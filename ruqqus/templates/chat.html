@@ -92,7 +92,7 @@
     initialRoom: {{ (request.args.get('room') | tojson) if request.args.get('room') else 'null' }},
     single: {{ 'true' if request.args.get('single') else 'false' }},
     maxGroupMembers: {{ chat_group_max }},
-    filterLevel: {{ v.filter_level if v.filter_level is not none else 1 }}
+    filterLevel: {{ effective_level(v) }}
   };
 </script>
 <script>

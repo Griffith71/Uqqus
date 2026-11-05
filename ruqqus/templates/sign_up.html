@@ -124,12 +124,12 @@
                             aria-describedby="passwordConfirmHelp" type="password" name="password_confirm"
                             required="">
 
-                            {# required (helpers/age_declaration.py): the notice on default.html asks in the same words #}
+                            {# required (helpers/age_declaration.py): Settings asks members from before in the same words #}
                             {% from "partials/age_question.html" import age_choices, age_child_means %}
                             <fieldset class="mt-4 score-display-choice">
                                 <legend class="score-display-legend">{{ _('How old are you?') }}</legend>
                                 {{ age_choices("signup-age") }}
-                                {{ age_child_means() }}
+                                {{ age_child_means("signup-age") }}
                             </fieldset>
 
                             {# the video question (helpers/consent.py), for someone it has to be asked of and who hasn't answered: the banner's

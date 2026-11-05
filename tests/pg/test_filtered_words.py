@@ -88,14 +88,14 @@ def test_a_word_is_escaped(make_member):
         unseed(member, word)
 
 
-def test_a_child_account_is_told_only_an_admin_can_change_it(make_member):
+def test_a_locked_account_is_told_to_confirm_its_age_not_to_change_its_filter(make_member):
     member = make_member()
     db = member.db_session()
-    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2 WHERE id = :u"), {"u": member.id})
+    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2, age_lock = 1 WHERE id = :u"), {"u": member.id})
     db.commit()
     page = get(member.browser(), "/filtered_words").get_data(as_text=True)
     assert "Change your word filter" not in page
-    assert "its word filter stays on Child. Only an admin can change that." in page
+    assert "its word filter stays on Child until you confirm your age in Settings." in page
 
     # a member who chose the Child filter themselves can still change it, and is told so
     other = make_member()

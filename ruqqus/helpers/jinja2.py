@@ -182,6 +182,59 @@ def score_mode(v):
     return SCORE_NET if v is not None and getattr(v, "score_display", 0) == SCORE_NET else SCORE_UPVOTES
 
 
+@app.template_global("private_posting_on")
+def private_posting_on(v):
+    """Is Private posting on for this member (helpers/private_posting.py)? The audience choices are drawn locked to Friends."""
+    from ruqqus.helpers import private_posting
+    return private_posting.on(v)
+
+
+@app.template_global("sensitive_definition")
+def sensitive_definition():
+    """What Sensitive means, in the reader's language: one text (helpers/sensitive.py DEFINITION), used by every place that explains it."""
+    from ruqqus.helpers import sensitive
+    from ruqqus.helpers.i18n_runtime import msg
+    return msg(sensitive.DEFINITION)
+
+
+@app.template_global("age_context")
+def age_context():
+    """What the age question needs to know about where the reader is: whether "18 or over" can be picked (not in the UK, the EU/EEA
+    and Australia, where a vendor has to confirm it) and the youngest age that may have an account there."""
+    from ruqqus.helpers import age_declaration
+    country = age_declaration.request_country()
+    return {"strict": age_declaration.is_strict(country), "min": age_declaration.min_age(country)}
+
+
+@app.template_global("age_assurance_configured")
+def age_assurance_configured():
+    """Is an age-check service set up (helpers/age_assurance.py)? Until one is, Settings says confirming isn't available yet."""
+    from ruqqus.helpers import age_assurance
+    return age_assurance.configured()
+
+
+@app.template_global("effective_level")
+def effective_level(v):
+    """The word-filter level this viewer really browses at: their own, or Child where the law asks for it and their age isn't
+    confirmed (helpers/visibility.viewer_level). A template that shows or passes on a level reads this, never `.filter_level`."""
+    from ruqqus.helpers.visibility import viewer_level
+    return viewer_level(v)
+
+
+@app.template_global("child_locked")
+def child_locked(v):
+    """Is this account under the child lock (helpers/age_declaration.is_locked)?"""
+    from ruqqus.helpers import age_declaration
+    return age_declaration.is_locked(v)
+
+
+@app.template_global("region_locked")
+def region_locked_now(v):
+    """Does the regional rule apply to this reader now: in a country that asks for it, with their age not confirmed?"""
+    from ruqqus.helpers import age_declaration
+    return age_declaration.current_region_locked(v)
+
+
 @app.template_global("ratio_class")
 def ratio_class_global(ups, downs):
     from ruqqus.helpers.vote_colour import ratio_class

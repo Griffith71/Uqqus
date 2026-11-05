@@ -48,9 +48,9 @@ def test_every_place_that_sends_an_audience_sends_the_circles_with_it():
 
 def test_the_sheets_draw_the_same_field_with_the_members_own_circles():
     modal = read("ruqqus", "templates", "partials", "audience_modal.html")
-    assert '{{ audience_field(0, "audience-option", (), circle_choices(v)) }}' in modal
+    assert '{{ audience_field(0, "audience-option", (), circle_choices(v), locked=private_posting_on(v)) }}' in modal
     stories = read("ruqqus", "templates", "partials", "story_sheets.html")
-    assert '{{ audience_field(0, "story-audience", (), circle_choices(v)) }}' in stories
+    assert '{{ audience_field(0, "story-audience", (), circle_choices(v), locked=private_posting_on(v)) }}' in stories
     options = read("ruqqus", "templates", "partials", "post_options.html")
     field = options.split("{% macro audience_field(")[1].split("{% endmacro %}")[0]
     assert 'data-circle-name="{{ c.name }}"' in field and "| safe" not in field and 'href="/circles"' in field

@@ -1,8 +1,10 @@
 {% extends "docs_default.html" %}
 
-{# The site's rules and guidelines (the owner's text, 2026-10-20). Six sections: the owner's, then evading and
-   manipulating the site, then bots (what /help/bots sets up). The short version shown beside Create a post and Create
-   a guild is partials/posting_rules.html: keep the two in step (tests/test_posting_rules.py). #}
+{# The site's rules and guidelines (the owner's text, 2026-10-20; reworded 2026-11-05 to say what the card beside Create a post says,
+   in the same words). Six sections: the owner's, then evading and manipulating the site, then bots (what /help/bots sets up). The short
+   version shown beside Create a post and Create a guild is partials/posting_rules.html: keep the two in step
+   (tests/test_posting_rules.py). The Sensitive definition is helpers/sensitive.py DEFINITION, written out here because this page is
+   English only. #}
 
 {% block title %}
 <title>Rules and Guidelines - {{ 'SITE_NAME' | app_config }}</title>
@@ -20,44 +22,39 @@
 
 ## 1. Free Expression and Good Faith
 
-Good-faith discussion, disagreement, and criticism are permitted. Deliberate deception and bad-faith conduct intended to mislead or harm others are prohibited.
+Good-faith discussion, disagreement and criticism are permitted. Deliberate deception and bad-faith conduct intended to mislead or harm others are prohibited.
 
-Because intent can be difficult to establish, claims of deliberate deception must be supported by clear, documented evidence. Disagreement, unpopular opinions, or speculation about another person's motives are not sufficient grounds for enforcement on their own.
+Claims of deliberate deception need clear, documented evidence: disagreement, unpopular opinions or speculation about motives are not enough on their own.
 
 ## 2. Criminal Activity and Prohibited Conduct
 
-Do not use {{ 'SITE_NAME' | app_config }} to engage in, facilitate or promote criminal activity or conduct prohibited by these rules. This includes:
+Do not use {{ 'SITE_NAME' | app_config }} to engage in, facilitate or promote criminal activity or conduct prohibited by these rules. This includes harassment, scams (including gambling schemes), fraud, spam, unsolicited commercial promotion, violence, malware, phishing, cyberattacks and other unlawful activity.
 
-* Harassment, scams (including gambling schemes), fraud, spam, unsolicited commercial promotion, violence, malware, phishing, cyberattacks, and other unlawful activity.
-* Copyright and intellectual property: do not infringe copyright or other intellectual property rights. Do not copy, repost or redistribute protected content without permission or a valid legal basis, or link to pirated copies. Do not falsely claim authorship of another person's work.
-* Deceptive impersonation of other users, public figures, organisations, or members of {{ 'SITE_NAME' | app_config }} staff.
-* Publishing personal information belonging to yourself or anyone else.
+Do not infringe copyright or other intellectual property rights. Do not copy, repost or redistribute protected content without permission or a valid legal basis, or link to pirated copies. Do not falsely claim authorship of another person's work.
+
+Do not use deceptive impersonation of other users, public figures, organisations or {{ 'SITE_NAME' | app_config }} staff, and do not publish personal information, yours or anyone else's.
 
 ## 3. Content Standards
 
-Content consisting entirely of any one of the following is prohibited:
+Do not post content made mainly to be consumed as sexual, violent or grotesque material.
 
-* Erotic material
-* Violent material
-* Grotesque material
-
-A broader work is not prohibited merely because it contains erotic, violent or grotesque elements.
+A broader work is not prohibited merely because it contains such elements. Mark Sensitive content Sensitive.
 
 ## 4. Transparency and Disclosure
 
-Sexual content must be marked Sensitive, and other content designated as sensitive must be clearly labelled. Commercial promotion, including paid partnerships and other material commercial relationships, must be disclosed. Content created using AI must be identified as such.
+Disclose commercial promotion, including paid partnerships and other material commercial relationships. Identify content created using AI. Automated accounts must clearly identify themselves as bots.
 
-Automated accounts must clearly identify themselves as bots.
+**What is Sensitive?** Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive.
+
+Sensitive posts and strong language are hidden from accounts with the child lock, and from anyone in a country where the law requires it until they confirm their age. An account with the child lock can't post Sensitive content.
 
 ## 5. Evading and Manipulating the Site
 
-Do not evade or manipulate the site, or help anyone else to. This includes:
+Do not evade a {{ 'SITE_NAME' | app_config }} ban or suspension, or use another account to circumvent a block imposed by another user. No hacking, no trying to get into accounts or systems that are not yours, and no exploiting a flaw for advantage: if you find a problem, tell us.
 
-* Evading a {{ 'SITE_NAME' | app_config }} ban or suspension, or using another account to circumvent a block imposed by another user.
-* Hacking, or trying to gain access to accounts, systems, or data that are not yours, and exploiting a flaw in the site for advantage. If you find a problem, tell us.
-* Manipulating votes, or using fake or coordinated accounts to give a false impression of support or activity.
+No manipulating votes, and no fake or coordinated accounts that give a false impression of support or activity.
 
-> Anonymous posts and comments are subject to the same rules as all other content. Anonymity conceals the author's identity from other users, not from {{ 'SITE_NAME' | app_config }}.
+> Anonymous posts and comments follow the same rules as everything else. Anonymity hides who wrote them from other users, not from {{ 'SITE_NAME' | app_config }}.
 
 <h2 id="bots">6. Bots</h2>
 

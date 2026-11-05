@@ -15,9 +15,11 @@
 
             <div class="settings-section rounded">
 
-              {# what the member said about their age (helpers/age_declaration.py): settings pages have no notice, so this is
-                 where it can be answered too. Only an admin changes an answer. #}
-              {% set child_account = v.age_declared == 2 %}
+              {# what the member said about their age, and the child lock (helpers/age_declaration.py): settings pages have no
+                 notice, so this is where it is answered, confirmed and explained #}
+              {% set child_account = child_locked(v) %}
+              {% set restricted = child_account or region_locked(v) %}
+              {% set age_note = request.args.get("age") %}
               <div class="d-lg-flex border-bottom" id="age-declaration">
 
                 <div class="title w-lg-25">
@@ -25,19 +27,73 @@
                 </div>
 
                 <div class="body w-lg-100 age-state">
+                  {% if age_note == "lifted" or age_note == "confirmed" %}
+                    <p class="mb-2 text-success" role="status">{{ _("Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it.") }}</p>
+                  {% elif age_note == "under" %}
+                    <p class="mb-2" role="status">{{ _("The age check found that you're under 18, so the child lock stays on.") }}</p>
+                  {% elif age_note == "failed" %}
+                    <p class="mb-2" role="status">{{ _("The age check didn't finish. Nothing has changed, and you can try again.") }}</p>
+                  {% endif %}
                   {% if v.age_declared is none %}
                     <p class="mb-2">{{ _("You haven't told us yet.") }}</p>
                     {% from "partials/age_question.html" import age_form %}
                     {{ age_form(v, "/settings/content", "age-settings") }}
                   {% else %}
                     {% if child_account %}
-                    <p class="mb-1">{{ _("This is a child account, set up by a parent or guardian, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
-                    <span class="d-block text-small-extra text-muted">{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive, and these settings can't turn that off.") }}</span>
+                    <p class="mb-1">{{ _("Your account has the child lock on, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
+                    <span class="d-block text-small-extra text-muted">{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off.") }}</span>
+                    {% elif v.age_assured_utc %}
+                    <p class="mb-1">{{ _("Your age was confirmed on %(date)s.", date=date_text(v.age_assured_utc, "%d %B %Y")) }}</p>
                     {% else %}
                     <p class="mb-1">{{ _("This account has been marked 18 or over since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
                     {% endif %}
-                    <span class="d-block text-small-extra text-muted">{{ _('You can\'t change this answer yourself. If it\'s wrong, <a href="%(url)s">contact us</a>: only an admin can change it.', url="/help/contact") }}</span>
+
+                    {% if restricted and not v.age_assured_utc %}
+                    {% set strict = age_context().strict %}
+                    <div class="mt-3" id="age-confirm">
+                      {% if v.age_under_utc %}
+                        <span class="d-block text-small-extra text-muted">{{ _("The age check found that you're under 18, so the child lock stays on.") }}</span>
+                      {% elif strict %}
+                        <span class="d-block text-small-extra text-muted mb-2">{% if child_account %}{{ _("Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off.") }}{% else %}{{ _("Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language.") }}{% endif %}</span>
+                        {% if age_assurance_configured() %}
+                        <form action="/settings/age_assurance/start" method="post" class="age-form">
+                          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                          <button type="submit" class="btn btn-primary">{{ _("Confirm my age") }}</button>
+                        </form>
+                        {% else %}
+                        <span class="d-block text-small-extra">{{ _("Age confirmation isn't available yet.") }}</span>
+                        {% endif %}
+                      {% else %}
+                        <span class="d-block text-small-extra text-muted mb-2">{{ _("To take the child lock off, confirm that you're 18 or over.") }}</span>
+                        <form action="/settings/age_declaration" method="post" class="age-form">
+                          <input type="hidden" name="formkey" value="{{ v.formkey }}">
+                          <input type="hidden" name="age_declaration" value="1">
+                          <button type="submit" class="btn btn-primary">{{ _("I'm 18 or over") }}</button>
+                        </form>
+                      {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if not child_account %}
+                    <span class="d-block mt-2 text-small-extra text-muted">{{ _('You can\'t change this answer yourself. If it\'s wrong, <a href="%(url)s">contact us</a>: only an admin can change it.', url="/help/contact") }}</span>
+                    {% endif %}
                   {% endif %}
+                </div>
+
+              </div>
+
+              {# helpers/private_posting.py: every post goes only to the Friends circle while this is on #}
+              <div class="d-lg-flex border-bottom" id="private-posting">
+
+                <div class="title w-lg-25">
+                  <label for="private-posting-switch">{{ _("Private posting") }}</label>
+                </div>
+
+                <div class="body w-lg-100">
+                  <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="private-posting-switch" aria-describedby="private-posting-help"{% if v.private_posting %} checked{% endif %}{% if v.age_lock == 2 %} disabled{% endif %} onchange="post_toast('/settings/private_posting?on=' + this.checked)">
+                    <label class="custom-control-label" for="private-posting-switch"></label>
+                  </div>
+                  <span class="d-block mt-2 text-small-extra text-muted" id="private-posting-help">{{ _("Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public.") }}</span>
                 </div>
 
               </div>
@@ -50,8 +106,8 @@
 
                 <div class="body w-lg-100">
 
-                  {% set level = 1 if v.filter_level is none else v.filter_level %}
-                  <select class="form-control" id="filterlevel" data-current="{{ level }}" onchange="filter_level_changed()"{% if child_account %} disabled aria-describedby="filterlevel-locked"{% endif %}>
+                  {% set level = effective_level(v) %}
+                  <select class="form-control" id="filterlevel" data-current="{{ level }}" onchange="filter_level_changed()"{% if restricted %} disabled aria-describedby="filterlevel-locked"{% endif %}>
                     <option value="0"{% if level == 0 %} selected{% endif %}>{{ _("Off - show everything") }}</option>
                     <option value="1"{% if level == 1 %} selected{% endif %}>{{ _("Standard - hide extremely offensive language") }}</option>
                     <option value="2"{% if level == 2 %} selected{% endif %}>{{ _("Child - also hide profanity and sensitive content") }}</option>
@@ -63,14 +119,14 @@
 
                   <button type="button" class="btn btn-primary mt-2 d-none" id="filterlevel-save" onclick="save_filter_level()">{{ _("Save word filter") }}</button>
 
-                  {% if child_account %}
-                  <span class="d-block mt-2 text-small-extra text-muted" id="filterlevel-locked">{{ _("This is a child account, so its word filter stays on Child. Only an admin can change that.") }}</span>
+                  {% if restricted %}
+                  <span class="d-block mt-2 text-small-extra text-muted" id="filterlevel-locked">{{ _("Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings.") }}</span>
                   {% else %}
                   <span class="d-block mt-2 text-small-extra text-muted">{{ _("Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password.") }}</span>
                   {% endif %}
 
                   {# the list isn't shown at the Child level (helpers/filtered_words.py), and this account can't leave it #}
-                  {% if not child_account %}
+                  {% if not restricted %}
                   <a class="d-inline-block mt-2 text-small" href="/filtered_words" id="filterlevel-words">{{ _("See the filtered words") }}</a>
                   {% endif %}
 
@@ -139,13 +195,13 @@
 
                 <div class="body w-lg-100">
 
-                  {% set child = (1 if v.filter_level is none else v.filter_level) >= 2 %}
+                  {% set child = effective_level(v) >= 2 %}
                   <div class="custom-control custom-switch">
                     <input type="checkbox" class="custom-control-input" id="all-shows-sensitive"{% if v.all_shows_sensitive and not child %} checked{% endif %}{% if child %} disabled{% endif %} onchange="post_toast('/settings/all_shows_sensitive?on=' + this.checked)">
                     <label class="custom-control-label" for="all-shows-sensitive"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">{{ _("Sensitive posts, guilds and accounts hold sexual content or deal with upsetting topics, such as grief or addiction recovery. They are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it.") }}{% if child %} {{ _("The Child word filter hides sensitive content everywhere, so this is off.") }}{% endif %}</span>
+                  <span class="text-small-extra text-muted">{{ sensitive_definition() }} {{ _("Sensitive posts, guilds and accounts are not against the rules, but All and For You leave them out unless you turn this on. You can always open a sensitive guild or profile, search for it or follow it.") }}{% if child %} {{ _("The Child word filter hides sensitive content everywhere, so this is off.") }}{% endif %}</span>
 
                 </div>
 
@@ -160,11 +216,11 @@
                 <div class="body w-lg-100">
 
                   <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="sensitive-account"{% if v.is_sensitive %} checked{% endif %}{% if v.sensitive_forced %} disabled{% endif %} onchange="post_toast('/settings/sensitive_account?on=' + this.checked)">
+                    <input type="checkbox" class="custom-control-input" id="sensitive-account"{% if v.is_sensitive %} checked{% endif %}{% if v.sensitive_forced or child_account %} disabled{% endif %} onchange="post_toast('/settings/sensitive_account?on=' + this.checked)">
                     <label class="custom-control-label" for="sensitive-account"></label>
                   </div>
 
-                  <span class="text-small-extra text-muted">{% if v.sensitive_forced %}{{ _("An admin marked your account sensitive, so only an admin can change this.") }} {% endif %}{{ _("Turn on if what you post is often sexual or upsetting. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content.") }}</span>
+                  <span class="text-small-extra text-muted">{% if v.sensitive_forced %}{{ _("An admin marked your account sensitive, so only an admin can change this.") }} {% endif %}{{ _("Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content.") }}</span>
 
                 </div>
 

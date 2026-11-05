@@ -1,18 +1,28 @@
 {# The age question (helpers/age_declaration.py), in one place so that sign-up and Settings ask it in the same
    words. Nothing is ticked first: it has to be an answer. #}
 {% macro age_choices(prefix) %}
+{% set ctx = age_context() %}
 <div class="custom-control custom-radio age-choice">
-    <input type="radio" class="custom-control-input" id="{{ prefix }}-adult" name="age_declaration" value="1" required>
+    {# where a vendor has to confirm it (the UK, the EU/EEA, Australia) "18 or over" can't be picked: the server stores the locked answer whatever is posted #}
+    <input type="radio" class="custom-control-input" id="{{ prefix }}-adult" name="age_declaration" value="1"{% if ctx.strict %} disabled aria-describedby="{{ prefix }}-means"{% else %} required{% endif %}>
     <label class="custom-control-label" for="{{ prefix }}-adult">{{ _("I'm 18 or over") }}</label>
 </div>
 <div class="custom-control custom-radio age-choice">
     <input type="radio" class="custom-control-input" id="{{ prefix }}-child" name="age_declaration" value="2" required>
-    <label class="custom-control-label" for="{{ prefix }}-child">{{ _("I'm a parent or guardian setting this up for my child (13 to 17)") }}</label>
+    <label class="custom-control-label" for="{{ prefix }}-child">{% if ctx.strict %}{{ _("I'm %(min)s or over", min=ctx.min) }}{% else %}{{ _("I'm %(min)s to 17", min=ctx.min) }}{% endif %}</label>
 </div>
 {% endmacro %}
 
-{% macro age_child_means() %}
-<small class="age-means">{{ _("You must be at least 13 to have an account. A child account stays on the Child word filter, which hides profanity and anything marked sensitive. You can't change your answer afterwards; only an admin can.") }}</small>
+{% macro age_child_means(prefix) %}
+{% set ctx = age_context() %}
+<small class="age-means" id="{{ prefix }}-means">
+    {{ _("You must be at least %(min)s to have an account where you are.", min=ctx.min) }}
+    {% if ctx.strict %}
+    {{ _("Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off.") }}
+    {% else %}
+    {{ _("If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings.") }}
+    {% endif %}
+</small>
 {% endmacro %}
 
 {# a plain form, so it works with no script; "child" is asked again on a page of its own before anything is saved #}
@@ -21,7 +31,7 @@
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
     <input type="hidden" name="next" value="{{ back }}">
     {{ age_choices(prefix) }}
-    {{ age_child_means() }}
+    {{ age_child_means(prefix) }}
     <button type="submit" class="btn btn-primary">{{ pgettext("button", "Save") }}</button>
 </form>
 {% endmacro %}

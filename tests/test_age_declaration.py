@@ -35,15 +35,15 @@ def test_only_the_two_exact_answers_count(value, expected):
 def test_a_child_account_is_put_on_the_child_filter_with_sensitive_content_off():
     fields = age.fields_for(age.CHILD, 1000)
     assert fields == {"age_declared": age.CHILD, "age_declared_utc": 1000, "filter_level": CHILD_FILTER,
-                      "hide_offensive": True, "all_shows_sensitive": False}
+                      "hide_offensive": True, "all_shows_sensitive": False, "age_lock": age.REGION_LOCK, "private_posting": True}
 
 
 def test_an_adult_answer_touches_nothing_else():
-    assert age.fields_for(age.ADULT, 1000) == {"age_declared": age.ADULT, "age_declared_utc": 1000}
+    assert age.fields_for(age.ADULT, 1000) == {"age_declared": age.ADULT, "age_declared_utc": 1000, "age_lock": None}
 
 
 def test_clearing_an_answer_says_when_as_nothing():
-    assert age.fields_for(None, 1000) == {"age_declared": None, "age_declared_utc": 0}
+    assert age.fields_for(None, 1000) == {"age_declared": None, "age_declared_utc": 0, "age_lock": None}
 
 
 def test_a_child_account_can_only_be_on_the_child_filter():
@@ -187,7 +187,7 @@ def test_the_terms_notice_goes_to_people_who_agreed_to_the_old_terms_once(db):
 
 
 def test_the_terms_notice_has_the_link_and_the_terms_words():
-    assert "[Terms](/help/terms)" in age.TERMS_NOTICE and "at least 18, or at least 13" in age.TERMS_NOTICE
+    assert "[Terms](/help/terms)" in age.TERMS_NOTICE and "child lock" in age.TERMS_NOTICE and "age-check service" in age.TERMS_NOTICE
 
 
 def test_the_one_off_is_by_hand_and_nothing_sends_it_by_itself():
@@ -207,14 +207,15 @@ def test_the_one_off_is_by_hand_and_nothing_sends_it_by_itself():
 def test_the_two_choices_are_written_once_and_asked_in_the_same_words_everywhere():
     question = read("ruqqus", "templates", "partials", "age_question.html")
     assert question.count("I'm 18 or over") == 1
-    assert question.count("I'm a parent or guardian setting this up for my child (13 to 17)") == 1
-    assert 'name="age_declaration" value="1" required' in question and 'name="age_declaration" value="2" required' in question
+    assert question.count("I'm %(min)s to 17") == 1 and question.count("I'm %(min)s or over") == 1
+    # the adult choice can't be picked where a vendor has to confirm it; the other is required either way
+    assert 'name="age_declaration" value="1"{% if ctx.strict %} disabled' in question
+    assert 'name="age_declaration" value="2" required' in question
     assert " checked" not in question, "nothing is answered for them"
     assert 'import age_choices' in read("ruqqus", "templates", "sign_up.html")
     assert 'import age_form' in read("ruqqus", "templates", "settings_filters.html")
     assert "age_choices(prefix)" in question.split("macro age_form", 1)[1]
-    # the page that asks again quotes the same message
-    assert "I'm a parent or guardian setting this up for my child (13 to 17)" in read("ruqqus", "templates", "age_confirm.html")
+    assert not (ROOT / "ruqqus" / "templates" / "age_confirm.html").exists(), "a lock can be lifted, so there is no second page"
 
 
 def test_there_is_no_notice_on_every_page_existing_members_are_asked_in_settings_only():
@@ -240,7 +241,7 @@ def test_a_child_account_isnt_sent_to_a_setting_it_cant_change():
     page = read("ruqqus", "templates", "filtered_words.html")
     child = page.split('{% if state == "child" %}', 1)[1].split('{% elif state == "warning" %}', 1)[0]
     locked, free = child.split("{% else %}", 1)
-    assert "v.age_declared == 2" in locked and "Change your word filter" not in locked
+    assert "child_locked(v) or region_locked(v)" in locked and "Change your word filter" not in locked
     assert f'_("{age.FILTER_LOCKED}")' in locked, "the words Settings uses"
     assert "Change your word filter" in free
 
@@ -251,8 +252,10 @@ def test_the_answer_route():
     head = pages.split("def settings_age_declaration(v):", 1)[0]
     assert head.rstrip().endswith('@auth_required\n@not_qr_limited\n@validate_formkey')
     assert "User.age_declared.is_(None)" in route, "once only, in the statement that writes"
-    assert route.index('request.form.get("confirm") != "1"') < route.index(".update(")
-    assert 'same_site(request.form.get("next")' in route
+    assert "age_declaration.signup_answer(answer, country)" in route, "a strict country can't be told 'adult' by a posted value"
+    assert "User.age_lock == age_declaration.REGION_LOCK" in route, "a lift happens once, in the statement that writes"
+    assert "age_declaration.is_strict(country)" in route, "only a vendor lifts the lock in the UK, the EU/EEA and Australia"
+    assert 'same_site(request.form.get("next")' in pages and "_settings_back()" in route
     assert "not_quarantined" not in pages, "a held account may change its own settings"
 
 
@@ -262,10 +265,10 @@ def test_the_admin_route():
     assert head.rstrip().endswith("@admin_level_required(3)\n@validate_formkey")
     assert "target.is_bot" in route and "v.admin_level <= (target.admin_level or 0)" in route
     assert 'action_log.record_quietly(g.db, "age_declaration"' in route
-    assert "notify(target, age_declaration.ADMIN_NOTICES[answer])" in route
+    assert "notify(target, age_declaration.ADMIN_NOTICES[notice])" in route
     log = read("ruqqus", "helpers", "action_log.py")
     assert '"remove_story", "age_declaration"}' in log, "what a member said about their age is the staff's to read, never the public's"
-    assert set(age.ADMIN_NOTICES) == {age.ADULT, age.CHILD, None} == set(age.LABELS)
+    assert set(age.ADMIN_NOTICES) == {age.ADULT, age.CHILD, None, age.CONFIRMED} == set(age.LABELS)
 
 
 def test_only_the_member_and_the_admins_are_told_the_answer():
@@ -300,17 +303,25 @@ def test_the_export_and_the_clean_up():
     from ruqqus.helpers import data_export
     sections = dict(data_export.SECTIONS)
     assert "age_declared" in sections["age"] and "age_declared_utc" in sections["age"]
+    for column in ("age_lock", "age_assured_utc", "age_under_utc", "private_posting"):
+        assert column in sections["age"], "what the site holds about their age is theirs to download"
     cleanup = read("ruqqus", "helpers", "account_cleanup.py")
-    assert 'UPDATE users SET age_declared = NULL, age_declared_utc = 0 WHERE id = :u' in cleanup
+    forget = cleanup.split('("forget the age answer",', 1)[1].split("),", 1)[0]
+    for piece in ("age_declared = NULL", "age_declared_utc = 0", "age_lock = NULL", "age_assured_utc = 0", "age_under_utc = 0",
+                  "private_posting = FALSE", "WHERE id = :u"):
+        assert piece in forget, piece
     assert "WHERE target_user_id = :u AND action = 'age_declaration'" in cleanup, "an admin's note says what the answer was"
     assert "ADMIN_NOTICES" in cleanup, "and so does the notice they sent"
 
 
 def test_the_terms_and_the_privacy_page_say_what_is_true():
     terms = read("ruqqus", "templates", "help", "terms.html")
-    assert "at least 18 years old, or at least 13 years old with an account made for you by a parent or guardian" in terms
+    assert "Nobody under 13 may have an account." in terms and "child lock" in terms
+    assert "until an age-check service has confirmed that they are 18 or over" in terms
+    assert "a parent or guardian" not in terms.split("## Age", 1)[1].split("## Account Access", 1)[0], "the parent-made account is Stage 2 and not promised"
     assert "if you indicate as such in your user settings" not in terms
     privacy = read("ruqqus", "templates", "help", "privacy.html")
     assert "Whether or not you have indicated that you are 18" not in privacy
     assert "What you told us about your age, and when" in privacy and "we don't check it" in privacy
+    assert "never a birth date, a document or a picture" in privacy and "No such service is set up yet" in privacy
     assert "keeps only that an admin changed the answer and when, not what it was or why" in privacy

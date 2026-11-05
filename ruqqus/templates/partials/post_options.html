@@ -31,14 +31,15 @@
   it is anonymous.
 #}
 
-{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu", noun="post") %}
-{% set for_circles = selected == 4 %}
+{# `locked`: Private posting is on (helpers/private_posting.py), so Public can't be picked and Friends is ticked #}
+{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu", noun="post", locked=false) %}
+{% set for_circles = selected == 4 or locked %}
 {% if layout == "cards" %}
 {# the Create a post page: both choices in plain view (no menu to find), the circles as chips under Circles #}
 <div class="audience audience-cards" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
   <span class="audience-title">{{ _("Who can see this Space?") if noun == "Space" else _("Who can see this post?") }}</span>
   <div class="audience-choices" role="radiogroup" aria-label="{{ _('Who can see this Space') if noun == 'Space' else _('Who can see this post') }}">
-    <input type="radio" class="audience-radio" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
+    <input type="radio" class="audience-radio" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}{% if locked %} disabled{% endif %}>
     <label class="audience-choice" for="{{ prefix }}-0"><i class="fas fa-globe-americas" aria-hidden="true"></i><span class="audience-choice-text"><strong>{{ pgettext("audience", "Public") }}</strong><small>{{ _("Anyone can see it") }}</small></span></label>
     <input type="radio" class="audience-radio" id="{{ prefix }}-4" name="audience" value="4"{% if for_circles %} checked{% endif %}>
     <label class="audience-choice" for="{{ prefix }}-4"><i class="fas fa-user-friends" aria-hidden="true"></i><span class="audience-choice-text"><strong>{{ pgettext("audience", "Circles") }}</strong><small>{{ _("Only the circles you pick") }}</small></span></label>
@@ -47,7 +48,7 @@
     <span class="audience-subtitle">{{ _("Pick who it is for") }}</span>
     <div class="audience-chip-list">
       {% for c in choices %}
-      <input type="checkbox" class="audience-chip-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen %} checked{% endif %}>
+      <input type="checkbox" class="audience-chip-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen or (locked and c.token == "friends" and not chosen) %} checked{% endif %}>
       <label class="audience-chip" for="{{ prefix }}-c-{{ c.token }}"{% if c.hint %} title="{{ msg_text(c.hint) }}"{% endif %}>{{ msg_text(c.name) if c.kind == "friends" else c.name }}{% if c.hint and c.kind != "friends" %}<small>{{ msg_text(c.hint) }}</small>{% endif %}</label>
       {% endfor %}
     </div>
@@ -57,12 +58,13 @@
     <a href="/circles" class="audience-manage">{{ _("Make or change your circles") }}</a>
   </div>
   <p class="audience-note">{{ _("Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.") }}</p>
+  {% if locked %}<p class="audience-note" id="{{ prefix }}-private">{{ _("Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content.") }}</p>{% endif %}
 </div>
 {% else %}
 <div class="audience" data-audience-field data-mode="{{ 4 if for_circles else 0 }}">
   <span class="audience-title">{{ _("Who can see this?") }}</span>
   <div class="custom-control custom-radio">
-    <input type="radio" class="custom-control-input" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}>
+    <input type="radio" class="custom-control-input" id="{{ prefix }}-0" name="audience" value="0"{% if not for_circles %} checked{% endif %}{% if locked %} disabled{% endif %}>
     <label class="custom-control-label" for="{{ prefix }}-0">{{ pgettext("audience", "Public") }} <span class="audience-hint">{{ pgettext("audience", "Anyone") }}</span></label>
   </div>
   <div class="custom-control custom-radio">
@@ -72,13 +74,14 @@
   <div class="audience-circles" role="group" aria-label="{{ pgettext('audience', 'Circles') }}">
     {% for c in choices %}
     <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen %} checked{% endif %}>
+      <input type="checkbox" class="custom-control-input" id="{{ prefix }}-c-{{ c.token }}" name="circles" value="{{ c.token }}" data-circle-name="{{ c.name }}"{% if c.token in chosen or (locked and c.token == "friends" and not chosen) %} checked{% endif %}>
       <label class="custom-control-label" for="{{ prefix }}-c-{{ c.token }}">{{ msg_text(c.name) if c.kind == "friends" else c.name }}{% if c.hint %} <span class="audience-hint">{{ msg_text(c.hint) }}</span>{% endif %}</label>
     </div>
     {% endfor %}
     <a href="/circles" class="audience-manage">{{ _("Make or change your circles") }}</a>
   </div>
   <p class="audience-note">{{ _("Only the people in them see it, and nobody is told which of your circles they are in. It can't be anonymous, forwarded, reposted or co-authored, and it stays off All, search and trending.") }}</p>
+  {% if locked %}<p class="audience-note" id="{{ prefix }}-private">{{ _("Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content.") }}</p>{% endif %}
 </div>
 {% endif %}
 {% endmacro %}

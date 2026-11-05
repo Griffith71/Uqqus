@@ -15,9 +15,10 @@ _SECTION_OF = {2: "extreme", 1: "profanity", 0: "allowed"}
 
 
 def child_filter(v):
-    """The viewer browses on the Child filter (users.filter_level 2; NULL is Standard): the list is not shown to them."""
-    level = getattr(v, "filter_level", None)
-    return (1 if level is None else level) >= 2
+    """The viewer browses on the Child filter (users.filter_level 2; NULL is Standard), or at that level because the law asks for it
+    where they are and their age isn't confirmed (visibility.viewer_level): the list is not shown to them."""
+    from ruqqus.helpers.visibility import CHILD, viewer_level
+    return viewer_level(v) >= CHILD
 
 
 def anywhere(entry):

@@ -10,7 +10,7 @@ from ruqqus.helpers import creator_fund as rules
 from ruqqus.helpers import creator_fund_store as store
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, tr
-from ruqqus.helpers.wrappers import not_qr_limited, admin_level_required, auth_required, is_not_banned, validate_formkey
+from ruqqus.helpers.wrappers import not_child_locked, not_qr_limited, admin_level_required, auth_required, is_not_banned, validate_formkey
 from ruqqus.__main__ import app, cache
 
 ADMIN_LEVEL = 4             # coins are money: as /admin/money's most powerful tools
@@ -47,6 +47,7 @@ def settings_creator_fund(v):
 @app.post("/settings/creator_fund")
 @is_not_banned
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def settings_creator_fund_save(v):
     if request.form.get("action") == "leave":

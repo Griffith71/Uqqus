@@ -20,7 +20,7 @@ through a route and these rules; members can only write, react, edit and delete 
   rated by the word filter; a member whose filter hides it sees the members' names instead.
 """
 
-from ruqqus.helpers import display_names
+from ruqqus.helpers import age_declaration, display_names
 from ruqqus.helpers.i18n_runtime import tr, trn
 
 MAX_MEMBERS = 32
@@ -68,8 +68,8 @@ def add_refusal(adder_id, adder_role, target, blocked_either_way, already_in, si
     if size >= MAX_MEMBERS:
         return trn("A group can have at most %(num)s person.", "A group can have at most %(num)s people.", MAX_MEMBERS)
     if getattr(target, "is_bot", False) or getattr(target, "is_deleted", False) \
-            or getattr(target, "is_suspended", False) or blocked_either_way:
-        # one message for every reason, so a block is never named
+            or getattr(target, "is_suspended", False) or blocked_either_way or age_declaration.target_refusal(target):
+        # one message for every reason, so a block (or a child lock) is never named
         return tr("@%(name)s can't be added to a group.", name=target.username)
     return None
 

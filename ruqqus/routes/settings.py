@@ -28,6 +28,7 @@ from ruqqus.helpers import totp as totp_rules
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
+from ruqqus.helpers import private_posting
 from ruqqus.helpers import text_length
 from ruqqus.helpers import profile_edit
 from ruqqus.helpers import age_declaration
@@ -615,26 +616,15 @@ def _leave_chat_groups(v):
         app.logger.warning(f"delete_account: chat groups not left for {v.id}: {e}")
 
 
-@app.route("/settings/delete_account", methods=["POST"])
-@is_not_banned
-@no_negative_balance("html")
-@not_qr_limited
-@validate_formkey
-def delete_account(v):
-
-    if not v.verifyPass(request.form.get("password", "")) or (
-            v.mfa_secret and not (v.accept_2fa(request.form.get("twofactor", ""))
-                                  or mfa_backup_store.spend(g.db, v.id, request.form.get("twofactor", ""), int(time.time())))):
-        return render_template("settings_security.html", v=v,
-                               error=tr("Invalid password or token") if v.mfa_secret else tr("Invalid password"))
-
-
+def close_own_account(v, reason):
+    """Everything that closing an account does, short of the commit: the member deleting theirs, or the age check finding that
+    the holder is under the youngest age where they are (routes/age_declaration_pages.py). Signs the request's browser out."""
     remove_user(v)
 
     v.discord_id=None
     v.is_deleted = True
     v.login_nonce += 1
-    v.delete_reason = request.form.get("delete_reason", "")
+    v.delete_reason = reason
     v.patreon_id=None
     v.patreon_pledge_cents=0
     v.del_banner()
@@ -704,6 +694,22 @@ def delete_account(v):
             g.db.add(comment)
             g.db.add(new_ma)
 
+
+@app.route("/settings/delete_account", methods=["POST"])
+@is_not_banned
+@no_negative_balance("html")
+@not_qr_limited
+@validate_formkey
+def delete_account(v):
+
+    if not v.verifyPass(request.form.get("password", "")) or (
+            v.mfa_secret and not (v.accept_2fa(request.form.get("twofactor", ""))
+                                  or mfa_backup_store.spend(g.db, v.id, request.form.get("twofactor", ""), int(time.time())))):
+        return render_template("settings_security.html", v=v,
+                               error=tr("Invalid password or token") if v.mfa_secret else tr("Invalid password"))
+
+
+    close_own_account(v, request.form.get("delete_reason", ""))
     g.db.commit()
 
     # not a redirect: this answer, which only a deletion that went through ever gets, is what clears the account's chat device
@@ -1116,6 +1122,23 @@ def settings_all_shows_sensitive(v):
     return jsonify({"message": tr("Saved.")})
 
 
+@app.route("/settings/private_posting", methods=["POST"])
+@auth_required
+@not_qr_limited
+@validate_formkey
+def settings_private_posting(v):
+    """Private posting (helpers/private_posting.py): every post goes only to the Friends circle while it is on. Turning it on is
+    always allowed; turning it off widens who reads what the member shares, so a limited QR sign-in can't, and a sub-account needs
+    its parent (Stage 2). Posts made while it was on stay Friends-only: Who can see this widens one."""
+    wanted = request.values.get("on") == "true"
+    if not wanted and not private_posting.may_turn_off(v):
+        return jsonify({"error": msg(private_posting.CAN_T_TURN_OFF)}), 403
+    v.private_posting = wanted
+    g.db.add(v)
+    g.db.commit()
+    return jsonify({"message": tr("Private posting is on.") if wanted else tr("Private posting is off.")})
+
+
 @app.route("/settings/all_opt_out", methods=["POST"])
 @auth_required
 @validate_formkey
@@ -1139,6 +1162,9 @@ def settings_sensitive_account(v):
     refused = sensitive_rules.owner_refusal(v.sensitive_forced, wanted)
     if refused:
         return jsonify({"error": refused}), 403
+    locked = age_declaration.locked_sensitive(v, wanted)         # a child-locked account posts no Sensitive content
+    if locked:
+        return jsonify({"error": msg(locked)}), 403
     v.is_sensitive = wanted
     g.db.add(v)
     g.db.commit()

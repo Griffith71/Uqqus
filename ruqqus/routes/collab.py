@@ -34,7 +34,7 @@ from ruqqus.helpers import collab_authorship as authorship
 from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
 from ruqqus.helpers import collab_store as store
-from ruqqus.helpers import collab_view, coauthors, live_bus
+from ruqqus.helpers import collab_view, coauthors, live_bus, private_posting
 from ruqqus.helpers.visibility import user_hidden
 from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, msg, tr, trn, trp
 
@@ -123,6 +123,8 @@ def collab_new(v):
     """A new shared draft with its creator as the one author (a plain form: it works without script)."""
     if not _may_write(v):
         abort(403)
+    if private_posting.refusal(v):             # a shared draft is published in public (helpers/private_posting.py)
+        return _error(msg(private_posting.REFUSAL), 403)
     now = _now()
     if store.made_since(g.db, v.id, now - DAY) >= rules.DOCS_PER_DAY:
         return _error(trn("You can start %(num)s shared draft a day.", "You can start %(num)s shared drafts a day.",
@@ -735,6 +737,8 @@ def collab_publish(doc_id, v):
     doc = store.doc(g.db, doc_id, lock=True)
     if not _may_write(v):
         abort(403)
+    if private_posting.refusal(v):             # a shared draft is published in public (helpers/private_posting.py)
+        return _error(msg(private_posting.REFUSAL), 403)
     now = _now()
     if doc[7] and doc[4] == doc[8]:
         post = g.db.query(Submission).filter_by(id=doc[7]).first()
@@ -797,6 +801,8 @@ def collab_fork(pid, v):
     post, doc = _readable_collab_post(pid, v)
     if not _may_write(v):
         abort(403)
+    if private_posting.refusal(v):             # a shared draft is published in public (helpers/private_posting.py)
+        return _error(msg(private_posting.REFUSAL), 403)
     if not post.is_public:
         return _error(tr("Only a public post can be forked."), 403)
     now = _now()

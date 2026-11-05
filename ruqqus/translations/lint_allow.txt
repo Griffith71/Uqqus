@@ -173,7 +173,12 @@ ruqqus/templates/userpage.html: Age answer
 ruqqus/templates/userpage.html: (since
 ruqqus/templates/userpage.html: Not asked
 ruqqus/templates/userpage.html: 18 or over
-ruqqus/templates/userpage.html: Child account (locks the Child filter)
+ruqqus/templates/userpage.html: Child account (starts the child lock)
+ruqqus/templates/userpage.html: 18 or over, age confirmed (lifts the lock; for staff and checked accounts)
 ruqqus/templates/userpage.html: Reason (for the staff log)
 ruqqus/templates/userpage.html: Change age answer
 ruqqus/templates/partials/ad_hold.html: (function (owner) { function other(stored) { if (!stored) return false; try { return !owner || JSON.parse(stored).user_id !== owner; } catch (e) { return true; } } try { return other(localStorage.getItem("ruqqus_chat_session")) || other(localStorage.getItem("ruqqus_call_session")); } catch (e) { return false; } })(
+ruqqus/templates/submission.html: Removal Reason (public, required)
+ruqqus/templates/submission.html: Rule broken
+ruqqus/templates/userpage.html: Ban Reason (public, required)
+ruqqus/templates/userpage.html: Rule broken

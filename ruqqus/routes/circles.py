@@ -9,14 +9,14 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submission, User
-from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, sharing, subscriber_badges
+from ruqqus.helpers import circle_guard, circle_store, circles, coauthors, private_posting, sharing, subscriber_badges
 from ruqqus.helpers.visibility import text_hidden
 from ruqqus.helpers.word_filter_store import get_filter
 from ruqqus.helpers.alerts import notify
-from ruqqus.helpers.i18n_runtime import N_, tr, trn
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, trn
 from ruqqus.helpers.get import get_guild, get_post, get_user
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
-from ruqqus.helpers.wrappers import not_qr_limited, auth_required, is_guildmaster, is_not_banned, no_negative_balance, validate_formkey
+from ruqqus.helpers.wrappers import not_child_locked, not_qr_limited, auth_required, is_guildmaster, is_not_banned, no_negative_balance, validate_formkey
 from ruqqus.__main__ import app, cache
 from ruqqus.routes.front import frontlist
 
@@ -134,6 +134,7 @@ def settings_circles(v):
 @app.route("/api/circles", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def circle_create(v):
     """Make a circle: `kind` custom (anyone, CUSTOM_LIMIT) or paid (Premium, PAID_LIMIT, with a `price`)."""
@@ -189,6 +190,7 @@ def circle_delete(cid, v):
 @app.route("/api/circles/<int:cid>/price", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def circle_price(cid, v):
     _mine(v, cid, kinds=(circles.PAID,))
@@ -282,6 +284,7 @@ def _paid_circle(cid):
 @is_not_banned
 @no_negative_balance("toast")
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def circle_subscribe(cid, v):
     row, owner = _paid_circle(cid)
@@ -412,6 +415,8 @@ def circle_post_audience(pid, v):
     audience, tokens, error = circles.parse_audience(raw, chosen)
     if error:
         return _fail(error)
+    if audience != circles.CIRCLES and private_posting.refusal(v):
+        return _fail(msg(private_posting.REFUSAL), 403)          # Private posting: not Public until it is turned off
     circle_ids = []
     if audience == circles.CIRCLES:
         circle_ids, error = circle_store.resolve(g.db, v.id, tokens)
@@ -524,6 +529,7 @@ def board_circle_price(guildname, board, v):
 @is_not_banned
 @no_negative_balance("toast")
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def circle_guild_subscribe(guildname, v):
     board = _circle_guild(guildname)

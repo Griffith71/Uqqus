@@ -437,10 +437,13 @@ def sign_up_post(v):
         #print(f"signup fail - {username } - invalid password")
         return new_signup(tr("Password must be between 8 and 100 characters."))
 
-    # how old: required, and a child account starts on the Child filter it stays on (helpers/age_declaration.py)
+    # how old: required. The under-18 answer starts the child lock (helpers/age_declaration.py), and so does any answer from a
+    # country where a vendor has to confirm that someone is 18 or over: a posted "18 or over" from there (the radio is disabled
+    # in the page, so only a hand-made request sends it) is stored as the locked answer
     age_answer = age_declaration.parse(request.form.get("age_declaration"))
     if age_answer is None:
         return new_signup(msg(age_declaration.SIGN_UP_NO_ANSWER))
+    age_answer = age_declaration.signup_answer(age_answer, request.headers.get("cf-ipcountry"))
 
     # Check for existing acocunts
     email = (request.form.get("email") or "").strip()

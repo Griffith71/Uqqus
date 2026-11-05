@@ -29,7 +29,7 @@ import os
 import re
 
 from ruqqus.helpers import age_declaration, consent
-from ruqqus.helpers.visibility import CHILD, viewer_level
+from ruqqus.helpers.visibility import CHILD, stored_level
 
 PAGES = ("feed", "post", "sidebar")
 PLACE_LABELS = {"feed": "Feed", "post": "Under a post", "sidebar": "Right sidebar"}
@@ -112,7 +112,9 @@ def viewer_allows(viewer, embedded=False):
         return True
     if getattr(viewer, "has_premium_no_renew", False):     # never has_premium: reading it spends a coin
         return False
-    return viewer_level(viewer) < CHILD
+    # the account's own level, not the regional rule: a visitor or an unconfirmed adult in a strict country still gets the
+    # (non-personalised) ads they had; a locked account, which is on the Child filter, gets none
+    return stored_level(viewer) < CHILD and not age_declaration.is_locked(viewer)
 
 
 def board_allows(board):

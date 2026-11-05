@@ -25,8 +25,8 @@
     <div class="fw-notice-icon" aria-hidden="true"><i class="fas fa-child"></i></div>
     <h1 class="fw-notice-title" id="fw-child-title">{{ _("The list isn't shown on the Child filter") }}</h1>
     <p class="fw-notice-text">{{ _("Your word filter is set to Child, which hides these words, so this page doesn't show them.") }}</p>
-    {% if v.age_declared == 2 %}
-    <p class="fw-notice-text">{{ _("This is a child account, so its word filter stays on Child. Only an admin can change that.") }}</p>
+    {% if child_locked(v) or region_locked(v) %}
+    <p class="fw-notice-text">{{ _("Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings.") }}</p>
     {% else %}
     <p class="fw-notice-text"><a href="/settings/content">{{ _("Change your word filter") }}</a></p>
     {% endif %}

@@ -27,7 +27,7 @@ from ruqqus.helpers.word_filter_store import apply_comment_severity
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
-from ruqqus.helpers import anonymity
+from ruqqus.helpers import age_declaration, anonymity, private_posting
 from ruqqus.helpers import action_log
 from ruqqus.classes import *
 from flask import *
@@ -347,6 +347,11 @@ Optional file data:
         # a 401 told an API client its sign-in was bad (bug hunt): 403 when the link bans the account, else 400, as
         # editing a comment answers
         return jsonify({"error": reason}), 403 if banned else 400
+
+    # a child-locked account can't comment anonymously (helpers/age_declaration.py)
+    locked_error = age_declaration.post_refusal(v, False, flag(request.form, "anonymous"))
+    if locked_error:
+        return jsonify({"error": msg(locked_error)}), 403
 
     # check existing
     existing = g.db.query(Comment).join(CommentAux).filter(Comment.author_id == v.id,
@@ -982,6 +987,8 @@ def repost_comment(cid, v):
     refusal = sharing.comment_refusal(comment, v)        # on a post that isn't public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
+    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
+        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": tr("A comment on a post for a Circle can't be reposted.")}, 400
@@ -1067,6 +1074,8 @@ def forward_comment(cid, v):
     refusal = sharing.comment_refusal(comment, v)        # on a post that isn't public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
+    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
+        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": tr("A comment on a post for a Circle can't be forwarded to a guild.")}, 400

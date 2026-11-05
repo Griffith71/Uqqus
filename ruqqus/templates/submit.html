@@ -159,8 +159,8 @@
                                     <i class="fas fa-chevron-down composer-pill-caret"></i>
                                 </summary>
                                 <div class="composer-pill-menu">
-                                    {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v)) }}
-                                    {{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon", compact=true) }}
+                                    {{ post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), locked=private_posting_on(v)) }}
+                                    {% if not child_locked(v) %}{{ post_options.anonymous_field(draft.option("anonymous", false) if draft else request.form.getlist("anonymous") | select | list | length > 0, "post-anon", compact=true) }}{% endif %}
                                 </div>
                             </details>
                         </div>
@@ -248,12 +248,15 @@
 
                                 {{ post_options.disclosure_field(draft.option("paid_partnership", false) if draft else request.form.getlist("paid_partnership") | select | list | length > 0, draft.option("made_with_ai", false) if draft else request.form.getlist("made_with_ai") | select | list | length > 0, "post-disc") }}
 
-                                <label for="sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Sexual content must be marked sensitive, and so may anything that could be upsetting. Not a rule violation: shown blurred with a click-to-reveal instead of being blocked.') }}"></i></label>
+{# a child-locked account can neither see nor post Sensitive content (helpers/age_declaration.py) #}
+                                {% if not child_locked(v) %}
+                                <label for="sensitive" class="text-warning mt-3">{{ _("Sensitive Content?") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ sensitive_definition() }}"></i></label>
 
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="sensitiveCheck" name="sensitive"{% if b and b.is_sensitive %} checked disabled {% elif draft and draft.option("sensitive") %} checked{% endif %}>
-                            <label class="custom-control-label" for="sensitiveCheck">{{ _("Sexual or upsetting? Blur this post until viewers click to reveal it.") }}</label>
+                            <label class="custom-control-label" for="sensitiveCheck">{{ _("Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it.") }}</label>
                         </div>
+                                {% endif %}
 
                             </div>
                         </details>

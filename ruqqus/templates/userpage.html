@@ -118,8 +118,9 @@
   <label for="admin-age-answer">Age answer{% if u.age_declared_utc %} (since {{ date_text(u.age_declared_utc, "%d %B %Y") }}){% endif %}</label>
   <select class="form-control mb-1" id="admin-age-answer" name="answer">
     <option value=""{% if u.age_declared is none %} selected{% endif %}>Not asked</option>
-    <option value="1"{% if u.age_declared == 1 %} selected{% endif %}>18 or over</option>
-    <option value="2"{% if u.age_declared == 2 %} selected{% endif %}>Child account (locks the Child filter)</option>
+    <option value="1"{% if u.age_declared == 1 and not u.age_assured_utc %} selected{% endif %}>18 or over</option>
+    <option value="2"{% if u.age_declared == 2 %} selected{% endif %}>Child account (starts the child lock)</option>
+    <option value="confirmed"{% if u.age_assured_utc %} selected{% endif %}>18 or over, age confirmed (lifts the lock; for staff and checked accounts)</option>
   </select>
   <input type="text" class="form-control mb-1" name="reason" maxlength="512" placeholder="Reason (for the staff log)">
   <input type="submit" class="btn btn-outline-warning btn-sm" value="Change age answer">

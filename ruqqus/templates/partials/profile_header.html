@@ -96,7 +96,7 @@
         {% if own %}
         <a href="/settings/profile" class="btn profile-x-outline profile-x-pill" data-profile-edit>{{ _("Edit profile") }}</a>
         {% elif v %}
-        {% if not u.is_bot %}{# nobody reads a bot's chats (helpers/bots.py) #}
+        {% if not u.is_bot and not child_locked(u) and not child_locked(v) %}{# nobody reads a bot's chats (helpers/bots.py), and a child-locked account has none #}
         <form method="POST" action="/api/chat/start" class="d-inline">
           <input type="hidden" name="username" value="{{ u.username }}">
           <input type="hidden" name="formkey" value="{{ v.formkey }}">

@@ -101,6 +101,7 @@ def channel_json(channel, me, v):
 @app.route("/api/broadcasts", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def broadcast_create(v):
     try:
@@ -131,6 +132,7 @@ def broadcast_create(v):
 @app.route("/api/broadcasts/following", methods=["GET"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 def broadcasts_following(v):
     """The Channels tab's "From people you follow": public channels of accounts v follows that v is not in, never an
     account in a block with v either way, a deleted one, or one whose name v's filter hides. Not a directory."""
@@ -144,6 +146,7 @@ def broadcasts_following(v):
 @app.route("/api/broadcasts/<int:bid>", methods=["GET"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 def broadcast_info(bid, v):
     channel, me = _channel(bid, v, member_only=False)
     return jsonify(channel_json(channel, me, v))
@@ -152,6 +155,7 @@ def broadcast_info(bid, v):
 @app.route("/api/broadcasts/<int:bid>/join", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def broadcast_join(bid, v):
     channel = channel_store.get(g.db, bid)
@@ -223,6 +227,7 @@ def broadcast_helpers(bid, v):
 @app.route("/api/broadcasts/<int:bid>/messages", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def broadcast_message(bid, v):
     """A public channel's message: rated, counted and sent by the site as its writer. A channel for circles is written

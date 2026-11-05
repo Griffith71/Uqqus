@@ -2,13 +2,13 @@ import { test, expect, type Browser, type BrowserContext, type Page } from "@pla
 import AxeBuilder from "@axe-core/playwright";
 import { open } from "./pages";
 
-// The age question (CLAUDE.md "Age declaration"; helpers/age_declaration.py, partials/age_question.html):
+// The age question and the child lock (CLAUDE.md "Age declaration and the child lock"; helpers/age_declaration.py, partials/age_question.html):
 //   docker compose exec -T ruqqus env PYTHONPATH=. /opt/ruqqus/service/venv/bin/python scripts/ui/seed_age.py     before each run
 //   npm run age
 // What it holds it to, in a real browser: sign-up can't be sent without an answer and nothing is answered for them; no page carries a
 // notice for a member from before (the owner, 2026-11-05) and Settings > Content asks in the same words as sign-up, with nothing running
-// off a phone's screen and both choices a target tall (32, 44 under a finger); "child" asks again first, and Go back saves nothing; once
-// answered it is kept for good; a child account's word filter and sensitive switch can't be changed by any of the routes; an admin can
+// off a phone's screen and both choices a target tall (32, 44 under a finger); "under 18" starts the child lock at once and the lock can
+// be lifted by saying 18 or over (no country header: not a strict country); once answered otherwise it is kept for good; a child account's word filter and sensitive switch can't be changed by any of the routes; an admin can
 // change the answer. A real sign-up is tests/pg/test_age_declaration.py: the dev site allows one account an
 // hour from its one Docker address, and refuses a headless browser's name.
 
@@ -17,7 +17,7 @@ const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch:
 const DESKTOP = { viewport: { width: 1280, height: 900 } } as const;
 const NOTICE = "#age-declaration";
 const ADULT = "I'm 18 or over";
-const CHILD = "I'm a parent or guardian setting this up for my child (13 to 17)";
+const CHILD = "I'm 13 to 17";
 
 test.describe.configure({ mode: "serial" });
 test.setTimeout(300_000);
@@ -138,31 +138,24 @@ test.describe("a member from before the question", () => {
     await context.close();
   });
 
-  test("answering child asks first; Go back saves nothing; then it is locked", async ({ browser }) => {
+  test("answering under 18 starts the child lock; the lock can be lifted by saying 18 or over", async ({ browser }) => {
     const { context, page } = await member(browser, "ui_age_child");
     await open(page, "/settings/content");
     await page.locator(`${NOTICE} label[for="age-settings-child"]`).click();
     await page.locator(`${NOTICE} button[type=submit]`).click();
-    await expect(page.getByRole("heading", { name: "Is this a child's account?" })).toBeVisible();
-    await expect(page.getByText("stay on the Child word filter")).toBeVisible();
-    await page.screenshot({ path: "shots/age/confirm-1280.png" });
-
-    await page.getByRole("link", { name: "Go back" }).click();
     await page.waitForLoadState("load");
     expect(new URL(page.url()).pathname).toBe("/settings/content");
-    await expect(page.locator("#age-declaration form"), "nothing was saved").toBeVisible();
-
-    await page.locator(`${NOTICE} label[for="age-settings-child"]`).click();
-    await page.locator(`${NOTICE} button[type=submit]`).click();
-    await page.getByRole("button", { name: "Yes, this is a child's account" }).click();
-    await page.waitForLoadState("load");
 
     await open(page, "/settings/content");
-    await expect(page.locator("#age-declaration")).toContainText("This is a child account");
+    await expect(page.locator("#age-declaration")).toContainText("Your account has the child lock on");
+    await expect(page.locator("#age-confirm")).toContainText("confirm that you're 18 or over");
+    await expect(page.locator("#private-posting-switch")).toBeChecked();
     await expect(page.locator("#filterlevel")).toBeDisabled();
     await expect(page.locator("#filterlevel")).toHaveValue("2");
     await expect(page.locator("#filterlevel-save")).toBeHidden();
     await expect(page.locator("#all-shows-sensitive")).toBeDisabled();
+    await expect(page.locator('[data-side-panel="chat"]'), "a locked account has no chat").toHaveCount(0);
+    await expect(page.locator('[href="/spaces/new"]')).toHaveCount(0);
     await page.locator(".settings-section").first().screenshot({ path: "shots/age/settings-child.png" });
     await expect(page.locator("#filterlevel-words"), "the list isn't shown at this level, so no link to a refusal").toHaveCount(0);
     expect((await new AxeBuilder({ page }).include("#age-declaration").withTags(["wcag2a", "wcag2aa"]).analyze()).violations).toEqual([]);

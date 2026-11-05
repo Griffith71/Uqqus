@@ -36,6 +36,11 @@ services:
       - BOTS_ENABLED=${BOTS_ENABLED:-1}
       # QR sign-in (ruqqus/helpers/qr_login.py): its setting shows only with 1, and the sign-in itself isn't built yet
       - QR_LOGIN_ENABLED=${QR_LOGIN_ENABLED:-1}
+      # the child lock (helpers/age_declaration.py, helpers/age_assurance.py): empty means the default list / no age-check service
+      - AGE_LOCK_COUNTRIES=${AGE_LOCK_COUNTRIES:-}
+      - AGE_MIN_AGES=${AGE_MIN_AGES:-}
+      - AGE_ASSURANCE_PROVIDER=${AGE_ASSURANCE_PROVIDER:-}
+      - AGE_ASSURANCE_DEV=${AGE_ASSURANCE_DEV:-}
       # chat for a member whose Matrix account Synapse already holds with no record on the site (routes/chat.py,
       # audit D-07): off, so a database restored without Synapse's never hands a new member an old account. Turn it on
       # only when the two belong together (e.g. a dev database restored on its own, with test accounts)

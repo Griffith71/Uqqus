@@ -1205,6 +1205,12 @@ button.text-expand {
     }
 }
 
+// where the law asks for a vendor's check, "18 or over" can't be picked (helpers/age_declaration.py): the whole row reads as unavailable
+.age-choice .custom-control-input:disabled ~ .custom-control-label {
+    opacity: .55;                 // the circle is drawn on the label, so the whole row dims; a colour here would lose to the sign-up page's own
+    cursor: not-allowed;
+}
+
 // a link inside a sentence has to be told apart by more than its colour
 .age-state a {
     text-decoration: underline;

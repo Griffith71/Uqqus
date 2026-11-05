@@ -223,10 +223,10 @@ def test_the_menu_item_the_sheet_and_the_script_agree():
 
 def test_the_composer_the_create_page_and_drafts_all_carry_the_audience():
     options = read("ruqqus", "templates", "partials", "post_options.html")
-    assert '{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu", noun="post") %}' in options
+    assert '{% macro audience_field(selected, prefix, chosen=(), choices=(), layout="menu", noun="post", locked=false) %}' in options
     assert 'name="audience"' in options and 'name="circles"' in options
-    assert "post_options.audience_field(audience_now, \"post-audience\", circles_now, circle_choices(v))" in read("ruqqus", "templates", "submit.html")
-    assert 'audience_field(0, "ic-audience", (), circle_choices(v))' in read("ruqqus", "templates", "partials", "inline_composer.html")
+    assert "post_options.audience_field(audience_now, \"post-audience\", circles_now, circle_choices(v), locked=private_posting_on(v))" in read("ruqqus", "templates", "submit.html")
+    assert 'audience_field(0, "ic-audience", (), circle_choices(v), locked=private_posting_on(v))' in read("ruqqus", "templates", "partials", "inline_composer.html")
     drafts = read("ruqqus", "helpers", "post_drafts.py")
     assert 'circles.parse_audience(form.get("audience"), form.getlist("circles"))' in drafts and '"circles": list(circle_tokens),' in drafts
     assert 'data["audience"] = str(options["audience"])' in drafts and 'data["circles"] = [str(c) for c in options.get("circles") or []]' in drafts

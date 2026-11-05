@@ -42,7 +42,8 @@ def row(member):
 
 def make_child(member):
     db = member.db_session()
-    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2 WHERE id = :u"), {"u": member.id})
+    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2, age_lock = 1, private_posting = true "
+                    "WHERE id = :u"), {"u": member.id})
     db.commit()
 
 
@@ -53,6 +54,13 @@ def make_adult(member):
 
 
 # ---------------------------------------------------------------- sign-up
+
+def locked_columns(real_app, username):
+    _, db_session = real_app
+    db = db_session()
+    db.rollback()
+    return db.execute(text("SELECT age_lock, private_posting, age_assured_utc FROM users WHERE username = :u"), {"u": username}).first()
+
 
 def sign_up_form(client, **fields):
     now = str(int(time.time()) - 60)
@@ -86,8 +94,9 @@ def test_sign_up_is_refused_without_an_answer(real_app, given):
 def test_the_sign_up_page_asks_and_answers_nothing_for_them(real_app):
     app, _ = real_app
     page = get(app.test_client(), "/signup").get_data(as_text=True)
+    # no country header: not a strict country, so both can be picked
     assert 'name="age_declaration" value="1" required' in page and 'name="age_declaration" value="2" required' in page
-    assert ADULT_CHOICE in page and "setting this up for my child (13 to 17)" in page
+    assert ADULT_CHOICE in page and "I'm 13 to 17" in page and "child lock" in page
 
 
 def test_an_adult_signs_up_on_the_standard_filter(real_app):
@@ -107,6 +116,8 @@ def test_a_child_account_signs_up_on_the_child_filter_and_sees_no_notice(real_ap
     assert post(client, "/signup", **form).status_code == 302
     made = signed_up(real_app, form["username"])
     assert made.age_declared == 2 and made.filter_level == 2 and made.hide_offensive is True and made.all_shows_sensitive is False
+    lock = locked_columns(real_app, form["username"])
+    assert lock.age_lock == 1 and lock.private_posting is True and lock.age_assured_utc == 0
     assert 'id="age-notice"' not in get(client, "/all").get_data(as_text=True)
 
 
@@ -194,7 +205,7 @@ def test_settings_shows_the_state_plainly(make_member):
     other = make_member()
     make_child(other)
     page = get(other.browser(), "/settings/content").get_data(as_text=True)
-    assert "This is a child account, set up by a parent or guardian" in page
+    assert "Your account has the child lock on, since" in page
     select = page.split('id="filterlevel"', 1)[1].split(">", 1)[0]
     assert "disabled" in select
     assert 'id="filterlevel-locked"' in page
@@ -232,23 +243,17 @@ def test_an_adult_answer_is_kept_for_good(make_member):
     assert 'id="age-notice"' not in get(member.browser(), "/all").get_data(as_text=True), "another browser too"
 
 
-def test_answering_child_asks_first_what_it_means(make_member):
+def test_answering_under_18_starts_the_child_lock_at_once(make_member):
     member = make_member()
     client = member.browser()
-    asked = answer(member, client, age_declaration="2", next="/all")
-    assert asked.status_code == 200
-    page = asked.get_data(as_text=True)
-    assert "stay on the Child word filter" in page and 'name="confirm" value="1"' in page
-    assert 'id="age-notice"' not in page
-    assert row(member).age_declared is None and row(member).filter_level == 1, "nothing saved yet"
-
-    saved = answer(member, client, age_declaration="2", confirm="1", next="/all")
+    saved = answer(member, client, age_declaration="2", next="/all")
     assert saved.status_code == 303
     now = row(member)
     assert now.age_declared == 2 and now.filter_level == 2 and now.all_shows_sensitive is False
+    assert member.user().age_lock == 1 and member.user().private_posting is True
     assert 'id="age-notice"' not in get(client, "/all").get_data(as_text=True)
     assert post(client, "/settings/profile", formkey=member.formkey(client), filter_level="1",
-                password=member.password).status_code == 403, "the lock holds for an answer given through the notice"
+                password=member.password).status_code == 403, "the lock holds for an answer given in Settings"
 
 
 def test_answering_child_turns_off_a_choice_made_before(make_member):
@@ -257,20 +262,33 @@ def test_answering_child_turns_off_a_choice_made_before(make_member):
     db.execute(text("UPDATE users SET all_shows_sensitive = true, filter_level = 0 WHERE id = :u"), {"u": member.id})
     db.commit()
     client = member.browser()
-    assert answer(member, client, age_declaration="2", confirm="1").status_code == 303
+    assert answer(member, client, age_declaration="2").status_code == 303
     now = row(member)
     assert now.filter_level == 2 and now.all_shows_sensitive is False
 
 
-@pytest.mark.parametrize("first, second", [("1", "2"), ("2", "1"), ("1", "1")])
+@pytest.mark.parametrize("first, second", [("1", "2"), ("1", "1")])
 def test_an_answer_cant_be_changed_by_the_member(make_member, first, second):
     member = make_member()
     client = member.browser()
-    answer(member, client, age_declaration=first, confirm="1")
+    answer(member, client, age_declaration=first)
     before = row(member)
-    again = answer(member, client, age_declaration=second, confirm="1")
+    again = answer(member, client, age_declaration=second)
     assert again.status_code == 409
     assert row(member) == before
+
+
+def test_a_locked_account_can_lift_the_lock_by_saying_18_where_a_tick_is_accepted_and_only_once(make_member):
+    member = make_member()
+    client = member.browser()
+    answer(member, client, age_declaration="2")
+    assert member.user().age_lock == 1
+    lifted = answer(member, client, age_declaration="1", next="/settings/content")
+    assert lifted.status_code == 303 and lifted.headers["Location"].endswith("age=lifted")
+    now = member.user()
+    assert now.age_declared == 1 and now.age_lock is None and now.private_posting is False and now.filter_level == 1
+    assert now.age_assured_utc == 0, "a tick is not a check"
+    assert answer(member, client, age_declaration="1").status_code == 409
 
 
 def test_an_answer_needs_the_form_key_and_a_real_choice(make_member):
@@ -405,11 +423,16 @@ def test_the_data_export_and_closing_the_account(make_member):
     make_child(member)
     db = member.db_session()
     exported = data_export.build(db, member.id)
-    assert exported["age"] == [{"age_declared": "a child account made by a parent or guardian", "age_declared_utc": 5}]
+    assert exported["age"] == [{"age_declared": "a child account", "age_declared_utc": 5, "age_lock": "child lock", "age_confirmed_utc": 0,
+                                "age_check_found_under_18_utc": 0, "private_posting": True}]
     db.rollback()
+    set_columns = db.execute(text("UPDATE users SET age_assured_utc = 77, age_under_utc = 88 WHERE id = :u"), {"u": member.id})
+    db.commit()
     account_cleanup.close_account(db, member.id, int(time.time()))
     db.commit()
     assert row(member).age_declared is None and row(member).age_declared_utc == 0
+    left = db.execute(text("SELECT age_lock, age_assured_utc, age_under_utc, private_posting FROM users WHERE id = :u"), {"u": member.id}).first()
+    assert tuple(left) == (None, 0, 0, False), "nothing about their age is kept"
 
 
 def test_closing_an_account_takes_an_admins_note_and_notice_with_it(make_member):

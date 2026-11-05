@@ -1,8 +1,11 @@
 """Sensitive content and the two discovery feeds, All and For You.
 
-"Sensitive" on this site means sexual content, which must be marked (/help/rules; the owner, 2026-10-30), and upsetting topics
-(grief, addiction recovery, ...): a heads-up, not a rule break. Content consisting entirely of erotic material is still against
-the rules. A post (`submissions.is_sensitive`), a guild (`boards.is_sensitive`) and an account (`users.is_sensitive`) can be
+"Sensitive" on this site is one general test, **anchored on film and game ratings** rather than a list (the owner, 2026-11-05: "the
+definition of sensitive needs to be highly generalised"): a film or game with the same content would be rated 15, R or 16+, or given a
+content warning (`DEFINITION`, written once here and drawn everywhere by the Jinja global `sensitive_definition()`: the Rules, the
+composers, Settings, the guild setting). It is a heads-up, not a rule break; content made mainly to be consumed as sexual, violent or
+grotesque material is still against the rules. Ordinary grief or recovery posts do not earn a 15 or R, so they are not Sensitive.
+A child-locked account (helpers/age_declaration.py) can't see, mark or post it. A post (`submissions.is_sensitive`), a guild (`boards.is_sensitive`) and an account (`users.is_sensitive`) can be
 sensitive.
 
 * All and For You leave sensitive content out unless the viewer chose to see it (`users.all_shows_sensitive`, Settings
@@ -22,9 +25,14 @@ Rules here are pure; the two subqueries are functions so tests can stand in for 
 from sqlalchemy import and_, or_, select
 
 from ruqqus.helpers import anonymity
-from ruqqus.helpers.i18n_runtime import tr_lazy
+from ruqqus.helpers.i18n_runtime import N_, tr_lazy
 
 FORCED = tr_lazy("An admin marked this sensitive, so it can't be switched off here.")
+
+# the one definition (see the docstring); its words are the owner's and are hand-checked in every language
+DEFINITION = N_("Mark a post Sensitive if a film or game with the same content would be rated 15, R or 16+, or given a content "
+                "warning. That means strong sexual content or nudity, graphic violence or injury, strong drug use, self-harm or "
+                "suicide, or very distressing or frightening scenes. If you're not sure, mark it Sensitive.")
 
 
 def shows_sensitive(v):

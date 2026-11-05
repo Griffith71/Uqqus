@@ -538,6 +538,8 @@ def search(v, search_type="posts"):
             users=users.filter(
             User.is_private==False,
             User.is_deleted==False,
+            # a child-locked account is found by its exact handle and not otherwise (helpers/age_declaration.py)
+            or_(User.age_lock.is_(None), User.username.ilike(term, escape=LIKE_ESCAPE)),
             or_(
               User.is_banned==0,
               and_(

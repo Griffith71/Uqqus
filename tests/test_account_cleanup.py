@@ -93,7 +93,7 @@ def test_a_missing_table_is_skipped_not_fatal():
 
 def test_delete_account_runs_it():
     settings = (ROOT / "ruqqus" / "routes" / "settings.py").read_text(encoding="utf-8")
-    body = settings.split("def delete_account(", 1)[1].split("\n@app", 1)[0]
+    body = settings.split("def close_own_account(", 1)[1].split('\n@app.route("/settings/blocks"', 1)[0]
     assert "account_cleanup.close_account(g.db, v.id, int(time.time()))" in body and "_leave_chat_groups(v)" in body
 
 

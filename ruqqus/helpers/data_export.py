@@ -17,8 +17,10 @@ SECTIONS = (
                 # held by the signup guard since (0: not held); its score and reasons are the admins' and stay out
                 "quarantined_utc FROM users WHERE id = :u"),
     # what the member said about their age, and when (helpers/age_declaration.py)
-    ("age", "SELECT CASE age_declared WHEN 1 THEN '18 or over' WHEN 2 THEN 'a child account made by a parent or guardian' "
-            "END AS age_declared, age_declared_utc FROM users WHERE id = :u"),
+    ("age", "SELECT CASE age_declared WHEN 1 THEN '18 or over' WHEN 2 THEN 'a child account' END AS age_declared, age_declared_utc, "
+            "CASE WHEN age_lock IS NULL THEN 'none' WHEN age_lock = 2 THEN 'set by a parent' ELSE 'child lock' END AS age_lock, "
+            "age_assured_utc AS age_confirmed_utc, age_under_utc AS age_check_found_under_18_utc, private_posting "
+            "FROM users WHERE id = :u"),
     ("posts", "SELECT s.id, s.created_utc, s.edited_utc, s.deleted_utc, a.title, a.url, a.body, s.board_id, "
               "s.is_anonymous FROM submissions s JOIN submissions_aux a ON a.id = s.id "
               "WHERE s.author_id = :u ORDER BY s.id"),

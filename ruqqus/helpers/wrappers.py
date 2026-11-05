@@ -387,6 +387,33 @@ def not_quarantined(action):
     return wrapper_maker
 
 
+def not_child_locked(feature):
+    """Refuse a child-locked account (helpers/age_declaration.py) what it may not do: chat, group chats and calls, Spaces and live
+    threads, coins, tips, Premium and paid circles, and creating a guild (`feature` names which, for tests/test_child_locked_assets.py,
+    which lists every route that carries it). Goes under the route's sign-in wrapper and right above its `@validate_formkey`, like
+    `@not_quarantined`. A page gets the message page with a way to confirm the age; a script, a 403 JSON error that says so."""
+
+    def wrapper_maker(f):
+
+        def wrapper(*args, **kwargs):
+            from . import age_declaration
+            from .i18n_runtime import msg
+            v = kwargs.get("v")
+            refused = age_declaration.feature_refusal(v)
+            if refused:
+                if request.method == "GET" and not request.path.startswith("/api/") or request.headers.get("Sec-Fetch-Mode") == "navigate":
+                    return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(refused),
+                                           link="/settings/content", link_text=tr("Confirm your age")), 403
+                return jsonify({"error": msg(refused), "age_locked": True}), 403
+            return f(*args, **kwargs)
+
+        wrapper.__name__ = f.__name__
+        wrapper.__doc__ = f.__doc__
+        return wrapper
+
+    return wrapper_maker
+
+
 QR_LIMITED_REFUSAL = N_("You signed in with a QR code. Enter your password to do this.")
 
 

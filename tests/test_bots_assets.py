@@ -202,7 +202,7 @@ def test_a_bot_profile_says_who_runs_it_and_is_hidden_until_approved():
     header = read("ruqqus", "templates", "partials", "profile_header.html")
     assert "{% if u.bot_kind == 'site' %}{{ _(\"Automated by %(site)s\") }}" in header
     assert "{% elif bot_owner and not bot_owner.is_deleted %}" in header and '_("Automated by %(owner)s", owner=bot_owner_link)' in header
-    assert "{% if not u.is_bot %}" in header.split('action="/api/chat/start"')[0].rsplit("{% elif v %}", 1)[1]
+    assert "{% if not u.is_bot and" in header.split('action="/api/chat/start"')[0].rsplit("{% elif v %}", 1)[1]
     assert "if not u.bot_shown_to(v):\n        abort(404)" in func(read("ruqqus", "routes", "users.py"), "u_username")
     shown = func(USER, "bot_shown_to", "\n    def ")
     assert '("approved", "paused")' in shown and "v.id in (row.owner_id, row.proposed_by_id)" in shown

@@ -25,6 +25,7 @@ from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
+from ruqqus.helpers import age_declaration, private_posting
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import post_drafts
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
@@ -323,6 +324,8 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
     sensitive = any(form.getlist("sensitive")) if "sensitive" in form else bool(primary.is_sensitive)
     if primary.sensitive_forced:        # an admin's mark: only an admin takes it off (routes/settings.py admin_sensitive_post)
         sensitive = True
+    if sensitive and not primary.is_sensitive and age_declaration.post_refusal(v, True, False):
+        return _edit_error(msg(age_declaration.FEATURE_LOCKED), 403)       # a child-locked account can't newly mark a post Sensitive
 
     paid_partnership = flag(form, "paid_partnership", primary.paid_partnership)
     made_with_ai = flag(form, "made_with_ai", primary.made_with_ai)
@@ -922,6 +925,15 @@ Optional file data:
                                     if bot_status == 403 else {"error": bot_error}, bot_status)
                     }
 
+    # a child-locked account can't mark a post Sensitive or post anonymously (helpers/age_declaration.py)
+    locked_error = age_declaration.post_refusal(v, flag(request.form, "sensitive"), flag(request.form, "anonymous"))
+    if locked_error:
+        locked_error = msg(locked_error)
+        return {"html": lambda: (render_template("submit.html", v=v, error=locked_error, title=title, url=url, body=body,
+                                                 text=text_for_redisplay, b=None, forward_guild_names=forward_guild_names), 403),
+                "api": lambda: ({"error": locked_error}, 403)
+                }
+
     raw_permission = request.form.get("comment_permission", "")
     comment_permission = cperm.EVERYONE if raw_permission.strip() == "" else cperm.parse(raw_permission)
     permission_error = tr("Choose who can comment.") if comment_permission is None else \
@@ -1517,6 +1529,12 @@ Optional file data:
         audience, audience_error = circle_rules.GUILD, None
     else:
         audience, audience_tokens, audience_error = circle_rules.parse_audience(request.form.get("audience"), request.form.getlist("circles"))
+        # Private posting (helpers/private_posting.py): Public becomes the Friends circle, and nothing may take the post further
+        if audience_error is None and private_posting.on(v):
+            if forward_guild_names:
+                audience_error = msg(private_posting.REFUSAL)
+            else:
+                audience, audience_tokens = private_posting.circles_chosen(v, audience, audience_tokens, circle_rules.CIRCLES)
         if audience_error is None and audience == circle_rules.CIRCLES:
             circle_ids, audience_error = circle_store.resolve(g.db, v.id, audience_tokens)
     if audience_error is None:
@@ -1887,6 +1905,8 @@ Required form data:
     refusal = sharing.post_refusal(post, v)              # not public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
+    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
+        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
         return {"error": tr("This post can't be forwarded.")}, 400
@@ -2080,6 +2100,8 @@ URL path parameters:
     refused = sensitive_rules.owner_refusal(post.sensitive_lock, not post.is_sensitive)
     if refused:
         return jsonify({"error": refused}), 403
+    if not post.is_sensitive and age_declaration.post_refusal(v, True, False):
+        return jsonify({"error": msg(age_declaration.FEATURE_LOCKED)}), 403
 
     post.is_sensitive = not post.is_sensitive
     g.db.add(post)
@@ -2170,6 +2192,8 @@ def repost_post(base36id, v):
     refusal = sharing.post_refusal(post, v)              # not public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
+    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
+        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
         return {"error": tr("This post can't be reposted.")}, 400

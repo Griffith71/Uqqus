@@ -202,6 +202,7 @@ def api_board_available(name, v):
 @no_negative_balance("html")
 @api("create")
 @not_qr_limited
+@not_child_locked("guilds")
 @validate_formkey
 def create_board_post(v):
     """

@@ -15,19 +15,21 @@ CORE = (
     "gambling schemes",
     "intellectual property",
     "deceptive impersonation",
-    "erotic",
+    "made mainly to be consumed as sexual, violent or grotesque material",       # the content standard (the owner, 2026-11-05)
     "violent",
     "grotesque",
     "a broader work",
     "pirated copies",
-    "consisting entirely of any one of",
+    "mark sensitive content sensitive",
+    "what is sensitive",
+    "child lock",
     "personal information",
     "impersonation",
     "paid partnerships",
     "unsolicited commercial promotion",
     "commercial promotion",
     "created using ai",
-    "sexual content",            # must be marked Sensitive (the owner, 2026-10-30); "erotic" above is the ban, which stays
+    "strong sexual content",     # inside the one Sensitive definition (helpers/sensitive.py DEFINITION), word for word in both places
     "identify themselves as bots",
     "not from",                  # anonymity hides the author from users, not from the site
     "ban",
@@ -108,3 +110,10 @@ def test_the_pages_that_name_the_policy_call_it_the_rules_and_guidelines():
         assert "[Content Policy]" not in (TEMPLATES / name).read_text(encoding="utf-8"), name
     # the Terms still define "Content Policy": it is the same page
     assert 'Rules and Guidelines [here](/help/rules) (the "Content Policy")' in (TEMPLATES / "help" / "terms.html").read_text(encoding="utf-8")
+
+
+def test_the_sensitive_definition_is_one_text_in_the_card_and_the_policy():
+    from ruqqus.helpers import sensitive
+    definition = re.sub(r"\s+", " ", sensitive.DEFINITION).lower()
+    for path in (PARTIAL, POLICY):
+        assert definition in _text(path), path.name

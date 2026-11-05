@@ -323,7 +323,7 @@ def test_a_deleted_accounts_device_goes_altogether():
 
 def test_only_a_deletion_that_went_through_answers_with_the_page_that_clears():
     settings = (ROOT / "ruqqus" / "routes" / "settings.py").read_text(encoding="utf-8")
-    body = settings[settings.index("def delete_account(v):"):settings.index('@app.route("/settings/blocks"')]
+    body = settings[settings.index("def close_own_account("):settings.index('@app.route("/settings/blocks"')]
     assert body.index("v.verifyPass(") < body.index('return render_template("settings_security.html"') < body.index("g.db.commit()") < body.index('"account_deleted.html"')
     assert "forgetChatDevices" in (TEMPLATES / "account_deleted.html").read_text(encoding="utf-8")
     assert "forgetChatDevices" not in (TEMPLATES / "settings_security.html").read_text(encoding="utf-8")

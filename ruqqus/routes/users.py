@@ -9,7 +9,7 @@ import gevent
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.visibility import viewer_level, user_hidden, hidden_notice
-from ruqqus.helpers import subscriber_badges, qr_colour
+from ruqqus.helpers import circle_store, subscriber_badges, qr_colour
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -512,6 +512,8 @@ URL path parameters:
         abort(409)
 
     g.db.delete(follow)
+    g.db.flush()
+    circle_store.drop_non_mutual(g.db, v.id, target.id)       # Private posting: a circle holds only mutual followers
 
     cache.delete_memoized(User.idlist, v, kind="user")
 

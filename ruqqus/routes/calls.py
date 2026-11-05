@@ -130,6 +130,7 @@ live_bus.register_topic("call", _guard_call_topic)
 @app.route("/call/<path:room_id>", methods=["GET"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 def call_window(room_id, v):
     room, refusal = chat_room(v, room_id)
     if room is None:
@@ -161,6 +162,7 @@ def _room_and_device(v):
 @app.route("/api/calls/join", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def call_join(v):
     room, refusal, room_id, device_id = _room_and_device(v)

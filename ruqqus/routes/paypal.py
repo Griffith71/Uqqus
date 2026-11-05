@@ -18,7 +18,7 @@ from ruqqus.helpers.i18n_runtime import N_, tr
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.get import *
 from ruqqus.__main__ import app
-from ruqqus.helpers import tips, tips_store
+from ruqqus.helpers import age_declaration, tips, tips_store
 from ruqqus.helpers import coins as coins_store, premium
 from ruqqus.helpers import coin_shop, paypal_events
 from ruqqus.helpers.discord import add_role
@@ -80,6 +80,7 @@ def shop_coin_balance(v):
 @is_not_banned
 @no_negative_balance("html")
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def shop_buy_coins(v):
 
@@ -355,6 +356,7 @@ def _tip_notification(kind, permalink, coins, recipient):
 @is_not_banned
 @no_negative_balance("toast")
 @not_qr_limited
+@not_child_locked("money")
 @not_quarantined("tip")
 @validate_formkey
 def gift_post_pid(pid, v):
@@ -386,6 +388,9 @@ def gift_post_pid(pid, v):
 
     if u.is_blocking or u.is_blocked:
         # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
+        return jsonify({"error": tr("You can't tip this account.")}), 403
+
+    if age_declaration.target_refusal(u):         # nobody can start a tip with a child-locked account (helpers/age_declaration.py)
         return jsonify({"error": tr("You can't tip this account.")}), 403
 
     # a bot's post takes tips too (the owner, 2026-10-20): a member bot's coins go to the member who runs it, a site
@@ -443,6 +448,7 @@ def gift_post_pid(pid, v):
 @is_not_banned
 @no_negative_balance("toast")
 @not_qr_limited
+@not_child_locked("money")
 @not_quarantined("tip")
 @validate_formkey
 def gift_comment_pid(cid, v):
@@ -477,6 +483,9 @@ def gift_comment_pid(cid, v):
 
     if u.is_blocking or u.is_blocked:
         # one message either way: it never says who blocked whom (bug hunt: the second told a tipper they were blocked)
+        return jsonify({"error": tr("You can't tip this account.")}), 403
+
+    if age_declaration.target_refusal(u):         # nobody can start a tip with a child-locked account (helpers/age_declaration.py)
         return jsonify({"error": tr("You can't tip this account.")}), 403
 
     coins = tips.parse_coins(request.args.get("coins"))
@@ -521,6 +530,7 @@ def paypaltxn_txid(txid, v):
 @app.route("/settings/premium/redeem", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def premium_redeem(v):
     """Spend one coin on a week of Premium, added after any time left (helpers/premium.py). Only when asked."""
@@ -538,6 +548,7 @@ def premium_redeem(v):
 @app.route("/settings/premium/auto_renew", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_child_locked("money")
 @validate_formkey
 def premium_auto_renew(v):
     """Whether a coin is spent on the next week when one runs out (`setting=true|false`)."""

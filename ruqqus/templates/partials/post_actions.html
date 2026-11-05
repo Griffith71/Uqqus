@@ -43,7 +43,7 @@
     </a>
     <div class="dropdown-menu border-0 shadow{% if mobile %} dropdown-menu-right{% endif %}" aria-labelledby="shareDropdownLink{{ 'Mobile' if mobile }}-{{ p.base36id }}">
       <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ p.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>{{ _("Copy link") }}</a>
-      {% if v %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>{{ _("Send in chat") }}</a>{% endif %}
+      {% if v and not child_locked(v) %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ p.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>{{ _("Send in chat") }}</a>{% endif %}
       {# a post made for a Circle is never forwarded or reposted (circles.post_refusal); its author may still send it #}
       {% if v and not p.audience %}
       <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardPostModal" onclick="forward_postModal('{{ p.base36id }}')"><i class="fas fa-share fa-fw"></i>{{ pgettext("verb", "Forward") }}</a>
@@ -80,7 +80,7 @@
 
 <li class="list-inline-item post-action-item">
   {% set tip_label = ngettext("%(num)s coin tipped", "%(num)s coins tipped", coins) %}
-  {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}
+  {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned and not child_locked(v) and not child_locked(author_of(p, v)) %}
   <a href="javascript:void(0)" class="post-action post-action-tip" data-toggle="modal" data-target="#tipModal"
      onclick="tipModal2('{{ p.base36id }}','post','{{ p.permalink }}','{{ author_of(p, v).username }}','{{ author_of(p, v).profile_url }}')"
      title="{{ ngettext('Tip (%(num)s coin tipped)', 'Tip (%(num)s coins tipped)', coins) }}" aria-label="{{ ngettext('Tip, %(num)s coin tipped', 'Tip, %(num)s coins tipped', coins) }}">
@@ -88,7 +88,7 @@
   <span class="post-action post-action-tip" title="{{ tip_label }}" aria-label="{{ tip_label }}">
   {% endif %}
     <img src="{{ asset_url('images/icons/ruqqus-coin.png') }}" alt="" width="15" height="15" class="post-action-coin"><span class="post-action-count">{{ _n(coins) }}</span>
-  {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned %}</a>{% else %}</span>{% endif %}
+  {% if v and v.id != p.author_id and not p.is_anonymous and not author_of(p, v).is_deleted and v.id != author_of(p, v).bot_owner_id and not anon_hidden(p, v) and p.deleted_utc == 0 and not p.is_banned and not child_locked(v) and not child_locked(author_of(p, v)) %}</a>{% else %}</span>{% endif %}
 </li>
 
 {% endmacro %}

@@ -338,6 +338,7 @@ def _space_page(space, v):
 @app.route("/api/spaces/<sid>/start", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("spaces")
 @validate_formkey
 def space_start(sid, v):
     space = load_space(sid, v)
@@ -405,6 +406,7 @@ def _call_only(space):
 @app.route("/api/spaces/<sid>/join", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_child_locked("spaces")
 @validate_formkey
 def space_join(sid, v):
     space = load_space(sid, v)
@@ -505,6 +507,7 @@ def space_hand(sid, v):
 
 @app.route("/api/spaces/<sid>/invite", methods=["POST"])
 @auth_required
+@not_child_locked("spaces")
 @validate_formkey
 def space_invite(sid, v):
     space = load_space(sid, v)
@@ -569,6 +572,7 @@ def space_listen(sid, v):
 
 @app.route("/api/spaces/<sid>/cohost", methods=["POST"])
 @auth_required
+@not_child_locked("spaces")
 @validate_formkey
 def space_cohost(sid, v):
     space = load_space(sid, v)
@@ -846,6 +850,7 @@ def space_messages(sid, v):
 @app.route("/api/spaces/<sid>/messages", methods=["POST"])
 @limiter.limit("30/minute", key_func=member_limit_key)
 @is_not_banned
+@not_child_locked("spaces")
 @validate_formkey
 def space_message_add(sid, v):
     """A message on the board: only from someone in the Space while it is live, rated by the word filter, slowed by slow
@@ -968,6 +973,7 @@ def _runs_updates(space, v):
 
 @app.route("/api/spaces/<sid>/updates", methods=["POST"])
 @is_not_banned
+@not_child_locked("spaces")
 @validate_formkey
 def space_update_add(sid, v):
     """An update, pushed by id on the post's topic (`live.update`) and read through the live-thread routes, which ask
@@ -1091,6 +1097,7 @@ _CREATE_LISTS = ("circles", "forward_guilds")
 @app.route("/api/spaces", methods=["POST"])
 @limiter.limit("20/hour", key_func=member_limit_key)
 @is_not_banned
+@not_child_locked("spaces")
 @validate_formkey
 def space_create(v):
     """Makes a Space. Its hidden backing row is made by the real posting route in this process, as v (the scheduler's

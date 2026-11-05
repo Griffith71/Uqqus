@@ -353,7 +353,11 @@ CREATE TABLE public.users (
     bot_owner_id integer,
     feed_defaults text DEFAULT '' NOT NULL,
     age_declared smallint,
-    age_declared_utc integer DEFAULT 0 NOT NULL
+    age_declared_utc integer DEFAULT 0 NOT NULL,
+    age_lock smallint,
+    age_assured_utc bigint DEFAULT 0 NOT NULL,
+    age_under_utc bigint DEFAULT 0 NOT NULL,
+    private_posting boolean DEFAULT false NOT NULL
 );
 
 
@@ -7071,6 +7075,10 @@ ALTER TABLE public.users ADD CONSTRAINT users_age_declared_rule CHECK (
     age_declared IS NULL OR age_declared = 1
     OR (age_declared = 2 AND COALESCE(filter_level, 1) = 2 AND NOT all_shows_sensitive));
 
+-- a lock only sits on a child account (helpers/age_declaration.py; 2026-12-16_age_assurance.sql)
+ALTER TABLE public.users ADD CONSTRAINT users_age_lock_rule CHECK (
+    age_lock IS NULL OR (age_lock IN (1, 2) AND age_declared = 2));
+
 -- translations kept so a text is translated once per language, and what an outside translator was sent each month
 -- (2026-11-26_languages_and_translation.sql; helpers/translation_store.py)
 CREATE TABLE public.translations (
@@ -7248,4 +7256,6 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-12_site_traffic.sql'),
     ('2026-12-13_qr_login.sql'),
     ('2026-12-14_log_public.sql'),
-    ('2026-12-15_region_colours.sql');
+    ('2026-12-15_region_colours.sql'),
+    ('2026-12-16_age_assurance.sql'),
+    ('2026-12-17_private_posting.sql');

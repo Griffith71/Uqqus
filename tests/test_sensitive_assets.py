@@ -106,7 +106,7 @@ def test_a_sensitive_accounts_posts_are_marked_when_written_and_an_edit_keeps_th
 def test_pages_say_so():
     filters = read("ruqqus", "templates", "settings_filters.html")
     assert 'id="all-shows-sensitive"' in filters and "/settings/all_shows_sensitive" in filters
-    assert 'id="sensitive-account"' in filters and "{% if v.sensitive_forced %} disabled{% endif %}" in filters
+    assert 'id="sensitive-account"' in filters and "{% if v.sensitive_forced or child_account %} disabled{% endif %}" in filters
     guild = read("ruqqus", "templates", "guild", "settings.html")
     assert "{% if b.sensitive_forced %} disabled{% endif %}" in guild
     assert 'action="/admin/sensitive/guild"' in read("ruqqus", "templates", "board.html")
@@ -134,18 +134,22 @@ def test_claude_md_describes_it():
     assert not re.search(r"FILTERED_SUBCATS", claude)
 
 
-def test_sexual_content_is_what_sensitive_now_covers_and_the_ban_stays():
+def test_sensitive_is_one_general_film_rating_test_and_the_ban_stays():
     rules = read("ruqqus", "templates", "help", "rules.html")
     card = read("ruqqus", "templates", "partials", "posting_rules.html")
-    assert "Sexual content must be marked Sensitive, and other content designated as sensitive must be clearly labelled." in rules
-    assert "Mark sexual content Sensitive, and clearly label other sensitive content." in card
     for page in (rules, card):
-        assert "erotic material" in page.lower()
-    assert "means sexual content, which must be marked" in read("ruqqus", "helpers", "sensitive.py")
-    label = "Sexual or upsetting? Blur this post until viewers click to reveal it."
+        assert "Do not post content made mainly to be consumed as sexual, violent or grotesque material." in page
+        assert "Mark Sensitive content Sensitive." in page
+        assert "rated 15, R or 16+" in page
+        assert "An account with the child lock can't post Sensitive content." in page
+    assert "film-rating" in read("ruqqus", "helpers", "sensitive.py") or "anchored on film and game ratings" in read("ruqqus", "helpers", "sensitive.py")
+    label = "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
     for name in ("submit.html", "collab/editor.html", "partials/inline_composer.html"):
-        assert label in read("ruqqus", "templates", *name.split("/")), name
-    assert "hold sexual content or deal with upsetting topics" in read("ruqqus", "templates", "settings_filters.html")
+        text = read("ruqqus", "templates", *name.split("/"))
+        assert label in text and "{% if not child_locked(v) %}" in text, name
+        assert "Sexual or upsetting?" not in text, name
+    assert "sensitive_definition()" in read("ruqqus", "templates", "settings_filters.html")
+    assert "upsetting" not in read("ruqqus", "templates", "settings_filters.html")
 
 
 def test_an_admin_can_force_a_post_sensitive():

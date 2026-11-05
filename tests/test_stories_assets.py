@@ -240,7 +240,7 @@ def test_the_picture_uses_the_linked_storage_uploader_not_this_site():
 def test_the_sheets_hold_nothing_a_member_wrote():
     expressions = set(re.findall(r"\{\{\s*([^}]*?)\s*\}\}", SHEETS))
     # the audience field draws the viewer's OWN circle names, escaped (partials/post_options.html)
-    expressions.discard('audience_field(0, "story-audience", (), circle_choices(v))')
+    expressions.discard('audience_field(0, "story-audience", (), circle_choices(v), locked=private_posting_on(v))')
     # the interface's own words, marked for translation: a gettext call on literal text only
     literal = r"""(?:'[^']*'|"[^"]*")"""
     expressions = {e for e in expressions if not re.fullmatch(rf"(?:_|pgettext)\({literal}(?:, {literal})?\)", e)}

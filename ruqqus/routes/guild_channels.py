@@ -227,6 +227,7 @@ app.jinja_env.globals.update(guild_has_chat=has_chat)
 @app.route("/api/guilds/<guildname>/channels", methods=["GET"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 def guild_channels_list(guildname, v):
     board = _visible_board(guildname, v)
     rows = store.of_board_for(g.db, board.id, v.id)
@@ -271,6 +272,7 @@ def _sync_writers(row):
 @app.route("/api/guilds/channels/<int:cid>/join", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def guild_channel_join(cid, v):
     """Put the viewer in the channel's room (they open a channel to join it, never all at once when a guild is joined)."""
@@ -323,6 +325,7 @@ def _mentioned(row, board, v, post_id, body, now):
 @app.route("/api/guilds/channels/<int:cid>/messages", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def guild_channel_message(cid, v):
     """A message, rated and counted here and sent by the site as its writer with the site's signature."""

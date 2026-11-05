@@ -24,7 +24,7 @@ HELD = {
     "oauth.py": "oauth_authorize_prompt oauth_authorize_post request_api_keys delete_oauth_app edit_oauth_app reroll_oauth_tokens oauth_rescind_app",
     "oidc_pages.py": "oidc_authorize oidc_authorize_post",
     "settings.py": "settings_apps settings_security_post settings_log_out_others settings_profile_post settings_new_feedkey delete_account "
-                   "settings_name_change settings_export settings_remove_discord settings_unblock_user settings_blocks_import",
+                   "settings_name_change settings_export settings_remove_discord settings_unblock_user settings_blocks_import settings_private_posting",
     "static.py": "settings_security press_inquiry",
     "users.py": "follow_user",
     "profile_lists.py": "settings_list_visibility",
@@ -33,7 +33,7 @@ HELD = {
     "collab.py": "collab_propose collab_vote collab_withdraw collab_invite_answer collab_leave collab_publish",
     "coauthors.py": "coauthor_invite coauthor_accept",
     "discord.py": "join_discord discord_redirect",
-    "age_declaration_pages.py": "settings_age_declaration",
+    "age_declaration_pages.py": "settings_age_declaration settings_age_assurance_start settings_age_assurance_callback",
     "chat.py": "chat_page chat_token chat_key_get chat_key_set chat_recovery_key_legacy chat_check_password chat_ready chat_start "
                "chat_conversations chat_share_targets chat_accept chat_decline chat_mark_read chat_search",
     "chat_apps.py": "settings_chat_apps chat_devices chat_device_sign_out",

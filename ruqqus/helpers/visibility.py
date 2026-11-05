@@ -28,14 +28,32 @@ CHILD = 2
 NOTICE_TITLE = tr_lazy("Hidden by your word filter")
 NOTICE_TEXT = tr_lazy("This isn't shown at your current word filter level. "
                       "You can review your word filter in your content settings.")
+# the same page for a reader whose level is Child because their age isn't confirmed: the word filter isn't theirs to change
+AGE_NOTICE_TITLE = tr_lazy("Hidden until you confirm your age")
+AGE_NOTICE_TEXT = tr_lazy("This isn't shown while your account is age-restricted.")
+AGE_NOTICE_TEXT_VISITOR = tr_lazy("This isn't shown where you are until your age has been confirmed. "
+                                  "Sign in to do that in your content settings.")
+
+
+def stored_level(v):
+    """The level the account itself chose (logged-out: Standard), whatever the law asks of where they are: for what belongs to the
+    account (ads, which keep showing to everyone in a strict country but a locked account), never for what a reader may see."""
+    if v is None or getattr(v, "filter_level", None) is None:
+        return STANDARD
+    return int(v.filter_level)
 
 
 def viewer_level(v):
-    """The filter level a viewer browses with (logged-out: Standard)."""
-    if v is None:
-        return STANDARD
-    level = getattr(v, "filter_level", None)
-    return STANDARD if level is None else int(level)
+    """The filter level a viewer browses with (logged-out: Standard). **In a country where the law asks for it (the UK, the EU/EEA,
+    Australia: helpers/age_declaration.py) anyone whose age has not been confirmed browses at Child**, a visitor too: this is the one
+    place the regional rule bites, and every feed, search, profile and memoize key already goes through it. It reads the request,
+    so a job with no request keeps the account's own level."""
+    level = stored_level(v)
+    if level < CHILD:
+        from ruqqus.helpers import age_declaration
+        if age_declaration.current_region_locked(v):
+            return CHILD
+    return level
 
 
 def _cut(level):
@@ -194,9 +212,20 @@ def hidden_notice(v):
     """What a direct link to hidden content returns (for routes wrapped in @api)."""
     from flask import jsonify, render_template
 
+    from ruqqus.helpers import age_declaration
+
+    if age_declaration.is_locked(v):
+        page = dict(title=AGE_NOTICE_TITLE, error=AGE_NOTICE_TEXT, link="/settings/content", link_text=tr_lazy("Confirm your age"))
+    elif age_declaration.current_region_locked(v):
+        if v is not None:
+            page = dict(title=AGE_NOTICE_TITLE, error=AGE_NOTICE_TEXT, link="/settings/content", link_text=tr_lazy("Confirm your age"))
+        else:
+            page = dict(title=AGE_NOTICE_TITLE, error=AGE_NOTICE_TEXT_VISITOR, link="/login", link_text=tr_lazy("Sign in"))
+    else:
+        page = dict(title=NOTICE_TITLE, error=NOTICE_TEXT)
     return {
-        "html": lambda: (render_template("message.html", v=v, title=NOTICE_TITLE, error=NOTICE_TEXT), 403),
-        "api": lambda: (jsonify({"error": NOTICE_TITLE}), 403),
+        "html": lambda: (render_template("message.html", v=v, **page), 403),
+        "api": lambda: (jsonify({"error": page["title"]}), 403),
     }
 
 

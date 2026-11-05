@@ -22,7 +22,7 @@ Rules this module keeps (CLAUDE.md):
 import math
 import time
 
-from ruqqus.helpers import category_filter
+from ruqqus.helpers import age_declaration, category_filter
 from ruqqus.helpers.i18n_runtime import N_, msg, tr, trn
 
 SIDEBAR_COUNT = 3        # one of each kind in the sidebar box
@@ -123,7 +123,8 @@ def user_eligible(u, viewer_id, following, blocked_ids):
     """May this account be suggested to the viewer?"""
     if u is None or u.id == viewer_id or u.id in following or u.id in blocked_ids:
         return False
-    return not (u.is_private or u.is_nofollow or u.is_banned or u.is_deleted)
+    # a child-locked account is found only by its exact name or a link, never suggested (helpers/age_declaration.py)
+    return not (u.is_private or u.is_nofollow or u.is_banned or u.is_deleted or age_declaration.is_locked(u))
 
 
 def guild_eligible(b, joined, blocked_board_ids, filter_on):

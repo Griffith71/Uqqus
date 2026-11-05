@@ -10,6 +10,7 @@ from flask import session, g, request
 
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers import anonymity, category_filter, circle_clause, circles, guild_limits, post_follows
+from ruqqus.helpers import age_declaration
 from .coauthors import PostCoauthor
 from ruqqus.helpers.muting import hide_muted, hide_muted_guilds
 from ruqqus.helpers.feed_family import one_per_family
@@ -123,6 +124,10 @@ class User(Base, Stndrd, Age_times):
     # made by a parent or guardian, which stays on the Child filter. Shown to them and to admins, never to anyone else.
     age_declared = Column(SmallInteger, default=None)
     age_declared_utc = Column(Integer, default=0)
+    age_lock = Column(SmallInteger, default=None)           # None, 1 (a standalone lock a confirmed age may lift) or 2 (a parent's sub-account)
+    age_assured_utc = Column(BigInteger, default=0)       # when a vendor or an admin confirmed 18 or over; 0 = never
+    age_under_utc = Column(BigInteger, default=0)         # when a vendor's check found the holder under 18; 0 = never
+    private_posting = Column(Boolean, default=False)        # everything posted goes only to the Friends circle (helpers/private_posting.py)
     # word filter rating of the username / the bio
     name_severity = Column(SmallInteger, default=0)
     bio_severity = Column(SmallInteger, default=0)
@@ -1626,7 +1631,7 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def can_make_guild(self):
-        return (self.has_premium or self.admin_level>=3 or self.true_score >= 250) and self.can_join_gms
+        return (self.has_premium or self.admin_level>=3 or self.true_score >= 250) and self.can_join_gms and not age_declaration.is_locked(self)
 
     @property
     def can_join_gms(self):

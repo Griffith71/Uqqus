@@ -4,6 +4,8 @@ expressions are read from the source and run against a stand-in account."""
 from pathlib import Path
 from types import SimpleNamespace as NS
 
+from ruqqus.helpers import age_declaration
+
 USER = (Path(__file__).resolve().parent.parent / "ruqqus" / "classes" / "user.py").read_text(encoding="utf-8")
 
 
@@ -12,9 +14,9 @@ def returned(name):
     return [line.strip()[len("return "):] for line in body.splitlines() if line.strip().startswith("return ")][0]
 
 
-def guild_maker(score, premium=False, admin=0, can_join=True):
-    me = NS(true_score=score, has_premium=premium, admin_level=admin, can_join_gms=can_join)
-    return bool(eval(returned("can_make_guild"), {"self": me}))
+def guild_maker(score, premium=False, admin=0, can_join=True, locked=False):
+    me = NS(true_score=score, has_premium=premium, admin_level=admin, can_join_gms=can_join, age_declared=2 if locked else 1, age_lock=1 if locked else None)
+    return bool(eval(returned("can_make_guild"), {"self": me, "age_declaration": age_declaration}))
 
 
 def picture_maker(country=None, activated=False):
@@ -28,6 +30,7 @@ def test_a_guild_needs_250_rep_unless_premium_or_an_admin():
     assert guild_maker(250) and guild_maker(5000)
     assert guild_maker(0, premium=True) and guild_maker(0, admin=3)
     assert not guild_maker(0, admin=2)
+    assert not guild_maker(5000, premium=True, locked=True), "a child-locked account starts no guild, whatever it has"
 
 
 def test_the_guild_limit_still_stops_everyone_with_enough_rep():

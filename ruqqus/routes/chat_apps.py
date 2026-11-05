@@ -31,6 +31,7 @@ def device_rows(devices, site_name):
 @app.get("/settings/chat_apps")
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 def settings_chat_apps(v):
     identity = _identity(v)
     ready = bool(identity and identity.key_blob_password and identity.ready_utc)
@@ -46,6 +47,7 @@ def settings_chat_apps(v):
 @limiter.limit("30/minute")
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 def chat_devices(v):
     identity = _identity(v)
     if not identity:
@@ -63,6 +65,7 @@ def chat_devices(v):
 @limiter.limit("20/minute")
 @auth_required
 @not_qr_limited
+@not_child_locked("chat")
 @validate_formkey
 def chat_device_sign_out(v):
     identity = _identity(v)
