@@ -1,9 +1,0 @@
-{# a member from before the age question (helpers/age_declaration.py), on every page of default.html until they answer:
-   in the page's flow, never a dialog, and the page works without an answer #}
-{% from "partials/age_question.html" import age_form %}
-<section class="age-notice" id="age-notice" aria-labelledby="age-notice-title">
-  <strong class="age-notice-title" id="age-notice-title">{{ _("How old are you?") }}</strong>
-  <p class="age-notice-lead">{{ _('We changed the <a href="%(url)s">Terms</a>, so we\'re asking everyone once. You can carry on using the site until you answer.', url="/help/terms") }}</p>
-  {# a page drawn in answer to a POST (a refused form) has no address to come back to: a GET there is a 405 #}
-  {{ age_form(v, request.full_path.rstrip('?') if request.method in ("GET", "HEAD") else "/settings/content", "age-notice") }}
-</section>

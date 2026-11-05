@@ -2,20 +2,20 @@ import { test, expect, type Browser, type BrowserContext, type Page } from "@pla
 import AxeBuilder from "@axe-core/playwright";
 import { open } from "./pages";
 
-// The age question (CLAUDE.md "Age declaration"; helpers/age_declaration.py, partials/age_question.html, partials/age_notice.html):
+// The age question (CLAUDE.md "Age declaration"; helpers/age_declaration.py, partials/age_question.html):
 //   docker compose exec -T ruqqus env PYTHONPATH=. /opt/ruqqus/service/venv/bin/python scripts/ui/seed_age.py     before each run
 //   npm run age
-// What it holds it to, in a real browser: sign-up can't be sent without an answer and nothing is answered for them; the notice sits
-// in the page's flow, moves and covers nothing, leaves every link working, isn't in a side panel's frame, and isn't scrolling the page
-// sideways at 390px; the two choices read the same on sign-up, the notice and Settings; "child" asks again first, and Go back saves
-// nothing; the chat page keeps the screen and doesn't carry the notice; both choices are a target tall (32, 44 under a finger); once answered it is gone for good; a child account's word filter and sensitive switch are off in Settings and refused by
-// the routes; an admin can change the answer. A real sign-up is tests/pg/test_age_declaration.py: the dev site allows one account an
+// What it holds it to, in a real browser: sign-up can't be sent without an answer and nothing is answered for them; no page carries a
+// notice for a member from before (the owner, 2026-11-05) and Settings > Content asks in the same words as sign-up, with nothing running
+// off a phone's screen and both choices a target tall (32, 44 under a finger); "child" asks again first, and Go back saves nothing; once
+// answered it is kept for good; a child account's word filter and sensitive switch can't be changed by any of the routes; an admin can
+// change the answer. A real sign-up is tests/pg/test_age_declaration.py: the dev site allows one account an
 // hour from its one Docker address, and refuses a headless browser's name.
 
 const PASSWORD = "ui-Password-1";
 const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } as const;
 const DESKTOP = { viewport: { width: 1280, height: 900 } } as const;
-const NOTICE = "#age-notice";
+const NOTICE = "#age-declaration";
 const ADULT = "I'm 18 or over";
 const CHILD = "I'm a parent or guardian setting this up for my child (13 to 17)";
 
@@ -45,9 +45,6 @@ async function member(browser: Browser, name: string, options: object = DESKTOP)
   const context = await browser.newContext({ ...options, storageState: signedIn.get(name) });
   return { context, page: await context.newPage() };
 }
-
-// the white label on the brand fill is the owner's one exception to AA (CLAUDE.md "Colour contrast")
-const notice_axe = (page: Page) => new AxeBuilder({ page }).include(NOTICE).exclude(`${NOTICE} .btn-primary`).withTags(["wcag2a", "wcag2aa"]).analyze();
 
 const sideways = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
@@ -96,141 +93,37 @@ test.describe("signing up", () => {
 });
 
 test.describe("a member from before the question", () => {
-  test("the notice is in the page's flow, covers nothing, and the page works without an answer", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_old");
-    await open(page, "/all");
-    const notice = page.locator(NOTICE);
-    await expect(notice).toBeVisible();
-    expect(await notice.evaluate((el) => getComputedStyle(el).position)).toBe("static");
-    await expect(page.locator(".modal.show")).toHaveCount(0);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-    expect(await page.evaluate(() => document.activeElement === document.body), "it never takes the focus").toBe(true);
-    await expect(notice.getByText(ADULT, { exact: true })).toBeVisible();
-    await expect(notice.getByText(CHILD, { exact: true })).toBeVisible();
-    await expect(notice.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/help/terms");
-    await page.screenshot({ path: "shots/age/notice-1280-light.png" });
-
-    // nothing is answered by using the site, and the links still lead on
-    await page.goto("/browse");
-    expect(new URL(page.url()).pathname).toBe("/browse");
-    await expect(page.locator(NOTICE)).toBeVisible();
-
-    const axe = await notice_axe(page);
-    expect(axe.violations.filter((v) => ["serious", "critical"].includes(v.impact ?? ""))).toEqual([]);
-
-    // a page with a layout of its own still lays out under it
-    await open(page, "/notifications");
-    await expect(page.locator(NOTICE)).toBeVisible();
-    expect(await sideways(page)).toBeLessThanOrEqual(0);
-    await page.screenshot({ path: "shots/age/notice-1280-notifications.png" });
-    await context.close();
-  });
-
-  test("dark, with the same check", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_old", { ...DESKTOP, colorScheme: "dark" });
-    await open(page, "/all");
-    await expect(page.locator(NOTICE)).toBeVisible();
-    const axe = await notice_axe(page);
-    expect(axe.violations.filter((v) => ["serious", "critical"].includes(v.impact ?? ""))).toEqual([]);
-    await page.screenshot({ path: "shots/age/notice-1280-dark.png" });
-    await context.close();
-  });
-
-  // the chat page is exactly the screen between the bars: a notice above it would push a conversation's box off the screen
-  for (const [label, options, bottomBar] of [["desktop", DESKTOP, 0], ["phone", PHONE, 56]] as const) {
-    test(`the chat page keeps the screen and doesn't carry the notice (${label})`, async ({ browser }) => {
+  // the owner, 2026-11-05: the question belongs to sign-up, so no page carries a notice; Settings > Content still asks
+  for (const [label, options] of [["desktop", DESKTOP], ["phone", PHONE]] as const) {
+    test(`no page carries a notice, and Settings asks, with nothing running off the screen (${label})`, async ({ browser }) => {
       const { context, page } = await member(browser, "ui_age_old", options);
-      await open(page, "/chat");
-      await expect(page.locator(NOTICE)).toHaveCount(0);
-      const box = (await page.locator("#chat-app").boundingBox())!;
-      const height = options.viewport.height;
-      expect(box.y + box.height).toBeLessThanOrEqual(height - bottomBar + 1);
-      expect(await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight)).toBeLessThanOrEqual(1);
-      await page.screenshot({ path: `shots/age/chat-${label}.png` });
+      for (const path of ["/all", "/notifications", "/browse", "/chat"]) {
+        await open(page, path);
+        await expect(page.locator("#age-notice"), path).toHaveCount(0);
+      }
+      await open(page, "/settings/content");
+      const asking = page.locator("#age-declaration");
+      await expect(asking.getByText(ADULT, { exact: true })).toBeVisible();
+      await expect(asking.getByText(CHILD, { exact: true })).toBeVisible();
+      await expect(asking.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/help/terms");
+      expect(await sideways(page)).toBeLessThanOrEqual(0);
+      for (const target of [`${NOTICE} label[for="age-settings-adult"]`, `${NOTICE} label[for="age-settings-child"]`, `${NOTICE} button[type=submit]`]) {
+        const box = (await page.locator(target).boundingBox())!;
+        expect(box.height, target).toBeGreaterThanOrEqual(label === "phone" ? 43 : 31);
+      }
+      await asking.screenshot({ path: `shots/age/settings-${label}.png` });
+      expect((await new AxeBuilder({ page }).include("#age-declaration").exclude(`${NOTICE} .btn-primary`).withTags(["wcag2a", "wcag2aa"]).analyze()).violations).toEqual([]);
       await context.close();
     });
   }
 
-  test("a phone: nothing runs off the screen, and a target is big enough for a finger", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_old", PHONE);
-    for (const path of ["/all", "/browse", "/notifications"]) {
-      await open(page, path);
-      await expect(page.locator(NOTICE), path).toBeVisible();
-      expect(await sideways(page), path).toBeLessThanOrEqual(0);
-      const box = (await page.locator(NOTICE).boundingBox())!;
-      expect(box.x, path).toBeGreaterThanOrEqual(0);
-      expect(box.x + box.width, path).toBeLessThanOrEqual(390);
-      await page.screenshot({ path: `shots/age/notice-390${path.replace("/", "-")}.png` });
-    }
-    await open(page, "/all");
-    for (const target of [`${NOTICE} label[for="age-notice-adult"]`, `${NOTICE} label[for="age-notice-child"]`, `${NOTICE} button[type=submit]`]) {
-      expect((await page.locator(target).boundingBox())!.height, target).toBeGreaterThanOrEqual(44);
-    }
-    // the radio is beside its first line, whatever the row's padding
-    const label = (await page.locator(`${NOTICE} label[for="age-notice-adult"]`).boundingBox())!;
-    const radio = await page.locator(`${NOTICE} label[for="age-notice-adult"]`).evaluate((el) => {
-      const dot = getComputedStyle(el, "::before");
-      return { top: parseFloat(dot.top), height: parseFloat(dot.height) };
-    });
-    expect(Math.abs(radio.top + radio.height / 2 - label.height / 2)).toBeLessThanOrEqual(1);
-    // the whole row answers, not only the words
-    await page.locator(`${NOTICE} label[for="age-notice-adult"]`).click({ position: { x: label.width - 4, y: 4 } });
-    await expect(page.locator("#age-notice-adult")).toBeChecked();
-    await context.close();
-  });
-
-  test("a desktop: both choices and Save are at least a control tall", async ({ browser }) => {
+  test("answering 18 or over in Settings is kept for good", async ({ browser }) => {
     const { context, page } = await member(browser, "ui_age_old");
-    await open(page, "/all");
-    for (const target of [`${NOTICE} label[for="age-notice-adult"]`, `${NOTICE} label[for="age-notice-child"]`, `${NOTICE} button[type=submit]`]) {
-      expect((await page.locator(target).boundingBox())!.height, target).toBeGreaterThanOrEqual(32);
-    }
-    await page.locator(NOTICE).screenshot({ path: "shots/age/notice-targets-desktop.png" });
-    await context.close();
-  });
-
-  test("not in a side panel's frame", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_old");
-    for (const path of ["/notifications?embed=1", "/all?embed=1", "/chat?embed=1"]) {
-      await open(page, path);
-      await expect(page.locator(NOTICE), path).toHaveCount(0);
-    }
-    await context.close();
-  });
-
-  test("the largest Text size cuts nothing off", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_old");
-    await context.addCookies([{ name: "text_size", value: "xlarge", url: "http://localhost" }]);
-    await open(page, "/all");
-    const clipped = await page.locator(`${NOTICE} *`).evaluateAll((els) => els.filter((el) => el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).display !== "inline").length);
-    expect(clipped).toBe(0);
-    await page.locator(NOTICE).screenshot({ path: "shots/age/notice-xlarge.png" });
-    await context.close();
-  });
-
-  test("right to left", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_rtl");
-    await open(page, "/all");
-    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    const notice = (await page.locator(NOTICE).boundingBox())!;
-    const label = (await page.locator('label[for="age-notice-adult"]').boundingBox())!;
-    expect(notice.x + notice.width - (label.x + label.width)).toBeLessThan(40);   // starts at the right-hand edge
-    await page.screenshot({ path: "shots/age/notice-rtl.png" });
-    await context.close();
-  });
-
-  test("answering 18 or over ends it for good, on the page they were on", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_old");
-    await open(page, "/browse");
-    await page.locator(NOTICE).getByText(ADULT, { exact: true }).click();
+    await open(page, "/settings/content");
+    await page.locator(`${NOTICE} label[for="age-settings-adult"]`).click();
     await page.locator(`${NOTICE} button[type=submit]`).click();
     await page.waitForLoadState("load");
-    expect(new URL(page.url()).pathname).toBe("/browse");
-    await expect(page.locator(NOTICE)).toHaveCount(0);
-    await open(page, "/all");
-    await expect(page.locator(NOTICE)).toHaveCount(0);
-
-    await open(page, "/settings/content");
+    expect(new URL(page.url()).pathname).toBe("/settings/content");
     await expect(page.locator("#age-declaration")).toContainText("marked 18 or over since");
     await expect(page.locator("#age-declaration form")).toHaveCount(0);
     await expect(page.locator("#filterlevel")).toBeEnabled();
@@ -247,23 +140,22 @@ test.describe("a member from before the question", () => {
 
   test("answering child asks first; Go back saves nothing; then it is locked", async ({ browser }) => {
     const { context, page } = await member(browser, "ui_age_child");
-    await open(page, "/all");
-    await page.locator(NOTICE).getByText(CHILD, { exact: true }).click();
+    await open(page, "/settings/content");
+    await page.locator(`${NOTICE} label[for="age-settings-child"]`).click();
     await page.locator(`${NOTICE} button[type=submit]`).click();
     await expect(page.getByRole("heading", { name: "Is this a child's account?" })).toBeVisible();
-    await expect(page.locator(NOTICE)).toHaveCount(0);
     await expect(page.getByText("stay on the Child word filter")).toBeVisible();
     await page.screenshot({ path: "shots/age/confirm-1280.png" });
 
     await page.getByRole("link", { name: "Go back" }).click();
     await page.waitForLoadState("load");
-    await expect(page.locator(NOTICE), "nothing was saved").toBeVisible();
+    expect(new URL(page.url()).pathname).toBe("/settings/content");
+    await expect(page.locator("#age-declaration form"), "nothing was saved").toBeVisible();
 
-    await page.locator(NOTICE).getByText(CHILD, { exact: true }).click();
+    await page.locator(`${NOTICE} label[for="age-settings-child"]`).click();
     await page.locator(`${NOTICE} button[type=submit]`).click();
     await page.getByRole("button", { name: "Yes, this is a child's account" }).click();
     await page.waitForLoadState("load");
-    await expect(page.locator(NOTICE)).toHaveCount(0);
 
     await open(page, "/settings/content");
     await expect(page.locator("#age-declaration")).toContainText("This is a child account");

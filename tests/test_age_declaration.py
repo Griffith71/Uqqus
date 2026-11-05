@@ -211,35 +211,21 @@ def test_the_two_choices_are_written_once_and_asked_in_the_same_words_everywhere
     assert 'name="age_declaration" value="1" required' in question and 'name="age_declaration" value="2" required' in question
     assert " checked" not in question, "nothing is answered for them"
     assert 'import age_choices' in read("ruqqus", "templates", "sign_up.html")
-    assert 'import age_form' in read("ruqqus", "templates", "partials", "age_notice.html")
     assert 'import age_form' in read("ruqqus", "templates", "settings_filters.html")
     assert "age_choices(prefix)" in question.split("macro age_form", 1)[1]
     # the page that asks again quotes the same message
     assert "I'm a parent or guardian setting this up for my child (13 to 17)" in read("ruqqus", "templates", "age_confirm.html")
 
 
-def test_the_notice_never_blocks_and_never_shows_in_a_side_panel():
-    shell = read("ruqqus", "templates", "default.html")
-    line = next(line for line in shell.splitlines() if "partials/age_notice.html" in line)
-    assert "v.age_declared is none" in line and "not v.is_bot" in line and "not request.args.get('embed')" in line
-    notice = read("ruqqus", "templates", "partials", "age_notice.html")
-    for dialog in ('role="dialog"', "modal", "aria-modal", "position: fixed", "autofocus"):
-        assert dialog not in notice
-    assert "<script" not in notice
-    style = read("ruqqus", "assets", "style", "_components.scss").split(".age-notice {", 1)[1].split("\n}", 1)[0]
-    assert "position" not in style and "z-index" not in style
-    assert "#" not in style, "tokens only"
-
-
-def test_the_notice_only_comes_back_to_an_address_that_answers_a_get():
-    notice = read("ruqqus", "templates", "partials", "age_notice.html")
-    assert """request.full_path.rstrip('?') if request.method in ("GET", "HEAD") else "/settings/content\"""" in notice
-
-
-def test_the_chat_page_is_the_screen_between_the_bars_so_it_doesnt_carry_the_notice():
-    assert "{% set hide_age_notice = true %}" in read("ruqqus", "templates", "chat.html")
-    assert "not hide_age_notice" in next(line for line in read("ruqqus", "templates", "default.html").splitlines()
-                                         if "partials/age_notice.html" in line)
+def test_there_is_no_notice_on_every_page_existing_members_are_asked_in_settings_only():
+    """The owner, 2026-11-05: the question belongs to sign-up. A member from before is asked in Settings > Content and nowhere else."""
+    assert not (ROOT / "ruqqus" / "templates" / "partials" / "age_notice.html").exists()
+    for shell in ("default.html", "header.html", "space.html", "chat.html"):
+        text = read("ruqqus", "templates", shell)
+        assert "age_notice" not in text and "age-notice" not in text, shell
+    assert "hide_age_notice" not in read("ruqqus", "routes", "age_declaration_pages.py")
+    assert "age-notice" not in read("ruqqus", "assets", "style", "_components.scss")
+    assert 'import age_form' in read("ruqqus", "templates", "settings_filters.html")
 
 
 def test_both_choices_are_a_target_tall():
@@ -257,11 +243,6 @@ def test_a_child_account_isnt_sent_to_a_setting_it_cant_change():
     assert "v.age_declared == 2" in locked and "Change your word filter" not in locked
     assert f'_("{age.FILTER_LOCKED}")' in locked, "the words Settings uses"
     assert "Change your word filter" in free
-
-
-def test_only_the_shell_of_ordinary_pages_carries_it():
-    assert "age_notice" not in read("ruqqus", "templates", "header.html")
-    assert "age_notice" not in read("ruqqus", "templates", "space.html")
 
 
 def test_the_answer_route():

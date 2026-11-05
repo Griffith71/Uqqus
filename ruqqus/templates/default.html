@@ -483,7 +483,6 @@
       {% if v and v.is_quarantined and not request.args.get('embed') %}{% include "partials/held_notice.html" %}{% endif %}
       {% if v and v.qr_limited and not request.args.get('embed') %}{% include "partials/qr_limited_notice.html" %}{% endif %}
       {# never in a side panel's frame; gone for good once answered (helpers/age_declaration.py) #}
-      {% if v and v.age_declared is none and not v.is_bot and not hide_age_notice and not request.args.get('embed') %}{% include "partials/age_notice.html" %}{% endif %}
 
       {% block desktopUserBanner %}
       {% endblock %}

@@ -1176,48 +1176,12 @@ button.text-expand {
     }
 }
 
-// the question a member from before the age declaration is asked (partials/age_notice.html, helpers/age_declaration.py): the
-// held notice's look, in the page's flow at the top of the column, so it moves nothing after load and covers nothing
-.age-notice {
-    margin: var(--space-4) 0 0;
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--brand-soft);
-    color: var(--text);
-    font-size: var(--text-sm);
-    line-height: 1.45;
-
-    a {
-        color: var(--text);
-        font-weight: 600;
-        text-decoration: underline;
-    }
-}
-
-.age-notice-title {
-    display: block;
-    margin: 0 0 var(--space-1);
-    color: var(--text);
-    font-size: var(--text-base);
-    font-weight: 600;
-}
-
-.age-notice-lead {
-    margin: 0 0 var(--space-3);
-}
-
 .age-means {
     display: block;
     margin-top: var(--space-2);
     color: var(--text-muted);
     font-size: var(--text-xs);
     line-height: 1.45;
-}
-
-// on the brand's tint the muted grey is too near AA to trust: the notice keeps the page's own text colour
-.age-notice .age-means {
-    color: var(--text);
 }
 
 .age-form .btn {

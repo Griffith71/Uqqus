@@ -3,8 +3,8 @@ account up for their child (13 to 17). Under-13s may not have an account (help/t
 said, never a check**: a child can sign up and say they are an adult, and anyone can read the site signed out.
 
 `users.age_declared` is NULL (not asked yet), ADULT or CHILD, `users.age_declared_utc` when. Sign-up asks and refuses
-without an answer (routes/login.py). A member from before this is asked by a notice (partials/age_notice.html, on
-default.html) and in Settings > Content, until they answer; until then they are treated as they always were. Bot
+without an answer (routes/login.py). A member from before this is asked only in Settings > Content (the owner, 2026-11-05: the
+question belongs to sign-up, so there is no notice on every page); until they answer they are treated as they always were. Bot
 accounts and the site's own account are never asked: nobody signs in to them.
 
 **A child account stays on the Child word filter** and never shows sensitive content in All or For You. Three things hold

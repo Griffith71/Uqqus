@@ -1,5 +1,5 @@
 """The age declaration on the real app and a real Postgres (helpers/age_declaration.py has the rules): sign-up refuses
-without an answer, a child account can't leave the Child filter by any route, the notice, and an admin changing an answer."""
+without an answer, a child account can't leave the Child filter by any route, Settings asking an existing member (no notice on other pages), and an admin changing an answer."""
 import hmac
 import importlib.util
 import os
@@ -110,24 +110,16 @@ def test_a_child_account_signs_up_on_the_child_filter_and_sees_no_notice(real_ap
     assert 'id="age-notice"' not in get(client, "/all").get_data(as_text=True)
 
 
-# ---------------------------------------------------------------- the notice's way back
+# ---------------------------------------------------------------- the answer's way back
 
-def test_a_page_drawn_by_a_post_sends_the_answer_back_somewhere_that_opens(make_member):
+def test_a_refused_form_page_carries_no_question_and_the_answer_still_comes_back_to_settings(make_member):
     member = make_member()
     client = member.browser()
     refused = post(client, "/api/comment", formkey=member.formkey(client), parent_fullname="t2_zzzzzz", body="hi")
-    page = refused.get_data(as_text=True)
-    assert refused.status_code >= 400 and 'id="age-notice"' in page, refused.status_code
-    assert 'name="next" value="/settings/content"' in page and 'name="next" value="/api/comment"' not in page
+    assert refused.status_code >= 400 and 'id="age-notice"' not in refused.get_data(as_text=True), refused.status_code
     back = answer(member, client, age_declaration="1", next="/settings/content")
     assert back.status_code == 303 and back.headers["Location"].endswith("/settings/content")
     assert get(client, "/settings/content").status_code == 200
-
-
-def test_a_page_opened_normally_is_where_the_answer_comes_back_to(make_member):
-    member = make_member()
-    page = get(member.browser(), "/browse?sort=new").get_data(as_text=True)
-    assert 'name="next" value="/browse?sort=new"' in page
 
 
 # ---------------------------------------------------------------- the lock
@@ -210,25 +202,18 @@ def test_settings_shows_the_state_plainly(make_member):
     assert " disabled" in switch and " checked" not in switch
 
 
-# ---------------------------------------------------------------- the notice
+# ---------------------------------------------------------------- where an existing member is asked
 
-def test_a_member_from_before_is_asked_on_a_page_that_still_works(make_member):
+def test_a_member_from_before_is_asked_in_settings_and_nowhere_else(make_member):
+    """The owner, 2026-11-05: the question belongs to sign-up, so no page carries a notice; Settings > Content still asks."""
     member = make_member()
     client = member.browser()
-    served = get(client, "/all")
-    assert served.status_code == 200
-    page = served.get_data(as_text=True)
-    assert 'id="age-notice"' in page and ADULT_CHOICE in page
-    assert 'id="posts"' in page or 'class="posts' in page or "You're all caught up" in page or "main-content-col" in page
-    assert 'name="next" value="/all"' in page
-
-
-def test_no_notice_in_a_side_panels_frame(make_member):
-    member = make_member()
-    client = member.browser()
-    for path in ("/notifications?embed=1", "/all?embed=1"):
-        assert 'id="age-notice"' not in get(client, path).get_data(as_text=True), path
-    assert 'id="age-notice"' in get(client, "/notifications").get_data(as_text=True)
+    for path in ("/all", "/notifications", "/notifications?embed=1", "/all?embed=1", "/chat", "/settings/profile"):
+        served = get(client, path)
+        assert served.status_code in (200, 302, 503), (path, served.status_code)
+        assert 'id="age-notice"' not in served.get_data(as_text=True), path
+    settings = get(client, "/settings/content").get_data(as_text=True)
+    assert ADULT_CHOICE in settings and 'id="age-declaration"' in settings
 
 
 def test_no_notice_for_a_visitor(real_app):
@@ -236,7 +221,7 @@ def test_no_notice_for_a_visitor(real_app):
     assert 'id="age-notice"' not in get(app.test_client(), "/all").get_data(as_text=True)
 
 
-def test_an_adult_answer_ends_the_notice_for_good(make_member):
+def test_an_adult_answer_is_kept_for_good(make_member):
     member = make_member()
     client = member.browser()
     saved = answer(member, client, age_declaration="1", next="/all")
@@ -364,7 +349,7 @@ def test_an_admin_clears_an_answer_and_the_member_is_asked_again(make_member):
     client = boss.browser()
     assert change(boss, client, member, answer="").status_code == 302
     assert row(member).age_declared is None and row(member).age_declared_utc == 0
-    assert 'id="age-notice"' in get(member.browser(), "/all").get_data(as_text=True)
+    assert ADULT_CHOICE in get(member.browser(), "/settings/content").get_data(as_text=True)         # asked again, in Settings
 
 
 def test_only_an_admin_above_the_account_may_change_it(make_member):

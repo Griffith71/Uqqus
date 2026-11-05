@@ -1,9 +1,5 @@
 {% extends "default.html" %}
 
-{# #chat-app is exactly the screen between the bars (_screens.scss), so anything above it pushes a conversation's box off
-   the screen: the age question asks on every other page and in Settings (helpers/age_declaration.py) #}
-{% set hide_age_notice = true %}
-
 {% block title %}
 <title>{{ _("Chat - %(site)s") }}</title>
 {% endblock %}

@@ -27,7 +27,7 @@ def settings_age_declaration(v):
 
     def refused(message, status):
         return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(message),
-                               link=back, link_text=msg(age_declaration.BACK), hide_age_notice=True), status
+                               link=back, link_text=msg(age_declaration.BACK)), status
 
     if not age_declaration.is_asked(v):
         return refused(age_declaration.ALREADY_ANSWERED, 409)
@@ -35,7 +35,7 @@ def settings_age_declaration(v):
     if answer is None:
         return refused(age_declaration.NO_ANSWER, 400)
     if answer == age_declaration.CHILD and request.form.get("confirm") != "1":
-        return render_template("age_confirm.html", v=v, back=back, hide_age_notice=True,
+        return render_template("age_confirm.html", v=v, back=back,
                                title=msg(age_declaration.CONFIRM_TITLE))
 
     # the check and the write are one statement, so two tabs can't both answer
