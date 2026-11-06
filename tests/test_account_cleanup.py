@@ -36,6 +36,7 @@ def test_every_step_matches_the_schema_and_does_its_job():
         conn.execute(text("INSERT INTO login_events (id, user_id, ip) VALUES (1, 5, '1.2.3.4'), (2, 6, '5.6.7.8')"))
         conn.execute(text("INSERT INTO circle_members (id, circle_id, user_id, tier, status, cancelled) VALUES (1, 9, 5, 'subscriber', 'active', 0)"))
         conn.execute(text("INSERT INTO chat_identities (user_id, key_blob_password) VALUES (5, 'locked')"))
+        conn.execute(text("INSERT INTO chat_site_devices (user_id, device_id, kind, created_ms, last_used_utc) VALUES (5, 'UQA', 'chat', 0, 0), (6, 'UQB', 'chat', 0, 0)"))
     with Session(engine) as db:
         skipped = account_cleanup.close_account(db, 5, 1000)
         assert skipped == []                                    # every step fits the schema's columns
@@ -44,6 +45,9 @@ def test_every_step_matches_the_schema_and_does_its_job():
         assert db.execute(text("SELECT COUNT(*) FROM login_events WHERE user_id = 5")).scalar() == 0
         assert db.execute(text("SELECT status FROM circle_members WHERE id = 1")).scalar() == "ended"
         assert db.execute(text("SELECT key_blob_password FROM chat_identities WHERE user_id = 5")).scalar() is None
+        # the site's record of its chat devices goes; the queued sign-out of them never does (it must still finish)
+        assert [str(u) for (u,) in db.execute(text("SELECT user_id FROM chat_site_devices"))] == ["6"]
+    assert not any("chat_device_signouts" in sql for _, sql in account_cleanup.STEPS)
 
 
 def test_an_admins_change_of_the_age_answer_leaves_no_copy_of_it():
@@ -113,6 +117,7 @@ def test_the_data_export_reads_every_section_from_the_schema():
         data = data_export.build(db, 5)
     assert set(data) == {"note"} | {name for name, _ in data_export.SECTIONS}       # no section failed
     assert data["account"][0]["email"] == "a@b.c" and [r["ip"] for r in data["sign_ins"]] == ["1.2.3.4"]
+    assert data["chat_devices"] == [{"chat_devices": 0, "signed_in": 0}], "a count, never the ids"
 
 
 def test_any_other_error_stops_the_deletion_instead_of_being_skipped():

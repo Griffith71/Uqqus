@@ -93,6 +93,12 @@ def is_locked(v):
     return v is not None and (getattr(v, "age_declared", None) == CHILD or getattr(v, "age_lock", None) is not None)
 
 
+def newly_locked(before, after):
+    """Did an answer just put the account under the stored lock? Then its chat devices are signed out (helpers/chat_signouts.py):
+    a child account has no chat, and an outside app's token never expires on its own."""
+    return not before and bool(after)
+
+
 def assured(v):
     """Has a vendor (or an admin) confirmed that this account's holder is 18 or over?"""
     return bool(v is not None and (getattr(v, "age_assured_utc", 0) or 0) > 0)

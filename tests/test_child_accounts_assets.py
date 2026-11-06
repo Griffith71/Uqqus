@@ -114,7 +114,7 @@ def test_the_tables_the_migration_and_the_ledger_agree():
         assert f"CREATE TABLE IF NOT EXISTS {table} (" in migration and f"CREATE TABLE public.{table} (" in schema
     assert "REFERENCES" not in migration, "no foreign key to users: closing an account deletes the rows (helpers/account_cleanup.py)"
     ledger = re.findall(r"\('(\d{4}-\d{2}-\d{2}_[\w-]+\.sql)'\)", schema.split("INSERT INTO public.schema_migrations", 1)[1])
-    assert ledger == sorted(ledger) and ledger[-1] == "2026-12-18_parent_accounts.sql"
+    assert ledger == sorted(ledger) and "2026-12-18_parent_accounts.sql" in ledger
     for name in ("chat", "spaces", "money", "anonymous_guilds", "posting", "commenting", "ask_private_utc", "ask_release_utc", "ask_release_country", "suspended_until_utc",
                  "parent_id", "made_utc"):
         assert f"    {name} " in migration or f"    {name} integer" in migration, name
@@ -281,6 +281,8 @@ def test_switching_money_off_or_stopping_management_stops_what_was_set_up_and_th
     assert 'name == "money" and not on' in ROUTES["children_controls"][1] and "_money_off(" in ROUTES["children_controls"][1]
     stop = ROUTES["children_stop"][1]
     assert "_money_off(" in stop and "_sign_out_of_chat(" in stop, "a standalone locked account has no parent to allow money or chat"
+    chat_off = pages.split("def _sign_out_of_chat(", 1)[1].split("\ndef ", 1)[0]
+    assert "chat_signouts.queue(g.db, child_id, reason)" in chat_off and "chat_devices.sign_out(" not in pages, "the durable queue"
     assert "child_store.money_locked(db, i)" in read("ruqqus", "helpers", "premium.py")
     renew = read("ruqqus", "helpers", "circle_store.py").split("def renew_due(", 1)[1].split("\n# ---", 1)[0]
     assert "child_store.money_locked(db, row.user_id)" in renew and "child_store.money_locked(db, row.owner_id)" in renew

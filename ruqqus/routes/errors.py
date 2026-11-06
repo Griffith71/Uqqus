@@ -157,6 +157,10 @@ def error_422(e):
 def error_429(e):
 
     ip = request.remote_addr
+    # the limiter can refuse before the site's own before_request opens the database: the sign-in in the cookie wasn't checked, so
+    # the answer writes no cookie (helpers/sign_in_ends.py: a copy of an ended one must not be refreshed)
+    if getattr(g, "db", None) is None:
+        g.skip_session_cookie = True
 
     # limited per code, so nobody else's requests can use them up and these say nothing about the address: thirty of them would
     # put everyone behind it in time out (routes/qr_login_pages.py). A script that ignores the body, so no page is drawn.

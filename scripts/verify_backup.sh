@@ -7,12 +7,13 @@
 #
 # It restores both dumps into scratch databases (drill_site on the site's server, drill_synapse on Synapse's), checks
 # the files against their checksums, that the schema has the tables it should, that the migration ledger lists every
-# migration file in this checkout, and that there are members and messages, then drops the scratch databases. A backup
+# migration file in this checkout, that there are members and messages, and that the two are a pair (every chat account
+# the site knows is on the chat server: scripts/chat_pair_check.sh), then drops the scratch databases. A backup
 # nobody has restored is a hope, not a backup: run this after setting the service up and now and then after.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-run() { docker compose run --rm --no-deps -T --entrypoint bash backup -c "$1"; }
+run() { docker compose run --rm --no-deps -T -v "$PWD/scripts/chat_pair_check.sh:/chat_pair_check.sh:ro" --entrypoint bash backup -c "$1"; }
 
 if [ "${1:-}" = "--fresh" ]; then
   docker compose run --rm --no-deps -T -e BACKUP_ONCE=1 backup
@@ -52,5 +53,6 @@ run "
   [ \"\$members\" -gt 0 ] || { echo 'FAIL: no accounts in the restored site database'; exit 1; }
   [ \"\$syn_tables\" -gt 20 ] || { echo 'FAIL: the Synapse schema is too small'; exit 1; }
   if [ \"\$ledger\" -lt \"\$migrations\" ]; then echo 'NOTE: this backup predates some migrations: apply them after a restore (scripts/migrate.py --apply)'; fi
+  bash /chat_pair_check.sh \"\$site/drill_site\" \"\$syn/drill_synapse\"
 "
 echo "OK: both databases restored from $pick and the scratch databases were dropped."

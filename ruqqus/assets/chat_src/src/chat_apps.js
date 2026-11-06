@@ -2,7 +2,7 @@
 // here with their password exactly as the chat page unlocks it (keylock.js: the site never sees the password, the
 // pre-key or the key), and their chat devices with Sign out. Text only: nothing here writes HTML.
 import { fetchKeyInfo, passwordIsRight, prekeyFromPassword, passwordKey, unlock } from "./keylock.js";
-import { loadSession } from "./token.js";
+import { CALL_STORAGE_KEY, loadSession } from "./token.js";
 
 const root = document.getElementById("chat-apps");
 const formkey = root.dataset.formkey;
@@ -57,7 +57,12 @@ if (keyForm) {
 // ---- devices ----
 
 const list = byId("chat-devices");
-const here = (loadSession() || {}).device_id;
+// THE INTERIM (build steps 2 and 3, helpers/chat_signouts.py KEEP_SITE_BROWSERS): this browser's own devices, read from its own storage
+// as before. Today's chat page and call window delete their crypto store when their device is signed out, which would destroy room keys
+// nothing else holds, so they are labelled "This browser" and offered no Sign out here. The server's `here` can't stand in for it yet:
+// today's client asks the token route only when it has no token, so the row's sign-in is often an older one. Build step 4c removes
+// this (the client that keeps its stores writes `here` on every start).
+const ownDevices = new Set([(loadSession() || {}).device_id, (loadSession(CALL_STORAGE_KEY) || {}).device_id].filter(Boolean));
 
 function when(ts) {
   if (!ts) return window.tr("Not used yet");
@@ -72,12 +77,29 @@ function line(text, cls) {
   return li;
 }
 
+// asks first; the site's own sheet where the page has it (default.html), the browser's otherwise (this page's shell has none)
+function ask(text) {
+  if (window.confirmSheet) return window.confirmSheet({ title: window.tr("Sign out"), text, ok: window.tr("Sign out") });
+  return Promise.resolve(window.confirm(text));
+}
+
 async function signOut(device, button) {
-  if (!window.confirm(window.tr("Sign out %(device)s? It will need to sign in again to read your chats.", { device: device.name }))) return;
+  // "This sign-in" is what the server says (the device was last started by this cookie's sign-in): a copy of the cookie is the same
+  // sign-in, so it is listed and can be signed out like any other. This browser's own devices have no button in the interim (above)
+  const question = device.here
+    ? window.tr("This signs out chat in this browser too, if it is this browser's. It will start again as a new device.")
+    : window.tr("Sign out %(device)s? It will need to sign in again to read your chats.", { device: device.name });
+  if (!(await ask(question))) return;
   button.disabled = true;
   const body = new URLSearchParams({ formkey, device_id: device.device_id });
   const resp = await fetch("/api/chat/devices/sign_out", { method: "POST", credentials: "same-origin", body });
-  if (resp.ok) {
+  if (resp.status === 202) {
+    const data = await resp.json().catch(() => ({}));
+    const note = document.createElement("span");
+    note.className = "text-muted text-small";
+    note.textContent = data.message || window.tr("This device will be signed out shortly.");
+    button.replaceWith(note);
+  } else if (resp.ok) {
     await load();
   } else {
     button.disabled = false;
@@ -108,20 +130,21 @@ async function load() {
     name.textContent = device.name;
     const sub = document.createElement("div");
     sub.className = "text-small text-muted";
-    const kind = device.device_id === here ? window.tr("This browser") : device.site ? window.tr("A browser on this site") : window.tr("An app");
+    const own = ownDevices.has(device.device_id);
+    const kind = own ? window.tr("This browser") : device.here ? window.tr("This sign-in")
+      : device.site ? window.tr("A browser on this site") : window.tr("An app");
     // Translators: a chat device's line, e.g. "An app · Last used 3 Oct 2026"
     sub.textContent = window.tr("%(kind)s · %(used)s", { kind, used: when(device.last_seen) });
     text.append(name, sub);
     li.append(text);
-    if (device.device_id !== here) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "btn btn-secondary btn-sm";
-      button.textContent = window.tr("Sign out");
-      button.setAttribute("aria-label", window.tr("Sign out %(device)s", { device: device.name }));
-      button.addEventListener("click", () => signOut(device, button));
-      li.append(button);
-    }
+    if (own) return li;                  // the interim: never this browser's own device (its store would go with it)
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn btn-secondary btn-sm";
+    button.textContent = window.tr("Sign out");
+    button.setAttribute("aria-label", window.tr("Sign out %(device)s", { device: device.name }));
+    button.addEventListener("click", () => signOut(device, button));
+    li.append(button);
     return li;
   }));
 }

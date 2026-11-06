@@ -299,6 +299,8 @@ def test_an_under_the_minimum_result_closes_the_account(make_member, monkeypatch
     done = get(client, where.replace("http://localhost", ""), "AU")
     assert done.status_code == 200 and "Your account was closed" in done.get_data(as_text=True)
     assert columns(member, "is_deleted").is_deleted is True
+    # the page clears this account's chat from the browser: its chat account, read before it closed (helpers/chat_signouts.py)
+    assert f'forgetChatDevices("@ruqqus_{member.id}:' in done.get_data(as_text=True)
 
 
 def test_a_result_that_didnt_finish_changes_nothing(make_member, monkeypatch):

@@ -44,6 +44,9 @@ run "
   pg_restore --clean --if-exists --no-owner --dbname=\"\$site/postgres\" /backups/$pick/site.dump
   pg_restore --clean --if-exists --no-owner --dbname=\"\$syn/synapse\" /backups/$pick/synapse.dump
 "
+docker compose run --rm --no-deps -T -v "$PWD/scripts/chat_pair_check.sh:/chat_pair_check.sh:ro" --entrypoint bash backup \
+  /chat_pair_check.sh "postgresql://postgres@postgres:5432/postgres" "postgresql://synapse:synapse@postgres_synapse:5432/synapse" \
+  || echo "The restored databases are not a pair: chat will refuse the members it can't match (/admin/chat says which)."
 docker compose up -d synapse ruqqus
 echo
 echo "Restored. Now apply any migration newer than the backup (the app prints which are missing at start-up):"

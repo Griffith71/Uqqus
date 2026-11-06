@@ -4,6 +4,7 @@ import base64
 import io
 import json
 import time
+from secrets import token_hex
 from os import environ
 
 import qrcode
@@ -12,7 +13,7 @@ from flask import session as flask_session
 
 from ruqqus.classes import *
 from ruqqus.helpers import ads as ads_rules
-from ruqqus.helpers import mfa_backup_store, qr_colour, qr_login, same_origin, sign_in_history, signin_alerts, user_agents
+from ruqqus.helpers import mfa_backup_store, qr_colour, qr_login, same_origin, sign_in_ends, sign_in_history, signin_alerts, user_agents
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, msg
 from ruqqus.helpers.redirects import same_site
@@ -317,6 +318,11 @@ def login_qr_upgrade(v):
             LoginEvent.created_utc == expires - qr_login.SESSION_SECONDS,
         ).update({"ip": request.remote_addr, "region_code": resolve_region(request.headers.get("cf-ipcountry"))},
                  synchronize_session=False)
+    # a new session id, and the old one ended for good (helpers/sign_in_ends.py): a copy of the cookie taken before the password is
+    # dead, and an answer of this browser's own still on its way can't put the limited cookie back
+    sign_in_ends.end(g.db, flask_session.get("session_id"), v.id, "qr_upgrade", now)
+    g.sign_in_ended_here = True
+    flask_session["session_id"] = token_hex(16)
     g.db.commit()
     qr_login.end_limited(flask_session)
     ads_rules.hold_after_password(flask_session, now)

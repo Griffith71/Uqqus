@@ -19,12 +19,12 @@ from ruqqus.helpers.get import *
 from ruqqus.helpers.regions import resolve_region
 from ruqqus.helpers.redirects import same_site
 from ruqqus.helpers import same_origin
-from ruqqus.helpers import account_sessions, chat_devices, mfa_backup, mfa_backup_store, sign_in_history, signin_alerts, user_agents
+from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history, signin_alerts, user_agents
 from ruqqus.helpers import captcha, signup_review_store, signup_risk, signup_signals
 from ruqqus.helpers import age_declaration, child_store
 from ruqqus.helpers import ads as ads_rules
 from ruqqus.helpers import consent as consent_rules
-from ruqqus.helpers import qr_login
+from ruqqus.helpers import qr_login, session_cookie, sign_in_ends
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers import i18n
@@ -186,8 +186,9 @@ def login_post():
         elif is_recovery:
             account.mfa_secret=None
             # switching two-factor off ends the account's other sign-ins, as it does from Settings (bug hunt: a
-            # stolen session outlived the owner signing in with the recovery code); this one takes the new nonce below
-            account_sessions.end_other_sessions(account)
+            # stolen session outlived the owner signing in with the recovery code); this one takes the new nonce below.
+            # Its chat devices are signed out too, none spared: this browser isn't signed in yet (helpers/chat_signouts.py)
+            account_sessions.revoke(g.db, account, "mfa_recovery")
             g.db.add(account)
             g.db.commit()
         elif is_backup:
@@ -216,7 +217,9 @@ def complete_sign_in(account, method):
     """Signs this browser in as `account`, whose right to it the caller has already checked: the session, the sign-in
     alert, the row in `login_events` with how it was made (`method`, helpers/sign_in_history.py), the alts check and the
     badges (the alts check only once a password has been typed on this browser). Not the ad hold, which belongs to a sign-in that typed a password here (helpers/ads.py)."""
-    # set session and user id
+    # set session and user id. A sign-in this browser still held ends for good (helpers/sign_in_ends.py): a copy of its cookie can't
+    # come back as it
+    end_old_sign_in(flask_session, "replaced")
     flask_session["user_id"] = account.id
     flask_session["session_id"] = token_hex(16)
     flask_session["login_nonce"] = account.login_nonce
@@ -285,13 +288,21 @@ def me(v):
 @auth_required
 @validate_formkey
 def logout(v):
-        
-    flask_session["user_id"]=None
-    flask_session["session_id"]=None
-
-    flask_session.modified=True
+    # ended on the server too (helpers/sign_in_ends.py): an answer still on its way writes no cookie (__main__.after_request), and a
+    # copy of this cookie is a visitor's from now on. The cookie stops naming the account at once, not on the next request
+    sign_in_ends.end(g.db, flask_session.get("session_id"), v.id, "logout", time.time())
+    g.sign_in_ended_here = True
+    session_cookie.forget_sign_in(flask_session)
+    flask_session.modified = True
 
     return redirect("/")
+
+
+def end_old_sign_in(session, reason):
+    """The sign-in `session` holds, if any, ends for good before another takes its place (helpers/sign_in_ends.py)."""
+    if session.get("user_id") and session.get("session_id"):
+        sign_in_ends.end(g.db, session["session_id"], session["user_id"], reason, time.time())
+        g.sign_in_ended_here = True
 
 # signing up
 
@@ -580,6 +591,7 @@ def sign_up_post(v):
 You can look around and set up your profile in the meantime.
 \n\nTo skip the wait, add and verify an email address in [Settings > Security](/settings/security)."""))
 
+    end_old_sign_in(session, "replaced")
     session["user_id"] = new_user.id
     session["session_id"] = token_hex(16)
     session.permanent = True
@@ -726,9 +738,8 @@ def post_reset(v):
 
     user.passhash = hash_password(password)
     # every sign-in of the account ends, and this reset link stops working (its token holds the nonce); so does
-    # every chat app signed in with it (helpers/chat_devices.py)
-    account_sessions.end_other_sessions(user)
-    chat_devices.sign_out(g.db, user.id, app.config["SITE_NAME"])
+    # chat on every device, none spared (helpers/chat_signouts.py)
+    account_sessions.revoke(g.db, user, "reset")
     g.db.add(user)
 
     return render_template("message_success.html", v=None,

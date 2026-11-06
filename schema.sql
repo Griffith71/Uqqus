@@ -7195,6 +7195,53 @@ CREATE TABLE public.child_family (
 CREATE UNIQUE INDEX child_family_child_key ON public.child_family USING btree (child_id) WHERE (child_id IS NOT NULL);
 CREATE INDEX child_family_parent_idx ON public.child_family USING btree (parent_id, made_utc);
 
+-- sign-ins that ended stay ended (helpers/sign_in_ends.py; 2026-12-19_ended_sign_ins.sql)
+CREATE TABLE public.ended_sign_ins (
+    id character(64) PRIMARY KEY,
+    user_id integer NOT NULL,
+    ended_utc bigint NOT NULL,
+    reason character varying(16) NOT NULL
+);
+
+CREATE INDEX ended_sign_ins_ended ON public.ended_sign_ins USING btree (ended_utc);
+
+-- the chat devices the site made, and the durable queue of chat sign-outs (helpers/chat_signouts.py; 2026-12-20_chat_sign_outs.sql)
+CREATE TABLE public.chat_site_devices (
+    user_id integer NOT NULL,
+    device_id character varying(64) NOT NULL,
+    kind character varying(8) NOT NULL CHECK (kind IN ('chat', 'call')),
+    sign_in character(64),
+    created_ms bigint NOT NULL,
+    last_used_utc bigint NOT NULL,
+    last_token_utc bigint DEFAULT 0 NOT NULL,
+    refresh_sealed text,
+    revoked_utc bigint DEFAULT 0 NOT NULL,
+    revoked_reason character varying(24),
+    mint_key character(32),
+    PRIMARY KEY (user_id, device_id)
+);
+
+CREATE UNIQUE INDEX chat_site_devices_mint ON public.chat_site_devices USING btree (user_id, mint_key) WHERE (mint_key IS NOT NULL);
+
+CREATE TABLE public.chat_device_signouts (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    mxid character varying(255) NOT NULL,
+    scope character varying(8) NOT NULL CHECK (scope IN ('all', 'listed')),
+    device_ids text,
+    spared text,
+    spare_after_ms bigint NOT NULL,
+    reason character varying(24) NOT NULL,
+    created_utc bigint NOT NULL,
+    attempts integer DEFAULT 0 NOT NULL,
+    next_try_utc bigint NOT NULL,
+    done_utc bigint DEFAULT 0 NOT NULL,
+    last_error character varying(64)
+);
+
+CREATE INDEX chat_device_signouts_due ON public.chat_device_signouts USING btree (next_try_utc) WHERE (done_utc = 0);
+CREATE INDEX chat_device_signouts_user ON public.chat_device_signouts USING btree (user_id) WHERE (done_utc = 0);
+
 CREATE TABLE public.schema_migrations (
     name character varying(255) PRIMARY KEY,
     applied_utc integer DEFAULT 0 NOT NULL
@@ -7294,4 +7341,6 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-15_region_colours.sql'),
     ('2026-12-16_age_assurance.sql'),
     ('2026-12-17_private_posting.sql'),
-    ('2026-12-18_parent_accounts.sql');
+    ('2026-12-18_parent_accounts.sql'),
+    ('2026-12-19_ended_sign_ins.sql'),
+    ('2026-12-20_chat_sign_outs.sql');

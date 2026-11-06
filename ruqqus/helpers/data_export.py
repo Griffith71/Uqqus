@@ -48,6 +48,9 @@ SECTIONS = (
     # the codes themselves are never exported (the site keeps only a hash); this is how many are left
     ("two_factor", "SELECT (SELECT count(*) FROM mfa_backup_codes WHERE user_id = :u AND used_utc = 0) AS unused_backup_codes, "
                    "(mfa_secret IS NOT NULL) AS two_factor_on FROM users WHERE id = :u"),
+    # how many chat devices the site made for the account, and how many are still signed in: never their ids
+    ("chat_devices", "SELECT count(*) AS chat_devices, COALESCE(SUM(CASE WHEN revoked_utc = 0 THEN 1 ELSE 0 END), 0) AS signed_in "
+                     "FROM chat_site_devices WHERE user_id = :u"),
     ("linked_storage", "SELECT provider, status, created_utc FROM media_accounts WHERE user_id = :u"),
     # what the member sent the admins, with the facts the page sent along; a screenshot is not exported
     ("feedback", "SELECT kind, message, page, context, status, response, created_utc FROM site_feedback "

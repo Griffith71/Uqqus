@@ -1,0 +1,59 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Chat health</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Chat health</h1>
+
+<p class="text-muted">Chat accounts are named after user ids (<code>@ruqqus_&lt;id&gt;:{{ server_name }}</code>), so the site's database and the chat server's (Synapse's) must always be restored together. This page checks that they still agree, the same check the start-up log and the restore drill make (helpers/chat_health.py). It was made just now.</p>
+
+{% if report.problems %}
+<div class="alert alert-danger" id="chat-health-problems" role="alert">
+  <ul class="mb-0 pl-3">{% for p in report.problems %}<li>{{ p }}</li>{% endfor %}</ul>
+</div>
+{% else %}
+<div class="alert alert-success" id="chat-health-ok">The two databases agree.</div>
+{% endif %}
+
+{% if report.notes %}
+<ul class="text-small" id="chat-health-notes">{% for n in report.notes %}<li>{{ n }}</li>{% endfor %}</ul>
+{% endif %}
+
+{% if not signouts.ready %}
+<div class="alert alert-danger" id="chat-signouts-missing" role="alert">Migration 2026-12-20_chat_sign_outs.sql not applied: a credential change still works, but its chat sign-out is only logged, and chat answers 503 until it is (<code>scripts/migrate.py --apply</code>).</div>
+{% elif signouts.late %}
+<div class="alert alert-danger" id="chat-signouts-late" role="alert">{{ signouts.late }} chat sign-out{{ 's' if signouts.late != 1 }} waiting longer than {{ late_minutes }} minutes for the chat server (helpers/chat_signouts.py: they are retried for ever; is Synapse reachable?).</div>
+{% endif %}
+
+<table class="table table-sm text-small">
+  <tr><th scope="row">This site database</th><td>{{ report.site }}</td></tr>
+  <tr><th scope="row">Chat accounts the site knows</th><td>{{ report.known }}</td></tr>
+  <tr><th scope="row">Highest id ever given a chat account</th><td>{{ report.mark }}</td></tr>
+  <tr><th scope="row">Site databases using this chat server</th><td>{{ report.sites | join(', ') or 'none recorded yet' }}</td></tr>
+  <tr><th scope="row">Chat sign-outs waiting for the chat server</th><td id="chat-signouts-pending">{{ signouts.pending if signouts.ready else 'unknown' }}</td></tr>
+</table>
+
+{% if refused %}
+<h2 class="h5 mt-4">Members refused chat</h2>
+<p class="text-muted text-small">The chat server already has an account with each of these ids, and the site has no record of it. If the site's database was restored without Synapse's, restore the pair instead (RESTORE.md). Give an account back only when it is the same person who used chat before: it holds that person's chats. Owners only.</p>
+{% for u in refused %}
+<div class="d-flex align-items-center justify-content-between border-bottom py-2 chat-refused" data-user="{{ u.id }}">
+  <span><a href="/@{{ u.username }}">@{{ u.username }}</a> <span class="text-muted">(id {{ u.id }})</span></span>
+  {% if v.admin_level >= 4 %}
+  <form action="/admin/chat/give_back" method="post" class="d-inline">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <input type="hidden" name="user_id" value="{{ u.id }}">
+    <button class="btn btn-outline-danger btn-sm">Give the chat account back</button>
+  </form>
+  {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

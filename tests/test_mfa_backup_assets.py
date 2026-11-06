@@ -31,6 +31,8 @@ def test_the_sign_in_spends_a_backup_code_without_turning_two_factor_off():
     assert "mfa_secret" not in spent.split("else:", 1)[0], "a backup code must leave two-factor on"
     recovered = step.split("elif is_recovery:", 1)[1].split("elif is_backup:", 1)[0]
     assert "account.mfa_secret=None" in recovered
+    # the recovery code switches two-factor off: every other sign-in and chat device of the account ends, none spared (helpers/chat_signouts.py)
+    assert 'account_sessions.revoke(g.db, account, "mfa_recovery")' in recovered
 
 
 def test_settings_makes_codes_only_for_an_account_with_two_factor_and_the_password_and_a_code():

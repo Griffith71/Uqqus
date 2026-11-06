@@ -83,11 +83,18 @@ def test_devices_are_named_and_accounts_made_without_a_spare_device():
 
 
 def test_chat_apps_sign_out_wherever_the_site_ends_other_sign_ins():
+    """Every credential event goes through account_sessions.revoke, which queues the chat sign-out (helpers/chat_signouts.py;
+    tests/test_revocation_assets.py has the tripwires, tests/pg/test_chat_signout_routes.py runs them)."""
     settings = read("ruqqus", "routes", "settings.py")
     login = read("ruqqus", "routes", "login.py")
-    assert settings.count('chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])') == 2, "password change, log out others"
-    assert 'chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"], apps_only=False)' in settings, "deleting the account"
-    assert 'chat_devices.sign_out(g.db, user.id, app.config["SITE_NAME"])' in login, "a password reset"
+    assert 'account_sessions.revoke(g.db, v, "password", session=flask_session, spare_this_sign_in=True)' in settings
+    assert 'account_sessions.revoke(g.db, v, "others", session=flask_session, spare_this_sign_in=True)' in settings
+    assert settings.count('account_sessions.revoke(g.db, v, "mfa", session=flask_session, spare_this_sign_in=True)') == 2, "two-factor on, off"
+    assert 'account_sessions.revoke(g.db, v, "deleted")' in settings, "deleting the account"
+    assert 'account_sessions.revoke(g.db, user, "reset")' in login, "a password reset"
+    assert 'account_sessions.revoke(g.db, account, "mfa_recovery")' in login, "the recovery code"
+    assert 'account_sessions.revoke(g.db, row, "child_password")' in read("ruqqus", "routes", "children_pages.py")
+    assert "chat_devices.sign_out" not in settings + login
     assert settings.count("chat_devices.sync_name(g.db, v)") == 2, "a username change, deleting the account"
     assert "chat_devices.sync_name(g.db, v, mxid)" in read("ruqqus", "routes", "chat.py"), "a new chat account"
 
@@ -109,7 +116,7 @@ def test_the_chat_server_signs_in_only_through_the_site():
     assert '"OIDC_CLIENT_SECRET"' in gen and '"OIDC_PRIVATE_KEY"' in gen and "OIDC_SECRET_FILE" in gen
 
 
-# ---- helpers/chat_devices.py with the chat server faked ----
+# ---- helpers/chat_devices.py with the chat server faked (signing out: tests/test_chat_signouts.py) ----
 
 @pytest.fixture
 def devices(monkeypatch):
@@ -135,22 +142,11 @@ class FakeDb:
         return SimpleNamespace(first=lambda: (self.mxid,) if self.mxid else None)
 
 
-def test_a_password_change_signs_out_apps_and_keeps_the_sites_browsers(devices):
+def test_no_chat_account_means_no_name_to_set(devices):
     chat_devices, calls = devices
-    assert chat_devices.sign_out(FakeDb("@ruqqus_3:x"), 3, "Laba") == 2
-    assert calls["deleted"] == [("@ruqqus_3:x", "APP1"), ("@ruqqus_3:x", "APP2")]
-
-
-def test_deleting_the_account_signs_out_every_device(devices):
-    chat_devices, calls = devices
-    assert chat_devices.sign_out(FakeDb("@ruqqus_3:x"), 3, "Laba", apps_only=False) == 4
-
-
-def test_no_chat_account_means_nothing_to_do(devices):
-    chat_devices, calls = devices
-    assert chat_devices.sign_out(FakeDb(None), 3, "Laba") == 0 and calls["deleted"] == []
     chat_devices.sync_name(FakeDb(None), SimpleNamespace(id=3, username="bob", is_deleted=False))
     assert calls["named"] == []
+    assert not hasattr(chat_devices, "sign_out"), "signing out is the durable queue's (helpers/chat_signouts.py)"
 
 
 def test_the_chat_name_is_the_handle_or_deleted(devices):
@@ -170,7 +166,6 @@ def test_a_chat_server_failure_never_stops_the_site(devices, capsys):
     sys.modules["ruqqus.helpers.matrix_client"] = broken
     import ruqqus.helpers
     ruqqus.helpers.matrix_client = broken
-    assert chat_devices.sign_out(FakeDb("@ruqqus_3:x"), 3, "Laba") == 0
     chat_devices.sync_name(FakeDb("@ruqqus_3:x"), SimpleNamespace(id=3, username="bob", is_deleted=False))
     assert "not done" in capsys.readouterr().out
 
@@ -179,3 +174,40 @@ def test_the_sites_own_devices_are_told_from_apps():
     from ruqqus.helpers.chat_devices import is_site_device
     assert is_site_device("Laba chat", "Laba") and is_site_device("", "Laba") and is_site_device(None, "Laba")
     assert not is_site_device("Element Web", "Laba") and not is_site_device("Labasomething", "Laba")
+
+
+def test_this_sign_in_is_what_the_server_says_and_every_other_device_can_be_signed_out():
+    """`here` is read from chat_site_devices (the row's sign_in is this cookie's), and it is a label, never a reason to hide: a copy
+    of the cookie is the same sign-in (chat plan 3.6)."""
+    source = (SRC / "chat_apps.js").read_text(encoding="utf-8")
+    devices = source.split("// ---- devices ----")[1]
+    assert 'device.here ? window.tr("This sign-in")' in devices
+    assert "if (device.device_id !== here)" not in devices and "li.append(button);" in devices
+    assert 'window.tr("This signs out chat in this browser too, if it is this browser\'s. It will start again as a new device.")' in devices
+    assert "resp.status === 202" in devices and 'window.tr("This device will be signed out shortly.")' in devices
+    route = read("ruqqus", "routes", "chat_apps.py")
+    assert '"here": bool(row and not row[0] and sign_in and row[1] == sign_in)' in route
+    assert '"site": row is not None or is_site_device(d["name"], site_name)' in route
+    assert "chat_signouts.sign_in_hash(flask_session.get(\"session_id\"))" in route
+    body = route[route.index("def chat_device_sign_out(v):"):route.index("def _not_now(")]
+    # the site's row is revoked and committed BEFORE Synapse deletes the device (a token request in flight can't re-create it), and only
+    # with the migration in (no 500 without it); what can't be done now is queued, and said to be only when something was kept
+    revoke = body.index('chat_signouts.revoke_device(g.db, v.id, device_id, "signed_out_here")')
+    assert body.rindex("if ready and", 0, revoke) < revoke < body.index("g.db.commit()", revoke) < body.index("matrix.delete_device(")
+    assert "ready = chat_signouts.tables_ready(g.db)" in body and "revoke_rows" not in body
+    later = route[route.index("def _sign_out_later("):]
+    assert 'if chat_signouts.queue(g.db, v.id, "signed_out_here", "listed", device_ids=[device_id], mxid=mxid) is None:' in later
+
+
+def test_in_the_interim_this_browsers_own_devices_are_labelled_from_its_storage_and_never_offered_sign_out():
+    """Build steps 2 and 3 (helpers/chat_signouts.py KEEP_SITE_BROWSERS): today's chat page and call window delete their crypto store when
+    their device is signed out, and today's client asks the token route only when it has no token, so the server's `here` is often an
+    older sign-in's. This browser's own chat and call devices are read from its storage, as before, and get no Sign out; step 4c drops it."""
+    source = (SRC / "chat_apps.js").read_text(encoding="utf-8")
+    devices = source.split("// ---- devices ----")[1]
+    assert 'import { CALL_STORAGE_KEY, loadSession } from "./token.js";' in source
+    assert "new Set([(loadSession() || {}).device_id, (loadSession(CALL_STORAGE_KEY) || {}).device_id].filter(Boolean))" in devices
+    assert 'const own = ownDevices.has(device.device_id);' in devices
+    assert 'own ? window.tr("This browser") : device.here ? window.tr("This sign-in")' in devices
+    assert devices.index("if (own) return li;") < devices.index('document.createElement("button")') < devices.index("li.append(button);")
+    assert "THE INTERIM" in devices and "Build step 4c removes" in devices

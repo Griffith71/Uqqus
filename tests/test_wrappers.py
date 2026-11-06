@@ -67,6 +67,23 @@ def test_auth_required_rejects_stale_login_nonce(app_):
     assert app_.client.get("/req").status_code == 401
 
 
+def test_auth_required_rejects_an_ended_sign_in(app_, monkeypatch):
+    """A cookie whose sign-in was ended (Log out, the QR password, a later sign-in: helpers/sign_in_ends.py) is a visitor's, and
+    the cookie stops naming the account."""
+    import time
+    asked = []
+    monkeypatch.setattr(app_.wrappers.sign_in_ends, "ended_at",
+                        lambda db, sid: asked.append(sid) or (int(time.time()) if sid == "sid" else None))
+    app_.login(app_.user)
+    answer = app_.client.get("/req")
+    assert answer.status_code == 401
+    assert asked == ["sid"]
+    # forgotten for this request, but nothing written over a cookie that may have replaced it (__main__.py's save_session)
+    assert not answer.headers.getlist("Set-Cookie")
+    app_.login(app_.user, session_id="other")
+    assert app_.client.get("/req").status_code == 200
+
+
 def test_auth_required_rejects_deleted_user(app_):
     app_.login(app_.user)
     app_.user.is_deleted = True

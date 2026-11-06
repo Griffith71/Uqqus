@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from flask import *
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers import age_declaration, oidc_provider as oidc
+from ruqqus.helpers import age_declaration, chat_signouts, oidc_provider as oidc
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
 from ruqqus.classes import *
@@ -137,7 +137,7 @@ def oidc_authorize_post(v):
     now = int(time.time())
     code = secrets.token_urlsafe(32)
     r.setex("oidc:code:" + oidc.digest(code), oidc.CODE_SECONDS,
-            oidc.code_record(v.id, args.get("nonce"), args["code_challenge"], now))
+            oidc.code_record(v.id, args.get("nonce"), args["code_challenge"], now, v.login_nonce))
     return redirect(back + urlencode({"code": code, "state": args["state"]}))
 
 
@@ -177,6 +177,16 @@ def oidc_token():
     user = g.db.query(User).filter_by(id=record["user_id"]).first()
     if _refusal(user, _chat_ready(record["user_id"])):
         return _token_error("invalid_grant")
+    # the credentials changed since the member confirmed (a new password, two-factor on or off, a reset, "log out everywhere"): the code
+    # was asked for by a sign-in that has since ended, and its chat sign-out may already be done, so nothing later would delete this app.
+    # A code with no recorded state (one issued before this check) is refused too: it lives 60 seconds
+    if record.get("login_nonce") != int(user.login_nonce or 0):
+        return _token_error("invalid_grant")
+    # a chat sign-out of the account still out would delete the app this signs in (its device has no site row): it is waited for and
+    # run first, and while one younger than a day can't be finished the app is asked to try later (helpers/chat_signouts.py)
+    import ruqqus.helpers.matrix_client as matrix
+    if not chat_signouts.flush_for_oidc(g.db, matrix, user.id):
+        return _token_error("temporarily_unavailable", 503)
     now = int(time.time())
     access = secrets.token_urlsafe(32)
     r.setex("oidc:token:" + oidc.digest(access), oidc.TOKEN_SECONDS, str(user.id))

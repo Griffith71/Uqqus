@@ -14,7 +14,7 @@ from flask import abort, g, jsonify, make_response, redirect, render_template, r
 from sqlalchemy import text
 
 from ruqqus.classes import User
-from ruqqus.helpers import account_sessions, age_declaration, child_accounts as rules, child_activity, child_store, chat_devices, circle_store, creator_fund_store, data_export, mfa_backup_store, sign_in_history
+from ruqqus.helpers import account_sessions, age_declaration, child_accounts as rules, child_activity, child_store, chat_signouts, circle_store, creator_fund_store, data_export, mfa_backup_store, sign_in_history
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
@@ -88,11 +88,12 @@ def _money_off(child_id):
     circle_store.stop_renewals_of(g.db, child_id)
 
 
-def _sign_out_of_chat(child_id):
-    """Chat already set up keeps working until its devices are signed out (Synapse knows nothing of switches): every Matrix device of the child goes, apps included.
-    The chat session can't be opened again without chat (`messaging` is chat), so this is final until chat is switched on."""
-    chat_devices.sign_out(g.db, child_id, app.config["SITE_NAME"], apps_only=False)
-    g.db.commit()
+def _sign_out_of_chat(child_id, reason):
+    """Chat already set up keeps working until its devices are signed out (Synapse knows nothing of switches): every Matrix device of the child goes, apps included,
+    through the durable queue (helpers/chat_signouts.py), worked once this is committed. The chat session can't be opened again without chat (`messaging` is chat),
+    so this is final until chat is switched on. Called BEFORE the route's one commit: the switch (or the release) and its sign-out are written together or not at
+    all, so a worker that dies in between can't leave chat off with its devices still signed in."""
+    chat_signouts.queue(g.db, child_id, reason)
 
 
 def _wrong_proof(v):
@@ -195,9 +196,9 @@ def children_controls(username, v):
         return jsonify({"error": msg(rules.UNKNOWN_CONTROL)}), 400
     if name == "money" and not on:
         _money_off(child["id"])
-    g.db.commit()
     if name == "chat" and not on:
-        _sign_out_of_chat(child["id"])
+        _sign_out_of_chat(child["id"], "child_chat_off")       # in the switch's own transaction
+    g.db.commit()
     return jsonify({"message": tr("Saved.")})
 
 
@@ -261,8 +262,8 @@ def children_stop(username, v):
         return _back(error=msg(rules.NO_CHILD))
     child_store.release(g.db, child["id"])
     _money_off(child["id"])                       # a standalone locked account has no parent to allow money
+    _sign_out_of_chat(child["id"], "child_stopped")   # and none to allow chat: what was open stops (in the release's own transaction)
     g.db.commit()
-    _sign_out_of_chat(child["id"])                # and none to allow chat: what was open stops
     notify(row, STOPPED)
     return _back(message=tr("Saved."))
 
@@ -285,8 +286,7 @@ def children_password(username, v):
         return _back(error=tr("Password must be between 8 and 100 characters."))
     row = _child_row(child)
     row.passhash = row.hash_password(new)
-    account_sessions.end_other_sessions(row)
-    chat_devices.sign_out(g.db, row.id, app.config["SITE_NAME"])
+    account_sessions.revoke(g.db, row, "child_password")      # every sign-in and chat device of the child, none spared; never the parent's
     g.db.add(row)
     g.db.commit()
     notify(row, NEW_PASSWORD)             # the child is told: a changed password is never silent

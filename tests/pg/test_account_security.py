@@ -398,7 +398,8 @@ def test_only_a_deletion_that_went_through_clears_the_chat_device_from_the_brows
     done = post(here, "/settings/delete_account", {"password": member.password, "formkey": member.formkey(here)})
     page = done.get_data(as_text=True)
     assert done.status_code == 200
-    assert 'addEventListener("DOMContentLoaded", function () { forgetChatDevices(); })' in page    # all_js.js loads last, so it is named only when called
+    # all_js.js loads last, so it is named only when called; it is given the deleted account's chat id, read before it closed
+    assert f'addEventListener("DOMContentLoaded", function () {{ forgetChatDevices("@ruqqus_{member.id}:' in page
     assert page.index("forgetChatDevices") < page.index("js/all_js.js")
     assert "data-logout" not in page                                            # drawn for a visitor
     assert member.user().is_deleted and not signed_in(here)

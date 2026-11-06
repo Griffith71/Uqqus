@@ -188,9 +188,14 @@ def test_log_out_takes_the_token_and_keeps_only_whose_device_this_was():
 
 
 def test_the_site_never_hands_a_signed_out_device_back():
-    source = (ROOT / "ruqqus" / "routes" / "chat.py").read_text(encoding="utf-8")
-    body = source[source.index("def chat_token(v):"):source.index('_BLOB = re.compile')]
+    """The route's work is helpers/chat_tokens.py (tests/test_chat_signouts.py runs it): a named device is taken up again only after
+    the list check, and anything else is a new device the site names."""
+    route = (ROOT / "ruqqus" / "routes" / "chat.py").read_text(encoding="utf-8")
+    assert "chat_tokens.issue(g.db, matrix, v.id, mxid, request.values" in route[route.index("def chat_token(v):"):route.index('_BLOB = re.compile')]
+    source = (ROOT / "ruqqus" / "helpers" / "chat_tokens.py").read_text(encoding="utf-8")
+    body = source[source.index("def issue("):source.index("def _mint(")]
     assert body.index("matrix.list_devices(mxid)") < body.index("matrix.login_as(mxid, device_id)")
+    assert "return _mint(" in body
 
 
 def test_a_tab_told_its_device_is_gone_clears_only_its_own_device():

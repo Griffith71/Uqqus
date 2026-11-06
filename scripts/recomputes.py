@@ -324,6 +324,30 @@ def recompute():
             db.rollback()
             print_(f"retention failed: {e}")
 
+        # the site's database and Synapse's still agree, and new user ids start past every id that had a chat account
+        # (helpers/chat_health.py; /admin/chat shows the last report)
+        try:
+            from ruqqus.helpers import chat_health
+            from ruqqus.__main__ import r as chat_redis
+            report = chat_health.run(db, chat_redis, fix=True)
+            print_("chat health: " + ("ok" if report["ok"] else "; ".join(report["problems"])))
+        except Exception as e:
+            db.rollback()
+            print_(f"chat health failed: {e}")
+
+        # the chat sign-outs still waiting for Synapse (helpers/chat_signouts.py): each is run once its request has committed, and
+        # retried for ever; this is the backstop that lands the ones Synapse was down for
+        try:
+            from ruqqus.helpers import chat_signouts
+            import ruqqus.helpers.matrix_client as signout_matrix
+            if chat_signouts.tables_ready(db):
+                print_(f"chat sign-outs: {chat_signouts.run_due(db, signout_matrix)}")
+            else:
+                print_("chat sign-outs: migration 2026-12-20_chat_sign_outs.sql not applied")
+        except Exception as e:
+            db.rollback()
+            print_(f"chat sign-outs failed: {e}")
+
         # a cycle rescans every live post of the last 180 days: once every few minutes is plenty
         time.sleep(CYCLE_PAUSE_SECONDS)
 

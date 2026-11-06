@@ -1,12 +1,15 @@
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
+import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync } from "node:fs";
 
 // Two accounts in one browser (CLAUDE.md "Chat encryption"): what one leaves behind must never become the other's.
 //   PYTHONPATH=. python scripts/ui/seed_chat_session.py   (in the container), then: npm run chat-session
 // The chat, call and Space windows each hold a Matrix session in localStorage and a crypto store in IndexedDB. Logging out has to take the token,
 // and a page has to refuse what another account left there (a cookie that ran out never passes through a Log out link).
-// Sign-ins are limited to 6 a minute, so each account signs in through the real form once and the tests put its cookies back; the one test
+// Sign-ins are limited to 6 a minute, so each account signs in through the real form once and the tests put a cookie back; the one test
 // that needs a real sign-in (the pre-key that unlocks a new device) makes two more, and the refused sign-in's test three (a 429 reads as a sign-in that never leaves /login).
+// A Log out ends its sign-in for good on the server (helpers/sign_in_ends.py), so a saved cookie can't be put back after one: each test gets a cookie
+// of its own, signed by the app in the container (`docker exec`, RUQQUS_CONTAINER, as money.spec.ts does), as a sign-in would leave it.
 
 test.describe.configure({ mode: "serial" });
 test.use({
@@ -31,9 +34,35 @@ async function signIn(page: Page, name: string) {
 
 const cookiesOf = (who: string): Cookies => JSON.parse(readFileSync(`.auth/${who}.json`, "utf8")).cookies;
 
+const CONTAINER = process.env.RUQQUS_CONTAINER || "ruqqus-ruqqus-1";
+const minted: Record<string, string[]> = {};
+
+// session cookies for these accounts, each with a session id of its own, signed with the app's own key: what the login route leaves, without
+// spending a sign-in
+function mintCookies(names: string[], count = 30) {
+  const script = `
+import json, secrets
+from ruqqus.__main__ import app, db_session
+from ruqqus.classes import User
+signer = app.session_interface.get_signing_serializer(app)
+db = db_session()
+made = {}
+for name in ${JSON.stringify(names)}:
+    user = db.query(User).filter_by(username=name).first()
+    made[name] = [signer.dumps({"user_id": user.id, "login_nonce": user.login_nonce, "session_id": secrets.token_hex(16), "_permanent": True})
+                  for _ in range(${count})]
+print("MINTED " + json.dumps(made))
+`;
+  const out = execSync(`docker exec -i -w /opt/ruqqus/service ${CONTAINER} env PYTHONPATH=. venv/bin/python -`, { input: script, maxBuffer: 16_000_000 }).toString();
+  const line = out.split("\n").find((l) => l.startsWith("MINTED "))!;
+  Object.assign(minted, JSON.parse(line.slice(7)));
+}
+
 async function becomes(context: BrowserContext, who: string) {
+  if (!minted[who]?.length) mintCookies([who]);
+  const template = cookiesOf(who).find((c) => c.name === "session_ruqqus")!;
   await context.clearCookies();
-  await context.addCookies(cookiesOf(who));
+  await context.addCookies([{ ...template, value: minted[who].shift()! }]);
 }
 
 // initRustCrypto's error for a store made for another account or device
@@ -73,8 +102,8 @@ async function expectNoTokenLeft(page: Page) {
 
 // the link's own handler, as the menu's click runs it (a chat page's own dialogs could be over the menu); the page comes back signed out
 async function pressLogOut(page: Page, link: string) {
-  // A request of the page's own still in flight undoes a log out with its refreshed session cookie (CLAUDE.md "Chat encryption", the known bug): not what this spec is measuring.
-  await page.waitForTimeout(1_500);
+  // no wait for the page's own requests to settle: one still on its way when Log out answers can't put the old cookie back any more
+  // (helpers/sign_in_ends.py; "a log out can't be undone" below)
   await page.locator(link).first().evaluate((a: HTMLElement) => a.click());
   await expect(page.locator("a[data-logout]")).toHaveCount(0, { timeout: 15_000 });
   await page.waitForLoadState("load");
@@ -125,9 +154,10 @@ test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
     if (existsSync(`.auth/${account.name}.json`)) {                           // a run a minute ago must not spend the minute's sign-ins
-      await context.addCookies(cookiesOf(account.name));
+      await becomes(context, account.name);
       const answer = await context.request.get("/settings/profile", { maxRedirects: 0 });
-      if (answer.status() === 200) {
+      const keys = answer.status() === 200 ? await (await context.request.get("/api/chat/key")).json() : {};
+      if (keys.password_blob && keys.recovery_blob) {                         // its chat was set up through the form already
         await context.close();
         continue;
       }
@@ -459,6 +489,37 @@ test("Log out that never reaches the site still clears this browser, says so and
   await page.unroute("**/logout");
   await openChat(page, A.mxid);
   expect((await stored(page, "ruqqus_chat_session"))?.device_id).toBe(left.device_id);
+  await context.close();
+});
+
+// The old bug (CLAUDE.md "Chat encryption"): an answer of the page's own, worked out before Log out and arriving after it, put the old cookie back and
+// the page was signed in again. It still arrives with the old cookie, and the next request refuses it (helpers/sign_in_ends.py).
+test("a log out can't be undone by answers that were on their way", async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  await becomes(context, A.name);
+  const page = await context.newPage();
+  await page.goto("/settings/profile", { waitUntil: "load" });
+  // asked from another tab, which stays where it is (the tab that logs out reloads, and a reload cancels its own requests)
+  const other = await context.newPage();
+  await other.goto("/help/privacy", { waitUntil: "load" });
+  let asked = 0;
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => { release = resolve; });
+  await other.route("**/api/chat/key", async (route) => {
+    const answer = await route.fetch();                                     // answered by the site now, with the old cookie
+    asked += 1;
+    await held;
+    await route.fulfill({ response: answer });                              // and arrives after the Log out
+  });
+  const answers = other.evaluate(() => Promise.all([0, 1, 2, 3].map(() => fetch("/api/chat/key").then((r) => r.status))));
+  await expect.poll(() => asked, { timeout: 15_000 }).toBe(4);
+  await pressLogOut(page, ".account-menu [data-logout]");
+  release();
+  expect(await answers).toEqual([200, 200, 200, 200]);                       // they did arrive, old cookie and all
+  for (const path of ["/", "/settings/profile", "/"]) {
+    await page.goto(path, { waitUntil: "load" });
+    await expect(page.locator("a[data-logout]")).toHaveCount(0);
+  }
   await context.close();
 });
 

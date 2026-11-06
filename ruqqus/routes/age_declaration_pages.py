@@ -6,7 +6,7 @@ import time
 from flask import abort, g, redirect, render_template, request
 
 from ruqqus.classes import User
-from ruqqus.helpers import action_log, age_assurance, age_declaration, child_store, muting
+from ruqqus.helpers import action_log, age_assurance, age_declaration, chat_devices, chat_signouts, child_store, muting
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import msg
@@ -43,13 +43,19 @@ def settings_age_declaration(v):
 
     if age_declaration.is_asked(v):
         stored = age_declaration.signup_answer(answer, country)
+        was_locked = age_declaration.is_locked(v)
         # the check and the write are one statement, so two tabs can't both answer
         changed = g.db.query(User).filter(User.id == v.id, User.age_declared.is_(None)).update(
             age_declaration.fields_for(stored, now), synchronize_session=False)
-        g.db.commit()
         if not changed:
+            g.db.rollback()
             return _refused(v, age_declaration.ALREADY_ANSWERED, 409, back)
-        g.db.refresh(v)
+        g.db.refresh(v)                        # read back in this transaction: the answer as written, not yet committed
+        if age_declaration.newly_locked(was_locked, age_declaration.is_locked(v)):
+            # a child account has no chat (`messaging`): what was signed in stops, outside apps too, whose tokens never expire. Queued in the
+            # answer's own transaction, so the lock and its sign-out are committed together or not at all
+            chat_signouts.queue(g.db, v.id, "child_locked")
+        g.db.commit()
         muting.clear_cached_feeds(v)
         return redirect(back, code=303)
 
@@ -124,9 +130,10 @@ def settings_age_assurance_callback(v):
         return redirect("/settings/content?age=under", code=303)
     if status == age_assurance.UNDER_MINIMUM:
         from ruqqus.routes.settings import close_own_account
+        deleted_mxid = chat_devices.mxid_of(g.db, v.id)    # read before the account closes: the page clears this account's chat here
         close_own_account(v, "age check: under the youngest age where they are")
         g.db.commit()
-        return render_template("account_deleted.html", v=None, title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE),
+        return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE),
                                message=msg(age_declaration.UNDER_AGE_CLOSED))
     return redirect("/settings/content?age=failed", code=303)
 
@@ -154,6 +161,7 @@ def admin_age_declaration(v):
         return redirect(target.permalink)
     notice = age_declaration.CONFIRMED if confirmed else answer
     was_sub = target.age_lock == age_declaration.PARENT_LOCK
+    was_locked = age_declaration.is_locked(target)
     action_log.record_quietly(g.db, "age_declaration", v.id, target_user_id=target.id, role=action_log.ADMIN,
                               reason=request.form.get("reason", ""), notice_sent=True,
                               staff_note=f"{age_declaration.LABELS[was]} to {age_declaration.LABELS[notice]}")
@@ -164,6 +172,8 @@ def admin_age_declaration(v):
     g.db.add(target)
     # an admin who takes the lock off a parent's sub-account ends the parent's access with it (the switches and the link go; the parent is told)
     parent_id = child_store.release(g.db, target.id) if was_sub and target.age_lock != age_declaration.PARENT_LOCK else None
+    if age_declaration.newly_locked(was_locked, age_declaration.is_locked(target)):
+        chat_signouts.queue(g.db, target.id, "child_locked")       # a child account has no chat: what was signed in stops
     g.db.commit()
     muting.clear_cached_feeds(target)
     notify(target, age_declaration.ADMIN_NOTICES[notice])

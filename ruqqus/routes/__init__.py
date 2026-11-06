@@ -7,6 +7,7 @@ from .chat import *
 from .live_events import *
 from .chat_groups import *
 from .chat_apps import *
+from .chat_health_pages import *
 from .oidc_pages import *
 from .calls import *
 from .live_comments import *

@@ -5,23 +5,35 @@ import secrets
 import time
 from os import environ
 from flask import *
+from flask import session as flask_session
 from sqlalchemy import or_, func, text
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
 from ruqqus.helpers.chat_events import is_new_message
-from ruqqus.helpers import age_declaration, broadcast_store, chat_group_store, chat_devices, guild_channel_store
+from ruqqus.helpers import age_declaration, broadcast_store, chat_group_store, chat_devices, chat_signouts, chat_tokens, guild_channel_store
 from ruqqus.helpers import guild_channels as guild_channel_rules
 from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
-from ruqqus.helpers.i18n_runtime import tr, trn, trp
+from ruqqus.helpers.i18n_runtime import msg, tr, trn, trp
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 
+PROVISION_LOCK = 7004               # pg_advisory_xact_lock(PROVISION_LOCK, user id): one first chat account at a time per member
+
+
 def _ensure_provisioned(v):
+    identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
+    if identity:
+        return identity.matrix_user_id
+    # Two requests for a new member at once (their own page asking for a token while someone starts a chat with them) both find no record
+    # and both register: the second is told the account exists and would be refused as an orphan, with a false alarm to every admin
+    # (the review of 2026-11-06, C3). One at a time per member, and the record read again after waiting: the first one's commit releases
+    # the lock, and the second then finds the record the first made.
+    g.db.execute(text("SELECT pg_advisory_xact_lock(:k, :u)"), {"k": PROVISION_LOCK, "u": int(v.id)})
     identity = g.db.query(ChatIdentity).filter_by(user_id=v.id).first()
     if identity:
         return identity.matrix_user_id
@@ -30,13 +42,40 @@ def _ensure_provisioned(v):
     try:
         mxid = matrix.provision_user(v.id, adopt_existing=environ.get("MATRIX_ADOPT_EXISTING") == "1")
     except matrix.OrphanMatrixAccount as e:
-        print(f"chat refused: {e}. Restore Synapse's database with the site's (scripts/backup.sh), or set "
-              "MATRIX_ADOPT_EXISTING=1 if they belong together.", flush=True)
-        abort(503)
+        print(f"chat refused: {e}. Restore Synapse's database with the site's (RESTORE.md), or give the account back "
+              "at /admin/chat if it is the same person.", flush=True)
+        _refuse_chat(v)
     g.db.add(ChatIdentity(user_id=v.id, matrix_user_id=mxid))
     g.db.commit()
     chat_devices.sync_name(g.db, v, mxid)       # outside apps show the @handle (helpers/chat_devices.py)
     return mxid
+
+
+def _refuse_chat(user):
+    """The chat server already has an account with this member's id and the site has no record of it (the two databases
+    parted: helpers/chat_health.py). It is never handed over; the admins are told once, new ids are moved past the mark,
+    and the member reads why instead of a bare 503."""
+    from ruqqus.helpers import chat_health
+    from ruqqus.helpers.alerts import send_to_many
+    try:
+        chat_health.run(g.db, r, fix=True)          # new sign-ups are moved past the mark at once
+    except Exception as e:
+        print(f"chat health check failed: {type(e).__name__}", flush=True)
+    if chat_health.note_refused(r, user.id):
+        try:
+            admins = [x for (x,) in g.db.query(User.id).filter(User.admin_level >= 3, User.is_deleted == False).all()]
+            send_to_many(admins, f"Chat was refused to @{user.username} (user id {user.id}): the chat server already has "
+                                 "an account with that id and the site has no record of it. See [/admin/chat](/admin/chat).")
+        except Exception as e:
+            g.db.rollback()
+            print(f"chat refusal notice failed: {type(e).__name__}", flush=True)
+    own = getattr(g, "v", None) is not None and g.v.id == user.id
+    sentence = (tr("Chat isn't available for your account right now. The site's admins have been told.") if own else
+                tr("Chat with this account isn't available right now. The site's admins have been told."))
+    if request.path.startswith("/api/") or request.is_json or request.accept_mimetypes.best == "application/json":
+        abort(make_response(jsonify({"error": sentence}), 503))
+    abort(make_response(render_template("message.html", v=getattr(g, "v", None), title=tr("Chat isn't available"),
+                                        error=sentence), 503))
 
 
 def _mxid_for_user_id(user_id):
@@ -65,22 +104,56 @@ def chat_page(v):
 @app.route("/api/chat/token", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 @validate_formkey
 def chat_token(v):
-    mxid = _ensure_provisioned(v)
-    device_id = request.values.get("device_id") or None
-    # the browser's own device, coming back after a log out. Signed out meanwhile (Settings > Chat apps) its keys are gone
-    # from the server, so it can't be taken up again: the answer's new id tells the browser to start afresh (token.js)
-    if device_id and device_id not in {d["device_id"] for d in matrix.list_devices(mxid)}:
-        device_id = None
-    token_resp = matrix.login_as(mxid, device_id)
-    return jsonify({
-        "homeserver_url": app.config["MATRIX_PUBLIC_URL"],
-        "user_id": token_resp["user_id"],
-        "access_token": token_resp["access_token"],
-        "device_id": token_resp["device_id"],
-    })
+    # no device is made without its row (helpers/chat_signouts.py): before the migration, chat waits instead (the page retries)
+    if not chat_signouts.tables_ready(g.db):
+        return _token_answer(503, {"retry": True})
+    try:
+        mxid = _ensure_provisioned(v)
+    except matrix.MatrixError:
+        # a first chat whose account the chat server couldn't make (down, an error, the id mark busy): nothing was handed out, try
+        # again (OrphanMatrixAccount never gets here: _refuse_chat answers it with its own refusal)
+        g.db.rollback()
+        return _token_answer(503, {"retry": True})
+    # the browser's own device, coming back after a log out, is taken up again only while it is this account's, not signed out,
+    # and still on the chat server; anything else is a new device, whose new id tells the browser to start afresh (token.js).
+    # Every device handed out is recorded (helpers/chat_tokens.py)
+    # and the account is read again before a device is handed out (a deletion or chat switched off while this waited)
+    status, body = chat_tokens.issue(g.db, matrix, v.id, mxid, request.values, flask_session.get("session_id"),
+                                     app.config["MATRIX_PUBLIC_URL"], site_name=app.config["SITE_NAME"],
+                                     nonce=flask_session.get("login_nonce", 0))
+    return _token_answer(status, body)
+
+
+def _token_answer(status, body):
+    if body.get("retry"):
+        body = dict(body, error=tr("Chat can't start right now. Try again in a moment."))
+    elif body.get("bad_request"):
+        body = {"error": tr("That request wasn't understood.")}
+    elif body.get("signed_out"):
+        body = {"error": tr("You're no longer signed in here. Sign in again to use chat."), "signed_out": True}
+    elif body.get("age_locked"):
+        refused = age_declaration.PARENT_OFF if body.get("parent") else age_declaration.FEATURE_LOCKED
+        body = {"error": msg(refused), "age_locked": True}
+    resp = jsonify(body)
+    resp.status_code = status
+    resp.headers["Cache-Control"] = "no-store"
+    return resp
+
+
+@app.route("/api/chat/formkey", methods=["GET"])
+@limiter.limit("30/minute", key_func=member_limit_key)
+@auth_required
+def chat_formkey(v):
+    """The form key of this cookie as it is now. A credential event that spares this sign-in (Log out everywhere, a password change,
+    two-factor on or off) raises the account's nonce, which form keys are made from, so a chat page, frame, call window or Space page
+    opened before it holds a key the form-key check now refuses: it asks here and tries again. A sign-in that ended is refused by
+    @auth_required itself. Changes nothing; another site can't read the answer (same-origin JSON)."""
+    resp = jsonify({"formkey": v.formkey})
+    resp.headers["Cache-Control"] = "no-store"
+    return resp
 
 
 _BLOB = re.compile(r"^[A-Za-z0-9_\-]{40,4096}$")
@@ -158,7 +231,7 @@ def chat_recovery_key_legacy(v):
 @limiter.limit("10/minute")
 @auth_required
 @not_qr_limited
-@not_child_locked("chat")
+@not_child_locked("messaging")
 @validate_formkey
 def chat_check_password(v):
     """Whether a typed password is the account's, before the browser locks the chat key with it (a typo would lock
@@ -169,7 +242,7 @@ def chat_check_password(v):
 @app.route("/api/chat/ready", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("messaging")
+@not_child_locked("chat")
 @validate_formkey
 def chat_ready(v):
     """This member's chat has finished setting up encryption: messages waiting for them in other people's browsers
@@ -197,7 +270,7 @@ def _started(room_id, status):
 @app.route("/api/chat/start", methods=["POST"])
 @auth_required
 @not_qr_limited
-@not_child_locked("messaging")
+@not_child_locked("chat")
 @not_quarantined("chat")
 @validate_formkey
 def chat_start(v):

@@ -76,11 +76,12 @@ AREA_EXCEPTIONS = {
     "settings_bot": "the page of forms, each of them refused; a key is only ever shown as it is made",
     "shop_coin_balance": "a number the navbar already shows",
     "circle_choices_for": "reads the member's own circles for the sheet; adding is refused",
+    "chat_formkey": "the form key of a sign-in that is still valid; changes nothing (a page opened before a credential change asks it)",
 }
 # what a route's own body doing marks it as this kind of route
-MARKS = ("verifyPass", "passhash", "accept_2fa", "mfa_backup_store", "end_other_sessions", "ClientAuth(", "OauthApp(", "coins.spend", "coins.move", "coins.give", "coins_store.",
+MARKS = ("verifyPass", "passhash", "accept_2fa", "mfa_backup_store", "account_sessions.revoke(", "ClientAuth(", "OauthApp(", "coins.spend", "coins.move", "coins.give", "coins_store.",
          "redeem_week", "circle_store.subscribe(", "circle_store.subscribe_guild(", "circle_store.cancel", "data_export.", "close_account", "login_as(", "recovery_key",
-         "chat_devices.sign_out", "delete_device", "ModRelationship(", "Follow(user_id", "invite_names(")
+         "chat_signouts.queue(", "delete_device", "ModRelationship(", "Follow(user_id", "invite_names(")
 MARK_EXCEPTIONS = {
     "login_post": "the sign-in itself", "post_reset": "signed out, by the emailed token", "oauth_grant": "an app's own token request",
     "oauth_release_auth": "a token ending itself", "oauth_kill_auth": "a token ending itself", "login_qr_upgrade": "what ends the limit",

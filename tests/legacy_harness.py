@@ -350,6 +350,11 @@ def build_legacy(monkeypatch):
     # sys.modules, and another test may already have imported the real module: point the attribute at the stand-in too
     monkeypatch.setattr(importlib.import_module("ruqqus.helpers"), "vote_copies",
                         stubs["ruqqus.helpers.vote_copies"], raising=False)
+    # the deny-list of ended sign-ins (helpers/sign_in_ends.py) is a table the fake database hasn't got: nothing has ended here, and
+    # nothing is written (a test that wants an ended sign-in sets `ended_at`)
+    ends = importlib.import_module("ruqqus.helpers.sign_in_ends")
+    monkeypatch.setattr(ends, "ended_at", lambda db, sid: None)
+    monkeypatch.setattr(ends, "end", lambda *a, **k: None)
     for name in ("ruqqus.helpers.wrappers", "ruqqus.helpers.security",
                  "ruqqus.helpers.session_helpers", "ruqqus.helpers.base36"):
         monkeypatch.delitem(sys.modules, name, raising=False)

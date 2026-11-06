@@ -15,6 +15,8 @@
           <h2 class="h5">{{ _("Password") }}</h2>
 
           <p class="text-small text-muted">{{ _("Change your account password.") }}</p>
+          {# helpers/chat_signouts.py: until the browser keeps its chat stores, these events sign out chat apps only #}
+          <p class="text-small text-muted" id="password-chat-note">{{ _("Changing your password also signs out every chat app signed in to your account.") }}</p>
 
           <div class="settings-section rounded">
 
@@ -154,6 +156,8 @@
     <h2 class="h5">{{ _("Two-Factor Authentication") }}</h2>
 
     <p class="text-small text-muted">{{ _("Change the two-factor settings for your account.") }}</p>
+    {# helpers/chat_signouts.py: switching two-factor on or off is a credential event (account_sessions.revoke) #}
+    <p class="text-small text-muted" id="mfa-chat-note">{{ _("Switching two-factor on or off also signs out every chat app signed in to your account.") }}</p>
 
     <div class="settings-section rounded">
 
@@ -293,7 +297,8 @@
 
   <h2 class="h5">{{ _("Log Out Everywhere") }}</h2>
 
-  <p class="text-small text-muted" id="log-out-everywhere">{{ _("Log all other devices out of your %(site)s account.") }}</p>
+  <p class="text-small text-muted" id="log-out-everywhere">{{ _("Log all other devices out of your %(site)s account.") }}
+    {{ _("This also signs out every chat app signed in to your account.") }}</p>
 
   <div class="settings-section rounded">
 

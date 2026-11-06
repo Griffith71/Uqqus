@@ -11,14 +11,32 @@ browser is the sole owner/persistence point for its own token+device_id
 (localStorage) - see ruqqus/templates/chat.html's bundle boot.
 """
 
+import time
+from contextlib import contextmanager
 from urllib.parse import quote
 
 import requests
+from requests import RequestException
 from ruqqus.__main__ import app
 
 
 class MatrixError(Exception):
     pass
+
+
+class Unreachable(MatrixError):
+    """The chat server didn't answer at all (stopped, refusing connections, too slow): `requests`' own errors, raised as a MatrixError so
+    that every caller's `except MatrixError` (the token route's retry and its cleanup, a queued sign-out in Settings > Chat apps) covers
+    a Synapse that is down as well as one that answers with an error. Synapse may still have done what it was asked (a device made
+    after the site stopped waiting): callers treat it like any failure that may have happened."""
+
+
+@contextmanager
+def _answering(what):
+    try:
+        yield
+    except RequestException as e:
+        raise Unreachable(f"{what}: {type(e).__name__}") from None
 
 
 def _as_headers():
@@ -33,19 +51,84 @@ class OrphanMatrixAccount(MatrixError):
     """Synapse already has an account for a user id the site has no chat record of (audit D-07)."""
 
 
+ID_MARK_TYPE = "org.uqqus.chat_ids"
+
+
+def _bot_mxid():
+    return f"@{app.config['MATRIX_BOT_LOCALPART']}:{app.config['MATRIX_SERVER_NAME']}"
+
+
+def read_id_mark() -> dict:
+    """The highest user id that was ever given a chat account here, kept in the bot's own account data ON SYNAPSE, so it
+    outlives a restore of the site's database alone (helpers/chat_health.py). {} before the first one."""
+    with _answering("read_id_mark"):
+        resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/user/{quote(_bot_mxid())}/account_data/"
+                            f"{ID_MARK_TYPE}", headers=_as_headers(), timeout=5)
+    if resp.status_code == 404:
+        return {}
+    if resp.status_code != 200:
+        raise MatrixError(f"read_id_mark failed: {resp.status_code}")
+    return resp.json()
+
+
+def write_id_mark(mark: dict):
+    with _answering("write_id_mark"):
+        resp = requests.put(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/user/{quote(_bot_mxid())}/account_data/"
+                            f"{ID_MARK_TYPE}", json=mark, headers=_as_headers(), timeout=5)
+    if resp.status_code != 200:
+        raise MatrixError(f"write_id_mark failed: {resp.status_code}")
+
+
+def note_chat_id(user_id: int):
+    """Raises the mark to `user_id` BEFORE its account is made (a failure here stops the account being made: fail
+    closed). One writer at a time across the site's processes (a Redis lock), so two first chats at once can't lower it."""
+    from ruqqus.helpers import chat_health
+    from ruqqus.__main__ import r
+    # held for a read and a write of 5 seconds each at the worst, so 30 seconds: a lock that ran out mid-update would let a second writer in
+    lock = r.lock("chat:id_mark_lock", timeout=30, blocking_timeout=5) if r is not None else None
+    if lock is not None and not lock.acquire():
+        raise MatrixError("note_chat_id: the mark is busy")
+    try:
+        mark = read_id_mark()
+        new = chat_health.raised_mark(mark, user_id, chat_health.site_key(), int(time.time()))
+        if new != mark:
+            write_id_mark(new)
+    finally:
+        if lock is not None:
+            try:
+                lock.release()
+            except Exception:
+                pass
+
+
+def account_exists(mxid: str) -> bool:
+    """Whether Synapse has this account, with no side effect: an appservice may only act as a user it registered, so
+    `whoami` as them answers 403 for one it never made."""
+    resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/account/whoami",
+                        params={"user_id": mxid}, headers=_as_headers(), timeout=5)
+    if resp.status_code == 200:
+        return True
+    if resp.status_code == 403:
+        return False
+    raise MatrixError(f"account_exists failed: {resp.status_code}")
+
+
 def provision_user(user_id: int, adopt_existing: bool = True) -> str:
     """Makes the member's Matrix account. Synapse answers 400 M_USER_IN_USE when it already exists: with
     `adopt_existing` that counts as success; without it, it is an OrphanMatrixAccount. Matrix ids come from user ids,
     so after the site's database is restored without Synapse's (or the other way round) a NEW member can be given the
     id of an old account that still sits in Synapse, with its rooms and the people who knew it. The caller passes
-    adopt_existing=False when it has no record of the account, and chat is refused rather than hand it over."""
+    adopt_existing=False when it has no record of the account, and chat is refused rather than hand it over.
+    The id is recorded in the high-water mark first (note_chat_id), so the site never hands it to someone new."""
+    note_chat_id(user_id)
     mxid = mxid_for(user_id)
     localpart = f"{app.config['MATRIX_USER_PREFIX']}{user_id}"
-    resp = requests.post(
-        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/register",
-        json={"type": "m.login.application_service", "username": localpart, "inhibit_login": True},
-        headers=_as_headers(), timeout=10,
-    )
+    with _answering("provision_user"):
+        resp = requests.post(
+            f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/register",
+            json={"type": "m.login.application_service", "username": localpart, "inhibit_login": True},
+            headers=_as_headers(), timeout=10,
+        )
     if resp.status_code == 400 and resp.json().get("errcode") == "M_USER_IN_USE":
         if adopt_existing:
             return mxid
@@ -69,10 +152,11 @@ def login_as(mxid: str, device_id: str = None) -> dict:
     }
     if device_id:
         body["device_id"] = device_id
-    resp = requests.post(
-        f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/login",
-        json=body, headers=_as_headers(), timeout=10,
-    )
+    with _answering("login_as"):
+        resp = requests.post(
+            f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/login",
+            json=body, headers=_as_headers(), timeout=10,
+        )
     if resp.status_code != 200:
         raise MatrixError(f"login_as failed: {resp.status_code}")
     return resp.json()
@@ -91,10 +175,18 @@ def set_display_name(mxid: str, name: str):
         raise MatrixError(f"set_display_name failed: {resp.status_code}")
 
 
+class UserUnknown(MatrixError):
+    """Synapse has no such account (a dev reset, a restore whose pair didn't match): there is nothing of it to sign out."""
+
+
 def list_devices(mxid: str):
-    """The member's Matrix devices (the site's own browsers and any outside app), as the bot: id, name, last seen."""
-    resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/devices",
-                        params={"user_id": mxid}, headers=_as_headers(), timeout=10)
+    """The member's Matrix devices (the site's own browsers and any outside app), as the bot: id, name, last seen. Raises
+    UserUnknown when the appservice never registered the account (Synapse's 403 "has not registered this user")."""
+    with _answering("list_devices"):
+        resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/devices",
+                            params={"user_id": mxid}, headers=_as_headers(), timeout=10)
+    if resp.status_code == 403 and "has not registered this user" in resp.text:
+        raise UserUnknown("list_devices: no such account")
     if resp.status_code != 200:
         raise MatrixError(f"list_devices failed: {resp.status_code}")
     return [{"device_id": d.get("device_id"), "name": d.get("display_name") or "", "last_seen": d.get("last_seen_ts")}
@@ -103,8 +195,9 @@ def list_devices(mxid: str):
 
 def delete_device(mxid: str, device_id: str):
     """Signs one of the member's devices out: its access token stops working and its keys are dropped."""
-    resp = requests.delete(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/devices/{quote(device_id, safe='')}",
-                           params={"user_id": mxid}, json={}, headers=_as_headers(), timeout=10)
+    with _answering("delete_device"):
+        resp = requests.delete(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/devices/{quote(device_id, safe='')}",
+                               params={"user_id": mxid}, json={}, headers=_as_headers(), timeout=10)
     if resp.status_code not in (200, 404):
         raise MatrixError(f"delete_device failed: {resp.status_code}")
 

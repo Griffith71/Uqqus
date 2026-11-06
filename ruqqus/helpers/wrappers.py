@@ -18,7 +18,7 @@ from ruqqus.__main__ import Base, app, db_session
 from ruqqus.helpers.session_helpers import *
 from urllib.parse import parse_qsl, urlencode, urlsplit
 
-from ruqqus.helpers import qr_login, session_cookie, sign_in_history
+from ruqqus.helpers import qr_login, session_cookie, sign_in_ends, sign_in_history
 from ruqqus.helpers.redirects import same_site
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import set_committed_value
@@ -90,6 +90,11 @@ def get_logged_in_user(db=None):
 
             if not v or nonce < v.login_nonce:
                 session_cookie.forget_sign_in(flask_session)
+                x = (None, None)
+            elif sign_in_ends.refuse(flask_session, db, time.time(), g):
+                # this sign-in was ended (Log out, the QR password, a later sign-in here): a cookie written back by an answer that
+                # was on its way, or a copy, is a visitor's (helpers/sign_in_ends.py). before_request already asked for every page
+                # that opened the database; this is for any caller that didn't
                 x = (None, None)
             else:
                 if v and qr_login.is_limited(flask_session):

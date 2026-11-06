@@ -656,7 +656,13 @@ def test_a_limited_sign_in_saves_a_draft_but_never_schedules_one(real_app, codes
     again = desk_post(desk, "/api/drafts", title="a draft", body="x", formkey=key, publish_utc=str(soon), draft_id=str(saved.get_json()["id"]))
     assert again.status_code == 403
     assert desk_post(desk, "/login/qr/upgrade", formkey=key, password=member.password).status_code == 302
-    assert desk_post(desk, "/api/drafts", title="a draft", body="x", formkey=key, publish_utc=str(soon)).get_json()["status"] == "scheduled"
+    # the password gave this browser a new session id (helpers/sign_in_ends.py), so the pages drawn after it carry a new form key
+    assert member.formkey(desk) != key
+    assert desk_post(desk, "/api/drafts", title="a draft", body="x", formkey=member.formkey(desk), publish_utc=str(soon)).get_json()["status"] == "scheduled"
+    # never left scheduled: an hour from now it would be due, and the scheduler's own tests (test_bughunt_fixes.py) would publish it
+    db = member.db_session()
+    db.execute(text("DELETE FROM post_drafts WHERE user_id = :u"), {"u": member.id})
+    db.commit()
 
 
 def test_a_limited_sign_in_never_starts_a_video_on_the_members_own_channel(real_app, codes, make_member):

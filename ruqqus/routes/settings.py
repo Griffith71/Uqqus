@@ -21,7 +21,7 @@ from ruqqus.helpers import circle_store
 from ruqqus.helpers import blocklist
 from ruqqus.helpers import chat_devices
 from ruqqus.helpers import bot_store
-from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_history, signin_alerts, user_agents
+from ruqqus.helpers import account_sessions, mfa_backup, mfa_backup_store, sign_in_ends, sign_in_history, signin_alerts, user_agents
 from ruqqus.helpers.jinja2 import qr_login_offered
 from ruqqus.helpers.regions import COUNTRY_NAMES
 from ruqqus.helpers import totp as totp_rules
@@ -286,8 +286,8 @@ def settings_security_post(v):
                 "settings_security.html", v=v, error=tr("Incorrect password"))
 
         v.passhash = v.hash_password(request.form.get("new_password"))
-        account_sessions.end_other_sessions(v, flask_session)       # whoever held the old password is signed out
-        chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])  # and so is any chat app signed in with it
+        # whoever held the old password is signed out, and so is chat everywhere else but this sign-in's own (helpers/chat_signouts.py)
+        account_sessions.revoke(g.db, v, "password", session=flask_session, spare_this_sign_in=True)
         ads_rules.hold_after_password(flask_session, int(time.time()))   # the form left a new pre-key for chat (chat_key.js)
 
         g.db.add(v)
@@ -372,7 +372,7 @@ def settings_security_post(v):
         totp_rules.claim(r, v.id, step)               # that code is spent: it can't switch two-factor off a moment later
 
         v.mfa_secret = secret
-        account_sessions.end_other_sessions(v, flask_session)
+        account_sessions.revoke(g.db, v, "mfa", session=flask_session, spare_this_sign_in=True)
         g.db.add(v)
 
         # the account's first backup codes, shown once, here
@@ -410,7 +410,7 @@ def settings_security_post(v):
 
         v.mfa_secret = None
         mfa_backup_store.delete_all(g.db, v.id)       # no second factor, no codes
-        account_sessions.end_other_sessions(v, flask_session)
+        account_sessions.revoke(g.db, v, "mfa", session=flask_session, spare_this_sign_in=True)
         g.db.add(v)
 
         return redirect("/settings/security?msg=" +
@@ -491,8 +491,8 @@ def settings_log_out_others(v):
         return render_template("settings_security.html",
                                v=v, error=tr("Incorrect Password")), 401
 
-    account_sessions.end_other_sessions(v, flask_session)
-    chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"])     # chat apps signed in with the account too
+    # chat too, chat apps included, all but this sign-in's own (helpers/chat_signouts.py)
+    account_sessions.revoke(g.db, v, "others", session=flask_session, spare_this_sign_in=True)
 
     g.db.add(v)
 
@@ -631,7 +631,9 @@ def close_own_account(v, reason, sign_out_browser=True):
 
     v.discord_id=None
     v.is_deleted = True
-    v.login_nonce += 1
+    # every sign-in and every chat device of the account goes, outside apps and the site's own browsers (helpers/chat_signouts.py:
+    # a queued sign-out, worked once this is committed); never this request's cookie for another account closed with it
+    account_sessions.revoke(g.db, v, "deleted")
     v.delete_reason = reason
     v.patreon_id=None
     v.patreon_pledge_cents=0
@@ -660,8 +662,7 @@ def close_own_account(v, reason, sign_out_browser=True):
     from ruqqus.helpers import account_cleanup
     account_cleanup.close_account(g.db, v.id, int(time.time()))
     _leave_chat_groups(v)
-    # every chat device signs out, outside apps and the site's own browsers, and the chat name says it is gone
-    chat_devices.sign_out(g.db, v.id, app.config["SITE_NAME"], apps_only=False)
+    # the chat name says it is gone (its devices were queued for sign-out above)
     chat_devices.sync_name(g.db, v)
 
     for b in v.boards_modded:
@@ -672,6 +673,9 @@ def close_own_account(v, reason, sign_out_browser=True):
             g.db.add(b)
 
     if sign_out_browser:
+        # this browser's sign-in ends for good (helpers/sign_in_ends.py); never for another account closed with it (a parent's child)
+        sign_in_ends.end(g.db, flask_session.get("session_id"), v.id, "deleted", time.time())
+        g.sign_in_ended_here = True
         flask_session.pop("user_id", None)
         flask_session.pop("session_id", None)
 
@@ -725,12 +729,13 @@ def delete_account(v):
         # an account that owes money isn't deleted to escape it, and deleting its parent would delete it
         return render_template("settings_security.html", v=v, error=tr("One of your child accounts owes money, so your account can't be deleted yet."))
 
+    deleted_mxid = chat_devices.mxid_of(g.db, v.id)        # read before the account closes: the page clears this account's chat here
     close_own_account(v, request.form.get("delete_reason", ""))
     g.db.commit()
 
     # not a redirect: this answer, which only a deletion that went through ever gets, is what clears the account's chat device
     # out of this browser. A visitor's home page can be cached, and an address that said so could be linked to.
-    return render_template("account_deleted.html", v=None,
+    return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid,
                            title=tr("Your account has been deleted"),
                            message=tr("Your chats and their keys have been removed from this browser."))
 

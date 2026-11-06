@@ -136,7 +136,7 @@ app.config["SERVER_NAME"] = SERVER_NAME #DomainMatcher(SERVER_NAME, ONION_NAME)
 # privacy page names it only while it is on
 from ruqqus.helpers import analytics
 # how long the site's own cookie lasts, and that a visitor's holds no identifier (helpers/session_cookie.py)
-from ruqqus.helpers import session_cookie
+from ruqqus.helpers import session_cookie, sign_in_ends
 # the one path that answers the video question and stores nothing (routes/consent_pages.py)
 from ruqqus.helpers import consent as consent_rules
 app.config["ANALYTICS_SRC"], app.config["ANALYTICS_DOMAIN"] = analytics.settings(environ, SERVER_NAME)
@@ -176,8 +176,12 @@ class _SessionInterface(SecureCookieSessionInterface):
     # An answer that everyone shares (a media file that is part of a post, kept by the CDN
     # in front of the site) must not carry one visitor's session cookie. A view marks such
     # an answer with g.skip_session_cookie (routes/media.py).
+    # Sign-ins that ended stay ended (helpers/sign_in_ends.py): a refused cookie's answer writes nothing unless the route
+    # changed the session after refusing it, so it can't overwrite the sign-in that replaced it.
     def save_session(self, app, session, response):
         if g.get("skip_session_cookie"):
+            return
+        if g.get("ended_sign_in_refused") and not session.modified:
             return
         super().save_session(app, session, response)
 
@@ -450,15 +454,20 @@ def before_request():
         g.skip_session_cookie = True
         return ("", 429) if r and r.get(f"ban_ip_{request.remote_addr}") else None
 
+    # The answers below are given before the database is opened, so a sign-in in the cookie can't be checked: they write no cookie,
+    # or a copy of an ended one (helpers/sign_in_ends.py) could be refreshed by them past the 400 days its row is kept
     if request.method.lower() != "get" and app.config["READ_ONLY"]:
+        g.skip_session_cookie = True
         return jsonify({"error":f"{app.config['SITE_NAME']} is currently in read-only mode."}), 500
 
     if app.config["BOT_DISABLE"] and request.headers.get("X-User-Type")=="Bot":
+        g.skip_session_cookie = True
         abort(503)
 
 
 
     if r and bool(r.get(f"ban_ip_{request.remote_addr}")):
+        g.skip_session_cookie = True
         return jsonify({"error":"Too many requests. You are in time out for 1 hour. Rate limit is 100/min; less for authentication and content creation endpoints."}), 429
 
     g.db = db_session()
@@ -502,6 +511,9 @@ def before_request():
 
     # a visitor has no identifier and no year-long cookie; a member has both (helpers/session_cookie.py)
     session_cookie.settle(flask_session, lambda: secrets.token_hex(16))
+    # a cookie whose sign-in ended (Log out, the QR password, a later sign-in here) is a visitor's on every page, whether or not the
+    # route asks who is signed in (helpers/sign_in_ends.py)
+    sign_in_ends.refuse(flask_session, g.db, time.time(), g)
 
     ua=request.headers.get("User-Agent","")
     if "CriOS/" in ua:
@@ -568,8 +580,30 @@ def _count_request(response):
         pass        # a count is never worth a page
 
 
+def _sign_in_ended_meanwhile():
+    """Did this request's sign-in end while it ran (helpers/sign_in_ends.py)? Then its answer must not write the cookie back: a page's
+    request held open across Log out or the QR password would otherwise put the old sign-in back. Never opens a database. An error
+    asking counts as ended: no cookie is written, which is safe. A request that never opened one (an error before `g.db = db_session()`:
+    Redis down for the limiter or the ban check, anything raised by an earlier hook; the early returns that set `skip_session_cookie`
+    themselves are already covered) never checked the sign-in in its cookie, so it counts as ended too: its answer must not refresh a
+    copy of an ended cookie past the 400 days its row is kept (the review of 2026-11-06, C4)."""
+    db = getattr(g, "db", None)
+    sid = flask_session.get("session_id")
+    if g.get("skip_session_cookie") or g.get("sign_in_ended_here") or not sid or not flask_session.get("user_id"):
+        return False
+    if db is None:
+        return True
+    try:
+        return sign_in_ends.ended(db, sid)
+    except Exception:
+        return True
+
+
 @app.after_request
 def after_request(response):
+
+    if _sign_in_ended_meanwhile():
+        g.skip_session_cookie = True        # _SessionInterface writes no cookie
 
     try:
         g.db.commit()
@@ -684,3 +718,43 @@ def www_redirect(path):
 #engines["leader"].dispose()
 #for engine in engines["followers"]:
 #    engine.dispose()
+
+
+def _check_chat_ids():
+    """At start-up, one process a minute checks that the site's database and Synapse's still agree and moves new user
+    ids past every id that ever had a chat account (helpers/chat_health.py). Synapse may still be starting: it tries
+    again for about five minutes. Never stops the app."""
+    gevent.sleep(3)                     # a process that only imports the app (a one-off script) is gone by now
+    from ruqqus.helpers import chat_health
+    for _ in range(30):
+        try:
+            if r is not None and r.get("chat:health:startup"):
+                return                  # another process checked in the last minute
+        except Exception:
+            pass
+        db = db_session()
+        try:
+            report = chat_health.run(db, r, fix=True)
+            if report["checked_utc"] and not any(p.startswith("The chat server could not be asked") for p in report["problems"]):
+                try:
+                    if r is not None:
+                        r.set("chat:health:startup", "1", ex=60)
+                except Exception:
+                    pass
+                for line in report["problems"]:
+                    print(f"CHAT: {line}", flush=True)
+                for line in report["notes"]:
+                    print(f"chat: {line}", flush=True)
+                return
+        except Exception as e:
+            print(f"chat check failed ({type(e).__name__}); trying again", flush=True)
+            db.rollback()
+        finally:
+            db.close()
+        gevent.sleep(10)
+    print("CHAT: the chat server could not be asked for five minutes, so new user ids were not checked against it "
+          "(helpers/chat_health.py). Open /admin/chat once it is up.", flush=True)
+
+
+if environ.get("CHECK_CHAT_IDS", "1") != "0":
+    gevent.spawn(_check_chat_ids)

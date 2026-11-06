@@ -88,8 +88,10 @@ def test_only_the_account_number_leaves():
     assert claims == {"iss": "http://localhost", "sub": "42", "aud": CLIENT, "iat": 2000, "exp": 2000 + oidc.ID_TOKEN_SECONDS,
                       "auth_time": 1000, "nonce": "n0nce"}
     assert "nonce" not in oidc.id_claims("http://localhost", CLIENT, 42, None, 1000, 2000)
-    record = json.loads(oidc.code_record(42, "n", CHALLENGE, 1000))
-    assert record == {"user_id": 42, "nonce": "n", "challenge": CHALLENGE, "auth_time": 1000}
+    record = json.loads(oidc.code_record(42, "n", CHALLENGE, 1000, 7))
+    assert record == {"user_id": 42, "nonce": "n", "challenge": CHALLENGE, "auth_time": 1000, "login_nonce": 7}
+    # the account's credential state is part of what a code stands for; a missing one is 0, as the column's default is
+    assert json.loads(oidc.code_record(42, "n", CHALLENGE, 1000, None))["login_nonce"] == 0
 
 
 def test_codes_and_tokens_are_kept_by_their_digest():

@@ -58,6 +58,9 @@ STEPS = (
     # chat: no copy of the key, locked or not, stays
     ("forget the chat key", "UPDATE chat_identities SET recovery_key_encrypted = NULL, key_blob_password = NULL, "
                             "key_blob_recovery = NULL WHERE user_id = :u"),
+    # the chat devices the site made (helpers/chat_signouts.py): the record goes, with anything sealed in it. The queued sign-out of
+    # the account's devices (chat_device_signouts) is never touched here: it must still finish, and needs nothing from these rows
+    ("forget the site's chat devices", "DELETE FROM chat_site_devices WHERE user_id = :u"),
     # apps the member let act for them: their tokens and refresh tokens stop working (bug hunt)
     ("revoke app grants", "DELETE FROM client_auths WHERE user_id = :u"),
     # two-factor backup codes

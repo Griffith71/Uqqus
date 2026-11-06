@@ -116,8 +116,12 @@ def basic_auth(header):
     return unquote_plus(user), unquote_plus(password)
 
 
-def code_record(user_id, nonce, challenge, now):
-    return json.dumps({"user_id": int(user_id), "nonce": nonce, "challenge": challenge, "auth_time": int(now)})
+def code_record(user_id, nonce, challenge, now, login_nonce):
+    """What a code stands for. `login_nonce` is the account's credential state when the member confirmed: a password change,
+    two-factor on or off, a reset or "log out everywhere" raises it (helpers/account_sessions.revoke), and a code issued before
+    one must not sign an app in after it, however little of its 60 seconds was left."""
+    return json.dumps({"user_id": int(user_id), "nonce": nonce, "challenge": challenge, "auth_time": int(now),
+                       "login_nonce": int(login_nonce or 0)})
 
 
 def id_claims(iss, client_id, user_id, nonce, auth_time, now):

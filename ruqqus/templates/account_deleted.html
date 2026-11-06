@@ -1,7 +1,9 @@
 {% extends "message.html" %}
 
-{# Only POST /settings/delete_account draws this, once the deletion has gone through. all_js.js loads at the end of the page. #}
+{# Only a deletion that went through draws this (POST /settings/delete_account, and the age check's closure): all_js.js loads at the
+   end of the page. `deleted_mxid` is read before the account closed; today's forgetChatDevices ignores it, the next client forgets that
+   account's chat only. #}
 {% block content %}
 {{ super() }}
-<script>document.addEventListener("DOMContentLoaded", function () { forgetChatDevices(); });</script>
+<script>document.addEventListener("DOMContentLoaded", function () { forgetChatDevices({{ deleted_mxid | tojson }}); });</script>
 {% endblock %}

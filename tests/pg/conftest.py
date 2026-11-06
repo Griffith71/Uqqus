@@ -56,6 +56,10 @@ def real_app(pg_url):
     os.environ.setdefault("MASTER_KEY", "ci-master-key-" + "x" * 30)
     os.environ.setdefault("domain", "localhost")
     os.environ.setdefault("CHECK_MIGRATIONS", "0")
+    # no start-up chat check in the tests (tests/pg/test_chat_health.py fakes a chat server). A test that opens chat in
+    # the dev container still makes a real account on the dev Synapse, and the id mark then names this database too
+    # (helpers/chat_health.py): that is right, those ids are taken there.
+    os.environ.setdefault("CHECK_CHAT_IDS", "0")
     from ruqqus.__main__ import app, db_session, r
     forget_leftovers(r)
     return app, db_session

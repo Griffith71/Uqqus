@@ -206,3 +206,150 @@ def test_a_code_for_an_account_suspended_since_is_refused(oidc_on, make_member):
     db.execute(text("UPDATE users SET is_banned = 1, unban_utc = 0 WHERE id = :u"), {"u": member.id})
     db.commit()
     assert token(app.test_client(), app, code, verifier).get_json() == {"error": "invalid_grant"}
+
+
+def test_a_code_issued_before_a_credential_change_is_refused_after_it(oidc_on, make_member):
+    """A stolen sign-in can park a code (60 seconds) at the chat server's callback; the member then changes their password, which ends
+    that sign-in and queues the chat sign-out. The code must not sign an app in afterwards: nothing later would delete the app, and its
+    token never expires (the review of 2026-11-06, C5). Any credential event raises login_nonce (helpers/account_sessions.revoke)."""
+    app, _ = oidc_on
+    member = make_member()
+    chat_ready(member)
+    client = member.browser()
+    verifier, challenge = pkce()
+    code = parse_qs(urlsplit(consent(member, client, app, challenge).headers["Location"]).query)["code"][0]
+    db = member.db_session()
+    db.execute(text("UPDATE users SET login_nonce = COALESCE(login_nonce, 0) + 1 WHERE id = :u"), {"u": member.id})
+    db.commit()
+    assert token(app.test_client(), app, code, verifier).get_json() == {"error": "invalid_grant"}
+    # a fresh code, confirmed after the change, still works: the check is on the state at confirmation, not a block on the account
+    client = member.browser()
+    verifier, challenge = pkce()
+    code = parse_qs(urlsplit(consent(member, client, app, challenge).headers["Location"]).query)["code"][0]
+    answer = token(app.test_client(), app, code, verifier)
+    assert answer.status_code == 200 and answer.get_json()["access_token"]
+
+
+def test_an_app_waits_for_a_chat_sign_out_of_the_account_still_out(oidc_on, make_member, monkeypatch):
+    """A sign-out still out would delete the app this signs in (its device has no site row): /oidc/token runs it first, and while one
+    younger than a day can't be finished it answers temporarily_unavailable (helpers/chat_signouts.py flush_for_oidc)."""
+    import ruqqus.helpers.matrix_client as matrix
+    app, _ = oidc_on
+    member = make_member()
+    chat_ready(member)
+    mxid = f"@ruqqus_{member.id}:ruqqus.local"
+    devices = {"OLDAPP0001": "Element Web"}
+    down = [True]
+
+    def list_devices(m):
+        if down[0]:
+            raise matrix.MatrixError("down")
+        return [{"device_id": d, "name": n, "last_seen": None} for d, n in devices.items()]
+
+    monkeypatch.setattr(matrix, "list_devices", list_devices)
+    monkeypatch.setattr(matrix, "delete_device", lambda m, d: devices.pop(d, None))
+    db = member.db_session()
+    db.execute(text("""INSERT INTO chat_device_signouts (user_id, mxid, scope, spare_after_ms, reason, created_utc, next_try_utc)
+                       VALUES (:u, :m, 'all', 0, 'reset', :t, :t)"""), {"u": member.id, "m": mxid, "t": int(time.time())})
+    db.commit()
+    client = member.browser()
+    verifier, challenge = pkce()
+    code = parse_qs(urlsplit(consent(member, client, app, challenge).headers["Location"]).query)["code"][0]
+    blocked = token(app.test_client(), app, code, verifier)
+    assert blocked.status_code == 503 and blocked.get_json() == {"error": "temporarily_unavailable"}
+
+    down[0] = False
+    code = parse_qs(urlsplit(consent(member, client, app, challenge).headers["Location"]).query)["code"][0]
+    good = token(app.test_client(), app, code, verifier)
+    assert good.status_code == 200 and "id_token" in good.get_json()
+    assert devices == {}, "the sign-out ran first, so it can't delete the app signed in now"
+    db.rollback()
+    assert db.execute(text("SELECT done_utc FROM chat_device_signouts WHERE user_id = :u"), {"u": member.id}).scalar() > 0
+
+
+HOLD = """
+import sys, time, psycopg2
+conn = psycopg2.connect(sys.argv[1])
+conn.cursor().execute("SELECT id FROM chat_device_signouts WHERE id = %s FOR UPDATE", (int(sys.argv[2]),))
+print("held", flush=True)
+time.sleep(float(sys.argv[3]))
+conn.rollback()
+"""
+
+
+def held_by_another_worker(row_id, seconds):
+    """Another process (a worker running the sign-out) holds the queue row's lock for `seconds`, then lets it go."""
+    import os
+    import subprocess
+    import sys
+    holder = subprocess.Popen([sys.executable, "-I", "-c", HOLD, os.environ["PG_TEST_DATABASE_URL"], str(row_id), str(seconds)],
+                              stdout=subprocess.PIPE, text=True)
+    assert holder.stdout.readline().strip() == "held"
+    return holder
+
+
+def _waiting_app(oidc_on, make_member, monkeypatch):
+    import ruqqus.helpers.matrix_client as matrix
+    app, _ = oidc_on
+    member = make_member()
+    chat_ready(member)
+    devices = {"OLDAPP0001": "Element Web"}
+    monkeypatch.setattr(matrix, "list_devices", lambda m: [{"device_id": d, "name": n, "last_seen": None} for d, n in devices.items()])
+    monkeypatch.setattr(matrix, "delete_device", lambda m, d: devices.pop(d, None))
+    db = member.db_session()
+    row_id = db.execute(text("""INSERT INTO chat_device_signouts (user_id, mxid, scope, spare_after_ms, reason, created_utc, next_try_utc)
+                                VALUES (:u, :m, 'all', 0, 'reset', :t, :t) RETURNING id"""),
+                        {"u": member.id, "m": f"@ruqqus_{member.id}:ruqqus.local", "t": int(time.time())}).scalar()
+    db.commit()
+    client = member.browser()
+
+    def code():
+        verifier, challenge = pkce()
+        return parse_qs(urlsplit(consent(member, client, app, challenge).headers["Location"]).query)["code"][0], verifier
+    return app, member, row_id, devices, code
+
+
+def test_an_app_waits_for_a_sign_out_another_worker_is_running(oidc_on, make_member, monkeypatch):
+    """flush_for_oidc takes the row with a plain FOR UPDATE (never SKIP LOCKED, which would pass a row another worker is on, still
+    pending, and refuse the app for nothing): it waits for that worker and runs whatever is left."""
+    app, member, row_id, devices, code = _waiting_app(oidc_on, make_member, monkeypatch)
+    one, verifier = code()
+    holder = held_by_another_worker(row_id, 2)
+    started = time.time()
+    good = token(app.test_client(), app, one, verifier)
+    waited = time.time() - started
+    holder.wait()
+    assert good.status_code == 200 and "id_token" in good.get_json(), good.get_data(as_text=True)
+    assert waited >= 1.5, "it waited for the other worker"
+    assert devices == {}, "the sign-out ran first"
+
+
+def test_an_app_is_told_to_try_again_when_the_sign_out_stays_locked(oidc_on, make_member, monkeypatch):
+    """A row held past WAIT_LOCK_SECONDS (a lock timeout, 55P03) is temporarily_unavailable, never a 500; once let go, the app signs in."""
+    from ruqqus.helpers import chat_signouts
+    monkeypatch.setattr(chat_signouts, "WAIT_LOCK_SECONDS", 1)
+    app, member, row_id, devices, code = _waiting_app(oidc_on, make_member, monkeypatch)
+    one, verifier = code()
+    holder = held_by_another_worker(row_id, 5)
+    blocked = token(app.test_client(), app, one, verifier)
+    assert blocked.status_code == 503 and blocked.get_json() == {"error": "temporarily_unavailable"}
+    assert devices == {"OLDAPP0001": "Element Web"}, "nothing was run while it was held"
+    holder.wait()
+    two, verifier = code()
+    good = token(app.test_client(), app, two, verifier)
+    assert good.status_code == 200 and devices == {}
+
+
+def test_a_code_for_a_suspended_account_is_still_refused_as_before(oidc_on, make_member):
+    """Decision 3 changes nothing about a suspension: /oidc/token keeps the refusal it had (test_a_code_for_an_account_suspended_since_is_refused),
+    and the token is refused before any chat sign-out is looked at."""
+    app, _ = oidc_on
+    member = make_member()
+    chat_ready(member)
+    client = member.browser()
+    verifier, challenge = pkce()
+    code = parse_qs(urlsplit(consent(member, client, app, challenge).headers["Location"]).query)["code"][0]
+    db = member.db_session()
+    db.execute(text("UPDATE users SET is_banned = 1, unban_utc = :later WHERE id = :u"), {"u": member.id, "later": int(time.time()) + 86400})
+    db.commit()
+    assert token(app.test_client(), app, code, verifier).get_json() == {"error": "invalid_grant"}
