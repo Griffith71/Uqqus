@@ -35,6 +35,11 @@ def db():
     with engine.begin() as conn:
         for statement in _statements():
             conn.execute(text(statement))
+        # migration 2026-12-21_log_snapshot_kinds.sql, in SQLite's words (the migration itself is Postgres)
+        conn.execute(text("ALTER TABLE log_snapshots ADD COLUMN kind VARCHAR(12) NOT NULL DEFAULT 'hide'"))
+        conn.execute(text("ALTER TABLE log_snapshots ADD COLUMN hider_id INTEGER"))
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0)"))
         conn.execute(text("CREATE TABLE contributors (id INTEGER PRIMARY KEY, user_id INTEGER, board_id INTEGER, is_active BOOLEAN)"))
@@ -182,7 +187,7 @@ def test_who_may_open_a_snapshot(db):
 
 
 def test_a_self_delete_is_kept_privately_and_is_not_in_the_log(db):
-    log.keep_snapshot(db, log.snapshot_of(Post()), now=NOW)
+    log.keep_snapshot(db, log.snapshot_of(Post(), kind=log.GRACE), now=NOW)
     assert db.execute(text("SELECT count(*) FROM log_entries")).scalar() == 0
     assert db.execute(text("SELECT count(*) FROM log_snapshots")).scalar() == 1
 
@@ -244,7 +249,7 @@ def seen(db, **kw):
 def test_each_reader_sees_exactly_their_entries(db):
     ids = _seed(db)
     assert seen(db, level=0) == {ids["public"]}                                              # a visitor
-    assert seen(db, level=0, member_boards=[2]) == {ids["public"], ids["private"]}           # a member of the private guild
+    assert seen(db, level=0, member_boards=[2]) == {ids["public"], ids["private"]}           # a member of the private guild reads its own entries
     assert seen(db, level=0, member_boards=[1, 3]) == {ids["public"]}                        # a member of other guilds only
     assert seen(db, level=3) == {ids["public"], ids["private"], ids["staff"]}                # an admin
     assert seen(db, level=4) == set(ids.values())                                            # a level-4 admin
@@ -318,7 +323,9 @@ def test_the_public_page_leaves_out_a_guild_that_has_gone_private_since(db):
     db.execute(text("UPDATE boards SET is_private = 1 WHERE id = 1"))                         # +1 goes private after both were written
     kept = entry(db, board=None, action="ban_user", actor=20, role=log.ADMIN, target_user_id=30)
     assert seen(db, level=0, open_guilds_only=True) == {kept}                                 # no guild is named, an account sanction stays
-    assert seen(db, level=0) == {open_entry, was_open, kept}                                  # a guild's own page asks without the flag
+    assert seen(db, level=0) == {kept}                                                        # the default is the public page's: no caller has to remember it
+    assert seen(db, level=0, open_guilds_only=False) == {open_entry, was_open, kept}          # a guild's own page asks without it
+    assert seen(db, level=3) == {open_entry, was_open, kept}                                  # staff read every guild
     db.execute(text("UPDATE boards SET is_private = 0, is_circle = 1 WHERE id = 1"))
     assert seen(db, level=0, open_guilds_only=True) == {kept}                                 # a Circle guild is no different
 
@@ -435,8 +442,6 @@ def test_the_visible_clause_can_be_aliased_for_a_subquery():
 @pytest.fixture
 def items(db):
     """Posts and comments by accounts 30 and 31 (one of each anonymous), a forwarded copy and another person's repost."""
-    db.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
-    db.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
     db.execute(text("CREATE TABLE content_edit_history (id INTEGER PRIMARY KEY AUTOINCREMENT, actor_id INTEGER, target_submission_id INTEGER DEFAULT 0, "
                     "target_comment_id INTEGER DEFAULT 0, board_id INTEGER DEFAULT 0, action VARCHAR(32), created_utc INTEGER DEFAULT 0)"))
     db.execute(text("INSERT INTO submissions (id, author_id, repost_id, is_anonymous) VALUES "
@@ -511,3 +516,88 @@ def test_an_authors_own_deletes_are_dates_with_no_words(db, items):
     assert len(log.author_deletes(db, actor_id=30, include_anonymous=True)) == 3
     assert [d["target_submission_id"] for d in log.author_deletes(db, post_ids=[100, 101])] == [100]
     assert log.author_deletes(db) == [] and [d["target_comment_id"] for d in log.author_deletes(db, comment_ids=[200])] == [200]
+
+
+# --- the first slice of the audit (2026-11-05): what a private copy is, who acted, and no pairing with an anonymous item ----------
+
+def _copy_of_kind(db, post_id, kind, hider=None, board=1):
+    return log.keep_snapshot(db, log.snapshot_of(Item(post_id, 30, board, "t", "<p>x</p>"), kind=kind, hider_id=hider), now=NOW)
+
+
+def test_who_may_open_a_copy_depends_on_what_it_is_a_copy_of(db):
+    """H2: the guildmasters read a guild's hide and nothing else, though every copy carries the guild's board id."""
+    for post_id, kind, hider in ((21, log.HIDE, None), (22, log.AUTHOR_HIDE, 11), (23, log.GRACE, None), (24, log.DELETE, None)):
+        _copy_of_kind(db, post_id, kind, hider)
+    gm = Viewer(10, mods=[Mod(1)])
+    opened = {post_id: log.may_open_copy(log.snapshot_for(db, post_id=post_id), gm) for post_id in (21, 22, 23, 24)}
+    assert opened == {21: True, 22: False, 23: False, 24: False}
+    for post_id in (21, 22, 23, 24):
+        copy = log.snapshot_for(db, post_id=post_id)
+        assert log.may_open_copy(copy, Viewer(30)) and log.may_open_copy(copy, Viewer(20, 3))     # its author and an admin: every kind
+        assert not log.may_open_copy(copy, Viewer(12))
+    hidden_by_post_author = log.snapshot_for(db, comment_id=None, post_id=22)
+    assert log.may_open_copy(hidden_by_post_author, Viewer(11)) and not log.may_open_copy(log.snapshot_for(db, post_id=21), Viewer(11))
+
+
+def test_a_private_copy_must_say_what_it_is(db):
+    with pytest.raises(ValueError):
+        log.keep_snapshot(db, {"post_id": 5, "author_id": 30, "board_id": 1, "title": "t"}, now=NOW)
+    assert log.snapshot_of(Item(5, 30, 1, "t", "<p>x</p>"))["kind"] == log.HIDE                    # a guild's hide unless the caller says
+    assert log.snapshot_of(Item(5, 30, 1, "t", "<p>x</p>"), legal_hold=True)["kind"] == log.LEGAL_KIND
+
+
+def test_a_viewer_gets_the_newest_copy_they_may_open(db):
+    """An item can have a guild's hide and then its author's delete; a guildmaster can read only the first."""
+    _copy_of_kind(db, 31, log.HIDE)
+    _copy_of_kind(db, 31, log.GRACE)
+    newest = log.snapshot_for(db, post_id=31)
+    assert newest["kind"] == log.GRACE
+    assert log.snapshot_for(db, post_id=31, viewer=Viewer(10, mods=[Mod(1)]))["kind"] == log.HIDE
+    assert log.snapshot_for(db, post_id=31, viewer=Viewer(30))["kind"] == log.GRACE
+    assert log.snapshot_for(db, post_id=31, viewer=Viewer(12)) is None
+
+
+def test_a_guildmasters_words_do_not_make_them_an_admin_or_take_their_entry_out_of_the_public_log(db):
+    """H3: the markers are what the site's own code writes; a reason is free text."""
+    note = "admin action | suspected ban evasion, banned image, CSAM detected, by the site's admins"
+    gm = entry(db, actor=10, board=1, note=note, reason="x")
+    row = db.execute(text("SELECT actor_role, audience FROM log_entries WHERE id = :i"), {"i": gm}).first()
+    assert tuple(row) == ("guildmaster", log.PUBLIC)
+    admin = entry(db, actor=20, board=1, note="admin action | ban evasion")
+    assert tuple(db.execute(text("SELECT actor_role, audience FROM log_entries WHERE id = :i"), {"i": admin}).first()) == ("admin", log.STAFF)
+    system = entry(db, actor=1, board=1, note="banned image")
+    assert tuple(db.execute(text("SELECT actor_role, audience FROM log_entries WHERE id = :i"), {"i": system}).first()) == ("system", log.LEGAL)
+    assert log.role_of(10, 0, "admin action") == log.GUILDMASTER and log.role_of(20, 3, "admin action") == log.ADMIN
+    assert log.audience_for("hide_post_from_guild", board_id=1, note="csam") == log.PUBLIC                  # untrusted words mean nothing
+    assert log.audience_for("hide_post_from_guild", board_id=1, note="csam", trusted=True) == log.LEGAL
+
+
+def test_a_log_reads_the_public_page_by_default_and_a_guilds_own_members_see_their_guild(db):
+    private = entry(db, board=2)
+    assert seen(db, level=0) == set()
+    assert seen(db, level=0, member_boards=[2]) == {private}
+    assert seen(db, level=3) == {private}
+
+
+def test_an_entry_never_pairs_an_account_with_an_anonymous_item(db, items):
+    """H6: an exile citing an anonymous post would say who wrote it."""
+    kept = log.record(db, "exile_user", 10, board_id=1, target_user_id=30, post_id=104, now=NOW)         # 104 is not anonymous
+    dropped = log.record(db, "exile_user", 10, board_id=1, target_user_id=30, post_id=103, now=NOW)      # 103 is
+    dropped_comment = log.record(db, "exile_user", 10, board_id=1, target_user_id=30, comment_id=201, now=NOW)
+    get = lambda i: tuple(db.execute(text("SELECT target_user_id, target_submission_id, target_comment_id FROM log_entries WHERE id = :i"), {"i": i}).first())
+    assert get(kept) == (30, 104, None) and get(dropped) == (30, None, None) and get(dropped_comment) == (30, None, None)
+    alone = log.record(db, "hide_post_from_guild", 10, board_id=1, post_id=103, now=NOW)                  # an item alone is untouched
+    assert get(alone) == (None, 103, None)
+
+
+def test_an_item_made_anonymous_after_an_exile_cited_it_stops_pairing_in_every_list(db, items):
+    exile = log.record(db, "exile_user", 10, board_id=1, target_user_id=30, post_id=104, now=NOW)
+    assert exile in listed(db, post_ids=[104]) and exile in listed(db, user_id=30)
+    assert exile in {r["id"] for r in log.fetch(db, level=0, target_user_id=30)[0]}
+    db.execute(text("UPDATE submissions SET is_anonymous = 1 WHERE id = 104"))
+    assert exile not in listed(db, post_ids=[104])                                           # the item's log no longer names the person
+    assert exile not in listed(db, user_id=30)                                               # the account's log no longer lists it
+    assert exile not in {r["id"] for r in log.fetch(db, level=0, target_user_id=30)[0]}      # nor does the `to=` filter
+    assert exile in {r["id"] for r in log.fetch(db, level=0)[0]}                             # the entry itself stays in the Log
+    assert exile in listed(db, user_id=30, include_anonymous=True)                           # and staff see it
+    assert exile in {r["id"] for r in log.fetch(db, level=3, target_user_id=30)[0]}

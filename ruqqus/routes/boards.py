@@ -620,7 +620,7 @@ Required form data:
     g.db.add(ma)
     g.db.flush()
     # the rule cited, and the post as it was: a private copy for the guild's guildmasters, the author and the admins (not in the entry)
-    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), snapshot=action_log.snapshot_of(post, board.id))
+    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), snapshot=action_log.snapshot_of(post, board.id, kind=action_log.HIDE))
     g.db.commit()
 
     # the card a guild's feed draws (b: no guild name on it), so it can replace the old one in place

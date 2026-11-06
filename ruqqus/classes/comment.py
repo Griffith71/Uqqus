@@ -208,7 +208,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
     def permalink(self):
         """The comment's address, under its own author (helpers/permalinks.py): /@bob/comment/<id>, or /comment/<id>
         when it is anonymous. The page shows it in its post's thread."""
-        anonymous = bool(self.is_anonymous)
+        anonymous = bool(self.is_anonymous) or (self.deleted_utc or 0) > 0       # a deleted comment names nobody (H8)
         return permalinks.comment_path(self.base36id, name=None if anonymous else self.author.username,
                                        anonymous=anonymous)
 

@@ -241,12 +241,34 @@ def comment_thread_hidden(comment, v):
     return False
 
 
+def history_open(item, v):
+    """Whether this reader may open an item's history page at all. The page names who edited and who deleted it, so for an item
+    its author deleted it is the author's and the admins' alone (the audit, 2026-11-05: H1: it used to tell everyone "Deleted by
+    @alice" on a page whose Log says a member's own delete is not published). Slice D3a replaces this with the Deleted tab's rule."""
+    if not (item.deleted_utc or 0) > 0:
+        return True
+    return bool(v and (v.admin_level >= 3 or anonymity.is_author(item, v)))
+
+
 def history_text_shown(item, v):
     """Whether an item's edit history may show the text it had (/post/<id>/history, /comment/<id>/history).
-    Edits, author deletes and guild removals stay public. Text the site's admins removed is shown only to
-    admins (level 3+, as on the item's page); purged text to nobody, since purging means erasing it."""
+    Edits stay public. Text the site's admins removed is shown only to admins (level 3+, as on the item's page); purged text to
+    nobody, since purging means erasing it. **An item a guild hid, or a post's author hid, is treated the same way** (M2): the
+    versions edited away would show what the hide was for, so only admins, the item's author and, for a guild's hide, that
+    guild's content guildmasters read them."""
     if (item.purged_utc or 0) > 0:
         return False
+    admin = bool(v and v.admin_level >= 3)
     if item.is_banned:
-        return bool(v and v.admin_level >= 3)
+        return admin
+    hidden_by_guild = bool(getattr(item, "hidden_by_guild", False))
+    author_hidden = bool(getattr(item, "author_hidden", False))
+    if hidden_by_guild or author_hidden:
+        if admin or anonymity.is_author(item, v):
+            return True
+        post = getattr(item, "post", item)          # a comment's guild is its post's
+        board = getattr(post, "board", None)
+        if hidden_by_guild and board is not None and v is not None and board.has_mod(v, "content"):
+            return True
+        return bool(author_hidden and v is not None and anonymity.is_author(post, v))
     return True

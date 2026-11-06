@@ -38,6 +38,7 @@ class ContentEditHistory(Base, Stndrd):
     summary = Column(String(256), default=None)     # what the editor said they changed (optional)
     hidden_utc = Column(BigInteger, default=0)      # an admin hid this revision's text (the row stays)
     hidden_by = Column(Integer, default=None)
+    edit_group = Column(BigInteger, default=None)   # the rows of ONE edit across a post and its copies: hiding one version hides all
 
     actor = relationship("User", lazy="joined", primaryjoin="User.id==ContentEditHistory.actor_id")
     board = relationship("Board", lazy="joined")

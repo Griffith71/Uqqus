@@ -9,7 +9,7 @@ from os import environ
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
-from ruqqus.helpers.visibility import post_hidden, comment_hidden, comment_thread_hidden, hidden_notice, history_text_shown
+from ruqqus.helpers.visibility import post_hidden, comment_hidden, comment_thread_hidden, hidden_notice, history_open, history_text_shown
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -831,7 +831,9 @@ URL path parameters:
         board_id=c.post.board_id,
         action="delete"
     ))
-    action_log.keep_snapshot(g.db, action_log.snapshot_of(c, c.post.board_id, comment=True))
+    # a private copy for its author and the admins only: it carries the guild's board id, but a guild's guildmasters have
+    # no business reading what an author deleted (kind GRACE, the audit's H2)
+    action_log.keep_snapshot(g.db, action_log.snapshot_of(c, c.post.board_id, comment=True, kind=action_log.GRACE))
 
     for forward_copy in c.forwarded_posts:
         if forward_copy.is_deleted:
@@ -867,6 +869,8 @@ obliterated by an admin, only a metadata-only notice is shown - no content.
         abort(403)
     if comment_hidden(comment, v) or (comment.post and post_hidden(comment.post, v)):
         return hidden_notice(v)["html"]()
+    if not history_open(comment, v):
+        abort(404)
 
     entries = g.db.query(ContentEditHistory).filter_by(
         target_comment_id=comment.id
@@ -876,8 +880,9 @@ obliterated by an admin, only a metadata-only notice is shown - no content.
         target_comment_id=comment.id
     ).first()
 
+    # only for a signed-in reader who may open one (see post_history: with no viewer snapshot_for answers the newest copy of all)
     copy_url = (f"/comment/{comment.base36id}/copy"
-                if action_log.may_open_copy(action_log.snapshot_for(g.db, comment_id=comment.id), v) else None)
+                if v is not None and action_log.snapshot_for(g.db, comment_id=comment.id, viewer=v) else None)
 
     return render_template(
         "content_history.html",
@@ -1275,7 +1280,7 @@ Required form data:
     g.db.flush()
     # the rule cited, and the text as it was: a private copy for the guild's guildmasters, the author and the admins (not in the entry)
     action_log.annotate(g.db, ma.id, rule=request.form.get("rule"),
-                        snapshot=action_log.snapshot_of(comment, board.id, comment=True))
+                        snapshot=action_log.snapshot_of(comment, board.id, comment=True, kind=action_log.HIDE))
     g.db.commit()
 
     rendered=render_template(
@@ -1384,7 +1389,9 @@ Required form data:
         action="author_hide",
         reason=reason
     ))
-    action_log.keep_snapshot(g.db, action_log.snapshot_of(comment, comment.post.board_id, comment=True))
+    # a post's author hid it: the comment's author, the hider and the admins may open the copy, not the guild's guildmasters
+    action_log.keep_snapshot(g.db, action_log.snapshot_of(comment, comment.post.board_id, comment=True,
+                                                          kind=action_log.AUTHOR_HIDE, hider_id=v.id))
     g.db.commit()
 
     html=render_template(

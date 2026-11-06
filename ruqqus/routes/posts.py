@@ -10,7 +10,7 @@ import gevent
 import mistletoe
 
 from ruqqus.helpers.wrappers import *
-from ruqqus.helpers.visibility import post_hidden, hidden_notice, history_text_shown
+from ruqqus.helpers.visibility import post_hidden, hidden_notice, history_open, history_text_shown
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.filters import *
@@ -472,6 +472,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
         rows = [primary] + [f for f in primary.forwards
                             if not f.is_banned and not f.is_deleted and not f.board.has_ban(v)]
 
+        edit_group = secrets.randbits(52) + 1       # one edit = one row per copy; an admin hiding the version hides them all
         for row in rows:
             if tracked:
                 g.db.add(ContentEditHistory(
@@ -479,6 +480,7 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
                     target_submission_id=row.id,
                     board_id=row.board_id,
                     action="edit",
+                    edit_group=edit_group,
                     summary=action_log.clean_reason(form.get("edit_summary"), 256) or None,
                     previous_title=row.title,
                     previous_url=(row.url or "")[:500] or None,
@@ -586,6 +588,8 @@ an admin, only a metadata-only notice is shown - no content.
         abort(403)
     if post_hidden(post, v):
         return hidden_notice(v)["html"]()
+    if not history_open(post, v):
+        abort(404)
 
     entries = g.db.query(ContentEditHistory).filter_by(
         target_submission_id=post.id
@@ -595,8 +599,10 @@ an admin, only a metadata-only notice is shown - no content.
         target_submission_id=post.id
     ).first()
 
+    # only for a signed-in reader who may open one: with no viewer snapshot_for answers the newest copy of all (the C7 of the review of
+    # 2026-11-06: a visitor was offered a link that 404s, and told that a private copy, a legal hold too, exists)
     copy_url = (f"/post/{post.base36id}/copy"
-                if action_log.may_open_copy(action_log.snapshot_for(g.db, post_id=post.id), v) else None)
+                if v is not None and action_log.snapshot_for(g.db, post_id=post.id, viewer=v) else None)
 
     return render_template(
         "content_history.html",
@@ -2022,7 +2028,7 @@ def delete_post_as(post, v):
         board_id=post.board_id,
         action="delete"
     ))
-    action_log.keep_snapshot(g.db, action_log.snapshot_of(post))
+    action_log.keep_snapshot(g.db, action_log.snapshot_of(post, kind=action_log.GRACE))
 
     # clear cache
     cache.delete_memoized(User.userpagelisting, post.author, sort="new")

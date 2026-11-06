@@ -5594,7 +5594,8 @@ CREATE TABLE public.content_edit_history (
     created_utc integer DEFAULT 0,
     summary character varying(256),
     hidden_utc bigint DEFAULT 0 NOT NULL,
-    hidden_by integer
+    hidden_by integer,
+    edit_group bigint
 );
 
 CREATE SEQUENCE public.content_edit_history_id_seq
@@ -5615,6 +5616,7 @@ ALTER TABLE ONLY public.content_edit_history
 CREATE INDEX content_edit_history_sid_idx ON public.content_edit_history USING btree (target_submission_id);
 CREATE INDEX content_edit_history_cid_idx ON public.content_edit_history USING btree (target_comment_id);
 CREATE INDEX content_edit_history_board_idx ON public.content_edit_history USING btree (board_id);
+CREATE INDEX content_edit_history_group_idx ON public.content_edit_history USING btree (edit_group) WHERE (edit_group IS NOT NULL);
 CREATE INDEX content_edit_history_deletes_idx ON public.content_edit_history USING btree (id DESC) WHERE ((action)::text = 'delete'::text);
 
 --
@@ -7120,7 +7122,10 @@ CREATE TABLE public.log_snapshots (
     body_html character varying(50000),
     created_utc bigint DEFAULT 0 NOT NULL,
     expires_utc bigint DEFAULT 0 NOT NULL,
-    scrubbed_utc bigint DEFAULT 0 NOT NULL
+    scrubbed_utc bigint DEFAULT 0 NOT NULL,
+    kind character varying(12) NOT NULL,
+    hider_id integer,
+    CONSTRAINT log_snapshots_kind CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal'))
 );
 
 CREATE INDEX log_snapshots_entry_idx ON public.log_snapshots (entry_id);
@@ -7343,4 +7348,6 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-17_private_posting.sql'),
     ('2026-12-18_parent_accounts.sql'),
     ('2026-12-19_ended_sign_ins.sql'),
-    ('2026-12-20_chat_sign_outs.sql');
+    ('2026-12-20_chat_sign_outs.sql'),
+    ('2026-12-21_log_snapshot_kinds.sql'),
+    ('2026-12-22_edit_groups.sql');

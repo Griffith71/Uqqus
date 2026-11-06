@@ -34,7 +34,7 @@ def test_the_public_log_is_the_same_page_for_a_visitor_a_member_and_an_admin():
     route = body(LOG_PAGES, "public_log")
     assert "@auth_desired" in LOG_PAGES.split("def public_log(")[0].rsplit("@app.route", 1)[1]
     fetch = route.split("action_log.fetch(")[1].split(")\n    rows")[0]
-    assert "level=0" in fetch and "open_guilds_only=True" in fetch           # what a visitor reads; a guild gone private is not named
+    assert "level=0" in fetch and "open_guilds_only=False" not in fetch      # what a visitor reads; `fetch` leaves out a guild gone private by default
     assert "member_boards" not in fetch and "admin_level" not in route       # an admin's other view is /admin/log
     assert "log_type=tab" in route and "suppression" not in route            # the tab picks the type; there is no 'suppression' tab
 
@@ -97,7 +97,8 @@ def test_the_delete_dialogs_and_the_privacy_page_say_what_is_kept_and_for_whom()
 # --- an author's own delete, and a hide, keep their text privately ------------------------------------------------------------------------
 
 def test_an_authors_delete_keeps_its_text_as_a_private_copy_and_not_in_the_public_history_row():
-    for src, fn, kw in ((POSTS, "delete_post_as", "snapshot_of(post)"), (COMMENTS, "delete_comment", "snapshot_of(c, c.post.board_id, comment=True)")):
+    for src, fn, kw in ((POSTS, "delete_post_as", "snapshot_of(post, kind=action_log.GRACE)"),
+                    (COMMENTS, "delete_comment", "snapshot_of(c, c.post.board_id, comment=True, kind=action_log.GRACE)")):
         part = body(src, fn)
         row = part.split('action="delete"')[1].split("))")[0]
         assert "previous_" not in row, fn
@@ -139,15 +140,29 @@ def test_an_admin_hides_one_version_and_it_is_logged_with_a_reason():
     assert "@admin_level_required(3)" in ADMIN_API.split("def admin_hide_revision(")[0].rsplit("@app.route", 1)[1]
     assert "@validate_formkey" in ADMIN_API.split("def admin_hide_revision(")[0].rsplit("@app.route", 1)[1]
     assert 'row.action != "edit"' in route and "if not reason:" in route
-    assert "row.previous_title = row.previous_url = row.previous_body = row.previous_body_html = None" in route
+    assert "sibling.previous_title = sibling.previous_url = sibling.previous_body = sibling.previous_body_html = None" in route
+    assert "edit_group=row.edit_group" in route          # one edit is a row on every copy: hide them all
     assert '"hide_revision", v.id' in route and "require_reason=True" in route and "role=action_log.ADMIN" in route
     assert "/admin/history/{{ entry.id }}/hide" in HISTORY and "v.admin_level >= 3" in HISTORY
 
 
 def test_the_history_page_offers_a_copy_only_to_whoever_may_open_it():
     for src, call in ((POSTS, "snapshot_for(g.db, post_id=post.id)"), (COMMENTS, "snapshot_for(g.db, comment_id=comment.id)")):
-        assert f"action_log.may_open_copy(action_log.{call}, v)" in src
+        assert call.replace(")", ", viewer=v)") in src
+        # a visitor has no viewer, and snapshot_for(viewer=None) answers the newest copy of all: only a signed-in reader is asked
+        assert "if v is not None and action_log." + call.replace(")", ", viewer=v)") in src
     assert "{% if copy_url %}" in HISTORY
+
+
+def test_the_history_decides_whether_to_name_the_account_that_acted_on_the_item_that_account_owns():
+    # a post's author hiding or restoring a comment under it acted as the POST's author: its anonymity is the post's (C6 of the review)
+    assert ('{% set owner = target.post if (target_type == "comment" and entry.action in ("author_hide", "author_restore")) else target %}'
+            in HISTORY)
+    assert "anon_hidden(owner, v) and entry.actor_id == owner.author_id" in HISTORY
+    assert "anon_hidden(target, v)" not in HISTORY
+    # the not-shown line blames the administrators only when they are the cause (C8): a guild's or an author's hide has its own sentence
+    assert "The earlier versions aren't shown while this is hidden." in HISTORY
+    assert "(target.hidden_by_guild or target.author_hidden) and not target.is_banned and not target.purged_utc" in HISTORY
 
 
 def test_the_private_copies_are_emptied_on_their_date_by_the_retention_step():
@@ -236,7 +251,7 @@ def test_a_posts_comments_and_accounts_log_are_the_public_entries_about_it_and_n
         assert "_about_page(v," in body(LOG_PAGES, fn), fn
     page = body(LOG_PAGES, "_about_page")
     fetch = page.split("action_log.fetch(")[1].split(")")[0]
-    assert "level=0" in fetch and "open_guilds_only=True" in fetch and "member_boards" not in fetch     # what /log shows, never more
+    assert "level=0" in fetch and "open_guilds_only=False" not in fetch and "member_boards" not in fetch     # what /log shows, never more
     assert "post_hidden(post, v)" in body(LOG_PAGES, "post_log") and "in_private_guild_for(v)" in body(LOG_PAGES, "post_log")
     assert "comment_hidden(comment, v)" in body(LOG_PAGES, "comment_log")
     assert "_profile_or_404(username, v)" in body(LOG_PAGES, "profile_log")       # the profile's own refusals: it confirms nothing more
@@ -275,3 +290,94 @@ def test_the_logs_are_linked_from_where_you_would_look_for_them():
     assert 'href="{{ u.permalink }}/log"' in read("ruqqus", "templates", "partials", "profile_header.html")
     assert 'href="/{{ target_type }}/{{ target.base36id }}/log"' in HISTORY
     assert '"author_delete_post"' in read("ruqqus", "classes", "mod_logs.py") and '"author_delete_comment"' in read("ruqqus", "classes", "mod_logs.py")
+
+
+# --- the first slice of the audit (2026-11-05) ----------------------------------------------------------------------------------------------
+
+def test_the_snapshot_kind_migration_is_in_the_schema_and_its_ledger_and_safe_to_run_twice():
+    schema = read("schema.sql")
+    for name, markers in (("2026-12-21_log_snapshot_kinds.sql", ("ADD COLUMN IF NOT EXISTS kind", "ADD COLUMN IF NOT EXISTS hider_id",
+                                                                  "WHERE kind IS NULL", "log_snapshots_kind")),
+                          ("2026-12-22_edit_groups.sql", ("ADD COLUMN IF NOT EXISTS edit_group", "CREATE INDEX IF NOT EXISTS"))):
+        migration = read("scripts", "migrations", name)
+        for marker in markers:
+            assert marker in migration, (name, marker)
+        assert f"('{name}')" in schema.split("schema_migrations", 1)[-1], name
+        assert "REFERENCES" not in migration
+    table = schema.split("CREATE TABLE public.log_snapshots (", 1)[1].split(");", 1)[0]
+    assert "kind character varying(12) NOT NULL" in table and "hider_id integer" in table
+    assert "CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal'))" in table
+    assert "    edit_group bigint" in schema.split("CREATE TABLE public.content_edit_history (", 1)[1].split(");", 1)[0]
+    assert "edit_group = Column(BigInteger" in read("ruqqus", "classes", "content_history.py")
+
+
+def test_a_guildmaster_opens_only_a_guilds_hide_and_every_writer_says_what_its_copy_is():
+    visible = body(ACTION_LOG, "snapshot_visible")
+    assert 'guild_mod and kind == HIDE' in visible and 'snapshot.get("hider_id") == viewer_id' in visible
+    assert "SNAPSHOT_KINDS" in ACTION_LOG and "raise ValueError" in body(ACTION_LOG, "_keep")      # no default kind
+    for src, fn, kind in ((POSTS, "delete_post_as", "kind=action_log.GRACE"), (COMMENTS, "delete_comment", "kind=action_log.GRACE"),
+                          (COMMENTS, "author_hide_comment", "kind=action_log.AUTHOR_HIDE, hider_id=v.id"),
+                          (COMMENTS, "mod_hide_comment", "kind=action_log.HIDE"), (BOARDS, "mod_hide_bid_pid", "kind=action_log.HIDE")):
+        assert kind in body(src, fn), (fn, kind)
+    assert "legal_hold=True" in body(ADMIN_API, "admin_csam_nuke") or "legal_hold=True" in ADMIN_API        # a legal hold is kind legal by itself
+
+
+def test_the_role_and_the_audience_come_from_who_acted_and_never_from_a_guildmasters_words():
+    assert "(admin_level or 0) >= 3 and any(mark in lowered for mark in ADMIN_MARKERS)" in ACTION_LOG
+    assert 'lowered = (note or "").lower() if trusted else ""' in ACTION_LOG
+    record = body(ACTION_LOG, "record")
+    assert "trusted=resolved in (ADMIN, SYSTEM)" in record
+    model = read("ruqqus", "classes", "mod_logs.py")
+    assert "def title_text(self, titles=True):" in model
+    assert "action.title_text(titles_shown)" in MODLOG
+
+
+def test_the_public_page_leaves_out_a_private_guild_without_being_asked_to():
+    assert "open_guilds_only=None" in ACTION_LOG and "open_guilds_only = level < 3 and not member_boards" in body(ACTION_LOG, "fetch")
+    for fn in ("public_log", "_about_page"):
+        assert "open_guilds_only=False" not in body(LOG_PAGES, fn), fn
+    assert "SITE_BOARDS" in ACTION_LOG and "action_log.SITE_BOARDS" in body(LOG_PAGES, "_rows")           # +general / +systemprofile are no guilds
+
+
+def test_an_entry_never_pairs_an_account_with_an_anonymous_item():
+    record = body(ACTION_LOG, "record")
+    assert "_is_anonymous(db, post_id, comment_id)" in record and "post_id = comment_id = None" in record
+    assert "_NOT_PAIRED_WITH_ANONYMOUS" in body(ACTION_LOG, "fetch") and "_NOT_PAIRED_WITH_ANONYMOUS" in body(ACTION_LOG, "about_scope")
+    rows = body(LOG_PAGES, "_rows")
+    assert rows.index('if e["target_user_id"]:') < rows.index('elif e["target_submission_id"]:')       # "exiled user @x", not "exiled #a1b2c"
+
+
+def test_a_deleted_items_history_is_the_authors_and_the_admins_and_its_address_names_nobody():
+    from_visibility = read("ruqqus", "helpers", "visibility.py")
+    assert "def history_open(item, v):" in from_visibility and "v.admin_level >= 3 or anonymity.is_author(item, v)" in from_visibility
+    for src, fn in ((POSTS, "post_history"), (COMMENTS, "comment_history")):
+        assert "if not history_open(" in body(src, fn), fn
+    assert "(self.deleted_utc or 0) > 0" in body(read("ruqqus", "classes", "submission.py"), "permalink")
+    assert "(self.deleted_utc or 0) > 0" in body(read("ruqqus", "classes", "comment.py"), "permalink")
+    text_rule = body(read("ruqqus", "helpers", "visibility.py"), "history_text_shown")
+    assert "hidden_by_guild" in text_rule and "author_hidden" in text_rule                              # M2
+
+
+def test_the_log_pages_are_noindex_rate_limited_and_disallowed_to_crawlers():
+    for fn in ("public_log", "post_log", "comment_log", "profile_log"):
+        decorators = LOG_PAGES.split(f"def {fn}(")[0].rsplit("@app.route", 1)[1]
+        assert "@limiter.limit(LOG_RATE)" in decorators, fn
+    assert "X-Robots-Tag" in body(LOG_PAGES, "_noindex") and "_noindex(render_template(" in body(LOG_PAGES, "public_log")
+    assert "_noindex(render_template(" in body(LOG_PAGES, "_about_page")
+    assert 'name="robots" content="noindex"' in read("ruqqus", "templates", "log.html")
+    robots = read("ruqqus", "assets", "robots.txt")
+    for line in ("Disallow: /log$", "Disallow: /log?", "Disallow: /log/", "Disallow: /post/*/log", "Disallow: /comment/*/log",
+                 "Disallow: /@*/log"):
+        assert line in robots, line
+    # a rule is a prefix (RFC 9309, `*` any run, `$` the end): the Log is shut out, the sign-in pages are not (C9 of the review of 2026-11-06:
+    # a bare "Disallow: /log" also matched /login, /login/qr/... and /logout)
+    import re
+    rules = [l.split(":", 1)[1].strip() for l in robots.split("User-Agent: DotBot")[0].splitlines() if l.startswith("Disallow:")]
+
+    def blocked(path):
+        return any(re.match(re.escape(r).replace(r"\*", ".*").replace(r"\$", "$"), path) for r in rules if r)
+
+    for path in ("/log", "/log?guild=pets", "/log/deleted", "/log/12/copy", "/post/abc/log", "/comment/abc/copy", "/@someone/log"):
+        assert blocked(path), path
+    for path in ("/login", "/login/qr/start", "/logout", "/logos", "/post/abc", "/@someone"):
+        assert not blocked(path), path

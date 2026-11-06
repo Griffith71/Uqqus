@@ -67,10 +67,19 @@ def admin_hide_revision(entry_id, v):
         return jsonify({"error": tr("A reason is required.")}), 400
 
     if not row.hidden_utc:
-        row.previous_title = row.previous_url = row.previous_body = row.previous_body_html = None
-        row.hidden_utc = int(time.time())
-        row.hidden_by = v.id
-        g.db.add(row)
+        # the same edit is a row on every copy of the post (one edit, one `edit_group`): hide the version everywhere, or the
+        # copies' history pages would go on showing the text (the audit, 2026-11-05: M1)
+        siblings = [row]
+        if row.edit_group:
+            siblings = g.db.query(ContentEditHistory).filter_by(edit_group=row.edit_group, action="edit").all()
+        now = int(time.time())
+        for sibling in siblings:
+            if sibling.hidden_utc:
+                continue
+            sibling.previous_title = sibling.previous_url = sibling.previous_body = sibling.previous_body_html = None
+            sibling.hidden_utc = now
+            sibling.hidden_by = v.id
+            g.db.add(sibling)
         action_log.record(g.db, "hide_revision", v.id, board_id=row.board_id or None,
                           post_id=row.target_submission_id or None, comment_id=row.target_comment_id or None,
                           rule=request.form.get("rule"), reason=reason, role=action_log.ADMIN, require_reason=True)

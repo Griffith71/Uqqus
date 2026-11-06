@@ -23,7 +23,10 @@
   <div class="card mb-3 p-3">
     <div class="mb-1">
       {% if entry.action in ("edit", "delete", "author_hide", "author_restore") %}
-      {% set actor %}{% if anon_hidden(target, v) and entry.actor_id == target.author_id %}{{ _('Anonymous') }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
+      {# the account that acted is the target's author, except when a post's author hid or restored a comment under it: then it is the POST's author, and
+         whether that is hidden is the post's rule, not the comment's (a comment on an anonymous post is named; its post's author who hid it is not) #}
+      {% set owner = target.post if (target_type == "comment" and entry.action in ("author_hide", "author_restore")) else target %}
+      {% set actor %}{% if anon_hidden(owner, v) and entry.actor_id == owner.author_id %}{{ _('Anonymous') }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
       {% endif %}
       <strong>
         {% if entry.action == "edit" %}
@@ -54,7 +57,7 @@
     {% if entry.hidden_utc %}
     <div class="text-muted text-small mb-1">{{ _("The text of this version was hidden by a site administrator.") }}</div>
     {% elif not show_text %}
-    {% if loop.first %}<div class="text-muted text-small mb-1">{{ _("The text isn't shown: this was removed by the site's administrators.") }}</div>{% endif %}
+    {% if loop.first %}<div class="text-muted text-small mb-1">{% if (target.hidden_by_guild or target.author_hidden) and not target.is_banned and not target.purged_utc %}{{ _("The earlier versions aren't shown while this is hidden.") }}{% else %}{{ _("The text isn't shown: this was removed by the site's administrators.") }}{% endif %}</div>{% endif %}
     {% elif entry.previous_body_html or entry.previous_title or entry.previous_url %}
     <div class="text-muted text-small mb-1">{{ _('Content immediately before this action:') }}</div>
     <div class="border rounded p-2">

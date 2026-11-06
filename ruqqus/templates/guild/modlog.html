@@ -1,6 +1,6 @@
 {% extends "guild/guild_settings.html" %}
 
-{% block pagetitle %}{% if action %}(+{{ b.name }}) {{ action.title_text }}{% else %}{{ _("+%(guild)s Moderation Log", guild=b.name) }}{% endif %}{% endblock %}
+{% block pagetitle %}{% if action %}(+{{ b.name }}) {{ action.title_text(titles_shown) }}{% else %}{{ _("+%(guild)s Moderation Log", guild=b.name) }}{% endif %}{% endblock %}
 
 
 {% block content %}

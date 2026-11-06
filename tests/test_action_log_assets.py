@@ -136,7 +136,9 @@ def test_the_public_columns_never_include_the_private_ones():
 
 def test_a_mod_log_answer_never_names_an_admin():
     assert '"mod": app.config[\'SITE_NAME\'] if self.by_admin else self.user.username' in MOD_LOGS
-    assert 'return any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS)' in MOD_LOGS
+    # the note's words say "admin" only for an account that really is one (a guildmaster's reason is the same free text)
+    assert 'and any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS))' in MOD_LOGS
+    assert "(user.admin_level or 0) >= 3" in MOD_LOGS
 
 
 def test_the_admin_page_is_staff_only_and_reads_through_the_one_visibility_rule():

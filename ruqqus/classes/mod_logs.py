@@ -175,8 +175,12 @@ class ModAction(Base, Stndrd, Age_times):
 
     @property
     def by_admin(self):
-        """Done by the site's admins: they are not named in a public entry (the Log: helpers/action_log.py)."""
-        return any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS)
+        """Done by the site's admins: they are not named in a public entry (the Log: helpers/action_log.py). The note's words
+        say so only for an account that really is an admin: a guildmaster's reason is the same note, free text, and "admin
+        action" in it must not make their own action read as the site's (the audit, 2026-11-05: H3)."""
+        user = self.user
+        return bool(user is not None and (user.admin_level or 0) >= 3
+                    and any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS))
 
     def _who(self):
         if self.user.is_deleted:
@@ -186,9 +190,10 @@ class ModAction(Base, Stndrd, Age_times):
         else:
             return f"@{self.user.username}"
 
-    @property
-    def title_text(self):
-        return self._text("title")
+    def title_text(self, titles=True):
+        """The page title of one entry. `titles=False` names a post by its id: a title is the author's text, which the public
+        sees none of (the audit, 2026-11-05: H4)."""
+        return self._text("title", titles)
     
     
 

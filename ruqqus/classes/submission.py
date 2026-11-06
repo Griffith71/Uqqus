@@ -307,7 +307,9 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
         every guild copy of it, is the Space's own address (helpers/spaces.py: a Space is not a post)."""
         if self.is_space:
             return permalinks.space_path(base36encode(self.repost_id or self.id), self.author.username)
-        anonymous = bool(self.is_anonymous)
+        # a deleted post's page says "Anon" (submission_deleted.html), so its address names nobody either: the address of
+        # `/@alice/post/<id>` told everyone whose post the "Anon" one was (the audit, 2026-11-05: H8)
+        anonymous = bool(self.is_anonymous) or (self.deleted_utc or 0) > 0
         if self.is_profile_post:
             return permalinks.post_path(self.base36id, name=None if anonymous else self.author.username,
                                         anonymous=anonymous)

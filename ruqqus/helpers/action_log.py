@@ -38,6 +38,12 @@ TYPES = (CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION)
 
 GUILDMASTER, ADMIN, SYSTEM = "guildmaster", "admin", "system"
 SITE_ACCOUNT_ID = 1                 # the site's own account: what an automatic action is done as
+SITE_BOARDS = (1, 2)                # +general and +systemprofile (where every profile post lives): the site's own, not guilds anyone can name
+
+# What a private copy is a copy OF, which decides who may open it (`snapshot_visible`), for how long it is kept and whether it
+# is public. D1 writes the first three and `legal`; `delete` is written by the delete model of slice D3a.
+HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND = "hide", "author_hide", "grace", "delete", "legal"
+SNAPSHOT_KINDS = (HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND)
 
 SNAPSHOT_DAYS = 90                  # how long the text of what was hidden, removed or deleted is kept privately
 LEGAL_HOLD_DAYS = 365               # illegal content: the one-year preservation duty
@@ -115,17 +121,21 @@ def role_of(actor_id, admin_level, note="", role=None):
     if actor_id == SITE_ACCOUNT_ID:
         return SYSTEM
     lowered = (note or "").lower()
-    if any(mark in lowered for mark in ADMIN_MARKERS):
+    # the markers are what the site's own admin routes write; a guildmaster's free text (a hide's reason is the same note)
+    # can say anything, so a marker only counts for an account that really is an admin (the audit, 2026-11-05: H3)
+    if (admin_level or 0) >= 3 and any(mark in lowered for mark in ADMIN_MARKERS):
         return ADMIN
     if lowered.strip() == "siege" and (admin_level or 0) >= 3:
         return ADMIN
     return GUILDMASTER
 
 
-def audience_for(action, *, board_id=None, private=False, note="", floor=PUBLIC):
+def audience_for(action, *, board_id=None, private=False, note="", floor=PUBLIC, trusted=False):
     """The audience an entry is written with; `floor` can only make it narrower (a caller that knows more, such as
-    "this was a ban on an alt", says STAFF)."""
-    lowered = (note or "").lower()
+    "this was a ban on an alt", says STAFF). The words in `note` mark an audience only when `trusted` (the writer is an admin
+    or the site, whose code writes those words): a guildmaster's reason is free text, and "suspected ban evasion" in it must not
+    take their own entry out of the public Log (the audit, 2026-11-05: H3)."""
+    lowered = (note or "").lower() if trusted else ""
     if action in LEGAL_ACTIONS or any(mark in lowered for mark in _LEGAL_NOTES):
         audience = LEGAL
     elif action in STAFF_ACTIONS or any(mark in lowered for mark in _STAFF_NOTES):
@@ -164,9 +174,26 @@ def _admin_level(db, user_id):
     return (row[0] or 0) if row else 0
 
 
-def snapshot_of(item, board_id=None, legal_hold=False, comment=False):
-    """What to keep of a post or comment (a Submission or a Comment, or a stand-in with the same attributes)."""
+def _is_anonymous(db, post_id=None, comment_id=None):
+    """Whether the post or comment is anonymous (a missing one is not)."""
+    if post_id:
+        row = db.execute(text("SELECT is_anonymous FROM submissions WHERE id = :i"), {"i": post_id}).first()
+        if row and row[0]:
+            return True
+    if comment_id:
+        row = db.execute(text("SELECT is_anonymous FROM comments WHERE id = :i"), {"i": comment_id}).first()
+        if row and row[0]:
+            return True
+    return False
+
+
+def snapshot_of(item, board_id=None, legal_hold=False, comment=False, kind=None, hider_id=None):
+    """What to keep of a post or comment (a Submission or a Comment, or a stand-in with the same attributes). `kind` says what
+    the copy is of (`SNAPSHOT_KINDS`; a legal hold is `legal`, anything else a guild's `hide` unless the caller says);
+    `hider_id` is the account that hid it where that is not a guild (a post's author hiding a comment may open it too)."""
     return {
+        "kind": LEGAL_KIND if legal_hold else (kind or HIDE),
+        "hider_id": hider_id,
         "post_id": None if comment else getattr(item, "id", None),
         "comment_id": getattr(item, "id", None) if comment else None,
         "author_id": getattr(item, "author_id", None),
@@ -181,11 +208,16 @@ def snapshot_of(item, board_id=None, legal_hold=False, comment=False):
 
 def _keep(db, snapshot, entry_id, now):
     days = LEGAL_HOLD_DAYS if snapshot.get("legal_hold") else SNAPSHOT_DAYS
+    kind = LEGAL_KIND if snapshot.get("legal_hold") else snapshot.get("kind")
+    if kind not in SNAPSHOT_KINDS:
+        raise ValueError(f"a private copy needs a kind: {kind!r}")     # no default: who may open it depends on it
     row = db.execute(text(
-        "INSERT INTO log_snapshots (entry_id, author_id, board_id, target_submission_id, target_comment_id, legal_hold, title, "
-        "url, body, body_html, created_utc, expires_utc) "
-        "VALUES (:entry, :author, :board, :post, :comment, :hold, :title, :url, :body, :html, :now, :expires) RETURNING id"),
+        "INSERT INTO log_snapshots (entry_id, author_id, board_id, target_submission_id, target_comment_id, legal_hold, kind, "
+        "hider_id, title, url, body, body_html, created_utc, expires_utc) "
+        "VALUES (:entry, :author, :board, :post, :comment, :hold, :kind, :hider, :title, :url, :body, :html, :now, :expires) "
+        "RETURNING id"),
         {"entry": entry_id, "author": snapshot.get("author_id"), "board": snapshot.get("board_id"),
+         "kind": kind, "hider": snapshot.get("hider_id") or None,
          "post": snapshot.get("post_id"), "comment": snapshot.get("comment_id"),
          "hold": bool(snapshot.get("legal_hold")), "title": (snapshot.get("title") or None),
          "url": (snapshot.get("url") or "")[:500] or None, "body": (snapshot.get("body") or None),
@@ -194,8 +226,9 @@ def _keep(db, snapshot, entry_id, now):
 
 
 def keep_snapshot(db, snapshot, now=None, entry_id=None):
-    """A private copy of an item with no entry of its own (an author deleting their own post: not a decision, so it is
-    not in the Log, but the text is kept for 90 days for reports and legal requests)."""
+    """A private copy of an item with no entry of its own (an author deleting their own post, or hiding a comment under it: not a
+    guild's decision, so it is not in the Log, but the text is kept for 90 days for reports and legal requests). The snapshot
+    must say its kind (`snapshot_of(..., kind=GRACE)`): a guildmaster may open only a guild's `hide`."""
     return _keep(db, snapshot, entry_id, int(now if now is not None else time.time()))
 
 
@@ -208,14 +241,20 @@ def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=
     if require_reason and action in REASON_REQUIRED and not reason:
         raise ReasonRequired("Give a reason.")
     now = int(created_utc if created_utc is not None else (now if now is not None else time.time()))
-    audience = audience_for(action, board_id=board_id, private=_board_is_private(db, board_id), note=note, floor=floor)
+    resolved = role_of(actor_id, _admin_level(db, actor_id), note, role)
+    audience = audience_for(action, board_id=board_id, private=_board_is_private(db, board_id), note=note, floor=floor,
+                            trusted=resolved in (ADMIN, SYSTEM))
+    if target_user_id and (post_id or comment_id) and _is_anonymous(db, post_id, comment_id):
+        # an entry never pairs an account with an anonymous item (an exile citing it would say who wrote it, and the
+        # account's own log and the `to=` filter list it): the exile stays, the pointer to the item does not (H6)
+        post_id = comment_id = None
     row = db.execute(text(
         "INSERT INTO log_entries (created_utc, log_type, action, actor_id, actor_role, board_id, target_user_id, "
         "target_submission_id, target_comment_id, rule_key, reason, staff_note, audience, notice_sent, legacy_modaction_id) "
         "VALUES (:now, :type, :action, :actor, :role, :board, :tuser, :tpost, :tcomment, :rule, :reason, :staff, :audience, "
         ":notice, :legacy) RETURNING id"),
         {"now": now, "type": type_of(action), "action": action, "actor": actor_id,
-         "role": role_of(actor_id, _admin_level(db, actor_id), note, role), "board": board_id or None,
+         "role": resolved, "board": board_id or None,
          "tuser": target_user_id or None, "tpost": post_id or None, "tcomment": comment_id or None,
          "rule": parse_rule(rule), "reason": reason, "staff": clean_reason(staff_note), "audience": audience,
          "notice": bool(notice_sent), "legacy": legacy_id}).first()
@@ -298,8 +337,8 @@ def led_boards(viewer):
 
 
 def may_open_copy(snapshot, viewer):
-    """Whether this account may open that preserved copy (None: there is none): its item's author, admins (a legal hold only
-    level 4) and the guildmasters of the guild it was hidden in."""
+    """Whether this account may open that preserved copy (None: there is none), by `snapshot_visible`'s rule: its item's
+    author, admins (a legal hold only level 4), whoever hid it, and the guildmasters of the guild only for a guild's hide."""
     if snapshot is None or viewer is None:
         return False
     return snapshot_visible(snapshot, viewer_id=viewer.id, level=staff_level(viewer.admin_level),
@@ -349,14 +388,30 @@ _OPEN_GUILDS = ("(board_id IS NULL OR NOT EXISTS (SELECT 1 FROM boards b WHERE b
                 "AND (b.is_private OR b.is_circle)))")
 
 
+# an entry that names an account and also an item that is anonymous now: listing it under that account (or showing it on the
+# item's page) would say who wrote the item. Written when the entry is made (`record` drops the item), and read here for an
+# item that was made anonymous after it.
+_NOT_PAIRED_WITH_ANONYMOUS = (
+    "NOT (target_user_id IS NOT NULL AND ("
+    "(target_submission_id IS NOT NULL AND EXISTS (SELECT 1 FROM submissions sp WHERE sp.id = log_entries.target_submission_id "
+    "AND COALESCE(sp.is_anonymous, false))) OR "
+    "(target_comment_id IS NOT NULL AND EXISTS (SELECT 1 FROM comments cp WHERE cp.id = log_entries.target_comment_id "
+    "AND COALESCE(cp.is_anonymous, false)))))")
+
+
 def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_id=None, target_user_id=None,
-          rule=None, action=None, before_id=None, limit=50, open_guilds_only=False, scope=None, offset=0):
+          rule=None, action=None, before_id=None, limit=50, open_guilds_only=None, scope=None, offset=0):
     """A page of entries, newest first, for a reader with this `level`: (rows, has_more). The staff-only columns come
-    only for staff; an admin entry's actor_id is left out for everyone else. `open_guilds_only` is the public page's: it
-    leaves out entries of a guild that has since gone private. `scope` is `about_scope`'s (SQL, params): only the entries about
-    one item or account. `offset` is for a page that merges the entries with another list."""
+    only for staff; an admin entry's actor_id is left out for everyone else. `open_guilds_only` leaves out entries of a guild
+    that has since gone private or become a Circle guild: **on unless the reader is staff or the caller names the guilds the
+    reader belongs to** (`member_boards`, a guild's own view) when left at None, because the public page never names such a guild
+    and a caller that forgot to say so used to publish one; pass False to opt out. `scope` is
+    `about_scope`'s (SQL, params): only the entries about one item or account. `offset` is for a page that merges the entries
+    with another list."""
     where, params = visible_clause(level, member_boards)
     clauses = [where]
+    if open_guilds_only is None:
+        open_guilds_only = level < 3 and not member_boards
     if open_guilds_only:
         clauses.append(_OPEN_GUILDS)
     if scope:
@@ -371,6 +426,9 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
     if actor_id not in (None, "") and level < 3:
         # an admin is "Site admin" below staff: filtering by an admin's id would list exactly their entries
         clauses.append("actor_role <> 'admin'")
+    if target_user_id not in (None, "") and level < 3:
+        # an entry that names an account AND an item that is anonymous now would say who wrote it (H6)
+        clauses.append(_NOT_PAIRED_WITH_ANONYMOUS)
     if before_id:
         clauses.append("id < :before")
         params["before"] = int(before_id)
@@ -403,18 +461,19 @@ def about_scope(*, post_ids=(), comment_ids=(), user_id=None, include_anonymous=
     anything the account wrote, a guild's copy of a post or a post that was never on their profile included. **An anonymous item
     is left out** unless `include_anonymous` (the admins'): listing it under its author would say who wrote it."""
     parts, params = [], {}
+    unpaired = "" if include_anonymous else f" AND {_NOT_PAIRED_WITH_ANONYMOUS}"
     if post_ids:
         marks, names = _numbered("sp", post_ids)
-        parts.append(f"target_submission_id IN ({marks})")
+        parts.append(f"(target_submission_id IN ({marks}){unpaired})")
         params.update(names)
     if comment_ids:
         marks, names = _numbered("sc", comment_ids)
-        parts.append(f"target_comment_id IN ({marks})")
+        parts.append(f"(target_comment_id IN ({marks}){unpaired})")
         params.update(names)
     if user_id:
         anonymous_post = "" if include_anonymous else " AND NOT COALESCE(s.is_anonymous, false)"
         anonymous_comment = "" if include_anonymous else " AND NOT COALESCE(c.is_anonymous, false)"
-        parts.append("target_user_id = :about")
+        parts.append(f"(target_user_id = :about{unpaired})")
         parts.append(f"target_submission_id IN (SELECT s.id FROM submissions s WHERE s.author_id = :about{anonymous_post})")
         parts.append(f"target_comment_id IN (SELECT c.id FROM comments c WHERE c.author_id = :about{anonymous_comment})")
         params["about"] = int(user_id)
@@ -462,17 +521,19 @@ def family_ids(db, post_id):
 
 
 def copies_for(db, entry_ids):
-    """{entry id: {author_id, board_id, legal_hold, scrubbed_utc}} for the entries on a page that kept a private copy of what
-    they hid or removed. Asked only about entries the reader may already see; `snapshot_visible` says who may open one."""
+    """{entry id: {author_id, board_id, legal_hold, kind, hider_id, scrubbed_utc}} for the entries on a page that kept a private
+    copy of what they hid or removed. Asked only about entries the reader may already see; `snapshot_visible` says who may
+    open one."""
     ids = sorted({int(i) for i in entry_ids or () if i})
     if not ids:
         return {}
     names = {f"c{n}": i for n, i in enumerate(ids)}
     marks = ", ".join(f":{n}" for n in names)
     rows = db.execute(text(
-        f"SELECT e.id, s.author_id, s.board_id, s.legal_hold, s.scrubbed_utc FROM log_entries e "
+        f"SELECT e.id, s.author_id, s.board_id, s.legal_hold, s.scrubbed_utc, s.kind, s.hider_id FROM log_entries e "
         f"JOIN log_snapshots s ON s.id = e.snapshot_id WHERE e.id IN ({marks})"), names)
-    return {r[0]: {"author_id": r[1], "board_id": r[2], "legal_hold": bool(r[3]), "scrubbed_utc": r[4]} for r in rows}
+    return {r[0]: {"author_id": r[1], "board_id": r[2], "legal_hold": bool(r[3]), "scrubbed_utc": r[4], "kind": r[5],
+                   "hider_id": r[6]} for r in rows}
 
 
 def entry_with_copy(db, entry_id, level, member_boards=()):
@@ -488,19 +549,26 @@ def entry_with_copy(db, entry_id, level, member_boards=()):
     if not snapshot_id:
         return entry, None
     snap = db.execute(text(
-        "SELECT id, author_id, board_id, target_submission_id, target_comment_id, legal_hold, title, url, body, body_html, "
-        "created_utc, expires_utc, scrubbed_utc FROM log_snapshots WHERE id = :s"), {"s": snapshot_id}).first()
+        "SELECT id, author_id, board_id, target_submission_id, target_comment_id, legal_hold, kind, hider_id, title, url, body, "
+        "body_html, created_utc, expires_utc, scrubbed_utc FROM log_snapshots WHERE id = :s"), {"s": snapshot_id}).first()
     return entry, (dict(snap._mapping) if snap else None)
 
 
 def snapshot_visible(snapshot, *, viewer_id, level, guild_mod=False):
-    """Whether a reader may open a snapshot: its author, admins (level 3; legal holds only level 4) and, for a guild
-    hide, the guildmasters of that guild (`guild_mod`). A scrubbed one has no text for anyone."""
+    """Whether a reader may open a snapshot: its author, admins (level 3; legal holds only level 4), the account that hid it
+    (a post's author, for a comment under it) and, **for a guild's hide only**, the guildmasters of that guild (`guild_mod`).
+    A comment its author deleted, or a Circle post's copy, carries the guild's board id too, and the guildmasters have no
+    business reading it (the audit, 2026-11-05: H2). A scrubbed one has no text for anyone."""
     if snapshot["scrubbed_utc"]:
         return False
-    if snapshot["legal_hold"]:
+    kind = snapshot.get("kind")
+    if snapshot["legal_hold"] or kind == LEGAL_KIND:
         return level >= 4
-    return bool(level >= 3 or (viewer_id and snapshot["author_id"] == viewer_id) or guild_mod)
+    if level >= 3:
+        return True
+    if viewer_id and (snapshot["author_id"] == viewer_id or snapshot.get("hider_id") == viewer_id):
+        return True
+    return bool(guild_mod and kind == HIDE)
 
 
 def not_hidden_from(level, member_boards=(), column="modactions.id"):
@@ -525,16 +593,23 @@ def notes_for(db, modaction_ids):
     return {r[0]: {"rule_key": r[1], "reason": "" if r[3] else r[2], "redacted_utc": r[3]} for r in rows}
 
 
-def snapshot_for(db, post_id=None, comment_id=None):
+def snapshot_for(db, post_id=None, comment_id=None, viewer=None):
     """The newest private copy of an item that still has its text, or None (what an author who deleted it, a guild that
-    hid it or an admin that removed it can still open). The caller decides who may read it (`snapshot_visible`)."""
+    hid it or an admin that removed it can still open). With a `viewer`, the newest one THEY may open (an item can have a
+    guild's hide and then its author's delete, and a guildmaster can read only the first); without, the newest of all, and the
+    caller decides who may read it (`snapshot_visible`)."""
     column, value = ("target_submission_id", post_id) if post_id else ("target_comment_id", comment_id)
     if not value:
         return None
-    row = db.execute(text(
-        f"SELECT id, entry_id, author_id, board_id, legal_hold, title, url, body, body_html, created_utc, expires_utc, scrubbed_utc "
-        f"FROM log_snapshots WHERE {column} = :v AND scrubbed_utc = 0 ORDER BY id DESC LIMIT 1"), {"v": int(value)}).first()
-    return dict(row._mapping) if row else None
+    rows = db.execute(text(
+        f"SELECT id, entry_id, author_id, board_id, legal_hold, kind, hider_id, title, url, body, body_html, created_utc, "
+        f"expires_utc, scrubbed_utc FROM log_snapshots WHERE {column} = :v AND scrubbed_utc = 0 ORDER BY id DESC LIMIT 10"),
+        {"v": int(value)})
+    for row in rows:
+        snapshot = dict(row._mapping)
+        if viewer is None or may_open_copy(snapshot, viewer):
+            return snapshot
+    return None
 
 
 # --- keeping and scrubbing ----------------------------------------------------------------------------------------------

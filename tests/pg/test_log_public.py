@@ -32,6 +32,12 @@ def get(client, path):
     return client.get(path, base_url=BASE, headers=HEADERS, environ_base={"REMOTE_ADDR": address()})
 
 
+def names_post(page, ident):
+    """Whether a page names a post by its id the way the Log does ('#a1b2c'). Not a substring test: a colour in the page's head such as
+    '#ffffff' begins with the same letters as a post whose id is 'ff' (the test failed one run in a few hundred on that)."""
+    return re.search(rf"#{re.escape(ident)}(?![0-9A-Za-z])", page) is not None
+
+
 def admin_of(make_member, level=3):
     admin = make_member()
     db = admin.db_session()
@@ -247,6 +253,11 @@ def test_a_guilds_guildmaster_the_author_and_an_admin_open_the_copy_of_a_hide_an
     assert f"/log/{row['id']}/copy" not in get(stranger.browser(), f"/log?guild={name}").get_data(as_text=True)
     history = get(gm.browser(), f"/post/{b36}/history")
     assert "COPY-WORDS" not in history.get_data(as_text=True) and f"/post/{b36}/copy" in history.get_data(as_text=True)
+    # the link is offered only to someone who can open it, and a visitor is not even told that a private copy exists (C7 of the review of
+    # 2026-11-06: with no viewer snapshot_for answers the newest copy of all)
+    for client in (real_app[0].test_client(), stranger.browser(), other_gm.browser()):
+        page = get(client, f"/post/{b36}/history")
+        assert f"/post/{b36}/copy" not in page.get_data(as_text=True) and "preserved copy" not in page.get_data(as_text=True)
 
 
 def test_a_scrubbed_copy_is_gone_for_everyone(make_member, real_app):
@@ -406,3 +417,233 @@ def test_an_unknown_account_or_post_has_no_log(make_member, real_app):
     assert get(visitor, "/@no_such_account_here/log").status_code == 404
     assert get(visitor, "/post/zzzzzzzz/log").status_code == 404
     assert get(visitor, "/comment/zzzzzzzz/log").status_code == 404
+
+
+# --- the first slice of the audit (2026-11-05): leaks closed -----------------------------------------------------------------------------------
+
+def add_comment(member, post_id, board_id, body, age=3600, anonymous=False):
+    from ruqqus.classes import Comment, CommentAux
+    from ruqqus.helpers.base36 import base36encode
+    db = member.db_session()
+    db.rollback()
+    with member.app.test_request_context("/"):
+        row = Comment(author_id=member.id, parent_submission=post_id, level=1, original_board_id=board_id,
+                      created_utc=int(time.time()) - age, is_anonymous=anonymous)
+    db.add(row)
+    db.flush()
+    db.add(CommentAux(id=row.id, body=re.sub("<[^>]+>", "", body), body_html=body))
+    db.commit()
+    return row.id, base36encode(row.id)
+
+
+def followed(client, location):
+    return client.get(location, base_url=BASE, headers=HEADERS, environ_base={"REMOTE_ADDR": address()})
+
+
+def test_a_deleted_posts_page_and_address_name_nobody_and_its_history_is_the_authors_and_the_admins(make_member, real_app):
+    """H1 and H8: the page of a deleted post says "Anon", so its address and its history page may not say whose it was."""
+    board_id, name = guild(real_app)
+    author, other, admin = make_member(), make_member(), admin_of(make_member)
+    post_id, b36 = add_post(author, board_id, "GONE-TITLE", "<p>GONE-WORDS</p>")
+    assert post(author.browser(), author, f"/delete_post/{b36}").status_code in (200, 204, 302)
+    visitor = real_app[0].test_client()
+    for client in (visitor, other.browser()):
+        moved = get(client, f"/post/{b36}")
+        assert moved.status_code == 301 and author.username not in moved.headers["Location"], moved.headers.get("Location")
+        page = followed(client, moved.headers["Location"])
+        assert page.status_code == 200 and author.username not in page.get_data(as_text=True)
+        assert get(client, f"/post/{b36}/history").status_code == 404                           # it would say "Deleted by @author"
+    for member in (author, admin):
+        history = get(member.browser(), f"/post/{b36}/history")
+        assert history.status_code == 200 and "Deleted by" in history.get_data(as_text=True), member.username
+
+
+def test_a_deleted_comments_address_and_history_name_nobody_either(make_member, real_app):
+    board_id, name = guild(real_app)
+    author, commenter, other = make_member(), make_member(), make_member()
+    post_id, b36 = add_post(author, board_id, "A post", "<p>words</p>")
+    comment_id, c36 = add_comment(commenter, post_id, board_id, "<p>COMMENT-WORDS</p>")
+    assert post(commenter.browser(), commenter, f"/delete/comment/{c36}").status_code in (200, 204, 302)
+    assert get(other.browser(), f"/comment/{c36}/history").status_code == 404
+    assert get(commenter.browser(), f"/comment/{c36}/history").status_code == 200
+    moved = get(other.browser(), f"/@{commenter.username}/comment/{c36}")
+    assert moved.status_code in (301, 302) and commenter.username not in moved.headers["Location"], moved.headers.get("Location")
+
+
+def test_guildmasters_open_the_copy_of_a_hide_but_not_of_what_an_author_deleted_or_a_post_authors_own_hide(make_member, real_app):
+    """H2: a private copy carries the guild's board id, which gives no leave to read what an author deleted or hid on their own profile."""
+    board_id, name = guild(real_app)
+    gm, author, commenter, stranger, admin = guildmaster(make_member, board_id), make_member(), make_member(), make_member(), admin_of(make_member)
+    post_id, b36 = add_post(author, board_id, "A post", "<p>words</p>")
+    deleted_id, deleted36 = add_comment(commenter, post_id, board_id, "<p>DELETED-BY-ITS-AUTHOR</p>")
+    assert post(commenter.browser(), commenter, f"/delete/comment/{deleted36}").status_code in (200, 204, 302)
+    (snap,) = snapshots(real_app, target_comment_id=deleted_id)
+    assert snap["kind"] == "grace" and snap["board_id"] == board_id
+    assert get(gm.browser(), f"/comment/{deleted36}/copy").status_code == 404                  # the guild's guildmaster has no business here
+    assert get(stranger.browser(), f"/comment/{deleted36}/copy").status_code == 404
+    for member in (commenter, admin):
+        assert "DELETED-BY-ITS-AUTHOR" in get(member.browser(), f"/comment/{deleted36}/copy").get_data(as_text=True)
+    # a post's author hiding a comment on their own profile post: the comment's author, the hider and the admins
+    profile_post, profile36 = add_post(author, 2, "A profile post", "<p>words</p>")
+    hidden_id, hidden36 = add_comment(commenter, profile_post, 2, "<p>HIDDEN-BY-THE-POST-AUTHOR</p>")
+    assert post(author.browser(), author, f"/author/hide_comment/{hidden36}", reason="Off topic").status_code == 200
+    (snap,) = snapshots(real_app, target_comment_id=hidden_id)
+    assert (snap["kind"], snap["hider_id"], snap["author_id"]) == ("author_hide", author.id, commenter.id)
+    for member in (commenter, author, admin):
+        assert "HIDDEN-BY-THE-POST-AUTHOR" in get(member.browser(), f"/comment/{hidden36}/copy").get_data(as_text=True), member.username
+    assert get(stranger.browser(), f"/comment/{hidden36}/copy").status_code == 404
+    # a guild's hide is still the guildmasters' to read
+    hidden_board, hidden_name, hide_gm, hide_author, hide_post, hide36 = hide(real_app, make_member)
+    assert "SECRET-BODY" in get(hide_gm.browser(), f"/post/{hide36}/copy").get_data(as_text=True)
+
+
+def test_the_history_of_a_comment_a_post_author_hid_names_nobody_when_the_post_is_anonymous(make_member, real_app):
+    """The account that hid or restored the comment is the POST's author, so whether it is named is the post's rule, not the comment's: a
+    named comment under an anonymous post was printing 'Removed by the post's author, @alice' to everyone (C6 of the review of 2026-11-06;
+    older than the Log work, it was in the template since 2026-10-28)."""
+    author, commenter, stranger, admin = make_member(), make_member(), make_member(), admin_of(make_member)
+    post_id, b36 = add_post(author, 2, "An anonymous post", "<p>words</p>", anonymous=True)
+    comment_id, c36 = add_comment(commenter, post_id, 2, "<p>NAMED-COMMENT</p>")
+    mine = author.browser()
+    assert post(mine, author, f"/author/hide_comment/{c36}", reason="Off topic").status_code == 200
+    assert post(mine, author, f"/author/unhide_comment/{c36}").status_code == 200
+    assert post(mine, author, f"/author/hide_comment/{c36}", reason="Off topic again").status_code == 200
+    for client in (real_app[0].test_client(), stranger.browser(), commenter.browser()):
+        page = get(client, f"/comment/{c36}/history")
+        text_ = page.get_data(as_text=True)
+        assert page.status_code == 200 and "Removed by the post" in text_ and "Restored by the post" in text_
+        assert author.username not in text_, "the page names the author of an anonymous post"
+    # the author themselves, and the admins (who are told who wrote it, as everywhere), still see the name
+    for member in (author, admin):
+        assert author.username in get(member.browser(), f"/comment/{c36}/history").get_data(as_text=True), member.username
+    # a post that is not anonymous is named as before
+    open_post, open36 = add_post(author, 2, "A named post", "<p>words</p>")
+    open_id, open_c36 = add_comment(commenter, open_post, 2, "<p>OTHER-COMMENT</p>")
+    assert post(mine, author, f"/author/hide_comment/{open_c36}", reason="Off topic").status_code == 200
+    assert author.username in get(stranger.browser(), f"/comment/{open_c36}/history").get_data(as_text=True)
+
+
+def test_a_guildmasters_words_cannot_make_their_hide_look_like_the_sites_or_take_it_out_of_the_public_log(make_member, real_app):
+    """H3: the role and the audience come from who acted, not from the words of the reason."""
+    from ruqqus.classes import ModAction
+    board_id, name = guild(real_app)
+    gm, author = guildmaster(make_member, board_id), make_member()
+    post_id, b36 = add_post(author, board_id, "SPOOF-TITLE", "<p>words</p>")
+    reason = "admin action | suspected ban evasion, banned image, CSAM detected, by the site's admins"
+    assert post(gm.browser(), gm, f"/mod/kick/{name}/{b36}", reason=reason, rule="good_faith").status_code == 200
+    (row,) = entries(real_app, board_id=board_id, target_submission_id=post_id)
+    assert (row["actor_role"], row["audience"]) == ("guildmaster", 0), row
+    page = get(real_app[0].test_client(), f"/log?guild={name}").get_data(as_text=True)
+    assert gm.username in page and "suspected ban evasion" in page                              # still the guildmaster's, still public
+    _, db_session = real_app
+    db = db_session()
+    db.expire_all()
+    action = db.query(ModAction).filter_by(board_id=board_id, kind="hide_post_from_guild").first()
+    assert action.by_admin is False and action.json["mod"] == gm.username
+
+
+def test_a_hidden_posts_log_entry_page_title_carries_no_title_for_the_public(make_member, real_app):
+    """H4."""
+    board_id, name, gm, author, post_id, b36 = hide(real_app, make_member, title="TITLE-IN-THE-HEAD", body="<p>x</p>")
+    (row,) = entries(real_app, board_id=board_id, target_submission_id=post_id)
+    from ruqqus.helpers.base36 import base36encode
+    _, db_session = real_app
+    db = db_session()
+    mod_id = db.execute(text("SELECT legacy_modaction_id FROM log_entries WHERE id = :i"), {"i": row["id"]}).scalar()
+    path = f"/+{name}/mod/log/{base36encode(mod_id)}"
+    public = get(real_app[0].test_client(), path)
+    assert public.status_code == 200 and "TITLE-IN-THE-HEAD" not in public.get_data(as_text=True)
+    assert "TITLE-IN-THE-HEAD" in get(gm.browser(), path).get_data(as_text=True)                # the guildmasters see the title, as before
+
+
+def test_hiding_a_version_hides_it_on_every_copy_and_earlier_versions_of_a_hidden_post_are_not_shown(make_member, real_app):
+    """M1 and M2."""
+    from ruqqus.classes import Submission, SubmissionAux
+    board_id, name = guild(real_app)
+    other_board, _ = guild(real_app)
+    author, admin, stranger = make_member(), admin_of(make_member), make_member()
+    post_id, b36 = add_post(author, board_id, "OLD-TITLE", "<p>OLD-WORDS</p>")
+    db = author.db_session()
+    db.rollback()
+    with author.app.test_request_context("/"):
+        copy = Submission(author_id=author.id, board_id=other_board, original_board_id=board_id, repost_id=post_id,
+                          created_utc=int(time.time()) - 3600, post_public=True)
+    db.add(copy)
+    db.flush()
+    db.add(SubmissionAux(id=copy.id, title="OLD-TITLE", body="OLD-WORDS", body_html="<p>OLD-WORDS</p>"))
+    db.commit()
+    copy_id = copy.id
+    assert post(author.browser(), author, f"/edit_post/{b36}", title="NEW-TITLE", body="NEW-WORDS", edit_summary="rewrite").status_code in (200, 302)
+    _, db_session = real_app
+    db = db_session()
+    db.expire_all()
+    rows = db.execute(text("SELECT id, target_submission_id, edit_group FROM content_edit_history WHERE action = 'edit' "
+                           "AND target_submission_id IN (:a, :b) ORDER BY id"), {"a": post_id, "b": copy_id}).all()
+    assert {r[1] for r in rows} == {post_id, copy_id} and len({r[2] for r in rows}) == 1 and rows[0][2]      # one edit, one group
+    assert post(admin.browser(), admin, f"/admin/history/{rows[0][0]}/hide", reason="Personal details").status_code == 303
+    db.expire_all()
+    hidden = db.execute(text("SELECT hidden_utc, previous_title FROM content_edit_history WHERE edit_group = :g"), {"g": rows[0][2]}).all()
+    assert len(hidden) == 2 and all(h[0] > 0 and h[1] is None for h in hidden)                  # both copies' rows, not just the one
+    # an old version of a post a guild then hid is not shown to strangers
+    db.execute(text("UPDATE content_edit_history SET hidden_utc = 0 WHERE edit_group = :g"), {"g": rows[0][2]})
+    db.execute(text("UPDATE content_edit_history SET previous_title = 'OLD-TITLE' WHERE edit_group = :g"), {"g": rows[0][2]})
+    db.execute(text("UPDATE submissions SET hidden_by_guild = true WHERE id = :p"), {"p": post_id})
+    db.commit()
+    assert "OLD-TITLE" not in get(stranger.browser(), f"/post/{b36}/history").get_data(as_text=True)
+    for member in (author, admin):
+        assert "OLD-TITLE" in get(member.browser(), f"/post/{b36}/history").get_data(as_text=True), member.username
+
+
+def test_an_exile_never_pairs_an_account_with_an_anonymous_item_and_reads_as_the_exile_of_a_person(make_member, real_app):
+    """H6: an exile that cites an anonymous post would say who wrote it, in the item's log, the account's log and the filters."""
+    board_id, name = guild(real_app)
+    gm, author, visible_author = guildmaster(make_member, board_id), make_member(), make_member()
+    anon_id, anon36 = add_post(author, board_id, "Anonymous post", "<p>x</p>", anonymous=True)
+    add_comment(author, anon_id, board_id, "<p>a named comment: this is how they took part</p>")
+    named_id, named36 = add_post(visible_author, board_id, "Named post", "<p>y</p>")
+    for username, fullname in ((author.username, f"t2_{anon36}"), (visible_author.username, f"t2_{named36}")):
+        answer = post(gm.browser(), gm, f"/mod/exile/{name}", username=username, thing=fullname)
+        assert answer.status_code in (200, 204), answer.get_data(as_text=True)[:200]
+    anon_entry, = entries(real_app, action="exile_user", target_user_id=author.id)
+    named_entry, = entries(real_app, action="exile_user", target_user_id=visible_author.id)
+    assert anon_entry["target_submission_id"] is None                                           # the citation of an anonymous post is dropped
+    assert named_entry["target_submission_id"] == named_id                                      # a named post's stays
+    visitor = real_app[0].test_client()
+    log = get(visitor, f"/log?type=sanction&guild={name}").get_data(as_text=True)
+    assert f"@{author.username}" in log and f"@{visible_author.username}" in log               # the line is about the person
+    assert not names_post(log, anon36) and not names_post(log, named36)                         # an exile is about the person, not the item
+    assert f"@{visible_author.username}" in get(visitor, f"/post/{named36}/log").get_data(as_text=True)
+    assert get(visitor, f"/log?type=sanction&to={visible_author.username}").get_data(as_text=True).count("exiled user") == 1
+    # the post is made anonymous AFTER the exile cited it: the item's own log and the filters stop pairing the two
+    _, db_session = real_app
+    db = db_session()
+    db.execute(text("UPDATE submissions SET is_anonymous = true WHERE id = :p"), {"p": named_id})
+    db.commit()
+    assert f"@{visible_author.username}" not in get(visitor, f"/post/{named36}/log").get_data(as_text=True)
+    assert get(visitor, f"/log?type=sanction&to={visible_author.username}").get_data(as_text=True).count("exiled user") == 0
+    staff = get(admin_of(make_member).browser(), f"/admin/log?type=sanction&to={visible_author.username}").get_data(as_text=True)
+    assert "exile_user" in staff                                                                # staff still see it
+
+
+def test_the_log_pages_are_not_for_search_engines(make_member, real_app):
+    member = make_member()
+    visitor = real_app[0].test_client()
+    for path in ("/log", f"/@{member.username}/log"):
+        page = get(visitor, path)
+        assert page.status_code == 200 and "noindex" in page.headers.get("X-Robots-Tag", ""), path
+    assert 'name="robots" content="noindex"' in get(visitor, "/log").get_data(as_text=True)
+    robots = get(visitor, "/robots.txt").get_data(as_text=True)
+    for line in ("Disallow: /log", "Disallow: /post/*/log", "Disallow: /comment/*/log", "Disallow: /@*/log"):
+        assert line in robots, line
+
+
+def test_the_sites_own_boards_are_not_named_as_guilds_in_the_log(make_member, real_app):
+    from ruqqus.classes import ModAction
+    admin, author = admin_of(make_member), make_member()
+    post_id, b36 = add_post(author, 2, "A profile post", "<p>words</p>")
+    _, db_session = real_app
+    db = db_session()
+    db.add(ModAction(kind="ban_post", user_id=admin.id, board_id=2, target_submission_id=post_id, note="admin action"))
+    db.commit()
+    page = get(real_app[0].test_client(), "/log").get_data(as_text=True)
+    assert b36 in page and "systemprofile" not in page

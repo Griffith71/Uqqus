@@ -5,6 +5,17 @@ Disallow: /submit
 Disallow: /settings
 Disallow: /me
 Disallow: /discord
+# the Log (and the log of one post, comment or account, and a preserved copy) is a record, not content to be found by a search
+# engine; the pages also say noindex, and neither stops a scraper. A rule is a prefix, so a bare /log would also shut out /login and
+# /logout: /log itself, /log?... and everything under /log/ are named instead
+Disallow: /log$
+Disallow: /log?
+Disallow: /log/
+Disallow: /post/*/log
+Disallow: /comment/*/log
+Disallow: /post/*/copy
+Disallow: /comment/*/copy
+Disallow: /@*/log
 
 User-Agent: DotBot
 User-Agent: TurnitinBot

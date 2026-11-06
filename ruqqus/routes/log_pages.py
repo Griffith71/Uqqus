@@ -25,11 +25,22 @@ from ruqqus.helpers.base36 import base36decode, base36encode
 from ruqqus.helpers.get import get_comment, get_guild, get_post, get_user
 from ruqqus.helpers.visibility import board_hidden, comment_hidden, hidden_notice, post_hidden, user_hidden
 from ruqqus.helpers.wrappers import admin_level_required, auth_desired
-from ruqqus.__main__ import app
+from ruqqus.__main__ import app, limiter
 
 PAGE = 50
 
 app.jinja_env.globals.update(LOG_RULES=action_log.RULES, LOG_TYPES=action_log.TYPES)
+
+
+def _noindex(html):
+    """A Log page as a response nobody should index: the deleted-text rules to come make these pages a record, not content to
+    be found by a search engine (the owner, 2026-11-05). `robots.txt` disallows them too, and neither stops a scraper."""
+    response = app.make_response(html)
+    response.headers["X-Robots-Tag"] = "noindex"
+    return response
+
+
+LOG_RATE = "60/minute"          # per address: the pages are a database read each and a scraper's target
 
 
 def _names(db, table, column, ids):
@@ -103,6 +114,8 @@ def _rows(entries, v):
         board = guilds.get(e["board_id"]) if e["board_id"] else None
         if board is not None and board_hidden(board, v):
             continue
+        if board is not None and board.id in action_log.SITE_BOARDS:
+            board = None                    # a profile post's board is the site's own, not a guild to name (L1)
         role = e["actor_role"]
         actor = people.get(e["actor_id"])
         if role != action_log.GUILDMASTER or e["actor_id"] is None:
@@ -111,14 +124,16 @@ def _rows(entries, v):
             who = log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted,
                                   hidden=user_hidden(actor, v))
         target = ""
-        if e["target_submission_id"]:
-            target = log_view.item_link("post", base36encode(e["target_submission_id"]))
-        elif e["target_comment_id"]:
-            target = log_view.item_link("comment", base36encode(e["target_comment_id"]))
-        elif e["target_user_id"]:
+        if e["target_user_id"]:
+            # a person is the subject of an exile, a mute or a ban, even when an item is cited with it ("exiled user @x", not
+            # "exiled #a1b2c"); the item is the subject only when there is no person
             user = people.get(e["target_user_id"])
             target = log_view.person(getattr(user, "username", ""), deleted=user is None or user.is_deleted,
                                      hidden=user_hidden(user, v))
+        elif e["target_submission_id"]:
+            target = log_view.item_link("post", base36encode(e["target_submission_id"]))
+        elif e["target_comment_id"]:
+            target = log_view.item_link("comment", base36encode(e["target_comment_id"]))
         copy = copies.get(e["id"])
         can_open = bool(copy and v is not None and not copy["scrubbed_utc"] and action_log.snapshot_visible(
             copy, viewer_id=v.id, level=level, guild_mod=copy["board_id"] in mine))
@@ -157,15 +172,15 @@ def _about_page(v, *, heading, back, scope, deletes, page):
     when `deletes` is given (the author's own page, an admin's), the times its author deleted something."""
     page = min(page, ABOUT_MAX_PAGE)
     want = page * log_view.PER_PAGE
-    entries, _ = action_log.fetch(g.db, level=0, open_guilds_only=True, scope=scope, limit=want)
+    entries, _ = action_log.fetch(g.db, level=0, scope=scope, limit=want)
     rows = _rows(entries, v)
     if deletes is not None:
         rows += _delete_rows(action_log.author_deletes(g.db, limit=want, **deletes), v)
     rows.sort(key=lambda r: (r["created_utc"], str(r["id"]).startswith("d"), int(str(r["id"]).lstrip("d"))), reverse=True)
     start = (page - 1) * log_view.PER_PAGE
     shown = rows[start:start + log_view.PER_PAGE]
-    return render_template("log_about.html", v=v, heading=heading, back=back, rows=shown, tab="content", page=page,
-                           more=len(rows) > start + log_view.PER_PAGE and page < ABOUT_MAX_PAGE)
+    return _noindex(render_template("log_about.html", v=v, heading=heading, back=back, rows=shown, tab="content", page=page,
+                                    more=len(rows) > start + log_view.PER_PAGE and page < ABOUT_MAX_PAGE))
 
 
 def _may_see_deletes(v, author_id):
@@ -174,6 +189,7 @@ def _may_see_deletes(v, author_id):
 
 
 @app.route("/post/<pid>/log", methods=["GET"])
+@limiter.limit(LOG_RATE)
 @auth_desired
 def post_log(pid, v):
     """What was decided about a post, and about the guild copies of it: hides, removals, restores, hidden versions. A post named
@@ -190,6 +206,7 @@ def post_log(pid, v):
 
 
 @app.route("/comment/<cid>/log", methods=["GET"])
+@limiter.limit(LOG_RATE)
 @auth_desired
 def comment_log(cid, v):
     comment = get_comment(cid, v=v)
@@ -204,6 +221,7 @@ def comment_log(cid, v):
 
 
 @app.route("/@<username>/log", methods=["GET"])
+@limiter.limit(LOG_RATE)
 @auth_desired
 def profile_log(username, v):
     """What was decided about an account and about what it wrote: suspensions and exiles, and every hide and removal of its posts
@@ -220,6 +238,7 @@ def profile_log(username, v):
 
 
 @app.route("/log", methods=["GET"])
+@limiter.limit(LOG_RATE)
 @auth_desired
 def public_log(v):
     args = request.args
@@ -227,14 +246,14 @@ def public_log(v):
     rule = action_log.parse_rule(args.get("rule"))
     before = log_view.parse_cursor(args.get("before"))
     entries, more = action_log.fetch(
-        g.db, level=0, log_type=tab, rule=rule or None, before_id=before, limit=log_view.PER_PAGE, open_guilds_only=True,
+        g.db, level=0, log_type=tab, rule=rule or None, before_id=before, limit=log_view.PER_PAGE,
         board_id=_id_of(get_guild, args.get("guild")), actor_id=_id_of(get_user, args.get("by")),
         target_user_id=_id_of(get_user, args.get("to")))
     rows = _rows(entries, v)
-    return render_template(
+    return _noindex(render_template(
         "log.html", v=v, tab=tab, rows=rows, more=more, next_before=entries[-1]["id"] if entries else None,
         tabs=log_view.TABS, tab_labels=log_view.TAB_LABELS, rule=rule,
-        filters={k: (args.get(k) or "").strip().lstrip("@+")[:40] for k in ("guild", "by", "to")})
+        filters={k: (args.get(k) or "").strip().lstrip("@+")[:40] for k in ("guild", "by", "to")}))
 
 
 @app.route("/log/<int:entry_id>/copy", methods=["GET"])
@@ -269,7 +288,7 @@ def deletion_log_retired():
 def _item_copy(v, post_id=None, comment_id=None):
     """The newest private copy of a post or comment, for whoever may open it; a 404 for everyone else, so the page says nothing
     about whether the item, or a copy of it, exists."""
-    snapshot = action_log.snapshot_for(g.db, post_id=post_id, comment_id=comment_id)
+    snapshot = action_log.snapshot_for(g.db, post_id=post_id, comment_id=comment_id, viewer=v)
     if v is None or not action_log.may_open_copy(snapshot, v):
         abort(404)
     response = app.make_response(render_template(
