@@ -591,7 +591,9 @@ def test_every_local_script_and_stylesheet_exists():
     for name, src in _templates().items():
         for path in re.findall(r"asset_url\('([^']+)'\)", src):
             file = ROOT / "ruqqus" / "assets" / path
-            assert file.exists() or file.with_suffix(".scss").exists() or path in ("js/chat_bundle.js", "js/call_bundle.js", "js/space_bundle.js"), (name, path)
+            # the four chat bundles are built by the Dockerfile and gitignored (a fresh checkout, which is what CI runs, has none)
+            built = ("js/chat_bundle.js", "js/call_bundle.js", "js/space_bundle.js", "js/chat_apps_bundle.js")
+            assert file.exists() or file.with_suffix(".scss").exists() or path in built, (name, path)
 
 
 def test_menus_agree_with_the_server():
