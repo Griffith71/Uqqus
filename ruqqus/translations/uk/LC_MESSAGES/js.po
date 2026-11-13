@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s є…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s встановити повідомлення, щоб зникнути після %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s вимкнено зникнення повідомлень."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -132,12 +140,26 @@ msgstr[0] "%(num)s учасник"
 msgstr[1] "%(num)s членів"
 msgstr[2] "%(num)s членів"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s повідомлення знайдено."
+msgstr[1] "%(num)s повідомлення знайдені."
+msgstr[2] "%(num)s повідомлень знайдено."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s повідомлення в нитки"
 msgstr[1] "%(num)s повідомлення в нитки"
 msgstr[2] "%(num)s повідомлень в нитки"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s повідомлення читати …"
+msgstr[1] "%(num)s повідомлення читати …"
+msgstr[2] "%(num)s повідомлення читати …"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -258,6 +280,14 @@ msgstr[2] "%(owner)s · %(num)s членів"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Зберегти будь-яку сторону?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s КБ"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -291,6 +321,14 @@ msgstr[0] "+%(guild)s · %(num)s коментар"
 msgstr[1] "+%(guild)s · %(num)s коментарів"
 msgstr[2] "+%(guild)s · %(num)s коментарів"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 день"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 тиждень"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s додано до цієї групи. Прийміть його і напишіть в ній."
@@ -301,10 +339,6 @@ msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be se
 msgstr[0] "@%(name)s не відкрив чат ще. Ваше повідомлення буде надіслано, коли вони роблять."
 msgstr[1] "@%(name)s не відкрив чат ще. Ваші %(num)s повідомлення будуть відправлені, коли вони роблять."
 msgstr[2] "@%(name)s не відкрив чат ще. Ваші повідомлення %(num)s будуть відправлені, коли вони роблять."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s є…"
 
 #, machine, plain1
 msgid "A Space"
@@ -358,6 +392,13 @@ msgid "A message that isn't there any more"
 msgstr "Повідомлення, яке не існує"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Не відправлено повідомлення: чат припинився в цій вкладці, перш ніж він міг піти."
+msgstr[1] "%(num)s повідомлення, які ви писали тут, не відправили: чат зупинився в цій вкладці, перш ніж вони могли б піти."
+msgstr[2] "%(num)s повідомлень, які ви писали тут, не відправили: чат зупинився в цій вкладці, перш ніж вони могли б піти."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Пост може мати %(num)s співавтора."
@@ -377,9 +418,13 @@ msgid "Accept"
 msgstr "Прийняти"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Додати"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Додавання помічника по імені користувача"
 
 #, machine, plain1
 msgid "Add image"
@@ -418,12 +463,12 @@ msgid "Adding..."
 msgstr "Додати..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Адміністратор"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Згода"
 
@@ -443,6 +488,10 @@ msgstr "Вирівнює право"
 msgid "Alignment"
 msgstr "Вирівнювання"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Також блок @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -452,7 +501,7 @@ msgstr "Також тут: %(names)s"
 msgid "An app"
 msgstr "Додаток"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Злість"
 
@@ -462,7 +511,7 @@ msgstr "Злість"
 msgid "Announcements"
 msgstr "Анонси"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Анонім"
 
@@ -470,6 +519,10 @@ msgstr "Анонім"
 #, machine, plain1
 msgid "Answer"
 msgstr "Відправити"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Будь-який в чаті може скопіювати повідомлення або приймати зображення екрана до нього йде."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -483,23 +536,23 @@ msgstr "Прикріпіть посилання на цю посаду"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Aw качки. Немає GIFs знайдено ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Круто"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Ніяково"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Нагору"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Заблокувати"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Заблокувати @%(name)s?"
 
@@ -510,6 +563,10 @@ msgstr "Заблоковано @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "(Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Принесіть ваші ключі чату над зупинкою. Введіть пароль для обробки."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -584,7 +641,7 @@ msgstr "Камера вимкнено"
 msgid "Camera on"
 msgstr "Камера на"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -622,7 +679,7 @@ msgstr[0] "Канал · %(num)s учасник"
 msgstr[1] "Канал · %(num)s члени"
 msgstr[2] "Канал · %(num)s членів"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Канали"
 
@@ -632,13 +689,45 @@ msgstr "Канали"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Чат"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Чат не може привезти ваші ключі. Перезавантаження, щоб спробувати знову."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Чат не може підключитися."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Чат не може закінчитися. Введіть пароль, щоб спробувати ще раз."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Чат не може закінчитися. Перезавантаження, щоб спробувати знову."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Не вдалося відкрити цей браузер, тому він знову починає."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Чат не може початися в цьому браузері."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Чат не відповів. Спробуйте ще раз."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Чи не було використано на цьому веб-переглядачі протягом тривалого часу, тому він знову починає."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Чат закриває в іншій вкладці…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -652,6 +741,26 @@ msgstr "Чат все ще починається."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Чат все ще починається. Спробуйте ще раз."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Чат не доступний для вашого облікового запису прямо зараз."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Чат загубив його підключення. Зрада…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Щоб зберегти дані сайту, ви не можете тут. Чат не може початися в цьому вікні."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Чат припинився в цій вкладці."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Чат був відключений на цьому браузері з іншого пристрою. Почати знову тут…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Чат з @%(name)s"
@@ -660,7 +769,7 @@ msgstr "Чат з @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Ключ чату не доступний прямо зараз."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Чати"
 
@@ -700,11 +809,11 @@ msgstr "Виберіть, хто може побачити це."
 msgid "Choose your profile or at least one guild."
 msgstr "Оберіть Ваш профіль або принаймні один прохід."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Кола"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Закрити"
 
@@ -740,7 +849,7 @@ msgstr "Порівняти їх з тими, хто показує додато�
 msgid "Confirm in the app as well."
 msgstr "Підтвердження в додатку, а також."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Розгубленість"
 
@@ -892,6 +1001,10 @@ msgstr "Чи не навантажуйте піновані повідомлен
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Не завантажуйте попередній перегляд."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Не завантажуйте чати"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1053,7 +1166,11 @@ msgstr "Не скопіюйте: виберіть коди та скопіюйт
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Не навантажуйте раніше повідомлення. Спробуйте ще раз."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Не завантажуйте своїх чатів. Спробуйте ще раз…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Створення допису"
 
@@ -1061,7 +1178,7 @@ msgstr "Створення допису"
 msgid "Creating…"
 msgstr "Створення …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Крінж"
 
@@ -1069,7 +1186,7 @@ msgstr "Крінж"
 msgid "Cross out"
 msgstr "Пробити"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Темна тема"
 
@@ -1134,13 +1251,21 @@ msgstr "Видалити цю історію?"
 msgid "Delete this update?"
 msgstr "Видалення цього оновлення?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Видалення коментаря"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Видалення допису"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Зняття повідомлень"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Відхилення повідомлень вимкнено."
 
 #, machine, plain1
 msgid "Discard"
@@ -1174,6 +1299,10 @@ msgstr "Сонце"
 #, machine, plain1
 msgid "Done."
 msgstr "Діон."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Завантажити"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1228,7 +1357,7 @@ msgstr "Зашифрований кінець: тільки люди в цьом
 msgid "Ended"
 msgstr "Закінчення"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Введіть URL-адресу"
 
@@ -1239,6 +1368,10 @@ msgstr "Введіть адресу електронної пошти: https://e
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Введіть пароль один раз. Заблокує ключ до ваших повідомлень в цьому браузері, тому сайт ніколи не може прочитати їх."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Введіть пароль для підтвердження."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1252,9 +1385,49 @@ msgstr "Введіть пароль."
 msgid "Enter your recovery code"
 msgstr "Введіть код для відновлення"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Введіть свій двофакторний код"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Введіть свій двофакторний код."
+
+#, machine, plain2
+msgid "File"
+msgstr "Головна"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Файли можна надсилати один раз @%(name)s відкрито чат."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Файли можна надсилати один раз чат розблоковано на цьому пристрої."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Файли не можна надсилати тут."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Головна"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Оздоблення"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Оздоблення чату над"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Оздоблення від"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Оздоблення чату в іншій вкладці …"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1276,9 +1449,13 @@ msgid "Formatting"
 msgstr "Форматування"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Переслати"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Переадресація цього повідомлення"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1287,7 +1464,19 @@ msgstr[0] "Перед тим, щоб на більшості провин."
 msgstr[1] "Перед тим, щоб на більшість %(num)s провини."
 msgstr[2] "Перед тим, як більшість %(num)s вин."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Вступ до…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Переадресація"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Закінчення."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Пересилання"
 
@@ -1327,11 +1516,11 @@ msgstr "Подаруйте кнопці деякий текст."
 msgid "Give the template a name."
 msgstr "Подаруйте шаблону ім'я."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Перейти на сайт"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Гидота"
 
@@ -1339,7 +1528,7 @@ msgstr "Гидота"
 msgid "Group info"
 msgstr "Групова інформація"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Гільдії"
 
@@ -1351,13 +1540,25 @@ msgstr "Гільдії з чатом"
 msgid "Hand raised"
 msgstr "Рука піднялася"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Радість"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Ви зберігаєте код відновлення чату? Без нього забутий пароль може втратити старі повідомлення."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Заголовок %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Допомога"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Допомагає писати в цьому каналі з вами. Вибираємо до трьох осіб, які в ній знаходяться."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1400,6 +1601,10 @@ msgstr "Я погоджуюся з правилами"
 msgid "I don't have it: start over"
 msgstr "У мене немає: початок"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "У мене є"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Я врятував"
@@ -1407,6 +1612,10 @@ msgstr "Я врятував"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Якщо ви коли-небудь забули пароль, цей код є єдиним способом, щоб читати старі повідомлення. Зберігати його кудись безпечно, як менеджер паролів."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Якщо у вас ще є код відновлення, використовуйте його замість: деякі старі повідомлення знаходяться тільки в резервній копії, він відкриває."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1498,11 +1707,11 @@ msgstr "Його історії залишаються у вашому архі�
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Приєднатися"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Приєднатися до %(channel)s"
 
@@ -1530,12 +1739,16 @@ msgstr "Ключові факти і посилання люди повинні 
 msgid "Last used %(date)s"
 msgstr "Останній використовується %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Навігація"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Сміх"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Вийти"
 
@@ -1551,7 +1764,7 @@ msgstr "Залишити цю групу? Хтось ще в ньому стає
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Залишити цю групу? Ви не побачите нових повідомлень, якщо хтось додає вам знову."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Світла тема"
 
@@ -1597,6 +1810,10 @@ msgstr "Зв'язатися з нами"
 msgid "Load earlier messages"
 msgstr "Завантаження попередніх повідомлень"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Навантаження коментаря…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Навантаження пошти …"
@@ -1621,17 +1838,25 @@ msgstr "Завантаження шаблонів..."
 msgid "Loading..."
 msgstr "Завантаження."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Завантаження…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Любов"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Нижня рука"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Зробіть новий код"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Зробіть новий код відновлення?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1649,7 +1874,7 @@ msgstr "Зробити це повідомлення громадськістю?
 msgid "Making the channel…"
 msgstr "Виготовлення каналу…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Ну таке"
 
@@ -1666,6 +1891,14 @@ msgstr "Видалити повідомлення"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Запит на повідомлення. Не знаєте, що ви бачили це до тих пір, поки ви приймаєте."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Повідомлення зникнуть після %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Повідомлень про те, що цей веб-переглядач вже може прочитати тут."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1677,7 +1910,7 @@ msgid "Microphone %(number)s"
 msgstr "Мікрофон %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Більше"
 
@@ -1685,11 +1918,11 @@ msgstr "Більше"
 msgid "Move to listeners"
 msgstr "Перемістити слухачів"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Вимкнути"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Ігнорується"
 
@@ -1709,7 +1942,11 @@ msgstr "Ім'я папки"
 msgid "New channel"
 msgstr "Новий канал"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Нові повідомлення в цьому чаті зникнуть для всіх після вибору часу. Повідомлення, надіслані перед тим, як зберегти час, який вони були відправлені."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Ні"
 
@@ -1729,17 +1966,29 @@ msgstr "Немає дзвінків. Почати один з голосовог
 msgid "No camera was found."
 msgstr "Не знайдено камери."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Не знайдено чатів."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Ніяких співавторів."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Немає коду? Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Немає пристроїв. Відкрийте чат для запуску."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Без мітки"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Немає помічників."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1748,6 +1997,10 @@ msgstr "Не знайдено мікрофона."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Ніяких матчів. Ви можете надсилати в чати і людям, які ви стежите."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Ніяких повідомлень."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1793,6 +2046,10 @@ msgstr "Не збережено"
 msgid "Not used yet"
 msgstr "Не використовується"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Не знайдено в повідомленнях цей браузер може прочитати."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Не знайдено."
@@ -1821,17 +2078,45 @@ msgstr "Ніщо до попереднього перегляду."
 msgid "Nothing was connected."
 msgstr "Ніщо було підключено."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Сповіщення"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "На цьому веб-сайті заблоковано сповіщення. Дозволити їх в налаштуваннях браузера, щоб повернути їх."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "У цьому браузері відсутні повідомлення."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Повідомлення про те, що в цьому браузері немає."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Повідомлення не можна перевірити. Перезавантажити сторінку, щоб спробувати знову."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Не можна перевертатися. Спробуйте ще раз."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Не допускаються повідомлення про це."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Кількість"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "Боже мій"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Відправити"
 
 #, machine, plain1
 msgid "Offline"
@@ -1840,6 +2125,10 @@ msgstr "Оффлайн"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Оффлайн · птиця"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Тільки власник групи і адміністратори можуть змінити це."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1875,6 +2164,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Відкрийте чат ще раз, щоб розблокувати ваші повідомлення, потім спробуйте знову."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Відкрийте чат, щоб закінчити налаштування повідомлень на цьому пристрої."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Налаштування Open Media"
 
@@ -1885,6 +2178,10 @@ msgstr "Відкрийте простір"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Відкрийте чат +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Відкриття файлу…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1911,7 +2208,7 @@ msgstr "Ви повинні"
 msgid "Pick a date and time."
 msgstr "Підберіть дату і час."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Виберіть мітку"
 
@@ -1945,11 +2242,15 @@ msgstr "На цьому сайті немає."
 msgid "Pin this message"
 msgstr "Перейдіть на це повідомлення"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Консерви"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Прикріплені повідомлення"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Будь ласка"
 
@@ -1957,12 +2258,18 @@ msgstr "Будь ласка"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Будь ласка, введіть дійсний URL (в тому числі http:// або https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Увійдіть ще раз."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Популярні канали"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Опублікувати"
 
@@ -1974,7 +2281,7 @@ msgstr "Опубліковано. Перезавантажити сторінк�
 msgid "Posting to %(guilds)s"
 msgstr "Повідомлення %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Публікація у вашому профілі"
 
@@ -1983,7 +2290,7 @@ msgstr "Публікація у вашому профілі"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Пост на профіль, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Публікація…"
 
@@ -2084,6 +2391,14 @@ msgstr "Редакція"
 msgid "React with %(emoji)s"
 msgstr "Реакція з %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Запис голосової замітки"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Запис… натиснути мікрофон знову, щоб надіслати його."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Відновлення коду"
@@ -2096,13 +2411,17 @@ msgstr "Червоний"
 msgid "Refreshing…"
 msgstr "Відновити …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Реєстрація"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Оновити оновлення"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Оновити"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2117,13 +2436,17 @@ msgstr "Комплект перемикання"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Вилучити"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Видалити %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Видалити @%(name)s як помічник"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2176,15 +2499,15 @@ msgstr "Перейменувати цю папку"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Поскаржитися"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Поскаржитися на коментар"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Поскаржитися на допис"
 
@@ -2192,11 +2515,11 @@ msgstr "Поскаржитися на допис"
 msgid "Report this message"
 msgstr "Звіт про це повідомлення"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Надсилання скарги"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Надсилання скарги"
 
@@ -2213,13 +2536,13 @@ msgstr "Кільце…"
 msgid "Rules of this channel"
 msgstr "Правила даного каналу"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Сумно"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Зберегти"
 
@@ -2235,11 +2558,15 @@ msgstr "Зберегти як шаблон..."
 msgid "Save your recovery code"
 msgstr "Зберегти код відновлення"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Збережено"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Збережено."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Збереження"
 
@@ -2273,7 +2600,7 @@ msgstr "Збереження…"
 msgid "Say what is wrong with this account."
 msgstr "Скажіть, що неправильно з цим обліковим записом."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Страх"
 
@@ -2292,7 +2619,8 @@ msgstr "Графік роботи %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Шукати"
 
@@ -2303,6 +2631,14 @@ msgstr "Шукайте когось, щоб додати."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Пошук телеканалу"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Пошук чату"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Пошук чатів"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2328,7 +2664,7 @@ msgstr[0] "%(num)s час"
 msgstr[1] "Побачити %(num)s"
 msgstr[2] "Дивись %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Виберіть розмову"
 
@@ -2337,6 +2673,10 @@ msgstr "Виберіть розмову"
 #, machine, plain1
 msgid "Send"
 msgstr "Відправити"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Надіслати файл"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2354,6 +2694,21 @@ msgstr "Відправте наступні фотографії:"
 msgid "Send your next videos to:"
 msgstr "Відправте наступні відео:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Відправлення %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Відправлення %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Відправляючи один раз чат готовий …"
+msgstr[1] "Відправлення %(num)s повідомлень один чат готовий …"
+msgstr[2] "Відправлення %(num)s повідомлень один чат готовий …"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Відправити."
@@ -2370,6 +2725,14 @@ msgstr "Сент"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Кілька людей…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Поділитися екраном"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Відправити коментар"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2390,11 +2753,20 @@ msgstr[2] "Показати %(num)s нових повідомлень"
 msgid "Show formatting"
 msgstr "Показати форматування"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Показати в каналі"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Показати в чаті"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Згорнути"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Показати більше"
 
@@ -2407,19 +2779,19 @@ msgstr "Переглянути оригінальні"
 msgid "Show translation"
 msgstr "Показати переклад"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Увійти"
+msgstr "Завершити сеанс"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Зареєструватися %(device)s"
+msgstr "Завершити сеанс на %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Вимкніть %(device)s? Для читання чатів потрібно зареєструватися знову."
+msgstr "Відключення %(device)s? Для читання чатів потрібно зареєструватися знову."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Вхід"
 
@@ -2539,6 +2911,11 @@ msgstr "Почати чат …"
 msgid "Starting…"
 msgstr "Почати…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Зупинити обмін"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Пробити"
@@ -2589,7 +2966,7 @@ msgstr "Форматування тексту"
 msgid "Text style"
 msgstr "Стиль тексту"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Дякуємо за запит"
 
@@ -2613,27 +2990,39 @@ msgstr "Дякую. А адмін буде виглядати на ньому."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Дякую: модератори guild будуть виглядати."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Спасибі: адміністратори сайту будуть виглядати, і ви заблоковані @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Спасибі: адміністратори сайту будуть виглядати."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Спасибі: адміністратори сайту будуть виглядати. @%(name)s не заблоковано звідси: блокувати їх з профілю."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Що чат ще не готовий до цього пристрою. Відкрийте його один раз, потім спробуйте знову."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Цей код не відкриває його. Перевірити для друку."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Не вдалося зберегти."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Цей пристрій не може бути підписаний прямо зараз."
+msgstr "Цей пристрій не може бути відключений прямо зараз."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Цей пристрій не може використовуватися."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Не вдалося надіслати"
 
@@ -2672,6 +3061,14 @@ msgstr "Не пароль."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Не можна надсилати повідомлення."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Що таке повідомлення не знайдено в каналі."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Це повідомлення не вдалося знайти в цьому чаті більше."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2757,6 +3154,10 @@ msgstr "Закрило чат: цей простір закінчився."
 msgid "The chat opens when the Space starts."
 msgstr "Відкривається чат при запуску космосу."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Проект змінився під вашим останню редагу, тому його перезавантажено. Переглянути останнє кілька слів."
@@ -2764,6 +3165,10 @@ msgstr "Проект змінився під вашим останню реда�
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Порівняти смайлики"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Файл не може бути відправлений. Спробуйте ще раз."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2780,6 +3185,10 @@ msgstr "Посилання не можна копіювати."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Не вдалося запустити мікрофон."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Не можна використовувати мікрофон. Перевірити цей сайт може використовувати його."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2819,6 +3228,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Респлей не зберіг: завантаження не вдалося. Ви можете завантажити його замість."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Змінюються ключі сайту, тому чат знову починається тут."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Резюме приховано фільтром вашого слова."
 
@@ -2854,6 +3267,10 @@ msgstr "На цьому сайті немає."
 msgid "These comments could not be loaded. Try again."
 msgstr "Ці коментарі не можуть бути завантажені. Спробуйте ще раз."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Вони ніколи не розповіли про те, що вони повідомили."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Відхилено дзвін."
@@ -2866,6 +3283,10 @@ msgstr "Вони не відповідають"
 msgid "They match"
 msgstr "Вони відповідають"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Зашифровані, використовуючи вільний простір. Тільки люди в чаті можуть відкрити їх."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Ви не зможете слідувати за вами, повідомленням або коментарями на ваших постах, і ви не побачите їх повідомлення. Ви можете розблокувати будь-який час."
@@ -2874,9 +3295,9 @@ msgstr "Ви не зможете слідувати за вами, повідо�
 msgid "This Space has ended."
 msgstr "Цей простір закінчився."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Веб-сайт"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Це також закінчується будь-яку допомогу з браузера, де ви використовували чат."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2886,9 +3307,29 @@ msgstr "Цей браузер не може робити дзвінки."
 msgid "This browser can't record the Space."
 msgstr "Цей браузер не може записувати простір."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Цей браузер не може поділитися своїм екраном."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Цей браузер не може показати повідомлення від цього сайту."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Цей браузер не може підготувати фотографії для завантаження. Спробуйте ще один браузер."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Цей веб-переглядач все ще зберігає ваші ключі чату до зміни пароля. Використовуйте їх, щоб читати старі повідомлення тут і на інших пристроях?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Цей браузер був відключений від чату з іншого пристрою, тому чат знову починає."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Цей браузер зберіг дані чату був очищений, тому чат знову починається тут."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2898,6 +3339,26 @@ msgstr "Це не може бути неоновим."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Цей канал приглушений для вас: не прочитаний точка і не згадує повідомлення."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Цей чат зашифрований, тому сайт не може прочитати його. Повідомляємо про це повідомлення і до чотирьох до нього, як ви бачите їх тут, до адміністраторів сайту."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Цей коментар не відображається."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Цей пристрій буде відключений коротко."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Цей файл не може бути відкрито. Спробуйте ще раз."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Цей файл не доступний."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Ця жива нитка закінчилася"
@@ -2905,6 +3366,10 @@ msgstr "Ця жива нитка закінчилася"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Це повідомлення не можна прочитати на цьому пристрої."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Це повідомлення було видалено."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2919,12 +3384,24 @@ msgstr "Цей запис не може бути показано."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Ця пошта off-topic для +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Зареєструватися"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Це відключення чату в цьому браузері теж, якщо це таке браузер. Починатиме новий пристрій."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Цей голосовий канал повністю (%(num)s особа)."
 msgstr[1] "Цей голосовий канал повністю (%(num)s чол.)."
 msgstr[2] "Цей голосовий канал є повним (%(num)s осіб)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Ці ключі не більше облікового запису. Використовуйте код відновлення або запустіть."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2958,7 +3435,7 @@ msgstr[0] "Довга до %(num)s (%(note)s)"
 msgstr[1] "Довгий до %(num)s (%(note)s)"
 msgstr[2] "Довгий час від %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Забагато запитів сьогодні"
 
@@ -2989,13 +3466,21 @@ msgstr "Переклад не доступний зараз."
 msgid "Try again"
 msgstr "Спробуйте ще раз"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Спробуйте завтра."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Поверніть сповіщення"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Двофакторний код"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Зареєстровано два фактори, тому чат знову починає."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -3029,12 +3514,12 @@ msgstr "Неможливо видалити коментар в цей час. �
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Не можна голосувати за цей час. Будь ласка, спробуйте ще раз."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Розблокувати"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Скасувати"
 
@@ -3054,17 +3539,13 @@ msgstr "Розблокувати"
 msgid "Unlock your messages"
 msgstr "Розблокувати повідомлення"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Розблокувати ваші повідомлення першим: перезавантажити сторінку, щоб ввести пароль."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Не ігнорувати"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Відкріпити"
 
@@ -3120,11 +3601,15 @@ msgstr "Використовуйте його тут"
 msgid "Use my recovery code instead"
 msgstr "Використовуйте код відновлення"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Використовуйте їх"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Це ім’я користувача вже зайняте :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Ім’я користувача підходить!"
 
@@ -3211,7 +3696,7 @@ msgstr[2] "Відеозв'язок · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Відео в цьому дзвінку: ви на аудіо."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Переглянути оригінал"
 
@@ -3257,6 +3742,10 @@ msgstr[0] "Голос переходить в браузер через реле
 msgstr[1] "Голос переходить в браузер через реле сайту, тому ніхто не бачить будь-яку адресу. До %(num)s осіб."
 msgstr[2] "Голос переходить в браузер через реле сайту, тому ніхто не бачить будь-яку адресу. До %(num)s осіб."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Голосова замітка"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Очікується момент: Ваші останні зміни все ще зберігаються."
@@ -3264,6 +3753,10 @@ msgstr "Очікується момент: Ваші останні зміни в
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Очікується додаток"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Ми знайшли свій чат на нашому веб-сайті"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3284,6 +3777,10 @@ msgstr "Що не так з цим простором? (за бажанням)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Що неправильно з цим повідомленням? (за бажанням)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Де слід надсилати файли в чатах?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3310,7 +3807,7 @@ msgstr "Хто сказав він"
 msgid "Who upvoted"
 msgstr "Хто виголосив"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Чому"
 
@@ -3325,6 +3822,10 @@ msgstr "Чому це порушує правила провини? Це буд�
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Чому це порушує правила провини? Це буде показано всім, хто дивиться на цю історію."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Чому цей коментар знімається? Ваша причина показана в публічному журналі."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3343,7 +3844,7 @@ msgstr "Написати щось першим."
 msgid "Write what you want to tell us."
 msgstr "Напишіть нам, що ви хочете розповісти нам."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Так"
 
@@ -3361,7 +3862,7 @@ msgstr "Так, скасувати його"
 msgid "You"
 msgstr "Ви"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Ви вже це зробили"
 
@@ -3377,7 +3878,7 @@ msgstr "Ви вже повідомляли про це повідомлення.
 msgid "You already voted on this post."
 msgstr "Ви вже проголосили на цій посаді."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Ви заблокували @%(name)s"
 
@@ -3416,7 +3917,7 @@ msgstr "Ви можете прочитати цей канал, але не пи
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Ви можете побачити, хто тут, але ви не можете говорити в цьому каналі."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Ви не можете цього зробити."
 
@@ -3460,6 +3961,14 @@ msgstr "Ви залишили космос."
 msgid "You left the call."
 msgstr "Ви залишили дзвінок."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Ви відключили всюди з іншого пристрою, тому чат знову починається."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Ви підписалися на свій двофакторний код відновлення, тому чат знову починає."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Ви неfollowed @%(name)s."
@@ -3467,6 +3976,10 @@ msgstr "Ви неfollowed @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Ви були видалені з цього космосу."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Ви отримаєте новий код відновлення, а старий - зупиниться на роботі."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3492,6 +4005,10 @@ msgstr "Ваш браузер заблокував вікно для підкл�
 msgid "Your chat devices can't be listed right now."
 msgstr "Ваші пристрої чату не можуть бути вказані прямо зараз."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Код відновлення чату"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Наші чати"
@@ -3503,6 +4020,10 @@ msgstr "Ваші чати будуть працювати знову на цьо
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Ваш коментар не може бути опублікований. Спробуйте ще раз."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Ваш поточний код відновлення буде припинено."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3534,9 +4055,32 @@ msgstr "Ваш ключ не може відображатися прямо за
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Ваш ключ був замкнений старшим паролем. Відкрийте чат на цьому сайті і введіть код відновлення один раз; потім він відкриває тут."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Ваше повідомлення буде відправлено один раз чат розблоковано на цьому пристрої."
+msgstr[1] "Ваші повідомлення %(num)s будуть відправлені один раз чат розблокований на цьому пристрої."
+msgstr[2] "Ваше повідомлення %(num)s буде відправлено один раз чат розблоковано на цьому пристрої."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Ваш старий код відновлення не працює."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Ваш пароль змінився, оскільки цей ключ чат був замкнений з ним. Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Ваш пароль був змінений для вас, тому чат знову починається тут."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Ваш пароль був змінений, тому чат знову починається тут."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Ваш пароль було скидання, тому чат знову починається тут."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3545,6 +4089,14 @@ msgstr "Ваш код відновлення"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Збережені шаблони виводяться тут."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Ваш екран можна поділитися лише тоді, коли ви перебуваєте на відео."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Ваш екран не може бути поділений."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3584,7 +4136,7 @@ msgid "blue"
 msgstr "синій"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "коментар"
 
@@ -3663,7 +4215,7 @@ msgstr "помаранчевий"
 msgid "pink"
 msgstr "рожевий"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "допис"
 

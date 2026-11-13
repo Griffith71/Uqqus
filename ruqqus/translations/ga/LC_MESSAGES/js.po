@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ga\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s tá clóscríobh…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s teachtaireachtaí a leagtar a imíonn tar éis %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s iompaithe as teachtaireachtaí ag imeacht."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -150,6 +158,15 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s teachtaireacht le fáil."
+msgstr[1] "%(num)s teachtaireachtaí le fáil."
+msgstr[2] "%(num)s teachtaireachtaí le fáil."
+msgstr[3] "%(num)s teachtaireachtaí le fáil."
+msgstr[4] "%(num)s teachtaireachtaí le fáil."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
@@ -158,6 +175,15 @@ msgstr[1] "%(num)s teachtaireachtaí sa snáithe"
 msgstr[2] "%(num)s teachtaireachtaí sa snáithe"
 msgstr[3] "%(num)s teachtaireachtaí sa snáithe"
 msgstr[4] "%(num)s teachtaireachtaí sa snáithe"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s teachtaireacht léamh…"
+msgstr[1] "%(num)s teachtaireachtaí a léamh…"
+msgstr[2] "%(num)s teachtaireachtaí a léamh…"
+msgstr[3] "%(num)s teachtaireachtaí a léamh…"
+msgstr[4] "%(num)s teachtaireachtaí a léamh…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -308,6 +334,14 @@ msgstr[4] "%(owner)s · %(num)s comhaltaí"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Sábháil ar aon nós?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s Eolas faoin gComhairle"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -345,6 +379,14 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 lá"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 seachtain"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "Chuir @%(name)s tú leis an ngrúpa seo. Glac leis é a léamh agus scríobh ann."
@@ -357,10 +399,6 @@ msgstr[1] "Nach bhfuil @%(name)s oscail comhrá go fóill. Beidh do %(num)s teac
 msgstr[2] "Nach bhfuil @%(name)s oscail comhrá go fóill. Beidh do %(num)s teachtaireachtaí a sheoladh nuair a dhéanann siad."
 msgstr[3] "Nach bhfuil @%(name)s oscail comhrá go fóill. Beidh do %(num)s teachtaireachtaí a sheoladh nuair a dhéanann siad."
 msgstr[4] "Nach bhfuil @%(name)s oscail comhrá go fóill. Do %(num)s Beidh teachtaireachtaí a sheoladh nuair a dhéanann siad."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "Cuntas deimhnithe%(name)s Tá clóscríobh…"
 
 #, machine, plain1
 msgid "A Space"
@@ -416,6 +454,15 @@ msgid "A message that isn't there any more"
 msgstr "Teachtaireacht nach bhfuil aon níos mó ann"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Ní raibh teachtaireacht a scríobh tú anseo a sheoladh: comhrá a stopadh sa chluaisín roimh d'fhéadfadh sé dul."
+msgstr[1] "%(num)s teachtaireachtaí a scríobh tú anseo nach raibh sheoladh: comhrá a stopadh sa chluaisín roimh d'fhéadfadh siad dul."
+msgstr[2] "%(num)s teachtaireachtaí a scríobh tú anseo nach raibh sheoladh: comhrá a stopadh sa chluaisín sula bhféadfadh siad dul."
+msgstr[3] "%(num)s teachtaireachtaí a scríobh tú anseo nach raibh sheoladh: comhrá a stopadh sa chluaisín sula bhféadfadh siad dul."
+msgstr[4] "%(num)s teachtaireachtaí a scríobh tú anseo nach raibh sheoladh: comhrá a stopadh sa cluaisín sula bhféadfadh siad dul."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Is féidir le post a bheith %(num)s comh-údar ag an chuid is mó."
@@ -437,9 +484,13 @@ msgid "Accept"
 msgstr "Glacadh le"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Cuir leis"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Cuir cúntóir le hainm úsáideora"
 
 #, machine, plain1
 msgid "Add image"
@@ -478,12 +529,12 @@ msgid "Adding..."
 msgstr "Ag cur..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Riarthóir"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Aontaím"
 
@@ -503,6 +554,10 @@ msgstr "Ceart ailínithe"
 msgid "Alignment"
 msgstr "Ailíniú"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Chomh maith leis sin bloc @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -512,7 +567,7 @@ msgstr "Chomh maith leis sin anseo: %(names)s"
 msgid "An app"
 msgstr "An app"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Feargach"
 
@@ -522,7 +577,7 @@ msgstr "Feargach"
 msgid "Announcements"
 msgstr "Fógraí"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Gan ainm"
 
@@ -530,6 +585,10 @@ msgstr "Gan ainm"
 #, machine, plain1
 msgid "Answer"
 msgstr "Freagra"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Is féidir le duine ar bith sa comhrá a chóipeáil fós teachtaireacht nó pictiúr a ghlacadh ar an scáileán sula dtéann sé."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -543,23 +602,23 @@ msgstr "Ceangail nasc chuig an bpost seo"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Sucks Aw. Uimh GIFs le fáil..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Iontach"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Amscaí"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Ar ais go barr"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Bac"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Bac @%(name)s?"
 
@@ -570,6 +629,10 @@ msgstr "Díchoisc @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Bold (Ctrl + B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Bringing do eochracha comhrá thar stop ar bhealach chuid. Cuir isteach do phasfhocal a chríochnú."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -646,7 +709,7 @@ msgstr "Ceamara gréasáin"
 msgid "Camera on"
 msgstr "Ceamara ar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Cealaigh"
 
@@ -688,7 +751,7 @@ msgstr[2] "Channel · %(num)s baill"
 msgstr[3] "Channel · %(num)s baill"
 msgstr[4] "Channel · %(num)s comhaltaí"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Cainéil"
 
@@ -698,13 +761,45 @@ msgstr "Cainéil atá tú i"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Comhrá"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Ní fhéadfadh Chat a thabhairt do eochracha os a chionn. Athlódáil chun iarracht a dhéanamh arís."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Ní fhéadfadh comhrá ceangal."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Ní fhéadfadh Chat chríochnú ag tosú os a chionn. Cuir isteach do phasfhocal chun iarracht a dhéanamh arís."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Ní fhéadfadh Chat chríochnú ag tosú os a chionn. Athlódáil chun iarracht a dhéanamh arís."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Ní fhéadfadh Chat oscailt cad a shábháil bhrabhsálaí, mar sin tá sé ag tosú arís anseo."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Níorbh fhéidir Chat tús a chur sa bhrabhsálaí seo."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Ní raibh comhrá a fhreagairt. Bain triail as arís."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Níor úsáideadh Chat ar an bhrabhsálaí seo ar feadh i bhfad, mar sin tá sé ag tosú arís anseo."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Tá comhrá dúnta i gcluaisín eile…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -718,6 +813,25 @@ msgstr "Tá comhrá fós ag tosú."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Tá comhrá fós ag tosú. Bain triail as arís i láthair."
 
+msgid "Chat isn't available for your account right now."
+msgstr ""
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat chaill a nasc. Ag iarraidh…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat riachtanais an bhrabhsálaí a choinneáil ar shonraí suíomh, agus ní féidir é anseo. Ní féidir Chat tús a chur sa bhfuinneog seo."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Comhrá stop sa táb."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Rinneadh comhrá a dhícheangal ar an bhrabhsálaí seo ó ghléas eile. Ag tosú arís anseo…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Comhrá le @%(name)s"
@@ -726,7 +840,7 @@ msgstr "Comhrá le @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Níl eochair Chat ar fáil ceart anois."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Comhráite"
 
@@ -766,11 +880,11 @@ msgstr "Roghnaigh is féidir a fheiceáil seo."
 msgid "Choose your profile or at least one guild."
 msgstr "Roghnaigh do phróifíl nó guild amháin ar a laghad."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Ciorcail"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Dún"
 
@@ -806,7 +920,7 @@ msgstr "Déan comparáid idir iad leis na cinn léiríonn do app, san ord céann
 msgid "Confirm in the app as well."
 msgstr "Daingniú sa app chomh maith."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Trína chéile"
 
@@ -958,6 +1072,10 @@ msgstr "Níorbh fhéidir a luchtú na teachtaireachtaí pinned"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Níorbh fhéidir luchtú an réamhamharc."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Níorbh fhéidir luchtú do comhráite"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1119,7 +1237,11 @@ msgstr "Níorbh fhéidir cóip: roghnaigh na cóid agus iad a chóipeáil."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Níorbh fhéidir luchtú teachtaireachtaí níos luaithe. Bain triail as arís i láthair."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Níorbh fhéidir luchtú do comhráite. Ag iarraidh arís…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Postáil á cruthú"
 
@@ -1127,7 +1249,7 @@ msgstr "Postáil á cruthú"
 msgid "Creating…"
 msgstr "Ag cruthú…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Náire"
 
@@ -1135,7 +1257,7 @@ msgstr "Náire"
 msgid "Cross out"
 msgstr "Trasnaigh amach"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Mód dorcha"
 
@@ -1200,13 +1322,21 @@ msgstr "Scrios an scéal seo?"
 msgid "Delete this update?"
 msgstr "Scrios an nuashonrú seo?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Trácht á scriosadh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Postáil á scriosadh"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Teachtaireachtaí Disappearing"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Tá teachtaireachtaí Disappearing as."
 
 #, machine, plain1
 msgid "Discard"
@@ -1240,6 +1370,10 @@ msgstr "Arna dhéanamh in Strasbourg"
 #, machine, plain1
 msgid "Done."
 msgstr "Arna dhéanamh sa Bhruiséil."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Íoslódáil"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1294,7 +1428,7 @@ msgstr "Deireadh-le-deireadh criptithe: ní féidir ach na daoine sa chainéal s
 msgid "Ended"
 msgstr "Deireadh le"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Cuir isteach URL"
 
@@ -1305,6 +1439,10 @@ msgstr "Cuir isteach seoladh gréasáin, cosúil le https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Cuir isteach do phasfhocal uair amháin. Glasann sé an eochair do do theachtaireachtaí sa bhrabhsálaí seo, mar sin ní féidir leis an suíomh iad a léamh."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Cuir isteach do phasfhocal a dheimhniú."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1318,9 +1456,49 @@ msgstr "Cuir isteach do phasfhocal."
 msgid "Enter your recovery code"
 msgstr "Cuir isteach do cód a ghnóthú"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Cuir isteach do chód dhá fhachtóir"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Cuir isteach do chód dhá fhachtóir."
+
+#, machine, plain2
+msgid "File"
+msgstr "Déan Teagmháil Linn"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Is féidir Comhaid a sheoladh uair amháin @%(name)s oscail comhrá."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Is féidir comhaid a sheoladh uair amháin comhrá unlocked ar an gléas seo."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Ní féidir comhaid a sheoladh anseo."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Deiridh"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Críochnaigh"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Críochnaigh a thabhairt do comhrá os cionn"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Críochnaigh ag tosú thar"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Críochnaithe comhrá a leagtar-suas i tab eile…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1344,9 +1522,13 @@ msgid "Formatting"
 msgstr "Amharc ar gach eolas"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Seol ar aghaidh"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Ar aghaidh an teachtaireacht seo"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1357,7 +1539,19 @@ msgstr[2] "Ar aghaidh go dtí an chuid is mó %(num)s guilds."
 msgstr[3] "Ar aghaidh go dtí an chuid is mó %(num)s guilds."
 msgstr[4] "Ar aghaidh chuig an chuid is mó %(num)s guilds."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Ar aghaidh go…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Ar aghaidh"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Ar aghaidh."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Á sheoladh ar aghaidh"
 
@@ -1397,11 +1591,11 @@ msgstr "Tabhair an cnaipe roinnt téacs."
 msgid "Give the template a name."
 msgstr "Tabhair an teimpléad ainm."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Téigh chuig an suíomh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Déistin"
 
@@ -1409,7 +1603,7 @@ msgstr "Déistin"
 msgid "Group info"
 msgstr "Grúpa info"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Cumainn"
 
@@ -1421,13 +1615,25 @@ msgstr "Guilds le comhrá"
 msgid "Hand raised"
 msgstr "Hand ardaithe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Sona"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "An bhfuil choinnigh tú do chód ghnóthú comhrá? Gan é, is féidir le focal faire dearmad chailleann do theachtaireachtaí d'aois."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Ceannaireacht %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Cabhracha"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Cúntóirí scríobh sa chainéal seo leat. Roghnaigh suas le triúr atá ann."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1470,6 +1676,10 @@ msgstr "Aontaím leis na rialacha"
 msgid "I don't have it: start over"
 msgstr "Níl mé é: tús a chur os a chionn"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Tá mé"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Mé a shábháil sé"
@@ -1477,6 +1687,10 @@ msgstr "Mé a shábháil sé"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Má dhéanann tú dearmad riamh do phasfhocal, is é an cód an t-aon bhealach a léamh do theachtaireachtaí d'aois. Coinnigh sé áit éigin sábháilte, cosúil le bainisteoir phasfhocal."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Má tá tú fós do cód a ghnóthú, é a úsáid ina ionad: tá roinnt teachtaireachtaí níos sine ach amháin sa cúltaca osclaíonn sé."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1568,11 +1782,11 @@ msgstr "A scéalta fanacht i do chartlann."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Bí páirteach"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Bí páirteach i %(channel)s"
 
@@ -1600,12 +1814,16 @@ msgstr "Ba cheart príomhfhíricí agus naisc daoine a fheiceáil ar dtús."
 msgid "Last used %(date)s"
 msgstr "Last used %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Níos déanaí"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Gáire"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Fág"
 
@@ -1621,7 +1839,7 @@ msgstr "Fág an grúpa seo? Éiríonn duine éigin eile ann a úinéir."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Fág an grúpa seo? Ní fheicfidh tú teachtaireachtaí nua mura gcuireann duine éigin leat arís."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Mód geal"
 
@@ -1669,6 +1887,10 @@ msgstr "Beo anois"
 msgid "Load earlier messages"
 msgstr "Luchtaigh teachtaireachtaí níos luaithe"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Loading comment…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Loading post…"
@@ -1693,17 +1915,25 @@ msgstr "Loading do teimpléid..."
 msgid "Loading..."
 msgstr "Loading..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Á lódáil…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Grá"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Lámh níos ísle"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Déan cód nua"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Déan cód a ghnóthú nua?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1721,7 +1951,7 @@ msgstr "Déan an post poiblí? Beidh gach duine in ann é a fheiceáil."
 msgid "Making the channel…"
 msgstr "Ag déanamh an chainéil…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1738,6 +1968,14 @@ msgstr "Teachtaireacht scriosadh"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Iarratas Teachtaireachta. Ní bheidh a fhios acu tá tú le feiceáil seo go dtí go nglacann tú."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Teachtaireachtaí imíonn siad tar éis %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Beidh Teachtaireachtaí a d'fhéadfadh an bhrabhsálaí seo a léamh cheana féin teacht ar ais anseo."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1749,7 +1987,7 @@ msgid "Microphone %(number)s"
 msgstr "Micreafón %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Tuilleadh"
 
@@ -1757,11 +1995,11 @@ msgstr "Tuilleadh"
 msgid "Move to listeners"
 msgstr "Bog do lucht éisteachta"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Ciúnaigh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Balbhaithe"
 
@@ -1781,7 +2019,11 @@ msgstr "Ainm do fillteán"
 msgid "New channel"
 msgstr "Cainéal nua"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Imíonn teachtaireachtaí nua sa comhrá seo do gach duine tar éis an ama a roghnaíonn tú. Teachtaireachtaí sheoladh roimh a choinneáil ar an am a cuireadh iad le."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Ní hea"
 
@@ -1801,17 +2043,29 @@ msgstr "Uimh glaonna go fóill. Tosaigh ar cheann ó glao guth comhrá nó glaoc
 msgid "No camera was found."
 msgstr "Fuarthas aon ceamara."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Níl aon comhráite le fáil."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Níl aon chomh-údar fós."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Uimh cód? Cláraigh le do phasfhocal nua ar bhrabhsálaí áit a bhfuil tú ag úsáid comhrá: is féidir é a thabhairt do comhrá ar ais."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Uimh feistí go fóill. Oscailte Comhrá chun tús a chur."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Gan lipéad"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Uimh Cúntóirí fós."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1820,6 +2074,10 @@ msgstr "Fuarthas aon micreafón."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Uimh cluichí amháin. Is féidir leat a sheoladh chuig do comhráite agus do dhaoine a leanann tú."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "No pinned teachtaireachtaí go fóill."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1865,6 +2123,10 @@ msgstr "Gan a shábháil"
 msgid "Not used yet"
 msgstr "Nach n-úsáidtear go fóill"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Ní dhéanfaidh aon ní le fáil sna teachtaireachtaí is féidir leis an bhrabhsálaí seo a léamh."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Ní dhéanfaidh aon ní le fáil."
@@ -1893,17 +2155,45 @@ msgstr "Ní dhéanfaidh aon ní a réamhamharc go fóill."
 msgid "Nothing was connected."
 msgstr "Ní raibh aon ní ceangailte."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Fógraí"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Tá fógraí blocáilte don suíomh seo sa bhrabhsálaí seo. Ceadaigh dóibh i suímh an bhrabhsálaí chun iad a chur ar."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Tá fógraí as an bhrabhsálaí seo."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Tá fógraí ar fáil sa bhrabhsálaí seo."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Níorbh fhéidir fógraí a sheiceáil. Athlódáil an leathanach chun iarracht a dhéanamh arís."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Níorbh fhéidir fógraí a iompú ar. Bain triail as arís."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Níor ceadaíodh fógraí don láithreán seo."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Liosta líonta"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Tairiscint"
 
 #, machine, plain1
 msgid "Offline"
@@ -1912,6 +2202,10 @@ msgstr "Uisce agus Séarachas"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "An t-eolas úsáideach"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Ní féidir ach úinéir grúpa agus admins athrú seo."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1947,6 +2241,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Oscailte Comhrá uair amháin a dhíghlasáil do theachtaireachtaí, ansin déan iarracht arís."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Comhrá Oscailte a chríochnú a chur ar bun do theachtaireachtaí ar an ngléas seo."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Suíomhanna meáin oscailte"
 
@@ -1957,6 +2255,10 @@ msgstr "Oscail an Spás"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Oscail an comhrá de + %(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Oscailt an comhad…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1983,7 +2285,7 @@ msgstr "Daoine a leanann tú"
 msgid "Pick a date and time."
 msgstr "Pioc dáta agus am."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Roghnaigh lipéad"
 
@@ -2017,11 +2319,15 @@ msgstr "Níl scéalta pictiúr ar fáil ar an suíomh seo go fóill."
 msgid "Pin this message"
 msgstr "PIN an teachtaireacht seo"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Cineál gas: in airde"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Teachtaireachtaí pionnaí"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Le do thoil"
 
@@ -2029,12 +2335,18 @@ msgstr "Le do thoil"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Cuir isteach bailí URL (lena n-áirítear http:// nó https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Logáil isteach arís, le do thoil."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Cainéil Coitianta"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Postáil"
 
@@ -2046,7 +2358,7 @@ msgstr "Posted. Athlódáil an leathanach chun é a fheiceáil."
 msgid "Posting to %(guilds)s"
 msgstr "Post a chur chuig %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Ag postáil chuig do phróifíl"
 
@@ -2055,7 +2367,7 @@ msgstr "Ag postáil chuig do phróifíl"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Postáil chuig do phróifíl, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Á phostáil…"
 
@@ -2158,6 +2470,14 @@ msgstr "Déan teagmháil"
 msgid "React with %(emoji)s"
 msgstr "Déan teagmháil le %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Taifead nóta gutha"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Taifeadadh… brúigh an micreafón arís chun é a sheoladh."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Cód Aisghabháil"
@@ -2170,13 +2490,17 @@ msgstr "Taiseachas aeir: fliuch"
 msgid "Refreshing…"
 msgstr "Ag tagairt…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Ag clárú"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Scaoileadh chun athnuachan"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Athlódáil"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2191,13 +2515,17 @@ msgstr "Sraith meabhrúchán"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Bain"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Bain %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Bain @%(name)s mar cúntóir"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2250,15 +2578,15 @@ msgstr "Athainmnigh an fillteán"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Tuairiscigh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Tuairiscigh an trácht"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Tuairiscigh an phostáil"
 
@@ -2266,11 +2594,11 @@ msgstr "Tuairiscigh an phostáil"
 msgid "Report this message"
 msgstr "Tuairiscigh an teachtaireacht seo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Trácht á thuairisciú"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Postáil á tuairisciú"
 
@@ -2287,13 +2615,13 @@ msgstr "Fáinneoireacht…"
 msgid "Rules of this channel"
 msgstr "Rialacha an chainéil seo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Brónach"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Sábháil"
 
@@ -2309,11 +2637,15 @@ msgstr "Sábháil mar teimpléad..."
 msgid "Save your recovery code"
 msgstr "Sábháil do cód a ghnóthú"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Sábháilte"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Sábháil."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Á shábháil"
 
@@ -2347,7 +2679,7 @@ msgstr "Cosaint…"
 msgid "Say what is wrong with this account."
 msgstr "Abair cad atá mícheart leis an gcuntas seo."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Scanraithe"
 
@@ -2366,7 +2698,8 @@ msgstr "Sceidealta do %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Cuardaigh"
 
@@ -2377,6 +2710,14 @@ msgstr "Cuardaigh do dhuine a chur leis."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Cuardaigh an cainéal seo"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Cuardaigh an comhrá seo"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Cuardaigh do comhráite"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2406,7 +2747,7 @@ msgstr[2] "Féach ar %(num)s"
 msgstr[3] "Féach ar %(num)s"
 msgstr[4] "Féach ar %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Roghnaigh comhrá"
 
@@ -2415,6 +2756,10 @@ msgstr "Roghnaigh comhrá"
 #, machine, plain1
 msgid "Send"
 msgstr "Seol an nasc seo chugainn"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Seol comhad"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2432,6 +2777,23 @@ msgstr "Seol do pictiúir seo chugainn:"
 msgid "Send your next videos to:"
 msgstr "Seol do chéad físeáin eile chuig:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Ag seoladh %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Ag seoladh %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Tá seoladh uair amháin comhrá réidh…"
+msgstr[1] "Sending %(num)s teachtaireachtaí uair amháin comhrá réidh…"
+msgstr[2] "Ag seoladh %(num)s teachtaireachtaí uair amháin comhrá réidh…"
+msgstr[3] "Ag seoladh %(num)s teachtaireachtaí uair amháin comhrá réidh…"
+msgstr[4] "Sheoladh %(num)s teachtaireachtaí uair amháin comhrá réidh…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Ag seoladh..."
@@ -2448,6 +2810,14 @@ msgstr "Tosaithe"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Tá roinnt daoine ag clóscríobh…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Scáileán Comhroinn"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Roinnte trácht"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2470,11 +2840,20 @@ msgstr[4] "Taispeáin %(num)s post nua"
 msgid "Show formatting"
 msgstr "Taispeáin formáidiú"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Taispeáin sa chainéal"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Taispeáin sa comhrá"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Taispeáin níos lú"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Taispeáin tuilleadh"
 
@@ -2487,19 +2866,19 @@ msgstr "Taispeáin bunaidh"
 msgid "Show translation"
 msgstr "Taispeáin aistriúchán"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Cláraigh amach"
+msgstr "Logáil amach"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Cláraigh amach %(device)s"
+msgstr "Logáil %(device)s amach"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Cláraigh amach %(device)s? Beidh sé gá a shíniú i arís a léamh do comhráite."
+msgstr "Dícheangal %(device)s? Beidh sé gá a shíniú i arís a léamh do comhráite."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Ag síniú isteach"
 
@@ -2623,6 +3002,11 @@ msgstr "Ag tosú an comhrá…"
 msgid "Starting…"
 msgstr "Ag tosú…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Stop a roinnt"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Stailc trína chéile"
@@ -2673,7 +3057,7 @@ msgstr "Formáidiú téacs"
 msgid "Text style"
 msgstr "Stíl téacs"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Go raibh maith agat as an iarratas"
 
@@ -2697,27 +3081,39 @@ msgstr "Go raibh maith agat. Beidh admin breathnú ar sé."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Go raibh maith agat: Beidh na moderators guild guild ar ghlacadh le breathnú."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Go raibh maith agat: Beidh an suíomh admins ghlacadh le breathnú, agus tá tú blocáilte @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Go raibh maith agat: Beidh an suíomh admins ghlacadh le breathnú."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Go raibh maith agat: Beidh an suíomh admins ghlacadh le breathnú. Níorbh fhéidir @%(name)s a bhlocáil ó anseo: bloc iad as a bpróifíl."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Níl an comhrá réidh ar an gléas seo go fóill. Oscail é uair amháin, ansin déan iarracht arís."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Ní chuireann an cód oscailt é. Seiceáil do typos."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Níorbh fhéidir é sin a shábháil."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Níorbh fhéidir an gléas sin a shíniú amach ceart anois."
+msgstr "Níorbh fhéidir an gléas sin a dhícheangal ceart anois."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Níorbh fhéidir an gléas sin a úsáid."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Níor éirigh leis sin"
 
@@ -2756,6 +3152,14 @@ msgstr "Ní hé sin do phasfhocal."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Ní féidir an teachtaireacht sin a sheoladh."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Ní fhéadfaí an teachtaireacht sin a fháil sa chainéal níos mó."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Ní fhéadfaí teachtaireacht sin a fháil sa comhrá seo níos mó."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2841,6 +3245,10 @@ msgstr "Tá an comhrá dúnta: tá an Spás dar críoch."
 msgid "The chat opens when the Space starts."
 msgstr "Osclaíonn an comhrá nuair a thosaíonn an Spás."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "An cód ó do app fíordheimhnitheoir, nó ceann de do cóid cúltaca."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "D'athraigh an dréacht faoi d'eagarthóir deireanach, mar sin athluchtaíodh é. Seiceáil do cúpla focal deireanach."
@@ -2848,6 +3256,10 @@ msgstr "D'athraigh an dréacht faoi d'eagarthóir deireanach, mar sin athluchta�
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "An emoji a chur i gcomparáid"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Níorbh fhéidir an comhad a sheoladh. Bain triail as arís."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2864,6 +3276,10 @@ msgstr "Níorbh fhéidir an nasc a chóipeáil."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Níorbh fhéidir an micreafón a thosú."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Níorbh fhéidir an micreafón a úsáid. Seiceáil go bhféadfadh an suíomh seo é a úsáid."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2903,6 +3319,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Ní raibh an replay shábháil: theip ar an uaslódáil. Is féidir leat é a íoslódáil ina ionad."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "D'athraigh eochracha an láithreáin, mar sin tá comhrá ag tosú arís anseo."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Tá an achoimre i bhfolach ag do scagaire focal."
 
@@ -2938,6 +3358,10 @@ msgstr "Níl aon áit eile chun iad a sheoladh ar an suíomh seo go fóill."
 msgid "These comments could not be loaded. Try again."
 msgstr "Níorbh fhéidir na tuairimí a luchtú. Bain triail as arís."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Níl siad in iúl riamh a thuairiscigh iad."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Dhiúltaigh siad an glaoch."
@@ -2950,6 +3374,10 @@ msgstr "Níl siad comhoiriúnach"
 msgid "They match"
 msgstr "Siad a mheaitseáil"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Fanann siad i do chuntas féin ann, criptithe, ag baint úsáide as a spás saor in aisce. Ní féidir ach na daoine sa comhrá a oscailt dóibh."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Ní bheidh siad in ann a leanúint leat, teachtaireacht tú nó trácht ar do phoist, agus ní bheidh tú a fheiceáil a gcuid post. Is féidir leat iad a dhíblocáil am ar bith."
@@ -2958,9 +3386,9 @@ msgstr "Ní bheidh siad in ann a leanúint leat, teachtaireacht tú nó trácht 
 msgid "This Space has ended."
 msgstr "Tá an Spás dar críoch."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "An brabhsálaí seo"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Críochnaíonn sé seo freisin aon tarrthála ó bhrabhsálaí nuair a d'úsáid tú comhrá."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2970,9 +3398,29 @@ msgstr "Ní féidir leis an bhrabhsálaí glaonna a dhéanamh."
 msgid "This browser can't record the Space."
 msgstr "Ní féidir leis an bhrabhsálaí seo an Spás a thaifeadadh."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Ní féidir leis an bhrabhsálaí a scáileán a roinnt."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Ní féidir leis an bhrabhsálaí fógraí a thaispeáint ón suíomh seo."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ní féidir leis an bhrabhsálaí pictiúir a ullmhú le haghaidh uaslódáil. Bain triail as bhrabhsálaí eile."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Tá an bhrabhsálaí fós do eochracha comhrá ó sular athraigh do phasfhocal. Bain úsáid as iad a léamh do theachtaireachtaí sean anseo agus ar do feistí eile?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Dícheangal an brabhsálaí seo ó chomhrá ó ghléas eile, mar sin tá comhrá ag tosú arís anseo."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Rinneadh sonraí comhrá a shábháil an bhrabhsálaí seo a ghlanadh, mar sin tá comhrá ag tosú arís anseo."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2982,6 +3430,26 @@ msgstr "Ní féidir é seo a bheith gan amhras."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Tá an cainéal muted ar do shon: aon ponc unread agus aon fhógraí lua."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Tá an comhrá deireadh-le-deireadh criptithe, mar sin ní féidir leis an suíomh é a léamh. Cuireann Tuairisciú an teachtaireacht seo agus suas go dtí ceithre roimhe, mar a fheiceann tú iad anseo, chuig an suíomh admins."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Ní féidir an trácht seo a thaispeáint."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Beidh an gléas a dhícheangal go gairid."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Níorbh fhéidir an comhad seo a oscailt. Bain triail as arís ina dhiaidh sin."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Níl an comhad seo ar fáil a thuilleadh."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Tá an snáithe beo seo críochnaithe"
@@ -2989,6 +3457,10 @@ msgstr "Tá an snáithe beo seo críochnaithe"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Ní féidir an teachtaireacht seo a léamh ar an bhfeiste seo."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Scriosadh an teachtaireacht seo."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -3003,6 +3475,14 @@ msgstr "Ní féidir an post seo a thaispeáint."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Tá an post seo as-topic le haghaidh + %(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "An comhartha-i"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "An nasc seo comhrá sa bhrabhsálaí freisin, má tá sé seo bhrabhsálaí ar. Tosóidh sé arís mar ghléas nua."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
@@ -3011,6 +3491,10 @@ msgstr[1] "Tá an cainéal guth iomlán (%(num)s duine)."
 msgstr[2] "Tá an cainéal guth iomlán (%(num)s duine)."
 msgstr[3] "Tá an cainéal guth iomlán (%(num)s duine)."
 msgstr[4] "Tá an cainéal guth iomlán (%(num)s duine)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Tá na heochracha a thuilleadh do chuntas. Bain úsáid as do cód a ghnóthú, nó tús a chur os a chionn."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -3046,7 +3530,7 @@ msgstr[2] "Too fada ag %(num)s (%(note)s)"
 msgstr[3] "Too fada ag %(num)s (%(note)s)"
 msgstr[4] "Too fada ag %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "An iomarca iarratas inniu"
 
@@ -3077,13 +3561,21 @@ msgstr "Níl an t-aistriúchán ar fáil anois."
 msgid "Try again"
 msgstr "Bain triail as arís"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Bain triail eile as amárach."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Cas fógraí ar ais ar"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Cód dhá fhachtóir"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Athraíodh comhartha dhá fhachtóir i, mar sin tá comhrá ag tosú arís anseo."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -3117,12 +3609,12 @@ msgstr "Ní féidir a bhaint as an trácht ag an am seo. Déan iarracht arís n�
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Ní féidir vótáil an tráth sin. Déan iarracht arís níos déanaí."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Díbhac"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Cealaigh"
 
@@ -3142,17 +3634,13 @@ msgstr "Díroghnaigh gach rud"
 msgid "Unlock your messages"
 msgstr "Díghlasáil do theachtaireachtaí"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Díghlasáil do theachtaireachtaí ar dtús: athlódáil an leathanach chun dul isteach do phasfhocal."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Díbhalbhaigh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Díphionnáil"
 
@@ -3208,11 +3696,15 @@ msgstr "Bain úsáid as anseo"
 msgid "Use my recovery code instead"
 msgstr "Bain úsáid as mo cód a ghnóthú ionad"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Úsáid iad"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Tá an t-ainm úsáideora sin tógtha cheana :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Tá an t-ainm úsáideora go breá!"
 
@@ -3305,7 +3797,7 @@ msgstr[4] "Físeán glaoch · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Tá físeán amach sa ghlaoch seo: tá tú ar fuaime."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Féach ar an mbunleagan"
 
@@ -3359,6 +3851,10 @@ msgstr[2] "Guth Téann bhrabhsálaí chun bhrabhsálaí tríd an suíomh Relay, 
 msgstr[3] "Guth Téann bhrabhsálaí chun bhrabhsálaí tríd an suíomh Relay, mar sin feiceann aon duine seoladh duine ar bith. Suas le %(num)s duine."
 msgstr[4] "Guth Téann bhrabhsálaí chun bhrabhsálaí tríd an suíomh Relay, mar sin feiceann aon duine seoladh duine ar bith. Suas go dtí %(num)s daoine."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Nótaí gutha"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Fan nóiméad: tá do chuid athruithe deireanach á shábháil fós."
@@ -3366,6 +3862,10 @@ msgstr "Fan nóiméad: tá do chuid athruithe deireanach á shábháil fós."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Ag fanacht leis an app"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Fuair muid do comhrá ar an bhrabhsálaí"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3386,6 +3886,10 @@ msgstr "Cad atá mícheart leis an Spás? taiseachas aeir: fliuch"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Cad atá mícheart leis an teachtaireacht seo? taiseachas aeir: fliuch"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Cá háit ar chóir na comhaid a sheolann tú i comhráite dul?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3412,7 +3916,7 @@ msgstr "Cé a dúirt sé"
 msgid "Who upvoted"
 msgstr "Cé a thug suas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Cén fáth"
 
@@ -3427,6 +3931,10 @@ msgstr "Cén fáth a bhriseann sé seo do rialacha guild ar? Beidh sé seo a tha
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Cén fáth a bhriseann sé seo do rialacha guild ar? Taispeánfar é seo do dhuine ar bith a fhéachann leis an bpost seo / stair na cuideachta."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Cén fáth go bhfuil an trácht seo á bhaint? Tá do chúis a thaispeántar sa log poiblí."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3445,7 +3953,7 @@ msgstr "Scríobh rud éigin ar dtús."
 msgid "Write what you want to tell us."
 msgstr "Scríobh cad ba mhaith leat a insint dúinn."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Sea"
 
@@ -3463,7 +3971,7 @@ msgstr "Sea, é a chealú"
 msgid "You"
 msgstr "Tá tú"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Rinne tú é sin cheana"
 
@@ -3479,7 +3987,7 @@ msgstr "Thuairiscigh tú an post seo cheana féin."
 msgid "You already voted on this post."
 msgstr "Vótáil tú cheana féin ar an bpost seo."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Tá @%(name)s bactha agat"
 
@@ -3520,7 +4028,7 @@ msgstr "Is féidir leat an cainéal seo a léamh ach ní scríobhann tú ann."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Is féidir leat a fheiceáil atá anseo, ach ní féidir leat labhairt sa chainéal seo."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Ní féidir leat é sin a dhéanamh."
 
@@ -3564,6 +4072,14 @@ msgstr "D'fhág tú an Spás."
 msgid "You left the call."
 msgstr "D'fhág tú an glaoch."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Dícheangal tú i ngach áit ó ghléas eile, mar sin tá comhrá ag tosú arís anseo."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Shínigh tú i le do chód aisghabhála dhá fhachtóir, mar sin tá comhrá ag tosú arís anseo."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Níl tú ag leanúint @%(name)s."
@@ -3571,6 +4087,10 @@ msgstr "Níl tú ag leanúint @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Baineadh tú as an Spás."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Feicfidh tú a fháil cód a ghnóthú nua, agus beidh an duine d'aois stop a chur ag obair."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3596,6 +4116,10 @@ msgstr "Chuir do bhrabhsálaí bac ar an bhfuinneog le nascadh. Ceadaigh pop-ups
 msgid "Your chat devices can't be listed right now."
 msgstr "Ní féidir do feistí comhrá a liostú ceart anois."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Do cód a ghnóthú comhrá"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Do comhráite"
@@ -3607,6 +4131,10 @@ msgstr "Beidh do comhráite ag obair arís ar an gléas, ach ní féidir teachta
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Níorbh fhéidir do comment a chur sa phost. Bain triail as arís."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Beidh do cód a ghnóthú reatha stop a chur ag obair."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3638,9 +4166,34 @@ msgstr "Ní féidir do eochair a thaispeáint ceart anois."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Cuireadh faoi ghlas do eochair le focal faire níos sine. Oscailte Comhrá ar an suíomh seo agus cuir isteach do chód téarnaimh uair amháin; ansin osclaíonn sé anseo."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Beidh do theachtaireacht a sheoladh uair amháin comhrá unlocked ar an gléas seo."
+msgstr[1] "Beidh do %(num)s teachtaireachtaí a sheoladh uair amháin comhrá unlocked ar an gléas seo."
+msgstr[2] "Beidh do %(num)s teachtaireachtaí a sheoladh uair amháin comhrá unlocked ar an gléas seo."
+msgstr[3] "Beidh do %(num)s teachtaireachtaí a sheoladh uair amháin comhrá unlocked ar an gléas seo."
+msgstr[4] "Do %(num)s Beidh teachtaireachtaí a sheoladh uair amháin comhrá unlocked ar an gléas seo."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Do cód a ghnóthú d'aois a thuilleadh oibreacha."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "D'athraigh do phasfhocal ó bhí faoi ghlas an eochair comhrá leis. An cód a ghnóthú shábháil tú nuair a bhí comhrá ar bun osclaíonn sé."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Athraíodh do phasfhocal ar do shon, mar sin tá comhrá ag tosú arís anseo."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Athraíodh do phasfhocal, mar sin tá comhrá ag tosú arís anseo."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Athshocrú do phasfhocal, mar sin tá comhrá ag tosú arís anseo."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3649,6 +4202,14 @@ msgstr "Do cód a ghnóthú"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Do teimpléid shábháil thaispeáint suas anseo."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Is féidir do scáileán a roinnt ach amháin nuair a bhíonn tú ar físeán sa ghlaoch seo."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Níorbh fhéidir do scáileán a roinnt."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3688,7 +4249,7 @@ msgid "blue"
 msgstr "gorm éadrom"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "trácht"
 
@@ -3777,7 +4338,7 @@ msgstr "oráiste"
 msgid "pink"
 msgstr "dath bláth bándearg"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "postáil"
 

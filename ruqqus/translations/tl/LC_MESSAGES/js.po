@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fil\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s ay ang pagmamakinilya…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "ang %(name)s ay nagtakda ng mga mensahe upang mawala pagkatapos ng %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "pinahinto ng %(name)s ang mga mensaheng nawawala."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s miyembro"
 msgstr[1] "%(num)s miyembro"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s mensahe ang natagpuan."
+msgstr[1] "%(num)s mensahe ang natagpuan."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s mensahe sa sinulid"
 msgstr[1] "%(num)s mensahe sa sinulid"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s mensahe basahin…"
+msgstr[1] "%(num)s mensahe basahin…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s · %(num)s miyembro"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Sa paano man?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s komento"
 msgstr[1] "+%(guild)s · %(num)s komento"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 araw"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 linggo"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@i%(name)s dinagdag ka sa grupong ito. Basahin ito at isulat dito."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@i%(name)s ay hindi pa nagbubukas ng chat. Ang iyong mensahe ay ipadadala sa panahong iyon."
 msgstr[1] "@i%(name)s ay hindi pa nagbubukas ng chat. Ang iyong %(num)s mensahe ay ipadadala kapag ito'y nakarating."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@i%(name)s…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Wala na roong mensahe"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Ang isang mensaheng isinulat mo rito ay hindi ipinadala: ang chat ay huminto sa task na ito bago ito makaalis."
+msgstr[1] "%(num)s mensahe na isinulat mo rito ay hindi ipinadala: ang chat ay huminto sa task na ito bago pa sila makaalis."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Ang isang post ay maaaring magkaroon ng %(num)s co-author sa karamihan."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Tanggapin"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Idagdag"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Magdagdag ng katulong sa pamamagitan ng username"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Pagdaragdag..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Sang-ayon"
 
@@ -413,6 +455,10 @@ msgstr "Kanan"
 msgid "Alignment"
 msgstr "Pagpapaalam"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Bloke rin @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Dito rin: %(names)s"
 msgid "An app"
 msgstr "Isang app"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Galit"
 
@@ -432,7 +478,7 @@ msgstr "Galit"
 msgid "Announcements"
 msgstr "Mga Patalastas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonymous"
 
@@ -440,6 +486,10 @@ msgstr "Anonymous"
 #, machine, plain1
 msgid "Answer"
 msgstr "Sagot"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Sinuman sa chat ay maaari pa ring kumopya ng isang mensahe o kumuha ng larawan ng screen bago ito lumabas."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Ikabit ang link sa post na ito"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Aw shucks. Walang GIFs..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Astig"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Nakakailang"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Bumalik sa itaas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "I-block"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "I-block si @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "Hinarang @i%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Bold (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Ang pagdadala ng iyong mga chat key sa nakasarang paraan. Ipasok ang password mo para matapos."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Umalis"
 msgid "Camera on"
 msgstr "Kamera on"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Kanselahin"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Channel · %(num)s miyembro"
 msgstr[1] "Channel · %(num)s miyembro"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Mga Channel"
 
@@ -599,13 +653,45 @@ msgstr "Mga channel na kinaroroonan mo"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Chat"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Hindi mabuhat ng Chat ang iyong mga susi. Mag - ipon uli."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Hindi makakonekta ang Chat."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Hindi matapos ng Chat ang simula. Ipasok ang iyong password para subukang muli."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Hindi matapos ng Chat ang simula. Mag - ipon uli."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Hindi mabuksan ng Chat kung ano ang natipid ng browser na ito, kaya nagsisimula na naman ito rito."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Hindi maaaring magsimula ang Chat sa browser na ito."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Hindi sumagot ang Chat. Subukan muli."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Matagal nang hindi ginagamit ang Chat sa browser na ito, kaya nagsisimula na naman ito rito."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Ang Chat ay nagsasara sa ibang tab…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Nagsisimula pa ang Chat."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Nagsisimula pa ang Chat. Subukang muli sandali."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Wala nang Chat para sa account mo ngayon."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Naiwala ng Chat ang koneksiyon nito. Pagtatanim…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Kailangan ng Chat ang browser na ito upang itago ang mga datos ng site, at hindi ito maaaring dito. Ang Chat ay hindi maaaring magsimula sa bintanang ito."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Huminto ang Chat sa task na ito."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Ang Chat ay inalis sa browser na ito mula sa ibang aparato. Muling magsimula dito…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Chat na may @i%(name)s"
@@ -627,7 +733,7 @@ msgstr "Chat na may @i%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Ang susi ng Chat ay hindi makukuha ngayon."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Mga Chat"
 
@@ -667,11 +773,11 @@ msgstr "Pumili kung sino ang makakakita nito."
 msgid "Choose your profile or at least one guild."
 msgstr "Piliin ang iyong katangian o sa paano man isang samahan."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Mga Circle"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Isara"
 
@@ -707,7 +813,7 @@ msgstr "Ihambing ang mga ito sa mga palabas ng inyong app, sa gayunding pagkakas
 msgid "Confirm in the app as well."
 msgstr "Tiyakin din sa app."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Nalilito"
 
@@ -859,6 +965,10 @@ msgstr "Hindi mabuhat ang naka - pindutan na mga mensahe"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Hindi kayang ikarga ang preview."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Hindi maikarga ang iyong mga chat"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Hindi makopya: pumili ng mga code at kopyahin ang mga ito."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Hindi makapagkarga ng mga naunang mensahe. Subukang muli sandali."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Hindi mo maikarga ang iyong mga chat. Pagsisikap na muli…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Ginagawa ang post"
 
@@ -1028,7 +1142,7 @@ msgstr "Ginagawa ang post"
 msgid "Creating…"
 msgstr "Paglikha…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1036,7 +1150,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Tumawid"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Dark mode"
 
@@ -1101,13 +1215,21 @@ msgstr "Itala ang kuwentong ito?"
 msgid "Delete this update?"
 msgstr "Itapon ang update na ito?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Binubura ang komento"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Binubura ang post"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Naglalahong mga mensahe"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Nawawala na ang mga mensahe."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Tapos"
 #, machine, plain1
 msgid "Done."
 msgstr "Tapos na."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Ibaba"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "End-to-end encrypted: ang mga tao lamang sa channel na ito ang makababas
 msgid "Ended"
 msgstr "Nagwakas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Maglagay ng URL"
 
@@ -1206,6 +1332,10 @@ msgstr "Ipasok ang isang web address, tulad ng https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Ipasok minsan ang iyong password. Ikinakabit nito ang susi sa iyong mga mensahe sa browser na ito, kaya hindi kailanman mabasa ng site ang mga ito."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Ipasok ang password mo para matiyak ito."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Ipasok ang iyong password."
 msgid "Enter your recovery code"
 msgstr "Ipasok ang iyong kodigo sa paggaling"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Ipasok ang iyong dalawang-factor code"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Ipasok ang iyong dalawang-factor code."
+
+#, machine, plain2
+msgid "File"
+msgstr "Larawan"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Ang mga talaksan ay maaaring ipadala minsan @%(name)s ay nagbukas ng usapan."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Maaaring magpadala ng mga talaksan minsang mabuksan ang usapan sa aparatong ito."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Hindi maaaring ipadala rito ang mga talaksan."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Huli"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Wakas"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Tapusin ang iyong pag - uusap"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Tatapos na magsimula"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Tinatapos ang chat set-up sa ibang tab…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Pagmamarka"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "I-forward"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Pasulong sa mensaheng ito"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Sumulong sa karamihan ng %(num)s guild."
 msgstr[1] "Hanggang sa karamihan ng %(num)s guild."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Pasulong sa…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Sumulong"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Sumulong."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Ifino-forward"
 
@@ -1292,11 +1478,11 @@ msgstr "Bigyan ng ilang teksto ang buton."
 msgid "Give the template a name."
 msgstr "Bigyan ng pangalan ang template."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Pumunta sa website"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Kadiri"
 
@@ -1304,7 +1490,7 @@ msgstr "Kadiri"
 msgid "Group info"
 msgstr "Pagkain ng Grupo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Mga Guild"
 
@@ -1316,13 +1502,25 @@ msgstr "Pinag - uusapan"
 msgid "Hand raised"
 msgstr "Pagtaas ng kamay"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Masaya"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Napanatili mo na ba ang iyong chat recovery code? Kung wala ito, maaaring maiwala ng nakalimutang password ang iyong dating mga mensahe."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Patungo sa %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Mga Katulong"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Ang mga tumutulong ay sumulat sa alulod na ito na kasama mo. Pumili ng hanggang tatlong tao na naroroon."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Sang - ayon ako sa mga tuntunin"
 msgid "I don't have it: start over"
 msgstr "Wala ako nito: magsimula ka muna"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Mayroon ako nito"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Nailigtas ko ito"
@@ -1372,6 +1574,10 @@ msgstr "Nailigtas ko ito"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Kung makalimutan mo ang iyong password, ang kodigong ito ang tanging paraan upang mabasa ang iyong dating mga mensahe. Ingatan ito sa ligtas na lugar, gaya ng isang password manager."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Kung taglay mo pa rin ang iyong kodigo sa paggaling, sa halip ay gamitin ito: ang ilang mas lumang mensahe ay nasa backup lamang nito."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Ang mga kuwento nito ay nananatili sa iyong archive."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Sumali"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Sumali sa %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Dapat munang makita ng mga tao ang mga susing katotohanan at pag - ugnay
 msgid "Last used %(date)s"
 msgstr "Huling ginamit na %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Pagkaraan"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Tawa"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Umalis"
 
@@ -1516,7 +1726,7 @@ msgstr "Umalis na sa grupong ito? May iba pa rito na nagiging may - ari nito."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Umalis na sa grupong ito? Hindi ka makakakita ng bagong mga mensahe malibang may magdagdag sa iyo muli."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Light mode"
 
@@ -1561,6 +1771,10 @@ msgstr "Mabuhay ngayon"
 msgid "Load earlier messages"
 msgstr "Dalhin ang naunang mga mensahe"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Pagsasabi ng…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Pagkarga ng post…"
@@ -1585,17 +1799,25 @@ msgstr "Pagbuhat ng iyong mga template..."
 msgid "Loading..."
 msgstr "Pagbuhat..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Naglo-load…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Pag-ibig"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Ibabang kamay"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Gumawa ng bagong kodigo"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Gumawa ng bagong kodigo sa paggaling?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Ginagawa bang publiko ang post na ito? Makikita ito ng lahat."
 msgid "Making the channel…"
 msgstr "Paggawa ng alulod…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1630,6 +1852,14 @@ msgstr "Inalis ang Mensahe"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Hinihiling ng mensahe. Hindi nila alam na nakita mo na ito hanggang sa tanggapin mo."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Nawala ang mga mensahe pagkatapos ng %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Ang mga mensahe na mababasa na ng browser na ito ay babalik dito."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Microphone %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Higit pa"
 
@@ -1649,11 +1879,11 @@ msgstr "Higit pa"
 msgid "Move to listeners"
 msgstr "Lumapit sa mga tagapakinig"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "I-mute"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Naka-mute"
 
@@ -1673,7 +1903,11 @@ msgstr "Sabihin ang iyong folder"
 msgid "New channel"
 msgstr "Bagong channel"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Ang bagong mga mensahe sa chat na ito ay naglalaho para sa lahat pagkatapos ng panahong pipiliin mo. Mga mensaheng ipinadala bago ang panahong ipinadala sa kanila."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Hindi"
 
@@ -1693,17 +1927,29 @@ msgstr "Wala pang mga tawag. Paandarin ang midya mula sa tawag na Voice o Video 
 msgid "No camera was found."
 msgstr "Walang nakitang kamera."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Walang nasumpungang mga chat."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Wala pang mga co-author."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Walang kodigo? Magsenyas kasama ng iyong bagong password sa browser kung saan ka gumagamit ng chat: maaari nitong ibalik ang iyong chat."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Wala pang kagamitan. Buksan ang Chat para magsimula."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Walang flair"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Wala pang katulong."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Walang nasumpungang mikropono."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Walang sinuman ang nagkakasalungatan. Maaari kang magpadala sa iyong mga chat at sa mga taong iyong sinusundan."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Hindi pa nailalagay ang mga mensahe."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Hindi ligtas"
 msgid "Not used yet"
 msgstr "Hindi pa ginagamit"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Walang anumang masusumpungan sa mga mensahe na mababasa ang browser na ito."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Walang natagpuan."
@@ -1785,17 +2039,45 @@ msgstr "Wala pang dapat makita."
 msgid "Nothing was connected."
 msgstr "Walang anumang konektado."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Mga Notification"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Ang mga nota ay hinahadlangan para sa lugar na ito sa browser na ito. Hayaan silang nasa lugar ng browser upang baligtarin sila."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Ang mga patalastas ay nasa browser na ito."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Mayroon nang mga nota sa browser na ito."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Hindi matiyak ang mga notipikasyon. Ikarga muli ang pahina upang subukan muli."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Ang mga notipikasyon ay hindi maaaring buksan. Subukan muli."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Hindi pinayagan ang notipikasyon para sa lugar na ito."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Numero unong listahan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Off"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline · muling pagtatanim"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Tanging ang may-ari ng grupo at admins lamang ang maaaring magbago nito."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Buksan ang Chat minsan upang buksan ang iyong mga mensahe, pagkatapos ay sumubok muli."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Buksan ang Chat upang tapusin ang pagtatakda ng iyong mga mensahe sa aparatong ito."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Open media settings"
 
@@ -1849,6 +2139,10 @@ msgstr "Buksan ang Kalawakan"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Buksan ang chat ng +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Binubuksan ang file…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Mga taong iyong sinusundan"
 msgid "Pick a date and time."
 msgstr "Pumili ng petsa at oras."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Pumili ng flair"
 
@@ -1909,11 +2203,15 @@ msgstr "Wala pang mga kuwento tungkol sa larawan sa lugar na ito."
 msgid "Pin this message"
 msgstr "Punan ang mensaheng ito"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Hinango"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Hinango na mga mensahe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Pakiusap"
 
@@ -1921,12 +2219,18 @@ msgstr "Pakiusap"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Pakipasok ang isang tanggap na URL (kabilang ang http:// o https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Mag-log in ulit."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Popular na mga channel"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "I-post"
 
@@ -1938,7 +2242,7 @@ msgstr "Posted. Ikarga muli ang pahina upang makita ito."
 msgid "Posting to %(guilds)s"
 msgstr "Pagkatapos ng %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Ipo-post sa profile mo"
 
@@ -1947,7 +2251,7 @@ msgstr "Ipo-post sa profile mo"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Nakapaskil sa iyong profile, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Ipino-post…"
 
@@ -2047,6 +2351,14 @@ msgstr "Reaksiyon"
 msgid "React with %(emoji)s"
 msgstr "Pakikitungo sa %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Mag - record ng voice note"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Pagrerekord… pindutin muli ang mikropono upang ipadala ito."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Kodigo ng Paggaling"
@@ -2059,13 +2371,17 @@ msgstr "Pula"
 msgid "Refreshing…"
 msgstr "Nakagiginhawa…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Nagre-register"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Paglaya sa kaginhawahan"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "I-reload"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Naglagay ng tagapagpaalaala"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Alisin"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Alisin ang %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Alisin ang @i%(name)s bilang katulong"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Muling banggitin ang folder na ito"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "I-report"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "I-report ang komento"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "I-report ang post"
 
@@ -2155,11 +2475,11 @@ msgstr "I-report ang post"
 msgid "Report this message"
 msgstr "Iulat ang mensaheng ito"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Nire-report ang komento"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Nire-report ang post"
 
@@ -2176,13 +2496,13 @@ msgstr "Pagong…"
 msgid "Rules of this channel"
 msgstr "Mga Alituntunin ng alulod na ito"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Malungkot"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "I-save"
 
@@ -2198,11 +2518,15 @@ msgstr "Iligtas bilang template..."
 msgid "Save your recovery code"
 msgstr "Iligtas ang iyong kodigo sa paggaling"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Na-save"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Ay nailigtas."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Sine-save"
 
@@ -2236,7 +2560,7 @@ msgstr "Pagliligtas…"
 msgid "Say what is wrong with this account."
 msgstr "Sabihin kung ano ang mali sa salaysay na ito."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Takot"
 
@@ -2255,7 +2579,8 @@ msgstr "Isinaayos para sa %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Maghanap"
 
@@ -2266,6 +2591,14 @@ msgstr "Humanap ng madadagdagan."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Hanapin ang channel na ito"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Hanapin ang chat na ito"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Hanapin ang iyong mga chat"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Nakikita ng %(num)s"
 msgstr[1] "Nakikita ng %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Pumili ng usapan"
 
@@ -2298,6 +2631,10 @@ msgstr "Pumili ng usapan"
 #, machine, plain1
 msgid "Send"
 msgstr "Pagpadala"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Magpadala ng talaksan"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Ipadala ang iyong susunod na mga larawan:"
 msgid "Send your next videos to:"
 msgstr "Ipadala ang susunod mong video:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Pagpadala ng %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Nagpadala ng %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Ang minsang pag - uusap ay handa na…"
+msgstr[1] "Ang pagpapadala ng %(num)s mensahe minsang makapag - usap ay handa na…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Pagpadala..."
@@ -2331,6 +2682,14 @@ msgstr "Ipinaalam"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Maraming tao ang nagmamakinilya…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Ibahagi ang screen"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Nagbahagi ng komento"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Ipakita ang %(num)s bagong posts"
 msgid "Show formatting"
 msgstr "Ipakita ang formating"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Ipakita sa channel"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Ipakita sa chat"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Mas kaunti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Ipakita pa"
 
@@ -2367,19 +2735,19 @@ msgstr "Ipakita sa orihinal"
 msgid "Show translation"
 msgstr "Ipakita ang salin"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Tanda"
+msgstr "I-log out"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Tanda %(device)s"
+msgstr "I-log out ang %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Tanda %(device)s? Kailangang pumirmang muli upang basahin ang iyong mga chat."
+msgstr "Di - Pag - uugnay %(device)s? Kailangang pumirmang muli upang basahin ang iyong mga chat."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Nagsa-sign in"
 
@@ -2497,6 +2865,11 @@ msgstr "Simula ng chat…"
 msgid "Starting…"
 msgstr "Nagsisimula…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Huwag makibahagi"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Pagbutas"
@@ -2547,7 +2920,7 @@ msgstr "Pagbubuo ng Teksto"
 msgid "Text style"
 msgstr "Uri ng teksto"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Salamat sa paghiling"
 
@@ -2571,27 +2944,39 @@ msgstr "Salamat. Titingnan ito ng isang admin."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Salamat: ang samahan ng samahan ay mag - iingat."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Salamat: ang admins ng site ay titingnan, at naharangan mo ang @i%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Salamat: ang admins ng site ay titingnan."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Salamat: ang admins ng site ay titingnan. @i%(name)s ay hindi maharang dito: pigilan sila sa kanilang profile."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Ang chat na iyon ay hindi pa handa sa aparatong ito. Buksan mo ito minsan, pagkatapos ay subuking muli."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Hindi ito binubuksan ng kodigong iyon. Tingnan ang mga typos."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Hindi iyon ma-save."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Ang aparatong iyon ay hindi maaaring ilagda ngayon."
+msgstr "Ang aparatong iyon ay hindi maaaring sirain ngayon."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Hindi maaaring gamitin ang aparatong iyon."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Hindi iyon natuloy"
 
@@ -2630,6 +3015,14 @@ msgstr "Hindi iyan ang password mo."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Ang mensaheng iyan ay hindi maaaring ipadala."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Ang mensaheng iyan ay hindi na masusumpungan pa sa channel."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Ang mensaheng iyan ay hindi na masusumpungan sa chat na ito."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Isinara ang chat: tapos na ang Kalawakang ito."
 msgid "The chat opens when the Space starts."
 msgstr "Nagsisimula ang chat kapag nagsimula na ang Kalawakan."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Ang kodigo mula sa iyong app, o isa sa iyong backup code."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Ang draft ay nagbago sa ilalim ng iyong huling edit, kaya ito ay muling nadiskarga. Suriin ang iyong huling mga salita."
@@ -2722,6 +3119,10 @@ msgstr "Ang draft ay nagbago sa ilalim ng iyong huling edit, kaya ito ay muling 
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Ang emoji na maihahambing"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Ang talaksan ay hindi maaaring ipadala. Subukan muli."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Ang link ay hindi maaaring gayahin."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Ang mikropono ay hindi maaaring simulan."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Hindi magamit ang mikropono. Tingnan kung magagamit ito ng site na ito."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Ang replay ay hindi naligtas: ang upload ay nabigo. Maaari mo itong i - download sa halip."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Nagbago ang mga susi ng site, kaya nag-umpisa na naman dito ang chat."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Ang buod ay nakatago sa pamamagitan ng iyong salitang pansala."
 
@@ -2812,6 +3221,10 @@ msgstr "Wala pang ibang mapagdadalhan nito sa lugar na ito."
 msgid "These comments could not be loaded. Try again."
 msgstr "Ang mga komentong ito ay hindi maaaring ikarga. Subukan muli."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Hindi kailanman sinasabi sa kanila kung sino ang nag - ulat nito."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Tinanggihan nila ang panawagan."
@@ -2824,6 +3237,10 @@ msgstr "Hindi sila magkasundo"
 msgid "They match"
 msgstr "Magtugma ang mga ito"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Ang mga ito ay nananatili sa iyong sariling ulat doon, encrypted, ginagamit ang libreng espasyo nito. Ang mga tao lamang sa chat ang makapagbubukas nito."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Sila'y hindi makasusunod sa iyo, makapaghahatid sa iyo ng mensahe o magkukomento sa iyong mga post, at hindi mo makikita ang kanilang mga post. Maaari mong alisin ang mga ito anumang oras."
@@ -2832,9 +3249,9 @@ msgstr "Sila'y hindi makasusunod sa iyo, makapaghahatid sa iyo ng mensahe o magk
 msgid "This Space has ended."
 msgstr "Ang Kalawakang ito ay natapos na."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Ang browser na ito"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Nagtatapos din ito ng anumang pagsagip mula sa isang browser kung saan gumamit ka ng chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Hindi makagawa ng tawag ang browser na ito."
 msgid "This browser can't record the Space."
 msgstr "Hindi maitatala ng browser na ito ang Kalawakan."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Ang browser na ito ay hindi maaaring makibahagi sa screen nito."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Hindi maipakita ng browser na ito ang mga notasyon mula sa lugar na ito."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ang browser na ito ay hindi makapaghanda ng mga larawan para sa mga kargada. Subukan ang isa pang browser."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Hinahawakan pa rin ng browser na ito ang iyong mga chat key bago baguhin ang iyong password. Gamitin ang mga ito upang basahin ang iyong lumang mga mensahe dito at sa iyong iba pang mga aparato?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Ang browser na ito ay hindi mahilig makipag - usap mula sa ibang aparato, kaya ang pakikipag - usap ay nagsisimula na naman dito."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Nilinaw ang natipid na datos ng browser na ito sa chat, kaya muling nagsisimula ang chat dito."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Ito'y maaaring baguhin."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Ang channel na ito ay napipi para sa iyo: walang hindi nababasang tuldok at walang binabanggit na notasyon."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Ang chat na ito ay end-to-end encrypted, kaya hindi ito mabasa ng site. Ang pag - uulat ay nagpapadala ng mensaheng ito at hanggang apat ang nauna rito, gaya ng pagkakita mo rito, sa mga admin sa lugar na iyon."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Hindi maipakikita ang komentong ito."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Ang aparatong ito ay malapit nang masira."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Hindi mabuksan ang talaksang ito. Subukan muli mamaya."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Wala na ang talaksang ito."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Ang buháy na sinulid na ito ay nagwakas na"
@@ -2863,6 +3320,10 @@ msgstr "Ang buháy na sinulid na ito ay nagwakas na"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Hindi mabasa ang mensaheng ito sa aparatong ito."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Inalis ang mensaheng ito."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Hindi maaaring ipalabas ang post na ito."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Ang post na ito ay off-topic para sa +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Itong sign-in"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Ito ay nag-iiba rin ng chat sa browser na ito, kung ito ay browser's. Muli itong magsisimula bilang bagong aparato."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Ang voice channel na ito ay punô (%(num)s tao)."
 msgstr[1] "Ang voice channel na ito ay punô (%(num)s katao)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Hindi na sa iyo ang mga susing iyon. Gamitin ang iyong kodigo sa paggaling, o magsimula."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Napakahaba ng %(num)s (U.%(note)s)"
 msgstr[1] "Umabot ng %(num)s (matagal%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Masyadong maraming request ngayong araw"
 
@@ -2945,13 +3418,21 @@ msgstr "Walang makukuhang pagsasalin sa ngayon."
 msgid "Try again"
 msgstr "Subukan muli"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Subukan ulit bukas."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Ibalik ang mga nota"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Dalawang-factor code"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Ang two-factor sign-in ay binago, kaya ang chat ay nagsisimulang muli dito."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Hindi matanggal ang komento sa panahong ito. Pakisuyong subukan muli mam
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Hindi makaboto sa panahong ito. Pakisuyong subukan muli mamaya."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "I-unblock"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "I-undo"
 
@@ -3010,17 +3491,13 @@ msgstr "Pagbukas"
 msgid "Unlock your messages"
 msgstr "Buksan ang iyong mga mensahe"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Buksan mo muna ang iyong mga mensahe: ilagay muli ang pahina upang makapasok sa iyong password."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "I-unmute"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "I-unpin"
 
@@ -3076,11 +3553,15 @@ msgstr "Gamitin ito dito"
 msgid "Use my recovery code instead"
 msgstr "Sa halip ay gamitin ang aking kodigo sa paggaling"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Gamitin ang mga ito"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "May gumagamit na ng username na iyan :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Ayos ang username!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Tinawag sa video na · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Ang video ay nasa ganitong tawag: ikaw ay nasa audio."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Tingnan ang orihinal"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Ang mga browser ng boses ay nagtutungo sa browser sa mga relay ng site, kaya walang nakakakita ng direksiyon ng sinuman. Hanggang %(num)s tao."
 msgstr[1] "Ang mga browser ng boses ay nagtutungo sa browser sa mga relay ng site, kaya walang nakakakita ng direksiyon ng sinuman. Hanggang %(num)s katao."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Boses"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Sandali lamang: ang iyong huling mga pagbabago ay naliligtas pa rin."
@@ -3213,6 +3698,10 @@ msgstr "Sandali lamang: ang iyong huling mga pagbabago ay naliligtas pa rin."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Hinihintay ang app"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Nasumpungan namin ang iyong chat sa browser na ito"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Ano ang problema sa Kalawakang ito? (opsiyonal)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Ano ang problema sa mensaheng ito? (opsiyonal)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Saan pupunta ang mga file na ipinadadala mo sa mga chat?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Sino ang nagsabi nito"
 msgid "Who upvoted"
 msgstr "Mga Natawa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Bakit"
 
@@ -3274,6 +3767,10 @@ msgstr "Bakit ito lumalabag sa mga tuntunin ng inyong samahan? Ipapakita ito sa 
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Bakit ito lumalabag sa mga tuntunin ng inyong samahan? Ito ay ipapalabas sa sinumang tumitingin sa post/komentaryong kasaysayang ito."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Bakit inaalis ang komentong ito? Ipinapakita ang iyong dahilan sa logo ng publiko."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Isulat muna ang isang bagay."
 msgid "Write what you want to tell us."
 msgstr "Isulat ang gusto mong sabihin sa amin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Oo"
 
@@ -3310,7 +3807,7 @@ msgstr "Oo, kanselahin ito"
 msgid "You"
 msgstr "Ikaw"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Nagawa mo na iyan"
 
@@ -3326,7 +3823,7 @@ msgstr "Iniulat na ninyo ang post na ito."
 msgid "You already voted on this post."
 msgstr "Ikaw ay bumoto na sa posisyong ito."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Bina-block mo si @%(name)s"
 
@@ -3364,7 +3861,7 @@ msgstr "Mababasa mo ang channel na ito ngunit hindi mo ito maisulat."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Makikita mo kung sino ang narito, ngunit hindi ka maaaring magsalita sa channel na ito."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Hindi mo iyan magagawa."
 
@@ -3408,6 +3905,14 @@ msgstr "Umalis ka sa Kalawakan."
 msgid "You left the call."
 msgstr "Iniwan mo ang tawag."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Natatanggal ka sa ibang gadyet, kaya nag - uusap ka ulit dito."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Ikaw ay pumirma sa pamamagitan ng iyong dalawang-factor revival code, kaya ang chat ay nagsisimulang muli dito."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Hindi ka sumunod sa @i%(name)s."
@@ -3415,6 +3920,10 @@ msgstr "Hindi ka sumunod sa @i%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Inalis ka sa Kalawakang ito."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Makakakuha ka ng bagong kodigo sa paggaling, at ang matanda ay hihinto ng pagtatrabaho."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Hinarangan ng iyong browser ang bintana para magdurugtong. Pahintulutan 
 msgid "Your chat devices can't be listed right now."
 msgstr "Ang iyong mga chat device ay hindi maaaring itala ngayon."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Ang iyong chat recovery code"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Ang iyong mga chat"
@@ -3451,6 +3964,10 @@ msgstr "Ang iyong mga chat ay muling gagana sa aparatong ito, subalit ang mga me
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Ang iyong komento ay hindi maaaring ipaskil. Subukan muli."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Ang iyong kasalukuyang kodigo sa paggaling ay hihinto sa pagtatrabaho."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Ang iyong susi ay hindi maaaring ipakita ngayon mismo."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Ang iyong susi ay naka-lock sa pamamagitan ng isang mas lumang password. Buksan ang Chat sa site na ito at pumasok nang minsan sa iyong kodigo ng paggaling; pagkatapos ay nagbubukas ito rito."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Ang iyong mensahe ay ipadadala minsang mabuksan ang usapan sa aparatong ito."
+msgstr[1] "Ang iyong %(num)s mensahe ay ipadadala minsang mabuksan ang usapan sa aparatong ito."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Ang iyong dating kodigo sa paggaling ay hindi na gumagana."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Ang inyong kontrasenyas ay nagbago yamang ang chat key na ito ay nakakandado na kasama nito. Ang kodigo ng paggaling na iyong natipid nang simulan ang pakikipag - usap ay nagbubukas nito."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Ang inyong kontrasenyas ay pinalitan para sa inyo, kaya dito na naman nagsisimula ang chat."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Binago ang inyong kontrasenyas, kaya dito na naman nagsisimula ang chat."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Ang inyong kontrasenyas ay inayos, kaya dito na naman nagsisimula ang chat."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Ang iyong kodigo sa paggaling"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Makikita rito ang iyong naligtas na mga template."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Ang iyong screen ay maaari lamang ibahagi habang ikaw ay nasa video sa tawag na ito."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Ang iyong screen ay hindi maaaring ibahagi."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "asul"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "komento"
 
@@ -3606,7 +4153,7 @@ msgstr "kahel"
 msgid "pink"
 msgstr "kulay rosas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "post"
 

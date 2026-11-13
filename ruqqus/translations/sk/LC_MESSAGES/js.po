@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sk\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s píše…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s nastaviť správy, aby zmizli po %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s vypol miznúce odkazy."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -132,12 +140,26 @@ msgstr[0] "%(num)s člen"
 msgstr[1] "%(num)s členovia"
 msgstr[2] "%(num)s členov"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s nájdená správa."
+msgstr[1] "%(num)s správy nájdené."
+msgstr[2] "%(num)s nájdených správ."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s správa vo vlákne"
 msgstr[1] "%(num)s správy vo vlákne"
 msgstr[2] "%(num)s správ vo vlákne"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s čítaná správa…"
+msgstr[1] "%(num)s správy prečítané…"
+msgstr[2] "%(num)s správ čítať…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -258,6 +280,14 @@ msgstr[2] "%(owner)s · %(num)s členov"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Zachrániť?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -291,6 +321,14 @@ msgstr[0] "+%(guild)s · %(num)s komentár"
 msgstr[1] "+%(guild)s · %(num)s komentáre"
 msgstr[2] "+%(guild)s · %(num)s komentárov"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 deň"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 týždeň"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s pridal vás do tejto skupiny. Prijmite, aby ste si ju prečítali a napísali do nej."
@@ -301,10 +339,6 @@ msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be se
 msgstr[0] "@%(name)s ešte neotvoril rozhovor. Vaša správa bude odoslaná, keď sa tak stane."
 msgstr[1] "@%(name)s ešte neotvoril rozhovor. Vaše %(num)s správy budú zaslané, keď sa tak stane."
 msgstr[2] "@%(name)s ešte neotvoril rozhovor. Vaše %(num)s správy budú zaslané, keď sa tak stane."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s píše…"
 
 #, machine, plain1
 msgid "A Space"
@@ -358,6 +392,13 @@ msgid "A message that isn't there any more"
 msgstr "Správa, ktorá tam už nie je"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Správa, ktorú ste tu napísali nebola odoslaná: chat sa zastavil v tejto karte pred tým, než mohol ísť."
+msgstr[1] "%(num)s správy, ktoré ste napísali tu neboli poslané: chat zastavil v tejto karte, než mohli ísť."
+msgstr[2] "%(num)s správ, ktoré ste tu napísali neboli poslané: chat sa zastavil v tejto karte pred tým, než mohli ísť."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Príspevok môže mať najviac jedného spoluautora."
@@ -377,9 +418,13 @@ msgid "Accept"
 msgstr "Akceptovať"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Pridať"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Pridať pomocníka podľa užívateľského mena"
 
 #, machine, plain1
 msgid "Add image"
@@ -418,12 +463,12 @@ msgid "Adding..."
 msgstr "Pridáva sa..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Súhlas"
 
@@ -443,6 +488,10 @@ msgstr "Zarovnať vpravo"
 msgid "Alignment"
 msgstr "Zosúladenie"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Tiež blok @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -452,7 +501,7 @@ msgstr "Tiež tu: %(names)s"
 msgid "An app"
 msgstr "App"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Hnev"
 
@@ -462,7 +511,7 @@ msgstr "Hnev"
 msgid "Announcements"
 msgstr "Oznámenia"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonym"
 
@@ -470,6 +519,10 @@ msgstr "Anonym"
 #, machine, plain1
 msgid "Answer"
 msgstr "Odpoveď"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Každý, kto v rozhovore môže stále kopírovať správu alebo urobiť obrázok obrazovky pred tým, než odíde."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -483,23 +536,23 @@ msgstr "Pripojiť odkaz na tento príspevok"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Do riti. Nie GIFs nájdené..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Super"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Trápne"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Späť hore"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Zablokovať"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Blokovať @%(name)s?"
 
@@ -510,6 +563,10 @@ msgstr "Blokované @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Tučné (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Prinášam ti kľúče od chatu. Zadajte svoje heslo na dokončenie."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -584,7 +641,7 @@ msgstr "Kamera vypnutá"
 msgid "Camera on"
 msgstr "Kamera zapnutá"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Zrušiť"
 
@@ -622,7 +679,7 @@ msgstr[0] "Kanál · %(num)s člen"
 msgstr[1] "Kanál · %(num)s členovia"
 msgstr[2] "Kanál · %(num)s členov"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanály"
 
@@ -632,13 +689,45 @@ msgstr "Kanály, v ktorých ste"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Chat"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat ti nemohol priniesť kľúče. Znovu nabiť a skúsiť to znova."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Diskusia sa nemohla spojiť."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chat nemohol skončiť od začiatku. Zadajte heslo a skúste to znova."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chat nemohol skončiť od začiatku. Znovu nabiť a skúsiť to znova."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat nemohol otvoriť, čo tento prehliadač uložil, takže to začína znova tu."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat nemohol začať v tomto prehliadači."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Rozhovor neodpovedal. Skús to znova."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Na tomto prehliadači už dlho nebol použitý, takže sa to tu opäť začína."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Chat sa zatvára v inej karte…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -652,6 +741,26 @@ msgstr "Diskusia stále začína."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Diskusia stále začína. Skús to znova za chvíľu."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Chat nie je teraz k dispozícii pre váš účet."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat stratil spojenie. Rezekcia…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Diskusia potrebuje tento prehliadač, aby udržal dáta stránok, a nemôže tu. Chat nemôže začať v tomto okne."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Chat sa zastavil v tomto účte."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Rozhovor bol odpojený na tomto prehliadači z iného zariadenia. Opäť tu…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Rozhovor s @%(name)s"
@@ -660,7 +769,7 @@ msgstr "Rozhovor s @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Kľúč nie je teraz dostupný."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Chaty"
 
@@ -700,11 +809,11 @@ msgstr "Vyber si, kto to vidí."
 msgid "Choose your profile or at least one guild."
 msgstr "Vyberte si svoj profil alebo aspoň jeden cech."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Kruhy"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Zavrieť"
 
@@ -740,7 +849,7 @@ msgstr "Porovnajte ich s tými, ktoré zobrazuje vaša aplikácia v rovnakom por
 msgid "Confirm in the app as well."
 msgstr "Potvrďte aj v aplikácii."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Zmätok"
 
@@ -892,6 +1001,10 @@ msgstr "Nepodarilo sa načítať pripnuté správy"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Nepodarilo sa načítať náhľad."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Nepodarilo sa načítať rozhovory"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1053,7 +1166,11 @@ msgstr "Nepodarilo sa kopírovať: vyberte kódy a skopírovať ich."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Nemohol som načítať skoršie správy. Skús to znova za chvíľu."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Nemohol som načítať vaše rozhovory. Snažím sa znovu…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Vytvára sa príspevok"
 
@@ -1061,7 +1178,7 @@ msgstr "Vytvára sa príspevok"
 msgid "Creating…"
 msgstr "Vytváram…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1069,7 +1186,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Vyškrtnúť"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Tmavý režim"
 
@@ -1134,13 +1251,21 @@ msgstr "Vymazať tento príbeh?"
 msgid "Delete this update?"
 msgstr "Odstrániť túto aktualizáciu?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Maže sa komentár"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Maže sa príspevok"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Miznúce správy"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Zmizli správy."
 
 #, machine, plain1
 msgid "Discard"
@@ -1174,6 +1299,10 @@ msgstr "Hotovo"
 #, machine, plain1
 msgid "Done."
 msgstr "Hotovo."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Stiahnuť"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1228,7 +1357,7 @@ msgstr "End-to-end šifrované: iba ľudia v tomto kanáli ho môžu prečítať
 msgid "Ended"
 msgstr "Koniec"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Zadajte URL"
 
@@ -1239,6 +1368,10 @@ msgstr "Zadajte webovú adresu, ako https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Zadajte svoje heslo raz. Zamkne kľúč k vašim správam v tomto prehliadači, takže ich stránka nikdy nemôže čítať."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Zadajte heslo pre potvrdenie."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1252,9 +1385,49 @@ msgstr "Zadajte svoje heslo."
 msgid "Enter your recovery code"
 msgstr "Zadajte váš kód obnovy"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Zadajte váš dvojfaktorový kód"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Zadajte váš dvojfaktorový kód."
+
+#, machine, plain2
+msgid "File"
+msgstr "Súbor"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Súbory môžu byť poslané raz @%(name)s otvoril chat."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Súbory môžu byť odoslané po odomknutí chatu na tomto zariadení."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Tu nie je možné posielať súbory."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Finálne"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Dokončiť"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Dones si rozhovor"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Koniec začiatku"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Dokončujem chat-up v inej karte…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1276,9 +1449,13 @@ msgid "Formatting"
 msgstr "Formátovanie"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Preposlať"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Poslať túto správu"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1287,7 +1464,19 @@ msgstr[0] "Dopredu na najviac %(num)s cech."
 msgstr[1] "Dopredu na najviac %(num)s cecky."
 msgstr[2] "Dopredu na maximálne %(num)s cechov."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Dopredu…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Zaslané"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Presmerované."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Preposiela sa"
 
@@ -1327,11 +1516,11 @@ msgstr "Dajte tlačidlá nejaký text."
 msgid "Give the template a name."
 msgstr "Dajte šablóne meno."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Prejsť na web"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Hnus"
 
@@ -1339,7 +1528,7 @@ msgstr "Hnus"
 msgid "Group info"
 msgstr "Informácie o skupine"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Cechy"
 
@@ -1351,13 +1540,25 @@ msgstr "Guildy s chatom"
 msgid "Hand raised"
 msgstr "Ruka zdvihnutá"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Radosť"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Držal si si svoj kód na zotavenie z chatu? Bez neho môže zabudnuté heslo stratiť staré správy."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Položka %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Pomocníci"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Pomocníci píšu v tomto kanáli s vami. Vyberte si až troch ľudí, ktorí sú v ňom."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1400,6 +1601,10 @@ msgstr "Súhlasím s pravidlami"
 msgid "I don't have it: start over"
 msgstr "Nemám to: začať odznova"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Mám ho"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Zachránil som ho"
@@ -1407,6 +1612,10 @@ msgstr "Zachránil som ho"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Ak ste niekedy zabudli heslo, tento kód je jediný spôsob, ako čítať svoje staré správy. Drž to niekde v bezpečí, ako správca hesiel."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Ak máte stále svoj kód obnovy, použite ho: niektoré staršie správy sú len v zálohe sa otvorí."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1498,11 +1707,11 @@ msgstr "Jeho príbehy zostávajú vo vašom archíve."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Pridať sa"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Pripojiť sa k %(channel)s"
 
@@ -1530,12 +1739,16 @@ msgstr "Kľúčové fakty a odkazy by mali ľudia vidieť ako prví."
 msgid "Last used %(date)s"
 msgstr "Naposledy použité %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Neskôr"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Smiech"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Opustiť"
 
@@ -1551,7 +1764,7 @@ msgstr "Opustiť túto skupinu? Niekto v ňom sa stáva jeho majiteľom."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Opustiť túto skupinu? Neuvidíš nové správy, pokiaľ ťa niekto nepridá."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Svetlý režim"
 
@@ -1597,6 +1810,10 @@ msgstr "Ži teraz"
 msgid "Load earlier messages"
 msgstr "Načítať skoršie správy"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Načítavam komentár…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Načítavam príspevok…"
@@ -1621,17 +1838,25 @@ msgstr "Načítavam šablóny..."
 msgid "Loading..."
 msgstr "Načítava sa..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Načítava sa…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Láska"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Dolná ruka"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Urobiť nový kód"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Urobiť nový kód obnovy?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1649,7 +1874,7 @@ msgstr "Zverejniť túto poštu? Všetci to budú môcť vidieť."
 msgid "Making the channel…"
 msgstr "Robím kanál…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Nič moc"
 
@@ -1666,6 +1891,14 @@ msgstr "Správa zrušená"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Žiadosť o správu. Nebudú vedieť, že ste to videli, kým to neprijmete."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Správy zmiznú po %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Správy, ktoré tento prehliadač už mohol prečítať, sa vrátia sem."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1677,7 +1910,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofón %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Viac"
 
@@ -1685,11 +1918,11 @@ msgstr "Viac"
 msgid "Move to listeners"
 msgstr "Presunúť na poslucháčov"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Stlmiť"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Stlmený"
 
@@ -1709,7 +1942,11 @@ msgstr "Pomenovať priečinok"
 msgid "New channel"
 msgstr "Nový kanál"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Nové správy v tomto chate zmiznú pre každého po čase, ktorý si vyberiete. Správy zaslané predtým, než si uchovali čas, s ktorým boli poslané."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Nie"
 
@@ -1729,17 +1966,29 @@ msgstr "Zatiaľ žiadne telefonáty. Začnite jeden z hovoru chatu alebo video h
 msgid "No camera was found."
 msgstr "Žiadna kamera sa nenašla."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Nenašli sa žiadne rozhovory."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Ešte žiadny spoluautori."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Žiadny kód? Prihláste sa so svojím novým heslom na prehliadači, kde ste použili chat: to môže priniesť svoj chat späť."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Ešte žiadne zariadenia. Otvorte rozhovor."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Bez štítku"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Ešte žiadni pomocníci."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1748,6 +1997,10 @@ msgstr "Nenašli sa žiadne mikrofóny."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Nikto sa nezhoduje. Môžete poslať na svoje rozhovory a ľuďom, ktorých sledujete."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Zatiaľ žiadne pritlačené správy."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1793,6 +2046,10 @@ msgstr "Neuložené"
 msgid "Not used yet"
 msgstr "Zatiaľ nepoužité"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Nič sa nenašlo v správach, ktoré tento prehliadač vie prečítať."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Nič sa nenašlo."
@@ -1821,17 +2078,45 @@ msgstr "Zatiaľ nič na ukážku."
 msgid "Nothing was connected."
 msgstr "Nič nebolo prepojené."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Upozornenia"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Oznámenia sú blokované pre túto stránku v tomto prehliadači. Povoliť im v nastaveniach prehliadača ich zapnúť."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Oznámenia sú vypnuté v tomto prehliadači."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Oznámenia sú zapnuté v tomto prehliadači."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Oznámenia nebolo možné skontrolovať. Znovu načítať stránku a skúsiť to znova."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Oznámenia nemohli byť zapnuté. Skús to znova."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Pre túto stránku neboli povolené oznámenia."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Číslovaný zoznam"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Vypnúť"
 
 #, machine, plain1
 msgid "Offline"
@@ -1840,6 +2125,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline · opakovanie"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Iba majiteľ skupiny a administrátori to môžu zmeniť."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1875,6 +2164,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Otvoriť rozhovor raz odomknúť správy, potom skúste znova."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Otvorte rozhovor, aby ste dokončili nastavenie správ na tomto zariadení."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Nastavenie otvorených médií"
 
@@ -1885,6 +2178,10 @@ msgstr "Otvorte priestor"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Otvoriť rozhovor o +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Otvorenie súboru…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1911,7 +2208,7 @@ msgstr "Ľudia, ktorých sleduješ"
 msgid "Pick a date and time."
 msgstr "Vyber si dátum a čas."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Vyberte štítok"
 
@@ -1945,11 +2242,15 @@ msgstr "Obrázky ešte nie sú dostupné na tejto stránke."
 msgid "Pin this message"
 msgstr "Pin this message"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Vrúbkované"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Vložené správy"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Prosím"
 
@@ -1957,12 +2258,18 @@ msgstr "Prosím"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Zadajte platnú URL (vrátane http:// alebo https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Prihláste sa znova."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Obľúbené kanály"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Uverejniť"
 
@@ -1974,7 +2281,7 @@ msgstr "Publikované. Znovu načítať stránku vidieť."
 msgid "Posting to %(guilds)s"
 msgstr "Poslať na %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Príspevok na váš profil"
 
@@ -1983,7 +2290,7 @@ msgstr "Príspevok na váš profil"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Poslať do svojho profilu, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Uverejňuje sa…"
 
@@ -2084,6 +2391,14 @@ msgstr "Reagovať"
 msgid "React with %(emoji)s"
 msgstr "Reagujte s %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Záznam hlasového záznamu"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Nahrávanie… stlačte mikrofón znova, aby ste ho poslali."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Kód zhodnotenia"
@@ -2096,13 +2411,17 @@ msgstr "Znovu"
 msgid "Refreshing…"
 msgstr "Osviežujúce…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Registruje sa"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Uvoľnenie do nového stavu"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Znova načítať"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2117,13 +2436,17 @@ msgstr "Súbor upozornení"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Odstrániť"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Odstrániť %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Odstrániť @%(name)s ako pomocník"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2176,15 +2499,15 @@ msgstr "Premenovať tento priečinok"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Nahlásiť"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Nahlásiť komentár"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Nahlásiť príspevok"
 
@@ -2192,11 +2515,11 @@ msgstr "Nahlásiť príspevok"
 msgid "Report this message"
 msgstr "Nahláste túto správu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Nahlasuje sa komentár"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Nahlasuje sa príspevok"
 
@@ -2213,13 +2536,13 @@ msgstr "Zvonenie…"
 msgid "Rules of this channel"
 msgstr "Pravidlá tohto kanála"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Smútok"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Uložiť"
 
@@ -2235,11 +2558,15 @@ msgstr "Uložiť ako šablónu..."
 msgid "Save your recovery code"
 msgstr "Uložiť kód obnovy"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Uložené"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Zachránený."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Ukladá sa"
 
@@ -2273,7 +2600,7 @@ msgstr "Ukladanie…"
 msgid "Say what is wrong with this account."
 msgstr "Povedz, čo je zlé na tomto účte."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Strach"
 
@@ -2292,7 +2619,8 @@ msgstr "Naplánované na %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Hľadať"
 
@@ -2303,6 +2631,14 @@ msgstr "Hľadajte niekoho, kto pridá."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Hľadať tento kanál"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Hľadať tento chat"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Prehľadajte svoje rozhovory"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2328,7 +2664,7 @@ msgstr[0] "Videný v %(num)s"
 msgstr[1] "Vidieť o %(num)s"
 msgstr[2] "Pozri o %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Vyberte konverzáciu"
 
@@ -2337,6 +2673,10 @@ msgstr "Vyberte konverzáciu"
 #, machine, plain1
 msgid "Send"
 msgstr "Poslať"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Poslať súbor"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2354,6 +2694,21 @@ msgstr "Pošlite ďalšie obrázky na:"
 msgid "Send your next videos to:"
 msgstr "Poslať ďalšie videá na:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Posielam %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Posielam %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Posielanie jedného rozhovoru je pripravené…"
+msgstr[1] "Posielam %(num)s správy akonáhle je chat pripravený…"
+msgstr[2] "Odoslanie %(num)s správ akonáhle je chat pripravený…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Posielam..."
@@ -2370,6 +2725,14 @@ msgstr "Odoslané"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Niekoľko ľudí píše…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Zdieľať obrazovku"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Zdieľaný komentár"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2390,11 +2753,20 @@ msgstr[2] "Zobraziť %(num)s nových príspevkov"
 msgid "Show formatting"
 msgstr "Zobraziť formátovanie"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Zobraziť v kanáli"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Zobraziť v rozhovore"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Zobraziť menej"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Zobraziť viac"
 
@@ -2407,19 +2779,19 @@ msgstr "Zobraziť originál"
 msgid "Show translation"
 msgstr "Zobraziť preklad"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Odhlásiť sa"
+msgstr "Odhlásiť"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Podpis %(device)s"
+msgstr "Odhlásiť %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Odhlásiť sa %(device)sTo bude musieť prihlásiť znovu čítať svoje rozhovory."
+msgstr "Odpojiť %(device)sTo bude musieť prihlásiť znovu čítať svoje rozhovory."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Prihlasovanie"
 
@@ -2539,6 +2911,11 @@ msgstr "Začínam chat…"
 msgid "Starting…"
 msgstr "Začínam…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Zastaviť zdieľanie"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Preškrtnutie"
@@ -2589,7 +2966,7 @@ msgstr "Formátovanie textu"
 msgid "Text style"
 msgstr "Textový štýl"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Ďakujeme za žiadosť"
 
@@ -2613,27 +2990,39 @@ msgstr "Ďakujem. Administrátor sa na to pozrie."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Vďaka: cechoví moderátori sa pozriú."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Vďaka: administrátori stránky sa pozriú, a zablokovali ste @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Vďaka: administrátori stránky sa pozrie."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Vďaka: administrátori stránky sa pozrie. @%(name)s Nemohol byť blokovaný odtiaľto: zablokovať ich od ich profilu."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Ten rozhovor ešte nie je pripravený. Otvor to raz a skús to znova."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Ten kód ho neotvára. Skontroluj preklepy."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Nepodarilo sa uložiť."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "To zariadenie sa teraz nedá odhlásiť."
+msgstr "To zariadenie teraz nemohlo byť odpojené."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "To zariadenie nemohlo byť použité."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Nepodarilo sa to"
 
@@ -2672,6 +3061,14 @@ msgstr "To nie je tvoje heslo."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Tá správa nemôže byť odoslaná."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Tá správa sa už v kanáli nedá nájsť."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Tá správa sa už v tomto rozhovore nedá nájsť."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2757,6 +3154,10 @@ msgstr "Chat je uzavretý: tento priestor skončil."
 msgid "The chat opens when the Space starts."
 msgstr "Rozhovor sa otvorí, keď začne priestor."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Kód z aplikácie autentifikátor, alebo jeden z vašich záložných kódov."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Návrh sa zmenil pod vašou poslednou úpravou, takže bol znovu načítaný. Pozri sa na svoje posledné slová."
@@ -2764,6 +3165,10 @@ msgstr "Návrh sa zmenil pod vašou poslednou úpravou, takže bol znovu načít
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji na porovnanie"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Spis sa nepodarilo poslať. Skús to znova."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2780,6 +3185,10 @@ msgstr "Spojenie nebolo možné skopírovať."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofón sa nedal naštartovať."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofón sa nedal použiť. Skontrolujte, či ho toto miesto používa."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2819,6 +3228,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Opakovanie nebolo uložené: nahrávanie zlyhalo. Namiesto toho si ho môžete stiahnuť."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Kľúče stránky sa zmenili, takže sa tu opäť začína chat."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Súhrn je skrytý filtrom vášho slova."
 
@@ -2854,6 +3267,10 @@ msgstr "Nie je nikde inde poslať je na týchto stránkach ešte."
 msgid "These comments could not be loaded. Try again."
 msgstr "Tieto pripomienky nebolo možné načítať. Skús to znova."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Nikdy im nepovedali, kto ich nahlásil."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Odmietli hovor."
@@ -2866,6 +3283,10 @@ msgstr "Nezhodujú sa"
 msgid "They match"
 msgstr "Zhodujú sa"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Zostávajú tam vo vašom vlastnom účte, zašifrované, používajúc jeho voľný priestor. Iba ľudia v rozhovore ich môžu otvoriť."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Nebudú môcť sledovať vás, odkázať vás alebo komentovať svoje príspevky, a neuvidíte ich príspevky. Môžete ich kedykoľvek odblokovať."
@@ -2874,9 +3295,9 @@ msgstr "Nebudú môcť sledovať vás, odkázať vás alebo komentovať svoje pr
 msgid "This Space has ended."
 msgstr "Tento priestor skončil."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Tento prehliadač"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "To tiež ukončí akúkoľvek záchranu z prehliadača, kde ste použili chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2886,9 +3307,29 @@ msgstr "Tento prehliadač nevie volať."
 msgid "This browser can't record the Space."
 msgstr "Tento prehliadač nemôže nahrávať priestor."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Tento prehliadač nemôže zdieľať obrazovku."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Tento prehliadač nemôže zobrazovať oznámenia z tejto stránky."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Tento prehliadač nemôže pripraviť obrázky na nahrávanie. Skús iný prehliadač."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Tento prehliadač stále drží kľúče chatu pred zmenou hesla. Použite ich na čítanie starých správ tu a na vašich ďalších zariadeniach?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Tento prehliadač bol odpojený od chatu z iného zariadenia, takže chat sa tu opäť začína."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Uložené dáta chatu tohto prehliadača boli vymazané, takže chat sa tu opäť začína."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2898,6 +3339,26 @@ msgstr "To môže byť odčinené."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Tento kanál je tlmený pre vás: žiadne neprečítané bodky a žiadne oznámenia."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Tento chat je end-to-end zašifrovaný, takže stránka nevie čítať. Hlásenie posiela túto správu a až štyri pred ňou, ako ich vidíte tu, adminom stránky."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Tento komentár sa nedá zobraziť."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Toto zariadenie bude čoskoro odpojené."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Tento súbor sa nepodarilo otvoriť. Skús to neskôr."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Tento súbor už nie je dostupný."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Táto živá niť skončila"
@@ -2905,6 +3366,10 @@ msgstr "Táto živá niť skončila"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Táto správa sa na tomto zariadení nedá prečítať."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Táto správa bola vymazaná."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2919,12 +3384,24 @@ msgstr "Tento post sa nedá zobraziť."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "This post is off-topic for +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Toto prihlásenie"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Toto tiež odpojí chat v tomto prehliadači, ak je to prehliadač. Začne znovu ako nové zariadenie."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Tento hlasový kanál je plný (%(num)s osoba)."
 msgstr[1] "Tento hlasový kanál je plný (%(num)s osoby)."
 msgstr[2] "Tento hlasový kanál je plný (%(num)s ľudí)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Tie kľúče už nie sú tvojím účtom. Použite svoj kód obnovy, alebo začať odznova."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2958,7 +3435,7 @@ msgstr[0] "Príliš dlho na %(num)s (%(note)s)"
 msgstr[1] "Príliš dlho na %(num)s (%(note)s)"
 msgstr[2] "Príliš dlho na %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Dnes príliš veľa žiadostí"
 
@@ -2989,13 +3466,21 @@ msgstr "Preklad teraz nie je dostupný."
 msgid "Try again"
 msgstr "Skús to znova"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Skúste to zajtra."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Zapnúť upozornenia"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Dvojfaktorový kód"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Zmenilo sa dvojfaktorové prihlásenie, takže tu opäť začína chat."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -3029,12 +3514,12 @@ msgstr "Nepodarilo sa odstrániť komentár v tejto dobe. Prosím, skúste to ne
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Momentálne nemôžem voliť. Prosím, skúste to neskôr."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Odblokovať"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Späť"
 
@@ -3054,17 +3539,13 @@ msgstr "Odomknúť"
 msgid "Unlock your messages"
 msgstr "Odomknite správy"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Odomknúť správy ako prvé: znovu načítať stránku zadať heslo."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Zrušiť stlmenie"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Odopnúť"
 
@@ -3120,11 +3601,15 @@ msgstr "Použi to tu"
 msgid "Use my recovery code instead"
 msgstr "Namiesto toho použite môj kód obnovy"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Použi ich"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Používateľské meno je obsadené :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Používateľské meno je v poriadku!"
 
@@ -3211,7 +3696,7 @@ msgstr[2] "Video volanie · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video je vypnuté v tomto hovore: ste na audio."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Zobraziť originál"
 
@@ -3257,6 +3742,10 @@ msgstr[0] "Hlas prechádza prehliadačom cez prenos stránky, takže nikto nevid
 msgstr[1] "Hlas prechádza prehliadačom cez prenos stránky, takže nikto nevidí nikoho adresu. Až dvaja ľudia."
 msgstr[2] "Hlas prechádza prehliadačom cez prenos stránky, takže nikto nevidí nikoho adresu. Až %(num)s ľudí."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Hlasová poznámka"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Počkajte chvíľu: vaše posledné zmeny sú stále uložené."
@@ -3264,6 +3753,10 @@ msgstr "Počkajte chvíľu: vaše posledné zmeny sú stále uložené."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Čakanie na aplikáciu"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Našli sme váš rozhovor v tomto prehliadači"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3284,6 +3777,10 @@ msgstr "Čo je zlé na tomto vesmíre? (nepovinné)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Čo je zlé na tejto správe? (nepovinné)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Kam by mali ísť súbory, ktoré posielate v rozhovoroch?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3310,7 +3807,7 @@ msgstr "Kto to povedal"
 msgid "Who upvoted"
 msgstr "Kto hlasoval"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Prečo"
 
@@ -3325,6 +3822,10 @@ msgstr "Prečo to porušuje pravidlá vášho cechu? To sa ukáže každému, kt
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Prečo to porušuje pravidlá vášho cechu? To sa ukáže každému, kto sa pozrie do histórie tohto post / komentár."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Prečo sa táto poznámka odstraňuje? Váš dôvod je uvedený vo verejnom denníku."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3343,7 +3844,7 @@ msgstr "Najprv niečo napíš."
 msgid "Write what you want to tell us."
 msgstr "Napíš nám, čo nám chceš povedať."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Áno"
 
@@ -3361,7 +3862,7 @@ msgstr "Áno, zruš to"
 msgid "You"
 msgstr "Ty"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Toto ste už urobili"
 
@@ -3377,7 +3878,7 @@ msgstr "Už ste nahlásili tento príspevok."
 msgid "You already voted on this post."
 msgstr "O tomto príspevku ste už hlasovali."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Blokujete @%(name)s"
 
@@ -3416,7 +3917,7 @@ msgstr "Môžete čítať tento kanál, ale nie písať do neho."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Vidíte, kto je tu, ale nemôžete hovoriť v tomto kanáli."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Toto nemôžete urobiť."
 
@@ -3460,6 +3961,14 @@ msgstr "Opustil si priestor."
 msgid "You left the call."
 msgstr "Nechal si hovor."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Odpojili ste sa všade od iného zariadenia, takže chat začína znova tu."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Prihlásil si sa so svojím dvojfaktorovým kódom obnovy, takže chat začína znova tu."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Nesledoval si @%(name)s."
@@ -3467,6 +3976,10 @@ msgstr "Nesledoval si @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Boli ste odvolaný z tohto vesmíru."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Dostanete nový kód obnovy a ten starý prestane fungovať."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3492,6 +4005,10 @@ msgstr "Váš prehliadač zablokoval okno pre pripojenie. Povoliť pop-up pre t�
 msgid "Your chat devices can't be listed right now."
 msgstr "Vaše konverzačné zariadenia teraz nemôžu byť uvedené."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Váš chat recovery kód"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Vaše rozhovory"
@@ -3503,6 +4020,10 @@ msgstr "Vaše chaty budú opäť fungovať na tomto zariadení, ale správy z mi
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Váš komentár nemohol byť zaslaný. Skús to znova."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Váš súčasný kód obnovy prestane fungovať."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3534,9 +4055,32 @@ msgstr "Váš kľúč sa teraz nedá zobraziť."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Váš kľúč bol zamknutý starším heslom. Open Diskusia na tejto stránke a zadajte svoj kód obnovy raz; potom sa otvorí tu."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Vaša správa bude odoslaná po odomknutí chatu na tomto zariadení."
+msgstr[1] "Vaše %(num)s správy budú zaslané po odomknutí chatu na tomto zariadení."
+msgstr[2] "Vaše %(num)s správy budú zaslané po odomknutí chatu na tomto zariadení."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Tvoj starý zákon už nefunguje."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Vaše heslo sa zmenilo, pretože tento kľúč chatu bol zamknutý. Kód obnovy, ktorý ste uložili pri chate, ho otvára."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Vaše heslo bolo pre vás zmenené, takže tu opäť začína chat."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Vaše heslo bolo zmenené, tak tu opäť začína chat."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Vaše heslo bolo resetované, takže chat začína odznova."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3545,6 +4089,14 @@ msgstr "Váš kód obnovy"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Ukážu sa tu vaše uložené šablóny."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Vaša obrazovka môže byť zdieľaná iba počas videa v tomto hovore."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Tvoja obrazovka nemohla byť zdieľaná."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3584,7 +4136,7 @@ msgid "blue"
 msgstr "modrá"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "komentár"
 
@@ -3663,7 +4215,7 @@ msgstr "oranžová"
 msgid "pink"
 msgstr "ružové"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "príspevok"
 

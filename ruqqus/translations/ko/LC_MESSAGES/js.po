@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s는 …"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s %(time)s 후에 사라지는 메시지 설정."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s 메시지가 사라집니다."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, python-format
@@ -114,10 +122,20 @@ msgid "%(num)s member"
 msgid_plural "%(num)s members"
 msgstr[0] "%(num)s 회원"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s 메시지가 있습니다."
+
 #, machine, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s 스레드의 메시지"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s 메시지 읽기 …"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -208,6 +226,14 @@ msgstr[0] "%(owner)s · %(num)s 회원"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s 어쨌든 저장합니까?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s 사이트맵"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, python-format
@@ -237,6 +263,14 @@ msgid "+%(guild)s · %(num)s comment"
 msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+ %(guild)s · %(num)s 댓글"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 일"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 주일"
+
 #, machine, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s 이 그룹에 추가. 그것을 읽고 그것을 씁니다."
@@ -245,10 +279,6 @@ msgstr "@%(name)s 이 그룹에 추가. 그것을 읽고 그것을 씁니다."
 msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s 아직 채팅을 열지 않았습니다. %(num)s 메시지는 그들이 할 때 보내질 것입니다."
-
-#, machine, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s 은 태핑…"
 
 #, machine
 msgid "A Space"
@@ -299,6 +329,11 @@ msgstr "차단 된 누군가의 메시지"
 msgid "A message that isn't there any more"
 msgstr "더 이상없는 메시지"
 
+#, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "%(num)s 메시지가 전송되지 않았습니다 : 채팅은이 탭에서 중지되었습니다."
+
 #, machine, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -317,9 +352,13 @@ msgid "Accept"
 msgstr "이름 *"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "추가"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "사용자 이름"
 
 #, machine
 msgid "Add image"
@@ -358,12 +397,12 @@ msgid "Adding..."
 msgstr "더 보기."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "관리자"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "동의"
 
@@ -383,6 +422,10 @@ msgstr "Align 권리"
 msgid "Alignment"
 msgstr "회사 소개"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "@%(name)s을 차단합니다"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, python-format
 msgid "Also here: %(names)s"
@@ -392,7 +435,7 @@ msgstr "또한 여기에: %(names)s"
 msgid "An app"
 msgstr "앱 다운로드"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "화남"
 
@@ -402,7 +445,7 @@ msgstr "화남"
 msgid "Announcements"
 msgstr "공지사항"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "익명"
 
@@ -410,6 +453,10 @@ msgstr "익명"
 #, machine
 msgid "Answer"
 msgstr "이름 *"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "채팅에서 누구나 여전히 메시지를 복사하거나 화면의 사진을 찍을 수 있습니다."
 
 #, machine
 msgid "Ask to mute"
@@ -423,23 +470,23 @@ msgstr "이 게시물에 대한 링크 첨부"
 msgid "Aw shucks. No GIFs found..."
 msgstr "아우 shucks. 아니 GIFs 발견 ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "대박"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "어색함"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "맨 위로"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "차단"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "@%(name)s 차단할까요?"
 
@@ -450,6 +497,10 @@ msgstr "차단 @%(name)s."
 #, machine
 msgid "Bold (Ctrl+B)"
 msgstr "대담한 (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "멈춘 부분에서 채팅 키를 가져옵니다. 비밀번호 입력."
 
 #, machine
 msgid "Bulleted list"
@@ -522,7 +573,7 @@ msgstr "카메라 오프"
 msgid "Camera on"
 msgstr "카메라 켜기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "취소"
 
@@ -556,7 +607,7 @@ msgid "Channel · %(num)s member"
 msgid_plural "Channel · %(num)s members"
 msgstr[0] "채널 · %(num)s 회원"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "채널"
 
@@ -566,13 +617,45 @@ msgstr "채널에서"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "채팅"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "채팅을 통해 키를 가져올 수 없습니다. 다시 시도합니다."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "채팅을 연결할 수 없습니다."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "채팅이 끝나지 않았습니다. 암호를 입력하여 다시 시도하십시오."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "채팅이 끝나지 않았습니다. 다시 시도합니다."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "채팅은이 브라우저가 저장된 것을 열 수 없습니다. 그래서 여기에 다시 시작합니다."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "이 브라우저에서 채팅을 시작할 수 없습니다."
 
 #, machine
 msgid "Chat did not answer. Try again."
 msgstr "채팅은 대답하지 않았다. 다시 시도하십시오."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "채팅은 오랫동안이 브라우저에서 사용되지 않았으므로 다시 시작합니다."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "채팅은 다른 탭에서 닫습니다 …"
 
 #, machine
 msgid "Chat is open in another tab."
@@ -586,6 +669,26 @@ msgstr "채팅은 여전히 시작된다."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "채팅은 여전히 시작된다. 순간에 다시 시도."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "지금 계정을 사용할 수 없습니다."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "채팅은 그것의 연결을 잃었다. 관련 기사…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "채팅은이 브라우저가 사이트 데이터를 유지하고, 여기에는 할 수 없습니다. 채팅은이 창에서 시작할 수 없습니다."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "이 탭에서 채팅 중지."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "채팅은 다른 장치에서이 브라우저에 연결되었습니다. 다시 시작 …"
+
 #, machine, python-format
 msgid "Chat with @%(name)s"
 msgstr "@%(name)s로 채팅하기"
@@ -594,7 +697,7 @@ msgstr "@%(name)s로 채팅하기"
 msgid "Chat's key isn't available right now."
 msgstr "채팅의 열쇠는 지금 사용할 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "채팅"
 
@@ -634,11 +737,11 @@ msgstr "누가 볼 수 있습니다."
 msgid "Choose your profile or at least one guild."
 msgstr "프로필 또는 적어도 하나의 길드를 선택하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "서클"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "닫기"
 
@@ -674,7 +777,7 @@ msgstr "앱 쇼와 같은 순서로 비교하십시오."
 msgid "Confirm in the app as well."
 msgstr "앱에서 확인."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "혼란"
 
@@ -826,6 +929,10 @@ msgstr "핀 메시지를로드 할 수 없습니다"
 #, machine
 msgid "Could not load the preview."
 msgstr "미리보기를로드 할 수 없습니다."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "채팅을로드 할 수 없습니다"
 
 #, machine
 msgid "Could not load your chats. Try again."
@@ -987,7 +1094,11 @@ msgstr "복사 할 수 없습니다 : 코드를 선택하고 복사하십시오.
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "이전 메시지를로드 할 수 없습니다. 순간에 다시 시도."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "채팅을로드 할 수 없습니다. 다시 시도 …"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "게시물 만드는 중"
 
@@ -995,7 +1106,7 @@ msgstr "게시물 만드는 중"
 msgid "Creating…"
 msgstr "회사 소개…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "오글"
 
@@ -1003,7 +1114,7 @@ msgstr "오글"
 msgid "Cross out"
 msgstr "더 알아보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "다크 모드"
 
@@ -1068,13 +1179,21 @@ msgstr "이 이야기 삭제?"
 msgid "Delete this update?"
 msgstr "이 업데이트 삭제?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "댓글 삭제 중"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "게시물 삭제 중"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "메시지 삭제"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "메시지가 꺼집니다."
 
 #, machine, plain1
 msgid "Discard"
@@ -1108,6 +1227,10 @@ msgstr "이름 *"
 #, machine, plain1
 msgid "Done."
 msgstr "이름 *."
+
+#, machine, plain2
+msgid "Download"
+msgstr "다운로드"
 
 #, machine
 msgid "Downloaded."
@@ -1162,7 +1285,7 @@ msgstr "종료 암호화 :이 채널의 사람들이 그것을 읽을 수 있습
 msgid "Ended"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "URL을 입력하세요"
 
@@ -1173,6 +1296,10 @@ msgstr "https://example.com과 같은 웹 주소를 입력하십시오"
 #, machine
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "비밀번호를 한번 입력하세요. 이 브라우저의 메시지에 열쇠를 잠그기 때문에 사이트가 결코 읽을 수 없습니다."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "비밀번호 입력."
 
 #, machine
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1186,9 +1313,49 @@ msgstr "비밀번호 입력."
 msgid "Enter your recovery code"
 msgstr "복구 코드를 입력"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "2단계 코드를 입력"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "2단계 코드를 입력합니다."
+
+#, machine, plain2
+msgid "File"
+msgstr "파일 형식"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "파일은 한 번 @%(name)s이 채팅을 열 수 있습니다."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "파일은 한 번 채팅이이이 장치에 잠금 해제됩니다."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "파일이 여기에 전송되지 않습니다."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Ღ♥ღ"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "제품 정보"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "끝 당신의 채팅을 가져 오기"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "끝 시작"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "마무리 채팅 설정 다른 탭에 …"
 
 #, machine
 msgid "Follow someone to add them to a group."
@@ -1208,16 +1375,32 @@ msgid "Formatting"
 msgstr "파일 형식"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "전달"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "이 메시지를 전달"
 
 #, machine, python-format
 msgid "Forward to at most %(num)s guild."
 msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "가장 %(num)s 길드에 전달."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "앞으로 …"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "관련 제품"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "앞으로."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "전달 중"
 
@@ -1257,11 +1440,11 @@ msgstr "일부 텍스트를 제공합니다."
 msgid "Give the template a name."
 msgstr "이름을 지정합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "웹사이트로 이동"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "역겨움"
 
@@ -1269,7 +1452,7 @@ msgstr "역겨움"
 msgid "Group info"
 msgstr "그룹 정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "길드"
 
@@ -1281,13 +1464,25 @@ msgstr "Guilds 와 채팅"
 msgid "Hand raised"
 msgstr "손 제기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "행복"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "채팅 복구 코드를 유지? 암호를 잊어버리지 않고 오래된 메시지를 잃을 수 있습니다."
 
 #, machine, python-format
 msgid "Heading %(level)s"
 msgstr "머리 %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "도움자"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "도움자는 당신과 함께이 채널에 쓰기. 3 명까지 선택할 수 있습니다."
 
 #, machine
 msgid "Hidden by your word filter"
@@ -1330,6 +1525,10 @@ msgstr "나는 규칙에 동의합니다"
 msgid "I don't have it: start over"
 msgstr "나는 그것을 가지고 있지 않습니다 : 시작"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "나는 그것을 가지고"
+
 #, machine
 msgid "I've saved it"
 msgstr "나는 그것을 저장했습니다"
@@ -1337,6 +1536,10 @@ msgstr "나는 그것을 저장했습니다"
 #, machine
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "암호를 잊어버린 경우, 이 코드는 오래된 메시지를 읽는 유일한 방법입니다. 비밀번호 관리자처럼 안전한 곳에 보관하십시오."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "복구 코드를 가지고 있다면, 대신 사용: 일부 오래된 메시지는 백업에만 열려."
 
 #, machine
 msgid "Image (coming soon)"
@@ -1428,11 +1631,11 @@ msgstr "그 이야기는 당신의 아카이브에 머물."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "가입"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "%(channel)s 참여"
 
@@ -1460,12 +1663,16 @@ msgstr "중요한 사실과 링크 사람들은 먼저 볼 수 있어야합니�
 msgid "Last used %(date)s"
 msgstr "마지막 사용 %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "이름 *"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "웃음"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "탈퇴"
 
@@ -1481,7 +1688,7 @@ msgstr "이 그룹을 떠나? 다른 사람은 소유자가됩니다."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "이 그룹을 떠나? 누군가가 다시 추가하지 않고 새로운 메시지를 볼 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "라이트 모드"
 
@@ -1525,6 +1732,10 @@ msgstr "현재 위치"
 msgid "Load earlier messages"
 msgstr "이전 메시지"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "로딩 …"
+
 #, machine
 msgid "Loading post…"
 msgstr "로딩 …"
@@ -1549,17 +1760,25 @@ msgstr "템플릿을 로딩 ..."
 msgid "Loading..."
 msgstr "로드 중 ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "불러오는 중…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "사랑"
 
 #, machine
 msgid "Lower hand"
 msgstr "낮은 손"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "새로운 코드 만들기"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "새로운 복구 코드를 만드십시오?"
 
 #, machine
 msgid "Make admin"
@@ -1577,7 +1796,7 @@ msgstr "이 게시물을 공개합니까? 누구나 볼 수 있습니다."
 msgid "Making the channel…"
 msgstr "채널 만들기 …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "그저 그럼"
 
@@ -1594,6 +1813,14 @@ msgstr "메시지 삭제"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "메시지 요청. 당신이 받아들일 때까지 본 적이 없습니다."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "메시지가 사라진 후 %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "이 브라우저는 이미 읽을 수 있습니다."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine
@@ -1605,7 +1832,7 @@ msgid "Microphone %(number)s"
 msgstr "마이크 %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "더 보기"
 
@@ -1613,11 +1840,11 @@ msgstr "더 보기"
 msgid "Move to listeners"
 msgstr "청취자들"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "음소거"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "뮤트됨"
 
@@ -1637,7 +1864,11 @@ msgstr "폴더 이름"
 msgid "New channel"
 msgstr "새로운 채널"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "이 채팅의 새로운 메시지는 당신이 선택한 시간 후 모든 사람에게 사라집니다. 그들이 보낸 시간 전에 보내진 메시지."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "아니"
 
@@ -1657,17 +1888,29 @@ msgstr "아직 전화가 없습니다. 채팅의 음성 통화 또는 비디오 
 msgid "No camera was found."
 msgstr "카메라가 없습니다."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "채팅이 없습니다."
+
 #, machine
 msgid "No co-authors yet."
 msgstr "아직 공동 저자 없음."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "코드 없음? 채팅을 사용하는 브라우저에서 새로운 암호로 로그인하십시오. 채팅을 다시 가져올 수 있습니다."
 
 #, machine
 msgid "No devices yet. Open Chat to start."
 msgstr "아직 기기가 없습니다. 시작하려면 채팅을 엽니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "플레어 없음"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "아직 도움이되지 않았습니다."
 
 #, machine
 msgid "No microphone was found."
@@ -1676,6 +1919,10 @@ msgstr "마이크가 없습니다."
 #, machine
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "아무도 일치하지 않습니다. 당신은 당신의 채팅에 보낼 수 있고 당신이 따르는 사람들."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "아직 핀 메시지 없음."
 
 #, machine
 msgid "No special characters or spaces allowed."
@@ -1721,6 +1968,10 @@ msgstr "견적 요청"
 msgid "Not used yet"
 msgstr "아직 사용되지 않음"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "이 브라우저에서 찾을 수 없습니다."
+
 #, machine
 msgid "Nothing found."
 msgstr "아무것도 찾을 수 없습니다."
@@ -1749,17 +2000,45 @@ msgstr "아직 미리보기가 없습니다."
 msgid "Nothing was connected."
 msgstr "아무것도 연결되었습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "알림"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "이 브라우저에서이 사이트에 대한 알림이 차단됩니다. 브라우저 설정에서 설정할 수 있습니다."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "이 브라우저에서 알림이 꺼집니다."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "이 브라우저에서 알림이 있습니다."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "알림을 확인할 수 없습니다. 다시 시도하는 페이지를 다시로드합니다."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "알림이 켜질 수 없습니다. 다시 시도하십시오."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "이 사이트에 대한 알림이 허용되지 않았습니다."
 
 #, machine
 msgid "Numbered list"
 msgstr "번호 목록"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "이름 *"
 
 #, machine
 msgid "Offline"
@@ -1768,6 +2047,10 @@ msgstr "옵션 정보"
 #, machine
 msgid "Offline · retrying"
 msgstr "오프 라인 · retrying"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "그룹 소유자 및 관리자 만이 변경할 수 있습니다."
 
 #, machine
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1802,6 +2085,10 @@ msgstr "기타 이 사이트에 한 번 채팅, 그래서 당신의 열쇠가 �
 msgid "Open Chat once to unlock your messages, then try again."
 msgstr "메시지 잠금을 해제 한 번 채팅을 열고 다시 시도하십시오."
 
+#, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "이 장치에서 메시지를 설정하기 위해 채팅을 엽니 다."
+
 #, machine
 msgid "Open media settings"
 msgstr "미디어 설정 열기"
@@ -1813,6 +2100,10 @@ msgstr "본문 바로가기"
 #, machine, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "+%(guild)s의 채팅을 엽니다"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "파일 열기 …"
 
 #, machine
 msgid "Options saved."
@@ -1839,7 +2130,7 @@ msgstr "당신이 따르는 사람들"
 msgid "Pick a date and time."
 msgstr "날짜와 시간을 선택."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "플레어 선택"
 
@@ -1873,11 +2164,15 @@ msgstr "사진 이야기는 아직이 사이트에서 사용할 수 없습니다
 msgid "Pin this message"
 msgstr "Pin 이 메시지"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "연락처"
+
 #, machine
 msgid "Pinned messages"
 msgstr "Pinned 메시지"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "제발"
 
@@ -1885,12 +2180,18 @@ msgstr "제발"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "유효한 URL (를 포함하여 http:// 또는 https://).를 입력하십시오"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "다시 로그인해 주세요."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "인기 채널"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "게시"
 
@@ -1902,7 +2203,7 @@ msgstr "관련 기사 페이지를 다시로드하십시오."
 msgid "Posting to %(guilds)s"
 msgstr "%(guilds)s에 게시"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "내 프로필에 게시"
 
@@ -1911,7 +2212,7 @@ msgstr "내 프로필에 게시"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "프로필에 게시, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "게시 중…"
 
@@ -2010,6 +2311,14 @@ msgstr "로그인"
 msgid "React with %(emoji)s"
 msgstr "%(emoji)s으로 React"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "음성 메모 녹음"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "녹음 … 마이크를 다시 눌러 전송합니다."
+
 #, machine
 msgid "Recovery code"
 msgstr "복구 코드"
@@ -2022,13 +2331,17 @@ msgstr "레드오"
 msgid "Refreshing…"
 msgstr "상쾌한 …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "가입 중"
 
 #, machine
 msgid "Release to refresh"
 msgstr "새로 고침"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "새로고침"
 
 #, machine
 msgid "Remind me"
@@ -2043,13 +2356,17 @@ msgstr "Reminder 세트"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "삭제"
 
 #, machine, python-format
 msgid "Remove %(name)s"
 msgstr "제거 %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Helper로 @%(name)s 제거"
 
 #, machine, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2102,15 +2419,15 @@ msgstr "이 폴더를 이름"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "신고"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "댓글 신고"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "게시물 신고"
 
@@ -2118,11 +2435,11 @@ msgstr "게시물 신고"
 msgid "Report this message"
 msgstr "이 메시지"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "신고하는 중"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "신고하는 중"
 
@@ -2139,13 +2456,13 @@ msgstr "링 …"
 msgid "Rules of this channel"
 msgstr "이 채널의 규칙"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "슬픔"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "저장"
 
@@ -2161,11 +2478,15 @@ msgstr "템플릿으로 저장 ..."
 msgid "Save your recovery code"
 msgstr "복구 코드를 저장"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "저장됨"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "다운로드."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "저장 중"
 
@@ -2199,7 +2520,7 @@ msgstr "저장…"
 msgid "Say what is wrong with this account."
 msgstr "이 계정으로 잘못되었는지."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "무서움"
 
@@ -2218,7 +2539,8 @@ msgstr "%(time)s에 대한 계획."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "검색"
 
@@ -2229,6 +2551,14 @@ msgstr "누군가를 위한 검색."
 #, machine
 msgid "Search this channel"
 msgstr "이 채널을 검색"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "이 채팅"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "채팅을 검색"
 
 #, machine, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2250,7 +2580,7 @@ msgid "Seen by %(num)s"
 msgid_plural "Seen by %(num)s"
 msgstr[0] "에 의해 참조 %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "대화를 선택하세요"
 
@@ -2259,6 +2589,10 @@ msgstr "대화를 선택하세요"
 #, machine
 msgid "Send"
 msgstr "이름 *"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "파일 보내기"
 
 #, machine
 msgid "Send it somewhere else:"
@@ -2275,6 +2609,19 @@ msgstr "다음 그림을 보내십시오:"
 #, machine
 msgid "Send your next videos to:"
 msgstr "다음 비디오를 보내십시오:"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "%(name)s를…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "이름 * %(name)s· … %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "%(num)s 메시지 한 번 채팅이 준비되어 있습니다 …"
 
 #, machine
 msgid "Sending..."
@@ -2293,6 +2640,14 @@ msgstr "이름 *"
 msgid "Several people are typing…"
 msgstr "몇몇 사람들은…"
 
+#, machine, plain2
+msgid "Share screen"
+msgstr "공유 화면"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "자주 묻는 질문"
+
 #, machine
 msgid "Shared a post"
 msgstr "자주 묻는 질문"
@@ -2310,11 +2665,20 @@ msgstr[0] "%(num)s 새로운 게시물 표시"
 msgid "Show formatting"
 msgstr "형식보기"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "채널에서보기"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "채팅에서보기"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "간략히"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "더 보기"
 
@@ -2327,19 +2691,19 @@ msgstr "쇼 원본"
 msgid "Show translation"
 msgstr "본문 바로가기"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "이름 *"
+msgstr "로그아웃"
 
-#, machine, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "로그인 %(device)s"
+msgstr "%(device)s 로그아웃"
 
-#, machine, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "로그인 %(device)s? 채팅을 읽고 다시 로그인해야합니다."
+msgstr "연결 %(device)s? 채팅을 읽고 다시 로그인해야합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "로그인 중"
 
@@ -2455,6 +2819,11 @@ msgstr "채팅 시작 …"
 msgid "Starting…"
 msgstr "시작 …"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "공유하기"
+
 #, machine
 msgid "Strikethrough"
 msgstr "스트라이크"
@@ -2505,7 +2874,7 @@ msgstr "텍스트 포맷"
 msgid "Text style"
 msgstr "텍스트 스타일"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "요청해 주셔서 감사합니다"
 
@@ -2529,27 +2898,39 @@ msgstr "감사합니다. 관리자는 그것을 볼 수 있습니다."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "감사 : 길드의 길드 모더레이터가 살펴 보겠습니다."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "감사 : 사이트의 관리자는 살펴 보며 @ %(name)s을 차단했습니다."
+
 #, machine
 msgid "Thanks: the site's admins will take a look."
 msgstr "감사 : 사이트의 관리자가 살펴볼 것입니다."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "감사 : 사이트의 관리자가 살펴볼 것입니다. @%(name)s는 다음과 같이 막을 수 없습니다: 그들의 프로필에서 차단합니다."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "그 채팅은 아직이 장치에 준비가되지 않습니다. 한 번 오픈 한 다음 다시 시도하십시오."
 
 #, machine
 msgid "That code doesn't open it. Check for typos."
 msgstr "그 코드가 열리지 않습니다. 본문 바로가기."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "저장하지 못했습니다."
 
-#, machine
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "그 장치는 지금 서명할 수 없습니다."
+msgstr "그 장치는 지금 막을 수 없습니다."
 
 #, machine
 msgid "That device couldn't be used."
 msgstr "그 장치는 사용할 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "전송하지 못했습니다"
 
@@ -2588,6 +2969,14 @@ msgstr "비밀번호가 없습니다."
 #, machine
 msgid "That message can't be sent."
 msgstr "메시지가 전송되지 않습니다."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "그 메시지는 더 많은 채널에서 찾을 수 없습니다."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "그 메시지는 더 이상이 채팅에서 찾을 수 없습니다."
 
 #, machine
 msgid "That password isn't right."
@@ -2673,6 +3062,10 @@ msgstr "채팅은 닫힙니다: 이 공간은 종료되었습니다."
 msgid "The chat opens when the Space starts."
 msgstr "대화는 스페이스가 시작될 때 열립니다."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "인증자 앱의 코드, 또는 백업 코드 중 하나."
+
 #, machine
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "마지막 편집의 밑에 초안은, 이렇게 reloaded. 마지막 몇 단어를 확인하십시오."
@@ -2680,6 +3073,10 @@ msgstr "마지막 편집의 밑에 초안은, 이렇게 reloaded. 마지막 몇 
 #, machine
 msgid "The emoji to compare"
 msgstr "이모티콘 비교"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "파일을 보낼 수 없습니다. 다시 시도하십시오."
 
 #, machine, python-format
 msgid "The guild, +%(name)s"
@@ -2696,6 +3093,10 @@ msgstr "링크를 복사 할 수 없습니다."
 #, machine
 msgid "The microphone couldn't be started."
 msgstr "마이크가 시작할 수 없습니다."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "마이크는 사용할 수 없습니다. 해당 이용 후기에 달린 코멘트가 없습니다."
 
 #, machine
 msgid "The microphone is in use by another app."
@@ -2734,6 +3135,10 @@ msgstr "재생이 저장되지 않았습니다 : %(reason)s. 대신 다운로드
 msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "재생이 저장되지 않았습니다 : 업로드 실패. 대신 다운로드 할 수 있습니다."
 
+#, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "사이트 키 변경, 그래서 채팅은 다시 시작."
+
 #, machine
 msgid "The summary is hidden by your word filter."
 msgstr "요약은 단어 필터에 의해 숨겨집니다."
@@ -2770,6 +3175,10 @@ msgstr "아직이 사이트에 보낼 다른 곳이 없습니다."
 msgid "These comments could not be loaded. Try again."
 msgstr "이 의견은로드 할 수 없습니다. 다시 시도하십시오."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "그들은 그들이 보고한 적이 없다."
+
 #, machine
 msgid "They declined the call."
 msgstr "그들은 전화를 쇠퇴했다."
@@ -2782,6 +3191,10 @@ msgstr "그들은 일치하지 않습니다"
 msgid "They match"
 msgstr "그들은 일치"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "그들은 자신의 계정에서 유지, 암호화, 그것의 무료 공간을 사용하여. 채팅의 사람들 만 열 수 있습니다."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "그들은 당신을 따를 수 없습니다, 메시지 또는 게시물에 댓글, 당신은 자신의 게시물을 볼 수 없습니다. 언제든지 차단할 수 있습니다."
@@ -2790,9 +3203,9 @@ msgstr "그들은 당신을 따를 수 없습니다, 메시지 또는 게시물�
 msgid "This Space has ended."
 msgstr "이 공간은 종료되었습니다."
 
-#, machine
-msgid "This browser"
-msgstr "이 브라우저"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "이것은 또한 당신이 채팅을 사용하는 브라우저에서 구조가 끝납니다."
 
 #, machine
 msgid "This browser can't make calls."
@@ -2802,9 +3215,29 @@ msgstr "이 브라우저는 호출 할 수 없습니다."
 msgid "This browser can't record the Space."
 msgstr "이 브라우저는 스페이스를 기록할 수 없습니다."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "이 브라우저는 화면을 공유할 수 없습니다."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "이 브라우저는 이 사이트에서 알림을 표시할 수 없습니다."
+
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "이 브라우저는 사진을 업로드 할 수 없습니다. 다른 브라우저를 사용해보십시오."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "이 브라우저는 여전히 귀하의 암호가 변경되기 전에 채팅 키를 보유하고 있습니다. 그(것)들을 사용하여 이전 메시지와 다른 기기에 읽을 수 있습니까?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "이 브라우저는 다른 장치에서 채팅에서 차단되었으므로 채팅이 다시 시작되었습니다."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "이 브라우저의 저장된 채팅 데이터가 정리되었으므로 채팅이 다시 시작되었습니다."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2814,6 +3247,26 @@ msgstr "이것은 undone일 수 없습니다."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "이 채널은 당신을 위해 뮤트: 아니 읽지 않은 점 및 언급 알림."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "이 채팅은 암호화 된 엔드 투 엔드이므로 사이트가 읽을 수 없습니다. 보고는 이 메시지를 보내고 4 하기 전에, 당신이 그들을 참조로, 사이트 관리자에."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "이 댓글은 볼 수 없습니다."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "이 장치는 곧 차단됩니다."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "이 파일은 열 수 없습니다. 나중에 다시 시도하십시오."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "이 파일은 더 이상 사용할 수 없습니다."
+
 #, machine
 msgid "This live thread has ended"
 msgstr "이 실은 끝났습니다"
@@ -2821,6 +3274,10 @@ msgstr "이 실은 끝났습니다"
 #, machine
 msgid "This message can't be read on this device."
 msgstr "이 메시지는 이 장치에 읽을 수 없습니다."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "이 메시지는 삭제되었습니다."
 
 #, machine
 msgid "This picture is no longer available."
@@ -2835,10 +3292,22 @@ msgstr "이 게시물은 볼 수 없습니다."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "이 게시물은 +%(guild)s에 대한 off-topic입니다"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "이 로그인"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "이 브라우저에서 채팅을 차단합니다. 이 브라우저의 경우. 새로운 장치로 다시 시작합니다."
+
 #, machine, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "이 음성 채널은 전체 (%(num)s 사람들)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "그 키는 더 이상 계정의. 복구 코드를 사용, 또는 이상 시작."
 
 #, machine
 msgid "Thou've reached the end of the list!"
@@ -2870,7 +3339,7 @@ msgid "Too long by %(num)s (%(note)s)"
 msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "%(num)s (%(note)s)에 의해 너무 오래"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "오늘 요청 한도 초과"
 
@@ -2901,13 +3370,21 @@ msgstr "번역은 지금 사용할 수 없습니다."
 msgid "Try again"
 msgstr "다시 시도"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "내일 다시 시도해 주세요."
 
 #, machine
 msgid "Turn notifications back on"
 msgstr "공지사항"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "2단계 코드"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Two-factor sign-in이 변경되었으므로 채팅이 다시 시작합니다."
 
 #, machine
 msgid "Type words to look for."
@@ -2941,12 +3418,12 @@ msgstr "이 시간에 코멘트를 제거 할 수 없습니다. 나중에 다시
 msgid "Unable to vote at this time. Please try again later."
 msgstr "이 시간에 투표 할 수 없습니다. 나중에 다시 시도하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "차단 해제"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "실행 취소"
 
@@ -2966,17 +3443,13 @@ msgstr "공유하기"
 msgid "Unlock your messages"
 msgstr "귀하의 메시지"
 
-#, machine
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "첫 번째 메시지를 잠금 해제: 비밀번호를 입력하기 위해 페이지를 다시로드."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "뮤트 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "고정 해제"
 
@@ -3032,11 +3505,15 @@ msgstr "여기에 사용"
 msgid "Use my recovery code instead"
 msgstr "대신 내 복구 코드를 사용"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "그들을 사용"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "이미 사용 중인 사용자 이름입니다 :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "사용할 수 있는 사용자 이름입니다!"
 
@@ -3117,7 +3594,7 @@ msgstr[0] "비디오 통화 · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "비디오는이 호출에서 떨어져 있습니다 : 당신은 오디오에 있습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "원본 보기"
 
@@ -3155,6 +3632,10 @@ msgid "Voice goes browser to browser through the site's relay, so nobody sees an
 msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
 msgstr[0] "음성은 사이트 릴레이를 통해 브라우저에 간다, 그래서 아무도의 주소를 볼 수 없습니다. 최대 %(num)s 사람들."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "연락처"
+
 #, machine
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "순간을 기다립니다: 당신의 마지막 변경은 여전히 저장됩니다."
@@ -3162,6 +3643,10 @@ msgstr "순간을 기다립니다: 당신의 마지막 변경은 여전히 저�
 #, machine
 msgid "Waiting for the app"
 msgstr "앱 대기"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "이 브라우저에서 채팅을 찾았습니다"
 
 #, machine
 msgid "We'll show fewer posts like this."
@@ -3182,6 +3667,10 @@ msgstr "이 공간에 무엇이 잘못되었습니까? (선택)"
 #, machine
 msgid "What's wrong with this message? (optional)"
 msgstr "이 메시지로 잘못되었습니까? (선택)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "채팅에서 보내는 파일이 어디 있습니까?"
 
 #, machine
 msgid "Where should your audio go?"
@@ -3208,7 +3697,7 @@ msgstr "그는 말했다"
 msgid "Who upvoted"
 msgstr "전체장편"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "왜"
 
@@ -3223,6 +3712,10 @@ msgstr "왜이 길드의 규칙을 깰? 이 의견의 역사를 본 사람은 �
 #, machine
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "왜이 길드의 규칙을 깰? 이 게시물 / 상품의 역사를 보면 누구나 볼 수 있습니다."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "왜이 코멘트가 제거됩니까? 당신의 이유는 공개 로그에 표시됩니다."
 
 #, machine
 msgid "Working it out…"
@@ -3241,7 +3734,7 @@ msgstr "먼저 뭔가를 작성합니다."
 msgid "Write what you want to tell us."
 msgstr "저희에게 말하고 싶은 것을 쓰고십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "응"
 
@@ -3259,7 +3752,7 @@ msgstr "예, 취소"
 msgid "You"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "이미 신고하셨습니다"
 
@@ -3275,7 +3768,7 @@ msgstr "당신은 이미이 게시물을보고."
 msgid "You already voted on this post."
 msgstr "당신은 이미이 게시물에 투표."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "@%(name)s 님을 차단 중입니다"
 
@@ -3312,7 +3805,7 @@ msgstr "이 채널을 읽을 수 있지만 그것에 쓰지 않습니다."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "여기에서 누구인지 볼 수 있지만, 이 채널에서 말할 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "권한이 없습니다."
 
@@ -3356,6 +3849,14 @@ msgstr "당신은 공간을 떠났다."
 msgid "You left the call."
 msgstr "당신은 전화를 왼쪽."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "다른 장치에서 모든 것을 차단, 그래서 채팅은 다시 시작."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "두 개의 요인 복구 코드와 함께 서명, 그래서 채팅은 다시 시작."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "@%(name)s을 따르지 않습니다."
@@ -3363,6 +3864,10 @@ msgstr "@%(name)s을 따르지 않습니다."
 #, machine
 msgid "You were removed from this Space."
 msgstr "이 공간에서 제거되었습니다."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "당신은 새로운 복구 코드를 얻을 것이다, 그리고 오래된 것은 작동을 중지합니다."
 
 #, machine
 msgid "You're doing that too much. Try again later."
@@ -3388,6 +3893,10 @@ msgstr "브라우저는 연결 창을 차단했습니다. 이 사이트에 팝�
 msgid "Your chat devices can't be listed right now."
 msgstr "채팅 장치가 지금 나열되지 않습니다."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "채팅 복구 코드"
+
 #, machine
 msgid "Your chats"
 msgstr "채팅하기"
@@ -3399,6 +3908,10 @@ msgstr "채팅은이 장치에서 다시 작동하지만, 이전에 메시지는
 #, machine
 msgid "Your comment could not be posted. Try again."
 msgstr "귀하의 의견은 게시 할 수 없습니다. 다시 시도하십시오."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "현재 복구 코드가 작동 중지됩니다."
 
 #, machine
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3430,9 +3943,30 @@ msgstr "당신의 열쇠는 지금 볼 수 없습니다."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "당신의 열쇠는 이전 암호로 잠겼습니다. 이 사이트에 채팅을 열고 복구 코드를 한 번 입력; 그 다음 여기에 열립니다."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "%(num)s 메시지가 전송되면 채팅이이 장치에서 잠금 해제됩니다."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "오래된 복구 코드는 더 이상 작동하지 않습니다."
+
 #, machine
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "이 채팅 키가 잠겨 있기 때문에 암호가 변경되었습니다. 채팅이 열릴 때 저장된 복구 코드가 저장되었습니다."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "비밀번호가 변경되었습니다. 그래서 채팅이 다시 시작합니다."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "비밀번호가 변경되었으므로 채팅이 다시 시작합니다."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "비밀번호가 재설정되었으므로 채팅이 다시 시작합니다."
 
 #, machine
 msgid "Your recovery code"
@@ -3441,6 +3975,14 @@ msgstr "복구 코드"
 #, machine
 msgid "Your saved templates show up here."
 msgstr "저장된 템플릿이 여기에 표시됩니다."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "이 전화에서 비디오를 공유 할 수 있습니다."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "화면을 공유 할 수 없습니다."
 
 #, machine
 msgid "Your settings have been updated."
@@ -3480,7 +4022,7 @@ msgid "blue"
 msgstr "뚱 베어"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "댓글"
 
@@ -3549,7 +4091,7 @@ msgstr "오렌지"
 msgid "pink"
 msgstr "핑크"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "게시물"
 

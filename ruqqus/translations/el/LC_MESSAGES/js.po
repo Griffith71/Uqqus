@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s πληκτρολογεί…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s βάλτε τα μηνύματα να εξαφανιστούν μετά το %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s Κλείσε τα μηνύματα εξαφάνισης."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s μέλος"
 msgstr[1] "%(num)s μέλη"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "βρέθηκε ένα μήνυμα."
+msgstr[1] "βρέθηκαν %(num)s μηνύματα."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s μήνυμα στο νήμα"
 msgstr[1] "%(num)s μηνύματα σε νήμα"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s μήνυμα διαβασμένο…"
+msgstr[1] "%(num)s μηνύματα που διαβάζονται…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s · %(num)s μέλη"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Να σωθείς;"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+ %(guild)s · %(num)s σχόλιο"
 msgstr[1] "+ %(guild)s · %(num)s σχόλια"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 ημέρα"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 εβδομάδα"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s σας πρόσθεσε σε αυτή την ομάδα. Δεχτείτε να το διαβάσετε και να γράψετε σε αυτό."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "Ο @%(name)s δεν έχει ανοίξει ακόμα κουβέντα. Το μήνυμά σας θα σταλεί όταν το κάνουν."
 msgstr[1] "Ο @%(name)s δεν έχει ανοίξει ακόμα κουβέντα. Τα %(num)s μηνύματά σας θα σταλούν όταν το κάνουν."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s πληκτρολογεί…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Ένα μήνυμα που δεν υπάρχει πια"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Ένα μήνυμα που έγραψες εδώ δεν στάλθηκε: η συνομιλία σταμάτησε σε αυτή την καρτέλα πριν μπορέσει να φύγει."
+msgstr[1] "%(num)s μηνύματα που γράψατε εδώ δεν στάλθηκαν: η συνομιλία σταμάτησε σε αυτή την καρτέλα πριν μπορέσουν να φύγουν."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Μια θέση μπορεί να έχει %(num)s συν-συγγραφέα το πολύ."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Αποδοχή"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Προσθήκη"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Προσθήκη βοηθού με όνομα χρήστη"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Προσθήκη..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Διαχειριστής"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Συμφωνώ"
 
@@ -413,6 +455,10 @@ msgstr "Ευθυγράμμιση δεξιά"
 msgid "Alignment"
 msgstr "Ευθυγράμμιση"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Αποκλεισμός επίσης @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Επίσης εδώ: %(names)s"
 msgid "An app"
 msgstr "Εφαρμογή"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Θυμός"
 
@@ -432,7 +478,7 @@ msgstr "Θυμός"
 msgid "Announcements"
 msgstr "Ανακοινώσεις"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Ανώνυμος"
 
@@ -440,6 +486,10 @@ msgstr "Ανώνυμος"
 #, machine, plain1
 msgid "Answer"
 msgstr "Απάντηση"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Οποιοσδήποτε στη συνομιλία μπορεί ακόμα να αντιγράψει ένα μήνυμα ή να φωτογραφίσει την οθόνη πριν φύγει."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Συνδέστε ένα σύνδεσμο σε αυτή τη θέση"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Σκατά. Δε βρέθηκε GIFs..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Τέλειο"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Αμήχανο"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Επιστροφή στην κορυφή"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Αποκλεισμός"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Αποκλεισμός του @%(name)s;"
 
@@ -480,6 +530,10 @@ msgstr "Μπλοκαρισμένο @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Έντονα (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Το να φέρνεις τα κλειδιά της συνομιλίας σου σταμάτησε. Εισάγετε τον κωδικό σας για να τελειώσετε."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Απενεργοποίηση κάμερας"
 msgid "Camera on"
 msgstr "Κάμερα ενεργοποιημένη"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Κανάλι · %(num)s μέλος"
 msgstr[1] "Κανάλι · %(num)s μέλη"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Κανάλια"
 
@@ -599,13 +653,45 @@ msgstr "Κανάλια που βρίσκονται"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Συνομιλία"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Η συζήτηση δεν μπορούσε να φέρει τα κλειδιά σου. Ξαναγεμίστε για να ξαναδοκιμάσετε."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Η συνομιλία δεν μπορούσε να συνδεθεί."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Η συζήτηση δεν μπορούσε να τελειώσει από την αρχή. Εισάγετε τον κωδικό σας για να δοκιμάσετε ξανά."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Η συζήτηση δεν μπορούσε να τελειώσει από την αρχή. Ξαναγεμίστε για να ξαναδοκιμάσετε."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Η συνομιλία δεν μπόρεσε να ανοίξει αυτό το πρόγραμμα περιήγησης που αποθηκεύτηκε, οπότε αρχίζει ξανά εδώ."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Η συνομιλία δεν μπορούσε να ξεκινήσει σε αυτό το πρόγραμμα περιήγησης."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Η συζήτηση δεν απάντησε. Προσπάθησε ξανά."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Το chat δεν είχε χρησιμοποιηθεί σε αυτό το πρόγραμμα περιήγησης για μεγάλο χρονικό διάστημα, οπότε αρχίζει ξανά εδώ."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Η συνομιλία κλείνει σε άλλη καρτέλα…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Η συζήτηση αρχίζει ακόμα."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Η συζήτηση αρχίζει ακόμα. Προσπάθησε ξανά σε ένα λεπτό."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Η συνομιλία δεν είναι διαθέσιμη για το λογαριασμό σας αυτή τη στιγμή."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Ο Τσατ έχασε τη σύνδεσή του. Ξαναπροσπαθώ…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Η συνομιλία χρειάζεται αυτό το πρόγραμμα περιήγησης για να κρατήσει τα δεδομένα της ιστοσελίδας, και δεν μπορεί εδώ. Η συζήτηση δεν μπορεί να ξεκινήσει από αυτό το παράθυρο."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Η συνομιλία σταμάτησε σε αυτή την καρτέλα."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Η συνομιλία αποσυνδέθηκε σε αυτό το πρόγραμμα περιήγησης από άλλη συσκευή. Ξεκινώντας πάλι από εδώ…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Συνομιλία με το @%(name)s"
@@ -627,7 +733,7 @@ msgstr "Συνομιλία με το @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Το κλειδί της συνομιλίας δεν είναι διαθέσιμο τώρα."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Συνομιλίες"
 
@@ -667,11 +773,11 @@ msgstr "Διάλεξε ποιος μπορεί να το δει αυτό."
 msgid "Choose your profile or at least one guild."
 msgstr "Επιλέξτε το προφίλ σας ή τουλάχιστον μία συντεχνία."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Κύκλοι"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Κλείσιμο"
 
@@ -707,7 +813,7 @@ msgstr "Συγκρίνετε τα με αυτά που δείχνει η εφα�
 msgid "Confirm in the app as well."
 msgstr "Επιβεβαιώστε και την εφαρμογή."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Σύγχυση"
 
@@ -859,6 +965,10 @@ msgstr "Αδυναμία φόρτωσης των καρφωμένων μηνυμ
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Αδυναμία φόρτωσης της προεπισκόπησης."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Αδυναμία φόρτωσης των συνομιλιών σας"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Δεν μπόρεσε να αντιγράψει: επιλέξτε του
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Δεν μπορούσα να φορτώσω νωρίτερα μηνύματα. Προσπάθησε ξανά σε ένα λεπτό."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Δεν μπορούσα να φορτώσω τις συζητήσεις σου. Προσπαθώ ξανά…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Δημιουργία ανάρτησης"
 
@@ -1028,7 +1142,7 @@ msgstr "Δημιουργία ανάρτησης"
 msgid "Creating…"
 msgstr "Δημιουργία…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1036,7 +1150,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Διαγραφή"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Σκούρο θέμα"
 
@@ -1101,13 +1215,21 @@ msgstr "Διαγραφή αυτής της ιστορίας?"
 msgid "Delete this update?"
 msgstr "Διαγραφή αυτής της ενημέρωσης?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Διαγραφή σχολίου"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Διαγραφή ανάρτησης"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Εξαφανίσεις μηνυμάτων"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Τα εξαφανισμένα μηνύματα είναι εκτός."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Έγινε"
 #, machine, plain1
 msgid "Done."
 msgstr "Έγινε."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Λήψη"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "Κρυπτογραφημένο από άκρη σε άκρη: μόνο �
 msgid "Ended"
 msgstr "Τέλος"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Εισαγάγετε ένα URL"
 
@@ -1206,6 +1332,10 @@ msgstr "Εισάγετε μια διεύθυνση ιστού, όπως https://
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Εισάγετε τον κωδικό σας μία φορά. Κλειδώνει το κλειδί για τα μηνύματά σας σε αυτό το πρόγραμμα περιήγησης, έτσι ώστε ο ιστότοπος να μην μπορεί ποτέ να τα διαβάσει."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Εισάγετε τον κωδικό σας για επιβεβαίωση."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Βάλε τον κωδικό σου."
 msgid "Enter your recovery code"
 msgstr "Εισάγετε τον κωδικό αποκατάστασης"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Εισάγετε τον κωδικό δύο συντελεστών"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Βάλε τον κωδικό δύο συντελεστών."
+
+#, machine, plain2
+msgid "File"
+msgstr "Αρχείο"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Τα αρχεία μπορούν να σταλούν μόλις ανοίξει η συνομιλία @%(name)s."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Τα αρχεία μπορούν να σταλούν μόλις η συνομιλία ξεκλειδωθεί σε αυτή τη συσκευή."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Τα αρχεία δεν μπορούν να σταλούν εδώ."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Τελικό"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Τέλος"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Τελειώστε την κουβέντα σας"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Τέλος εκκίνησης από την αρχή"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Τελειώνοντας το chat-up σε μια άλλη καρτέλα…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Μορφοποίηση"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Προώθηση"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Προώθηση αυτού του μηνύματος"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Προωθήστε το πολύ %(num)s συντεχνία."
 msgstr[1] "Μπροστά σε το πολύ %(num)s συντεχνίες."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Εμπρός προς…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Προωθημένο"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Εμπρός."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Προώθηση"
 
@@ -1292,11 +1478,11 @@ msgstr "Δώσε λίγο μήνυμα στο κουμπί."
 msgid "Give the template a name."
 msgstr "Δώστε στο πρότυπο ένα όνομα."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Μετάβαση στον ιστότοπο"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Αηδία"
 
@@ -1304,7 +1490,7 @@ msgstr "Αηδία"
 msgid "Group info"
 msgstr "Πληροφορίες ομάδας"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Συντεχνίες"
 
@@ -1316,13 +1502,25 @@ msgstr "Συντεχνίες με συνομιλία"
 msgid "Hand raised"
 msgstr "Ψηλά το χέρι"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Χαρά"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Κράτησες τον κωδικό αποκατάστασης συνομιλίας; Χωρίς αυτό, ένας ξεχασμένος κωδικός πρόσβασης μπορεί να χάσει τα παλιά σας μηνύματα."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Τίτλος %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Βοηθοί"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Οι βοηθοί γράφουν σε αυτό το κανάλι μαζί σας. Διαλέξτε μέχρι και τρία άτομα που είναι σε αυτό."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Συμφωνώ με τους κανόνες"
 msgid "I don't have it: start over"
 msgstr "Δεν το έχω. Ξεκίνα από την αρχή"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Το έχω"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Το φύλαξα"
@@ -1372,6 +1574,10 @@ msgstr "Το φύλαξα"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Αν ξεχάσετε ποτέ τον κωδικό σας, αυτός ο κωδικός είναι ο μόνος τρόπος για να διαβάσετε τα παλιά σας μηνύματα. Κράτα το κάπου ασφαλές, σαν μάνατζερ κωδικών."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Εάν εξακολουθείτε να έχετε τον κωδικό ανάκτησης, χρησιμοποιήστε τον: μερικά παλαιότερα μηνύματα βρίσκονται μόνο στο αντίγραφο ασφαλείας που ανοίγει."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Οι ιστορίες του παραμένουν στο αρχείο σ
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Συμμετοχή"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Συμμετοχή στο %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Βασικά γεγονότα και συνδέσεις που οι άν
 msgid "Last used %(date)s"
 msgstr "Τελευταία χρήση %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Αργότερα"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Γέλιο"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Αποχώρηση"
 
@@ -1516,7 +1726,7 @@ msgstr "Να αφήσω αυτή την ομάδα; Κάποιος άλλος μ
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Να αφήσω αυτή την ομάδα; Δε θα δεις νέα μηνύματα αν δε σε ξαναπροσλάβουν."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Φωτεινό θέμα"
 
@@ -1561,6 +1771,10 @@ msgstr "Ζήσε τώρα"
 msgid "Load earlier messages"
 msgstr "Φόρτωση προηγούμενων μηνυμάτων"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Φόρτωση σχολίου…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Φόρτωση…"
@@ -1585,17 +1799,25 @@ msgstr "Φόρτωση προτύπων..."
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Φόρτωση…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Αγάπη"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Κάτω χέρι"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Δημιουργία νέου κώδικα"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Να φτιάξουμε νέο κώδικα ανάκτησης?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Να το δημοσιοποιήσουμε; Όλοι θα μπορούν
 msgid "Making the channel…"
 msgstr "Κάνοντας το κανάλι…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Μπα"
 
@@ -1630,6 +1852,14 @@ msgstr "Διαγραφή μηνύματος"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Αίτημα μηνύματος. Δεν θα ξέρουν ότι το έχεις δει μέχρι να δεχτείς."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Τα μηνύματα εξαφανίζονται μετά το %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Μηνύματα αυτού του προγράμματος περιήγησης θα μπορούσε ήδη να διαβάσει θα έρθει πίσω εδώ."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Μικρόφωνο %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Περισσότερα"
 
@@ -1649,11 +1879,11 @@ msgstr "Περισσότερα"
 msgid "Move to listeners"
 msgstr "Μετακίνηση σε ακροατές"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Σίγαση"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Σε σίγαση"
 
@@ -1673,7 +1903,11 @@ msgstr "Όνομα του φακέλου σας"
 msgid "New channel"
 msgstr "Νέο κανάλι"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Τα νέα μηνύματα σε αυτή τη συνομιλία εξαφανίζονται για όλους μετά το χρόνο που θα επιλέξετε. Μηνύματα που αποστέλλονται πριν να κρατήσει το χρόνο που εστάλησαν με."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Όχι"
 
@@ -1693,17 +1927,29 @@ msgstr "Κανένα τηλεφώνημα ακόμα. Ξεκινήστε ένα 
 msgid "No camera was found."
 msgstr "Δεν βρέθηκε κάμερα."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Δεν βρέθηκαν συνομιλίες."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Δεν υπάρχουν ακόμα συν-συγγραφείς."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Χωρίς κωδικό; Συνδεθείτε με το νέο σας κωδικό πρόσβασης σε ένα πρόγραμμα περιήγησης όπου έχετε χρησιμοποιήσει συνομιλία: μπορεί να φέρει πίσω τη συνομιλία σας."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Καμία συσκευή ακόμα. Άνοιγμα συνομιλίας για αρχή."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Χωρίς ετικέτα"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Κανένας βοηθός ακόμα."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Δεν βρέθηκε μικρόφωνο."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Κανείς δεν ταιριάζει. Μπορείτε να στείλετε στις συνομιλίες σας και στους ανθρώπους που ακολουθείτε."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Κανένα καρφωμένο μήνυμα ακόμα."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Μη αποθηκευμένο"
 msgid "Not used yet"
 msgstr "Δεν έχει χρησιμοποιηθεί ακόμη"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Τίποτα δεν βρέθηκε στα μηνύματα που μπορεί να διαβάσει αυτός ο περιηγητής."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Δεν βρέθηκε τίποτα."
@@ -1785,17 +2039,45 @@ msgstr "Τίποτα για προεπισκόπηση ακόμα."
 msgid "Nothing was connected."
 msgstr "Τίποτα δεν συνδέθηκε."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Οι ειδοποιήσεις είναι μπλοκαρισμένες για αυτό το site σε αυτό το πρόγραμμα περιήγησης. Αφήστε τα στις ρυθμίσεις του προγράμματος περιήγησης για να τα ενεργοποιήσετε."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Οι ειδοποιήσεις ακυρώνονται σε αυτό το πρόγραμμα περιήγησης."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Οι ειδοποιήσεις είναι ενεργοποιημένες σε αυτό το πρόγραμμα περιήγησης."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Οι ειδοποιήσεις δεν μπορούσαν να ελεγχθούν. Ξαναγεμίστε τη σελίδα για να ξαναδοκιμάσετε."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Οι ειδοποιήσεις δεν μπορούσαν να ενεργοποιηθούν. Προσπάθησε ξανά."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Δεν επιτρεπόταν να ειδοποιηθούν γι' αυτό το site."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Αριθμημένη λίστα"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Κλείσιμο"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Χωρίς σύνδεση"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Εκτός σύνδεσης · επανέναρξη"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Μόνο ο ιδιοκτήτης και οι διαχειριστές μιας ομάδας μπορούν να το αλλάξουν αυτό."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Άνοιγμα συνομιλίας μία φορά για να ξεκλειδώσετε τα μηνύματά σας, στη συνέχεια, προσπαθήστε ξανά."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Άνοιγμα συνομιλίας για να ολοκληρώσετε τη ρύθμιση των μηνυμάτων σας σε αυτή τη συσκευή."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Άνοιγμα ρυθμίσεων πολυμέσων"
 
@@ -1849,6 +2139,10 @@ msgstr "Άνοιγμα του χώρου"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Άνοιγμα της συνομιλίας του +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Άνοιγμα του αρχείου…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Οι άνθρωποι που ακολουθείς"
 msgid "Pick a date and time."
 msgstr "Διάλεξε ημερομηνία και ώρα."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Επιλέξτε ετικέτα"
 
@@ -1909,11 +2203,15 @@ msgstr "Οι ιστορίες εικόνων δεν είναι ακόμα δια
 msgid "Pin this message"
 msgstr "Καρφιτσώστε αυτό το μήνυμα"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Καρφωμένο"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Καρφωμένα μηνύματα"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Σε παρακαλώ"
 
@@ -1921,12 +2219,18 @@ msgstr "Σε παρακαλώ"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Παρακαλώ εισάγετε ένα έγκυρο URL (συμπεριλαμβανομένου του http:// or https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Συνδεθείτε ξανά."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Δημοφιλή κανάλια"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Δημοσίευση"
 
@@ -1938,7 +2242,7 @@ msgstr "Αναρτήθηκε. Ξαναγεμίστε τη σελίδα για ν
 msgid "Posting to %(guilds)s"
 msgstr "Δημοσίευση στο %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Δημοσίευση στο προφίλ σας"
 
@@ -1947,7 +2251,7 @@ msgstr "Δημοσίευση στο προφίλ σας"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Δημοσίευση στο προφίλ σας, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Δημοσίευση…"
 
@@ -2047,6 +2351,14 @@ msgstr "Αντίδραση"
 msgid "React with %(emoji)s"
 msgstr "Αντιδράστε με %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Καταγράψτε ένα φωνητικό σημείωμα"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Ηχογραφώντας… πιέστε ξανά το μικρόφωνο για να το στείλετε."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Κωδικός ανάκτησης"
@@ -2059,13 +2371,17 @@ msgstr "Επαναφορά"
 msgid "Refreshing…"
 msgstr "Αναζωογονητικό…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Εγγραφή"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Απελευθέρωση σε ανανέωση"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Επαναφόρτωση"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Σύνολο υπενθυμίσεων"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Αφαίρεση"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Αφαίρεση %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Αφαίρεση του @%(name)s ως βοηθού"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Μετονομασία αυτού του φακέλου"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Αναφορά"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Αναφορά σχολίου"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Αναφορά ανάρτησης"
 
@@ -2155,11 +2475,11 @@ msgstr "Αναφορά ανάρτησης"
 msgid "Report this message"
 msgstr "Αναφορά αυτού του μηνύματος"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Αποστολή αναφοράς"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Αποστολή αναφοράς"
 
@@ -2176,13 +2496,13 @@ msgstr "Χτυπάει…"
 msgid "Rules of this channel"
 msgstr "Κανόνες αυτού του καναλιού"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Λύπη"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Αποθήκευση"
 
@@ -2198,11 +2518,15 @@ msgstr "Αποθήκευση ως πρότυπο..."
 msgid "Save your recovery code"
 msgstr "Αποθήκευση κώδικα αποκατάστασης σας"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Αποθηκεύτηκε"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Σώθηκε."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Αποθήκευση"
 
@@ -2236,7 +2560,7 @@ msgstr "Αποθήκευση…"
 msgid "Say what is wrong with this account."
 msgstr "Πες τι δεν πάει καλά με αυτόν τον λογαριασμό."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Φόβος"
 
@@ -2255,7 +2579,8 @@ msgstr "Προγραμματίστηκε για το %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Αναζήτηση"
 
@@ -2266,6 +2591,14 @@ msgstr "Ψάξτε για κάποιον να προσθέσετε."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Αναζήτηση αυτού του καναλιού"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Αναζήτηση αυτής της συνομιλίας"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Ψάξτε τις συνομιλίες σας"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Βλέπε από %(num)s"
 msgstr[1] "Από %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Επιλέξτε μια συνομιλία"
 
@@ -2298,6 +2631,10 @@ msgstr "Επιλέξτε μια συνομιλία"
 #, machine, plain1
 msgid "Send"
 msgstr "Αποστολή"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Αποστολή αρχείου"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Στείλτε τις επόμενες φωτογραφίες σας σ�
 msgid "Send your next videos to:"
 msgstr "Στείλτε τα επόμενα βίντεο σας σε:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Αποστολή %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Αποστολή %(name)s… %(percent)s %%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Αποστολή μόλις η συνομιλία είναι έτοιμη…"
+msgstr[1] "Αποστολή %(num)s μηνυμάτων μόλις η συνομιλία είναι έτοιμη…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Αποστολή..."
@@ -2331,6 +2682,14 @@ msgstr "Αποστολή"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Αρκετοί άνθρωποι πληκτρολογούν…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Κοινή χρήση οθόνης"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Μοιράστηκε ένα σχόλιο"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Εμφάνιση %(num)s νέων δημοσιεύσεων"
 msgid "Show formatting"
 msgstr "Εμφάνιση μορφοποίησης"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Εμφάνιση στο κανάλι"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Εμφάνιση στη συνομιλία"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Εμφάνιση λιγότερων"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Εμφάνιση περισσότερων"
 
@@ -2367,19 +2735,19 @@ msgstr "Εμφάνιση αρχικού"
 msgid "Show translation"
 msgstr "Εμφάνιση μετάφρασης"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Υπογραφή"
+msgstr "Αποσύνδεση"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Υπογραφή %(device)s"
+msgstr "Αποσύνδεση %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Υπογραφή %(device)sΘα χρειαστεί να υπογράψει ξανά για να διαβάσει τις συζητήσεις σας."
+msgstr "Αποσύνδεση %(device)sΘα χρειαστεί να υπογράψει ξανά για να διαβάσει τις συζητήσεις σας."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Σύνδεση"
 
@@ -2497,6 +2865,11 @@ msgstr "Ξεκινάω την κουβέντα…"
 msgid "Starting…"
 msgstr "Ξεκινώντας…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Σταματήστε να μοιράζεστε"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Διαγραφή μέσω"
@@ -2547,7 +2920,7 @@ msgstr "Μορφοποίηση κειμένου"
 msgid "Text style"
 msgstr "Στυλ κειμένου"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Ευχαριστούμε για το αίτημα"
 
@@ -2571,27 +2944,39 @@ msgstr "Ευχαριστώ. Ένας διαχειριστής θα το κοιτ
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Ευχαριστώ: οι συντονιστές της συντεχνίας θα ρίξουν μια ματιά."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Ευχαριστώ: οι διαχειριστές του site θα ρίξουν μια ματιά, και έχετε μπλοκάρει @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Ευχαριστώ: οι διαχειριστές του site θα ρίξουν μια ματιά."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Ευχαριστώ: οι διαχειριστές του site θα ρίξουν μια ματιά. @%(name)s Δεν θα μπορούσε να αποκλειστεί από εδώ: μπλοκάρετε τους από το προφίλ τους."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Αυτή η κουβέντα δεν είναι έτοιμη ακόμα. 'νοιξέ το μια φορά και ξαναδοκίμασε."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Αυτός ο κώδικας δεν τον ανοίγει. Έλεγξε για τυπογραφικά."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Δεν ήταν δυνατή η αποθήκευση."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Αυτή η συσκευή δεν μπορούσε να υπογραφεί τώρα."
+msgstr "Αυτή η συσκευή δεν μπορεί να αποσυνδεθεί τώρα."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Αυτή η συσκευή δεν μπορούσε να χρησιμοποιηθεί."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Δεν ολοκληρώθηκε"
 
@@ -2630,6 +3015,14 @@ msgstr "Αυτός δεν είναι ο κωδικός σου."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Αυτό το μήνυμα δεν μπορεί να σταλεί."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Αυτό το μήνυμα δεν βρέθηκε πια στο κανάλι."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Αυτό το μήνυμα δεν βρέθηκε σε αυτή τη συζήτηση πια."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Η συζήτηση έκλεισε: αυτός ο χώρος τελεί�
 msgid "The chat opens when the Space starts."
 msgstr "Η συνομιλία ανοίγει όταν αρχίζει το Διάστημα."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Ο κωδικός από την εφαρμογή σου ή έναν από τους κωδικούς ασφαλείας σου."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Το προσχέδιο άλλαξε με την τελευταία σου επεξεργασία, οπότε φορτώθηκε ξανά. Έλεγξε τα τελευταία σου λόγια."
@@ -2722,6 +3119,10 @@ msgstr "Το προσχέδιο άλλαξε με την τελευταία σο
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Το emoji για σύγκριση"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Ο φάκελος δεν μπορούσε να σταλεί. Προσπάθησε ξανά."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Ο σύνδεσμος δεν μπόρεσε να αντιγραφεί."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Το μικρόφωνο δεν μπορούσε να ξεκινήσει."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Το μικρόφωνο δεν μπορούσε να χρησιμοποιηθεί. Ελέγξτε ότι αυτό το site μπορεί να το χρησιμοποιήσει."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Η επανάληψη δεν αποθηκεύτηκε: το ανέβασμα απέτυχε. Μπορείς να το κατεβάσεις."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Τα κλειδιά της ιστοσελίδας άλλαξαν, οπότε η συνομιλία αρχίζει πάλι εδώ."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Η περίληψη είναι κρυμμένη από το φίλτρο λέξης σας."
 
@@ -2812,6 +3221,10 @@ msgstr "Δεν υπάρχει πουθενά αλλού να τους στείλ
 msgid "These comments could not be loaded. Try again."
 msgstr "Οι παρατηρήσεις αυτές δεν ήταν δυνατόν να φορτωθούν. Προσπάθησε ξανά."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Δεν τους λένε ποτέ ποιος τους ανέφερε."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Αρνήθηκαν την κλήση."
@@ -2824,6 +3237,10 @@ msgstr "Δεν ταιριάζουν"
 msgid "They match"
 msgstr "Ταιριάζουν"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Μένουν στο λογαριασμό σου εκεί, κρυπτογραφημένα, χρησιμοποιώντας τον ελεύθερο χώρο του. Μόνο οι άνθρωποι στη συζήτηση μπορούν να τα ανοίξουν."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Δεν θα μπορούν να σε ακολουθήσουν, να σου στείλουν μήνυμα ή να σχολιάσουν τις θέσεις σου, και δεν θα βλέπεις τις θέσεις τους. Μπορείς να τους ξεμπλοκάρεις όποτε θες."
@@ -2832,9 +3249,9 @@ msgstr "Δεν θα μπορούν να σε ακολουθήσουν, να σο
 msgid "This Space has ended."
 msgstr "Αυτός ο χώρος τελείωσε."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Αυτός ο περιηγητής"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Αυτό τελειώνει επίσης οποιαδήποτε διάσωση από ένα πρόγραμμα περιήγησης όπου χρησιμοποιήσατε συνομιλία."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Αυτός ο περιηγητής δεν μπορεί να κάνει �
 msgid "This browser can't record the Space."
 msgstr "Αυτός ο περιηγητής δεν μπορεί να καταγράψει το Διάστημα."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Αυτός ο περιηγητής δεν μπορεί να μοιραστεί την οθόνη του."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Αυτός ο περιηγητής δεν μπορεί να εμφανίζει ειδοποιήσεις από αυτόν τον ιστότοπο."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Αυτό το πρόγραμμα περιήγησης δεν μπορεί να προετοιμάσει φωτογραφίες για αποστολή. Δοκίμασε άλλο πρόγραμμα περιήγησης."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Αυτό το πρόγραμμα περιήγησης εξακολουθεί να περιέχει τα κλειδιά συνομιλίας σας από πριν αλλάξει ο κωδικός πρόσβασής σας. Να τα χρησιμοποιήσεις για να διαβάσεις τα παλιά σου μηνύματα εδώ και στις άλλες συσκευές σου?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Αυτός ο περιηγητής αποσυνδέθηκε από την συνομιλία από άλλη συσκευή, οπότε η συνομιλία ξεκινά ξανά εδώ."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Τα αποθηκευμένα δεδομένα συνομιλίας αυτού του περιηγητή εκκαθαρίστηκαν, οπότε η συνομιλία ξεκινά ξανά εδώ."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Αυτό δεν μπορεί να αναιρεθεί."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Αυτό το κανάλι είναι αθόρυβο για εσάς: καμία μη αναγνωσμένη τελεία και καμία αναφορά ειδοποιήσεων."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Αυτή η συνομιλία είναι κρυπτογραφημένη, οπότε η ιστοσελίδα δεν μπορεί να την διαβάσει. Η αναφορά στέλνει αυτό το μήνυμα και μέχρι τέσσερις πριν, όπως τους βλέπετε εδώ, στους διαχειριστές της ιστοσελίδας."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Αυτό το σχόλιο δεν φαίνεται."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Αυτή η συσκευή θα αποσυνδεθεί σύντομα."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Αυτό το αρχείο δεν μπορούσε να ανοιχτεί. Προσπάθησε ξανά αργότερα."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Αυτό το αρχείο δεν είναι πλέον διαθέσιμο."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Αυτό το ζωντανό νήμα τελείωσε"
@@ -2863,6 +3320,10 @@ msgstr "Αυτό το ζωντανό νήμα τελείωσε"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Αυτό το μήνυμα δεν μπορεί να διαβαστεί σε αυτή τη συσκευή."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Αυτό το μήνυμα διαγράφηκε."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Αυτή η ανάρτηση δεν μπορεί να εμφανιστε
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Αυτή η ανάρτηση είναι εκτός θέματος για + %(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Αυτή η υπογραφή"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Αυτό αποσυνδέει τη συνομιλία και σε αυτό το πρόγραμμα περιήγησης, αν είναι αυτό του browser. Θα ξεκινήσει ξανά ως νέα συσκευή."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Αυτό το κανάλι φωνής είναι πλήρες (%(num)s άτομο)."
 msgstr[1] "Αυτό το κανάλι φωνής είναι γεμάτο (%(num)s άτομα)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Αυτά τα κλειδιά δεν είναι πια του λογαριασμού σου. Χρησιμοποιήστε τον κωδικό ανάκτησης ή ξεκινήστε από την αρχή."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Πολύς χρόνος κατά %(num)s ( %(note)s)"
 msgstr[1] "Πολύς χρόνος μέχρι το %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Πάρα πολλά αιτήματα σήμερα"
 
@@ -2945,13 +3418,21 @@ msgstr "Η μετάφραση δεν είναι διαθέσιμη τώρα."
 msgid "Try again"
 msgstr "Προσπάθησε ξανά"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Δοκιμάστε ξανά αύριο."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Ενεργοποιήστε τις ειδοποιήσεις"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Κωδικός δύο συντελεστών"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Η είσοδος δύο παραγόντων άλλαξε, οπότε η συνομιλία αρχίζει πάλι εδώ."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Αδυναμία αφαίρεσης του σχολίου αυτή τη 
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Δεν μπορώ να ψηφίσω αυτή τη στιγμή. Παρακαλώ προσπαθήστε ξανά αργότερα."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Άρση αποκλεισμού"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Αναίρεση"
 
@@ -3010,17 +3491,13 @@ msgstr "Ξεκλείδωμα"
 msgid "Unlock your messages"
 msgstr "Ξεκλειδώστε τα μηνύματά σας"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Ξεκλειδώστε πρώτα τα μηνύματά σας: επαναφόρτωση της σελίδας για να εισάγετε τον κωδικό σας."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Άρση σίγασης"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Ξεκαρφίτσωμα"
 
@@ -3076,11 +3553,15 @@ msgstr "Χρησιμοποίησέ το εδώ"
 msgid "Use my recovery code instead"
 msgstr "Χρησιμοποίησε τον κωδικό μου"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Χρησιμοποίησέ τα"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Το όνομα χρήστη χρησιμοποιείται ήδη :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Το όνομα χρήστη είναι μια χαρά!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Βίντεο κλήσης · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Το βίντεο είναι κλειστό σε αυτή την κλήση: είσαι σε ήχο."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Προβολή πρωτοτύπου"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Η φωνή πηγαίνει στο πρόγραμμα περιήγησης μέσω του ρελέ της ιστοσελίδας, έτσι κανείς δεν βλέπει τη διεύθυνση κανενός. Μέχρι %(num)s άτομο."
 msgstr[1] "Η φωνή πηγαίνει στο πρόγραμμα περιήγησης μέσω του ρελέ της ιστοσελίδας, έτσι κανείς δεν βλέπει τη διεύθυνση κανενός. Μέχρι %(num)s άτομα."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Φωνητική σημείωση"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Περιμένετε ένα λεπτό: οι τελευταίες σας αλλαγές σώζονται ακόμα."
@@ -3213,6 +3698,10 @@ msgstr "Περιμένετε ένα λεπτό: οι τελευταίες σας
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Αναμονή για την εφαρμογή"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Βρήκαμε την συνομιλία σας σε αυτό το πρόγραμμα περιήγησης"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Τι έχει αυτός ο χώρος; (προαιρετικά)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Τι έχει αυτό το μήνυμα; (προαιρετικά)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Πού να πάνε τα αρχεία που στέλνεις?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Ποιος το είπε"
 msgid "Who upvoted"
 msgstr "Ποιος υπερψήφισε"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Γιατί"
 
@@ -3274,6 +3767,10 @@ msgstr "Γιατί αυτό παραβιάζει τους κανόνες της 
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Γιατί αυτό παραβιάζει τους κανόνες της συντεχνίας σου; Αυτό θα φανεί σε όποιον ψάξει την ιστορία αυτού του post/comment."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Γιατί αφαιρείται αυτό το σχόλιο; Ο λόγος σας φαίνεται στο δημόσιο ημερολόγιο."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Γράψε κάτι πρώτα."
 msgid "Write what you want to tell us."
 msgstr "Γράψε ό,τι θέλεις να μας πεις."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Ναι"
 
@@ -3310,7 +3807,7 @@ msgstr "Ναι, ακύρωσέ το"
 msgid "You"
 msgstr "Εσύ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Το έχετε ήδη κάνει"
 
@@ -3326,7 +3823,7 @@ msgstr "Έχεις ήδη αναφέρει αυτό το πόστο."
 msgid "You already voted on this post."
 msgstr "Έχετε ήδη ψηφίσει σε αυτό το αξίωμα."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Έχετε αποκλείσει τον χρήστη @%(name)s"
 
@@ -3364,7 +3861,7 @@ msgstr "Μπορείς να διαβάσεις αυτό το κανάλι αλλ
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Μπορείτε να δείτε ποιος είναι εδώ, αλλά δεν μπορείτε να μιλήσετε σε αυτό το κανάλι."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Δεν μπορείτε να το κάνετε αυτό."
 
@@ -3408,6 +3905,14 @@ msgstr "Έφυγες από το διάστημα."
 msgid "You left the call."
 msgstr "Άφησες την κλήση."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Αποσυνδέθηκες παντού από μια άλλη συσκευή, οπότε η συζήτηση αρχίζει πάλι εδώ."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Υπογράψατε με τον κωδικό ανάκτησης δύο παραγόντων, οπότε η συνομιλία ξεκινά πάλι εδώ."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Δεν ακολούθησες τον @%(name)s."
@@ -3415,6 +3920,10 @@ msgstr "Δεν ακολούθησες τον @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Απομακρύνθηκες από αυτό το διάστημα."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Θα πάρεις νέο κώδικα αποκατάστασης και ο παλιός θα σταματήσει να δουλεύει."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Ο περιηγητής σας μπλόκαρε το παράθυρο γ
 msgid "Your chat devices can't be listed right now."
 msgstr "Οι συσκευές συνομιλίας σας δεν μπορούν να καταχωρηθούν τώρα."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Ο κωδικός αποκατάστασης συνομιλίας σας"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Οι συζητήσεις σας"
@@ -3451,6 +3964,10 @@ msgstr "Οι συνομιλίες σας θα δουλέψουν ξανά σε �
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Το σχόλιό σας δεν μπόρεσε να δημοσιευτεί. Προσπάθησε ξανά."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Ο τρέχων κωδικός σου θα σταματήσει να λειτουργεί."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Το κλειδί σου δεν φαίνεται τώρα."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Το κλειδί σου ήταν κλειδωμένο με παλιότερο κωδικό πρόσβασης. Ανοίξτε συνομιλία σε αυτό το site και εισάγετε τον κωδικό ανάκτησης σας μία φορά; τότε ανοίγει εδώ."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Το μήνυμά σας θα σταλεί μόλις η συνομιλία ξεκλειδωθεί σε αυτή τη συσκευή."
+msgstr[1] "Τα %(num)s μηνύματά σας θα σταλούν μόλις η συνομιλία ξεκλειδωθεί σε αυτή τη συσκευή."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Ο παλιός κωδικός σου δεν λειτουργεί πλέον."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Ο κωδικός σας άλλαξε από τότε που το κλειδί συνομιλίας ήταν κλειδωμένο με αυτό. Ο κωδικός ανάκτησης που αποθηκεύσατε όταν δημιουργήθηκε η συνομιλία το ανοίγει."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Ο κωδικός σου άλλαξε για σένα, οπότε η συνομιλία αρχίζει ξανά εδώ."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Ο κωδικός σου άλλαξε, οπότε η συνομιλία αρχίζει πάλι εδώ."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Ο κωδικός σου επανατοποθετήθηκε, οπότε η συνομιλία αρχίζει ξανά εδώ."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Ο κωδικός ανάκτησής σας"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Τα αποθηκευμένα πρότυπα σας εμφανίζονται εδώ."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Η οθόνη σας μπορεί να μοιραστεί μόνο ενώ είστε σε βίντεο σε αυτή την κλήση."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Η οθόνη σου δεν μπορούσε να μοιραστεί."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "μπλε"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "σχόλιο"
 
@@ -3606,7 +4153,7 @@ msgstr "πορτοκαλί"
 msgid "pink"
 msgstr "ροζ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "ανάρτηση"
 

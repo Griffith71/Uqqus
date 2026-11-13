@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 20:16+1100\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -351,7 +351,7 @@ msgstr "%(name)sのチャンネル"
 msgid "%(name)s's channels - %(site)s"
 msgstr "%(name)sのチャンネル - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(name)s's profile - %(site)s"
 msgstr "%(name)s のプロフィール - %(site)s"
 
@@ -916,7 +916,7 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 
 #. in a post's facts line: the share of its votes that are upvotes ("97%
 #. upvoted")
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "アップボート率 %(percent)s%%"
 
@@ -952,7 +952,7 @@ msgstr "%(role)s: 書きます"
 
 #. the member's reputation in the navbar, e.g. "1234 Rep" (Rep: the upvotes
 #. other people gave them)
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(score)s Rep"
 msgstr "評判 %(score)s"
 
@@ -1011,28 +1011,28 @@ msgstr "%(site)s - オープン、フリースピーナソーシャルプラッ�
 msgid "%(site)s API Documentation"
 msgstr "%(site)s APIドキュメント"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Administrator, speaking officially"
 msgstr "%(site)s 管理者による公式発言"
 
 #. the site's name and the feed being read, as a heading
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s All"
 msgstr "%(site)s すべて"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Curations"
 msgstr "%(site)s キュレーション"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Feeds"
 msgstr "%(site)s フィード"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Following"
 msgstr "%(site)s フォロー中"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s For You"
 msgstr "%(site)s おすすめ"
 
@@ -1044,7 +1044,7 @@ msgstr "%(site)sヘルプ"
 msgid "%(site)s Homepage"
 msgstr "%(site)s サイトマップ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Notification"
 msgstr "%(site)s からのお知らせ"
 
@@ -1056,11 +1056,11 @@ msgstr "%(site)s パスワードリセット"
 msgid "%(site)s Policies"
 msgstr "%(site)s ポリシー"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Premium"
 msgstr "%(site)s Premium"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Search"
 msgstr "%(site)s 検索"
 
@@ -1194,6 +1194,14 @@ msgstr "%(who)s guild モデレータ @%(name)s を追加しました"
 msgid "%(who)s approved post %(title)s"
 msgstr "%(who)s 承認された投稿 %(title)s"
 
+#, machine, plain1, python-format
+msgid "%(who)s banned %(name)s"
+msgstr "%(who)s 禁止された %(name)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s banned the guild +%(guild)s"
+msgstr "%(who)s guild +%(guild)s を禁止"
+
 #, machine, python-format
 msgid "%(who)s cancelled an event"
 msgstr "%(who)s イベントをキャンセル"
@@ -1263,6 +1271,10 @@ msgid "%(who)s deleted a channel category"
 msgstr "%(who)s チャンネルカテゴリを削除"
 
 #, machine, plain1, python-format
+msgid "%(who)s deleted a comment"
+msgstr "%(who)s コメントを削除"
+
+#, machine, plain1, python-format
 msgid "%(who)s deleted a flair"
 msgstr "%(who)s ラベルを削除"
 
@@ -1273,6 +1285,10 @@ msgstr "%(who)s ロールを削除"
 #, machine, python-format
 msgid "%(who)s deleted a wiki page"
 msgstr "%(who)s wikiページを削除"
+
+#, machine, plain1, python-format
+msgid "%(who)s deleted post %(title)s"
+msgstr "%(who)s 削除された投稿 %(title)s"
 
 #, machine, python-format
 msgid "%(who)s edited a wiki page"
@@ -1302,6 +1318,10 @@ msgstr "%(who)s は投稿を強調した %(title)s"
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s このギルドからコメントを隠しました"
 
+#, machine, plain1, python-format
+msgid "%(who)s hid a revision of %(title)s"
+msgstr "%(who)s %(title)sのリビジョンをハイド"
+
 #, machine, python-format
 msgid "%(who)s hid post %(title)s from this guild"
 msgstr "%(who)s ハイド投稿 %(title)s このギルドから"
@@ -1313,6 +1333,18 @@ msgstr "%(who)s は guild モデレータ @%(name)s を招待しました"
 #, machine, python-format
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s キックポスト %(title)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on %(name)s"
+msgstr "%(who)s %(name)sで禁止を解除"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on the guild +%(guild)s"
+msgstr "%(who)s は guild +%(guild)s の禁止を持ち上げました"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the suspension of %(name)s"
+msgstr "%(who)s は %(name)s の懸濁液を持ち上げました"
 
 #, machine, python-format
 msgid "%(who)s made a channel"
@@ -1374,6 +1406,10 @@ msgstr "%(who)s 再指定ポスト %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s チャンネルメッセージを削除"
 
+#, machine, plain1, python-format
+msgid "%(who)s removed a revision of a guild's wiki"
+msgstr "%(who)s は guild の wiki のリビジョンを削除しました"
+
 #, machine, python-format
 msgid "%(who)s removed comment"
 msgstr "%(who)s 削除コメント"
@@ -1413,6 +1449,10 @@ msgstr "%(who)s 投稿のラベルをセット %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
 msgstr "%(who)s は guild モデレータとしてステップダウン"
+
+#, machine, plain1, python-format
+msgid "%(who)s suspended %(name)s"
+msgstr "%(who)s が中断された %(name)s"
 
 #, machine, python-format
 msgid "%(who)s switched the wiki"
@@ -1490,7 +1530,7 @@ msgstr "%(who)s スタイルシートを更新"
 msgid "%(who)s yanked post %(title)s"
 msgstr "%(who)s ヤンク投稿 %(title)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "&copy; 2021 %(company)s"
 msgstr "&copy; 2021 %(company)s"
 
@@ -1522,7 +1562,7 @@ msgstr "(個室内)"
 msgid "(no title)"
 msgstr "(タイトルなし)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(off)"
 msgstr "（オフ）"
 
@@ -1542,7 +1582,7 @@ msgstr "(オプション)"
 msgid "(required in this guild)"
 msgstr "(このギルドで必須)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(required)"
 msgstr "（必須）"
 
@@ -1586,7 +1626,7 @@ msgstr "**法的要求**"
 msgid "**Press**"
 msgstr "**プレス**"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ 選択肢を追加"
 
@@ -1598,7 +1638,7 @@ msgstr "+%(guild)s 承認コントリビューター"
 msgid "+%(guild)s CSS - %(site)s Guildmaster Tools"
 msgstr ""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Channels"
 msgstr "+%(guild)s のチャンネル"
 
@@ -1606,11 +1646,11 @@ msgstr "+%(guild)s のチャンネル"
 msgid "+%(guild)s Chat Bans"
 msgstr "+%(guild)s チャットバン"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Circle"
 msgstr "+%(guild)s のサークル"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Comments"
 msgstr "+%(guild)s のコメント"
 
@@ -1618,7 +1658,7 @@ msgstr "+%(guild)s のコメント"
 msgid "+%(guild)s Exiles"
 msgstr "+%(guild)s 拡張子"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Flair"
 msgstr "+%(guild)s のフレアー"
 
@@ -1626,7 +1666,7 @@ msgstr "+%(guild)s のフレアー"
 msgid "+%(guild)s Guildmasters - %(site)s Guildmaster Tools"
 msgstr "+%(guild)s ギルドモデレータ - %(site)s ギルドモデレータツール"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Insights"
 msgstr "+%(guild)s のインサイト"
 
@@ -1767,9 +1807,8 @@ msgstr "-%(operator)s: 使用できません。 マイナスを残します."
 msgid "-The %(site)s team"
 msgstr "-%(site)sチーム"
 
-#, machine
 msgid "1 day"
-msgstr "1 日"
+msgstr "1日"
 
 #, machine
 msgid "1 hour"
@@ -2030,17 +2069,16 @@ msgstr "<strong>ブラウザ:</strong> %(browser)s"
 msgid "<strong>Email:</strong> %(email)s"
 msgstr "<strong>メール:</strong> %(email)s"
 
-#, machine
+#, machine, plain2
 msgid "<strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device."
-msgstr "<strong>そうでなければ、</strong> パスワードを変更します。 また、他のすべてのデバイスにサインアウトします。"
+msgstr "<strong>そうでなければ、</strong> パスワードを変更します。 また、他のすべてのデバイスを切断します。"
 
 #, machine, python-format
 msgid "<strong>Member bot</strong>: you run it with your own key or pay for its source (for example X). It stays yours, says \"Automated by @%(name)s\" and you manage it."
 msgstr "<strong>メンバーボット</strong>: 独自のキーで実行するか、ソース(例えばX)で支払います。 それはあなたの滞在、 \"@によって自動化された\"と言う%(name)s「管理する」"
 
-#, machine
-msgid "<strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app can't send one."
-msgstr "<strong>まだ:</strong> 写真とファイル。 チャットサーバーはファイルがありませんので、アプリは送信できません。"
+msgid "<strong>Not in apps:</strong> files, pictures and voice notes. Those sent on this site are kept, encrypted, in the sender's own storage, which an app can't reach, and an app can't send one."
+msgstr "<strong>アプリでは使えません:</strong> ファイル、画像、ボイスメモ。このサイトで送信したものは送信者自身のストレージに暗号化して保存され、アプリからは届かず、アプリから送信することもできません。"
 
 #, machine
 msgid "<strong>On this site only:</strong> starting a chat, accepting a message request, making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a call on this server: the site keeps who can reach you as it does here."
@@ -2141,9 +2179,9 @@ msgstr ""
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "@%(name)s has a new password and is signed out everywhere."
-msgstr "@%(name)s は新しいパスワードを持ち、どこにでも署名されます."
+msgstr "@%(name)s には新しいパスワードがあり、どこにでも接続解除されます."
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2328,6 +2366,16 @@ msgstr ""
 msgid "@%(name)s stepped off as co-author of [your post](%(link)s)."
 msgstr ""
 
+#, machine, plain2, python-format
+msgid ""
+"@%(name)s told everyone in #%(channel)s of +%(guild)s.\n"
+"\n"
+"[Open the channel](%(link)s)"
+msgstr ""
+"@%(name)s は +%(guild)s の #%(channel)s で全員に伝えました。\n"
+"\n"
+"[チャンネルを開く](%(link)s)"
+
 #, machine, python-format
 msgid "@%(name)s unblocked."
 msgstr "@%(name)s ブロック解除."
@@ -2406,6 +2454,10 @@ msgstr "サークルギルドはプライベートで良いです。メンバー
 #, machine, plain1
 msgid "A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose. Keep it private just for yourself, or make it public so others can follow or fork it."
 msgstr "キュレーションフィードは、選択したアルゴリズムで、カスタムフィードのように、ギルドとアカウントの独自の名前付きコレクションです。 自分だけのプライベートを保ち、他の人がフォローしたり、それをフォークしたりすることができますので、それを公開する."
+
+#, machine, plain1
+msgid "A QR code to sign in with. Scan it with your phone, where you are signed in."
+msgstr "サインインする QR コード。 サインインしている携帯電話でスキャンします."
 
 #, machine
 msgid "A Space"
@@ -2612,6 +2664,10 @@ msgstr "チャットアプリはチャットにサインインしたい <strong>
 #, machine, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
 msgstr "チャットアプリは%(site)sアカウントにサインインしました。 もしそうでなければ、 [Settings > Chat app](/settings/chat_apps) にサインインし、パスワードを変更します."
+
+#, python-format
+msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
+msgstr "ピン留めできるメッセージは1つのチャットで%(num)s件までです。先に1つ外してください。"
 
 #, machine, python-format
 msgid "A circle can have %(num)s person at most."
@@ -3000,6 +3056,10 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "投稿のテキストは%(count)s文字(中国語、日本語、韓国語)、絵文字の2文字(絵文字)となります."
 
 #, machine, plain1
+msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
+msgstr "隠されていたり、削除したり、削除されたりしたときにあったので、これのプライベートコピー。 著者のみ、隠されていたギルドのギルドモデレータとサイトの管理者が開いて、これまで保存されていない."
+
+#, machine, plain1
 msgid "A private guild can only go in a private curation."
 msgstr "プライベートギルドは、専用のキュレーションフィードでのみ使用できます."
 
@@ -3123,6 +3183,10 @@ msgstr "役割名は @ を含まない: ハンドルとして読み込みます.
 msgid "A role name can't contain control or invisible characters."
 msgstr "役割名は、制御または不可視の文字を含むことはできません."
 
+#, machine, plain1
+msgid "A rule of the guild"
+msgstr "ギルドのルール"
+
 #, machine
 msgid "A scheduled post needs a title."
 msgstr "スケジュールされた投稿にはタイトルが必要です."
@@ -3174,6 +3238,10 @@ msgstr "キュレーションフィードのアルゴリズムの開始点。 �
 msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "ストーリーは%(num)s文字(中国語、日本語、韓国語、絵文字、絵文字)の2文字です."
+
+#, machine, plain1
+msgid "A suspension or ban needs a public reason, so the Log can say why."
+msgstr "停止または禁止は公共の理由を必要とするので、ログは理由を言うことができます."
 
 #, machine
 msgid "A template needs some text."
@@ -3255,7 +3323,7 @@ msgstr "単語またはフレーズは、制御または不可視文字を含む
 msgid "A year"
 msgstr "年間行事"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "API App"
 msgstr "APIアプリ"
 
@@ -3267,16 +3335,16 @@ msgstr "API ドキュメント"
 msgid "API requests must be authenticated with an access token. To obtain an access token, follow <a href=\"%(url)s\">these instructions.</a>"
 msgstr "API アクセストークンでリクエストを認証する必要があります。 アクセストークンを取得するには、 <a href=\"%(url)s\">これらの指示。</a>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About"
 msgstr "概要"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "About"
 msgstr "概要"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: about the guild"
 msgid "About"
 msgstr "概要"
@@ -3285,11 +3353,11 @@ msgstr "概要"
 msgid "About @%(name)s"
 msgstr "@%(name)sについて"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About Guild"
 msgstr "ギルドについて"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About this account"
 msgstr "このアカウントについて"
 
@@ -3339,7 +3407,7 @@ msgstr "口座パスワード(チャイルドフィルタダウンを有効に�
 msgid "Account to add"
 msgstr "追加するアカウント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts"
 msgstr "アカウント"
 
@@ -3351,7 +3419,7 @@ msgstr "ブロックするアカウント"
 msgid "Accounts you block are not told, but they may work it out if they try to comment on something of yours."
 msgstr "ブロックするアカウントは話されていませんが、あなたの何かにコメントしようとすると、それを動作させることができます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts you follow"
 msgstr "フォロー中のアカウント"
 
@@ -3363,7 +3431,7 @@ msgstr "フォローしているアカウントは、匿名投稿のために選
 msgid "Accounts you mute"
 msgstr "ミュートするアカウント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Achievements"
 msgstr "実績"
 
@@ -3400,17 +3468,17 @@ msgstr "最近アクティブ"
 msgid "Activism"
 msgstr "アクティビズム"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Activity"
 msgstr "アクティビティ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Add"
 msgstr "追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Add"
 msgstr "追加先"
@@ -3419,7 +3487,7 @@ msgstr "追加先"
 msgid "Add %(name)s"
 msgstr "%(name)sを追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a GIF"
 msgstr "GIFを追加"
 
@@ -3435,7 +3503,7 @@ msgstr "フィードを追加する"
 msgid "Add a flair"
 msgstr "ラベルを追加する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a link"
 msgstr "リンクを追加"
 
@@ -3447,7 +3515,7 @@ msgstr "メッセージを追加する"
 msgid "Add a message (optional)"
 msgstr "メッセージを追加(オプション)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a picture"
 msgstr "画像を追加"
 
@@ -3459,7 +3527,7 @@ msgstr "写真を追加(未使用)"
 msgid "Add a picture."
 msgstr "写真を追加してください."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a poll"
 msgstr "投票を追加"
 
@@ -3471,11 +3539,11 @@ msgstr "リソースを追加する"
 msgid "Add a screenshot"
 msgstr "スクリーンショットを追加する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a sound"
 msgstr "音声を追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a video"
 msgstr "動画を追加"
 
@@ -3498,11 +3566,11 @@ msgstr "アカウントを追加"
 msgid "Add an email to secure your account in case you forget your password."
 msgstr "パスワードを忘れた場合にアカウントを保護するためにメールを追加します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an emoji"
 msgstr "絵文字を追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an image"
 msgstr "画像を追加"
 
@@ -3514,7 +3582,12 @@ msgstr "から投稿するアカウントに少なくとも1つのフィード�
 msgid "Add at least one person."
 msgstr "少なくとも1人を追加してください."
 
-#, glossary, machine, plain1
+#, python-format
+msgid "Add at most %(num)s person at a time."
+msgid_plural "Add at most %(num)s people at a time."
+msgstr[0] "一度に追加できるのは %(num)s 人までです。"
+
+#, glossary, machine, plain2
 msgid "Add audio"
 msgstr "音声を追加"
 
@@ -3559,15 +3632,15 @@ msgstr "あなたの投稿にテキストを追加..."
 msgid "Add to calendar"
 msgstr "カレンダーに追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to circles"
 msgstr "サークルに追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to curation"
 msgstr "キュレーションに追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to your post"
 msgstr "投稿に追加"
 
@@ -3579,7 +3652,7 @@ msgstr "ストーリーに追加"
 msgid "Add user"
 msgstr "ユーザーを追加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add your comment..."
 msgstr "コメントを追加..."
 
@@ -3608,7 +3681,7 @@ msgstr "追加。 管理者が承認すると始まります."
 msgid "Address, page or post"
 msgstr "アドレス、ページまたは投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "管理者"
 
@@ -3625,20 +3698,20 @@ msgstr "管理者は名前を変更できません."
 msgid "Admins can't disconnect Discord."
 msgstr "管理者はDiscordを切断できません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "the Advanced filter, as a short tab"
 msgid "Advanced"
 msgstr "詳細"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter"
 msgstr "詳細フィルター"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter:"
 msgstr "詳細フィルター："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced search"
 msgstr "詳細検索"
 
@@ -3678,17 +3751,21 @@ msgstr "アラートと見出しは、各行に示されているソースから
 msgid "Algorithm"
 msgstr "アルゴリスム"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "Algorithmを保存しました."
+
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
 msgstr "すべて"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "filter"
 msgid "All"
 msgstr "すべて"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "All"
 msgstr "全期間"
@@ -3698,7 +3775,7 @@ msgid "All %(num)s channel"
 msgid_plural "All %(num)s channels"
 msgstr[0] "すべての %(num)s チャネル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All Time"
 msgstr "全期間"
 
@@ -3706,7 +3783,7 @@ msgstr "全期間"
 msgid "All events"
 msgstr "すべてのイベント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All guilds"
 msgstr "すべてのギルド"
 
@@ -3714,15 +3791,15 @@ msgstr "すべてのギルド"
 msgid "All of these words"
 msgstr "これらすべての単語"
 
-#, machine
+#, machine, plain2
 msgid "All other devices have been logged out"
-msgstr "他のすべてのデバイスがログアウトされている"
+msgstr "他のすべてのデバイスが接続されていない"
 
 #, machine
 msgid "All pages"
 msgstr "すべてのページ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All posts"
 msgstr "すべて"
 
@@ -3746,7 +3823,7 @@ msgstr "お問い合わせ ギルドへの転送には、独自の投票とコ�
 msgid "All tips are anonymous :)"
 msgstr "すべてのヒントは匿名です:)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All topics"
 msgstr "すべてのトピック"
 
@@ -3831,12 +3908,24 @@ msgid "An account with that username or email already exists."
 msgstr "既に存在するユーザー名またはメールのアカウント."
 
 #, machine, plain1
+msgid "An admin cleared the age answer on your account. You'll be asked again."
+msgstr "管理者は、あなたのアカウントで年齢の回答をクリアしました。 お問い合わせ."
+
+#, machine, plain1
 msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
 msgstr "管理者は18歳以上であることを確認しました。 あなたのアカウントはもはや子供ロックを持っていません。 あなたの単語フィルタは変更されていません: 設定 > コンテンツ、チャイルドフィルタダウンの切り替えにはパスワードが必要です."
 
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "管理者は、+%(guild)sの機密性をマークしました。その投稿は、機密コンテンツを見るために選択しない限り、すべておよびあなたのために残されます。 管理者だけが変更できます."
+
+#, python-format
+msgid "An admin marked [your post](%(link)s) sensitive: it is blurred until someone clicks to reveal it, and left out of All and For You unless they choose to see sensitive content. Only an admin can change this."
+msgstr ""
+
+#, machine, plain1
+msgid "An admin marked this account as belonging to someone 18 or over. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "管理者は、このアカウントを18歳以上の人に帰属します。 あなたの単語フィルタは変更されていません: 設定 > コンテンツ、チャイルドフィルタダウンの切り替えにはパスワードが必要です."
 
 #, machine, plain1
 msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
@@ -3877,6 +3966,10 @@ msgstr "管理者はアカウントの自動投稿をオフにしました。 �
 #, machine, plain1, python-format
 msgid "An admin unlocked the sensitive setting of +%(guild)s. Its guildmasters can change it again."
 msgstr "管理者は、+%(guild)sの機密設定を解除しました。 ギルドモデレータは再び変更できます."
+
+#, python-format
+msgid "An admin unlocked the sensitive setting of [your post](%(link)s). You can change it again."
+msgstr ""
 
 #, machine
 msgid "An admin unlocked the sensitive setting on your account. You can change it in Settings > Content."
@@ -3975,7 +4068,7 @@ msgstr "アニメ&マンガ"
 msgid "Announcement channel"
 msgstr "通知チャンネル"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Announcements from +%(guild)s"
 msgstr "+%(guild)s のお知らせ"
 
@@ -3988,20 +4081,20 @@ msgid "Annular solar eclipse"
 msgstr "アンナラーソーラー eclipse"
 
 #. short for Anonymous: who wrote a deleted post
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anon"
 msgstr "匿名"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymity"
 msgstr "匿名"
 
 #. a kind of post in the Post type filter: posts made anonymously
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "匿名"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "label"
 msgid "Anonymous"
 msgstr "匿名"
@@ -4022,11 +4115,15 @@ msgstr "別のアカウントは、現在そのアドレスを使用します。
 msgid "Another language you read"
 msgstr "あなたが読む別の言語"
 
+#, machine, plain1
+msgid "Another reason"
+msgstr "別の理由"
+
 #, machine
 msgid "Answer Going or Interested."
 msgstr "回答 目的・目的."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any account"
 msgstr "すべてのアカウント"
 
@@ -4042,11 +4139,11 @@ msgstr "すべての著者は公開することができます"
 msgid "Any author can publish."
 msgstr "どの著者でも公開することができます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any guild"
 msgstr "すべてのギルド"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any language"
 msgstr "すべての言語"
 
@@ -4072,12 +4169,12 @@ msgstr "これらの単語のどれか"
 msgid "Anyone"
 msgstr "スタッフ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Anyone"
 msgstr "誰でも"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anyone can see it"
 msgstr "誰でも閲覧できます"
 
@@ -4089,7 +4186,7 @@ msgstr "誰がフォローしているか、あなたのサークルの購読者
 msgid "App Name"
 msgstr "アプリ名"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Appearance"
 msgstr "外観"
 
@@ -4114,7 +4211,7 @@ msgctxt "button"
 msgid "Apply"
 msgstr "適用して下さい"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approve"
 msgstr "承認"
 
@@ -4164,15 +4261,23 @@ msgstr "公認メンバーとギルドモデレータ"
 msgid "Approved since"
 msgstr "承認以来"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approved users"
 msgstr "承認済みユーザー"
+
+#, machine, plain1
+msgid "Approved. Press Confirm on that screen to finish signing in."
+msgstr "承認される。 プレス サインインを完了するために、その画面で確認します."
 
 #, machine
 msgid "Approved: run by the site"
 msgstr "承認: サイトで実行"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Approving a code needs script, which is off in this browser. Sign in on the computer with your password instead."
+msgstr "コードを承認するには、このブラウザでオフであるスクリプトが必要です。 代わりにパスワードでコンピュータにサインインします."
+
+#, glossary, machine, plain2
 msgid "Apps"
 msgstr "アプリ"
 
@@ -4196,7 +4301,7 @@ msgstr "考古学"
 msgid "Architecture"
 msgstr "建築設計"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Archived post"
 msgstr "アーカイブ済みの投稿"
 
@@ -4208,7 +4313,7 @@ msgstr "人工知能"
 msgid "Artisan"
 msgstr "アーティスト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Arts"
 msgstr "アート"
 
@@ -4321,19 +4426,19 @@ msgstr "プロフィール"
 msgid "Auto-moderation"
 msgstr "自動変調"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated"
 msgstr "ボット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated account"
 msgstr "ボットアカウント"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(owner)s"
 msgstr "運用者：%(owner)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(site)s"
 msgstr "%(site)s 公式ボット"
 
@@ -4349,11 +4454,11 @@ msgstr "アカウントの登録が承認されていない 管理者は言い�
 msgid "Automated posting on your own account is set up in its own section."
 msgstr "自分のアカウントへの自動投稿は、独自のセクションで設定されます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatic"
 msgstr "自動"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "自動"
@@ -4370,7 +4475,7 @@ msgstr "自動スパム除去。 投稿のクリエイターがあまりにも�
 msgid "Automatic, not an official warning"
 msgstr "自動、公式警告ではなく"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatically Join Chats"
 msgstr "チャットに自動参加"
 
@@ -4378,7 +4483,7 @@ msgstr "チャットに自動参加"
 msgid "Automatically join Guild chat channels."
 msgstr "自動的にギルドチャットチャンネルに参加します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automaton"
 msgstr "ボット"
 
@@ -4387,7 +4492,7 @@ msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "自動設定"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Autoplay"
 msgstr "自動再生"
 
@@ -4403,7 +4508,7 @@ msgstr "サーバーが破砕された間、ルークのためにサインアッ
 msgid "Awarded to users who provide major technical expertise. Current awardees: @mutageno, @AmoralAtBest, @p2hang"
 msgstr "大手の技術的専門知識を提供するユーザーに授与される。 現在の受賞者:@mutageno、@AmoralAtBest、@p2hang"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome T-Shirts"
 msgstr "クールなTシャツ"
 
@@ -4412,12 +4517,16 @@ msgstr "クールなTシャツ"
 msgid "BBC Top Stories"
 msgstr "BBCトップストーリー"
 
+#, machine, plain1
+msgid "Back"
+msgstr "バックナンバー"
+
 #, machine
 msgctxt "button"
 msgid "Back"
 msgstr "バック"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Back"
 msgstr "前へ"
@@ -4441,6 +4550,10 @@ msgstr "草案に戻る"
 #, machine
 msgid "Back to the history"
 msgstr "歴史に戻る"
+
+#, machine, plain1
+msgid "Back to the log"
+msgstr "ログに戻る"
 
 #, machine
 msgid "Back to the post"
@@ -4516,7 +4629,7 @@ msgstr "Bantuの廊下"
 msgid "Baseball"
 msgstr "サッカー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Based"
 msgstr "Based"
@@ -4553,7 +4666,7 @@ msgstr "+%(guild)s のメンバーになり、メールアドレスは必要あ�
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "コミュニティの一員になり、メールアドレスは必要ありません。 アカウントを作る."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
 msgstr "Ruqqus に参加して30日未満"
 
@@ -4573,7 +4686,7 @@ msgstr "夕方から始まる"
 msgid "Behind the scenes"
 msgstr "舞台裏で"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Beta"
 msgstr "ベータ"
 
@@ -4585,7 +4698,7 @@ msgstr "Beta ユーザー"
 msgid "Bicycles"
 msgstr "自転車"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bio"
 msgstr "自己紹介"
 
@@ -4605,7 +4718,7 @@ msgstr "バードウォッチング"
 msgid "Block &amp; Mute"
 msgstr "ブロック&amp; ミュート"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s"
 msgstr "@%(name)s をブロック"
 
@@ -4617,11 +4730,11 @@ msgstr "ブロックアカウント"
 msgid "Block and Mute - %(site)s"
 msgstr "ブロックとミュート - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block and mute"
 msgstr "ブロックとミュート"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block user"
 msgstr "ユーザーをブロック"
 
@@ -4655,7 +4768,7 @@ msgstr "ブックディスカッション"
 msgid "Book Recommendations"
 msgstr "書籍の提言"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Bookmark"
 msgstr "ブックマーク"
@@ -4669,11 +4782,11 @@ msgid "Bookmark, %(num)s bookmark"
 msgid_plural "Bookmark, %(num)s bookmarks"
 msgstr[0] "ブックマーク、%(num)sブックマーク"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarked"
 msgstr "ブックマーク済み"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarks"
 msgstr "ブックマーク"
 
@@ -4709,7 +4822,7 @@ msgstr "ボットユーザー名"
 msgid "Bot's name"
 msgstr "Botの名前"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bots"
 msgstr "ボット"
 
@@ -4757,6 +4870,10 @@ msgstr "ニュース"
 msgid "Briefly describe what the guild is about..."
 msgstr "ギルドが何であるかを簡潔に説明します..."
 
+#, machine, plain1
+msgid "Briefly say what you changed (optional)"
+msgstr "あなたが変更したことをすぐに言う(オプション)"
+
 #, machine
 msgid "Bronze Patron"
 msgstr "ブロンズ・パトロン"
@@ -4764,6 +4881,10 @@ msgstr "ブロンズ・パトロン"
 #, machine
 msgid "Bronze Recruiter"
 msgstr "ブロンズリクルート"
+
+#, machine, plain1
+msgid "Browser"
+msgstr "ブラウザ"
 
 #, machine
 msgid "Browser not recorded"
@@ -4797,7 +4918,7 @@ msgstr "週の最初のコインを交換する Premium なしでコインを購
 msgid "By royal decree, we are unable to show this to you right now."
 msgstr "王宮の守護により、今はお見せできません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "CSS"
 msgstr "CSS"
 
@@ -4814,7 +4935,7 @@ msgstr "電話番号"
 msgid "Call controls"
 msgstr "コールコントロール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Calls"
 msgstr "通話"
 
@@ -4832,6 +4953,10 @@ msgid "Calls end after %(num)s hour."
 msgid_plural "Calls end after %(num)s hours."
 msgstr[0] "%(num)s 時間後に電話をかけます."
 
+#, machine, plain2
+msgid "Calls only"
+msgstr "通話のみ"
+
 #, machine
 msgid "Camera off"
 msgstr "カメラオフ"
@@ -4844,7 +4969,7 @@ msgstr "カメラ"
 msgid "Camping"
 msgstr "キャンプ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -4886,7 +5011,7 @@ msgstr "キャンセル"
 msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
 msgstr "資本金、アクセント、繰り返しの文字は何も変更しません:単語は、アクセントまたは数回書かれた文字で同じ読みます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Captions"
 msgstr "字幕"
 
@@ -4894,7 +5019,7 @@ msgstr "字幕"
 msgid "Car Repair"
 msgstr "車の修理"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "Card"
 msgstr "カード"
@@ -4923,7 +5048,7 @@ msgstr "あなたとして投票キャスト"
 msgid "Casual Discussion"
 msgstr "カジュアルなディスカッション"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Categorical"
 msgstr "カテゴリ別"
 
@@ -4971,11 +5096,11 @@ msgstr "カテゴリー名"
 msgid "Category: %(category)s"
 msgstr "カテゴリー: %(category)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Category: %(category)s / %(subcategory)s"
 msgstr "カテゴリ：%(category)s / %(subcategory)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Category: Uncategorized"
 msgstr "カテゴリ：未分類"
 
@@ -4991,7 +5116,7 @@ msgstr "セレブ"
 msgid "Central Andes"
 msgstr "中央アンデス"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Change"
 msgstr "変更"
@@ -5004,7 +5129,7 @@ msgstr "パスワード変更"
 msgid "Change Username"
 msgstr "Username の変更"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change categories"
 msgstr "カテゴリを変更"
 
@@ -5013,7 +5138,7 @@ msgctxt "guildmaster action"
 msgid "Change invite"
 msgstr "招待状の変更"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change languages"
 msgstr "言語を変更"
 
@@ -5026,11 +5151,11 @@ msgctxt "guildmaster action"
 msgid "Change perms"
 msgstr "パーマの変更"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change post types"
 msgstr "投稿タイプを変更"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change regions"
 msgstr "地域を変更"
 
@@ -5038,7 +5163,7 @@ msgstr "地域を変更"
 msgid "Change the capitilization of your guild's name."
 msgstr "ギルドの名前のキャピティレーションを変更します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change the default sorting for posts."
 msgstr "投稿のデフォルトの並べ替えを変更します。"
 
@@ -5070,7 +5195,7 @@ msgstr "パスワードの変更"
 msgid "Change your password."
 msgstr "パスワードの変更."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change your word filter"
 msgstr "単語フィルターを変更"
 
@@ -5086,12 +5211,18 @@ msgstr "変更点"
 msgid "Changing these rules always needs every counted author."
 msgstr "これらのルールを変更するには、すべてのカウントされた著者が必要です."
 
+msgid "Changing your password doesn't end the access of an app you allowed. Check your apps and your chat apps in Settings too."
+msgstr "パスワードを変更しても、許可したアプリのアクセスは終了しません。設定でアプリとチャットアプリも確認してください。"
+
+msgid "Changing your password signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "パスワードを変更すると、他のデバイスとチャットアプリのチャットからログアウトされます。ただし、ここでサインインしてからこのブラウザで使っているチャットは除きます。"
+
 #, machine
 msgctxt "chat kind"
 msgid "Channel"
 msgstr "チャンネル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Channel"
 msgstr "チャンネル"
@@ -5144,7 +5275,7 @@ msgstr "チャネルのunpin"
 msgid "Channel's own rules"
 msgstr "チャンネル独自のルール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "チャンネル"
 
@@ -5156,25 +5287,25 @@ msgstr "チャンネルは、ギルドのチャットタブとチャットで、
 msgid "Charter Supporter"
 msgstr "チャーターサポーター"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "チャット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading"
 msgid "Chat"
 msgstr "チャット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Chat"
 msgstr "チャット"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Chat - %(site)s"
 msgstr "チャット - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat apps"
 msgstr "チャットアプリ"
 
@@ -5186,9 +5317,41 @@ msgstr "チャットアプリ - %(site)s"
 msgid "Chat apps aren't switched on for this site yet."
 msgstr "チャットアプリは、まだこのサイトに切り替えられません."
 
+msgid "Chat can't start right now. Try again in a moment."
+msgstr "現在チャットを開始できません。しばらくしてからもう一度お試しください。"
+
+#, machine, plain2
+msgid "Chat couldn't take those keys."
+msgstr "これらのキーを取らないチャット."
+
+#, machine, plain2
+msgid "Chat isn't answering right now. Try again in a minute."
+msgstr "今すぐチャットが応答しません。 もう一度お試しください."
+
 #, machine
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "今すぐチャットが応答しません。 もう一度お試しください."
+
+msgid "Chat isn't available"
+msgstr "チャットは利用できません"
+
+msgid "Chat isn't available for your account right now. The site's admins have been told."
+msgstr "現在、お使いのアカウントではチャットを利用できません。サイトの管理者に通知されました。"
+
+#, machine, plain2
+msgid "Chat isn't set up for your account yet."
+msgstr "チャットはアカウントをまだ設定していません."
+
+#, machine, plain2
+msgid "Chat isn't set up on your account yet. Open Chat once to set it up and get your recovery code."
+msgstr "チャットはアカウントにまだ設定されていません。 チャットを一度開くと、回復コードが取得できます."
+
+#, machine, plain2, python-format
+msgid "Chat was started over on your %(site)s account"
+msgstr "%(site)sアカウントでチャットが開始されました"
+
+msgid "Chat with this account isn't available right now. The site's admins have been told."
+msgstr "現在、このアカウントとのチャットは利用できません。サイトの管理者に通知されました。"
 
 #, machine, plain1
 msgid "Chat, group chats and calls"
@@ -5199,7 +5362,7 @@ msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "チャットバンユーザ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "チャット"
 
@@ -5297,6 +5460,9 @@ msgstr "決定方法を選択し、誰が公開できるかを選択します."
 msgid "Choose how long a proposal stays open."
 msgstr "提案が開いている期間を選択してください."
 
+msgid "Choose how long messages last."
+msgstr "メッセージが残る期間を選んでください。"
+
 #, machine
 msgid "Choose how long people wait between messages."
 msgstr "メッセージ間で待ち時間を選択する."
@@ -5340,6 +5506,9 @@ msgstr "どの種類のフィードバックかを選んで下さい."
 #, machine
 msgid "Choose what to propose."
 msgstr "提案するものを選択してください."
+
+msgid "Choose what you're told of."
+msgstr "通知する内容を選んでください。"
 
 #, machine
 msgid "Choose when an author stops being counted."
@@ -5405,7 +5574,7 @@ msgstr "クリスマスイブ"
 msgid "Chronic Illness"
 msgstr "慢性疾患"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Circle"
 msgstr "サークル"
@@ -5426,11 +5595,11 @@ msgstr "あなたが支払うサークルギルド"
 msgid "Circle member"
 msgstr "サークルメンバー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "サークル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Circles"
 msgstr "サークル"
@@ -5451,7 +5620,7 @@ msgstr "クラシック"
 msgid "Cleaning & Organizing"
 msgstr "清掃・整理"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: clear the advanced filter"
 msgid "Clear"
 msgstr "クリア"
@@ -5472,7 +5641,7 @@ msgstr "クライアントID"
 msgid "Client Secret"
 msgstr "クライアントシークレット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "閉じる"
 
@@ -5480,7 +5649,7 @@ msgstr "閉じる"
 msgid "Close Friends are never shown on any list."
 msgstr "友だちはリストに表示されません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close panel"
 msgstr "パネルを閉じる"
 
@@ -5504,7 +5673,7 @@ msgstr "共著者招待 - %(site)s"
 msgid "Co-authored"
 msgstr "共著"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Co-authors"
 msgstr "共著者"
 
@@ -5528,11 +5697,11 @@ msgstr "コーヒー・紅茶"
 msgid "Coin balance:"
 msgstr "コインバランス:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Coins"
 msgstr "コイン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Coins"
 msgstr "コイン"
@@ -5565,7 +5734,7 @@ msgstr "コイン、ヒント、Premiumおよび有料サークル"
 msgid "Collaborative"
 msgstr "コラボレーション"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Collapse"
 msgstr "折りたたむ"
 
@@ -5585,7 +5754,7 @@ msgstr "カラー"
 msgid "Coloured: a post with mostly upvotes shows its upvotes in <span class=\"font-weight-bold vote-ratio-10\">blue</span>, one with mostly downvotes in <span class=\"font-weight-bold vote-ratio-0\">red</span>, and anything between in a shade between. Hover a score to see both counts."
 msgstr "彩色: 大部分のアップボットを持つ投稿は、そのアップボットを示しています <span class=\"font-weight-bold vote-ratio-10\">ブルー</span>、大抵の downvotes の 1 つ <span class=\"font-weight-bold vote-ratio-0\">レッド</span>日陰で何か。 両方のカウントを見るためにスコアをフーバー."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Combat Sports"
 msgstr "格闘技"
 
@@ -5605,7 +5774,7 @@ msgstr "コミック&漫画"
 msgid "Coming up"
 msgstr "最新情報"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
 msgstr "コメントする"
@@ -5622,7 +5791,7 @@ msgstr "匿名でコメント: 他のユーザーはあなたの名前が見つ�
 msgid "Comment bookmarked."
 msgstr "コメントのブックマーク."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "コメントを投稿しました！"
 
@@ -5630,11 +5799,11 @@ msgstr "コメントを投稿しました！"
 msgid "Commenting"
 msgstr "コメント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments"
 msgstr "コメント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Comments"
 msgstr "コメント"
@@ -5656,11 +5825,11 @@ msgstr "コメント 非表示 または削除"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "あなたの匿名投稿へのコメントは匿名です"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments:"
 msgstr "コメント数："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Commercial promotion"
 msgstr "有料プロモーション"
 
@@ -5696,6 +5865,10 @@ msgstr "この修正と比較"
 msgid "Computers"
 msgstr "コンピュータ"
 
+#, machine, plain1
+msgid "Confirm"
+msgstr "お問い合わせ"
+
 #, machine
 msgid "Confirm New Password"
 msgstr "新規パスワードの確認"
@@ -5708,11 +5881,15 @@ msgstr "パスワードの確認"
 msgid "Confirm my age"
 msgstr "年齢確認"
 
+#, machine, plain2
+msgid "Confirm with your password again."
+msgstr "パスワードの再確認."
+
 #, machine, plain1
 msgid "Confirm your age"
 msgstr "年齢確認"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Connect"
 msgstr "ソーシャル"
 
@@ -5744,17 +5921,17 @@ msgstr "接続 - %(site)s"
 msgid "Console"
 msgstr "コンソール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contact"
 msgstr "お問い合わせ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Contact"
 msgstr "お問い合わせ"
 
 #. a group of post types in the Post type filter (text, links, pictures...)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content"
 msgstr "コンテンツ"
 
@@ -5766,7 +5943,7 @@ msgstr "コンテンツフィルタ"
 msgid "Content awarded:"
 msgstr "受賞内容:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content disclosure"
 msgstr "コンテンツの開示"
 
@@ -5774,16 +5951,24 @@ msgstr "コンテンツの開示"
 msgid "Content immediately before this action:"
 msgstr "このアクション直前のコンテンツ:"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Content standards"
+msgstr "コンテンツ規格"
+
+#, glossary, machine, plain2
 msgid "Context"
 msgstr "文脈を表示"
+
+#, machine, plain1
+msgid "Continue"
+msgstr "お問い合わせ"
 
 #, machine
 msgctxt "button"
 msgid "Continue"
 msgstr "続き"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Continuous scroll"
 msgstr "連続スクロール"
 
@@ -5792,11 +5977,11 @@ msgctxt "guildmaster action"
 msgid "Contrib user"
 msgstr "Contrib ユーザー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute"
 msgstr "貢献する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute Code"
 msgstr "コードで貢献"
 
@@ -5842,15 +6027,15 @@ msgctxt "button"
 msgid "Copy"
 msgstr "コピー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy Link"
 msgstr "リンクをコピー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link"
 msgstr "リンクをコピー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link to profile"
 msgstr "プロフィールのリンクをコピー"
 
@@ -5887,6 +6072,10 @@ msgid "Counter-Culture"
 msgstr "カウンターカルチャー"
 
 #, machine, plain1
+msgid "Country"
+msgstr "カントリー"
+
+#, machine, plain1
 msgid "Country Music"
 msgstr "カントリーミュージック"
 
@@ -5898,7 +6087,7 @@ msgstr "あなたが参加したカバーギルド"
 msgid "Crafts"
 msgstr "クラフト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bottom bar button that opens Create post"
 msgid "Create"
 msgstr "作成"
@@ -5911,7 +6100,7 @@ msgstr "&amp; の移動を作成する"
 msgid "Create Curation"
 msgstr "キュレーションフィードの作成"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create Guild"
 msgstr "ギルドを作成"
 
@@ -5935,7 +6124,7 @@ msgstr "ギルドの作成 - %(site)s"
 msgid "Create a community for something you love."
 msgstr "好きなコミュニティを作る."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a curation"
 msgstr "キュレーションを作成"
 
@@ -5947,7 +6136,7 @@ msgstr "ギルドを作成する"
 msgid "Create a key"
 msgstr "キーを作成する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a post"
 msgstr "投稿を作成"
 
@@ -5968,7 +6157,7 @@ msgctxt "guildmaster action"
 msgid "Create guild"
 msgstr "ギルドを作成する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create post"
 msgstr "投稿を作成"
 
@@ -5984,7 +6173,7 @@ msgstr "アカウントを作成します."
 msgid "Creative Writing"
 msgstr "クリエイティブ・ライティング"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio"
 msgstr "Creator Studio"
 
@@ -5992,7 +6181,7 @@ msgstr "Creator Studio"
 msgid "Creator Studio - %(site)s"
 msgstr "クリエイタースタジオ - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio is part of Premium"
 msgstr "Creator Studio はプレミアム限定です"
 
@@ -6000,7 +6189,7 @@ msgstr "Creator Studio はプレミアム限定です"
 msgid "Creator Studio: your earnings and paid circles"
 msgstr "クリエイタースタジオ:あなたの収入と有料のサークル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator fund"
 msgstr "クリエイター基金"
 
@@ -6020,7 +6209,11 @@ msgstr "犯罪と裁判所"
 msgid "Crime & Mystery"
 msgstr "犯罪と謎"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Criminal activity and prohibited conduct"
+msgstr "犯罪行為および禁止行為"
+
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "イタい"
 
@@ -6032,15 +6225,15 @@ msgstr "暗号通貨"
 msgid "Cuisine"
 msgstr "お食事処"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Culture"
 msgstr "文化"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curation"
 msgstr "キュレーション"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curations"
 msgstr "キュレーション"
 
@@ -6062,7 +6255,7 @@ msgstr[0] "現在のバランス: <span class=\"text-black font-weight-bold\">%(
 msgid "Custom Filters"
 msgstr "カスタムフィルタ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom Stickers"
 msgstr "カスタムステッカー"
 
@@ -6070,7 +6263,7 @@ msgstr "カスタムステッカー"
 msgid "Custom URI scheme can be used. Separate multiple options with comma."
 msgstr "カスタム URI スキームを使用できます。 コンマで複数のオプションを分離します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom User Feed"
 msgstr "カスタムユーザーフィード"
 
@@ -6118,7 +6311,7 @@ msgstr "危険ゾーン"
 msgid "Danubian Steppe"
 msgstr "ダヌビアンステップ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "ダークモード"
 
@@ -6142,16 +6335,16 @@ msgstr "月々の視線によって期待される日付は、あなたがいる
 msgid "Dating Advice"
 msgstr "デートのアドバイス"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Day"
 msgstr "日付"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Day"
 msgstr "日付"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Day"
 msgstr "今日"
@@ -6198,15 +6391,15 @@ msgctxt "button"
 msgid "Decline"
 msgstr "Decline"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default"
 msgstr "標準"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Sorting"
 msgstr "デフォルトの並べ替え"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Time Filter"
 msgstr "デフォルトの期間フィルター"
 
@@ -6223,7 +6416,7 @@ msgctxt "button"
 msgid "Delete"
 msgstr "削除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Delete"
 msgstr "削除"
@@ -6376,7 +6569,7 @@ msgstr "すべて選択解除"
 msgid "Designate whether your guild discusses sensitive topics."
 msgstr "あなたのギルドが敏感なトピックについて議論するかどうかを指定します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Details"
 msgstr "詳細"
 
@@ -6470,13 +6663,11 @@ msgstr "Dailymotionを切断する? あなたのチャンネルで既にビデ�
 msgid "Disconnect Discord"
 msgstr "接続解除 Discord"
 
-#, machine
-msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing."
-msgstr "Googleを切断する? Google Driveに保存されている写真とオーディオは、投稿中に表示を停止します。 YouTubeの動画は再生し続ける."
+msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts, and files you sent in chats from it can no longer be opened. Videos on YouTube keep playing."
+msgstr "Google との接続を解除しますか? Google ドライブに保存した画像と音声は投稿に表示されなくなり、そこからチャットで送信したファイルは開けなくなります。YouTube の動画は引き続き再生されます。"
 
-#, machine
-msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts."
-msgstr "OneDriveを切断する? 保存された写真とオーディオは、あなたの投稿に表示を停止します."
+msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts, and files you sent in chats from it can no longer be opened."
+msgstr "OneDrive との接続を解除しますか? そこに保存した画像と音声は投稿に表示されなくなり、そこからチャットで送信したファイルは開けなくなります。"
 
 #, machine
 msgid "Disconnect? Images and audio from this storage will stop showing in your posts."
@@ -6490,7 +6681,7 @@ msgstr "切断."
 msgid "Disconnecting your Discord account will remove you from the %(site)s Discord server."
 msgstr "%(site)s DiscordサーバからDiscordアカウントを解除します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discord Server"
 msgstr "Discord サーバー"
 
@@ -6498,7 +6689,7 @@ msgstr "Discord サーバー"
 msgid "Discord account already linked."
 msgstr "Discord 既にリンクされているアカウント."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover Curations"
 msgstr "キュレーションを見つける"
 
@@ -6506,7 +6697,7 @@ msgstr "キュレーションを見つける"
 msgid "Discover amazing communities across <span class=\"text-purple\">%(site)s</span>."
 msgstr "素晴らしいコミュニティを発見 <span class=\"text-purple\">%(site)s</span>お問い合わせ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover guilds"
 msgstr "ギルドを見つける"
 
@@ -6536,12 +6727,12 @@ msgstr "表示名"
 msgid "Display name"
 msgstr "表示名"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Disputed"
 msgstr "賛否両論"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Distinguish"
 msgstr "公式表示"
 
@@ -6565,26 +6756,37 @@ msgstr "アカウントをお持ちではありませんか? <a href=\"%(url)s\"
 msgid "Don't quote"
 msgstr "引用しないでください"
 
+msgid "Don't say who it's from"
+msgstr "送信者を表示しない"
+
 #, machine, python-format
 msgid "Don't show +%(guild)s content in All or Trending for users that aren't members of the guild."
 msgstr "ギルドのメンバーでないユーザーのためのすべてのまたはトレンドで+%(guild)sコンテンツを表示しないでください."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate"
 msgstr "寄付"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Donate"
 msgstr "寄付"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate Cash or Crypto"
 msgstr "現金・暗号資産で寄付"
 
 #, machine
 msgid "Done"
 msgstr "ログイン"
+
+#, machine, plain1
+msgid "Done by"
+msgstr "寄付する"
+
+#, machine, plain1
+msgid "Done to"
+msgstr "寄付する"
 
 #, machine, plain1
 msgid "Download"
@@ -6615,7 +6817,7 @@ msgstr "データをダウンロード"
 msgid "Downvote"
 msgstr "ダウンボルト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Downvote"
 msgstr "ダウンボート"
@@ -6628,7 +6830,7 @@ msgstr "ダウンボルト"
 msgid "Doxxing is not allowed."
 msgstr "Doxxingは許可されていません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Drafts"
 msgstr "下書き"
 
@@ -6710,12 +6912,12 @@ msgctxt "button"
 msgid "Edit"
 msgstr "編集"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: edit the advanced filter"
 msgid "Edit"
 msgstr "編集"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Edit"
 msgstr "編集"
@@ -6752,7 +6954,7 @@ msgstr "他の人が %(site)s で表示する方法を編集します."
 msgid "Edit permissions"
 msgstr "権限の編集"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Edit profile"
 msgstr "プロフィールを編集"
 
@@ -6776,7 +6978,7 @@ msgstr "共有ドラフトでこの投稿を編集し、変更を公開します
 msgid "Edit your posts and comments"
 msgstr "投稿とコメントを編集する"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Edited %(when)s"
 msgstr "%(when)sに編集"
 
@@ -6952,11 +7154,23 @@ msgstr "認証アプリで生成された6桁のコードと%(site)sアカウン
 msgid "Enter your account password to turn the Child filter down."
 msgstr "チャイルドフィルタをダウンさせるには、アカウントパスワードを入力してください."
 
+#, machine, plain1
+msgid "Enter your password"
+msgstr "パスワードを入力してください"
+
+#, machine, plain1, python-format
+msgid "Enter your password - %(site)s"
+msgstr "パスワードを入力してください - %(site)s"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "2要素コードを入力してください."
+
 #, machine
 msgid "Entertainment"
 msgstr "エンターテイメント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Entertainment News"
 msgstr "エンタメニュース"
 
@@ -7008,6 +7222,10 @@ msgstr "エシックス"
 msgid "Evading a site-wide ban"
 msgstr "サイト全体の禁止を回避"
 
+#, machine, plain1
+msgid "Evading and manipulating the site"
+msgstr "サイトを蒸発し、操作する"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Event cancel"
@@ -7027,7 +7245,7 @@ msgstr "イベント編集"
 msgid "Event hidden by your word filter"
 msgstr "あなたの単語フィルターによって隠されるでき事"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Events"
 msgstr "イベント"
 
@@ -7065,9 +7283,9 @@ msgid "Every bot rule applies, %(num)s post a day included."
 msgid_plural "Every bot rule applies, %(num)s posts a day included."
 msgstr[0] "全てのボットルールは、1日に %(num)s が投稿されます."
 
-#, machine
+#, machine, plain2
 msgid "Every browser and app signed in to your chats. Sign out any you don't recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat."
-msgstr "すべてのブラウザとアプリがチャットに署名しました。 認識していないか使用しなくなったり、使用しなくなったりするブラウザを出て、次に「チャット」を開きます."
+msgstr "すべてのブラウザとアプリがチャットに署名しました。 認識していないか使用しなくなったり、使用しなくなったりしなくなったり、接続を解除するブラウザは、チャットを開くときにパスワードを要求します."
 
 #, machine
 msgid "Every character is credited to whoever typed or pasted it."
@@ -7081,8 +7299,12 @@ msgstr "+%(guild)s への転送はラベルを必要とします"
 msgid "Every guild's comments in one list. Open a guild to comment in it."
 msgstr "1つのリストですべてのギルドのコメント。 ギルドを開き、コメントしてください."
 
+#, machine, plain2
+msgid "Every message"
+msgstr "すべてのメッセージ"
+
 #. who may open one of a profile's lists (Following, Followers...).
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Everyone"
 msgstr "全員"
 
@@ -7166,7 +7388,7 @@ msgstr ""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "例:ハッピーアワー・正確なフレーズ「ハッピーアワー」"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
 msgstr "@%(name)s を追放"
 
@@ -7199,7 +7421,7 @@ msgstr "+%(guild)s から除外されます."
 msgid "Exiled since"
 msgstr "以来の"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Exiles"
 msgstr "追放ユーザー"
 
@@ -7216,7 +7438,7 @@ msgstr "Exilesとチャット禁止"
 msgid "Expected"
 msgstr "期待される"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Explore"
 msgstr "見つける"
 
@@ -7224,7 +7446,7 @@ msgstr "見つける"
 msgid "Explore curations - %(site)s"
 msgstr "キュレーションフィード - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Explore guilds - %(site)s"
 msgstr "ギルドを見つける - %(site)s"
 
@@ -7241,7 +7463,7 @@ msgstr "拡張"
 msgid "Extend for"
 msgstr "拡張機能"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Extra large"
 msgstr "特大"
 
@@ -7306,31 +7528,38 @@ msgstr "フィクション"
 msgid "File"
 msgstr "ファイル"
 
+msgid "Files you send in chats are kept here too, encrypted: only the people in that chat can open them."
+msgstr "チャットで送信したファイルも暗号化されてここに保存されます。開けるのはそのチャットのメンバーだけです。"
+
 #, machine
 msgid "Film & TV"
 msgstr "映画・テレビ"
+
+#, machine, plain1
+msgid "Filter"
+msgstr "フィルター"
 
 #, machine, plain1, python-format
 msgid "Filter +%(guild)s by flair"
 msgstr "ラベルでフィルタ+%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filter by"
 msgstr "絞り込み"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filtered words"
 msgstr "フィルター対象の単語"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Filtered words - %(site)s"
 msgstr "フィルター対象の単語 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters"
 msgstr "フィルター"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters in this search"
 msgstr "この検索のフィルター"
 
@@ -7387,7 +7616,7 @@ msgstr "釣り"
 msgid "Fitness"
 msgstr "フィットネス"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Flag"
 msgstr "報告"
@@ -7396,11 +7625,11 @@ msgstr "報告"
 msgid "Flagged Posts"
 msgstr "旗艦投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Flair"
 msgstr "フレアー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Flair"
 msgstr "フレアー"
@@ -7443,7 +7672,7 @@ msgstr "ラベルは、投稿を+%(guild)sに転送し、読者はそれらに�
 msgid "Flights & Airlines"
 msgstr "フライト&航空会社"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Fold the sidebar"
 msgstr "サイドバーを折りたたむ"
 
@@ -7463,7 +7692,7 @@ msgstr "フォルダの名前を変更しました."
 msgid "Folder:"
 msgstr "フォルダ:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Follow"
 msgstr "フォロー"
@@ -7476,7 +7705,7 @@ msgstr "お問い合わせ%(name)s"
 msgid "Follow accounts and join guilds, and their posts show here."
 msgstr "アカウントをフォローしてギルドに参加し、投稿がここに表示されます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follow post"
 msgstr "投稿をフォロー"
 
@@ -7494,11 +7723,11 @@ msgid "Followed by %(num)s person you follow"
 msgid_plural "Followed by %(num)s people you follow"
 msgstr[0] "%(num)sフォローしている人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Followers"
 msgstr "フォロワー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Followers"
 msgstr "フォロワー"
@@ -7514,31 +7743,31 @@ msgstr "フォロワー・@%(name)s - %(site)s"
 #. the names of a profile's lists: the accounts it follows, its followers, who
 #. pays for its paid circles,
 #. and the paid circles it pays for.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Following"
 msgstr "フォロー中"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you follow"
 msgid "Following"
 msgstr "フォロー中"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "Following"
 msgstr "フォロー中"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: curations you follow"
 msgid "Following"
 msgstr "フォロー中"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Following"
 msgstr "フォロー中"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Following"
 msgstr "フォロー中"
@@ -7551,7 +7780,7 @@ msgstr "@%(name)sのフォロー"
 msgid "Following · @%(name)s - %(site)s"
 msgstr "フォロー・@%(name)s - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follows you"
 msgstr "フォローされています"
 
@@ -7559,11 +7788,11 @@ msgstr "フォローされています"
 msgid "Food"
 msgstr "フード"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For You"
 msgstr "おすすめ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For a circle"
 msgstr "サークル限定"
 
@@ -7614,12 +7843,12 @@ msgstr "それを見直した管理者のために."
 msgid "For the admins who review it: what the bot is for and where its posts come from."
 msgstr "それをレビューする管理者のために: ボットは、その投稿がどこから来たのか."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: forget the saved default filters"
 msgid "Forget"
 msgstr "削除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forget my default"
 msgstr "デフォルトを削除"
 
@@ -7627,7 +7856,7 @@ msgstr "デフォルトを削除"
 msgid "Forgot password?"
 msgstr "パスワードを忘れた場合?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Fork"
 msgstr "フォーク"
@@ -7653,15 +7882,15 @@ msgstr "からフォーク <a href=\"%(url)s\">%(title)s</a>"
 msgid "Formatting"
 msgstr "フォーマット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Formatting help"
 msgstr "書式のヘルプ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Former Admin"
 msgstr "元管理者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Forward"
 msgstr "転送する"
@@ -7695,7 +7924,6 @@ msgstr "ギルドへのフォワード"
 msgid "Forward to guilds (optional)"
 msgstr "ギルドへのフォワード(オプション)"
 
-#, glossary, machine, plain1
 msgctxt "profile tab"
 msgid "Forwarded"
 msgstr "転送"
@@ -7721,11 +7949,11 @@ msgstr "ギルドへ進む"
 msgid "Forwarded!"
 msgstr "フォワード!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwarding to"
 msgstr "転送先"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwards"
 msgstr "転送"
 
@@ -7733,11 +7961,11 @@ msgstr "転送"
 msgid "Forwards then come from the post's Forward dialog, where a flair is picked."
 msgstr "その後、ラベルが選ばれるポストのフォワードダイアログから来る."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Founded"
 msgstr "設立"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Founder"
 msgstr "創設者"
@@ -7745,6 +7973,10 @@ msgstr "創設者"
 #, machine
 msgid "Free circles"
 msgstr "フリーサークル"
+
+#, machine, plain1
+msgid "Free expression and good faith"
+msgstr "自由な表現およびよい信仰"
 
 #, machine
 msgid "Fresh and rising"
@@ -7778,7 +8010,7 @@ msgstr "友人は、あなたがフォローしているすべての人です。
 msgid "Friends is your automatic circle of mutual follows. Choose another name."
 msgstr "友人は相互のあなたの自動円です。 別の名前を選択してください."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Friends liked"
 msgstr "友達が高評価"
 
@@ -7786,7 +8018,7 @@ msgstr "友達が高評価"
 msgid "Friendship"
 msgstr "社会招聘"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "From"
 msgstr "投稿者"
@@ -7831,7 +8063,7 @@ msgstr "%(older)s (%(older_by)s) のリビジョンから %(newer)s (%(newer_by)
 msgid "From these accounts"
 msgstr "これらのアカウントから"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "From:"
 msgstr "期間："
 
@@ -7843,7 +8075,7 @@ msgstr "農業生活"
 msgid "Full Moon"
 msgstr "フルムーン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Full editor"
 msgstr "フルエディタ"
 
@@ -7867,7 +8099,7 @@ msgstr "ゲームナイト参加"
 msgid "Gaming"
 msgstr "ゲーム"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gaming News"
 msgstr "ゲームニュース"
 
@@ -7883,11 +8115,11 @@ msgstr "Geminidsの流星のシャワー"
 msgid "General Information"
 msgstr "一般情報"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Memes"
 msgstr "ミーム全般"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Science"
 msgstr "一般科学"
 
@@ -7911,13 +8143,17 @@ msgstr "コインを入手"
 msgid "Get coins to send a tip"
 msgstr "チップを送信するためにコインを入手"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Get involved"
 msgstr "参加する"
 
 #, machine
 msgid "Get more coins"
 msgstr "より多くのコインを入手"
+
+#, machine, plain1
+msgid "Give a reason"
+msgstr "理由を与える"
 
 #, machine
 msgid "Give the Space's post address or id."
@@ -7983,7 +8219,7 @@ msgstr "この役割を果たす"
 msgid "Give this ruqqie a tip!"
 msgstr "このruqqieをヒントに!"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Glad to have you back. Make a %(site)s!"
 msgstr "また会えてうれしいです。%(site)sを投稿しよう！"
 
@@ -8106,11 +8342,11 @@ msgid "Group · %(num)s people"
 msgid_plural "Group · %(num)s people"
 msgstr[0] "グループ・%(num)s 人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Groups"
 msgstr "グループ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild"
 msgstr "ギルド"
 
@@ -8138,7 +8374,7 @@ msgstr "ガイドの説明"
 msgid "Guild Icon"
 msgstr "ギルドアイコン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild Name"
 msgstr "ギルド名"
 
@@ -8150,7 +8386,11 @@ msgstr "プライバシー"
 msgid "Guild Styling"
 msgstr "ギルドスタイリング"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Guild changes"
+msgstr "ギルド変更"
+
+#, glossary, machine, plain2
 msgid "Guild details"
 msgstr "ギルドの詳細"
 
@@ -8178,11 +8418,11 @@ msgstr "ギルド名、+なし…"
 msgid "Guild names must be 3-25 letters or numbers."
 msgstr "ギルド名は3-25文字または数字でなければなりません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild settings"
 msgstr "ギルド設定"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Guildmaster"
 msgstr "ギルドマスター"
@@ -8191,23 +8431,23 @@ msgstr "ギルドマスター"
 msgid "Guildmaster Since"
 msgstr "ギルドモデレータ 以来"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster Tools"
 msgstr "ギルドマスターツール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster of"
 msgstr "管理中のギルド"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Guildmaster of +%(guild)s"
 msgstr "+%(guild)s のギルドマスター"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster tools"
 msgstr "ギルドマスターツール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmasters"
 msgstr "ギルドマスター"
 
@@ -8232,7 +8472,7 @@ msgid "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgid_plural "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "ギルドモデレータ<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "ギルド"
 
@@ -8282,15 +8522,15 @@ msgstr "今のハッペン"
 msgid "Hardware"
 msgstr "ハードウェア"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Health"
 msgstr "健康"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Help"
 msgstr "ヘルプ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Help"
 msgstr "ヘルプ"
@@ -8299,7 +8539,7 @@ msgstr "ヘルプ"
 msgid "Helped test features in development"
 msgstr "開発に役立つテスト機能"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Herald"
 msgstr "ピックアップ"
@@ -8317,6 +8557,18 @@ msgstr "ハイライトポスト"
 #, machine, python-format
 msgid "Hey there, %(name)s"
 msgstr "お問い合わせ %(name)s"
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, QR sign-in was turned back on for your %(site)s account, with its password. It lets a phone that is signed in to your account approve a sign-in on another screen."
+msgstr "こんにちは %(name)s、QR のサインインが %(site)s のために返されました パスワードでアカウント、 別の画面にサインインした携帯電話をアカウントに承認します."
+
+#, machine, plain2, python-format
+msgid "Hi %(name)s, chat encryption was started over on your %(site)s account, after its password was given. Messages from before can no longer be read on your devices unless a browser where you used chat brings them back."
+msgstr "こんにちは%(name)s、チャットの暗号化が%(site)sに始まりました パスワードが与えられた後、アカウント。 チャットを使用したブラウザが戻ってくる限り、以前のメッセージはデバイスに読み込まれることができません."
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, someone signed in to your %(site)s account with a QR code that was approved on your phone."
+msgstr "こんにちは%(name)s、%(site)sアカウントにQRで署名した人 電話で承認されたコード."
 
 #, machine, python-format
 msgid "Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently."
@@ -8358,7 +8610,7 @@ msgstr "隠しページ"
 msgid "Hidden until you confirm your age"
 msgstr "年齢確認まで隠し"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Hide"
 msgstr "非表示にする"
 
@@ -8367,7 +8619,7 @@ msgctxt "button"
 msgid "Hide"
 msgstr "秀"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Hide"
 msgstr "非表示"
@@ -8381,7 +8633,7 @@ msgctxt "guildmaster action"
 msgid "Hide comment from guild"
 msgstr "Guild からのコメントを隠す"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Hide from +%(guild)s"
 msgstr "+%(guild)s で非表示にする"
 
@@ -8393,6 +8645,10 @@ msgstr "ギルドから投稿を隠す"
 #, machine
 msgid "Hide posts or collapse comments that are made by bots."
 msgstr "ボットによって作られた投稿やコメントを非表示にする."
+
+#, machine, plain1
+msgid "Hide this version"
+msgstr "このバージョンを隠す"
 
 #, machine
 msgid "Hides matching content from your feeds, and collapses matching comments."
@@ -8418,7 +8674,7 @@ msgstr "ハイキング"
 msgid "Hip-Hop"
 msgstr "ヒップホップ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "History"
 msgstr "履歴"
 
@@ -8442,7 +8698,7 @@ msgstr "この投稿の歴史"
 msgid "Hobbies"
 msgstr "ホビー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Home"
 msgstr "ホーム"
 
@@ -8470,7 +8726,7 @@ msgstr "ホース"
 msgid "Hosted by %(name)s"
 msgstr "%(name)s でホスト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Hot"
 msgstr "人気"
@@ -8520,6 +8776,10 @@ msgstr "所要時間"
 msgid "How long it runs"
 msgstr "どのくらいの時間が経ちます"
 
+#, machine, plain1
+msgid "How old are you?"
+msgstr "何歳ですか?"
+
 #, machine
 msgid "How scores read"
 msgstr "スコアの読み方"
@@ -8548,7 +8808,7 @@ msgstr "キーを使用する方法"
 msgid "How to write this post"
 msgstr "この投稿を書く方法"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "How words are matched"
 msgstr "単語の照合方法"
 
@@ -8589,6 +8849,10 @@ msgid "I'm %(min)s to 17"
 msgstr "I'm %(min)s から 17"
 
 #, machine, plain1
+msgid "I'm 18 or over"
+msgstr "18歳以上"
+
+#, machine, plain1
 msgid "Ice Hockey"
 msgstr "アイスホッケー"
 
@@ -8620,6 +8884,10 @@ msgstr "18歳以上の場合は、親または保護者がアカウントを解�
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
 msgstr "2FA がない場合 デバイスは、バックアップコードの1つを代わりに入力します。 各バックアップコードは一度動作します。 バックアップコードを作ったことがないアカウントは、Recovery Code に入力でき、2FA をオフにします."
 
+#, machine, plain2
+msgid "If you forget your password, your recovery code, or a browser where you've used chat, brings your old messages back. The code can't be shown again: this site never has it. A new one replaces it."
+msgstr "パスワードを忘れた場合、回復コード、またはチャットを使用したブラウザを忘れた場合、古いメッセージを取り戻します。 このコードは、再び表示できません。このサイトは決してそれを持っていません。 新しく交換する."
+
 #, machine, python-format
 msgid "If you have any questions, feel free to <a href=\"%(mail)s\">email the %(site)s team.</a>."
 msgstr "ご不明な点がございましたら、お気軽にお問い合わせください。 <a href=\"%(mail)s\">電子メール %(site)s チーム。</a>お問い合わせ"
@@ -8649,7 +8917,7 @@ msgctxt "button"
 msgid "Ignore"
 msgstr "無視"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Image"
 msgstr "画像"
@@ -8697,7 +8965,7 @@ msgstr "インスタグラム %(language)s"
 msgid "In %(place)s"
 msgstr "インスタグラム %(place)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "In guild"
 msgstr "ギルド"
 
@@ -8721,7 +8989,7 @@ msgstr "これらのギルドで"
 msgid "Inadvertantly broke Ruqqus"
 msgstr "誤ってRucqqusを破った"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Inbox"
 msgstr "受信箱"
 
@@ -8732,6 +9000,20 @@ msgstr "含まれるもの"
 #, machine
 msgid "Includes accounts you follow"
 msgstr "フォローするアカウントが含まれています"
+
+msgid "Incoming call"
+msgstr "着信"
+
+#, python-format
+msgid "Incoming call from %(name)s"
+msgstr "%(name)s から着信"
+
+msgid "Incoming video call"
+msgstr "ビデオ通話の着信"
+
+#, python-format
+msgid "Incoming video call from %(name)s"
+msgstr "%(name)s からビデオ通話の着信"
 
 #, machine
 msgid "Incorrect Password"
@@ -8766,7 +9048,7 @@ msgstr "インデュース・サブコンチネンタル"
 msgid "Influencers"
 msgstr "インフルエンサー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Insights"
 msgstr "インサイト"
 
@@ -8799,7 +9081,7 @@ msgstr "お問い合わせ"
 msgid "Interior Design"
 msgstr "インテリアデザイン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "International Affairs"
 msgstr "国際問題"
 
@@ -9030,6 +9312,10 @@ msgstr "アプリを通して動作します。 <strong>%(app)s</strong> (クラ
 msgid "It's called %(name)s now."
 msgstr "%(name)s という."
 
+#, machine, plain2
+msgid "It's too late to refuse this code: it has run out or has been used. If you don't recognise a sign-in, log out everywhere, and check your apps too."
+msgstr "このコードを拒否しても遅すぎる: 実行中、または使用済みです。 サインインを認識しなければ、どこでも接続を解除し、アプリをチェックしてください."
+
 #, machine
 msgid "Its feed server has not named any posts you can see."
 msgstr "フィードサーバーは、あなたが見ることができる投稿の名前をつけていません."
@@ -9058,7 +9344,7 @@ msgstr "JPG, PNG, GIF ファイルがサポートされています。 最大フ
 msgid "Jazz & Blues"
 msgstr "ジャズ&ブルース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Job"
 msgstr "職業"
 
@@ -9071,7 +9357,7 @@ msgstr[0] "ほとんどの %(num)s 文字でジョブができます."
 msgid "Job can't contain < or >."
 msgstr "ジョブには < または > が含まれていません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Join"
 msgstr "参加"
@@ -9083,7 +9369,7 @@ msgid "Join %(circle)s &middot; %(num)s coin/month"
 msgid_plural "Join %(circle)s &middot; %(num)s coins/month"
 msgstr[0] "%(circle)s &middot; %(num)sコイン/月"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join +%(guild)s"
 msgstr "+%(guild)s に参加"
 
@@ -9096,11 +9382,11 @@ msgid "Join Circle &middot; %(num)s coin/month"
 msgid_plural "Join Circle &middot; %(num)s coins/month"
 msgstr[0] "Circle &middot; %(num)s コイン/月"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join Guild"
 msgstr "ギルドに参加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join guild"
 msgstr "ギルドに参加"
 
@@ -9126,7 +9412,7 @@ msgctxt "people who joined the guild, table heading"
 msgid "Joined"
 msgstr "参加する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Joined"
 msgstr "参加済み"
@@ -9147,7 +9433,7 @@ msgstr "オープンアルファ中にRuqqusに参加"
 msgid "Joined Ruqqus during open beta"
 msgstr "オープンβ中のRuqqusに参加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Jump in the discussion."
 msgstr "会話に参加しよう。"
 
@@ -9221,7 +9507,7 @@ msgstr "ボットの種類"
 msgid "Kind of story"
 msgstr "ストーリーの種類"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Kinds of Space"
 msgstr "スペースの種類"
 
@@ -9237,7 +9523,7 @@ msgstr "投稿の種類 <span class=\"text-muted\">(none はあらゆる種類�
 msgid "Knitting & Sewing"
 msgstr "ニット&縫製"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "badge"
 msgid "LIVE"
 msgstr "LIVE"
@@ -9254,7 +9540,7 @@ msgstr "ラベル"
 msgid "Landscaping"
 msgstr "ランドスケープ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Language"
 msgstr "言語"
 
@@ -9267,7 +9553,7 @@ msgstr "言語学習"
 msgid "Languages on this page"
 msgstr "このページの言語"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Large"
 msgstr "大"
 
@@ -9303,12 +9589,12 @@ msgstr "法律上の注意"
 msgid "Layout"
 msgstr "レイアウト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Leave"
 msgstr "脱退"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: leave the guild"
 msgid "Leave"
 msgstr "脱退"
@@ -9321,7 +9607,7 @@ msgstr "+%(guild)sを残す"
 msgid "Leave group"
 msgstr "グループ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave guild desktop"
 msgstr "ギルドから脱退"
 
@@ -9337,7 +9623,7 @@ msgstr "まずは空にしておいてください."
 msgid "Leave out"
 msgstr "ふりがな"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave out forwarded copies"
 msgstr "転送されたコピーを除外"
 
@@ -9416,7 +9702,7 @@ msgstr "ふりがな"
 msgid "Left +%(guild)s"
 msgstr "左 +%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Legal"
 msgstr "法的情報"
 
@@ -9436,7 +9722,7 @@ msgstr "ドットまたは他のマークによってスペースアウトまた
 msgid "Letters, numbers and underscores, 3 to 25 characters."
 msgstr "文字、数字、アンダースコア、3〜25文字."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Lifestyle"
 msgstr "暮らし"
 
@@ -9457,12 +9743,12 @@ msgstr "1000文字の制限"
 msgid "Limit of 256 characters"
 msgstr "256文字の制限"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Link"
 msgstr "リンク"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Link"
 msgstr "リンク"
@@ -9475,7 +9761,7 @@ msgstr "リンク(オプション)"
 msgid "Link Discord"
 msgstr "サイトマップ Discord"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Link copied to clipboard"
 msgstr "リンクをコピーしました"
 
@@ -9524,7 +9810,7 @@ msgstr "当サイトへのリンクはお断りしております."
 msgid "Linux & Open Source"
 msgstr "Linuxとオープンソース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "List"
 msgstr "リスト"
@@ -9546,7 +9832,7 @@ msgstr "文学"
 msgid "Live"
 msgstr "ライブ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "Space state"
 msgid "Live"
 msgstr "ライブ中"
@@ -9555,7 +9841,7 @@ msgstr "ライブ中"
 msgid "Live Spaces"
 msgstr "ライブスペース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Live and upcoming"
 msgstr "ライブ中・予定"
 
@@ -9594,11 +9880,11 @@ msgstr "ライブ・%(kind)s"
 msgid "Loading..."
 msgstr "ローディング..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "読み込み中…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Location"
 msgstr "場所"
 
@@ -9624,15 +9910,23 @@ msgstr "ロック"
 msgid "Locked: guildmasters edit it."
 msgstr "ロック: guild のモデレータはそれを編集します."
 
-#, machine
+#, machine, plain1
+msgid "Log"
+msgstr "ログイン"
+
+#, machine, plain1, python-format
+msgid "Log - %(site)s"
+msgstr "ログイン - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Log Out Everywhere"
-msgstr "どこでもログアウト"
+msgstr "すべての端末からログアウト"
 
 #, machine, python-format
 msgid "Log all other devices out of your %(site)s account."
 msgstr "他のデバイスを %(site)s アカウントからログアウトします."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Log in to bookmark"
 msgstr "ログインしてブックマーク"
 
@@ -9640,13 +9934,29 @@ msgstr "ログインしてブックマーク"
 msgid "Log in to vote"
 msgstr "投票する"
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Log of @%(name)s"
+msgstr "@%(name)sのログ"
+
+#, machine, plain1, python-format
+msgid "Log of post #%(id)s"
+msgstr "投稿のログ #%(id)s"
+
+#, machine, plain1
+msgid "Log of this comment"
+msgstr "このコメントのログ"
+
+#, glossary, machine, plain2
 msgid "Log out"
 msgstr "ログアウト"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Log out everywhere"
-msgstr "どこでもログアウト"
+msgstr "すべての端末からログアウト"
+
+#, machine, plain2
+msgid "Logging out everywhere ends that sign-in. It doesn't end an app's access, so check those too."
+msgstr "サインインの終端を切断する。 アプリのアクセスを終わらないので、それらもチェックします."
 
 #, machine, python-format
 msgid "Login - %(site)s"
@@ -9676,11 +9986,11 @@ msgstr "Lyridsの流星のシャワー"
 msgid "Made on %(date)s."
 msgstr "%(date)s で作られました."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Made with AI"
 msgstr "AI生成"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "navigation landmark"
 msgid "Main"
 msgstr "メイン"
@@ -9738,7 +10048,7 @@ msgstr "新しいバックアップコードを作る"
 msgid "Make one with New event."
 msgstr "新しいイベントで1つを作る."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Make or change your circles"
 msgstr "サークルを作成・編集"
 
@@ -9790,7 +10100,7 @@ msgstr "トピックス"
 msgid "March equinox"
 msgstr "3月 エキノックス"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mark Sensitive Content"
 msgstr "センシティブに指定"
 
@@ -9815,7 +10125,7 @@ msgstr "マーケティング&セールス"
 msgid "Marriage"
 msgstr "マーリエージ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Matches your interests"
 msgstr "あなたの興味に合っています"
 
@@ -9823,7 +10133,7 @@ msgstr "あなたの興味に合っています"
 msgid "Mathematics"
 msgstr "数学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media"
 msgstr "メディア"
 
@@ -9835,7 +10145,7 @@ msgstr "メディアのみ"
 msgid "Media settings"
 msgstr "メディア設定"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media storage"
 msgstr "メディアストレージ"
 
@@ -9881,7 +10191,7 @@ msgid "Member<span class=\"text-primary\"> %(num)s</span>"
 msgid_plural "Members<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "メンバー<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Members"
 msgstr "メンバー"
 
@@ -9903,7 +10213,7 @@ msgid "Members with at least %(num)s point in a month share that month's budget 
 msgid_plural "Members with at least %(num)s points in a month share that month's budget by their points."
 msgstr[0] "毎月の予算をポイントでシェアする少なくとも%(num)sポイントを持つメンバー."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Memes"
 msgstr "ミーム"
 
@@ -9919,7 +10229,7 @@ msgstr "メンション @%(name)s"
 msgid "Mentioning these accounts"
 msgstr "これらのアカウントのメンション"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mentions"
 msgstr "メンション"
 
@@ -9941,11 +10251,11 @@ msgid "Mentions any of: %(num)s word or phrase at most."
 msgid_plural "Mentions any of: %(num)s words or phrases at most."
 msgstr[0] "%(num)s の単語やフレーズをほとんど解釈します."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Merch and more. Support %(site)s today!"
 msgstr "グッズなど。%(site)sを今すぐ応援しよう！"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Message"
 msgstr "メッセージ"
@@ -10017,11 +10327,11 @@ msgstr "モバイル&アプリ"
 msgid "Mobile Games"
 msgstr "モバイルゲーム"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Log"
 msgstr "管理ログ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Queue"
 msgstr "管理キュー"
 
@@ -10033,11 +10343,11 @@ msgstr "モデルビル"
 msgid "Moderation"
 msgstr "モデレーション"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Moderation log"
 msgstr "モデレーションログ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Modern Culture"
 msgstr "現代文化"
 
@@ -10055,7 +10365,7 @@ msgctxt "table heading"
 msgid "Month"
 msgstr "カレンダー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Month"
 msgstr "今月"
@@ -10068,24 +10378,24 @@ msgstr "月に生まれた"
 msgid "Monthly creator fund payouts"
 msgstr "毎月のクリエイターファンドアウト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "その他"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "More"
 msgstr "その他"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More actions"
 msgstr "その他の操作"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More comments"
 msgstr "さらにコメントを表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More options"
 msgstr "その他のオプション"
 
@@ -10137,7 +10447,7 @@ msgstr "%(name)s 下に移動"
 msgid "Move %(name)s up"
 msgstr "%(name)sを上に移動"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Move to folder"
 msgstr "フォルダに移動"
 
@@ -10165,12 +10475,12 @@ msgstr "音楽制作"
 msgid "Must attempt to buy at least one coin"
 msgstr "少なくとも1コインを購入しようとする"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Mute"
 msgstr "ミュート"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "microphone"
 msgid "Mute"
 msgstr "ミュート"
@@ -10179,11 +10489,11 @@ msgstr "ミュート"
 msgid "Mute +%(guild)s"
 msgstr "ミュート +%(guild)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Mute @%(name)s"
 msgstr "@%(name)s をミュート"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute guild"
 msgstr "ギルドをミュート"
 
@@ -10203,7 +10513,7 @@ msgstr "チャンネルでミュート"
 msgid "Muted since"
 msgstr "以来"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My Curations"
 msgstr "マイキュレーション"
 
@@ -10211,7 +10521,7 @@ msgstr "マイキュレーション"
 msgid "My Friends"
 msgstr "私の友人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My account"
 msgstr "マイアカウント"
 
@@ -10219,7 +10529,7 @@ msgstr "マイアカウント"
 msgid "My account is sensitive"
 msgstr "私のアカウントは機密です"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My guilds"
 msgstr "マイギルド"
 
@@ -10227,7 +10537,7 @@ msgstr "マイギルド"
 msgid "My languages"
 msgstr "私の言語"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My profile"
 msgstr "マイプロフィール"
 
@@ -10271,7 +10581,7 @@ msgstr "ネット投票"
 msgid "Neuroscience"
 msgstr "神経科学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Never counted"
 msgstr "対象外"
 
@@ -10310,7 +10620,7 @@ msgctxt "new highlight"
 msgid "New"
 msgstr "ニュース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "New"
 msgstr "新着"
@@ -10355,6 +10665,10 @@ msgstr "新しいチャット"
 msgid "New circle"
 msgstr "ニューサークル"
 
+#, machine, plain1
+msgid "New code"
+msgstr "新しいコード"
+
 #, machine
 msgid "New comments · Show them"
 msgstr "新しいコメント・表示"
@@ -10371,7 +10685,7 @@ msgstr "新イベント"
 msgid "New folder"
 msgstr "新しいフォルダ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "New group"
 msgstr "新しいグループ"
 
@@ -10387,6 +10701,22 @@ msgstr "新しいアイテムは、フィードから最古の「%(max)s」に�
 msgid "New members pay %(num)s coin every 30 days. Current members keep their price."
 msgid_plural "New members pay %(num)s coins every 30 days. Current members keep their price."
 msgstr[0] "新規会員登録 %(num)s 30日ごとにコインを貯める 現在のメンバーは価格を維持しています。"
+
+#, machine, plain2
+msgid "New message"
+msgstr "新しいメッセージ"
+
+#, python-format
+msgid "New message from %(name)s"
+msgstr "%(name)s から新しいメッセージ"
+
+#, machine, plain2
+msgid "New message request"
+msgstr "新しいメッセージリクエスト"
+
+#, python-format
+msgid "New message request from %(name)s"
+msgstr "%(name)s から新しいメッセージリクエスト"
 
 #, machine
 msgid "New page address"
@@ -10445,20 +10775,20 @@ msgstr "最新記事"
 msgid "Newest first."
 msgstr "新着順."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "News"
 msgstr "ニュース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Next"
 msgstr "次へ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "next page"
 msgid "Next"
 msgstr "次へ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "story"
 msgid "Next"
 msgstr "次のストーリー"
@@ -10484,7 +10814,7 @@ msgstr "いいえ"
 msgid "No Space is shown on this stage right now."
 msgstr "今のステージではスペースが表示されない."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No Spaces are scheduled."
 msgstr "予定されているスペースはありません。"
 
@@ -10532,7 +10862,7 @@ msgstr "チャンネルが表示されません."
 msgid "No channels yet."
 msgstr "チャンネルはありません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No comments"
 msgstr "コメントはありません"
 
@@ -10576,7 +10906,7 @@ msgstr "外部リンクは許可されていません."
 msgid "No feeds."
 msgstr "フィードはありません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "フレアーなし"
 
@@ -10596,7 +10926,7 @@ msgstr "+%(guild)s というギルドはありません."
 msgid "No guild called +%(name)s."
 msgstr "+%(name)s というギルドはありません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guildmasters"
 msgstr "ギルドマスターはいません"
 
@@ -10609,7 +10939,7 @@ msgid "No guilds are in this topic yet."
 msgid_plural "No guilds are in these topics yet."
 msgstr[0] "これらのトピックはまだギルドはありません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guilds here yet."
 msgstr "まだギルドがありません。"
 
@@ -10646,7 +10976,7 @@ msgstr "名前の提案はまだありません - 第一です!"
 msgid "No older than"
 msgstr "古いもの"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No one"
 msgstr "なし"
 
@@ -10690,7 +11020,7 @@ msgstr "パブリックキュレーションフィードが%(query)sにマッチ
 msgid "No public curations yet. Be the first!"
 msgstr "パブリックキュレーションフィードはまだありません。 まずは!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No recordings yet."
 msgstr "まだ録音はありません。"
 
@@ -10750,6 +11080,10 @@ msgstr "誰も、その人々はそれを読むことができます:サイト�
 msgid "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."
 msgstr "誰も参加できません:ギルドは招待のみです。 現在のメンバーは、彼らが支払ったことを保ちます."
 
+#, machine, plain1
+msgid "Nobody can sign in to your account with a code."
+msgstr "誰もコードでアカウントにサインインすることはできません."
+
 #, machine, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "毎月の予算の%(share)s%%以上は誰も取得しません。 シェアはコイン全体に丸められます."
@@ -10789,6 +11123,10 @@ msgstr "ここには誰もいません"
 #, machine, plain1, python-format
 msgid "Nobody under %(age)s may have an account where you are."
 msgstr "%(age)s で誰もアカウントを持っているかもしれません."
+
+#, machine, plain1
+msgid "Nobody was signed in. If someone asked you to scan that code, they can't use it now."
+msgstr "誰も署名されていない。 誰かがそのコードをスキャンするように依頼した場合、今では使用できません."
 
 #, machine
 msgid "Nobody yet."
@@ -10840,6 +11178,10 @@ msgstr "接続されていない - %(site)s"
 msgid "Not flaired \"%(flair)s\""
 msgstr "\"%(flair)s\" を汚さない"
 
+#, machine, plain1
+msgid "Not found"
+msgstr "見つかりませんでした"
+
 #, machine
 msgid "Not found."
 msgstr "見つかりませんでした."
@@ -10871,7 +11213,7 @@ msgstr "お問い合わせ %(place)s"
 msgid "Not in these guilds"
 msgstr "これらのギルドではなく"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not known yet"
 msgstr "不明"
 
@@ -10882,6 +11224,10 @@ msgstr "%(domain)s にリンクされていない"
 #, machine
 msgid "Not made with AI"
 msgstr "AIで作らない"
+
+#, machine, plain1
+msgid "Not me"
+msgstr "お問い合わせ"
 
 #, machine
 msgid "Not now"
@@ -10915,9 +11261,12 @@ msgstr "これ以上のトレンドはありません"
 msgid "Not yet"
 msgstr "未使用"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not your default:"
 msgstr "デフォルトと異なります："
+
+msgid "Nothing"
+msgstr "なし"
 
 #, machine
 msgid "Nothing bookmarked yet"
@@ -10938,6 +11287,10 @@ msgstr "何も下書きはまだ(コメント)"
 #, machine
 msgid "Nothing downvoted yet (posts)"
 msgstr "ダウン投票はまだありません (投稿)"
+
+#, machine, plain1
+msgid "Nothing has been logged yet."
+msgstr "何も記録されていません."
 
 #, machine
 msgid "Nothing has changed since the last publish."
@@ -10970,6 +11323,10 @@ msgstr "今は何も住んでいません."
 #, machine, plain1
 msgid "Nothing marked for today."
 msgstr "今日は何もマークされていません."
+
+#, machine, plain1
+msgid "Nothing matches this filter."
+msgstr "このフィルタにはマッチしません."
 
 #, machine, python-format
 msgid "Nothing on %(site)s can translate into it right now, so the Translate button won't show."
@@ -11043,13 +11400,28 @@ msgstr "何もない."
 msgid "Notification types"
 msgstr "通知の種類"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "通知"
+
+msgid "Notifications aren't available on this site yet."
+msgstr "このサイトではまだ通知を利用できません。"
+
+msgid "Notifications don't say who a message is from."
+msgstr "通知に送信者は表示されません。"
 
 #, machine, python-format
 msgid "Notifications for @%(name)s turned off."
 msgstr "@%(name)s の通知がオフになりました."
+
+msgid "Notifications from this group"
+msgstr "このグループからの通知"
+
+msgid "Notifications need this page's script."
+msgstr "通知にはこのページのスクリプトが必要です。"
+
+msgid "Notifications say who a message is from."
+msgstr "通知に送信者が表示されます。"
 
 #, machine, python-format
 msgid "Notifications, %(num)s new"
@@ -11086,12 +11458,10 @@ msgstr "オセアニア"
 msgid "Oddly Satisfying"
 msgstr "オッディ・サティスフィ"
 
-#, machine, plain1
 msgid "Off"
 msgstr "オフ"
 
 #. slow mode in a guild's channel is switched off.
-#, machine
 msgctxt "slow mode"
 msgid "Off"
 msgstr "オフ"
@@ -11108,7 +11478,7 @@ msgstr "オフensive"
 msgid "Offline on %(service)s"
 msgstr "オフライン %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Old"
 msgstr "古い順"
@@ -11134,6 +11504,9 @@ msgstr "お問い合わせ %(date)s"
 #, machine
 msgid "On Ruqqus for one year"
 msgstr "1年間ラッカー"
+
+msgid "On an iPhone or iPad, add this site to your Home Screen first (Share, then Add to Home Screen), and turn notifications on from there."
+msgstr "iPhone や iPad では、まずこのサイトをホーム画面に追加し(共有 → ホーム画面に追加)、そこから通知をオンにしてください。"
 
 #, machine, plain1
 msgid "On by default"
@@ -11239,6 +11612,9 @@ msgstr "Premiumアカウントのみ、この投稿にコメントすること�
 msgid "Only a call has a stage."
 msgstr "コールのみステージがあります."
 
+msgid "Only a group's owner and admins can change this."
+msgstr "変更できるのはグループのオーナーと管理者だけです。"
+
 #, machine, plain1
 msgid "Only a guild's copy of a post has a flair."
 msgstr "投稿の guild のコピーだけがラベルを持っています."
@@ -11298,6 +11674,10 @@ msgstr "承認された会員のみがこのチャネルで書き込みます."
 #, machine
 msgid "Only continue if you started signing in to a chat app just now."
 msgstr "今すぐチャットアプリにサインインし始めたら、続行してください."
+
+#, machine, plain1
+msgid "Only continue if you started this yourself on a screen in front of you. If a post, comment, message or website asked you to scan this, someone may be trying to take your account."
+msgstr "目の前の画面でこの自分を始めたら続行してください。 投稿、コメント、メッセージ、またはウェブサイトがこれをスキャンするように求めた場合、誰かがあなたのアカウントを取ろうとしているかもしれません."
 
 #, machine, python-format
 msgid "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s member, so a small guild's numbers can't point at one person."
@@ -11393,7 +11773,7 @@ msgstr "チャンネルの所有者とヘルパーだけが書いています."
 msgid "Only the channel's owner chooses its helpers."
 msgstr "チャネルの所有者だけがそのヘルパーを選択します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Only the circles you pick"
 msgstr "選んだサークルのみ"
 
@@ -11562,7 +11942,7 @@ msgstr "チャットで開く"
 msgid "Open in the guild"
 msgstr "ギルドで開く"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open page"
 msgstr "ページを開く"
 
@@ -11582,11 +11962,15 @@ msgstr "オリジナルを%(domain)sで開く、新しいタブ"
 msgid "Open the post"
 msgstr "投稿を開く"
 
+#, machine, plain1
+msgid "Open the preserved copy"
+msgstr "保存されたコピーを開く"
+
 #, machine
 msgid "Open the quoted post"
 msgstr "引用されたポストを開けて下さい"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open the shared draft"
 msgstr "共有下書きを開く"
 
@@ -11618,11 +12002,11 @@ msgstr "意見と分析"
 msgid "Opt Out of All/Trending"
 msgstr "オール/トレンディングのオプトアウト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Opted out of All"
 msgstr "すべてフィードから除外"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Option %(number)s"
 msgstr "選択肢 %(number)s"
 
@@ -11715,11 +12099,11 @@ msgstr "独自のミックスで注文: 投票とヒント %(votes)s、コメン
 msgid "Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s."
 msgstr "独自のミックスで注文: 投票とヒント %(votes)s、コメント %(comments)s、 %(fade)s 以上のフェーディング."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Original post"
 msgstr "元の投稿"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Original username: @%(name)s"
 msgstr "元のユーザー名：@%(name)s"
 
@@ -11727,7 +12111,7 @@ msgstr "元のユーザー名：@%(name)s"
 msgid "Orionids meteor shower"
 msgstr "Orionidsの流星のシャワー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other Sports"
 msgstr "その他のスポーツ"
 
@@ -11741,7 +12125,7 @@ msgstr "その他の言語 読む"
 msgid "Other or unknown"
 msgstr "その他・不明"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other spellings:"
 msgstr "その他の表記:"
 
@@ -11786,7 +12170,7 @@ msgstr "プロフィール"
 msgid "Own account"
 msgstr "独自のアカウント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you made"
 msgid "Owned"
 msgstr "作成したもの"
@@ -11799,7 +12183,7 @@ msgstr "パソコン"
 msgid "PNG, JPEG, GIF or WebP, 8 MB at most."
 msgstr "PNG, JPEG, GIF, WebP, 8 MB."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Page navigation"
 msgstr "ページナビゲーション"
 
@@ -11835,7 +12219,7 @@ msgstr "有料サークル"
 msgid "Paid circles are part of Premium."
 msgstr "有料サークルはPremiumの一部です."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Paid circles you are in"
 msgstr "参加中の有料サークル"
 
@@ -11930,15 +12314,15 @@ msgctxt "events"
 msgid "Past"
 msgstr "新着情報"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Day"
 msgstr "過去24時間"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Month"
 msgstr "過去1か月"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Year"
 msgstr "過去1年"
 
@@ -11959,7 +12343,7 @@ msgstr "パユース"
 msgid "Paused"
 msgstr "パユース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Paused"
 msgstr "一時停止中"
@@ -12045,7 +12429,13 @@ msgid "People who follow you, or whom you follow, are in at once. Anyone else ge
 msgid_plural "People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to %(num)s people and is end-to-end encrypted."
 msgstr[0] "あなたに従う人、またはあなたがフォローしている人、一度にいます。 他の人が彼らのリクエストに招待状を取得します。 グループは、最大%(num)sの人々を持ち、エンドツーエンド暗号化されています."
 
-#, glossary, machine, plain1
+msgid "People you chat with don't see when you've read their messages or are typing, and you don't see theirs."
+msgstr "チャット相手には、あなたがメッセージを読んだことや入力中であることは表示されません。相手の分もあなたには表示されません。"
+
+msgid "People you chat with see when you've read their messages and when you're typing."
+msgstr "チャット相手には、あなたがメッセージを読んだことと入力中であることが表示されます。"
+
+#, glossary, machine, plain2
 msgid "People you follow liked"
 msgstr "フォロー中の人が高評価"
 
@@ -12117,7 +12507,7 @@ msgstr "写真またはビデオ"
 msgid "Photography"
 msgstr "プロフィール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "word filter entry"
 msgid "Phrase"
 msgstr "フレーズ"
@@ -12130,7 +12520,7 @@ msgstr "物理"
 msgid "Pick a date and time."
 msgstr "日付と時刻を選択します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "フレアーを選択"
 
@@ -12174,12 +12564,15 @@ msgstr "スローモードの長さの1つを選択します."
 msgid "Pick who it is for"
 msgstr "お問い合わせ"
 
+msgid "Picture"
+msgstr "画像"
+
 #, machine
 msgctxt "kind of story"
 msgid "Picture"
 msgstr "プロフィール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Picture"
 msgstr "画像"
@@ -12225,11 +12618,11 @@ msgstr "映像は行きます"
 msgid "Pictures, video and sound, nothing else."
 msgstr "写真、ビデオ、音、その他何もしません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pin"
 msgstr "固定"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Pin"
 msgstr "固定する"
@@ -12253,20 +12646,19 @@ msgctxt "colour"
 msgid "Pink"
 msgstr "ピンク"
 
-#, glossary, machine, plain1
 msgctxt "heading of pinned posts"
 msgid "Pinned"
-msgstr "固定済み"
+msgstr "ピン留め"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned comment"
 msgstr "固定されたコメント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned posts"
 msgstr "固定された投稿"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Pinned to +%(guild)s"
 msgstr "+%(guild)s に固定"
 
@@ -12317,6 +12709,10 @@ msgstr "%(domain)sからビデオを再生する"
 msgid "Play with sound"
 msgstr "サウンドで遊ぶ"
 
+#, machine, plain1
+msgid "Please choose one of the two answers."
+msgstr "2つの回答のいずれかを選択してください."
+
 #, machine
 msgid "Please enter a better title"
 msgstr "より良いタイトルを入力してください"
@@ -12332,6 +12728,10 @@ msgstr "お問い合わせ %(site)s 電子メール、テキスト、または�
 #, machine
 msgid "Please remove the following link(s) from your comment, and then you will be able to post it:"
 msgstr "コメントから次のリンクを削除してください"
+
+#, machine, plain1
+msgid "Please say how old you are."
+msgstr "年齢を教えてください."
 
 #, machine
 msgid "Please select a reason for flagging below."
@@ -12349,6 +12749,10 @@ msgstr "ポッドキャスト"
 msgid "Poetry"
 msgstr "ポエトリー"
 
+#, machine, plain1
+msgid "Point your phone's camera at this. It runs out after two minutes."
+msgstr "携帯電話のカメラをポイントします。 2分後に走る."
+
 #, machine
 msgctxt "table heading"
 msgid "Points"
@@ -12358,11 +12762,11 @@ msgstr "ポイント"
 msgid "Political"
 msgstr "ポリティカル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political Ideas & Debate"
 msgstr "政治思想と議論"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political News"
 msgstr "政治ニュース"
 
@@ -12370,24 +12774,24 @@ msgstr "政治ニュース"
 msgid "Politics"
 msgstr "政治"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll"
 msgstr "投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Poll"
 msgstr "投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll (optional)"
 msgstr "投票（任意）"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll length"
 msgstr "投票期間"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Poll option %(number)s"
 msgstr "選択肢 %(number)s"
 
@@ -12419,12 +12823,12 @@ msgstr "人気のサイト"
 msgid "Popular this week"
 msgstr "今週の人気順"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "投稿する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Post"
 msgstr "投稿"
@@ -12437,7 +12841,7 @@ msgstr "投稿情報"
 msgid "Post an update"
 msgstr "更新投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "匿名で投稿"
 
@@ -12475,15 +12879,15 @@ msgstr "投稿インサイト・クリエイタースタジオ - %(site)s"
 msgid "Post on %(service)s"
 msgstr "%(service)sの投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post text"
 msgstr "本文"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post title"
 msgstr "タイトル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post type"
 msgstr "投稿タイプ"
 
@@ -12524,11 +12928,11 @@ msgstr "投稿する"
 msgid "Posting cooldown"
 msgstr "クールダウン投稿"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Posting to +%(guild)s"
 msgstr "+%(guild)s に投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "自分のプロフィールに投稿"
 
@@ -12536,11 +12940,11 @@ msgstr "自分のプロフィールに投稿"
 msgid "Postponed"
 msgstr "フィードバック"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts"
 msgstr "投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Posts"
 msgstr "投稿"
@@ -12658,7 +13062,7 @@ msgstr "今週のコメント欄にコメントを投稿します."
 msgid "Posts you forward to a guild, and comments you forward into a new post, will show here."
 msgstr "ギルドに転送する投稿、新しい投稿に転送するコメント、ここで表示されます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts you save will show up here."
 msgstr "保存した投稿はここに表示されます。"
 
@@ -12686,7 +13090,7 @@ msgstr "予測"
 msgid "Pregnancy & Babies"
 msgstr "妊娠と赤ちゃん"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium"
 msgstr "プレミアム"
 
@@ -12694,7 +13098,7 @@ msgstr "プレミアム"
 msgid "Premium Settings - %(site)s"
 msgstr "Premium 設定 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium accounts"
 msgstr "プレミアムアカウント"
 
@@ -12711,16 +13115,24 @@ msgstr "%(date)s UTCまでのPremium."
 msgid "Premium until: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 msgstr "Premium まで: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Preserved copy"
+msgstr "保存されたコピー"
+
+#, machine, plain1, python-format
+msgid "Preserved copy - %(site)s"
+msgstr "保存されたコピー - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Press"
 msgstr "報道関係者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Press"
 msgstr "報道関係者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "link to the page for journalists"
 msgid "Press"
 msgstr "報道関係者"
@@ -12729,11 +13141,15 @@ msgstr "報道関係者"
 msgid "Pressing play loads %(player)s, which can set cookies, see your address and record what you watch."
 msgstr "プレスのプレイは、クッキーを設定できる %(player)s をロードし、あなたのアドレスを見て、あなたが見るものを録音することができます."
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Pressing play loads %(player)s."
+msgstr "プレスプレイロード %(player)s."
+
+#, glossary, machine, plain2
 msgid "Prev"
 msgstr "前へ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Prev"
 msgstr "前へ"
@@ -12769,15 +13185,15 @@ msgctxt "button"
 msgid "Print"
 msgstr "プリント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy"
 msgstr "プライバシー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy Policy"
 msgstr "プライバシーポリシー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy and cookie settings"
 msgstr "プライバシーとCookieの設定"
 
@@ -12785,7 +13201,7 @@ msgstr "プライバシーとCookieの設定"
 msgid "Privacy page"
 msgstr "サイトマップ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Private"
 msgstr "非公開"
@@ -12818,7 +13234,7 @@ msgstr "+%(guild)s のギルドモデレータだから、プライベートな�
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "+%(guild)s で承認されたコントリビューターであるので、プライベートなコンテンツが表示されます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Private mode."
 msgstr "非公開モード。"
 
@@ -12910,7 +13326,7 @@ msgstr "プロダクト"
 msgid "Productivity"
 msgstr "生産性"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Profile"
 msgstr "プロフ"
 
@@ -13015,12 +13431,12 @@ msgstr "削除されたアカウントによって提案されます."
 msgid "Psychology"
 msgstr "心理学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Public"
 msgstr "公開"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Public"
 msgstr "公開"
@@ -13099,7 +13515,7 @@ msgstr "購入履歴"
 msgid "Purchase history"
 msgstr "購入履歴"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Purge"
 msgstr "完全に消去"
@@ -13134,6 +13550,30 @@ msgstr "パズル"
 #, machine
 msgid "Q&A"
 msgstr "Q&A"
+
+#, machine, plain1
+msgid "QR code"
+msgstr "QR コード"
+
+#, machine, plain1
+msgid "QR sign-in"
+msgstr "QR サインイン"
+
+#, machine, plain1
+msgid "QR sign-in is off."
+msgstr "QR サインインはオフです."
+
+#, machine, plain1
+msgid "QR sign-in is on."
+msgstr "QR サインインがオンになります."
+
+#, machine, plain1, python-format
+msgid "QR sign-in was turned on for your %(site)s account"
+msgstr "QR サインインが %(site)s アカウントにオンされました"
+
+#, machine, plain1
+msgid "QR sign-in was turned on for your account. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr "QR サインインがアカウントにオンになりました。 もしそうでなければ、パスワードは[Settings > Security](/settings/security)で変更してください."
 
 #, machine, plain1
 msgid "Quadrantids meteor shower"
@@ -13238,7 +13678,7 @@ msgstr "フラグを立てる理由?"
 msgid "Reason:"
 msgstr "理由:"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Reason: %(reason)s"
 msgstr "理由：%(reason)s"
 
@@ -13272,6 +13712,10 @@ msgstr "録音"
 msgid "Recordings"
 msgstr "レコーディング"
 
+#, machine, plain2
+msgid "Recovery code"
+msgstr "回復コード"
+
 #, machine
 msgid "Recruited 1 friend to join Ruqqus"
 msgstr "Ruqqusに参加する1人の友人を募集しました"
@@ -13301,19 +13745,19 @@ msgstr "週に1コインを交換"
 msgid "Redirect URI"
 msgstr "リダイレクトURI"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region"
 msgstr "地域"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region not known yet"
 msgstr "地域はまだ不明です"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regional"
 msgstr "地域"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regions"
 msgstr "地域"
 
@@ -13343,7 +13787,7 @@ msgstr "@%(name)s の自動投稿を拒否しますか? 自分のアカウント
 msgid "Rejected"
 msgstr "注入される"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Rejected"
 msgstr "却下"
@@ -13376,7 +13820,7 @@ msgstr "私を尊敬する"
 msgid "Reminder set"
 msgstr "リマインダーセット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "削除"
 
@@ -13401,7 +13845,7 @@ msgstr "@%(name)s を削除"
 msgid "Remove an author"
 msgstr "著者を削除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove bookmark"
 msgstr "ブックマークを解除"
 
@@ -13410,7 +13854,7 @@ msgid "Remove bookmark, %(num)s bookmark"
 msgid_plural "Remove bookmark, %(num)s bookmarks"
 msgstr[0] "ブックマーク、%(num)sブックマークを削除"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove from +%(guild)s"
 msgstr "+%(guild)s から削除"
 
@@ -13427,11 +13871,11 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "モデレータを削除"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "選択肢 %(number)s を削除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove poll"
 msgstr "投票を削除"
 
@@ -13463,7 +13907,7 @@ msgstr "あなたの投稿から%(domain)sリンクを削除し、もう一度�
 msgid "Remove the %(domain)s link from your post and try again. %(reason)s"
 msgstr "あなたの投稿から%(domain)sリンクを削除し、もう一度お試しください。 %(reason)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove the filter: %(filter)s"
 msgstr "フィルターを解除：%(filter)s"
 
@@ -13471,7 +13915,7 @@ msgstr "フィルターを解除：%(filter)s"
 msgid "Remove the following link and try again: `%(link)s`. Reason: %(reason)s"
 msgstr "次のリンクを削除し、もう一度お試しください: `%(link)s`. 理由: %(reason)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove the image"
 msgstr "画像を削除"
 
@@ -13487,7 +13931,7 @@ msgstr "メッセージを削除します"
 msgid "Remove the server"
 msgstr "サーバーを削除します"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove this topic"
 msgstr "このトピックを解除"
 
@@ -13496,7 +13940,7 @@ msgctxt "diff line"
 msgid "Removed"
 msgstr "削除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by administrators"
 msgstr "管理者により削除されました"
 
@@ -13504,7 +13948,7 @@ msgstr "管理者により削除されました"
 msgid "Removed by admins"
 msgstr "管理者によって削除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by guildmasters"
 msgstr "ギルドマスターにより削除されました"
 
@@ -13549,7 +13993,7 @@ msgstr "週が切れるとコインから自動更新"
 msgid "Renews every 30 days from your coins at this price until you cancel. Cancelling keeps your access until the day you paid to. No refunds."
 msgstr "キャンセルされるまで、コインから30日ごとに更新されます。 キャンセルは、お客様が支払った日までのアクセスを保持します。 返金はありません."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Rep"
 msgstr "評判"
 
@@ -13557,13 +14001,13 @@ msgstr "評判"
 msgid "Replay of this Space"
 msgstr "この空間の再生"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Report"
 msgstr "報告"
 
 #. the account's @name, filled in by the page
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report %(name)s"
 msgstr "%(name)s を報告"
 
@@ -13577,19 +14021,19 @@ msgstr "レポート%(name)sのコメント"
 msgid "Report %(name)s's post"
 msgstr "レポート%(name)sの投稿"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report @%(name)s"
 msgstr "@%(name)s を報告"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report Bugs"
 msgstr "バグを報告"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "コメントを報告"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "投稿を報告"
 
@@ -13601,7 +14045,7 @@ msgstr "レポート投稿 - %(site)s"
 msgid "Reported messages"
 msgstr "レポートメッセージ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Reports"
 msgstr "報告"
@@ -13614,12 +14058,12 @@ msgstr "それらについて"
 msgid "Reports opened"
 msgstr "レポート公開"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Repost"
 msgstr "リポスト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Repost"
 msgstr "リポスト"
@@ -13628,7 +14072,7 @@ msgstr "リポスト"
 msgid "Repost removed."
 msgstr "再投稿削除."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposted"
 msgstr "リポスト済み"
 
@@ -13636,7 +14080,7 @@ msgstr "リポスト済み"
 msgid "Reposted to your profile."
 msgstr "あなたのプロフィールに掲示される."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposts"
 msgstr "リポスト"
 
@@ -13652,7 +14096,7 @@ msgstr "爬虫類 & Amphibians"
 msgid "Request API Key"
 msgstr "リクエスト API キーキー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Requests"
 msgstr "リクエスト"
 
@@ -13664,7 +14108,7 @@ msgstr "ラベルが必要"
 msgid "Reroll Secret"
 msgstr "リロールシークレット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: go back to the saved default filters"
 msgid "Reset"
 msgstr "リセット"
@@ -13681,7 +14125,7 @@ msgstr "パスワードの再設定"
 msgid "Reset password"
 msgstr "パスワードの再設定"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reset to my default"
 msgstr "デフォルトに戻す"
 
@@ -13701,11 +14145,15 @@ msgstr "あなたのフィードをリセットしますか?"
 msgid "Reset your password."
 msgstr "パスワードの再設定."
 
+#, machine, plain2
+msgid "Resetting your password signs chat out on all your devices, chat apps included. Your chat key stays locked with your old password, so to keep your chat history you'll need your chat recovery code, or a browser where you've used chat."
+msgstr "パスワードのリセットは、すべてのデバイス、チャットアプリにチャットを切断します。 チャットキーは古いパスワードでロックされているので、チャットの回復コードが必要なチャット履歴や、チャットを使用したブラウザを維持できます."
+
 #, machine
 msgid "Resign"
 msgstr "リサイン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Resources"
 msgstr "リソース"
 
@@ -13722,7 +14170,7 @@ msgstr "セキュリティの問題に責任を持って報告"
 msgid "Restaurants"
 msgstr "レストラン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restore"
 msgstr "復元"
 
@@ -13755,7 +14203,7 @@ msgstr "+%(guild)s で閲覧、転送、コメントを制限し、承認され�
 msgid "Restricted Forwarding"
 msgstr "制限された転送"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restricted forwarding mode."
 msgstr "転送制限モード。"
 
@@ -13802,7 +14250,7 @@ msgstr "リビジョン %(number)s"
 msgid "Revision %(number)s, published %(age)s."
 msgstr "修正 %(number)s, 公開 %(age)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Revisions"
 msgstr "変更履歴"
 
@@ -13876,7 +14324,7 @@ msgstr "役割のunassign"
 msgid "Role-Playing Games"
 msgstr "ロールプレイングゲーム"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Roles"
 msgstr "ロール"
 
@@ -13896,7 +14344,11 @@ msgstr "ロッシュ・ハシャナ"
 msgid "Rugby"
 msgstr "ラグビー"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Rule"
+msgstr "ルール"
+
+#, glossary, machine, plain2
 msgid "Rules"
 msgstr "ルール"
 
@@ -13941,12 +14393,16 @@ msgstr "Ruqqusは、このユーザーの情報をオンにするために外国
 msgid "Saharan Belt"
 msgstr "サハランベルト"
 
+#, machine, plain1
+msgid "Sanctions"
+msgstr "サンクション"
+
 #, machine
 msgctxt "weekday"
 msgid "Sat"
 msgstr "スタッフ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "保存"
 
@@ -13977,7 +14433,7 @@ msgstr "変更を保存"
 msgid "Save Display Name"
 msgstr "表示名を保存"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save Edit"
 msgstr "編集を保存"
 
@@ -13989,7 +14445,7 @@ msgstr "アルゴリズムを保存"
 msgid "Save as a draft"
 msgstr "ドラフトとして保存"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save as my default"
 msgstr "デフォルトとして保存"
 
@@ -14005,11 +14461,11 @@ msgstr "変更を保存"
 msgid "Save description"
 msgstr "説明を保存"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save draft"
 msgstr "下書き保存"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save for later"
 msgstr "あとで投稿"
 
@@ -14041,17 +14497,16 @@ msgstr "今すぐ保存してください。 それらは示されます <strong
 msgid "Save word filter"
 msgstr "単語フィルターを保存"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "保存しました"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved as your default"
 msgstr "デフォルトとして保存済み"
 
-#, machine
 msgid "Saved."
-msgstr "保存."
+msgstr "保存しました。"
 
 #, machine
 msgid "Saved. People see it before they subscribe."
@@ -14061,7 +14516,7 @@ msgstr "保存。 購読する前に、人々はそれを見ます."
 msgid "Saved. Your lists are shown as you chose."
 msgstr "保存。 選択したリストが表示されます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "保存中"
 
@@ -14073,6 +14528,9 @@ msgstr "このアカウントで何が間違っているかを言う."
 msgid "Say what the bot will post and where it comes from (at least 10 characters)."
 msgstr "ボットが投稿し、そこから来る場所(少なくとも10文字)を言う."
 
+msgid "Say who it's from"
+msgstr "送信者を表示する"
+
 #, machine
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Googleなどの2要素認証アプリを使用して、このバーコードをスキャン(またはコードを入力する) 認証または認証."
@@ -14081,7 +14539,7 @@ msgstr "Googleなどの2要素認証アプリを使用して、このバーコ�
 msgid "Scandinavia"
 msgstr "スカンジナビア"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Schedule"
 msgstr "予約"
@@ -14115,7 +14573,7 @@ msgstr "Sci-Fiの特長"
 msgid "Science"
 msgstr "科学研究"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Science News"
 msgstr "科学ニュース"
 
@@ -14127,11 +14585,11 @@ msgstr "スコア"
 msgid "Sculpture"
 msgstr "彫刻家"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "検索"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Search"
 msgstr "検索"
@@ -14144,11 +14602,11 @@ msgstr "\"%(query)s\" の検索 +%(guild)s - %(site)s"
 msgid "Search Tenor and press enter"
 msgstr "Tenor を検索し、入力を押します"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search categories…"
 msgstr "カテゴリを検索…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search chats and channels"
 msgstr "チャットとチャンネルを検索"
 
@@ -14168,7 +14626,7 @@ msgstr "ギルド検索"
 msgid "Search guilds to post to"
 msgstr "ギルドを検索して投稿する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search languages…"
 msgstr "言語を検索…"
 
@@ -14184,19 +14642,19 @@ msgstr "フォローする人々を検索"
 msgid "Search people, or type an @handle"
 msgstr "人を検索したり、 @handle を入力したりする"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Search posts in +%(guild)s"
 msgstr "+%(guild)s の投稿を検索"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search posts, +guilds, @users, #topics, &curations"
 msgstr "投稿、+ギルド、@ユーザー、#トピック、&キュレーションを検索"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search regions…"
 msgstr "地域を検索…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search tips"
 msgstr "検索のヒント"
 
@@ -14204,7 +14662,7 @@ msgstr "検索のヒント"
 msgid "Secret Rerolled"
 msgstr "シークレットリロール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Security"
 msgstr "セキュリティ"
 
@@ -14229,7 +14687,7 @@ msgstr "お問い合わせ Premium"
 msgid "See all"
 msgstr "すべてを見る"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See everything in All"
 msgstr "すべての投稿を見る"
 
@@ -14241,7 +14699,7 @@ msgstr "すべてを見る ライブ"
 msgid "See the current page"
 msgstr "現在のページを見る"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See the filtered words"
 msgstr "フィルター対象の単語を見る"
 
@@ -14269,6 +14727,9 @@ msgstr "ユーザー名を見る"
 msgid "See: %(choice)s"
 msgstr "参照: %(choice)s"
 
+msgid "Seen and typing"
+msgstr "既読と入力中"
+
 #, machine
 msgid "Select Category"
 msgstr "カテゴリーを選択"
@@ -14281,7 +14742,7 @@ msgstr "パッケージを選択"
 msgid "Select a Category"
 msgstr "カテゴリーを選択"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "会話を選択してください"
 
@@ -14314,7 +14775,7 @@ msgstr "先端を送信"
 msgid "Send feedback"
 msgstr "フィードバックを送信"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Send in chat"
 msgstr "チャットで送信"
 
@@ -14326,12 +14787,12 @@ msgstr "回復リンクを送信"
 msgid "Send report"
 msgstr "レポートを送信する"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild with sensitive content"
 msgid "Sensitive"
 msgstr "センシティブ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive Content"
 msgstr "センシティブな内容"
 
@@ -14339,7 +14800,7 @@ msgstr "センシティブな内容"
 msgid "Sensitive Content?"
 msgstr "敏感な内容か?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "センシティブな内容"
 
@@ -14405,11 +14866,11 @@ msgstr "敏感なコメントを設定する"
 msgid "Setting not saved. Try again."
 msgstr "保存されていない設定。 もう一度お試しください."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Settings"
 msgstr "設定"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Settings - %(site)s"
 msgstr "設定 - %(site)s"
 
@@ -14433,12 +14894,12 @@ msgstr "性的未成年者"
 msgid "Sexualizing minors is strictly prohibited."
 msgstr "性的未成年者を固く禁じます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Share"
 msgstr "共有"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Share"
 msgstr "共有"
@@ -14456,7 +14917,10 @@ msgstr "みんなの代わりに、あなたの円の一部で投稿やストー
 msgid "Share of the text"
 msgstr "テキストの共有"
 
-#, glossary, machine, plain1
+msgid "Share screen"
+msgstr "画面を共有"
+
+#, glossary, machine, plain2
 msgid "Share something"
 msgstr "何か共有しよう"
 
@@ -14521,11 +14985,11 @@ msgstr[0] "すべて表示 %(num)s"
 msgid "Show as a table"
 msgstr "テーブルとして表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show every topic"
 msgstr "すべてのトピックを表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show fewer"
 msgstr "表示を減らす"
 
@@ -14541,11 +15005,11 @@ msgstr "すべて表示する"
 msgid "Show its card in guilds"
 msgstr "ギルドでカードを表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "折りたたむ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "もっと見る"
 
@@ -14569,7 +15033,7 @@ msgid_plural "Showing %(shown)s of %(num)s results for"
 msgstr[0] "%(shown)s の %(num)s 結果を表示"
 
 #. the kinds of post the feed is narrowed to, e.g. "Showing Polls, Videos."
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing <strong>%(types)s</strong>."
 msgstr "表示中：<strong>%(types)s</strong>。"
 
@@ -14577,11 +15041,11 @@ msgstr "表示中：<strong>%(types)s</strong>。"
 msgid "Showing posts detected as <strong>%(languages)s</strong>."
 msgstr "検出された投稿を表示 <strong>%(languages)s</strong>お問い合わせ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts from <strong>%(regions)s</strong>."
 msgstr "<strong>%(regions)s</strong> の投稿を表示中。"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts in <strong>%(categories)s</strong>."
 msgstr "<strong>%(categories)s</strong> の投稿を表示中。"
 
@@ -14618,7 +15082,7 @@ msgstr "あなたのバイオの下で示される。 あなたの地域(%(regio
 msgid "Shows posts of any type you tick."
 msgstr "ダニの種類を投稿します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Side panel"
 msgstr "サイドパネル"
 
@@ -14626,17 +15090,34 @@ msgstr "サイドパネル"
 msgid "Siege against +%(guild)s Failed"
 msgstr "+%(guild)s の失敗に対する買収クレーム"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign In"
 msgstr "ログイン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign Up"
 msgstr "新規登録"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in"
 msgstr "ログイン"
+
+#. %(name)s is the account's @handle. The script puts it in, as text
+#, machine, plain1, python-format
+msgid "Sign in as %(name)s?"
+msgstr "サインイン %(name)sお問い合わせ"
+
+#, machine, plain1
+msgid "Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in."
+msgstr "すでに署名されている携帯電話でコードをスキャンしてコンピュータにサインインします。 携帯電話は2要素のコードを要求します。, またはパスワードは2要素を使用しない場合, コンピュータを許可する前に."
+
+#, machine, plain1
+msgid "Sign in on another screen?"
+msgstr "別の画面にサインインしますか?"
+
+#, machine, plain1
+msgid "Sign in on this phone first, then scan a new code."
+msgstr "最初にこの携帯電話にサインインし、新しいコードをスキャンします."
 
 #, machine, python-format
 msgid "Sign in to %(site)s"
@@ -14670,7 +15151,7 @@ msgstr "ボットを申請するためにサインインします."
 msgid "Sign in to chat in +%(guild)s's channels."
 msgstr "+%(guild)s のチャンネルでチャットにサインインします."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to downvote"
 msgstr "ログインしてダウンボート"
 
@@ -14694,11 +15175,19 @@ msgstr "サインイン"
 msgid "Sign in to see them here."
 msgstr "詳細はこちらをご覧ください."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to upvote"
 msgstr "ログインしてアップボート"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Sign in with a QR code"
+msgstr "QRでサインイン コードコード"
+
+#, machine, plain1, python-format
+msgid "Sign in with a QR code - %(site)s"
+msgstr "QR コードでサインイン - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Sign up"
 msgstr "新規登録"
 
@@ -14717,6 +15206,13 @@ msgstr "今すぐ登録! %(site)sは、デザインによる検閲とモデレ�
 #, machine
 msgid "Sign-in emails are off."
 msgstr "サインインメールがオフになります."
+
+#, machine, plain1, python-format
+msgid "Signed in here as @%(name)s"
+msgstr "@%(name)s にサインイン"
+
+msgid "Signed out"
+msgstr "ログアウトしました"
 
 #, machine
 msgid "Signed-in viewers"
@@ -14742,7 +15238,7 @@ msgstr "同様のギルド"
 msgid "Simulation Games"
 msgstr "シミュレーションゲーム"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Since"
 msgstr "開始日"
@@ -14830,7 +15326,7 @@ msgstr "プロフィールを表示しない."
 msgid "Soccer"
 msgstr "サッカー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Issues"
 msgstr "社会問題"
 
@@ -14838,7 +15334,7 @@ msgstr "社会問題"
 msgid "Social Media"
 msgstr "ソーシャルメディア"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Sciences"
 msgstr "社会科学"
 
@@ -14858,7 +15354,7 @@ msgstr[0] "一部のアカウントでは、この個人を守っているので
 msgid "Some of my circles (end-to-end encrypted)"
 msgstr "私のサークルの一部(エンドツーエンド暗号化)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Some posts are automated"
 msgstr "一部の投稿は自動投稿です"
 
@@ -14908,6 +15404,18 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "編集中にページを保存しました。 あなたのテキストはまだここにあります: コピーして、ページをリロードして変更を確認し、もう一度追加してください."
 
+#, machine, plain2, python-format
+msgid ""
+"Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
+"\n"
+"\n"
+"If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
+msgstr ""
+"承認された%(browser)s、%(place)s、%(when)sのQRコードでアカウントに署名した人。\n"
+"\n"
+"\n"
+"もしそうでなければ、 [/settings/security#log-out-everywhere] と [your app](/settings/apps) と [your chat app](/settings/chat_apps): 接続解除は終了しません."
+
 #, machine
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
 msgstr "受信トレイにメッセージが表示されている人。 他の人はリクエストとしてそれを取得します。 チャットはエンドツーエンド暗号化されます."
@@ -14933,6 +15441,10 @@ msgid "Something went wrong while publishing. Please try again."
 msgstr "出版中に何かが間違っていた。 お問い合わせ."
 
 #, machine, plain1
+msgid "Something went wrong, so this code has stopped. Wait a moment and try a new one."
+msgstr "何かが間違っていたので、このコードは止まりました。 しばらくお待ちください."
+
+#, machine, plain1
 msgid "Soon"
 msgstr "近日公開"
 
@@ -14940,19 +15452,19 @@ msgstr "近日公開"
 msgid "Sorry, I've been cursed and can't make you coffee right now."
 msgstr "申し訳ありません、このコンテンツはただ今 アメリカ英語 のみです."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort By:"
 msgstr "並べ替え："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort by"
 msgstr "並べ替え"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort comments"
 msgstr "コメントの並べ替え"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort guilds"
 msgstr "ギルドの並べ替え"
 
@@ -14960,7 +15472,7 @@ msgstr "ギルドの並べ替え"
 msgid "Sound"
 msgstr "サウンド"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Sound"
 msgstr "音声"
@@ -14973,16 +15485,16 @@ msgstr "サウンド"
 msgid "Southern Cone"
 msgstr "南コーン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Space"
 msgstr "スペース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "a live Space"
 msgid "Space"
 msgstr "スペース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Space"
 msgstr "スペース"
@@ -14997,7 +15509,7 @@ msgstr "スペース録音"
 
 #. a group of post types in the Post type filter (live, upcoming and recorded
 #. Spaces)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Spaces"
 msgstr "スペース"
 
@@ -15055,7 +15567,7 @@ msgstr "スタンドアップコメディ"
 msgid "Standard - hide extremely offensive language"
 msgstr "標準 - 非常に攻撃的な言語を隠す"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start a Space"
 msgstr "スペースを開始"
 
@@ -15075,7 +15587,7 @@ msgstr "から始まる"
 msgid "Start now"
 msgstr "今すぐ始める"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start one"
 msgstr "スペースを開始"
 
@@ -15133,7 +15645,7 @@ msgstr "この投稿の共著者としてオフ?"
 msgid "Stepping down"
 msgstr "ステップダウン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sticky post"
 msgstr "固定投稿"
 
@@ -15161,7 +15673,7 @@ msgstr "自動的に投稿を停止しますか? あなたのアカウントと�
 msgid "Stopped after failing"
 msgstr "失敗した後停止"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Story"
 msgstr "ストーリー"
@@ -15186,16 +15698,16 @@ msgstr "ストリーミングサービス"
 msgid "Study Tips"
 msgstr "研究のヒント"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Submitter"
 msgstr "投稿者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Subscribe"
 msgstr "サブスクライブ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "calendar feed"
 msgid "Subscribe"
 msgstr "購読"
@@ -15222,7 +15734,7 @@ msgid "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coin/mo</span>"
 msgid_plural "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coins/mo</span>"
 msgstr[0] "会員登録<span class=\"profile-x-price\">&nbsp;・ %(num)s 1 ヶ月あたりの硬貨</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribed"
 msgstr "サブスクライブ中"
 
@@ -15230,15 +15742,15 @@ msgstr "サブスクライブ中"
 msgid "Subscribed · renews %(date)s"
 msgstr "登録・更新 %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscriber"
 msgstr "サブスクライバー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribers"
 msgstr "サブスクライバー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Subscribers"
 msgstr "サブスクライバー"
@@ -15293,6 +15805,10 @@ msgstr "あなたがフォローしているアカウントから提案した、
 msgid "Summary"
 msgstr "ニュース"
 
+#, machine, plain1, python-format
+msgid "Summary: %(summary)s"
+msgstr "概要: %(summary)s"
+
 #, machine
 msgctxt "weekday"
 msgid "Sun"
@@ -15306,7 +15822,7 @@ msgstr "スーパーヒーロー"
 msgid "Support"
 msgstr "サポート"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Support %(site)s"
 msgstr "%(site)s を支援"
 
@@ -15347,8 +15863,11 @@ msgstr "Wikiをオフにする"
 msgid "Switch the wiki off? Its pages are kept; only guildmasters see them until it is on again."
 msgstr "ウィキをオフにする? そのページは保存されます。 ギルドモデレータのみが、それが再びあるまで表示されます."
 
+msgid "Switching two-factor on or off signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "2段階認証をオンまたはオフにすると、他のデバイスとチャットアプリのチャットからログアウトされます。ただし、ここでサインインしてからこのブラウザで使っているチャットは除きます。"
+
 #. the tab of notices from the site itself
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "notifications"
 msgid "System"
 msgstr "システム"
@@ -15379,7 +15898,7 @@ msgstr "外部サーバーからこのキュレーションフィードを取る
 msgid "Taking part"
 msgstr "パートを取る"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tap to play"
 msgstr "タップして再生"
 
@@ -15392,11 +15911,11 @@ msgctxt "colour"
 msgid "Teal"
 msgstr "テール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech News"
 msgstr "テクノロジーニュース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech Support"
 msgstr "テクニカルサポート"
 
@@ -15424,11 +15943,11 @@ msgstr "%(site)sを離れる理由を教えてください。 (オプション)"
 msgid "Tennis"
 msgstr "テニス"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Terms"
 msgstr "利用規約"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Terms"
 msgstr "利用規約"
@@ -15455,7 +15974,7 @@ msgctxt "kind of story"
 msgid "Text"
 msgstr "テキスト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post body"
 msgid "Text"
 msgstr "本文"
@@ -15475,7 +15994,7 @@ msgstr "テキストチャネル"
 msgid "Text posts"
 msgstr "テキスト投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Text size"
 msgstr "文字サイズ"
 
@@ -15604,6 +16123,9 @@ msgstr "そのボットはこのチャネルをフィードしません."
 msgid "That category isn't in this guild."
 msgstr "このギルドではそうではありません."
 
+msgid "That chat was not found."
+msgstr "そのチャットは見つかりませんでした。"
+
 #, machine
 msgid "That circle isn't taking subscribers."
 msgstr "その円は加入者を取らない."
@@ -15611,6 +16133,10 @@ msgstr "その円は加入者を取らない."
 #, machine
 msgid "That circle isn't yours."
 msgstr "その円があなたのものではありません."
+
+#, machine, plain1
+msgid "That code isn't right."
+msgstr "そのコードは右ではありません."
 
 #, machine
 msgid "That comment has been deleted."
@@ -15628,9 +16154,13 @@ msgstr "その接続の試みは期限切れです。 もう一度お試しく�
 msgid "That description is too long once formatted."
 msgstr "その記述はフォーマットされたら余りに長いです."
 
-#, machine
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "今、デバイスは署名できませんでした."
+msgstr "今ではデバイスが切断できませんでした."
+
+#, machine, plain1
+msgid "That didn't go through. Wait a moment and try again."
+msgstr "行っていません。 しばらくお待ちください."
 
 #, machine
 msgid "That didn’t work."
@@ -15704,6 +16234,10 @@ msgstr "ファイルが大きすぎる."
 msgid "That file is too big. The limit for audio files is %(size)s MB."
 msgstr "ファイルが大きすぎる。 オーディオファイルの制限は%(size)s MBです."
 
+#, python-format
+msgid "That file is too big. The limit for files in chats is %(size)s MB."
+msgstr "ファイルが大きすぎます。チャットで送れるファイルは %(size)s MB までです。"
+
 #, machine, plain1, python-format
 msgid "That file is too big. The limit for image files is %(size)s MB."
 msgstr "ファイルが大きすぎる。 画像ファイルの上限は%(size)s MBです."
@@ -15762,6 +16296,10 @@ msgstr "別のアカウントのユーザー名なので、表示名にするこ
 msgid "That is another account's username, so it can't be your display name."
 msgstr "別のアカウントのユーザー名なので、表示名にすることはできません."
 
+#, machine, plain1
+msgid "That is how someone would try this on you. Press Not me unless you are sure."
+msgstr "それは、誰かがあなたにこれを試みる方法です。 ニュース わからない."
+
 #, machine
 msgid "That is not a usable address."
 msgstr "使用可能なアドレスではありません."
@@ -15799,8 +16337,16 @@ msgid "That isn't a valid username."
 msgstr "有効なユーザー名ではありません."
 
 #, machine, plain1
+msgid "That isn't right. Try again."
+msgstr "そうではありません。 もう一度お試しください."
+
+#, machine, plain1
 msgid "That isn't something you can switch."
 msgstr "それはあなたが切り替えることができるものではありません."
+
+#, machine, plain2
+msgid "That isn't your password."
+msgstr "パスワードではありません."
 
 #, machine
 msgid "That key couldn't be saved."
@@ -15834,6 +16380,9 @@ msgstr "そのメッセージは引用できません."
 msgid "That message can't have a thread."
 msgstr "そのメッセージはスレッドを持たない."
 
+msgid "That message isn't in this chat any more."
+msgstr "そのメッセージはもうこのチャットにありません。"
+
 #, machine
 msgid "That name is kept for the site's staff."
 msgstr "サイトのスタッフに名前を付けておきます."
@@ -15857,6 +16406,9 @@ msgstr "パスワードリセットフォームが無効になっています."
 #, machine
 msgid "That password reset link has expired."
 msgstr "パスワードリセットリンクが無効になっています."
+
+msgid "That picture can't be used here."
+msgstr "その画像はここでは使えません。"
 
 #, machine
 msgid "That picture is already used somewhere else. Upload it again."
@@ -15914,9 +16466,16 @@ msgstr "そのプロモーションコードは、この注文を自由にしま
 msgid "That recording can no longer be used."
 msgstr "録画は使用できません."
 
+msgid "That report couldn't be read. Try again."
+msgstr "その報告を読み取れませんでした。もう一度お試しください。"
+
 #, machine
 msgid "That request was bad and you should feel bad."
 msgstr "それは悪い要求であり、あなたは悪い感じるべきです."
+
+#, machine, plain1
+msgid "That request wasn't understood."
+msgstr "それは理解しませんでした."
 
 #, machine
 msgid "That server is not on the public internet."
@@ -16018,7 +16577,7 @@ msgstr "BBCのテクノロジーの見出し、そのパブリックRSSフィー
 msgid "The Child word filter hides sensitive content everywhere, so this is off."
 msgstr "子供の単語フィルターは、どこにでも機密コンテンツを隠すので、これはオフです."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "The Platform"
 msgstr "プラットフォーム"
 
@@ -16179,9 +16738,17 @@ msgstr[0] "%(guilds)s に転送したコピーをダウンします."
 msgid "The dates leave no days."
 msgstr "定休日:無休."
 
+#, machine, plain1
+msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "それについて行われた決定, 最新: 誰, いつ, どこ, ルールと理由. 隠されているものや削除されたもののタイトルやテキストは表示されません."
+
 #, machine
 msgid "The draft has changes the post doesn't show yet."
 msgstr "ドラフトは、ポストがまだ表示されていない変更を持っています."
+
+#, machine, plain1
+msgid "The earlier versions aren't shown while this is hidden."
+msgstr "これは隠されている間、以前のバージョンは表示されません."
 
 #, machine, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -16528,6 +17095,10 @@ msgstr "スペースがライブ中は要約を変更できます."
 msgid "The text isn't shown: this was removed by the site's administrators."
 msgstr "テキストが表示されません。これはサイトの管理者によって削除されました."
 
+#, machine, plain1
+msgid "The text of this version was hidden by a site administrator."
+msgstr "このバージョンのテキストはサイト管理者によって隠されました."
+
 #, machine, python-format
 msgid "The time before links must be a whole number of days, 0 to %(max)s."
 msgstr "リンク前の時間は、日数、0から %(max)sお問い合わせ"
@@ -16694,6 +17265,10 @@ msgstr "その名のアカウントはありません."
 msgid "There's no invitation to speak."
 msgstr "招待状はありません."
 
+#, machine, plain2
+msgid "There's no recovery code to keep yet."
+msgstr "まだ回復コードはありません."
+
 #, machine
 msgid "There's nothing here right now."
 msgstr "今は何もない."
@@ -16738,9 +17313,9 @@ msgstr "すでにこのサークルにいます."
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "言われていない。 あなたがブロックする誰もがあなたの円を残します."
 
-#, machine, plain1
-msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
-msgstr "どこからでも署名されます。 チャットを使用する場合は、回復コードを要求される可能性があります."
+#, machine, plain2
+msgid "They are signed out everywhere, chat apps included. If they use chat, they may need their recovery code, or a browser where they've used chat, to read their old messages."
+msgstr "チャットアプリは、どこにでも接続されていない。 チャットを使うと、リカバリーコードや、チャットを使用したブラウザが必要になるので、古いメッセージを読むことができます."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16915,6 +17490,10 @@ msgstr "このアクセスは、1 時間で期限が切れる、またはそれ�
 msgid "This account can't use chat apps."
 msgstr "チャットアプリは使用できません."
 
+#, machine, plain1, python-format
+msgid "This account has been marked 18 or over since %(date)s."
+msgstr "このアカウントは、%(date)s 以降に 18 以上をマークされています."
+
 #, machine, python-format
 msgid "This account has been permanently suspended from %(site)s."
 msgstr "このアカウントは%(site)sから永続的に中断されています."
@@ -16939,6 +17518,9 @@ msgstr "このアカウントはお金を借りますので、まだ削除する
 msgid "This account posts about sensitive topics"
 msgstr "機密トピックに関するこのアカウント投稿"
 
+msgid "This also signs out chat everywhere else, chat apps included, except the chat this browser has used since you signed in here."
+msgstr "これにより、チャットアプリを含む他のすべての場所でもチャットからログアウトされます。ただし、ここでサインインしてからこのブラウザで使っているチャットは除きます。"
+
 #. %(time)s is a length of time, such as "6 months"
 #, machine, python-format
 msgid "This author hasn't been active for %(time)s, so isn't counted."
@@ -16959,6 +17541,12 @@ msgstr "このボットは動作しません."
 #, machine
 msgid "This bot's owner can't run it right now."
 msgstr "このボットの所有者は、今では実行できません."
+
+msgid "This browser was signed out. Sign in again to carry on."
+msgstr "このブラウザはログアウトされました。続けるにはもう一度サインインしてください。"
+
+msgid "This browser's notifications couldn't be turned on. Try again."
+msgstr "このブラウザの通知をオンにできませんでした。もう一度お試しください。"
 
 #, machine, python-format
 msgid "This call is full (%(num)s person)."
@@ -17001,6 +17589,14 @@ msgstr "このチャネルは利用できません."
 msgid "This circle isn't taking subscribers."
 msgstr "このサークルは加入者を連れていません."
 
+#, machine, plain1
+msgid "This code can't be used. Get a new one on the computer, or sign in there with your password."
+msgstr "このコードは使えません。 コンピュータに新しいものを入手するか、パスワードでサインインしてください."
+
+#, machine, plain1
+msgid "This code has run out."
+msgstr "このコードは実行されています."
+
 #, machine
 msgid "This comment and the comments under it"
 msgstr "このコメントとコメント"
@@ -17041,6 +17637,10 @@ msgstr "このコメントセクションは、幽霊の町です..."
 msgid "This content has already been posted"
 msgstr "このコンテンツは既に公開されています"
 
+#, machine, plain1
+msgid "This copy is no longer kept."
+msgstr "このコピーは保存されません."
+
 #, machine
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "これは、独自の投票とコメントでそのギルドで新しく独立した投稿を作成します。 タイトルはコメントのテキストから生成されます。 元のコメントに戻ってリンクが表示されます."
@@ -17072,6 +17672,9 @@ msgstr "このキュレーションフィードのルールは実行に時間が
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
 msgstr "これにより、アカウントとすべてのアカウントが削除されます。 それは元に戻すことができません。 データを最初にダウンロードできます."
+
+msgid "This device will be signed out shortly."
+msgstr "このデバイスはまもなくログアウトされます。"
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17125,9 +17728,16 @@ msgstr "スペース:その議論はスペースにあります。 <a href=\"%(u
 msgid "This is a Space: its host and co-hosts post its updates from the Space."
 msgstr "スペース: ホストとホストがスペースからアップデートを投稿します."
 
+#, machine, plain1, python-format
+msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
+msgstr "これは、+で実行されたモデレータアクションのログです%(guild)s. みんながサイト全体で読むことができるもの <a href=\"%(url)s\">ログイン</a>. 削除するメンバーは公開されていない。"
+
 #, machine
 msgid "This is already in your language."
 msgstr "これは既にあなたの言語です."
+
+msgid "This is for chat on this site. A chat app you use outside it follows its own setting."
+msgstr "これはこのサイトのチャットの設定です。外部のチャットアプリでは、そのアプリの設定に従います。"
 
 #, machine
 msgid "This is for the members of a Circle guild."
@@ -17200,6 +17810,10 @@ msgid "This page may not be embedded in other webpages."
 msgstr "このページは他のページでは埋め込むことができません."
 
 #, machine, plain1
+msgid "This page was opened from a link, not by your camera."
+msgstr "このページは、カメラではなくリンクから開きます."
+
+#, machine, plain1
 msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
 msgstr "コメントテキストを永久に消去します。 管理者であっても、元に戻すことはできません."
 
@@ -17210,6 +17824,10 @@ msgstr "投稿タイトル、テキスト、リンクを永久に消去します
 #, machine
 msgid "This person is blocking you."
 msgstr "この人はあなたをブロックしています."
+
+#, machine, plain1
+msgid "This phone signed in with a QR code, so it can't approve another one. Enter your password here, then scan a new code."
+msgstr "この電話は QR で署名しました コードなので、別のコードを承認できません。 パスワードを入力し、新しいコードをスキャンします."
 
 #, machine
 msgid "This poll has ended."
@@ -17342,6 +17960,10 @@ msgstr "この検索はあまり時間がかかりませんでした。 単語�
 msgid "This sign-in can't go on"
 msgstr "このサインインは行かない"
 
+#, machine, plain1
+msgid "This sign-in lasts 12 hours, and chat, coins, apps, following, who can see what you share and account settings ask for your password first."
+msgstr "このサインインは12時間持続し、チャット、コイン、アプリ、以下は、共有とアカウント設定がパスワードに最初に尋ねるものを見ることができます."
+
 #, machine
 msgid "This sign-in request didn't come from a chat app this site knows."
 msgstr "このサイトでは、チャットアプリからリクエストが来なかった."
@@ -17391,6 +18013,10 @@ msgstr "すでにルールです."
 msgid "Those dates leave no days to search."
 msgstr "ご希望の日付は検索日を過ぎません."
 
+#, machine, plain2
+msgid "Those keys couldn't be used."
+msgstr "これらのキーは使用できませんでした."
+
 #, machine
 msgid "Through the app"
 msgstr "アプリを通して"
@@ -17413,7 +18039,7 @@ msgstr "最初にルールに同意するボックスを切り替えます."
 msgid "Ticks all its subcategories. Untick them to keep only the guilds filed under the category itself."
 msgstr "すべてのサブカテゴリを切り替えます。 カテゴリ自体の下でファイルされたギルドだけを保つためにそれらを解凍します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Time"
 msgstr "期間"
 
@@ -17434,7 +18060,7 @@ msgstr "タイムズはタイムゾーンにあります."
 msgid "Times the post's page was opened by someone other than you. A repeat from the same visitor within half an hour, robots and link previews are not counted. Views before this feature are not counted either."
 msgstr "投稿ページを他の誰かに公開しました。 1時間以内に同じ訪問者から繰り返しますが、ロボットとリンクプレビューはカウントされません。 この機能がカウントされる前のビュー."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Tip"
 msgstr "チップ"
@@ -17453,16 +18079,16 @@ msgid "Tip, %(num)s coin tipped"
 msgid_plural "Tip, %(num)s coins tipped"
 msgstr[0] "ヒント、%(num)s コイン tipped"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "coins received"
 msgid "Tips"
 msgstr "チップ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Title"
 msgstr "タイトル"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile title"
 msgid "Title"
 msgstr "称号"
@@ -17550,7 +18176,7 @@ msgstr "オプトアウトを切り替える"
 msgid "Toggle Privacy"
 msgstr "プライバシーポリシー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Toggle navigation"
 msgstr "ナビゲーションを切り替え"
 
@@ -17570,7 +18196,7 @@ msgstr "あまりにも多くのライブストリームが開きます。 タ�
 msgid "Too much spam!"
 msgstr "あまりにも多くのスパム!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Top"
 msgstr "トップ"
@@ -17592,7 +18218,7 @@ msgstr "%(site)s 上の投稿の%(share)s%% %(date)s"
 msgid "Topic"
 msgstr "トピック"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Topics"
 msgstr "トピック"
 
@@ -17631,6 +18257,10 @@ msgid "Translation isn't available right now. Try again in a little while."
 msgstr "翻訳は現在使用できません。 しばらくしてもう一度お試しください."
 
 #, machine, plain1
+msgid "Transparency and disclosure"
+msgstr "透明性と開示"
+
+#, machine, plain1
 msgid "Travel"
 msgstr "ツアー"
 
@@ -17638,11 +18268,11 @@ msgstr "ツアー"
 msgid "Travel Advice"
 msgstr "旅行アドバイス"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Trending"
 msgstr "トレンド"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Trending"
 msgstr "トレンド"
@@ -17664,6 +18294,10 @@ msgstr "トラック&SUV"
 msgid "True Crime"
 msgstr "真の犯罪"
 
+#, machine, plain1
+msgid "Try again"
+msgstr "お問い合わせ"
+
 #, machine
 msgctxt "weekday"
 msgid "Tue"
@@ -17677,6 +18311,21 @@ msgstr "ターアンステップ"
 msgid "Turn it off"
 msgstr "オフにする"
 
+#, machine, plain1
+msgid "Turn it off if you'll never use it: your password keeps working as it does now."
+msgstr "使用しないとオフにします。パスワードは今のように機能します."
+
+#, machine, plain2
+msgid "Turn it on in Security"
+msgstr "セキュリティでそれをオンにする"
+
+#, machine, plain1
+msgid "Turn off"
+msgstr "オフ"
+
+msgid "Turn off Seen and typing"
+msgstr "既読と入力中をオフにする"
+
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
 msgstr "+%(guild)sから通知をオフにする"
@@ -17684,6 +18333,16 @@ msgstr "+%(guild)sから通知をオフにする"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "@%(name)s から通知をオフにする"
+
+msgid "Turn off notifications in this browser"
+msgstr "このブラウザの通知をオフにする"
+
+#, machine, plain1
+msgid "Turn on"
+msgstr "ターンダウン"
+
+msgid "Turn on Seen and typing"
+msgstr "既読と入力中をオンにする"
 
 #, machine, plain1
 msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
@@ -17701,9 +18360,16 @@ msgstr "+%(guild)s からの通知をオンにします"
 msgid "Turn on notifications from @%(name)s"
 msgstr "@%(name)s からの通知をオンにします"
 
+msgid "Turn on notifications in this browser"
+msgstr "このブラウザの通知をオンにする"
+
 #, machine
 msgid "Turn on two-factor authentication first."
 msgstr "2要素認証を最初にオンにします."
+
+#, machine, plain1
+msgid "Turning it back on needs your password, and we'll tell you it happened."
+msgstr "パスワードが要求されるように、パスワードを返すと、パスワードを通知します."
 
 #, machine, plain1
 msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
@@ -17729,17 +18395,29 @@ msgstr "2要素認証"
 msgid "Two-Factor Code"
 msgstr "2要素コード"
 
-#, machine
+#, machine, plain2
 msgid "Two-factor authentication disabled. Your other devices have been signed out."
-msgstr "2要素認証を無効にします。 他のデバイスが署名されました."
+msgstr "2要素認証を無効にします。 他のデバイスが切断されました."
 
 #, machine
 msgid "Two-factor authentication is already on. Turn it off first to set up a new device."
 msgstr "2 要素認証は既に行われています。 新しいデバイスを設定するには、まずオフにします."
 
-#, machine
+#, machine, plain2
 msgid "Two-factor authentication is on. Your other devices have been signed out."
-msgstr "2要素認証がオンになっています。 他のデバイスが署名されました."
+msgstr "2要素認証がオンになっています。 他のデバイスが切断されました."
+
+#, machine, plain1
+msgid "Two-factor code or backup code"
+msgstr "2要素コードまたはバックアップコード"
+
+#, machine, plain2
+msgid "Two-factor sign-in"
+msgstr "2要素サインイン"
+
+#, machine, plain2
+msgid "Two-factor sign-in keeps someone who learns your password out of your account, and so out of your chats."
+msgstr "2つのファクターサインインは、あなたのアカウントからパスワードを学習する人を維持します, そして、あなたのチャットからそう."
 
 #, machine
 msgid "Two-step login"
@@ -17765,7 +18443,7 @@ msgstr "%(name)s で入力"
 msgid "Unable to copy data"
 msgstr "データをコピーできない"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unable to copy link"
 msgstr "リンクをコピーできませんでした"
 
@@ -17807,15 +18485,15 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "アンバンポスト"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "ブロックを解除"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unblock @%(name)s"
 msgstr "@%(name)s のブロックを解除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock user"
 msgstr "ユーザーのブロックを解除"
 
@@ -17839,11 +18517,11 @@ msgctxt "guildmaster action"
 msgid "Uncontrib user"
 msgstr "Uncontrib ユーザー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undistinguish"
 msgstr "公式表示を解除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "元に戻す"
 
@@ -17852,7 +18530,7 @@ msgctxt "guildmaster action"
 msgid "Unexile user"
 msgstr "Unexile ユーザー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Unfollow"
 msgstr "フォロー解除"
@@ -17861,7 +18539,7 @@ msgstr "フォロー解除"
 msgid "Unfollow @%(name)s"
 msgstr "フォロー解除 @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unfollow post"
 msgstr "投稿のフォローを解除"
 
@@ -17879,11 +18557,11 @@ msgctxt "guildmaster action"
 msgid "Unherald post"
 msgstr "Unherald投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unhide"
 msgstr "再表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unhide"
 msgstr "再表示"
@@ -17893,7 +18571,7 @@ msgctxt "guildmaster action"
 msgid "Unhide comment from guild"
 msgstr "ギルドからのUnhideコメント"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unhide from +%(guild)s"
 msgstr "+%(guild)s で再表示"
 
@@ -17947,11 +18625,11 @@ msgstr "すべての評判を解除する機能"
 msgid "Unlock animated emojis with %(site)s Premium."
 msgstr "アニメーション emojis を %(site)s Premium でロック解除します."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmark Sensitive Content"
 msgstr "センシティブ指定を解除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "ミュート解除"
 
@@ -17968,19 +18646,19 @@ msgstr "ミュート +%(guild)s"
 msgid "Unmute @%(name)s"
 msgstr "@%(name)s ディレクティブ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute guild"
 msgstr "ギルドのミュートを解除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute user"
 msgstr "ユーザーのミュートを解除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "固定を解除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unpin"
 msgstr "固定を解除"
@@ -17999,7 +18677,7 @@ msgstr "アンピンポスト"
 msgid "Unpopular Opinions"
 msgstr "非人気のオピニオン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unread"
 msgstr "未読"
 
@@ -18035,7 +18713,7 @@ msgctxt "button"
 msgid "Unsubscribe"
 msgstr "退会"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Until"
 msgstr "終了日"
@@ -18137,7 +18815,7 @@ msgstr "アップロード画像"
 msgid "Upvote"
 msgstr "アップボット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Upvote"
 msgstr "アップボート"
@@ -18146,11 +18824,11 @@ msgstr "アップボート"
 msgid "Upvoted"
 msgstr "プロフィール"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes"
 msgstr "アップボート"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Upvotes"
 msgstr "アップボート"
@@ -18167,7 +18845,7 @@ msgstr "アップ投票, 数が上がってきたかによって色付け"
 msgid "Upvotes, comments and bookmarks per day"
 msgstr "一日あたりのアップ投票、コメント、ブックマーク"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes:"
 msgstr "アップボート数："
 
@@ -18200,6 +18878,10 @@ msgstr "異なるMicrosoftアカウントを使用する"
 msgid "Use a new line for each filter entry. Limit of 1000 characters."
 msgstr "各フィルターエントリに新しい行を使用します。 1000文字の制限."
 
+#, machine, plain1
+msgid "Use your password"
+msgstr "パスワードを使用する"
+
 #, machine
 msgid "User"
 msgstr "ユーザー登録"
@@ -18220,7 +18902,7 @@ msgstr "このコメントを投稿しました."
 msgid "User was exiled from +%(guild)s for this post."
 msgstr "ユーザーは、この投稿の+%(guild)sから除外されました."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username"
 msgstr "ユーザー名"
 
@@ -18245,7 +18927,7 @@ msgid "Username changes cost 20 Coins. You only have a balance of %(num)s Coin"
 msgid_plural "Username changes cost 20 Coins. You only have a balance of %(num)s Coins"
 msgstr[0] "ユーザー名の変更費用20コイン。 %(num)sの残高のみ コイン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username or Email Address"
 msgstr "ユーザー名またはメールアドレス"
 
@@ -18368,7 +19050,7 @@ msgctxt "kind of story"
 msgid "Video"
 msgstr "ビデオ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Video"
 msgstr "動画"
@@ -18381,7 +19063,7 @@ msgstr "ビデオとオーディオ"
 msgid "Video call - %(site)s"
 msgstr "ビデオコール - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Video from %(domain)s"
 msgstr "%(domain)s の動画"
 
@@ -18442,11 +19124,11 @@ msgstr "このサイト上の動画は、YouTubeや他のサイトから来て�
 msgid "View %(site)s as you, including private or restricted content"
 msgstr "プライベートまたは制限されたコンテンツを含む %(site)s を表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View all"
 msgstr "すべて表示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View anyway"
 msgstr "表示する"
 
@@ -18454,7 +19136,7 @@ msgstr "表示する"
 msgid "View comment"
 msgstr "コメントを見る"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View entire discussion"
 msgstr "すべてのコメントを表示"
 
@@ -18466,7 +19148,7 @@ msgstr "モデレーションログ記録の表示"
 msgid "View on %(service)s"
 msgstr "%(service)sで見る"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "元画像を表示"
 
@@ -18581,9 +19263,13 @@ msgid "Waiting for an admin. You will get a notification when they decide; until
 msgstr "管理者を待ちます。 ボットのプロファイルがあなたと管理者だけに表示されるまで、彼らは決定したときに通知を取得します."
 
 #. the state of a bot account, shown as a badge on its page.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Waiting for approval"
 msgstr "承認待ち"
+
+#, machine, plain1
+msgid "Wasn't you?"
+msgstr "お問い合わせ?"
 
 #, machine
 msgctxt "button"
@@ -18646,7 +19332,7 @@ msgstr "[Terms](/help/terms)のエイジセクションを変更しました。 
 msgid "Web Development"
 msgstr "ウェブ開発"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Website"
 msgstr "ウェブサイト"
 
@@ -18659,7 +19345,7 @@ msgstr "お問い合わせ"
 msgid "Weddings"
 msgstr "ウェディング"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Week"
 msgstr "今週"
@@ -18668,7 +19354,7 @@ msgstr "今週"
 msgid "Weekend plans"
 msgstr "週末プラン"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Welcome back."
 msgstr "おかえりなさい。"
 
@@ -18720,6 +19406,14 @@ msgstr "変更内容 <span class=\"text-muted font-weight-normal\">(オプショ
 msgid "What do you want to say?"
 msgstr "何を言いたいですか?"
 
+#, machine, plain1
+msgid "What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "ギルドモデレータとサイトが決定したのは、まず第一次:誰、いつ、ルールと理由。 隠されているものや削除されたもののタイトルやテキストは表示されません."
+
+#, machine, plain1
+msgid "What guildmasters and the site decided: hides, removals, exiles and bans, with the rule and the reason."
+msgstr "ギルドモデレータとサイトが決定しました: 隠れる, 除去, 亡命と禁止, ルールと理由で."
+
 #, machine
 msgid "What is it about?"
 msgstr "お問い合わせ?"
@@ -18731,6 +19425,9 @@ msgstr "お問い合わせ?"
 #, machine
 msgid "What is wrong with this account? For example spam, impersonation, harassment or ban evasion. To report one post or comment, use its own menu."
 msgstr "このアカウントで何が間違っていますか? たとえば、スパム、偽装、ハラスメント、または禁止の回避。 1つの投稿またはコメントを報告するには、独自のメニューを使用します."
+
+msgid "What it could already read comes back once it is unlocked."
+msgstr "すでに読めていたメッセージは、ロックが解除されると戻ってきます。"
 
 #, machine
 msgid "What it does now"
@@ -18749,6 +19446,10 @@ msgid "What kind of Space?"
 msgstr "どんな空間?"
 
 #, machine, plain1
+msgid "What members delete themselves is not published here."
+msgstr "削除するメンバーはここに公開されていません."
+
+#, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
 msgstr "今、何が起きているのか、そして、何が起きているのか、誰が話しているのか."
 
@@ -18764,7 +19465,7 @@ msgstr "ギルドモデレータが何をしたか"
 msgid "What to say"
 msgstr "言うべきこと"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "What to search"
 msgstr "検索対象"
 
@@ -18834,7 +19535,7 @@ msgstr "投稿がどこから来るか"
 msgid "Where this account is based, from where it uses %(site)s"
 msgstr "このアカウントがベースになっている場合、%(site)s を使用する場所から"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Where to post"
 msgstr "投稿先"
 
@@ -18874,11 +19575,11 @@ msgstr "どの投稿か"
 msgid "White Hat"
 msgstr "白い帽子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment"
 msgstr "コメントできるユーザー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment?"
 msgstr "コメントできるユーザー"
 
@@ -18898,7 +19599,7 @@ msgstr "参加できる方"
 msgid "Who can read"
 msgstr "誰が読むことができるか"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this"
 msgstr "公開範囲"
 
@@ -18918,11 +19619,11 @@ msgstr "この投稿をご覧いただけます"
 msgid "Who can see this post?"
 msgstr "誰がこの投稿を見ることができますか?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this:"
 msgstr "公開範囲："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this?"
 msgstr "公開範囲"
 
@@ -18954,7 +19655,7 @@ msgstr "お問い合わせ"
 msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
 msgstr "誰がそれらを報告したのか、そして彼らが書いたもの、誰にも表示されていないが、管理者."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who subscribes to your Circle"
 msgstr "あなたのサークルの購読者"
 
@@ -18976,13 +19677,17 @@ msgstr "フォローする人 - %(site)s"
 msgid "Who wrote it"
 msgstr "誰が書いたか"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who wrote what"
 msgstr "誰が何を書いたか"
 
 #, machine
 msgid "Who you follow"
 msgstr "フォローする"
+
+#, machine, plain1
+msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
+msgstr "誰がこのようになったかは、ブラウザと自分自身を置くことを報告しました."
 
 #, machine
 msgid "Wholesome"
@@ -18993,7 +19698,7 @@ msgid "Whoops!"
 msgstr "フープ!"
 
 #. the reason an admin pauses a bot
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "なんで"
 
@@ -19011,7 +19716,7 @@ msgid "Why not (they are told)"
 msgstr "なぜそうでない(言われる)"
 
 #. the guild's wiki is switched off
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -19053,7 +19758,7 @@ msgid "Wildlife"
 msgstr "ワイルドライフ"
 
 #. posts with a link, a picture, a video... (the ticks below)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "With"
 msgstr "含むもの"
@@ -19090,7 +19795,7 @@ msgstr "音で"
 msgid "With a video"
 msgstr "ビデオを使って"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "With textarea"
 msgstr "テキストエリア"
 
@@ -19144,6 +19849,10 @@ msgstr "音なし"
 msgid "Without a video"
 msgstr "ビデオなし"
 
+#, machine, plain1, python-format
+msgid "Without it, this sign-in ends on %(when)s."
+msgstr "それなしで、このサインインは%(when)sで終了します."
+
 #, machine, python-format
 msgid "Won't renew, access ends %(date)s"
 msgstr "更新しない、アクセス終了 %(date)s"
@@ -19156,7 +19865,7 @@ msgstr "木工事業"
 msgid "Word filter"
 msgstr "ワードフィルタ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Words"
 msgstr "キーワード"
 
@@ -19332,7 +20041,7 @@ msgstr "「無題の草案」を一緒に書きますか?"
 msgid "Write: %(choice)s"
 msgstr "書き込み: %(choice)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Written together"
 msgstr "共同執筆"
 
@@ -19345,7 +20054,7 @@ msgstr "ヤンクポスト"
 msgid "Year"
 msgstr "年間行事"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Year"
 msgstr "今年"
@@ -19363,6 +20072,10 @@ msgstr "イエロー"
 msgctxt "vote"
 msgid "Yes"
 msgstr "はい"
+
+#, machine, plain1
+msgid "Yes, sign in on that screen"
+msgstr "はい、その画面にサインイン"
 
 #, machine, plain1
 msgid "Yoga"
@@ -19459,7 +20172,7 @@ msgstr "既に登録済みです."
 msgid "You are already the author."
 msgstr "あなたはすでに著者です."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "@%(name)s をブロックしています"
 
@@ -19550,6 +20263,9 @@ msgstr "設定でいつでも変更できます."
 #, machine
 msgid "You can change this for each video when you add it. Videos are uploaded as not made for kids."
 msgstr "追加すると、動画ごとに変更できます。 お子様専用の動画をアップロードします."
+
+msgid "You can change this once they've accepted your message request."
+msgstr "相手がメッセージリクエストを承認すると変更できます。"
 
 #, machine
 msgid "You can close this window."
@@ -19736,6 +20452,10 @@ msgstr "このチャットでは呼び出しできません."
 #, machine, plain1
 msgid "You can't change perms on guildmasters above you."
 msgstr "上記のギルドモデレータでパーマを変更することはできません."
+
+#, machine, plain1, python-format
+msgid "You can't change this answer yourself. If it's wrong, <a href=\"%(url)s\">contact us</a>: only an admin can change it."
+msgstr "この回答を自分で変更することはできません。 それが間違っている場合, <a href=\"%(url)s\">お問い合わせ</a>:管理者だけが変更できます。"
 
 #, machine
 msgid "You can't comment on content from users that are blocking you."
@@ -20117,6 +20837,14 @@ msgstr "バックアップコードはまだ作成されていません."
 msgid "You haven't posted anything in the last 28 days."
 msgstr "過去28日間に何も投稿していません."
 
+#, machine, plain2
+msgid "You haven't said you kept your recovery code."
+msgstr "あなたの回復コードを保たれたとはいえません."
+
+#, machine, plain1
+msgid "You haven't told us yet."
+msgstr "まだ話せません."
+
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
 msgstr "できること <a href=\"%(url)s\">買収クレーム</a> このコミュニティはギルドモデレータになります。"
@@ -20137,7 +20865,7 @@ msgstr "あなたがいるアカウントを持っているために少なくと
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Tor 経由で画像をアップロードするには、確認済みのメールアドレスが必要です."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You muted @%(name)s"
 msgstr "@%(name)s をミュートしました"
 
@@ -20191,6 +20919,30 @@ msgstr "もう少しお待ちください."
 msgid "You post timestamped updates as things happen; everyone comments under them."
 msgstr "あなたは物事が起こるようにタイムスタンプされたアップデートを投稿します。それらの下ですべてのコメント."
 
+#, machine, plain2, python-format
+msgid "You said you kept your recovery code on %(date)s."
+msgstr "回復コードを %(date)s に保存したと言いました."
+
+#, machine, plain1
+msgid "You signed in with a QR code, so chat, coins, apps, following, who can see what you share, your account's name and its security settings ask for your password first."
+msgstr "QR で署名した コード, チャット, コイン, アプリ, 以下, 誰があなたが共有するものを見ることができます, あなたのアカウントの名前とそのセキュリティ設定は、最初にパスワードを尋ねます."
+
+#, machine, plain1
+msgid "You signed in with a QR code."
+msgstr "QRコードで署名しました."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to do this."
+msgstr "QRコードで署名しました。 パスワードを入力してください."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to join a call."
+msgstr "QRコードで署名しました。 パスワードを入力してください."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to use this form."
+msgstr "QRコードで署名しました。 パスワードを入力してください."
+
 #, machine, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "%(site)sアカウントのメールを変更したいとお伝えしました。 このプロセスを終了するには、新しいメールアドレスを確認してください"
@@ -20239,7 +20991,7 @@ msgstr "このユーザーをブロックしていますが、このコメント
 msgid "You're blocking this user, but you can see this comment because you're an admin."
 msgstr "このユーザーをブロックしていますが、管理者だからこのコメントを見ることができます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You're blocking this user."
 msgstr "このユーザーをブロックしています。"
 
@@ -20260,6 +21012,9 @@ msgstr "お問い合わせ."
 msgid "You're invited to write a shared draft with others. [See the invitation](%(link)s)"
 msgstr "他の人と共有ドラフトを書くために招待されます。 [招待状を見る](%(link)s)"
 
+msgid "You're no longer signed in here. Sign in again to use chat."
+msgstr "ここではサインインしていません。チャットを使うにはもう一度サインインしてください。"
+
 #, machine, plain1
 msgid "You're not following any curations yet."
 msgstr "キュレーションフィードがまだ続いていません."
@@ -20277,6 +21032,9 @@ msgid "You're subscribed. It renews in 30 days for %(num)s coins unless you canc
 msgid_plural "You're subscribed. It renews in 30 days for %(num)s coins unless you cancel."
 msgstr[0] "購読する %(num)s で 30 日更新されます キャンセルしない限りコイン."
 
+msgid "You're told of new messages and calls in your chats, never what a message says. Each group can be set to every message, calls only or nothing, in the group's people sheet."
+msgstr "チャットの新しいメッセージや通話が通知されます。メッセージの内容が通知されることはありません。グループごとに、グループのメンバー画面で「すべてのメッセージ」「通話のみ」「なし」を選べます。"
+
 #, machine
 msgid "You're writing very fast. Wait a moment."
 msgstr "非常に高速に書いています。 しばらくお待ちください."
@@ -20284,6 +21042,10 @@ msgstr "非常に高速に書いています。 しばらくお待ちくださ�
 #, machine
 msgid "You've added a lot of people to groups today. Try again tomorrow."
 msgstr "今日は多くの人がグループに追加しました。 明日からもう一度お試しください."
+
+#, machine, plain1
+msgid "You've already answered this. Only an admin can change your answer."
+msgstr "お問い合わせ 管理者だけが回答を変更することができます."
 
 #, machine
 msgid "You've already reported this Space."
@@ -20314,9 +21076,15 @@ msgstr "最後の時間に多くのボイスチャンネルに参加しました
 msgid "You've sent a lot of feedback today. Try again tomorrow."
 msgstr "今日は多くのフィードバックを送っています。 明日からもう一度お試しください."
 
+msgid "You've sent a lot of files today. Try again tomorrow."
+msgstr "今日は多くのファイルを送信しました。明日もう一度お試しください。"
+
 #, machine
 msgid "You've sent a lot of reports today. Try again tomorrow."
 msgstr "今日はたくさんのレポートを送っています。 明日からもう一度お試しください."
+
+msgid "You've sent a lot of reports. Try again later."
+msgstr "報告を多く送信しています。しばらくしてからもう一度お試しください。"
 
 #, machine
 msgid "You've started a lot of calls in the last hour. Try again later."
@@ -20430,7 +21198,7 @@ msgstr "RSS フィードアドレス"
 msgid "Your Subscribed Users"
 msgstr "ユーザー登録"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your account"
 msgstr "アカウント"
 
@@ -20578,6 +21346,10 @@ msgstr "あなたのアカウントの自動投稿は、%(fails)s が失敗し�
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "アカウントの自動投稿が承認されました。 フィードの新しい投稿はプロフィールに表示され、数分以内に自動化されています。 [Settings > Bots](/settings/bots)で管理します."
 
+#, machine, plain1
+msgid "Your age"
+msgstr "あなたの年齢"
+
 #, machine, plain1, python-format
 msgid "Your age was confirmed on %(date)s."
 msgstr "%(date)sで年齢が確認されました."
@@ -20585,6 +21357,10 @@ msgstr "%(date)sで年齢が確認されました."
 #, machine
 msgid "Your answer"
 msgstr "あなたの答え"
+
+#, machine, plain1
+msgid "Your apps"
+msgstr "アプリケーション"
 
 #, machine
 msgid "Your backup codes"
@@ -20620,9 +21396,13 @@ msgstr ""
 msgid "Your bots"
 msgstr "あなたのボット"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your channels"
 msgstr "マイチャンネル"
+
+#, machine, plain1
+msgid "Your chat apps"
+msgstr "チャットアプリ"
 
 #, machine
 msgid "Your chat devices"
@@ -20631,6 +21411,10 @@ msgstr "チャットデバイス"
 #, machine
 msgid "Your chat devices can't be listed right now."
 msgstr "チャットデバイスは、現在表示できません."
+
+#, machine, plain2
+msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr "チャット暗号化が始まりました。 チャットを使用したブラウザが戻ってくる限り、デバイス上でメッセージが読み込まれることはできません。 もしそうでなければ、パスワードは[Settings > Security](/settings/security)で変更してください."
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -20648,13 +21432,17 @@ msgstr "チャットは、Matrix 上で実行します。, 開いた標準, に 
 msgid "Your child accounts will be deleted with yours."
 msgstr "お子様のアカウントが削除されます."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your circles"
 msgstr "マイサークル"
 
 #, machine, python-format
 msgid "Your circles - %(site)s"
 msgstr "あなたのサークル - %(site)s"
+
+#, machine, plain1
+msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "あなたのコメントは、サイトのページを離れます。 本サイトは、お客様とサイトの管理者だけが開くことができる90日間プライベートコピーを保持します。 これは元に戻すことができません."
 
 #, machine
 msgid "Your commenting history will show here."
@@ -20721,10 +21509,10 @@ msgid "Your language"
 msgstr "あなたの言語"
 
 #. the English uses "sign-ins" for every number
-#, machine, python-format
+#, machine, plain2, python-format
 msgid "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
 msgid_plural "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
-msgstr[0] "最後の %(num)s サインイン。 この場所は、接続から働いた国のみです。 認めない? パスワードを変更: 他のすべてのデバイスに署名する."
+msgstr[0] "最後の %(num)s サインイン。 この場所は、接続から働いた国のみです。 認めない? パスワードを変更する: 他のすべてのデバイスを切断します."
 
 #, machine
 msgid "Your media storage is no longer connected."
@@ -20766,9 +21554,9 @@ msgstr "あなたの新しいキー。 今それをコピー:それは再び表�
 msgid "Your original username will always stay reserved for you: <code>%(name)s</code>"
 msgstr "あなたの元のユーザー名はいつもあなたのために予約されます: <code>%(name)s</code>"
 
-#, machine
+#, machine, plain2
 msgid "Your other devices have been signed out."
-msgstr "他のデバイスが署名されました."
+msgstr "他のデバイスが切断されました."
 
 #, machine
 msgid "Your own circles"
@@ -20816,9 +21604,9 @@ msgstr "親または保護者がアカウントをオフにしました."
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
 msgstr "親または保護者がこのアカウントをあなたのために作成しました。 彼らはあなたがサイト上で何をするかを見ることができます(あなたの投稿、コメント、投票、ブックマーク、フォロー、ギルド、あなたがチャットしている人、あなたのアカウントが報告され、あなたの最近のサインイン; サイトは、あなたのチャットが何を言っているかを示すことはありません)そして、彼らはどの機能がオンになっているかを選択します。 [Settings > Content](/settings/content) で表示できます。 パスワード: [Settings > Security](/settings/security) で変更して、それを知っているだけなので、あなたのチャットにサインインして読むことができます."
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "親または保護者がアカウントに新しいパスワードを設定し、署名しました。 新しいパスワードでサインインし、[設定 > セキュリティ](/settings/security)で変更して、それを知っているだけです."
+msgstr "親または保護者がアカウントに新しいパスワードを設定し、接続解除されました。 新しいパスワードでサインインし、[設定 > セキュリティ](/settings/security)で変更して、それを知っているだけです."
 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
@@ -20840,9 +21628,9 @@ msgstr "親または保護者のアカウントが中断されたため、自分
 msgid "Your password"
 msgstr "パスワード"
 
-#, machine
+#, machine, plain2
 msgid "Your password has been changed. Your other devices have been signed out."
-msgstr "パスワードが変更されました。 他のデバイスが署名されました."
+msgstr "パスワードが変更されました。 他のデバイスが切断されました."
 
 #, machine
 msgid "Your password meets the requirements."
@@ -20852,9 +21640,21 @@ msgstr "パスワードは要件を満たします."
 msgid "Your payouts"
 msgstr "あなたの支払い"
 
+#, machine, plain1
+msgid "Your phone approved this. Only continue if this is your account."
+msgstr "あなたの電話はこれを承認しました。 このアカウントがアカウントの場合のみ継続します."
+
+#, machine, plain1
+msgid "Your phone said no, so nobody was signed in."
+msgstr "あなたの電話は誰も署名されていないと言いました."
+
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "あなたの投稿は、任意の方法であなたのプロフィールに表示されます。 お問い合わせ 私のプロフィールは、あまりにもコメントを持っているし、ギルドを追加して、それをまっすぐに投稿します。各ギルドは、独自の投票とコメントで独自のコピーを取得します."
+
+#, machine, plain1
+msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "あなたの投稿はあなたのプロフィール、フィードおよびギルドを離れます。 本サイトは、お客様とサイトの管理者だけが開くことができる90日間プライベートコピーを保持します。 これは元に戻すことができません."
 
 #, machine
 msgid "Your posting history will show here."
@@ -21065,7 +21865,7 @@ msgstr "[プレスリソース](/help/press)"
 msgid "[Privacy Policy](/help/privacy)"
 msgstr "[プライバシーポリシー](/help/privacy)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[Removed by admin]"
 msgstr "[管理者により削除]"
 
@@ -21109,7 +21909,7 @@ msgstr "[タイトル](/help/titles)"
 msgid "[banned]"
 msgstr "[禁止]"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[deleted account]"
 msgstr "[削除済みアカウント]"
 
@@ -21129,6 +21929,11 @@ msgstr "[削除]"
 msgid "[doc pending]"
 msgstr "[ドキュメントの終了]"
 
+#. stands in a preserved copy's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[写真]"
+
 #, machine
 msgid "[removed by admin]"
 msgstr "[管理者によって削除]"
@@ -21140,6 +21945,11 @@ msgstr "[管理者によって削除]"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "[ギルドモデレータによる削除]"
+
+#. stands in a preserved copy's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[音]"
 
 #, machine
 msgid "a day"
@@ -21174,7 +21984,7 @@ msgctxt "sort"
 msgid "activity"
 msgstr "アクティビティ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "activity"
 msgstr "アクティビティ"
@@ -21243,6 +22053,16 @@ msgstr "アバター"
 msgid "ban evasion"
 msgstr "バン evasion"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "banned %(target)s"
+msgstr "禁止された %(target)s"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "banned the guild +%(guild)s"
+msgstr "guild +%(guild)s を禁止"
+
 #, machine
 msgctxt "story background"
 msgid "berry"
@@ -21255,7 +22075,7 @@ msgid "bots"
 msgstr "ボット"
 
 #. the author's name, with their badges
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by %(author)s"
 msgstr "投稿者：%(author)s"
 
@@ -21276,7 +22096,7 @@ msgid "by <a href=\"/@%(name)s\">@%(name)s</a>"
 msgstr "によって <a href=\"/@%(name)s\">ツイート%(name)s</a>"
 
 #. a curation that ranks posts with its own algorithm
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by @%(name)s"
 msgstr "作成者：@%(name)s"
 
@@ -21365,6 +22185,10 @@ msgctxt "unit"
 msgid "coins"
 msgstr "コイン"
 
+#, glossary, machine, plain2
+msgid "comment"
+msgstr "コメント"
+
 #, machine
 msgid "commercial promotion"
 msgstr "商用プロモーション"
@@ -21394,6 +22218,11 @@ msgctxt "time filter"
 msgid "day"
 msgstr "日 時"
 
+#. follows the author's name in the Log; %(target)s is a link to a comment
+#, machine, plain1, python-format
+msgid "deleted a %(target)s"
+msgstr "%(target)s を削除"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "deleted a channel"
@@ -21419,12 +22248,17 @@ msgstr "ロールを削除"
 msgid "deleted a wiki page"
 msgstr "wikiページを削除"
 
+#. follows the author's name in the Log; %(target)s is a link to a post
+#, machine, plain1, python-format
+msgid "deleted post %(target)s"
+msgstr "削除された投稿 %(target)s"
+
 #, machine
 msgctxt "sort"
 msgid "disputed"
 msgstr "紛争解決"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "disputed"
 msgstr "賛否両論"
@@ -21514,7 +22348,7 @@ msgid "forest"
 msgstr "フォレスト"
 
 #. the title of the post it was forked from, a link
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "forked from %(post)s"
 msgstr "%(post)s からフォーク"
 
@@ -21565,13 +22399,19 @@ msgstr "投稿を強調 %(target)s"
 msgid "hid a %(target)s from this guild"
 msgstr "このギルドから %(target)s をハイド"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain1, python-format
+msgid "hid a revision of %(target)s"
+msgstr "%(target)sのリビジョンを隠す"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
 msgid "hid post %(target)s from this guild"
 msgstr "hid post %(target)s このギルドから"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "hidden from +%(guild)s"
 msgstr "+%(guild)s で非表示"
 
@@ -21581,7 +22421,7 @@ msgid "hot"
 msgstr "ホット"
 
 #. the guild page's current sort order, written in lowercase on its bar
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "hot"
 msgstr "人気"
@@ -21653,7 +22493,22 @@ msgstr "自分のストレージでリプレイとして保存され、参加す
 msgid "kicked post %(target)s"
 msgstr "キックポスト %(target)s"
 
-#, glossary, machine, plain1
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the ban on %(target)s"
+msgstr "%(target)sで禁止を解除"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "lifted the ban on the guild +%(guild)s"
+msgstr "guild +%(guild)sの禁止を持ち上げました"
+
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the suspension of %(target)s"
+msgstr "%(target)sの停止を持ち上げました"
+
+#, glossary, machine, plain2
 msgid "link preview"
 msgstr "リンクのプレビュー"
 
@@ -21697,7 +22552,7 @@ msgctxt "time filter"
 msgid "month"
 msgstr "月 日"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "moved from <a href=\"%(url)s\">+%(guild)s</a>"
 msgstr "<a href=\"%(url)s\">+%(guild)s</a> から移動"
 
@@ -21721,7 +22576,7 @@ msgctxt "sort"
 msgid "new"
 msgstr "ニュース"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "new"
 msgstr "新着"
@@ -21750,7 +22605,7 @@ msgctxt "sort"
 msgid "old"
 msgstr "古い投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "old"
 msgstr "古い順"
@@ -21759,11 +22614,11 @@ msgstr "古い順"
 msgid "only guildmasters write here"
 msgstr "ギルドモデレータのみはこちら"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "outside server"
 msgstr "外部サーバー"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "own algorithm"
 msgstr "独自アルゴリズム"
 
@@ -21816,7 +22671,7 @@ msgstr "チャンネルでメッセージをピン留め"
 msgid "pinned post %(target)s"
 msgstr "ピン留めポスト %(target)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post image"
 msgstr "投稿画像"
 
@@ -21838,7 +22693,7 @@ msgstr "投稿 %(age)s によって @%(name)s に +%(guild)s"
 msgid "posts made with AI"
 msgstr "aIを用いた投稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild badge"
 msgid "private"
 msgstr "非公開"
@@ -21888,6 +22743,11 @@ msgstr "削除 %(target)s"
 msgid "removed a message by %(target)s from a channel"
 msgstr "チャンネルから%(target)sでメッセージを削除"
 
+#. follows the moderator's name in the Log
+#, machine, plain1
+msgid "removed a revision of a guild's wiki"
+msgstr "guild の wiki のリビジョンを削除"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -21915,7 +22775,7 @@ msgstr "チャンネルカテゴリの名前を変更しました"
 msgid "renews %(date)s"
 msgstr "更新する %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "repost"
 msgstr "リポスト"
@@ -21935,7 +22795,7 @@ msgstr "wikiページのリビジョンを復元"
 msgid "see it"
 msgstr "お問い合わせ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "sensitive content"
 msgstr "センシティブ"
 
@@ -21994,6 +22854,11 @@ msgctxt "story background"
 msgid "sunset"
 msgstr "サンセット"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "suspended %(target)s"
+msgstr "中断された %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "switched the wiki"
@@ -22004,7 +22869,7 @@ msgstr "wiki を切り替える"
 msgid "test storage"
 msgstr "テストストレージ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "text post"
 msgstr "テキスト投稿"
 
@@ -22067,7 +22932,7 @@ msgctxt "sort"
 msgid "top"
 msgstr "トップトップ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "top"
 msgstr "トップ"
@@ -22178,7 +23043,7 @@ msgstr "v. %(version)s, © 2021 %(company)s"
 msgid "video"
 msgstr "ビデオ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "video preview"
 msgstr "動画プレビュー"
 
@@ -22256,9 +23121,9 @@ msgstr "投票する はい"
 msgid "you were posting too fast, and it couldn't wait any longer."
 msgstr "あまりにも早く投稿していたので、もう待たせませんでした."
 
-#, machine
+#, machine, plain2
 msgid "you were signed out."
-msgstr "サインアップ."
+msgstr "切断された."
 
 #, machine
 msgid "you're invited to write it"

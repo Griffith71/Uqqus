@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: da\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s skriver…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s sætter beskeder til at forsvinde efter %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s slukkede forsvinder beskeder."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s medlem"
 msgstr[1] "%(num)s medlemmer"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s besked fundet."
+msgstr[1] "%(num)s beskeder fundet."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s besked i tråd"
 msgstr[1] "%(num)s beskeder i tråd"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s besked læst…"
+msgstr[1] "%(num)s beskeder læst…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s %(num)s medlemmer"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Redde alligevel?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+ %(guild)s · %(num)s kommentar"
 msgstr[1] "+ %(guild)s · %(num)s kommentarer"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 dag"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 uge"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s tilføjede dig til denne gruppe. Accepter at læse den og skrive i den."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@ %(name)s har ikke åbnet chatten endnu. Din besked vil blive sendt, når de gør."
 msgstr[1] "@ %(name)s har ikke åbnet chatten endnu. Dine %(num)s beskeder vil blive sendt, når de gør."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s skriver…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "En besked, der ikke er der mere"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "En besked du skrev her blev ikke sendt: chat stoppet i denne fane før den kunne gå."
+msgstr[1] "%(num)s beskeder du skrev her blev ikke sendt: chat stoppet i denne fane før de kunne gå."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Et indlæg kan højst have %(num)s medforfatter."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Accepter"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Tilføj"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Tilføj en hjælper ved brugernavn"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Tilføjelse..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Enig"
 
@@ -413,6 +455,10 @@ msgstr "Justér højre"
 msgid "Alignment"
 msgstr "Justering"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Også blok @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Også her: %(names)s"
 msgid "An app"
 msgstr "En app"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Vred"
 
@@ -432,7 +478,7 @@ msgstr "Vred"
 msgid "Announcements"
 msgstr "Meddelelser"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonym"
 
@@ -440,6 +486,10 @@ msgstr "Anonym"
 #, machine, plain1
 msgid "Answer"
 msgstr "Svar"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Enhver i chatten kan stadig kopiere en besked eller tage et billede af skærmen, før den går."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Vedlæg et link til dette indlæg"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Hold da kæft. Ingen GIFs fundet..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Fedt"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Akavet"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Til toppen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Bloker"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Bloker @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "Blokeret @ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Fed (Ctrl + B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "At bringe dine chatnøgler over stoppede delvist. Indtast din adgangskode for at afslutte."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Kamera slukket"
 msgid "Camera on"
 msgstr "Kamera tændt"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Annuller"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kanal · %(num)s medlem"
 msgstr[1] "Kanal %(num)s medlemmer"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanaler"
 
@@ -599,13 +653,45 @@ msgstr "Kanaler du er i"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Chat"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat kunne ikke tage dine nøgler med. Lad os prøve igen."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Chat kunne ikke forbinde."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chat kunne ikke være færdig med at starte forfra. Indtast din adgangskode for at prøve igen."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chat kunne ikke være færdig med at starte forfra. Lad os prøve igen."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat kunne ikke åbne, hvad denne browser gemte, så det starter igen her."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat kunne ikke starte i denne browser."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Chat svarede ikke. Prøv igen."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat havde ikke været brugt på denne browser i lang tid, så det starter igen her."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Chat lukker i en anden fane…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Chat begynder stadig."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Chat begynder stadig. Prøv igen om et øjeblik."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Chat er ikke tilgængelig for din konto lige nu."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat mistede forbindelsen. Jeg prøver igen…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat har brug for denne browser til at holde site data, og det kan ikke her. Chat kan ikke starte her."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Chat stoppede i denne fane."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Chat blev afbrudt på denne browser fra en anden enhed. Starter igen her…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Chat med @ %(name)s"
@@ -627,7 +733,7 @@ msgstr "Chat med @ %(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Chats nøgle er ikke tilgængelig lige nu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Chats"
 
@@ -667,11 +773,11 @@ msgstr "Vælg hvem der kan se dette."
 msgid "Choose your profile or at least one guild."
 msgstr "Vælg din profil eller mindst én guild."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Cirkler"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Luk"
 
@@ -707,7 +813,7 @@ msgstr "Sammenlign dem med dem, din app viser, i samme rækkefølge."
 msgid "Confirm in the app as well."
 msgstr "Bekræft også i appen."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Forvirret"
 
@@ -859,6 +965,10 @@ msgstr "Kunne ikke indlæse de fastgjorte breve"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Kunne ikke indlæse forhåndsvisningen."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Kunne ikke indlæse dine chats"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Kunne ikke kopiere: Vælg koderne og kopiere dem."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Kunne ikke indlæse tidligere beskeder. Prøv igen om et øjeblik."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Jeg kunne ikke læsse din snak. Jeg prøver igen…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Opretter opslag"
 
@@ -1028,7 +1142,7 @@ msgstr "Opretter opslag"
 msgid "Creating…"
 msgstr "At skabe…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1036,7 +1150,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Kryds ud"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Mørk tilstand"
 
@@ -1101,13 +1215,21 @@ msgstr "Slet historien?"
 msgid "Delete this update?"
 msgstr "Slet denne opdatering?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Sletter kommentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Sletter opslag"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Forsendelsesmeddelelser"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Forsvandt beskeder er slukket."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Færdig"
 #, machine, plain1
 msgid "Done."
 msgstr "Færdig."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Download"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "Ende- to- end krypteret: Kun folk i denne kanal kan læse det."
 msgid "Ended"
 msgstr "Afsluttet"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Indtast en URL"
 
@@ -1206,6 +1332,10 @@ msgstr "Indtast en webadresse, som https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Indtast din adgangskode en gang. Det låser nøglen til dine beskeder i denne browser, så webstedet aldrig kan læse dem."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Indtast din adgangskode for at bekræfte."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Indtast dit kodeord."
 msgid "Enter your recovery code"
 msgstr "Indtast din inddrivelseskode"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Indtast din tofaktorkode"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Indtast din tofaktorkode."
+
+#, machine, plain2
+msgid "File"
+msgstr "Fil"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Filer kan sendes når @ %(name)s har åbnet chat."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Filer kan sendes når chatten er ulåst på denne enhed."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Filer kan ikke sendes her."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Endelig"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Afslut"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Afslut bringe din chat over"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Afslut start over"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Færdiggør chat set- up i en anden fane…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Formatering"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Videresend"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Fremsend dette brev"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Fremad til højst %(num)s gylden."
 msgstr[1] "Fremad til højst %(num)s gylden."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Fremad til…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Fremsendt"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Fremsendt."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Videresender"
 
@@ -1292,11 +1478,11 @@ msgstr "Giv knappen noget tekst."
 msgid "Give the template a name."
 msgstr "Giv skabelonen et navn."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Gå til hjemmesiden"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Ulækkert"
 
@@ -1304,7 +1490,7 @@ msgstr "Ulækkert"
 msgid "Group info"
 msgstr "Gruppe info"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Laug"
 
@@ -1316,13 +1502,25 @@ msgstr "Guilds med chat"
 msgid "Hand raised"
 msgstr "Hånden hævet"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Glad"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Har du beholdt din chat gendannelseskode? Uden det, kan en glemt adgangskode miste dine gamle beskeder."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Udgiftsområde %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Hjælper"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Hjælper skrive i denne kanal med dig. Vælg op til tre personer, der er i det."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Jeg er enig i reglerne"
 msgid "I don't have it: start over"
 msgstr "Jeg har det ikke: start forfra"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Jeg har den"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Jeg har gemt den"
@@ -1372,6 +1574,10 @@ msgstr "Jeg har gemt den"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Hvis du nogensinde glemmer din adgangskode, denne kode er den eneste måde at læse dine gamle beskeder. Hold det et sikkert sted, som en password manager."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Hvis du stadig har din recovery kode, skal du bruge det i stedet: nogle ældre beskeder er kun i sikkerhedskopi, det åbner."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Dens historier bliver i dit arkiv."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Bliv medlem"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Deltag i %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Nøglefakta og links, som folk bør se først."
 msgid "Last used %(date)s"
 msgstr "Sidst brugt %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Senere"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Grin"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Forlad"
 
@@ -1516,7 +1726,7 @@ msgstr "Forlade gruppen? En anden bliver ejer."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Forlade gruppen? Du vil ikke se nye beskeder, medmindre nogen tilføjer dig igen."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Lys tilstand"
 
@@ -1561,6 +1771,10 @@ msgstr "Lev nu"
 msgid "Load earlier messages"
 msgstr "Indlæs tidligere breve"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Indlæser kommentar…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Indlæser post…"
@@ -1585,17 +1799,25 @@ msgstr "Indlæser dine skabeloner..."
 msgid "Loading..."
 msgstr "Indlæser..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Indlæser…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Kærlighed"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Nederste hånd"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Lav en ny kode"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Lav en ny gendannelseskode?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Gør dette indlæg offentligt? Alle vil kunne se det."
 msgid "Making the channel…"
 msgstr "Gør kanalen…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1630,6 +1852,14 @@ msgstr "Brev slettet"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Besked anmodning. De vil ikke vide, du har set det, før du accepterer det."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Meddelelser forsvinder efter %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Beskeder denne browser kunne allerede læse vil komme tilbage her."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Mere"
 
@@ -1649,11 +1879,11 @@ msgstr "Mere"
 msgid "Move to listeners"
 msgstr "Gå til lyttere"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Lyd fra"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Lyd slået fra"
 
@@ -1673,7 +1903,11 @@ msgstr "Nævn din mappe"
 msgid "New channel"
 msgstr "Ny kanal"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Nye beskeder i denne chat forsvinder for alle efter den tid, du vælger. Beskeder sendt før holde den tid, de blev sendt med."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Nej"
 
@@ -1693,17 +1927,29 @@ msgstr "Ingen opkald endnu. Start en fra et chats stemme eller videoopkald."
 msgid "No camera was found."
 msgstr "Intet kamera blev fundet."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Ingen chats fundet."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Ingen medforfattere endnu."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Ingen kode? Log ind med din nye adgangskode på en browser, hvor du har brugt chat: det kan bringe din chat tilbage."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Ingen enheder endnu. Åbn chatten for at starte."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Ingen etiket"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Ingen hjælpere endnu."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Ingen mikrofon blev fundet."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Ingen matcher. Du kan sende til dine chats og til folk du følger."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Ingen beskeder endnu."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Ikke gemt"
 msgid "Not used yet"
 msgstr "Ikke anvendt endnu"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Intet fundet i de beskeder denne browser kan læse."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Intet fundet."
@@ -1785,17 +2039,45 @@ msgstr "Intet at se endnu."
 msgid "Nothing was connected."
 msgstr "Intet var forbundet."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Notifikationer"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Anmeldelser er blokeret for dette websted i denne browser. Tillad dem i browserens indstillinger at tænde dem."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Anmeldelser er slået fra i denne browser."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Anmeldelser er på i denne browser."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Anmeldelser kunne ikke kontrolleres. Genindlæs siden for at prøve igen."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Meddelelser kunne ikke tændes. Prøv igen."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Anmeldelser var ikke tilladt for dette websted."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Nummereret liste"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Fra"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Kun en gruppes ejer og administratorer kan ændre dette."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Åbn Chat en gang for at låse dine beskeder op, så prøv igen."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Åbn chat for at afslutte opsætning af dine beskeder på denne enhed."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Åbn medieindstillinger"
 
@@ -1849,6 +2139,10 @@ msgstr "Åbn rummet"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Åbn chatten af + %(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Åbner filen…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Folk du følger"
 msgid "Pick a date and time."
 msgstr "Vælg en dato og tid."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Vælg en etiket"
 
@@ -1909,11 +2203,15 @@ msgstr "Billedhistorier er ikke tilgængelige på dette websted endnu."
 msgid "Pin this message"
 msgstr "Pin denne meddelelse"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pyntet"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Pinkede breve"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Vær sød"
 
@@ -1921,12 +2219,18 @@ msgstr "Vær sød"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Indtast en gyldig URL (inklusive http: / / eller https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Log ind igen."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Populære kanaler"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Slå op"
 
@@ -1938,7 +2242,7 @@ msgstr "Sendt. Genindlæs siden for at se den."
 msgid "Posting to %(guilds)s"
 msgstr "Udstationering til %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Slår op på din profil"
 
@@ -1947,7 +2251,7 @@ msgstr "Slår op på din profil"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Udstationering til din profil, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Slår op…"
 
@@ -2047,6 +2351,14 @@ msgstr "Reagere"
 msgid "React with %(emoji)s"
 msgstr "Reagerer med %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Optag en stemme note"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Optagelse… Tryk på mikrofonen igen for at sende den."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Inddrivelseskode"
@@ -2059,13 +2371,17 @@ msgstr "Redo"
 msgid "Refreshing…"
 msgstr "Forfriskende…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Opretter konto"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Frigivelse til opdatering"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Genindlæs"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Mindesæt"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Fjern"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Fjern %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Fjern @ %(name)s som hjælper"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Omdøb denne mappe"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Anmeld"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Anmeld kommentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Anmeld opslag"
 
@@ -2155,11 +2475,11 @@ msgstr "Anmeld opslag"
 msgid "Report this message"
 msgstr "Rapportér denne meddelelse"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Anmelder kommentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Anmelder opslag"
 
@@ -2176,13 +2496,13 @@ msgstr "Ringe…"
 msgid "Rules of this channel"
 msgstr "Regler for denne kanal"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Trist"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Gem"
 
@@ -2198,11 +2518,15 @@ msgstr "Gem som skabelon..."
 msgid "Save your recovery code"
 msgstr "Gem din inddrivelseskode"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Gemt"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Reddet."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Gemmer"
 
@@ -2236,7 +2560,7 @@ msgstr "Gemmer…"
 msgid "Say what is wrong with this account."
 msgstr "Sig, hvad der er galt med kontoen."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Bange"
 
@@ -2255,7 +2579,8 @@ msgstr "Planlagt for %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Søg"
 
@@ -2266,6 +2591,14 @@ msgstr "Søg efter nogen at tilføje."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Søg i denne kanal"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Søg i denne chat"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Søg i dine chats"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Set af %(num)s"
 msgstr[1] "Set af %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Vælg en samtale"
 
@@ -2298,6 +2631,10 @@ msgstr "Vælg en samtale"
 #, machine, plain1
 msgid "Send"
 msgstr "Send"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Send en fil"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Send dine næste billeder til:"
 msgid "Send your next videos to:"
 msgstr "Send dine næste videoer til:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Sender %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Sender %(name)s… %(percent)s %%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Sender når chatten er klar…"
+msgstr[1] "Sender %(num)s beskeder når chatten er klar…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "At sende..."
@@ -2331,6 +2682,14 @@ msgstr "Sendt"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Flere mennesker skriver…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Del skærm"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Del en kommentar"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Vis %(num)s nye indlæg"
 msgid "Show formatting"
 msgstr "Vis formatering"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Vis i kanalen"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Vis i chatten"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Vis mindre"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Vis mere"
 
@@ -2367,19 +2735,19 @@ msgstr "Vis original"
 msgid "Show translation"
 msgstr "Vis oversættelse"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
 msgstr "Log ud"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Log ud %(device)s"
+msgstr "Log %(device)s ud"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Underskriv %(device)s? Det bliver nødt til at logge ind igen for at læse dine chats."
+msgstr "Afbryd forbindelsen %(device)s? Det bliver nødt til at logge ind igen for at læse dine chats."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Logger ind"
 
@@ -2497,6 +2865,11 @@ msgstr "Start chatten…"
 msgid "Starting…"
 msgstr "Start…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Stop deling"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Gennemstreget"
@@ -2547,7 +2920,7 @@ msgstr "Tekstformatering"
 msgid "Text style"
 msgstr "Tekststil"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Tak for din anmodning"
 
@@ -2571,27 +2944,39 @@ msgstr "Tak. En admin vil se på det."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Tak: Guild 's Guild moderatorer vil tage et kig."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Tak: webstedets administratorer vil tage et kig, og du har blokeret @ %(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Tak: webstedets administratorer vil tage et kig."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Tak: webstedets administratorer vil tage et kig. @ %(name)s kunne ikke blokeres herfra: blokere dem fra deres profil."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Den snak er ikke klar endnu. Åbn den en gang, og prøv igen."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Den kode åbner den ikke. Tjek for slåfejl."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Det kunne ikke gemmes."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Den kan ikke underskrives lige nu."
+msgstr "Den kan ikke afbrydes lige nu."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Den kan ikke bruges."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Det gik ikke igennem"
 
@@ -2630,6 +3015,14 @@ msgstr "Det er ikke dit kodeord."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Den besked kan ikke sendes."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Den besked kunne ikke findes på kanalen mere."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Den besked kunne ikke findes i denne chat mere."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Chatten er lukket: dette rum er slut."
 msgid "The chat opens when the Space starts."
 msgstr "Chatten åbner, når rummet starter."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Koden fra din autentifikator app, eller en af dine backup-koder."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Udkastet ændrede sig under din sidste redigering, så det blev genladet. Tjek dine sidste ord."
@@ -2722,6 +3119,10 @@ msgstr "Udkastet ændrede sig under din sidste redigering, så det blev genladet
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Den emoji at sammenligne"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Filen kunne ikke sendes. Prøv igen."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Forbindelsen kunne ikke kopieres."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofonen kunne ikke startes."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofonen kunne ikke bruges. Kontroller, at dette websted kan bruge det."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Genspillet blev ikke gemt: uploadet mislykkedes. Du kan downloade det i stedet."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Webstedets nøgler er ændret, så chatten starter igen her."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Sammendraget er skjult af dit ordfilter."
 
@@ -2812,6 +3221,10 @@ msgstr "Der er ingen andre steder at sende dem på denne hjemmeside endnu."
 msgid "These comments could not be loaded. Try again."
 msgstr "Disse kommentarer kunne ikke indlæses. Prøv igen."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "De får aldrig at vide, hvem der anmeldte dem."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "De afslog opkaldet."
@@ -2824,6 +3237,10 @@ msgstr "De matcher ikke"
 msgid "They match"
 msgstr "De matcher"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "De bliver på din egen konto der, krypteret, ved hjælp af sin frie plads. Kun folk i chatten kan åbne dem."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "De vil ikke være i stand til at følge dig, besked dig eller kommentere dine indlæg, og du vil ikke se deres indlæg. Du kan afspærre dem når som helst."
@@ -2832,9 +3249,9 @@ msgstr "De vil ikke være i stand til at følge dig, besked dig eller kommentere
 msgid "This Space has ended."
 msgstr "Rummet er slut."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Denne browser"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Dette slutter også enhver redning fra en browser, hvor du brugte chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Denne browser kan ikke ringe."
 msgid "This browser can't record the Space."
 msgstr "Denne browser kan ikke optage rummet."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Denne browser kan ikke dele sin skærm."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Denne browser kan ikke vise meddelelser fra dette websted."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Denne browser kan ikke forberede billeder til upload. Prøv en anden browser."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Denne browser indeholder stadig dine chatnøgler fra før din adgangskode ændres. Brug dem til at læse dine gamle beskeder her og på dine andre enheder?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Denne browser blev afbrudt fra chat fra en anden enhed, så chatten starter igen her."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Denne browsers gemte chat data blev ryddet, så chat starter igen her."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Det kan ikke gøres om."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Denne kanal er dæmpet for dig: ingen ulæste prik og ingen omtale meddelelser."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Denne chat er ende- to- end krypteret, så siden kan ikke læse den. Rapportering sender dette budskab og op til fire før det, som du ser dem her, til webstedets administratorer."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Denne kommentar kan ikke vises."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Denne enhed vil blive afbrudt snart."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Denne fil kunne ikke åbnes. Prøv igen senere."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Denne fil er ikke længere tilgængelig."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Denne tråd er færdig"
@@ -2863,6 +3320,10 @@ msgstr "Denne tråd er færdig"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Denne besked kan ikke læses på denne enhed."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Denne meddelelse blev slettet."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Dette indlæg kan ikke vises."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Dette indlæg er off- topic for + %(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Dette signal"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Dette afbryder chatten også i denne browser, hvis det er denne browsers. Det vil starte igen som en ny enhed."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Denne stemme kanal er fuld (%(num)s person)."
 msgstr[1] "Denne stemme kanal er fuld (%(num)s personer)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "De nøgler er ikke længere din konto. Brug din recovery kode, eller starte forfra."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "For lang tid med %(num)s (%(note)s)"
 msgstr[1] "For lang tid med %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "For mange anmodninger i dag"
 
@@ -2945,13 +3418,21 @@ msgstr "Oversættelse er ikke tilgængelig lige nu."
 msgid "Try again"
 msgstr "Prøv igen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Prøv igen i morgen."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Slå meddelelser til igen"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Twofaktorkode"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "To-faktor sign- in blev ændret, så chatten starter igen her."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Kan ikke fjerne kommentaren på dette tidspunkt. Prøv igen senere."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Kan ikke stemme på dette tidspunkt. Prøv igen senere."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Fjern blokering"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Fortryd"
 
@@ -3010,17 +3491,13 @@ msgstr "Lås op"
 msgid "Unlock your messages"
 msgstr "Lås dine beskeder op"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Lås dine beskeder op først: genindlæs siden for at indtaste din adgangskode."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Slå lyden til"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Frigør"
 
@@ -3076,11 +3553,15 @@ msgstr "Brug den her"
 msgid "Use my recovery code instead"
 msgstr "Brug min gendannelseskode i stedet"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Brug dem"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Brugernavnet er allerede taget :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Brugernavnet er helt i orden!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Videoopkald · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video er slukket i dette opkald: du er på lyd."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Se original"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Stemme går browser til browser gennem webstedet relæ, så ingen ser nogens adresse. Op til %(num)s person."
 msgstr[1] "Stemme går browser til browser gennem webstedet relæ, så ingen ser nogens adresse. Op til %(num)s personer."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Stemmemeddelelse"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Vent et øjeblik. Dine sidste ændringer bliver stadig reddet."
@@ -3213,6 +3698,10 @@ msgstr "Vent et øjeblik. Dine sidste ændringer bliver stadig reddet."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Venter på appen"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Vi fandt din chat på denne browser"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Hvad er der galt med denne Space? (frivilligt)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Hvad er der galt med beskeden? (frivilligt)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Hvor skal de filer, du sender i chats gå hen?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Hvem sagde det"
 msgid "Who upvoted"
 msgstr "Hvem stemte for"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Hvorfor"
 
@@ -3274,6 +3767,10 @@ msgstr "Hvorfor bryder det din guild 's regler? Dette vil blive vist til alle, d
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Hvorfor bryder det din guild 's regler? Dette vil blive vist til alle, der ser op denne post / kommentar historie."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Hvorfor fjernes denne bemærkning? Din grund er vist i den offentlige logbog."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Skriv noget først."
 msgid "Write what you want to tell us."
 msgstr "Skriv, hvad du vil fortælle os."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Ja"
 
@@ -3310,7 +3807,7 @@ msgstr "Ja, aflys det"
 msgid "You"
 msgstr "Dig"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Det har du allerede gjort"
 
@@ -3326,7 +3823,7 @@ msgstr "Du har allerede rapporteret dette indlæg."
 msgid "You already voted on this post."
 msgstr "De har allerede stemt om dette indlæg."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Du blokerer @%(name)s"
 
@@ -3364,7 +3861,7 @@ msgstr "Du kan læse denne kanal, men ikke skrive i det."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Du kan se, hvem der er her, men du kan ikke tale her."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Det må du ikke."
 
@@ -3408,6 +3905,14 @@ msgstr "Du forlod rummet."
 msgid "You left the call."
 msgstr "Du forlod opkaldet."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Du har afbrudt alle steder fra en anden enhed, så chatten starter igen her."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Du skrev dig ind med din tofaktorgendannelseskode, så chatten starter igen her."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Du fulgte ikke efter @ %(name)s."
@@ -3415,6 +3920,10 @@ msgstr "Du fulgte ikke efter @ %(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Du blev fjernet fra dette rum."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Du får en ny kode, og den gamle stopper med at arbejde."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Din browser blokerede vinduet for forbindelse. Tillad pop- ups til dette
 msgid "Your chat devices can't be listed right now."
 msgstr "Dine chat-enheder kan ikke angives lige nu."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Din chat recovery kode"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Dine chats"
@@ -3451,6 +3964,10 @@ msgstr "Dine chats vil arbejde igen på denne enhed, men beskeder fra før kan i
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Din kommentar kunne ikke bogføres. Prøv igen."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Din nuværende gendannelseskode vil stoppe med at virke."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Din nøgle kan ikke vises lige nu."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Din nøgle var låst med et ældre kodeord. Åbn Chat på dette websted og indtaste din recovery kode én gang; så åbner det her."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Din besked vil blive sendt når chatten er ulåst på denne enhed."
+msgstr[1] "Dine %(num)s beskeder vil blive sendt når chatten er ulåst på denne enhed."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Din gamle gendannelseskode virker ikke længere."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Din adgangskode ændrede sig, da denne chat-nøgle var låst med den. Den gendannelseskode, du gemte, da chatten blev sat op, åbner den."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Din adgangskode blev ændret for dig, så chatten starter igen her."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Din adgangskode blev ændret, så chatten starter igen her."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Dit kodeord blev nulstillet, så chatten starter igen her."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Din inddrivelseskode"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Dine gemte skabeloner dukker op her."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Din skærm kan kun deles, mens du er på video i dette opkald."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Din skærm kunne ikke deles."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "blå"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "kommentar"
 
@@ -3606,7 +4153,7 @@ msgstr "orange"
 msgid "pink"
 msgstr "lyserøde"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "opslag"
 

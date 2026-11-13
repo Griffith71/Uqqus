@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: lv\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s ir mašīnrakstīšana…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s uzstāda vēstules, lai tās pazustu pēc %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s izslēdza izzūdošās vēstules."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -132,12 +140,26 @@ msgstr[0] "%(num)s loceklis"
 msgstr[1] "%(num)s locekļi"
 msgstr[2] "%(num)s locekļi"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s ziņojums atrasts."
+msgstr[1] "%(num)s vēstules atrastas."
+msgstr[2] "%(num)s atrastas vēstules."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s ziņojuma pavediens"
 msgstr[1] "%(num)s vēstules pavedienā"
 msgstr[2] "%(num)s vēstuļu pavedienā"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s ziņojums nolasīts…"
+msgstr[1] "%(num)s vēstules lasītas…"
+msgstr[2] "%(num)s lasītas vēstules…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -258,6 +280,14 @@ msgstr[2] "%(owner)s · %(num)s locekļi"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Saglabāt jebkurā gadījumā?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -291,6 +321,14 @@ msgstr[0] "+%(guild)s · %(num)s komentārs"
 msgstr[1] "+%(guild)s · %(num)s komentāri"
 msgstr[2] "+%(guild)s · %(num)s komentāri"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 diena"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 nedēļa"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s pievienot jūs šai grupai. Pieņem to lasīt un rakstīt tajā."
@@ -301,10 +339,6 @@ msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be se
 msgstr[0] "@ %(name)s vēl nav atvēris tērzēšanu. Jūsu ziņojums tiks nosūtīts, kad viņi to darīs."
 msgstr[1] "@ %(name)s vēl nav atvēris tērzēšanu. Jūsu %(num)s ziņojumi tiks nosūtīti, kad viņi to darīs."
 msgstr[2] "@ %(name)s vēl nav atvēris tērzēšanu. Jūsu %(num)s ziņojumi tiks nosūtīti, kad viņi to darīs."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s ir mašīnrakstīšana…"
 
 #, machine, plain1
 msgid "A Space"
@@ -358,6 +392,13 @@ msgid "A message that isn't there any more"
 msgstr "Ziņa, kuras vairs nav"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Ziņa, kuru jūs šeit rakstījāt, netika nosūtīta: tērzēt apstājās šajā cilnē, pirms tā varēja iet."
+msgstr[1] "%(num)s vēstules jūs rakstījis šeit netika nosūtīts: tērzēt apstājās šajā cilnē, pirms viņi varētu iet."
+msgstr[2] "%(num)s vēstules jūs rakstījis šeit netika nosūtīts: tērzēt apstājās šajā cilnē, pirms viņi varētu iet."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Amatā var būt ne vairāk kā %(num)s līdzautors."
@@ -377,9 +418,13 @@ msgid "Accept"
 msgstr "Pieņemt"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Pievienot"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Pievienot palīgu pēc lietotājvārda"
 
 #, machine, plain1
 msgid "Add image"
@@ -418,12 +463,12 @@ msgid "Adding..."
 msgstr "Pievieno..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Administrators"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Piekrītu"
 
@@ -443,6 +488,10 @@ msgstr "Izlīdzināt pa labi"
 msgid "Alignment"
 msgstr "Izlīdzināšana"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Arī bloks @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -452,7 +501,7 @@ msgstr "Arī šeit: %(names)s"
 msgid "An app"
 msgstr "Lietotne"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Dusmīgi"
 
@@ -462,7 +511,7 @@ msgstr "Dusmīgi"
 msgid "Announcements"
 msgstr "Paziņojumi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonīms"
 
@@ -470,6 +519,10 @@ msgstr "Anonīms"
 #, machine, plain1
 msgid "Answer"
 msgstr "Atbilde"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Ikviens tērzēšanā joprojām var kopēt ziņu vai nofotografēt ekrānu, pirms tas iet."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -483,23 +536,23 @@ msgstr "Pievienot saiti šim amatam"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Kuce. Nav atrasts GIFs..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Lieliski"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Neveikli"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Atpakaļ uz augšu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Bloķēt"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Bloķēt @%(name)s?"
 
@@ -510,6 +563,10 @@ msgstr "Bloķēts @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Treknraksts (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Pavadot tērzēšanas taustiņus, apstājās daļēji. Ievadiet paroli, lai pabeigtu."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -584,7 +641,7 @@ msgstr "Fotoaparāts izslēgts"
 msgid "Camera on"
 msgstr "Fotoaparāts ieslēgts"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Atcelt"
 
@@ -622,7 +679,7 @@ msgstr[0] "Kanāls · %(num)s loceklis"
 msgstr[1] "Kanāls · %(num)s locekļi"
 msgstr[2] "Kanāls · %(num)s locekļi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanāli"
 
@@ -632,13 +689,45 @@ msgstr "Kanāli"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Tērzēšana"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Tērzēšana nevarēja atnest atslēgas. Pārlādēt, lai mēģinātu vēlreiz."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Tērzēšana nevarēja savienoties."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Tērzēšana nevarēja beigties. Ievadiet paroli, lai mēģinātu vēlreiz."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Tērzēšana nevarēja beigties. Pārlādēt, lai mēģinātu vēlreiz."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Tērzēšana nevarēja atvērt to, ko šī pārlūkprogramma saglabāta, tāpēc tā šeit atkal sākas."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Tērzēšana nevarēja sākties šajā pārlūkprogrammā."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Tērzēšana neatbildēja. Mēģini vēlreiz."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Tērzēšana šajā pārlūkprogrammā nebija izmantota ilgu laiku, tāpēc tā šeit atkal sākas."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Tērzēšana aizveras citā cilnē…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -652,6 +741,26 @@ msgstr "Tērzēšana joprojām sākas."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Tērzēšana joprojām sākas. Mēģiniet vēlreiz pēc brīža."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Tērzēšana šobrīd nav pieejama jūsu kontam."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Tērzēšana zaudēja saikni. Mēģina vēlreiz…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Tērzēšanai ir nepieciešams šis pārlūks, lai saglabātu vietnes datus, un tas nevar šeit. Tērzēšana nevar sākties šajā logā."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Tērzēšana apstājās šajā cilnē."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Tērzēšana šajā pārlūkprogrammā tika atvienota no citas ierīces. Sākas atkal šeit…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Tērzēšana ar @ %(name)s"
@@ -660,7 +769,7 @@ msgstr "Tērzēšana ar @ %(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Tērzēšanas atslēga šobrīd nav pieejama."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Sarunas"
 
@@ -700,11 +809,11 @@ msgstr "Izvēlieties, kas to var redzēt."
 msgid "Choose your profile or at least one guild."
 msgstr "Izvēlieties savu profilu vai vismaz vienu ģildi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Loki"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Aizvērt"
 
@@ -740,7 +849,7 @@ msgstr "Salīdzināt tos ar tiem, kurus jūsu lietotne parāda, tādā pašā se
 msgid "Confirm in the app as well."
 msgstr "Apstipriniet arī lietotnē."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Apjucis"
 
@@ -892,6 +1001,10 @@ msgstr "Neizdevās ielādēt piespraudes vēstules"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Neizdevās ielādēt priekšskatījumu."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Neizdevās ielādēt jūsu tērzēšanu"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1053,7 +1166,11 @@ msgstr "Nevaru nokopēt: atlasiet kodus un nokopējiet tos."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Nevarēju ielādēt agrākas ziņas. Mēģiniet vēlreiz pēc brīža."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Nevarēju ielādēt tērzēšanas. Mēģina vēlreiz…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Izveido ierakstu"
 
@@ -1061,7 +1178,7 @@ msgstr "Izveido ierakstu"
 msgid "Creating…"
 msgstr "Veidoju…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Kauns"
 
@@ -1069,7 +1186,7 @@ msgstr "Kauns"
 msgid "Cross out"
 msgstr "Izsvītrot"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Tumšais režīms"
 
@@ -1134,13 +1251,21 @@ msgstr "Dzēst šo stāstu?"
 msgid "Delete this update?"
 msgstr "Dzēst atjauninājumu?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Dzēš komentāru"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Dzēš ierakstu"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Izzūdošās vēstules"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Izzūdošas ziņas ir izslēgtas."
 
 #, machine, plain1
 msgid "Discard"
@@ -1174,6 +1299,10 @@ msgstr "Pabeigts"
 #, machine, plain1
 msgid "Done."
 msgstr "Sarunāts."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Lejupielādēt"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1228,7 +1357,7 @@ msgstr "No gala līdz galam šifrēts: to var nolasīt tikai šī kanāla cilvē
 msgid "Ended"
 msgstr "Beigas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Ievadiet URL"
 
@@ -1239,6 +1368,10 @@ msgstr "Ievadiet tīmekļa adresi, piemēram, https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Ievadiet paroli vienreiz. Tas slēdz atslēgu uz jūsu ziņojumiem šajā pārlūkprogrammā, lai vietne nekad nevar izlasīt tos."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Ievadiet paroli, lai apstiprinātu."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1252,9 +1385,49 @@ msgstr "Ievadiet paroli."
 msgid "Enter your recovery code"
 msgstr "Ievadiet atgūšanas kodu"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Ievadiet jūsu divu faktoru kodu"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Ievadiet jūsu divu faktoru kodu."
+
+#, machine, plain2
+msgid "File"
+msgstr "Fails"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Failus var nosūtīt pēc @ %(name)s atvēršanas tērzēšana."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Failus var nosūtīt, kad tērzēšana ir atslēgta šajā ierīcē."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Šeit nevar nosūtīt failus."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Galīgais"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Pabeigt"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Pabeidz tērzēšanu"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Pabeigt sākumu"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Pabeidz tērzēšanas iestatīšanu citā cilnē…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1276,9 +1449,13 @@ msgid "Formatting"
 msgstr "Formatēšana"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Pārsūtīt"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Pārsūtīt šo vēstuli"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1287,7 +1464,19 @@ msgstr[0] "Uz priekšu ne vairāk kā %(num)s ģilde."
 msgstr[1] "Uz priekšu ne vairāk kā %(num)s ģildes."
 msgstr[2] "Uz priekšu ne vairāk kā %(num)s ģildes."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Pārsūtīt uz…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Pārsūtīts"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Pārsūtīts."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Pārsūta"
 
@@ -1327,11 +1516,11 @@ msgstr "Iedod pogai tekstu."
 msgid "Give the template a name."
 msgstr "Norādīt sagataves nosaukumu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Doties uz vietni"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Pretīgi"
 
@@ -1339,7 +1528,7 @@ msgstr "Pretīgi"
 msgid "Group info"
 msgstr "Grupas informācija"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Ģildes"
 
@@ -1351,13 +1540,25 @@ msgstr "Ģildes ar tērzēšanu"
 msgid "Hand raised"
 msgstr "Pacelts ar roku"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Priecīgi"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Vai esat tur savu tērzēšanas atgūšanas kodu? Bez tās aizmirstā parole var pazaudēt vecos ziņojumus."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Pozīcija %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Palīgi"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Palīgi rakstīt šajā kanālā ar jums. Izvēlēties līdz trim cilvēkiem, kas ir tajā."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1400,6 +1601,10 @@ msgstr "Es piekrītu noteikumiem"
 msgid "I don't have it: start over"
 msgstr "Man nav tā: sāciet no jauna"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Man tā ir"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Esmu to izglābis"
@@ -1407,6 +1612,10 @@ msgstr "Esmu to izglābis"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Ja kādreiz esat aizmirsis savu paroli, šis kods ir vienīgais veids, kā izlasīt vecos ziņojumus. Turiet to kaut kur drošībā, kā paroles pārvaldnieks."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Ja jums joprojām ir jūsu atgūšanas kodu, izmantot to vietā: daži vecāki ziņojumi ir tikai rezerves tā atver."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1498,11 +1707,11 @@ msgstr "Tās stāsti paliek jūsu arhīvā."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Pievienoties"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Pievienoties %(channel)s"
 
@@ -1530,12 +1739,16 @@ msgstr "Galvenie fakti un saites cilvēkiem vajadzētu redzēt pirmais."
 msgid "Last used %(date)s"
 msgstr "Pēdējo reizi izmantots %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Vēlāk"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Smiekli"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Pamest"
 
@@ -1551,7 +1764,7 @@ msgstr "Atstājiet grupu? Kāds cits tajā kļūst par tā īpašnieku."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Atstājiet grupu? Jūs neredzēsiet jaunas ziņas, ja kāds jūs nepievienos."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Gaišais režīms"
 
@@ -1597,6 +1810,10 @@ msgstr "Dzīvot tagad"
 msgid "Load earlier messages"
 msgstr "Ielādēt iepriekšējos ziņojumus"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Ielādē komentāru…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Ielādē pastu…"
@@ -1621,17 +1838,25 @@ msgstr "Ielādē šablonus..."
 msgid "Loading..."
 msgstr "Ielādē..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Ielādē…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Mīlestība"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Apakšējā roka"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Izveidot jaunu kodu"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Padarīt jaunu atgūšanas kodu?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1649,7 +1874,7 @@ msgstr "Vai šo ziņu var publiskot? To varēs redzēt ikviens."
 msgid "Making the channel…"
 msgstr "Kanāla izveidošana…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1666,6 +1891,14 @@ msgstr "Ziņojums dzēsts"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Ziņojuma pieprasījums. Viņi nezinās, ka esi to redzējis, kamēr nepieņemsi."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Vēstules izzūd pēc %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Vēstules, ko šī pārlūkprogramma jau var lasīt, atgriezīsies šeit."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1677,7 +1910,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofons %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Vairāk"
 
@@ -1685,11 +1918,11 @@ msgstr "Vairāk"
 msgid "Move to listeners"
 msgstr "Pārvietot uz klausītājiem"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Izslēgt"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Apklusināts"
 
@@ -1709,7 +1942,11 @@ msgstr "Nosauciet savu mapi"
 msgid "New channel"
 msgstr "Jauns kanāls"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Jaunas ziņas šajā tērzēšanā pazūd ikvienam pēc laika, kad izvēlaties. Ziņojumi, kas nosūtīti pirms saglabāt laiku, ar kuru tie tika nosūtīti."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Nē"
 
@@ -1729,17 +1966,29 @@ msgstr "Vēl nav zvana. Sākt vienu no tērzēšanas balss zvanu vai Video zvanu
 msgid "No camera was found."
 msgstr "Kamera netika atrasta."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Nekādas tērzēšanas nav atrastas."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Līdzautoru vēl nav."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Nav koda? Pierakstīties ar savu jauno paroli pārlūkā, kur esat izmantojis tērzēšanu: tas var dot savu tērzēšanu atpakaļ."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Vēl nav ierīču. Atvērt tērzēšanu, lai sāktu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Bez birkas"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Vēl nav palīgu."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1748,6 +1997,10 @@ msgstr "Mikrofons netika atrasts."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Neviens neatbilst. Jūs varat nosūtīt uz jūsu tērzēšanu un cilvēkiem, ko jūs sekot."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Vēl nav atrastas vēstules."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1793,6 +2046,10 @@ msgstr "Nav saglabāts"
 msgid "Not used yet"
 msgstr "Vēl nav izmantots"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Šajā pārlūkā nekas nav atrasts."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Nekas nav atrasts."
@@ -1821,17 +2078,45 @@ msgstr "Vēl nav priekšskatījuma."
 msgid "Nothing was connected."
 msgstr "Nekas nebija saistīts."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Paziņojumi"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Šajā pārlūkā ir bloķēti paziņojumi par šo vietni. Atļaut pārlūka iestatījumos tos ieslēgt."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Paziņojumi ir izslēgti šajā pārlūkprogrammā."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Paziņojumi ir ieslēgti šajā pārlūkprogrammā."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Paziņojumus nevarēja pārbaudīt. Pārlādējiet lapu, lai mēģinātu vēlreiz."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Paziņojumus nevarēja ieslēgt. Mēģini vēlreiz."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Paziņojumi šajā vietnē netika atļauti."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Numerētais saraksts"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Izslēgts"
 
 #, machine, plain1
 msgid "Offline"
@@ -1840,6 +2125,10 @@ msgstr "Bezsaistē"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Nesaistē · atkārtota zādzība"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "To var mainīt tikai grupas īpašnieks un admins."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1875,6 +2164,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Atvērt tērzēšanu vienreiz, lai atbloķētu ziņojumus, tad mēģiniet vēlreiz."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Atvērt tērzēšanu, lai pabeigtu vēstuļu iestatīšanu šajā ierīcē."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Atvērtie multivides iestatījumi"
 
@@ -1885,6 +2178,10 @@ msgstr "Atvērt vietu"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Atvērt tērzēšanu no +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Atver failu…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1911,7 +2208,7 @@ msgstr "Cilvēki, kuriem tu seko"
 msgid "Pick a date and time."
 msgstr "Izvēlieties datumu un laiku."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Izvēlieties birku"
 
@@ -1945,11 +2242,15 @@ msgstr "Attēlu stāsti šajā vietnē vēl nav pieejami."
 msgid "Pin this message"
 msgstr "Ielādēt šo vēstuli"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Kanēlis"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Ievadāmās vēstules"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Lūdzu"
 
@@ -1957,12 +2258,18 @@ msgstr "Lūdzu"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Lūdzu, ievadiet derīgu URL (ieskaitot http:// vai https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Lūdzu, pierakstieties vēlreiz."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Populāri kanāli"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Publicēt"
 
@@ -1974,7 +2281,7 @@ msgstr "Posted. Pārlādējiet lapu, lai to redzētu."
 msgid "Posting to %(guilds)s"
 msgstr "Ielikšana uz %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Publicē jūsu profilā"
 
@@ -1983,7 +2290,7 @@ msgstr "Publicē jūsu profilā"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Ievietošana savā profilā, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Publicē…"
 
@@ -2084,6 +2391,14 @@ msgstr "Reaģēt"
 msgid "React with %(emoji)s"
 msgstr "Reaģēt ar %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Ieraksta balss piezīmi"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Ieraksta… atkal nospiediet mikrofonu, lai to nosūtītu."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Atgūšanas kods"
@@ -2096,13 +2411,17 @@ msgstr "Atkārtot"
 msgid "Refreshing…"
 msgstr "Atsvaidzina…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Reģistrē"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Atsvaidzināt"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Pārlādēt"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2117,13 +2436,17 @@ msgstr "Atgādinājuma komplekts"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Noņemt"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Izņemt %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Izņemt @ %(name)s kā palīgu"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2176,15 +2499,15 @@ msgstr "Pārdēvēt šo mapi"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Ziņot"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Ziņot par komentāru"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Ziņot par ierakstu"
 
@@ -2192,11 +2515,11 @@ msgstr "Ziņot par ierakstu"
 msgid "Report this message"
 msgstr "Ziņot par šo vēstuli"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Ziņo par komentāru"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Ziņo par ierakstu"
 
@@ -2213,13 +2536,13 @@ msgstr "Zvanu…"
 msgid "Rules of this channel"
 msgstr "Kanāla noteikumi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Skumji"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Saglabāt"
 
@@ -2235,11 +2558,15 @@ msgstr "Saglabāt kā sagatavi..."
 msgid "Save your recovery code"
 msgstr "Saglabāt jūsu atgūšanas kodu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Saglabāts"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Saglabāts."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Saglabā"
 
@@ -2273,7 +2600,7 @@ msgstr "Saglabā…"
 msgid "Say what is wrong with this account."
 msgstr "Saki, kas šajā kontā nav kārtībā."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Bail"
 
@@ -2292,7 +2619,8 @@ msgstr "Plānots %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Meklēt"
 
@@ -2303,6 +2631,14 @@ msgstr "Meklē kādu, ko pievienot."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Meklēt šo kanālu"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Meklēt šo čatu"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Meklējiet tērzēšanas"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2328,7 +2664,7 @@ msgstr[0] "Ar %(num)s"
 msgstr[1] "Ar %(num)s"
 msgstr[2] "Skatīt līdz %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Izvēlieties sarunu"
 
@@ -2337,6 +2673,10 @@ msgstr "Izvēlieties sarunu"
 #, machine, plain1
 msgid "Send"
 msgstr "Sūtīt"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Sūtīt failu"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2354,6 +2694,21 @@ msgstr "Nosūtīt nākamos attēlus uz:"
 msgid "Send your next videos to:"
 msgstr "Nosūtīt nākamos videoklipus uz:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Nosūta %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Nosūtīšana %(name)s… %(percent)s %%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Sūtīšana, kad tērzēšana ir gatava…"
+msgstr[1] "Sūta %(num)s ziņojumus, kad tērzēšana ir gatava…"
+msgstr[2] "Sūta %(num)s ziņojumus, kad tērzēšana ir gatava…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Sūta..."
@@ -2370,6 +2725,14 @@ msgstr "Nosūtīts"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Vairāki cilvēki raksta…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Kopīgot ekrānu"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Dalīta ar komentāru"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2390,11 +2753,20 @@ msgstr[2] "Rādīt %(num)s jaunas ziņas"
 msgid "Show formatting"
 msgstr "Rādīt formatējumu"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Rādīt kanālā"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Rādīt tērzēšanā"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Rādīt mazāk"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Rādīt vairāk"
 
@@ -2407,19 +2779,19 @@ msgstr "Rādīt oriģinālo"
 msgid "Show translation"
 msgstr "Rādīt tulkojumu"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Parakstīt"
+msgstr "Izrakstīt"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Parakstīt %(device)s"
+msgstr "Izrakstīt %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Parakstīties %(device)s? Tas būs nepieciešams, lai pierakstītos vēlreiz, lai izlasītu savu tērzēšanu."
+msgstr "Atslēgties %(device)s? Tas būs nepieciešams, lai pierakstītos vēlreiz, lai izlasītu savu tērzēšanu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Pierakstās"
 
@@ -2539,6 +2911,11 @@ msgstr "Sāk čatu…"
 msgid "Starting…"
 msgstr "Palaiž…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Apturēt koplietošanu"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Pārsvītrojums"
@@ -2589,7 +2966,7 @@ msgstr "Teksta formatēšana"
 msgid "Text style"
 msgstr "Teksta stils"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Paldies par pieprasījumu"
 
@@ -2613,27 +2990,39 @@ msgstr "Paldies. Admin būs apskatīt to."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Paldies: ģildes ģildes moderatori paskatīsies."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Paldies: vietnes admins izskatīsies, un jūs esat bloķējis @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Paldies: vietnes admins būs apskatīt."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Paldies: vietnes admins būs apskatīt. @ %(name)s nevarēja bloķēt no šejienes: bloķēt tos no viņu profila."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Šī tērzēšana vēl nav gatava šai ierīcei. Atveriet to vienreiz, tad mēģiniet vēlreiz."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Tas kodekss to neatver. Pārbaudiet, vai nav tipogrāfijas."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Neizdevās saglabāt."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "To ierīci tagad nevarēja parakstīt."
+msgstr "To ierīci tagad nevarēja atvienot."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "To ierīci nevarēja izmantot."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Neizdevās nosūtīt"
 
@@ -2672,6 +3061,14 @@ msgstr "Tā nav tava parole."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "To ziņu nevar nosūtīt."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Šo ziņu vairs nevarēja atrast kanālā."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Šo ziņu šajā tērzēšanā vairs nevarēja atrast."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2757,6 +3154,10 @@ msgstr "Čats ir slēgts: šī telpa ir beigusies."
 msgid "The chat opens when the Space starts."
 msgstr "Čats atveras, kad sākas Kosmoss."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Jūsu autentificētāja lietotnes kods vai viens no dublējuma kodiem."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Projekts mainīts zem pēdējās rediģēšanas, tāpēc tas tika pārlādēts. Pārbaudiet savus pēdējos vārdus."
@@ -2764,6 +3165,10 @@ msgstr "Projekts mainīts zem pēdējās rediģēšanas, tāpēc tas tika pārl�
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji, kam jāsalīdzina"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Failu nevarēja nosūtīt. Mēģini vēlreiz."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2780,6 +3185,10 @@ msgstr "Saiti nevarēja nokopēt."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofonu nevarēja iedarbināt."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofonu nevarēja izmantot. Pārbaudiet, vai šī vieta to var izmantot."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2819,6 +3228,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Atkārtotā spēle netika saglabāta: augšupielāde neizdevās. Jūs varat lejupielādēt to vietā."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Vietnes atslēgas ir mainītas, tāpēc tērzēšana atkal sākas šeit."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Kopsavilkumu paslēpj jūsu vārdu filtrs."
 
@@ -2854,6 +3267,10 @@ msgstr "Nav kur citur nosūtīt tos šajā vietnē vēl."
 msgid "These comments could not be loaded. Try again."
 msgstr "Šos komentārus neizdevās ielādēt. Mēģini vēlreiz."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Viņiem nekad nav teikts, kas tos ziņoja."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Viņi noraidīja aicinājumu."
@@ -2866,6 +3283,10 @@ msgstr "Viņi nesakrīt"
 msgid "They match"
 msgstr "Viņi atbilst"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Viņi paliek jūsu kontā, šifrēti, izmantojot savu brīvo vietu. Tos var atvērt tikai čatā iesaistītie cilvēki."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Viņi nevarēs sekot jums, ziņa jums vai komentārs par jūsu posts, un jūs neredzēsiet viņu posts. Jūs varat tos atbloķēt jebkurā laikā."
@@ -2874,9 +3295,9 @@ msgstr "Viņi nevarēs sekot jums, ziņa jums vai komentārs par jūsu posts, un
 msgid "This Space has ended."
 msgstr "Šī telpa ir beigusies."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Šī pārlūkprogramma"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Tas arī izbeidz jebkuru glābšanu no pārlūka, kur izmantojat tērzēšanu."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2886,9 +3307,29 @@ msgstr "Šī pārlūkprogramma nevar veikt zvanus."
 msgid "This browser can't record the Space."
 msgstr "Šī pārlūkprogramma nevar ierakstīt Visumu."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Šī pārlūkprogramma nevar kopīgot savu ekrānu."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Šī pārlūkprogramma nevar parādīt paziņojumus no šīs vietnes."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Šī pārlūkprogramma nevar sagatavot attēlus augšupielādēšanai. Mēģini citu pārlūku."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Šī pārlūkprogramma joprojām tur jūsu tērzēšanas atslēgas pirms paroles maiņas. Izmantojiet tos, lai lasītu vecos ziņojumus šeit un citās ierīcēs?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Šī pārlūkprogramma tika atvienota no tērzēšanas no citas ierīces, tāpēc šeit atkal sākas tērzēšana."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Šīs pārlūkprogrammas saglabātie tērzēšanas dati tika noskaidroti, tāpēc šeit atkal sākas tērzēšana."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2898,6 +3339,26 @@ msgstr "To nevar novērst."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Šis kanāls jums tiek liegts: nav nelasītu punktu un nav nekādu paziņojumu."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Šī tērzēšana ir no gala līdz galam šifrēta, tāpēc vietne to nevar izlasīt. Ziņojumi sūta šo ziņu un līdz četriem pirms tā, kā jūs redzat tos šeit, uz vietas admins."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Šo komentāru nevar parādīt."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Šī ierīce drīz tiks atvienota."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Šo failu nevarēja atvērt. Mēģini vēlreiz vēlāk."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Šis fails vairs nav pieejams."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Šis dzīvais pavediens ir beidzies"
@@ -2905,6 +3366,10 @@ msgstr "Šis dzīvais pavediens ir beidzies"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Šo ziņojumu nevar nolasīt šajā ierīcē."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Šī vēstule tika izdzēsta."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2919,12 +3384,24 @@ msgstr "Šo ziņu nevar parādīt."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Šis amats ir ārpus temata +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Šī zīme"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Tas atvieno čatu arī šajā pārlūkprogrammā, ja tā ir šī pārlūkprogramma. Tā atkal sāksies kā jauna ierīce."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Šis balss kanāls ir pilns (%(num)s cilvēks)."
 msgstr[1] "Šis balss kanāls ir pilns (%(num)s cilvēki)."
 msgstr[2] "Šis balss kanāls ir pilns (%(num)s cilvēki)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Šīs atslēgas vairs nav jūsu konta. Izmantojiet savu atgūšanas kodu, vai sākt no jauna."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2958,7 +3435,7 @@ msgstr[0] "Pārāk garš līdz %(num)s (%(note)s)"
 msgstr[1] "Pārāk garš par %(num)s (%(note)s)"
 msgstr[2] "Pārāk ilgi līdz %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Šodien pārāk daudz pieprasījumu"
 
@@ -2989,13 +3466,21 @@ msgstr "Tulkojums šobrīd nav pieejams."
 msgid "Try again"
 msgstr "Mēģiniet vēlreiz"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Mēģiniet vēlreiz rīt."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Ieslēgt paziņojumus"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Divu faktoru kods"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Divu faktoru pierakstīšanās tika mainīta, tāpēc tērzēšana šeit atkal sākas."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -3029,12 +3514,12 @@ msgstr "Neizdevās izņemt komentāru šajā laikā. Lūdzu, mēģiniet vēlāk 
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Šajā laikā nevar balsot. Lūdzu, mēģiniet vēlāk vēlreiz."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Atbloķēt"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Atsaukt"
 
@@ -3054,17 +3539,13 @@ msgstr "Atslēgt"
 msgid "Unlock your messages"
 msgstr "Atslēgt vēstules"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Vispirms atbloķējiet ziņojumus: pārielādējiet lapu, lai ievadītu paroli."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Neapklusināt"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Atspraust"
 
@@ -3120,11 +3601,15 @@ msgstr "Izmantojiet to šeit"
 msgid "Use my recovery code instead"
 msgstr "Izmantot manu atgūšanas kodu vietā"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Izmantot tos"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Lietotājvārds jau aizņemts :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Lietotājvārds ir derīgs!"
 
@@ -3211,7 +3696,7 @@ msgstr[2] "Videozvans · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video ir izslēgts šajā zvanā: jūs esat audio."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Skatīt oriģinālu"
 
@@ -3257,6 +3742,10 @@ msgstr[0] "Balss dodas pārlūkā caur vietnes releju, tāpēc neviens neredz ne
 msgstr[1] "Balss dodas pārlūkā caur vietnes releju, tāpēc neviens neredz neviena adresi. Līdz %(num)s cilvēkiem."
 msgstr[2] "Balss dodas pārlūkā caur vietnes releju, tāpēc neviens neredz neviena adresi. Līdz %(num)s cilvēkiem."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Balss piezīme"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Pagaidiet brīdi: jūsu pēdējās izmaiņas joprojām tiek saglabātas."
@@ -3264,6 +3753,10 @@ msgstr "Pagaidiet brīdi: jūsu pēdējās izmaiņas joprojām tiek saglabātas.
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Gaida programmu"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Mēs atradām jūsu čatu šajā pārlūkprogrammā"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3284,6 +3777,10 @@ msgstr "Kas noticis ar šo Visumu? (pēc izvēles)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Kas vainas šim vēstījumam? (pēc izvēles)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Kurp lai paliek faili, ko sūti tērzēšanā?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3310,7 +3807,7 @@ msgstr "Kas to teica"
 msgid "Who upvoted"
 msgstr "Balsojuma"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Kāpēc"
 
@@ -3325,6 +3822,10 @@ msgstr "Kāpēc tas pārkāpj jūsu ģildes noteikumus? Tas tiks parādīts ikvi
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Kāpēc tas pārkāpj jūsu ģildes noteikumus? Tas tiks parādīts ikvienam, kas meklē šo post/komentāra vēsturi."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Kāpēc šis komentārs tiek izņemts? Jūsu iemesls ir parādīts publiskajā žurnālā."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3343,7 +3844,7 @@ msgstr "Vispirms uzraksti."
 msgid "Write what you want to tell us."
 msgstr "Raksti, ko vēlies mums pateikt."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Jā"
 
@@ -3361,7 +3862,7 @@ msgstr "Jā, atceļiet"
 msgid "You"
 msgstr "Jūs"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Jūs to jau izdarījāt"
 
@@ -3377,7 +3878,7 @@ msgstr "Jūs jau ziņojāt par šo ziņu."
 msgid "You already voted on this post."
 msgstr "Jūs jau balsojāt par šo amatu."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Jūs bloķējat @%(name)s"
 
@@ -3416,7 +3917,7 @@ msgstr "Jūs varat izlasīt šo kanālu, bet ne rakstīt tajā."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Jūs varat redzēt, kas ir šeit, bet jūs nevarat runāt šajā kanālā."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Jūs to nevarat darīt."
 
@@ -3460,6 +3961,14 @@ msgstr "Tu atstāji Visumu."
 msgid "You left the call."
 msgstr "Tu atstāji zvanu."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Jūs visur atvienojāties no citas ierīces, tāpēc šeit atkal sākas tērzēšana."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Tu pierakstījies ar savu divu faktoru atgūšanas kodu, tāpēc tērzēšana šeit atkal sākas."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Jūs nesekojāt @%(name)s."
@@ -3467,6 +3976,10 @@ msgstr "Jūs nesekojāt @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Tu tiki izņemts no kosmosa."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Jūs saņemsiet jaunu atveseļošanas kodu, un vecais pārtrauks strādāt."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3492,6 +4005,10 @@ msgstr "Jūsu pārlūkprogramma bloķēja logu pieslēgšanai. Atļaut uznirsto�
 msgid "Your chat devices can't be listed right now."
 msgstr "Jūsu tērzēšanas ierīces šobrīd nevar tikt uzskaitītas."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Jūsu tērzēšanas atgūšanas kods"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Jūsu tērzēšana"
@@ -3503,6 +4020,10 @@ msgstr "Jūsu tērzēšanas atkal strādās ar šo ierīci, bet ziņojumus no ie
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Neizdevās ievietot jūsu komentāru. Mēģini vēlreiz."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Jūsu pašreizējais atjaunošanas kods pārtrauks darbu."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3534,9 +4055,32 @@ msgstr "Jūsu atslēgu šobrīd nevar parādīt."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Jūsu atslēga tika slēgta ar vecāku paroli. Atvērt tērzēšanu šajā vietnē un ievadiet savu atgūšanas kodu vienu reizi; tad tas atver šeit."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Jūsu ziņojums tiks nosūtīts, kad tērzēšana tiks atslēgta šajā ierīcē."
+msgstr[1] "Jūsu %(num)s ziņojumi tiks nosūtīts, kad tērzēšana tiks atslēgta šajā ierīcē."
+msgstr[2] "Jūsu %(num)s ziņojumi tiks nosūtīti, kad tērzēšana tiks atslēgta šajā ierīcē."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Jūsu vecais atveseļošanas kods vairs nedarbojas."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Jūsu parole ir mainīta, jo šī tērzēšanas atslēga ir ar to slēgta. Atveseļošanas kods jūs saglabāts, kad tērzēšana tika izveidota atver to."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Jūsu parole tika mainīta, tāpēc tērzēšana atkal sākas šeit."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Jūsu parole tika mainīta, tāpēc tērzēšana atkal sākas šeit."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Jūsu parole tika atiestatīta, tāpēc šeit atkal sākas tērzēšana."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3545,6 +4089,14 @@ msgstr "Jūsu atveseļošanas kods"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Šeit parādās jūsu saglabātās sagataves."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Ekrānu var koplietot tikai tad, kad esat video šajā zvanā."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Nevarēja kopīgot jūsu ekrānu."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3584,7 +4136,7 @@ msgid "blue"
 msgstr "zils"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "komentārs"
 
@@ -3663,7 +4215,7 @@ msgstr "apelsīni"
 msgid "pink"
 msgstr "sārtie"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "ieraksts"
 

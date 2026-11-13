@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sw\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s Ni wakati wa kuandika…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s Kuweka ujumbe baada ya kuondoka %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s Kuacha ujumbe uliopotea."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "mwanachama mmoja"
 msgstr[1] "wanachama wa %(num)s"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s ujumbe uliotumwa."
+msgstr[1] "ujumbe wa %(num)s unapatikana."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "ujumbe wa %(num)s katika thread"
 msgstr[1] "%(num)s ujumbe katika thread"
+
+#, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] ""
+msgstr[1] ""
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s • Wanachama wa %(num)s"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Kuokoa wakati wowote?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s ya KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] ""
 msgstr[1] ""
 
+#, machine, plain2
+msgid "1 day"
+msgstr "siku ya 1"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "wiki ya 1"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ ya%(name)s Ongeza kwenye kikundi hiki. Kusoma na kuandika ndani yake."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] ""
 msgstr[1] ""
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ ya%(name)s Ni wakati wa kuandika…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Ujumbe ambao haupatikani tena"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Ujumbe ulioandika hapa haukutumwa: chat kusimamishwa katika tab hii kabla ya kwenda."
+msgstr[1] "ujumbe wa %(num)s ulioandika hapa haukutumwa: mazungumzo yalizuiwa kwenye kichupo hiki kabla ya kwenda."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Makala inaweza kuwa na mwandishi wa ushirikiano zaidi ya mmoja."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Kukubali"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Ongeza"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Kuongeza msaada kwa jina la mtumiaji"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Kuongeza ..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Msimamizi"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Nakubali"
 
@@ -413,6 +455,10 @@ msgstr "Aliza Hakim"
 msgid "Alignment"
 msgstr "Kutambuliwa"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Pia kuzuia @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Kwa mfano: %(names)s"
 msgid "An app"
 msgstr "App ya"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Hasira"
 
@@ -432,7 +478,7 @@ msgstr "Hasira"
 msgid "Announcements"
 msgstr "Matangazo ya"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Asiyejulikana"
 
@@ -440,6 +486,10 @@ msgstr "Asiyejulikana"
 #, machine, plain1
 msgid "Answer"
 msgstr "Majibu"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Mtu yeyote katika chat bado nakala ujumbe au kuchukua picha ya screen kabla ya kwenda."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Weka link kwenye hii post"
 msgid "Aw shucks. No GIFs found..."
 msgstr "ya shucks. Hakuna cha GIFs Licha ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Safi sana"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Kuona haya"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Rudi juu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Zuia"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Zuia @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "Kuondolewa @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "(Sauti ya Ctrl + B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Kuleta funguo yako chat juu ya kusimamishwa sehemu ya njia. Kuingia password yako ili kumaliza."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Kamera mbali mbali"
 msgid "Camera on"
 msgstr "Kamera juu ya"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Ghairi"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kituo cha %(num)s"
 msgstr[1] "Idadi ya wanachama %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Chaneli"
 
@@ -599,13 +653,45 @@ msgstr "Channels wewe ni katika"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Gumzo"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat haiwezi kuleta funguo yako juu. Jaribu tena."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Chat haiwezi kuunganishwa."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Mazungumzo hayawezi kumalizika. Kuingia password yako kujaribu tena."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Mazungumzo hayawezi kumalizika. Jaribu tena."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat haikuweza kufungua nini browser hii kuokolewa, hivyo ni kuanza tena hapa."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat haiwezi kuanza katika browser hii."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Chat hakuwa na jibu. Jaribu tena."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat imekuwa kutumika katika browser hii kwa muda mrefu, hivyo ni kuanza tena hapa."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Mazungumzo yakwama kwenye tab …"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Mazungumzo bado yanaendelea."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Mazungumzo bado yanaendelea. Jaribu tena kwa wakati mmoja."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Chat ni si inapatikana kwa ajili ya akaunti yako sasa."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Facebook imepoteza uhusiano wake. Uchunguzi wa…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat inahitaji kivinjari hiki kuweka data ya tovuti, na haiwezi hapa. Chat haiwezi kuanza katika dirisha hili."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Chat ilisimama katika tab hii."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Chat iliondolewa kwenye kivinjari hiki kutoka kifaa kingine. Kwa mara nyingine tena hapa …"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Kuwasiliana na @%(name)s"
@@ -627,7 +733,7 @@ msgstr "Kuwasiliana na @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Simu ya mkononi ya Chat haipatikani kwa sasa."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Gumzo"
 
@@ -666,11 +772,11 @@ msgstr "Chagua nani unaweza kuona."
 msgid "Choose your profile or at least one guild."
 msgstr "Chagua wasifu wako au angalau kikundi kimoja."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Miduara"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Funga"
 
@@ -706,7 +812,7 @@ msgstr "Kulinganisha yao na wale programu yako inaonyesha, katika utaratibu huo.
 msgid "Confirm in the app as well."
 msgstr "Pia inapatikana kwenye App."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Kuchanganyikiwa"
 
@@ -858,6 +964,10 @@ msgstr "Haiwezi kupakia ujumbe uliopigwa"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Haikuweza kupakia hakikisho."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Haiwezi kupakia mazungumzo yako"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1019,7 +1129,11 @@ msgstr "Haikuweza kunakili: chagua msimbo na unakili."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Haikuweza kupakia ujumbe wa awali. Jaribu tena kwa wakati mmoja."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Haikuweza kupakia picha zako. Jaribu tena …"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Inaunda chapisho"
 
@@ -1027,7 +1141,7 @@ msgstr "Inaunda chapisho"
 msgid "Creating…"
 msgstr "Kujenga …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Inatia aibu"
 
@@ -1035,7 +1149,7 @@ msgstr "Inatia aibu"
 msgid "Cross out"
 msgstr "Kuvuka msalaba"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Hali ya giza"
 
@@ -1100,13 +1214,21 @@ msgstr "Unaacha hadithi hii?"
 msgid "Delete this update?"
 msgstr "Je, si update hii?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Inafuta maoni"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Inafuta chapisho"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Ujumbe uliopotea"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Ujumbe wa kuondoka umeondolewa."
 
 #, machine, plain1
 msgid "Discard"
@@ -1140,6 +1262,10 @@ msgstr "Kufanya hivyo"
 #, machine, plain1
 msgid "Done."
 msgstr "Ya kufanya."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Download mchezo Download"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1194,7 +1320,7 @@ msgstr "Mwisho-kwa-mwisho encrypted: tu watu katika kituo hiki wanaweza kusoma."
 msgid "Ended"
 msgstr "Mwisho wa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Weka URL"
 
@@ -1205,6 +1331,10 @@ msgstr "Nenda kwenye ukurasa wa wavuti, kama https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Kuingia password yako mara moja. Inafunga ufunguo wa ujumbe wako kwenye kivinjari hiki, kwa hivyo tovuti haiwezi kusoma."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Kuingia password yako ili kuthibitisha."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1218,9 +1348,49 @@ msgstr "Kuingia password yako."
 msgid "Enter your recovery code"
 msgstr "Ingiza msimbo wako wa usajili"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Ingiza msimbo wako wa sehemu mbili"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Ingiza msimbo wako wa sehemu mbili."
+
+#, machine, plain2
+msgid "File"
+msgstr "Faili ya faili"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Faili zinaweza kutumwa mara moja @%(name)s Aliacha kuzungumza."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Faili zinaweza kutumwa mara moja chat ni kufunguliwa kwenye kifaa hiki."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Faili haziwezi kutumwa hapa."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Mwisho wa Mwisho Mwisho"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Mwisho wa Mwisho"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Kukamilisha chat yako juu ya"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Mwisho wa kuanza"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Kuweka chat katika tab nyingine …"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1241,9 +1411,13 @@ msgid "Formatting"
 msgstr "Muundo wa"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Sambaza"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Tuma ujumbe huu"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1251,7 +1425,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Nenda kwenye kikundi zaidi ya moja."
 msgstr[1] "Nenda kwenye makundi zaidi ya %(num)s."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Kwenda kwa…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Mbele ya"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Ya mbele."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Inasambaza"
 
@@ -1291,11 +1477,11 @@ msgstr "Bonyeza kifungo cha maandishi."
 msgid "Give the template a name."
 msgstr "Tumia template kwa jina."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Nenda kwenye tovuti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Kinyaa"
 
@@ -1303,7 +1489,7 @@ msgstr "Kinyaa"
 msgid "Group info"
 msgstr "Taarifa ya Kundi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Vyama"
 
@@ -1315,13 +1501,25 @@ msgstr "Kucheza na chat"
 msgid "Hand raised"
 msgstr "Kuinua mikono juu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Furaha"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Je, wewe kuweka yako chat ahueni code? Bila hiyo, nenosiri lililosahau linaweza kupoteza ujumbe wako wa zamani."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Kichwa cha kichwa %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Wasaidizi"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Waandishi wa habari wakiwa katika picha ya pamoja na wewe. Chagua kati ya watu watatu ambao wako ndani."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1364,6 +1562,10 @@ msgstr "Nakubaliana na Kanuni za"
 msgid "I don't have it: start over"
 msgstr "Hakuna Matata: Start"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Mimi kuwa na"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Nimekuwa nikihifadhi"
@@ -1371,6 +1573,10 @@ msgstr "Nimekuwa nikihifadhi"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Kama wewe kamwe kusahau password yako, hii ni njia pekee ya kusoma ujumbe wako wa zamani. Weka mahali salama, kama msimamizi wa nenosiri."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Ikiwa bado una msimbo wako wa kupona, tumia badala yake: jumbe zingine za zamani ziko tu kwenye chelezo inayofungua."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1462,11 +1668,11 @@ msgstr "Maelezo yake yapo kwenye archive yako."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Jiunge"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Jiunge na %(channel)s"
 
@@ -1494,12 +1700,15 @@ msgstr "Mambo ya msingi na mahusiano ya watu lazima yazingatiwe kwanza."
 msgid "Last used %(date)s"
 msgstr "Matumizi ya mwisho %(date)s"
 
-#, glossary, machine, plain1
+msgid "Later"
+msgstr ""
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Kicheko"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Ondoka"
 
@@ -1515,7 +1724,7 @@ msgstr "Kuacha kundi hili? Mtu mwingine ndani yake anakuwa mmiliki wake."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Kuacha kundi hili? Hutaona ujumbe mpya isipokuwa mtu akikuongeza tena."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Hali ya mwanga"
 
@@ -1560,6 +1769,10 @@ msgstr "Kuishi Sasa"
 msgid "Load earlier messages"
 msgstr "Ujumbe wa awali"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Maoni ya Loading …"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Orodha ya …"
@@ -1584,17 +1797,25 @@ msgstr "Kuongeza templates yako ..."
 msgid "Loading..."
 msgstr "Udhibiti wa ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Inapakia…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Upendo"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Mkono wa chini"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Kufanya code mpya"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Je, una mpango mpya wa kufufua?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1612,7 +1833,7 @@ msgstr "Je, makala hii ni ya umma? Kila mtu anaweza kuiona."
 msgid "Making the channel…"
 msgstr "Kufanya kituo cha …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1629,6 +1850,14 @@ msgstr "Ujumbe uliofutwa"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Ujumbe wa maombi. Huwezi kujua kama umeyaona haya mpaka ukayaona."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Ujumbe wake baada ya %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Ujumbe wa kivinjari hiki unaweza kusoma hapa."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1640,7 +1869,7 @@ msgid "Microphone %(number)s"
 msgstr "Mawasiliano ya simu %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Zaidi"
 
@@ -1648,11 +1877,11 @@ msgstr "Zaidi"
 msgid "Move to listeners"
 msgstr "Kuingia kwa wasikilizaji"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Nyamaza"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Imenyamazishwa"
 
@@ -1672,7 +1901,11 @@ msgstr "Jina la folda yako"
 msgid "New channel"
 msgstr "Channel mpya ya channel"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Ujumbe mpya katika mazungumzo haya kutoweka kwa kila mtu baada ya wakati wewe kuchagua. Wajumbe wa kamati hiyo kabla ya muda wao kumalizika."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Hapana"
 
@@ -1692,17 +1925,29 @@ msgstr "Hakuna simu bado. Kuanza moja kutoka simu ya sauti ya mazungumzo au simu
 msgid "No camera was found."
 msgstr "Kamera yangu haikuwa mbali."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Hakuna mawasiliano yaliyopatikana."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Hakuna waandishi wa ushirikiano bado."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Hakuna kanuni? Ingia na nywila yako mpya kwenye kivinjari ambapo umetumia mazungumzo: inaweza kuleta mazungumzo yako nyuma."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Hakuna vifaa bado. Fungua mazungumzo ili kuanza."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Bila lebo"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Bado hakuna msaada."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1711,6 +1956,10 @@ msgstr "Hakukuwa na kipaza sauti."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Hakuna mchezaji hata mmoja. Unaweza kutuma ujumbe kwa watu unaowafuata."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Hakuna ujumbe uliotumwa."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1756,6 +2005,10 @@ msgstr "Hakuna kuokoa"
 msgid "Not used yet"
 msgstr "Haijatumiwa bado"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Hakuna kitu kilichopatikana katika ujumbe huu browser inaweza kusoma."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Hakuna kilichopatikana."
@@ -1784,17 +2037,45 @@ msgstr "Hakuna cha kusubiri mpaka sasa."
 msgid "Nothing was connected."
 msgstr "Hakuna kitu kilichounganishwa."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Arifa"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Taarifa ni imefungwa kwa tovuti hii katika browser hii. Weka katika mipangilio ya kivinjari ili kuwageuza."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Maelezo haya yanapatikana katika browser hii."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Maelezo ni katika browser hii."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Taarifa hizo hazikuweza kuchunguzwa. Bofya ukurasa huu kujaribu tena."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Maelezo hayawezi kubadilishwa. Jaribu tena."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Maelezo haya hayakuruhusiwa kwenye tovuti hii."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Orodha ya"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Mbali ya"
 
 #, machine, plain1
 msgid "Offline"
@@ -1802,6 +2083,10 @@ msgstr "Ya nje"
 
 msgid "Offline · retrying"
 msgstr ""
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Ni kiongozi na kiongozi pekee anayeweza kubadilisha hili."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1837,6 +2122,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Fungua Chat mara moja kufungua ujumbe wako, kisha jaribu tena."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Fungua Chat ili kumaliza kuweka ujumbe wako kwenye kifaa hiki."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Mipangilio ya vyombo vya habari"
 
@@ -1847,6 +2136,10 @@ msgstr "Kufungua nafasi"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Bonyeza kitufe cha + %(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Kufungua faili …"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1873,7 +2166,7 @@ msgstr "Watu wanakufuata"
 msgid "Pick a date and time."
 msgstr "Chagua tarehe na wakati."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Chagua lebo"
 
@@ -1907,11 +2200,15 @@ msgstr "Hadithi za picha bado hazipatikani kwenye tovuti hii."
 msgid "Pin this message"
 msgstr "Sambaza ujumbe huu"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pinduliwa"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Ujumbe wa siri"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Tafadhali"
 
@@ -1919,12 +2216,18 @@ msgstr "Tafadhali"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Tafadhali kuingia kwa halali URL (ikiwa ni pamoja na: https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Tafadhali ingia tena."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Vituo maarufu"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Chapisha"
 
@@ -1936,7 +2239,7 @@ msgstr "Imechapishwa. Rejea ukurasa huu ili kuona."
 msgid "Posting to %(guilds)s"
 msgstr "Kuwasilisha kwa %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Inachapishwa kwenye wasifu wako"
 
@@ -1945,7 +2248,7 @@ msgstr "Inachapishwa kwenye wasifu wako"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Kuingia profile yako, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Inachapisha…"
 
@@ -2045,6 +2348,14 @@ msgstr "Majibu ya"
 msgid "React with %(emoji)s"
 msgstr "kuwa na %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Rekodi ya sauti"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Kurekodi, bonyeza kipaza sauti tena ili kutuma."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Usajili wa code"
@@ -2057,13 +2368,17 @@ msgstr "Redo"
 msgid "Refreshing…"
 msgstr "Mapinduzi ya …"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Inasajili"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Kujiandaa kwa ajili ya baridi"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Pakia upya"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2078,13 +2393,17 @@ msgstr "Kumbukumbu ya kuzaliwa"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Ondoa"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Kuondolewa %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Kuacha @%(name)s Kama msaidizi wa"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2137,15 +2456,15 @@ msgstr "Badilisha folda hii"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Ripoti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Ripoti maoni"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Ripoti chapisho"
 
@@ -2153,11 +2472,11 @@ msgstr "Ripoti chapisho"
 msgid "Report this message"
 msgstr "Tuma ujumbe huu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Inaripoti maoni"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Inaripoti chapisho"
 
@@ -2174,13 +2493,13 @@ msgstr "Licha ya…"
 msgid "Rules of this channel"
 msgstr "Kanuni za channel hii"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Huzuni"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Hifadhi"
 
@@ -2196,11 +2515,15 @@ msgstr "Hifadhi kama template ..."
 msgid "Save your recovery code"
 msgstr "Kuokoa msimbo wako wa kuokoa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Imehifadhiwa"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Kuwaokoa."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Inahifadhi"
 
@@ -2234,7 +2557,7 @@ msgstr "Kuokoa …"
 msgid "Say what is wrong with this account."
 msgstr "Nini mbaya kuhusu akaunti hii."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Hofu"
 
@@ -2253,7 +2576,8 @@ msgstr "Imeandaliwa kwa ajili ya %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Tafuta"
 
@@ -2264,6 +2588,14 @@ msgstr "Tafuta mtu wa kuongeza."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Kutafuta channel hii"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Angalia hii chat"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Kutafuta chat yako"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2287,7 +2619,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Waliozaliwa %(num)s"
 msgstr[1] "Waliozaliwa %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Chagua mazungumzo"
 
@@ -2296,6 +2628,10 @@ msgstr "Chagua mazungumzo"
 #, machine, plain1
 msgid "Send"
 msgstr "Ujumbe wa"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Tuma faili"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2313,6 +2649,20 @@ msgstr "Tuma picha zako zifuatazo kwa:"
 msgid "Send your next videos to:"
 msgstr "Tuma video zako zifuatazo kwa:"
 
+#, python-format
+msgid "Sending %(name)s…"
+msgstr ""
+
+#, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr ""
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Baada ya mazungumzo ya moja kwa moja ni tayari …"
+msgstr[1] "Kutuma ujumbe wa %(num)s wakati wa mazungumzo ni tayari …"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Ujumbe wa..."
@@ -2329,6 +2679,14 @@ msgstr "Ujumbe wake"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Watu kadhaa wafariki …"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Kushiriki screen"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Kushiriki maoni"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2348,11 +2706,20 @@ msgstr[1] "Kuonyesha %(num)s posts mpya"
 msgid "Show formatting"
 msgstr "Kuonyesha format"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Onyesha kwenye channel"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Kuonyesha katika chat"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Onyesha kidogo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Onyesha zaidi"
 
@@ -2365,19 +2732,19 @@ msgstr "Maonyesho ya awali"
 msgid "Show translation"
 msgstr "Onyesha tafsiri"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Ishara ya"
+msgstr "Ondoa"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Ishara ya %(device)s"
+msgstr "Ondoa %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Ishara ya %(device)sUnahitaji kuingia tena ili kusoma mazungumzo yako."
+msgstr "Kuunganisha %(device)sUnahitaji kuingia tena ili kusoma mazungumzo yako."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Inaingia"
 
@@ -2495,6 +2862,11 @@ msgstr "Kuanza mazungumzo ya …"
 msgid "Starting…"
 msgstr "Kuanza …"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Kuacha kushirikiana"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Mgomo wa"
@@ -2545,7 +2917,7 @@ msgstr "Muundo wa maandishi"
 msgid "Text style"
 msgstr "Mtindo wa maandishi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Asante kwa ombi lako"
 
@@ -2569,27 +2941,39 @@ msgstr "Ya kushukuru. Kwa hiyo, Mheshimiwa Waziri aangalie hilo."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Shukrani: Wasimamizi wa kikundi cha kikundi wataangalia."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Shukrani: Wasimamizi wa tovuti wataangalia, na umezuia @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Shukrani: Wasimamizi wa tovuti wataangalia."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Shukrani: Wasimamizi wa tovuti wataangalia. @ ya%(name)s Haiwezi kuzuiwa kutoka hapa: kuwazuia kutoka kwenye wasifu wao."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Simu hii bado haijatengenezwa kwa mfumo huu. Jaribu mara moja, kisha jaribu tena."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Mfumo huu hauwezi kufungua. Kuangalia kwa ajili ya typos."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Haikuweza kuhifadhiwa."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Mfumo huu haukuweza kutekelezwa kwa sasa."
+msgstr "Mfumo huu hauwezi kuunganishwa kwa sasa."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Mfumo huu hauwezi kutumika."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Haikufanikiwa"
 
@@ -2628,6 +3012,14 @@ msgstr "Hiyo sio siri ya password yako."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Ujumbe huu hauwezi kutumwa."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Ujumbe huo haukuweza kupatikana tena katika kituo hicho."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Ujumbe huo haukuweza kupatikana tena katika mazungumzo hayo."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2713,6 +3105,10 @@ msgstr "Picha zote na Wizara ya Mambo ya Ndani ya Nchi."
 msgid "The chat opens when the Space starts."
 msgstr "Mazungumzo huanza wakati nafasi inapoanza."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Nambari kutoka kwa programu yako ya kuthibitisha, au moja ya nambari zako za chelezo."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Mpango huu ulibadilika chini ya hariri yako ya mwisho, kwa hivyo ulirejeshwa. Angalia maneno yako ya mwisho."
@@ -2720,6 +3116,10 @@ msgstr "Mpango huu ulibadilika chini ya hariri yako ya mwisho, kwa hivyo ulireje
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji ya kujilinganisha"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Faili haikuweza kutumwa. Jaribu tena."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2736,6 +3136,10 @@ msgstr "Kiungo hakiwezi kunakiliwa."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Microphone haiwezi kuanza."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Microphone haiwezi kutumika. Angalia kwamba tovuti hii inaweza kutumika."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2775,6 +3179,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Replay ilikuwa si kuokolewa: upload kushindwa. Unaweza kupakua badala yake."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Vipengele vya tovuti vimebadilika, kwa hivyo mazungumzo huanza tena hapa."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Maelezo yako yamefichwa na neno filter."
 
@@ -2810,6 +3218,10 @@ msgstr "Hakuna mahali pengine kutuma yao kwenye tovuti hii bado."
 msgid "These comments could not be loaded. Try again."
 msgstr "Maoni haya hayawezi kujumuishwa. Jaribu tena."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Hawajawahi kuambiwa ni nani aliyewatuma."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Walikataa wito huo."
@@ -2822,6 +3234,10 @@ msgstr "Hawana mchezo"
 msgid "They match"
 msgstr "Wanacheza"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Wao kukaa katika akaunti yako mwenyewe huko, encrypted, kutumia nafasi yake ya bure. Ni watu tu katika chat unaweza kufungua yao."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Hawataweza kukufuata, kukutuma au kutoa maoni kwenye machapisho yako, na hutaona machapisho yao. Unaweza kujiondoa wakati wowote."
@@ -2830,9 +3246,9 @@ msgstr "Hawataweza kukufuata, kukutuma au kutoa maoni kwenye machapisho yako, na
 msgid "This Space has ended."
 msgstr "Nafasi hii ilikwisha."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Browser hii"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Hii pia kuishia kuwaokoa yoyote kutoka browser ambapo wewe kutumia chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2842,9 +3258,29 @@ msgstr "Mtumiaji huyu hawezi kupiga simu."
 msgid "This browser can't record the Space."
 msgstr "Tovuti hii haiwezi kurekodi nafasi."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Kivinjari hiki hakiwezi kushiriki skrini yake."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Kivinjari hiki hakiwezi kuonyesha taarifa kutoka kwenye tovuti hii."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Kivinjari hiki hakiwezi kuandaa picha za kupakia. Jaribu browser nyingine."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Kivinjari hiki bado kinashikilia funguo zako za mazungumzo kabla ya nywila yako kubadilishwa. Je, unaweza kusoma ujumbe wako wa zamani hapa na kwenye vifaa vyako vingine?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Kivinjari hiki kilikatwa kutoka kwa soga kutoka kwa kifaa kingine, kwa hivyo mazungumzo huanza tena hapa."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Hii browser kuokolewa chat data ilifutwa, hivyo chat ni kuanza tena hapa."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2854,6 +3290,26 @@ msgstr "Hii haiwezi kupuuzwa."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Njia hii ni muted kwa ajili yenu: si kusoma dot na hakuna taarifa ya kutaja."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Mazungumzo haya ni ya mwisho-kwa-mwisho encrypted, hivyo tovuti haiwezi kusoma. Taarifa hutuma ujumbe huu na hadi nne kabla yake, kama unavyoona hapa, kwa admins wa tovuti."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Maoni haya hayawezi kuonyeshwa."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Mfumo huu utaunganishwa kwa muda mfupi."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Faili hii haiwezi kufunguliwa. Jaribu tena baadaye."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Faili hii haipatikani tena."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Safari hii ya maisha iliishia"
@@ -2861,6 +3317,10 @@ msgstr "Safari hii ya maisha iliishia"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Ujumbe huu hauwezi kusomwa kwenye kifaa hiki."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Ujumbe huu ulifutwa."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2875,11 +3335,23 @@ msgstr "Makala hii haiwezi kuonyeshwa."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Makala hii imeandikwa kwa ajili ya +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Ishara hii ya ndani"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Hii inakata chat katika browser hii pia, kama ni browser hii. Itaanza tena kama mfumo mpya."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Fomu hii ya maombi ni kamili (%(num)s watu)."
 msgstr[1] "Kituo hiki cha sauti ni kamili (%(num)s watu)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Akaunti hizi sio tena akaunti yako. Tumia msimbo wako wa kurejesha, au kuanza."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2912,7 +3384,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Maombi mengi mno leo"
 
@@ -2943,13 +3415,21 @@ msgstr "Tafsiri ya sasa haipatikani."
 msgid "Try again"
 msgstr "Jaribu tena"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Jaribu tena kesho."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Kurudisha taarifa kwenye"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Kanuni mbili za msingi"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Ishara ya sababu mbili ilibadilishwa, kwa hivyo mazungumzo huanza tena hapa."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2983,12 +3463,12 @@ msgstr "Haiwezi kuacha maoni wakati huu. Tafadhali jaribu tena baadaye."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Kushindwa kupiga kura kwa wakati huu. Tafadhali jaribu tena baadaye."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Ondoa kizuizi"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Tendua"
 
@@ -3008,17 +3488,13 @@ msgstr "Unlock ya"
 msgid "Unlock your messages"
 msgstr "Unda ujumbe wako"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Kufungua ujumbe wako kwanza: reload ukurasa kuingia password yako."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Rejesha sauti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Bandua"
 
@@ -3074,11 +3550,15 @@ msgstr "Tumia hapa"
 msgid "Use my recovery code instead"
 msgstr "Tumia msimbo wangu wa kuokoa badala yake"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Tumia yao"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Jina la mtumiaji tayari limechukuliwa :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Jina la mtumiaji liko sawa!"
 
@@ -3162,7 +3642,7 @@ msgstr[1] "Simu ya Mkono · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video ni mbali katika wito huu: wewe ni juu ya sauti."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Tazama asili"
 
@@ -3204,6 +3684,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Sauti inakwenda browser kupitia relay tovuti, hivyo hakuna mtu anaona anwani ya mtu yeyote. hadi mtu mmoja."
 msgstr[1] "Sauti inakwenda browser kupitia relay tovuti, hivyo hakuna mtu anaona anwani ya mtu yeyote. kufikia watu %(num)s."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Sauti ya sauti"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Kumbuka: mabadiliko yako ya mwisho bado yanahifadhiwa."
@@ -3211,6 +3695,10 @@ msgstr "Kumbuka: mabadiliko yako ya mwisho bado yanahifadhiwa."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Kuangalia kwa ajili ya App"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Sisi kupatikana chat yako juu ya browser hii"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3231,6 +3719,10 @@ msgstr "Kuna nini kibaya kwenye eneo hili? (Sauti ya)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Ni nini kibaya na ujumbe huu? (Sauti ya)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Ambapo lazima faili kutuma katika chat kwenda?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3257,7 +3749,7 @@ msgstr "WHO imesema kuwa"
 msgid "Who upvoted"
 msgstr "Nani wa kulaumiwa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Kwa nini"
 
@@ -3272,6 +3764,10 @@ msgstr "Kwa nini hii inavunja sheria za kikundi chako? Hii itaonyeshwa kwa mtu y
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Kwa nini hii inavunja sheria za kikundi chako? Hii itaonyeshwa kwa mtu yeyote anayeangalia historia ya chapisho hili / maoni."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Kwa nini maoni haya yameondolewa? Sababu yako ni kuonyeshwa katika logi ya umma."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3290,7 +3786,7 @@ msgstr "Andika kitu kwanza."
 msgid "Write what you want to tell us."
 msgstr "Andika kile unachotaka kutuambia."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Ndiyo"
 
@@ -3308,7 +3804,7 @@ msgstr "Ndiyo, kuacha"
 msgid "You"
 msgstr "Wewe ni wewe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Tayari umefanya hivyo"
 
@@ -3324,7 +3820,7 @@ msgstr "Tayari umechapisha makala hii."
 msgid "You already voted on this post."
 msgstr "Tayari umepiga kura katika makala hii."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Umemzuia @%(name)s"
 
@@ -3362,7 +3858,7 @@ msgstr "Unaweza kusoma makala hii lakini si kuandika ndani yake."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Unaweza kuona ni nani hapa, lakini huwezi kuzungumza katika kituo hiki."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Huwezi kufanya hivyo."
 
@@ -3406,6 +3902,14 @@ msgstr "Umeacha nafasi."
 msgid "You left the call."
 msgstr "Aliacha kupiga simu."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Wewe kuingiliana kila mahali kutoka kifaa kingine, hivyo chat ni kuanza tena hapa."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Wewe saini katika na yako sababu mbili ahueni code, hivyo chat ni kuanza tena hapa."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "bila mpangilio @%(name)s."
@@ -3413,6 +3917,10 @@ msgstr "bila mpangilio @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Wewe ni kuondolewa kutoka nafasi hii."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Utapata msimbo mpya wa kupona, na wa zamani utaacha kufanya kazi."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3438,6 +3946,10 @@ msgstr "Browser yako imefungwa dirisha kwa ajili ya kuunganisha. Ruhusu pop-ups 
 msgid "Your chat devices can't be listed right now."
 msgstr "Simu yako ya mkononi haiwezi kupakuliwa kwa sasa."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Nambari yako ya kurejesha chat"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Chat yako"
@@ -3449,6 +3961,10 @@ msgstr "Mazungumzo yako itafanya kazi tena kwenye kifaa hiki, lakini ujumbe kuto
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Maoni yako hayawezi kuchapishwa. Jaribu tena."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Mfumo wako wa sasa utaacha kufanya kazi."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3480,9 +3996,31 @@ msgstr "Maelezo yako hayawezi kuonyeshwa kwa sasa."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Akaunti yako imefungwa na nenosiri la zamani. Fungua Chat kwenye tovuti hii na kuingia msimbo wako wa kufufua mara moja; kisha inafungua hapa."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Ujumbe wako utatumwa mara moja chat ni kufunguliwa kwenye kifaa hiki."
+msgstr[1] "Ujumbe wako wa %(num)s utatumwa mara moja chat imefunguliwa kwenye kifaa hiki."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Mfumo wako wa zamani haufanyi kazi tena."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Nenosiri yako iliyopita tangu ufunguo huu chat imefungwa na hiyo. Msimbo wa kufufua uliohifadhiwa wakati chat ilianzishwa inafungua."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Nenosiri yako ilibadilishwa kwako, kwa hivyo mazungumzo huanza tena hapa."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Nenosiri yako ilibadilika, hivyo mazungumzo huanza tena hapa."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Password yako ilikuwa upya, hivyo chat ni kuanza tena hapa."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3491,6 +4029,14 @@ msgstr "Msimbo wa usajili"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Violezo vyako vilivyohifadhiwa vinaonyeshwa hapa."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Screen yako inaweza kushirikiwa tu wakati uko kwenye video kwenye simu hii."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Kamera yako haiwezi kuunganishwa."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3530,7 +4076,7 @@ msgid "blue"
 msgstr "bluu ya bluu"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "maoni"
 
@@ -3604,7 +4150,7 @@ msgstr "machungwa ya machungwa"
 msgid "pink"
 msgstr "rangi ya pink"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "chapisho"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hu\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s A gépelés…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s beállított üzenetek eltűnése után %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s kikapcsolta az eltűnt üzeneteket."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -114,10 +122,20 @@ msgid "%(num)s member"
 msgid_plural "%(num)s members"
 msgstr[0] "%(num)s tagok"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s Üzenetek megtalálása."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s üzenet fonalban"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s olvasott üzenetek…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -208,6 +226,14 @@ msgstr[0] "%(owner)s · %(num)s tagok"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Amúgy is spórolsz?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -237,6 +263,14 @@ msgid "+%(guild)s · %(num)s comment"
 msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s megjegyzések"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 nap"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 hét"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s hozzáadott téged ehhez a csoporthoz. Fogadd el, hogy elolvasod és beleírsz."
@@ -245,10 +279,6 @@ msgstr "@ %(name)s hozzáadott téged ehhez a csoporthoz. Fogadd el, hogy elolva
 msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s Még nem nyitotta meg a beszélgetést. A %(num)s Az üzeneteket akkor küldik el, amikor megteszik."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s gépel…"
 
 #, machine, plain1
 msgid "A Space"
@@ -300,6 +330,11 @@ msgid "A message that isn't there any more"
 msgstr "Egy üzenet, ami már nincs ott"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "%(num)s Az itt írt üzeneteket nem küldték el: a csevegés abbamaradt, mielőtt elindulhattak volna."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Egy poszt lehet %(num)s társszerzők legfeljebb."
@@ -317,9 +352,13 @@ msgid "Accept"
 msgstr "Elfogadás"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Hozzáadás"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Helikopter hozzáadása felhasználónév szerint"
 
 #, machine, plain1
 msgid "Add image"
@@ -358,12 +397,12 @@ msgid "Adding..."
 msgstr "Hozzáadás..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Adminisztrátor"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Egyetértek"
 
@@ -383,6 +422,10 @@ msgstr "Jobbra igazítás"
 msgid "Alignment"
 msgstr "Kiigazítás"
 
+#, python-format
+msgid "Also block @%(name)s"
+msgstr ""
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -392,7 +435,7 @@ msgstr "Itt is: %(names)s"
 msgid "An app"
 msgstr "Alkalmazás"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Dühös"
 
@@ -402,7 +445,7 @@ msgstr "Dühös"
 msgid "Announcements"
 msgstr "Bejelentések"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Névtelen"
 
@@ -410,6 +453,10 @@ msgstr "Névtelen"
 #, machine, plain1
 msgid "Answer"
 msgstr "Válasz"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "A chat-ben bárki másolhat egy üzenetet, vagy lefényképezheti a képernyőt, mielőtt elmegy."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -423,23 +470,23 @@ msgstr "Kapcsolat csatolása ehhez a bejegyzéshez"
 msgid "Aw shucks. No GIFs found..."
 msgstr "A francba! Nem. GIFs Találtam..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Szuper"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Kínos"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Vissza a tetejére"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Letiltás"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "@%(name)s letiltása?"
 
@@ -450,6 +497,10 @@ msgstr "Blokkolva @ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Merész (Ctrl + B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "A chat kulcsaid áthozása félúton megállt. Adja meg a befejezendő jelszót."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -522,7 +573,7 @@ msgstr "Kamera kikapcsolva"
 msgid "Camera on"
 msgstr "Kamera bekapcsolva"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Mégse"
 
@@ -556,7 +607,7 @@ msgid "Channel · %(num)s member"
 msgid_plural "Channel · %(num)s members"
 msgstr[0] "Csatorna %(num)s tagok"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Csatornák"
 
@@ -566,13 +617,45 @@ msgstr "Csatornák, amiben vagy"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Csevegés"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat nem tudta áthozni a kulcsaidat. Újratöltés."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Chat nem tudott kapcsolódni."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chat nem tudta befejezni az újrakezdést. Adja meg jelszavát, hogy újra megpróbálhassa."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chat nem tudta befejezni az újrakezdést. Újratöltés."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat nem tudta megnyitni, amit ez a böngésző mentett, így kezdődik újra itt."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Ebben a böngészőben nem lehet beszélgetni."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Nem válaszolt. Próbáld újra."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "A beszélgetést már régóta nem használták a böngészőben, szóval itt kezdődik újra."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "A beszélgetés egy másik lapon zárul…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -586,6 +669,26 @@ msgstr "A beszélgetés még mindig tart."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "A beszélgetés még mindig tart. Próbáld újra egy pillanat alatt."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "A beszélgetés jelenleg nem elérhető a számlájára."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat elvesztette a kapcsolatot. Újra…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chatnek szüksége van erre a böngészőre, hogy megőrizze a webhely adatait, és nem lehet itt. Ebben az ablakban nem lehet beszélgetni."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Megállt a beszélgetés ebben a fülben."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "A beszélgetést kikapcsolták a böngészőn egy másik eszközről. Kezdve itt…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Chat with @ %(name)s"
@@ -594,7 +697,7 @@ msgstr "Chat with @ %(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Chat kulcsa jelenleg nem elérhető."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Csevegések"
 
@@ -634,11 +737,11 @@ msgstr "Válassza ki, ki látja ezt."
 msgid "Choose your profile or at least one guild."
 msgstr "Válassza ki a profilját, vagy legalább egyet."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Körök"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Bezárás"
 
@@ -674,7 +777,7 @@ msgstr "Hasonlítsa össze őket azokkal, amiket az alkalmazás mutat, ugyanabba
 msgid "Confirm in the app as well."
 msgstr "Erősítse meg az alkalmazást is."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Zavarodott"
 
@@ -826,6 +929,10 @@ msgstr "Nem sikerült betölteni a beszúrt üzeneteket"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Nem sikerült betölteni az előnézetet."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Nem sikerült betölteni a beszélgetéseket"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -987,7 +1094,11 @@ msgstr "Nem sikerült másolni: válassza ki a kódokat, és másolja őket."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Nem tudtam betölteni korábbi üzeneteket. Próbáld újra egy pillanat alatt."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Nem tudtam megtölteni a beszélgetéseidet. Újra próbálkozni…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Létrehozás…"
 
@@ -995,7 +1106,7 @@ msgstr "Létrehozás…"
 msgid "Creating…"
 msgstr "Létrehozni…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Ciki"
 
@@ -1003,7 +1114,7 @@ msgstr "Ciki"
 msgid "Cross out"
 msgstr "Cross out"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Sötét mód"
 
@@ -1068,13 +1179,21 @@ msgstr "Törölni ezt a történetet?"
 msgid "Delete this update?"
 msgstr "Törölni ezt a frissítést?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Törlés…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Törlés…"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Eltávolító üzenetek"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Az eltűnt üzenetek kikapcsoltak."
 
 #, machine, plain1
 msgid "Discard"
@@ -1108,6 +1227,10 @@ msgstr "Kész"
 #, machine, plain1
 msgid "Done."
 msgstr "Kész."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Letöltés"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1162,7 +1285,7 @@ msgstr "End-to-end titkosított: csak az emberek ezen a csatornán tudja olvasni
 msgid "Ended"
 msgstr "Befejezve"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Add meg az URL-t"
 
@@ -1173,6 +1296,10 @@ msgstr "Adjon meg egy webcímet, például https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Adja meg a jelszavát egyszer. Ez zárja a kulcsot az üzenetek ebben a böngészőben, így az oldal nem tudja olvasni őket."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Adja meg a jelszavát, hogy megerősítse."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1186,9 +1313,49 @@ msgstr "Adja meg a jelszavát."
 msgid "Enter your recovery code"
 msgstr "Adja meg a helyreállítási kódot"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Adja meg a kétfaktoros kódot"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Adja meg a kétfaktoros kódját."
+
+#, machine, plain2
+msgid "File"
+msgstr "Fájl"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "A fájlok akkor küldhetők el, ha a @ %(name)s megnyitotta a csevegést."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "A fájlok akkor küldhetők el, ha a chat nyitva van ezen az eszközön."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Az aktákat nem lehet ide küldeni."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Záró"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Befejezés"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Fejezd be a csevegést"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Újrakezdés"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Befejezni a csevegést egy másik lapon…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1208,16 +1375,32 @@ msgid "Formatting"
 msgstr "Átalakítás"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Továbbítás"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Üzenet továbbítása"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
 msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Legfeljebb %(num)s Bűnösök."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Előre…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Tárolás"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "- Nem."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Továbbítás…"
 
@@ -1257,11 +1440,11 @@ msgstr "Adj egy kis sms-t a gombnak."
 msgid "Give the template a name."
 msgstr "Adja meg a sablon nevét."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Ugrás a webhelyre"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Undorító"
 
@@ -1269,7 +1452,7 @@ msgstr "Undorító"
 msgid "Group info"
 msgstr "Csoportos információ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Céhek"
 
@@ -1281,13 +1464,25 @@ msgstr "Bűnösök chat"
 msgid "Hand raised"
 msgstr "Kezeket fel"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Boldog"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Megtartottad a chat helyreállítási kódodat? Enélkül egy elfelejtett jelszó elveszítheti a régi üzeneteit."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Címsor %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Segítők"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "A segítők ezzel a csatornával írnak. Válassz három embert, akik benne vannak."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1330,6 +1525,10 @@ msgstr "Egyetértek a szabályokkal"
 msgid "I don't have it: start over"
 msgstr "Nincs nálam: kezdjük elölről"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Megvan"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Megmentettem"
@@ -1337,6 +1536,10 @@ msgstr "Megmentettem"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Ha valaha elfelejti a jelszavát, ez a kód az egyetlen módja, hogy elolvassa a régi üzeneteket. Tartsd valahol biztonságban, mint egy jelszókezelőt."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Ha még megvan a helyreállítási kód, használja helyette: néhány régebbi üzenetek csak a biztonsági mentés nyit."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1428,11 +1631,11 @@ msgstr "A történetei az archívumban maradnak."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Csatlakozás"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Csatlakozás: %(channel)s"
 
@@ -1460,12 +1663,16 @@ msgstr "A legfontosabb tényeket és kapcsolatokat az embereknek kell először 
 msgid "Last used %(date)s"
 msgstr "Utoljára használt %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Később"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Nevetés"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Kilépés"
 
@@ -1481,7 +1688,7 @@ msgstr "Elhagyni ezt a csoportot? Valaki más lesz a tulajdonosa."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Elhagyni ezt a csoportot? Nem fogsz új üzeneteket látni, hacsak valaki nem ad hozzá újra."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Világos mód"
 
@@ -1525,6 +1732,10 @@ msgstr "Élj most"
 msgid "Load earlier messages"
 msgstr "Korábbi üzenetek betöltése"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "A komment betöltése…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Betöltési pont…"
@@ -1549,17 +1760,25 @@ msgstr "A sablonok betöltése..."
 msgid "Loading..."
 msgstr "Betöltés..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Betöltés…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Szerelem"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Alsó kéz"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Új kód készítése"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Új helyreállítási kód?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1577,7 +1796,7 @@ msgstr "Nyilvánosságra hozni ezt a posztot? Mindenki láthatja."
 msgid "Making the channel…"
 msgstr "A csatorna…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Mindegy"
 
@@ -1594,6 +1813,14 @@ msgstr "Üzenet törölve"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Üzenetkérés. Addig nem tudják meg, amíg el nem fogadod."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Az üzenetek eltűnnek. %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Üzenetek ez a böngésző már olvasni fog vissza ide."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1605,7 +1832,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Továbbiak"
 
@@ -1613,11 +1840,11 @@ msgstr "Továbbiak"
 msgid "Move to listeners"
 msgstr "Áthelyezés a hallgatókra"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Némítás"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Némítva"
 
@@ -1637,7 +1864,11 @@ msgstr "A mappa neve"
 msgid "New channel"
 msgstr "Új csatorna"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Új üzenetek ebben a chat eltűnik mindenki számára, miután az idő, amit választ. Üzeneteket küldtek, mielőtt megtartották volna az időt, amit velük küldtek."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Nem"
 
@@ -1657,17 +1888,29 @@ msgstr "Még nincs hívás. Kezdje el egy chat hanghívásával vagy videóhív�
 msgid "No camera was found."
 msgstr "Nem találtak kamerát."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Nem találtunk beszélgetéseket."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Még nincs társszerző."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Nincs kód? Jelentkezzen be az új jelszóval a böngészőben, ahol chat-et használt: visszahozhatja a csevegést."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Még nincs eszköz. Kezdhetjük a beszélgetést."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Nincs címke"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Még nincsenek segítők."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1676,6 +1919,10 @@ msgstr "Nem találtak mikrofont."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Senki sem egyezik. Elküldheted a beszélgetéseidhez és az emberekhez, akiket követsz."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Még nincs rögzítve üzenet."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1721,6 +1968,10 @@ msgstr "Nem mentett"
 msgid "Not used yet"
 msgstr "Még nem használt"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Semmi nem található azokban az üzenetekben, amiket a böngésző el tud olvasni."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Nem találtam semmit."
@@ -1749,17 +2000,45 @@ msgstr "Még nincs mit előre látni."
 msgid "Nothing was connected."
 msgstr "Semmi nem volt kapcsolatban."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Értesítések"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Értesítések blokkolva ezen az oldalon ebben a böngészőben. Hagyja őket a böngésző beállításaiban bekapcsolni."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Ebben a böngészőben kikapcsolt az értesítés."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "A bejelentések ebben a böngészőben vannak."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "A bejelentéseket nem lehetett ellenőrizni. Újratölti az oldalt, hogy újra megpróbálja."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Az értesítéseket nem lehetett bekapcsolni. Próbáld újra."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Nem engedélyeztek értesítést erre az oldalra."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Számozott lista"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "Úristen"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Ki"
 
 #, machine, plain1
 msgid "Offline"
@@ -1768,6 +2047,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline · újrateremtés"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Csak egy csoport tulajdonosa és admingerei változtathatnak ezen."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1803,6 +2086,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Nyissa ki egyszer a beszélgetést, hogy kinyissa az üzeneteket, majd próbálja újra."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Nyissa meg a beszélgetést, hogy befejezze az üzenetek beállítását ezen az eszközön."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Média megnyitása"
 
@@ -1813,6 +2100,10 @@ msgstr "A tér megnyitása"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "A + chat megnyitása%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "A fájl megnyitása…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1839,7 +2130,7 @@ msgstr "Emberek, akiket követsz"
 msgid "Pick a date and time."
 msgstr "Válassz egy dátumot és időt."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Válassz címkét"
 
@@ -1873,11 +2164,15 @@ msgstr "A képek még nem állnak rendelkezésre ezen az oldalon."
 msgid "Pin this message"
 msgstr "Pin ez az üzenet"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pinned"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Pintyes üzenetek"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Kérlek"
 
@@ -1885,12 +2180,18 @@ msgstr "Kérlek"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Adja meg az érvényes URL (beleértve: http: / / vagy https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Jelentkezz be újra."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Népszerű csatornák"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Közzététel"
 
@@ -1902,7 +2203,7 @@ msgstr "Posted. Újratöltjük az oldalt, hogy lássuk."
 msgid "Posting to %(guilds)s"
 msgstr "Posting to %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Közzététel a profilodon"
 
@@ -1911,7 +2212,7 @@ msgstr "Közzététel a profilodon"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Posting to your profile, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Közzététel…"
 
@@ -2010,6 +2311,14 @@ msgstr "Reakció"
 msgid "React with %(emoji)s"
 msgstr "Reakció %(emoji)s - vel"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Hangüzenet rögzítése"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Felvétel… nyomja meg újra a mikrofont, hogy elküldje."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Visszatérítési kód"
@@ -2022,13 +2331,17 @@ msgstr "Módosítás"
 msgid "Refreshing…"
 msgstr "Frissítő…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Regisztráció…"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Felengedés frissítésre"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Újratöltés"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2043,13 +2356,17 @@ msgstr "Emlékeztető készlet"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Eltávolítás"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Eltávolítás %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "@ %(name)s eltávolítása segítőként"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2102,15 +2419,15 @@ msgstr "A mappa átnevezése"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Jelentés"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Hozzászólás jelentése"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Bejegyzés jelentése"
 
@@ -2118,11 +2435,11 @@ msgstr "Bejegyzés jelentése"
 msgid "Report this message"
 msgstr "Jelentse ezt az üzenetet"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Jelentés…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Jelentés…"
 
@@ -2139,13 +2456,13 @@ msgstr "Csing…"
 msgid "Rules of this channel"
 msgstr "A csatorna szabályai"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Szomorú"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Mentés"
 
@@ -2161,11 +2478,15 @@ msgstr "Mentés sablonként..."
 msgid "Save your recovery code"
 msgstr "Mentse a helyreállítási kódot"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Mentve"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Megmentettem."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Mentés…"
 
@@ -2199,7 +2520,7 @@ msgstr "Megmentem…"
 msgid "Say what is wrong with this account."
 msgstr "Mondd el, mi a baj ezzel a számlával."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Ijedt"
 
@@ -2218,7 +2539,8 @@ msgstr "Tervezett %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Keresés"
 
@@ -2229,6 +2551,14 @@ msgstr "Keressen valakit, akit hozzáadhat."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Keresés ezen a csatornán"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Keresse meg ezt a chat"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Kutassák át a beszélgetéseiket"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2250,7 +2580,7 @@ msgid "Seen by %(num)s"
 msgid_plural "Seen by %(num)s"
 msgstr[0] "Lásd: %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Válassz egy beszélgetést"
 
@@ -2259,6 +2589,10 @@ msgstr "Válassz egy beszélgetést"
 #, machine, plain1
 msgid "Send"
 msgstr "Küldés"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Fájl küldése"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2275,6 +2609,19 @@ msgstr "Küldje el a következő képeket:"
 #, machine, plain1
 msgid "Send your next videos to:"
 msgstr "Küldje el a következő videókat:"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Küldés %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Küldés: %(name)s… %(percent)s %%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Küldés %(num)s Üzenetek, ha kész a chat…"
 
 #, machine, plain1
 msgid "Sending..."
@@ -2293,6 +2640,14 @@ msgstr "Elküldött"
 msgid "Several people are typing…"
 msgstr "Több ember gépel…"
 
+#, machine, plain2
+msgid "Share screen"
+msgstr "Képernyő megosztása"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Megosztott egy megjegyzést"
+
 #, machine, plain1
 msgid "Shared a post"
 msgstr "Megosztottam egy posztot"
@@ -2310,11 +2665,20 @@ msgstr[0] "Megjelenítés %(num)s új álláshelyek"
 msgid "Show formatting"
 msgstr "A formázás megjelenítése"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "A csatorna megjelenítése"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "A chat megjelenítése"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Kevesebb"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Több megjelenítése"
 
@@ -2327,19 +2691,19 @@ msgstr "Eredeti"
 msgid "Show translation"
 msgstr "A fordítás megjelenítése"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Kijelentkezés"
+msgstr "Kijelentkeztetés"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Kijelentkezés %(device)s"
+msgstr "%(device)s kijelentkeztetése"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Kijelentkezés %(device)sÚjra be kell jelentkeznie, hogy elolvassa a beszélgetéseidet."
+msgstr "Váltás %(device)sÚjra be kell jelentkeznie, hogy elolvassa a beszélgetéseidet."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Bejelentkezés…"
 
@@ -2455,6 +2819,11 @@ msgstr "Kezdődik a beszélgetés…"
 msgid "Starting…"
 msgstr "Kezdve…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Hagyd abba a megosztást"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Strikethrough"
@@ -2505,7 +2874,7 @@ msgstr "Szövegformázás"
 msgid "Text style"
 msgstr "Szövegstílus"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Köszönjük a kérést"
 
@@ -2529,27 +2898,39 @@ msgstr "Köszönöm. Egy adminisztrátor megnézi."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Köszönöm, a Céhek Ligája moderátorai megnézik."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Köszönöm: az oldal tollai megnézik, és blokkolja @ %(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Köszönöm: az oldal tollai megnézik."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Köszönöm: az oldal tollai megnézik. @%(name)s Innen nem lehet blokkolni őket."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "A beszélgetés még nem készült el ezen az eszközön. Nyisd ki egyszer, aztán próbáld újra."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Az a kód nem nyitja ki. Ellenőrizzék a gépelést."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Nem sikerült menteni."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Azt az eszközt most nem lehet aláírni."
+msgstr "Azt az eszközt most nem lehet kikapcsolni."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Azt az eszközt nem lehetett használni."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Ez nem sikerült"
 
@@ -2588,6 +2969,14 @@ msgstr "Nem ez a jelszavad."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Ezt az üzenetet nem lehet elküldeni."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Ezt az üzenetet már nem lehet megtalálni a csatornában."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Ezt az üzenetet már nem találtuk ebben a csevejben."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2673,6 +3062,10 @@ msgstr "A beszélgetés lezárva: ez a tér véget ért."
 msgid "The chat opens when the Space starts."
 msgstr "A beszélgetés akkor kezdődik, amikor a tér elkezdődik."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "A hitelesítő alkalmazás kódja, vagy az egyik biztonsági kód."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "A vázlat megváltozott az utolsó szerkesztés alatt, így újratöltötte. Nézd meg az utolsó szavaidat."
@@ -2680,6 +3073,10 @@ msgstr "A vázlat megváltozott az utolsó szerkesztés alatt, így újratöltö
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Az emoji összehasonlítani"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Az aktát nem lehetett elküldeni. Próbáld újra."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2696,6 +3093,10 @@ msgstr "A kapcsolatot nem lehetett lemásolni."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "A mikrofont nem lehetett elindítani."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "A mikrofont nem lehetett használni. Ellenőrizze, hogy ezen az oldalon lehet használni."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2735,6 +3136,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "A visszajátszás nem mentett: a feltöltés nem sikerült. Letöltheted helyette."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Az oldal kulcsai megváltoztak, itt kezdődik a beszélgetés."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Az összefoglalót elrejtette a szószűrő."
 
@@ -2770,6 +3175,10 @@ msgstr "Még nincs hová elküldeni őket."
 msgid "These comments could not be loaded. Try again."
 msgstr "Ezek az észrevételek nem voltak kitöltve. Próbáld újra."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Sosem árulják el, ki jelentette őket."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Visszautasították a hívást."
@@ -2782,6 +3191,10 @@ msgstr "Nem egyeznek"
 msgid "They match"
 msgstr "Egyezik"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "A saját fiókjában maradnak, titkosítva, a szabad terét használva. Csak a beszélgetésben részt vevő emberek nyithatják ki őket."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Nem lesznek képesek követni, üzenni vagy kommentálni a posztjukat, és nem fogják látni a posztjukat. Bármikor feloldhatod őket."
@@ -2790,9 +3203,9 @@ msgstr "Nem lesznek képesek követni, üzenni vagy kommentálni a posztjukat, �
 msgid "This Space has ended."
 msgstr "Ez a tér véget ért."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Ez a böngésző"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Ez is véget vet minden mentés a böngésző, ahol használt chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2802,9 +3215,29 @@ msgstr "Ez a böngésző nem tud telefonálni."
 msgid "This browser can't record the Space."
 msgstr "Ez a böngésző nem tudja felvenni az űrt."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "A böngésző nem tudja megosztani a képernyőjét."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Ez a böngésző nem tudja megjeleníteni értesítések ezen az oldalon."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "A böngésző nem tud képeket készíteni a feltöltéshez. Próbáljon meg egy másik böngészőt."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Ez a böngésző még mindig a chat billentyűket, mielőtt a jelszó megváltozott. Használják őket, hogy elolvassák a régi üzeneteiket itt és a többi eszközön?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "A böngészőt kikapcsolták a chat-ről egy másik eszközről, így a chat itt kezdődik újra."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "A böngésző mentett chat adatait törölték, így a chat itt kezdődik újra."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2814,6 +3247,26 @@ msgstr "Ezt nem lehet visszacsinálni."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Ez a csatorna néma: nincs olvasatlan pont és nincs említés értesítések."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Ez a chat endo-to-end titkosított, így az oldal nem tudja elolvasni. Jelentés küld ezt az üzenetet, és akár négy előtt, mint látod őket itt, az oldal administrs."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Ezt a megjegyzést nem lehet kimutatni."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Ez az eszköz hamarosan ki lesz kapcsolva."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Ezt az aktát nem lehetett megnyitni. Próbáld meg később."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Ez a fájl már nem elérhető."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Ez az élő szál véget ért"
@@ -2821,6 +3274,10 @@ msgstr "Ez az élő szál véget ért"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Ez az üzenet nem olvasható ezen az eszközön."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Ezt az üzenetet törölték."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2835,10 +3292,22 @@ msgstr "Ezt a posztot nem lehet megmutatni."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Ez a bejegyzés a + %(guild)s témakörön kívül esik"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Ez a jel."
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Ez a böngészőben is megszakítja a csevegést, ha ez a böngészőé. Újrakezdik, mint egy új eszköz."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Ez a hangcsatorna tele van (%(num)s )."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Azok a kulcsok már nem a te számlád. Használja a helyreállítási kódot, vagy kezdje újra."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2870,7 +3339,7 @@ msgid "Too long by %(num)s (%(note)s)"
 msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Túl hosszú %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Túl sok kérés mára"
 
@@ -2901,13 +3370,21 @@ msgstr "A fordítás jelenleg nem elérhető."
 msgid "Try again"
 msgstr "Próbáld újra"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Próbáld újra holnap."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Az értesítések bekapcsolása"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Kétfaktoros kód"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "A kétfaktoros sign- in megváltozott, így a beszélgetés itt kezdődik újra."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2941,12 +3418,12 @@ msgstr "Nem sikerült eltávolítani a megjegyzést ebben az időben. Kérem, pr
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Jelenleg nem lehet szavazni. Kérem, próbálja meg később."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Letiltás feloldása"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Visszavonás"
 
@@ -2966,17 +3443,13 @@ msgstr "Nyisd ki"
 msgid "Unlock your messages"
 msgstr "Üzenetek megnyitása"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Először bontsa ki az üzeneteket: töltse újra az oldalt a jelszó megadásához."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Feloldás"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Kitűzés törlése"
 
@@ -3032,11 +3505,15 @@ msgstr "Itt használd"
 msgid "Use my recovery code instead"
 msgstr "Használd inkább a helyreállítási kódomat"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Használd őket"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "A felhasználónév már foglalt :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "A felhasználónév rendben van!"
 
@@ -3117,7 +3594,7 @@ msgstr[0] "Videó hívás %(num)s sz"
 msgid "Video is off in this call: you're on audio."
 msgstr "A videó ki van kapcsolva ebben a hívásban. Hangon vagy."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Eredeti megtekintése"
 
@@ -3155,6 +3632,10 @@ msgid "Voice goes browser to browser through the site's relay, so nobody sees an
 msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
 msgstr[0] "Hang megy böngésző böngésző keresztül az oldal relé, így senki nem látja senki címét. Fel %(num)s Emberek."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Hangüzenet"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Várj egy percet: az utolsó változtatásaid még mindig meg vannak mentve."
@@ -3162,6 +3643,10 @@ msgstr "Várj egy percet: az utolsó változtatásaid még mindig meg vannak men
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Várakozás az alkalmazásra"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Megtaláltuk a csevegést ezen a böngészőn"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3182,6 +3667,10 @@ msgstr "Mi a baj ezzel a hellyel? (nem kötelező)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Mi a baj ezzel az üzenettel? (nem kötelező)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Hová kellene mennie az aktáknak, amiket küldesz?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3208,7 +3697,7 @@ msgstr "Ki mondta"
 msgid "Who upvoted"
 msgstr "Ki szavazott"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Miért"
 
@@ -3223,6 +3712,10 @@ msgstr "Miért szegi meg ez a céhed szabályait? Ezt mindenki láthatja, aki ut
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Miért szegi meg ez a céhed szabályait? Ezt annak mutatjuk meg, aki ennek a hozzászólásnak a történetét vizsgálja."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Miért törölték ezt a megjegyzést? Az indoka szerepel a nyilvános naplóban."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3241,7 +3734,7 @@ msgstr "Írj előbb valamit."
 msgid "Write what you want to tell us."
 msgstr "Írjon, amit akar."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Igen"
 
@@ -3259,7 +3752,7 @@ msgstr "Igen, mondd le"
 msgid "You"
 msgstr "Te"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Ezt már megtetted"
 
@@ -3275,7 +3768,7 @@ msgstr "Már jelentette ezt a posztot."
 msgid "You already voted on this post."
 msgstr "Már szavaztál erről a posztról."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Letiltottad: @%(name)s"
 
@@ -3312,7 +3805,7 @@ msgstr "Olvashatod ezt a csatornát, de nem írhatsz bele."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Láthatja, ki van itt, de nem beszélhet ezen a csatornán."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Ezt nem teheted meg."
 
@@ -3356,6 +3849,14 @@ msgstr "Elhagytad az űrt."
 msgid "You left the call."
 msgstr "Otthagytad a hívást."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Mindenütt kikapcsoltál egy másik eszközről, szóval itt kezdődik a beszélgetés."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Beiratkoztál a két faktoros helyreállítási kódoddal, szóval itt kezdődik a beszélgetés."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "You unfollowed @%(name)s."
@@ -3363,6 +3864,10 @@ msgstr "You unfollowed @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Eltávolítottak erről a térről."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Kapsz egy új helyreállítási kódot, és a régi nem fog működni."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3388,6 +3893,10 @@ msgstr "A böngésző blokkolta az ablakot a csatlakozáshoz. Engedélyezze a po
 msgid "Your chat devices can't be listed right now."
 msgstr "A chat eszközeidet nem lehet most felsorolni."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "A chat helyreállítási kód"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "A beszélgetéseid"
@@ -3399,6 +3908,10 @@ msgstr "A beszélgetések újra működni fognak ezen az eszközön, de az előz
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "A hozzászólását nem lehetett elküldeni. Próbáld újra."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "A jelenlegi helyreállítási kód nem működik."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3430,9 +3943,30 @@ msgstr "A kulcsod most nem mutatható meg."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "A kulcsod egy régebbi jelszóval volt lezárva. Nyissa meg a chat ezen az oldalon, és adja meg a helyreállítási kódot egyszer, majd megnyílik itt."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "A %(num)s üzenetek akkor kerülnek küldésre, ha a chat nyitva van ezen az eszközön."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "A régi gyógyulási kódod már nem működik."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "A jelszavad megváltozott, mivel ez a chat kulcs zárva volt vele. A helyreállítási kód, amit elmentettél, amikor a chat-et felállították, kinyitja."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "A jelszavát megváltoztatták, tehát a beszélgetés itt kezdődik újra."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Megváltoztatták a jelszavad, szóval itt kezdődik a beszélgetés."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "A jelszavát visszaállították, így a beszélgetés itt kezdődik újra."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3441,6 +3975,14 @@ msgstr "A helyreállítási kód"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "A mentett sablonjaid itt vannak."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "A képernyőt csak akkor lehet megosztani, ha videón vagy ebben a hívásban."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "A képernyődet nem lehetett megosztani."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3480,7 +4022,7 @@ msgid "blue"
 msgstr "kék"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "hozzászólás"
 
@@ -3549,7 +4091,7 @@ msgstr "narancs"
 msgid "pink"
 msgstr "rózsaszín"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "bejegyzés"
 

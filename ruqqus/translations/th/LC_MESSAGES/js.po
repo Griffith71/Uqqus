@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: th\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s กําลังพิมพ์…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s ตั้งจดหมายให้หายไปหลังจาก %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s ยกเลิกการลบจดหมาย"
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -114,10 +122,20 @@ msgid "%(num)s member"
 msgid_plural "%(num)s members"
 msgstr[0] "%(num)s สมาชิก"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s พบจดหมาย"
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s ข้อความในเธรด"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s กําลังอ่านจดหมาย…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -208,6 +226,14 @@ msgstr[0] "%(owner)s อะ %(num)s สมาชิก"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s จะบันทึกยังไง?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s กิโลไบต์"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -237,6 +263,14 @@ msgid "+%(guild)s · %(num)s comment"
 msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s อะ %(num)s หมายเหตุ"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 วัน"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 สัปดาห์"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s เพิ่มคุณเข้าไปในกลุ่มนี้ จง ยอม รับ ว่า อ่าน แล้ว เขียน ลง ใน นั้น."
@@ -245,10 +279,6 @@ msgstr "@ %(name)s เพิ่มคุณเข้าไปในกลุ่�
 msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s ยังไม่ได้เปิดการสนทนา คุณ %(num)s ข้อความจะถูกส่งไปเมื่อพวกเขาทํา"
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s กําลังพิมพ์…"
 
 #, machine, plain1
 msgid "A Space"
@@ -300,6 +330,11 @@ msgid "A message that isn't there any more"
 msgstr "ข้อความที่ไม่มีอีกแล้ว"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "%(num)s ข้อความที่คุณเขียนที่นี่ไม่ได้ถูกส่งมา การสนทนาหยุดอยู่ในแท็บนี้ ก่อนที่พวกเขาจะไป"
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "โพสต์สามารถ %(num)s ผู้ร่วมเขียนมากที่สุด"
@@ -317,9 +352,13 @@ msgid "Accept"
 msgstr "ยอมรับ"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "เพิ่ม"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "เพิ่มผู้ช่วยเหลือโดยชื่อผู้ใช้"
 
 #, machine, plain1
 msgid "Add image"
@@ -358,12 +397,12 @@ msgid "Adding..."
 msgstr "เพิ่ม..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "แอดมิน"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "เห็นด้วย"
 
@@ -383,6 +422,10 @@ msgstr "จัดเรียงขวา"
 msgid "Alignment"
 msgstr "การจัดวาง"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "บล็อกด้วย%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -392,7 +435,7 @@ msgstr "และตรงนี้: %(names)s"
 msgid "An app"
 msgstr "แอพพลิเคชัน"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "โกรธ"
 
@@ -402,7 +445,7 @@ msgstr "โกรธ"
 msgid "Announcements"
 msgstr "การ ประกาศ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "ไม่ระบุตัวตน"
 
@@ -410,6 +453,10 @@ msgstr "ไม่ระบุตัวตน"
 #, machine, plain1
 msgid "Answer"
 msgstr "ตอบ"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "ใคร ก็ ตาม ที่ อยู่ ใน การ สนทนา ยัง คง คัด ลอก ข้อ ความ หรือ ถ่าย ภาพ จอ ก่อน จะ ไป."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -423,23 +470,23 @@ msgstr "แนบการเชื่อมโยงไปยังโพสต
 msgid "Aw shucks. No GIFs found..."
 msgstr "อุ๊บส์ ไม่ GIFs พบ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "สุดยอด"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "อึดอัด"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "กลับไปด้านบน"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "บล็อก"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "บล็อก @%(name)s?"
 
@@ -450,6 +497,10 @@ msgstr "บล็อค@ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "ตัวหนา (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "เอากุญแจแชทมาหยุดทางนึง ใส่รหัสผ่านของคุณที่จะเสร็จสิ้น."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -522,7 +573,7 @@ msgstr "ปิดกล้อง"
 msgid "Camera on"
 msgstr "กล้องบน"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -556,7 +607,7 @@ msgid "Channel · %(num)s member"
 msgid_plural "Channel · %(num)s members"
 msgstr[0] "ช่อง %(num)s สมาชิก"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "ช่อง"
 
@@ -566,13 +617,45 @@ msgstr "แชนเนลที่คุณอยู่ใน"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "แชท"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "แชตเอากุญแจมาไม่ได้ โหลดใหม่เพื่อลองอีกครั้ง."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "แชตติดต่อไม่ได้."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "แชนท์ เริ่มต้นใหม่ไม่ได้ ใส่รหัสผ่านของคุณที่จะลองอีกครั้ง."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "แชนท์ เริ่มต้นใหม่ไม่ได้ โหลดใหม่เพื่อลองอีกครั้ง."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat ไม่สามารถเปิดสิ่งที่เบราว์เซอร์นี้บันทึกไว้ ดังนั้นมันจะเริ่มต้นอีกครั้งที่นี่."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "แชตไม่สามารถเริ่มต้นในเบราว์เซอร์นี้."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "แชตไม่ตอบ ลองอีกที."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "แชตไม่ได้ถูกใช้บนเบราว์เซอร์ตัวนี้มานานแล้ว มันเลยเริ่มต้นที่นี่อีกครั้ง."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "แชตกําลังจะปิดในอีกแท็บหนึ่ง…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -586,6 +669,26 @@ msgstr "แชตกําลังเริ่มต้น."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "แชตกําลังเริ่มต้น ลองอีกครั้งในสักครู่."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "แชนต์ไม่มีให้ใช้ สําหรับบัญชีของคุณตอนนี้."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "แชตเสียการติดต่อ กําลังลองใหม่…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "แชตต้องการให้เบราเซอร์นี้เก็บข้อมูลของเว็บไซต์ และมันอยู่ที่นี่ไม่ได้ พูดคุยไม่สามารถเริ่มต้นในหน้าต่างนี้."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Chart หยุดในแท็บนี้."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "แชตถูกตัดการเชื่อมต่อกับเบราว์เซอร์ตัวนี้จากอุปกรณ์อื่น เริ่มใหม่อีกครั้งที่นี่…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "พูดคุยด้วย%(name)s"
@@ -594,7 +697,7 @@ msgstr "พูดคุยด้วย%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "กุญแจของแชตไม่ว่างตอนนี้."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "แชท"
 
@@ -634,11 +737,11 @@ msgstr "เลือกสิว่าใครเห็น."
 msgid "Choose your profile or at least one guild."
 msgstr "เลือกโพรไฟล์ของคุณ หรืออย่างน้อยหนึ่งสมาคม."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "เซอร์เคิล"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "ปิด"
 
@@ -674,7 +777,7 @@ msgstr "เปรียบเทียบพวกเขากับคนที
 msgid "Confirm in the app as well."
 msgstr "ยืนยันในแอพด้วย."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "งง"
 
@@ -826,6 +929,10 @@ msgstr "ไม่สามารถโหลดจดหมายที่ตร
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "ไม่สามารถโหลดภาพตัวอย่างได้."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "ไม่สามารถโหลดการสนทนาของคุณได้"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -987,7 +1094,11 @@ msgstr "ไม่สามารถคัดลอก: เลือกรหั�
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "ไม่สามารถโหลดข้อความก่อนหน้านี้ ลองอีกครั้งในสักครู่."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "ไม่สามารถบรรจุการสนทนาของคุณ พยายามอีกครั้ง…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "กำลังสร้างโพสต์"
 
@@ -995,7 +1106,7 @@ msgstr "กำลังสร้างโพสต์"
 msgid "Creating…"
 msgstr "กําลังสร้าง…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "เขินแทน"
 
@@ -1003,7 +1114,7 @@ msgstr "เขินแทน"
 msgid "Cross out"
 msgstr "ตัดออกไป"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "โหมดมืด"
 
@@ -1068,13 +1179,21 @@ msgstr "ลบเรื่องนี้?"
 msgid "Delete this update?"
 msgstr "ลบข้อมูลล่าสุดนี้หรือไม่?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "กำลังลบความคิดเห็น"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "กำลังลบโพสต์"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "ลบจดหมาย"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "ส่งข้อความหายไป."
 
 #, machine, plain1
 msgid "Discard"
@@ -1108,6 +1227,10 @@ msgstr "เสร็จแล้ว"
 #, machine, plain1
 msgid "Done."
 msgstr "เรียบร้อย."
+
+#, machine, plain2
+msgid "Download"
+msgstr "ดาวน์โหลด"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1162,7 +1285,7 @@ msgstr "การเข้ารหัสสุดท้าย: เฉพาะ�
 msgid "Ended"
 msgstr "จบ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "ป้อน URL"
 
@@ -1173,6 +1296,10 @@ msgstr "ป้อนที่อยู่เว็บไซต์ เช่น h
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "ใส่รหัสผ่านของคุณครั้งเดียว มันจะล็อคกุญแจไปยังจดหมายของคุณในเบราว์เซอร์นี้ ดังนั้นเว็บไซต์จะไม่สามารถอ่านมันได้."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "ใส่รหัสผ่านของคุณที่จะยืนยัน."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1186,9 +1313,49 @@ msgstr "ใส่รหัสผ่านของคุณ."
 msgid "Enter your recovery code"
 msgstr "ใส่รหัสการกู้คืนของคุณ"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "ใส่รหัสสองตัวประกอบ"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "ใส่รหัสสองปัจจัย."
+
+#, machine, plain2
+msgid "File"
+msgstr "แฟ้ม"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "แฟ้มสามารถส่งได้หนึ่งครั้ง@ info: whatsthis%(name)s ได้เปิดการสนทนา"
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "แฟ้มสามารถส่งได้เมื่อไม่มีการสนทนาบนอุปกรณ์นี้."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "แฟ้มไม่สามารถส่งมาที่นี่ได้."
+
 #, machine, plain1
 msgid "Final"
 msgstr "สุดท้าย"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "เสร็จสิ้น"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "มาคุยกันให้จบเถอะ"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "เสร็จสิ้นการเริ่มต้นใหม่"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "กําลังเตรียมการการสนทนาในแท็บอื่น…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1208,16 +1375,32 @@ msgid "Formatting"
 msgstr "การฟอร์แมต"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "ส่งต่อ"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "ส่งต่อจดหมายฉบับนี้"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
 msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "ส่งต่อไปยังอย่างน้อย %(num)s สโมสร."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "ส่งต่อไปยัง…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "ส่งต่อแล้ว"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "เดินหน้า."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "กำลังส่งต่อ"
 
@@ -1257,11 +1440,11 @@ msgstr "ให้ปุ่มบางข้อความ."
 msgid "Give the template a name."
 msgstr "บอกชื่อแม่แบบ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "ไปที่เว็บไซต์"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "ขยะแขยง"
 
@@ -1269,7 +1452,7 @@ msgstr "ขยะแขยง"
 msgid "Group info"
 msgstr "ข้อมูลกลุ่ม"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "กิลด์"
 
@@ -1281,13 +1464,25 @@ msgstr "คู่มือ การ สนทนา"
 msgid "Hand raised"
 msgstr "ชูมือขึ้น"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "มีความสุข"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "คุณเก็บรหัสคําพูดไว้หรือเปล่า ถ้าไม่มีมัน รหัสผ่านสามารถสูญเสียข้อความเก่าของคุณ."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "กําลังไป %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "ผู้ช่วยเหลือ"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "ผู้ช่วยเขียนในช่องนี้กับคุณ เลือกคนที่อยู่ในนั้นสามคน."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1330,6 +1525,10 @@ msgstr "ฉันเห็นด้วยกับกฏ"
 msgid "I don't have it: start over"
 msgstr "ฉันไม่มี เริ่มใหม่"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "ฉันมีมัน"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "ฉันบันทึกไว้แล้ว"
@@ -1337,6 +1536,10 @@ msgstr "ฉันบันทึกไว้แล้ว"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "ถ้าคุณลืมรหัสผ่านของคุณ รหัสนี้เป็นเพียงทางเดียวที่จะอ่านข้อความเก่าของคุณ เก็บมันไว้ในที่ปลอดภัย เหมือนผู้จัดการพาสเวิร์ด."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "หาก คุณ ยัง มี รหัส การ ฟื้น ตัว อยู่ จง ใช้ รหัส นี้ แทน: บาง ข้อ ที่ เก่า แก่ กว่า มี อยู่ เฉพาะ ใน สํารอง ที่ มัน เปิด อยู่."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1428,11 +1631,11 @@ msgstr "เรื่องราวมันยังอยู่ในประ
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "เข้าร่วม"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "เข้าร่วม %(channel)s"
 
@@ -1460,12 +1663,16 @@ msgstr "ข้อเท็จจริงสําคัญและการเ
 msgid "Last used %(date)s"
 msgstr "ใช้ล่าสุด %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "ทีหลัง"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "หัวเราะ"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "ออก"
 
@@ -1481,7 +1688,7 @@ msgstr "ออกจากกลุ่มนี้? บางคนในนั�
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "ออกจากกลุ่มนี้? คุณจะไม่ได้เห็นข้อความใหม่ นอกจากจะมีคนเพิ่มข้อมูลให้คุณอีกครั้ง."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "โหมดสว่าง"
 
@@ -1524,6 +1731,10 @@ msgstr "มีชีวิตต่อไป"
 msgid "Load earlier messages"
 msgstr "โหลดจดหมายก่อนหน้า"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "กําลังโหลดหมายเหตุ…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "กําลังโหลดตําแหน่ง…"
@@ -1548,17 +1759,25 @@ msgstr "กําลังโหลดต้นแบบของคุณ..."
 msgid "Loading..."
 msgstr "กําลังโหลด..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "กำลังโหลด…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "รัก"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "ด้านล่าง"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "สร้างรหัสใหม่"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "ทํารหัสฟื้นฟูใหม่?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1576,7 +1795,7 @@ msgstr "ทําให้โพสต์นี้สาธารณะ? ทุ�
 msgid "Making the channel…"
 msgstr "สร้างช่องทาง…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "เฉยๆ"
 
@@ -1593,6 +1812,14 @@ msgstr "ลบจดหมายแล้ว"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "ขอข้อความ พวกเขาจะไม่รู้ว่าคุณเห็นสิ่งนี้ จนกว่าคุณจะยอมรับ."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "จดหมายหายไปหลังจาก %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "จดหมายที่เบราว์เซอร์นี้สามารถอ่านได้ จะกลับมายังที่นี่."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1604,7 +1831,7 @@ msgid "Microphone %(number)s"
 msgstr "ไมโครโฟน %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "เพิ่มเติม"
 
@@ -1612,11 +1839,11 @@ msgstr "เพิ่มเติม"
 msgid "Move to listeners"
 msgstr "ย้ายไปยังผู้ฟัง"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "ปิดไมค์"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "ปิดเสียงแล้ว"
 
@@ -1636,7 +1863,11 @@ msgstr "ชื่อโฟลเดอร์ของคุณ"
 msgid "New channel"
 msgstr "ช่องสัญญาณใหม่"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "ข้อความใหม่ในการสนทนานี้ จะหายไปสําหรับทุกคนหลังจากคุณเลือกแล้ว ส่งข้อความก่อนที่จะเก็บเวลาที่พวกเขาถูกส่งด้วย."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "ไม่"
 
@@ -1656,17 +1887,29 @@ msgstr "ยังไม่ได้โทรศัพท์ เริ่มจ�
 msgid "No camera was found."
 msgstr "ไม่พบกล้อง."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "ไม่พบการสนทนา."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "ยังไม่มีผู้เขียนร่วม."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "ไม่มีรหัส? เข้าสู่ระบบด้วยรหัสผ่านใหม่ของคุณบนเบราว์เซอร์ที่คุณเคยใช้การสนทนา: มันสามารถนําการสนทนาของคุณกลับมา."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "ยังไม่ได้อุปกรณ์ เปิดแชตเพื่อเริ่มต้น."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "ไม่มีป้ายกำกับ"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "ยังไม่มีคนช่วย."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1675,6 +1918,10 @@ msgstr "ไม่พบไมโครโฟน."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "ไม่มีใครตรงกัน คุณ สามารถ ส่ง คํา พูด ไป ยัง คน ที่ คุณ ติด ตาม ได้."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "ยังไม่ได้ตรึงข้อความ."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1720,6 +1967,10 @@ msgstr "ไม่บันทึก"
 msgid "Not used yet"
 msgstr "ยังไม่ได้ใช้"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "ไม่พบในจดหมายที่เบราว์เซอร์นี้สามารถอ่านได้."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "ไม่พบอะไรเลย."
@@ -1748,17 +1999,45 @@ msgstr "ยังไม่ได้แสดงตัวอย่าง."
 msgid "Nothing was connected."
 msgstr "ไม่มีอะไรเชื่อมโยงกัน."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "การแจ้งเตือน"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "การแจ้งให้ทราบในเบราว์เซอร์นี้ถูกบล็อค ให้มันอยู่ในการตั้งค่าของเบราว์เซอร์เพื่อเปิดใช้งานมัน."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "การแจ้งให้ทราบไม่มีอยู่ในเบราว์เซอร์นี้."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "การแจ้งให้ทราบในเบราว์เซอร์นี้."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "การแจ้งให้ทราบไม่สามารถตรวจสอบได้ เรียกหน้าเว็บใหม่อีกครั้งเพื่อลองอีกครั้ง."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "การแจ้งให้ทราบไม่สามารถเปิดได้ ลองอีกที."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "การแจ้งห้ามเข้าเว็บไซต์นี้."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "หมายเลข"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "ปิด"
 
 #, machine, plain1
 msgid "Offline"
@@ -1767,6 +2046,10 @@ msgstr "ออฟไลน์"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "ออฟไลน์"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "เฉพาะเจ้าของกลุ่มเท่านั้น ที่จะเปลี่ยนเรื่องนี้ได้."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1802,6 +2085,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "เปิดแชตหนึ่งครั้งเพื่อปลดล็อคข้อความของคุณ แล้วลองใหม่อีกครั้ง."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "เปิด แชต เพื่อจัดการจดหมายของคุณบนอุปกรณ์นี้ให้เสร็จ."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "เปิดการตั้งค่าสื่อ"
 
@@ -1812,6 +2099,10 @@ msgstr "เปิดช่องว่าง"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "เปิดการสนทนาของ + %(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "กําลังเปิดแฟ้ม…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1838,7 +2129,7 @@ msgstr "คนที่คุณติดตาม"
 msgid "Pick a date and time."
 msgstr "เลือกวันที่และเวลา."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "เลือกป้ายกำกับ"
 
@@ -1872,11 +2163,15 @@ msgstr "ยังไม่มีเนื้อเรื่องบนเว็
 msgid "Pin this message"
 msgstr "กดข้อความนี้"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "ปักหมุด"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "จดหมายที่ถูกปักหมุด"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "ขอร้อง"
 
@@ -1884,12 +2179,18 @@ msgstr "ขอร้อง"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "โปรดป้อนที่ถูกต้อง URL (รวม http) หรือ https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "โปรดเข้าสู่ระบบอีกครั้ง"
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "ช่องเสียงนิยม"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "โพสต์"
 
@@ -1901,7 +2202,7 @@ msgstr "โพสต์ เอาหน้ามาดูใหม่."
 msgid "Posting to %(guilds)s"
 msgstr "กําลังส่งไปยัง %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "โพสต์ไปที่โปรไฟล์ของคุณ"
 
@@ -1910,7 +2211,7 @@ msgstr "โพสต์ไปที่โปรไฟล์ของคุณ"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "โพสต์ไปที่ประวัติของคุณ %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "กำลังโพสต์…"
 
@@ -2009,6 +2310,14 @@ msgstr "ย้อนกลับ"
 msgid "React with %(emoji)s"
 msgstr "ปรับใช้กับ %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "บันทึกข้อความเสียง"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "บันทึก… กดไมโครโฟนอีกครั้งเพื่อส่งมัน."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "ถอดรหัส"
@@ -2021,13 +2330,17 @@ msgstr "ทําซ้ํา"
 msgid "Refreshing…"
 msgstr "กําลังปรับปรุงใหม่…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "กำลังลงทะเบียน"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "ถูก ปล่อย ให้ สดชื่น"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "โหลดใหม่"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2042,13 +2355,17 @@ msgstr "เตือนความจํา"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "นำออก"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "ลบ %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "ลบ@ action%(name)s ในฐานะผู้ช่วยเหลือ"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2101,15 +2418,15 @@ msgstr "เปลี่ยนชื่อโฟลเดอร์นี้"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "รายงาน"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "รายงานความคิดเห็น"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "รายงานโพสต์"
 
@@ -2117,11 +2434,11 @@ msgstr "รายงานโพสต์"
 msgid "Report this message"
 msgstr "รายงานข้อผิดพลาดนี้"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "กำลังรายงานความคิดเห็น"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "กำลังรายงานโพสต์"
 
@@ -2138,13 +2455,13 @@ msgstr "แหวน…"
 msgid "Rules of this channel"
 msgstr "กฎของช่องนี้"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "เศร้า"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "บันทึก"
 
@@ -2160,11 +2477,15 @@ msgstr "บันทึกเป็นต้นแบบ..."
 msgid "Save your recovery code"
 msgstr "บันทึกรหัสการฟื้นตัวของคุณ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "บันทึกแล้ว"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "รอด."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "กำลังบันทึก"
 
@@ -2198,7 +2519,7 @@ msgstr "กําลังบันทึก…"
 msgid "Say what is wrong with this account."
 msgstr "จง พูด ถึง เรื่อง นี้ อย่าง ผิด ๆ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "กลัว"
 
@@ -2217,7 +2538,8 @@ msgstr "จัดตารางสําหรับ %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "ค้นหา"
 
@@ -2228,6 +2550,14 @@ msgstr "ค้นหาใครบางคนที่จะเพิ่ม."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "ค้นหาช่องนี้"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "ค้นหาการสนทนานี้"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "ค้นหาการสนทนาของคุณ"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2249,7 +2579,7 @@ msgid "Seen by %(num)s"
 msgid_plural "Seen by %(num)s"
 msgstr[0] "เห็นโดย %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "เลือกการสนทนา"
 
@@ -2258,6 +2588,10 @@ msgstr "เลือกการสนทนา"
 #, machine, plain1
 msgid "Send"
 msgstr "ส่ง"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "ส่งแฟ้ม"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2274,6 +2608,19 @@ msgstr "ส่งภาพถัดไปไปยัง:"
 #, machine, plain1
 msgid "Send your next videos to:"
 msgstr "ส่งวิดีโอถัดไปไปยัง:"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "กําลังส่ง %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "กําลังส่ง %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "กําลังส่ง %(num)s ข้อความเมื่อการสนทนาพร้อม…"
 
 #, machine, plain1
 msgid "Sending..."
@@ -2292,6 +2639,14 @@ msgstr "ส่งแล้ว"
 msgid "Several people are typing…"
 msgstr "มีหลายคนพิมพ์…"
 
+#, machine, plain2
+msgid "Share screen"
+msgstr "ใช้หน้าจอร่วมกัน"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "ใช้ความคิดเห็นร่วมกัน"
+
 #, machine, plain1
 msgid "Shared a post"
 msgstr "ใช้ร่วมกันโพสต์"
@@ -2309,11 +2664,20 @@ msgstr[0] "แสดง %(num)s โพสต์ใหม่"
 msgid "Show formatting"
 msgstr "แสดงรูปแบบ"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "แสดงในช่อง"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "แสดงในการสนทนา"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "แสดงน้อยลง"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "แสดงเพิ่มเติม"
 
@@ -2326,19 +2690,19 @@ msgstr "แสดงต้นฉบับ"
 msgid "Show translation"
 msgstr "แสดงการแปล"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "เซ็น"
+msgstr "ออกจากระบบ"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "เซ็น %(device)s"
+msgstr "ให้ %(device)s ออกจากระบบ"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "เซ็น %(device)sมันต้องลงชื่ออีกครั้ง เพื่ออ่านการสนทนาของคุณ"
+msgstr "ยุติการเชื่อมต่อ %(device)sมันต้องลงชื่ออีกครั้ง เพื่ออ่านการสนทนาของคุณ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "กำลังเข้าสู่ระบบ"
 
@@ -2454,6 +2818,11 @@ msgstr "เริ่มการสนทนา…"
 msgid "Starting…"
 msgstr "กําลังเริ่ม…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "หยุดการใช้ร่วมกัน"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "เส้นพาดกลาง"
@@ -2504,7 +2873,7 @@ msgstr "การฟอร์แมตข้อความ"
 msgid "Text style"
 msgstr "รูปแบบข้อความ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "ขอบคุณสำหรับคำขอ"
 
@@ -2528,27 +2897,39 @@ msgstr "ขอบคุณ admin จะมองไปที่มัน."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "ขอบคุณ."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "ขอบคุณ admins เว็บไซต์ของจะใช้เวลาดูและคุณได้บล็อก%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "ขอบคุณ admins เว็บไซต์ของจะใช้เวลาดู."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "ขอบคุณ admins เว็บไซต์ของจะใช้เวลาดู @%(name)s ไม่สามารถปิดกั้นจากที่นี่ได้ ปิดกั้นพวกเขาจากประวัติ"
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "การสนทนานั่นยังไม่พร้อม เปิดอีกครั้ง แล้วลองใหม่."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "รหัสไม่เปิด เช็คอักษรไขว้."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "บันทึกไม่สำเร็จ"
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "อุปกรณ์นั่นไม่สามารถเซ็นได้ในตอนนี้."
+msgstr "อุปกรณ์นั่นไม่สามารถติดต่อได้ในตอนนี้."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "อุปกรณ์นั่นไม่สามารถใช้ได้."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "ส่งไม่สำเร็จ"
 
@@ -2587,6 +2968,14 @@ msgstr "นั่นไม่ใช่พาสเวิร์ดของคุ
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "ข้อความนั่นไม่สามารถส่งได้."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "ข้อความที่ไม่สามารถพบในช่องใด ๆ เพิ่มเติม."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "ข้อความที่ไม่สามารถพบในการสนทนานี้อีกต่อไป."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2672,6 +3061,10 @@ msgstr "การสนทนายุติลงแล้ว พื้นท�
 msgid "The chat opens when the Space starts."
 msgstr "การสนทนาเปิดเมื่ออวกาศเริ่มต้น."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "รหัสจากแอพตัวจริง หรือรหัสสํารองของคุณ."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "ร่างมีการเปลี่ยนแปลงภายใต้การแก้ไขล่าสุดของคุณจึงถูกโหลด ดูคําพูดสุดท้ายของคุณ."
@@ -2679,6 +3072,10 @@ msgstr "ร่างมีการเปลี่ยนแปลงภายใ
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "เอโมจิที่จะเปรียบเทียบ"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "ไฟล์ไม่สามารถส่งได้ ลองอีกที."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2695,6 +3092,10 @@ msgstr "การเชื่อมโยงไม่สามารถคัด
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "ไมโครโฟนเริ่มต้นไม่ได้."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "ไมโครโฟนไม่สามารถใช้ได้ ตรวจสอบว่าเว็บไซต์นี้สามารถใช้มันได้."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2734,6 +3135,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "การเล่นซ้ําไม่ถูกบันทึก: การอัปโหลดล้มเหลว คุณสามารถดาวน์โหลดได้แทน."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "กุญแจของเว็บไซต์มีการเปลี่ยนแปลง ดังนั้นการสนทนาเริ่มต้นอีกครั้งที่นี่."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "การสรุปถูกซ่อนโดยตัวกรองคําของคุณ."
 
@@ -2769,6 +3174,10 @@ msgstr "ยังไม่มีที่อื่นให้ส่งพวก
 msgid "These comments could not be loaded. Try again."
 msgstr "ไม่สามารถโหลดความคิดเห็นเหล่านี้ได้ ลองอีกที."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "ไม่มีใครบอกหรอกว่าใครรายงาน."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "พวกเขาไม่ยอมรับสาย."
@@ -2781,6 +3190,10 @@ msgstr "มันไม่ตรงกัน"
 msgid "They match"
 msgstr "มันตรงกัน"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "พวกเขาอยู่ในบัญชีของคุณเองมี เข้ารหัสใช้พื้นที่ฟรี เฉพาะคนที่อยู่ในการสนทนาเท่านั้นที่สามารถเปิดมันได้."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "พวกเขาตามคุณไม่ทัน ส่งข้อความหรือความเห็น บนโพสต์ของคุณ และคุณจะไม่เห็นโพสต์ของพวกเขา คุณปิดได้ทุกเวลา."
@@ -2789,9 +3202,9 @@ msgstr "พวกเขาตามคุณไม่ทัน ส่งข้�
 msgid "This Space has ended."
 msgstr "พื้นที่นี้สิ้นสุดลงแล้ว."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "เบราว์เซอร์นี้"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "นี่ยังจบการช่วยเหลือจากเว็บเบราว์เซอร์ที่คุณใช้แชทด้วย."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2801,9 +3214,29 @@ msgstr "เบราว์เซอร์คนนี้โทรไม่ได
 msgid "This browser can't record the Space."
 msgstr "เบราว์เซอร์ตัวนี้ไม่สามารถบันทึกเสียงอวกาศได้."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "เบราว์เซอร์ตัวนี้ไม่สามารถใช้หน้าจอร่วมกันได้."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "เบราว์เซอร์นี้ไม่สามารถแสดงการแจ้งเตือนจากเว็บไซต์นี้ได้."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "เบราว์เซอร์นี้ ไม่สามารถเตรียมภาพสําหรับการอัปโหลดได้ ลองเรียกดู."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "เบราว์เซอร์นี้ยังคงเก็บปุ่มสนทนาของคุณไว้ ก่อนที่จะมีการเปลี่ยนแปลงรหัสผ่าน ใช้มันเพื่ออ่านข้อความเก่าของคุณที่นี่และบนอุปกรณ์อื่น ๆ ของคุณหรือไม่?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "เบราว์เซอร์นี้ถูกยุติการสนทนาจากอุปกรณ์ตัวอื่น ดังนั้นการสนทนาจึงเริ่มอีกครั้งที่นี่."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "ข้อมูลการสนทนาของเบราว์เซอร์นี้ถูกบันทึกเรียบร้อย ดังนั้นการสนทนาจะเริ่มอีกครั้งที่นี่."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2813,6 +3246,26 @@ msgstr "เรื่อง นี้ ไม่ อาจ ลบ ล้าง ไ
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "ช่องนี้จะเงียบสําหรับคุณ: ไม่มีส่วนที่ยังไม่ได้อ่าน และไม่มีการแจ้งข้อมูล."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "การสนทนานี้เข้ารหัสไว้แล้ว ดังนั้นเว็บไซต์จึงไม่สามารถอ่านมันได้ รายงานส่งข้อความนี้ และส่งถึง 4 คนก่อน ดังที่คุณเห็นที่นี่ โฆษณาของเว็บไซต์."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "ความคิดเห็นนี้ไม่สามารถแสดงได้."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "อุปกรณ์นี้จะยุติการทํางานในเร็วๆนี้."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "ไม่สามารถเปิดแฟ้มนี้ได้ ลองใหม่ทีหลัง."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "แฟ้มนี้ไม่มีอยู่."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "เธรดที่มีชีวิตอยู่นี้สิ้นสุดลงแล้ว"
@@ -2820,6 +3273,10 @@ msgstr "เธรดที่มีชีวิตอยู่นี้สิ้
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "ข้อความนี้ไม่สามารถอ่านบนอุปกรณ์นี้ได้."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "จดหมายนี้ถูกลบแล้ว."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2834,10 +3291,22 @@ msgstr "โพสต์นี้ไม่สามารถแสดงได้
 msgid "This post is off-topic for +%(guild)s"
 msgstr "โพสต์นี้ยกเลิกรูปแบบสําหรับ + %(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "เข้าสู่ระบบ"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "การยกเลิกการสนทนาในเบราว์เซอร์นี้ด้วย หากเป็นของเบราว์เซอร์นี้ มันจะเริ่มจากอุปกรณ์ใหม่."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "ช่องเสียงเต็มแล้ว%(num)s คน)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "กุญแจพวกนั้น ไม่ใช่บัญชีของคุณอีกต่อไป ใช้รหัสการฟื้นตัวของคุณ หรือเริ่มต้นใหม่."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2869,7 +3338,7 @@ msgid "Too long by %(num)s (%(note)s)"
 msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "นานเกินไป %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "วันนี้มีคำขอมากเกินไป"
 
@@ -2900,13 +3369,21 @@ msgstr "การแปลไม่มีตอนนี้."
 msgid "Try again"
 msgstr "ลองอีกครั้ง"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "โปรดลองอีกครั้งพรุ่งนี้"
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "แจ้งเตือนเมื่อ"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "รหัสสองตัวประกอบ"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "เข้าสู่ระบบสัญญาณ 2 ตัวได้เปลี่ยนไปแล้ว ดังนั้นการคุยจะเริ่มอีกครั้ง."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2940,12 +3417,12 @@ msgstr "ไม่สามารถลบหมายเหตุได้ใน
 msgid "Unable to vote at this time. Please try again later."
 msgstr "ไม่สามารถลงคะแนนได้ในตอนนี้ กรุณาลองอีกครั้งในภายหลัง."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "เลิกบล็อก"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "เลิกทำ"
 
@@ -2965,17 +3442,13 @@ msgstr "ปลดล็อค"
 msgid "Unlock your messages"
 msgstr "ปลดล็อคจดหมายของคุณ"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "ปลดล็อคจดหมายของคุณก่อน:."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "เลิกปิดเสียง"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "เลิกปักหมุด"
 
@@ -3031,11 +3504,15 @@ msgstr "ใช้ที่นี่สิ"
 msgid "Use my recovery code instead"
 msgstr "ใช้รหัสการฟื้นตัวของฉันแทน"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "ใช้พวกมัน"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "ชื่อผู้ใช้นี้ถูกใช้แล้ว :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "ชื่อผู้ใช้นี้ใช้ได้!"
 
@@ -3116,7 +3593,7 @@ msgstr[0] "วิดีโอโทร.หา %(num)s วินาที"
 msgid "Video is off in this call: you're on audio."
 msgstr "วิดีโอไม่อยู่ในสายนี้ คุณกําลังอยู่ในเสียง."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "ดูต้นฉบับ"
 
@@ -3154,6 +3631,10 @@ msgid "Voice goes browser to browser through the site's relay, so nobody sees an
 msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
 msgstr[0] "เสียงเรียกเบราว์เซอร์ผ่านช่องส่งของเว็บไซต์ จึงไม่มีใครเห็นที่อยู่ของใคร ถึง %(num)s ผู้คน"
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "บันทึกช่วยจําเสียง"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "เดี๋ยวนะ การเปลี่ยนแปลงครั้งสุดท้ายของคุณ ยังถูกบันทึก."
@@ -3161,6 +3642,10 @@ msgstr "เดี๋ยวนะ การเปลี่ยนแปลงค�
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "กําลังรอแอพ"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "เราพบการสนทนาของคุณในเบราว์เซอร์นี้"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3181,6 +3666,10 @@ msgstr "เกิดอะไรขึ้นกับอวกาศนี้? (
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "ข้อความนี้มันผิดตรงไหน (ตัวเลือก)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "ไฟล์ที่คุณส่งไป ควรไปที่ไหน?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3207,7 +3696,7 @@ msgstr "ใครพูด"
 msgid "Who upvoted"
 msgstr "ใครขึ้นมา"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "ทำไม"
 
@@ -3222,6 +3711,10 @@ msgstr "ทําไมมันแหกกฎของสมาคมคุณ
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "ทําไมมันแหกกฎของสมาคมคุณ นี้จะแสดงให้ทุกคนที่ดูประวัติหลังการโพสต์/คอมมานท์นี้."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "ทําไม ความ เห็น เช่น นี้ จึง ถูก ขจัด ออก ไป? เหตุผลของคุณแสดงในบันทึกสาธารณะ."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3240,7 +3733,7 @@ msgstr "เขียนอะไรสักอย่างก่อน."
 msgid "Write what you want to tell us."
 msgstr "เขียนสิ่งที่คุณต้องการบอกเรา."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "ใช่"
 
@@ -3258,7 +3751,7 @@ msgstr "ใช่ ยกเลิกซะ"
 msgid "You"
 msgstr "คุณ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "คุณทำไปแล้ว"
 
@@ -3274,7 +3767,7 @@ msgstr "คุณแจ้งความแล้ว."
 msgid "You already voted on this post."
 msgstr "คุณลงมติไปแล้ว."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "คุณบล็อก @%(name)s อยู่"
 
@@ -3311,7 +3804,7 @@ msgstr "คุณอ่านช่องนี้ได้ แต่ไม่�
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "คุณสามารถดูผู้ที่อยู่ที่นี่ แต่คุณไม่สามารถพูดคุยในช่องนี้."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "คุณไม่มีสิทธิ์ทำเช่นนั้น"
 
@@ -3355,6 +3848,14 @@ msgstr "คุณออกจากอวกาศ."
 msgid "You left the call."
 msgstr "คุณโทรมาแล้ว."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "คุณตัดการเชื่อมต่อทุกที่ จากอุปกรณ์อื่น ดังนั้นการสนทนาก็เริ่มต้นอีกครั้งที่นี่."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "คุณลงชื่อด้วยรหัสสองปัจจัยของคุณ ดังนั้นการสนทนาจะเริ่มอีกครั้ง."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "คุณยังไม่ทําตาม%(name)s."
@@ -3362,6 +3863,10 @@ msgstr "คุณยังไม่ทําตาม%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "คุณถูกย้ายออกจากอวกาศนี้."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "คุณจะได้รหัสการฟื้นตัวใหม่ และอันเก่าจะหยุดทํางาน."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3387,6 +3892,10 @@ msgstr "เบราว์เซอร์ของคุณปิดกั้น
 msgid "Your chat devices can't be listed right now."
 msgstr "อุปกรณ์แชทของคุณ ไม่สามารถอยู่ในรายการได้ในขณะนี้."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "รหัสการคุยของคุณ"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "การสนทนาของคุณ"
@@ -3398,6 +3907,10 @@ msgstr "การสนทนาของคุณจะทํางานอี
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "ไม่สามารถโพสต์ความคิดเห็นของคุณได้ ลองอีกที."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "รหัสการฟื้นตัวของคุณจะหยุดทํางาน."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3429,9 +3942,30 @@ msgstr "กุญแจของคุณไม่สามารถแสดง
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "กุญแจของคุณถูกล็อคด้วยรหัสผ่านที่เก่ากว่า เปิดแชตในเว็บไซต์นี้และป้อนรหัสการกู้คืนของคุณครั้งเดียวแล้วมันเปิดที่นี่."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "คุณ %(num)s ข้อความจะถูกส่งเมื่อไม่มีการสนทนาบนอุปกรณ์นี้"
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "รหัสการฟื้นตัวของคุณใช้ไม่ได้แล้ว."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "รหัสผ่านของคุณมีการเปลี่ยนแปลง เนื่องจากปุ่มสนทนานี้ถูกล็อคไว้ รหัสที่คุณบันทึกไว้ ตอนที่มีการตั้งค่าการสนทนา."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "รหัสผ่านของคุณถูกเปลี่ยนเพื่อให้การสนทนาเริ่มต้นอีกครั้งที่นี่."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "รหัสผ่านของคุณมีการเปลี่ยนแปลง ดังนั้นการสนทนาจะเริ่มอีกครั้งที่นี่."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "รหัสผ่านของคุณถูกรีเซ็ต ดังนั้นการสนทนาจะเริ่มอีกครั้งที่นี่."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3440,6 +3974,14 @@ msgstr "รหัสการฟื้นตัวของคุณ"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "แม่พิมพ์ของคุณโผล่มาที่นี่."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "หน้าจอของคุณสามารถใช้ร่วมกันได้ ในขณะที่คุณอยู่ในวีดีโอในสายนี้."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "หน้าจอของคุณใช้ร่วมกันไม่ได้."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3479,7 +4021,7 @@ msgid "blue"
 msgstr "น้ําเงิน"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "ความคิดเห็น"
 
@@ -3548,7 +4090,7 @@ msgstr "ส้ม"
 msgid "pink"
 msgstr "สีชมพู"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "โพสต์"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 20:16+1100\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: bn\n"
@@ -368,7 +368,7 @@ msgstr "%(name)s চ্যানেল"
 msgid "%(name)s's channels - %(site)s"
 msgstr "%(name)sচ্যানেল - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(name)s's profile - %(site)s"
 msgstr "%(name)s-এর প্রোফাইল - %(site)s"
 
@@ -1027,7 +1027,7 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 
 #. in a post's facts line: the share of its votes that are upvotes ("97%
 #. upvoted")
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% আপভোট"
 
@@ -1063,7 +1063,7 @@ msgstr "%(role)s: লেখা"
 
 #. the member's reputation in the navbar, e.g. "1234 Rep" (Rep: the upvotes
 #. other people gave them)
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(score)s Rep"
 msgstr "%(score)s সুনাম"
 
@@ -1122,28 +1122,28 @@ msgstr "%(site)s - মুক্ত, বিনামূল্যে-স্পি�
 msgid "%(site)s API Documentation"
 msgstr "%(site)s API নথিপত্র"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Administrator, speaking officially"
 msgstr "%(site)s অ্যাডমিনিস্ট্রেটর, আনুষ্ঠানিক বক্তব্য"
 
 #. the site's name and the feed being read, as a heading
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s All"
 msgstr "%(site)s সব"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Curations"
 msgstr "%(site)s সংকলন"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Feeds"
 msgstr "%(site)s ফিড"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Following"
 msgstr "%(site)s ফলো করছেন"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s For You"
 msgstr "%(site)s আপনার জন্য"
 
@@ -1155,7 +1155,7 @@ msgstr "%(site)s সহায়তা"
 msgid "%(site)s Homepage"
 msgstr "%(site)s-র হোম-পেজ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Notification"
 msgstr "%(site)s বিজ্ঞপ্তি"
 
@@ -1167,11 +1167,11 @@ msgstr "%(site)s পাসওয়ার্ড পুনরায় নির�
 msgid "%(site)s Policies"
 msgstr "%(site)s নীতি"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Premium"
 msgstr "%(site)s প্রিমিয়াম"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Search"
 msgstr "%(site)s সার্চ"
 
@@ -1306,6 +1306,14 @@ msgid "%(who)s approved post %(title)s"
 msgstr "%(who)s অনুমোদন করা হচ্ছে %(title)s"
 
 #, machine, plain1, python-format
+msgid "%(who)s banned %(name)s"
+msgstr "%(who)s নিষিদ্ধ %(name)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s banned the guild +%(guild)s"
+msgstr "%(who)s-কে guild+%(guild)s নিষিদ্ধ করা হয়েছে।"
+
+#, machine, plain1, python-format
 msgid "%(who)s cancelled an event"
 msgstr "%(who)s বাতিল করা হয়েছে"
 
@@ -1374,6 +1382,10 @@ msgid "%(who)s deleted a channel category"
 msgstr "%(who)s একটি চ্যানেল শ্রেণী মুছে ফেলা হয়েছে"
 
 #, machine, plain1, python-format
+msgid "%(who)s deleted a comment"
+msgstr "%(who)s মুছে ফেলা হয়েছে"
+
+#, machine, plain1, python-format
 msgid "%(who)s deleted a flair"
 msgstr "%(who)s একটি লেবেল মুছে ফেলুন"
 
@@ -1384,6 +1396,10 @@ msgstr "%(who)s একটি ভূমিকা মুছে ফেলা হচ
 #, machine, plain1, python-format
 msgid "%(who)s deleted a wiki page"
 msgstr "%(who)s একটি উইকি পাতা মুছে ফেলুনName"
+
+#, machine, plain1, python-format
+msgid "%(who)s deleted post %(title)s"
+msgstr "%(who)s মুছে ফেলা %(title)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
@@ -1414,6 +1430,10 @@ msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s এই guid থেকে একটি মন্তব্য গোপন করুন"
 
 #, machine, plain1, python-format
+msgid "%(who)s hid a revision of %(title)s"
+msgstr "%(who)s, %(title)s-র একটি পরিমার্জন গোপন করেছিল"
+
+#, machine, plain1, python-format
 msgid "%(who)s hid post %(title)s from this guild"
 msgstr "%(who)s গোপন পোস্ট %(title)s এই guiguid থেকে"
 
@@ -1424,6 +1444,18 @@ msgstr "%(who)s guiguidd Saidut @siguedus%(name)s"
 #, machine, plain1, python-format
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s পোস্টট %(title)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on %(name)s"
+msgstr "%(who)s %(name)s-র উপর নিষেধাজ্ঞা প্রত্যাহার করা হয়েছে"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on the guild +%(guild)s"
+msgstr "%(who)s guild +%(guild)s নিষেধাজ্ঞা প্রত্যাহার করে নিয়েছে।"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the suspension of %(name)s"
+msgstr "%(who)s বরখাস্ত করা হয়েছে %(name)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s made a channel"
@@ -1486,6 +1518,10 @@ msgid "%(who)s removed a channel message"
 msgstr "%(who)s একটি চ্যানেল থেকে বার্তা সরিয়ে ফেলা হয়েছে"
 
 #, machine, plain1, python-format
+msgid "%(who)s removed a revision of a guild's wiki"
+msgstr "%(who)s একটি guiল্ড উইকির একটি প্রতিলিপি মুছে ফেলে"
+
+#, machine, plain1, python-format
 msgid "%(who)s removed comment"
 msgstr "%(who)s মুছে ফেলা হয়েছে"
 
@@ -1524,6 +1560,10 @@ msgstr "%(who)s লেবেল নির্ধারণ %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
 msgstr "%(who)s guiguid smid smory দ্বারা নিচে নামাও"
+
+#, machine, plain1, python-format
+msgid "%(who)s suspended %(name)s"
+msgstr "%(who)s স্থগিত %(name)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s switched the wiki"
@@ -1601,7 +1641,7 @@ msgstr "%(who)s স্টাইল-শিট আপডেট করেছে"
 msgid "%(who)s yanked post %(title)s"
 msgstr "%(who)s চন্দন পোস্ট %(title)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "&copy; 2021 %(company)s"
 msgstr "&copy; 2021 %(company)s"
 
@@ -1633,7 +1673,7 @@ msgstr "(ব্যক্তিগত স্থানে)"
 msgid "(no title)"
 msgstr "(ও নয়)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(off)"
 msgstr "(বন্ধ)"
 
@@ -1653,7 +1693,7 @@ msgstr "(ঐচ্ছিক)"
 msgid "(required in this guild)"
 msgstr "(এই guidgaind)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(required)"
 msgstr "(আবশ্যক)"
 
@@ -1697,7 +1737,7 @@ msgstr "**Sehalt অনুরোধকৃত"
 msgid "**Press**"
 msgstr "**শূণ্য**"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ বিকল্প যোগ করুন"
 
@@ -1709,7 +1749,7 @@ msgstr "+%(guild)s অনুমোদিত অংশগ্রহণকারী
 msgid "+%(guild)s CSS - %(site)s Guildmaster Tools"
 msgstr "+%(guild)s CSS -কি? %(site)s Guidifer টুল"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Channels"
 msgstr "+%(guild)s চ্যানেল"
 
@@ -1717,11 +1757,11 @@ msgstr "+%(guild)s চ্যানেল"
 msgid "+%(guild)s Chat Bans"
 msgstr "+%(guild)s আলাপনের মাস্ক"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Circle"
 msgstr "+%(guild)s সার্কেল"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Comments"
 msgstr "+%(guild)s মন্তব্য"
 
@@ -1729,7 +1769,7 @@ msgstr "+%(guild)s মন্তব্য"
 msgid "+%(guild)s Exiles"
 msgstr "+%(guild)s নিক্তি"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Flair"
 msgstr "+%(guild)s লেবেল"
 
@@ -1737,7 +1777,7 @@ msgstr "+%(guild)s লেবেল"
 msgid "+%(guild)s Guildmasters - %(site)s Guildmaster Tools"
 msgstr "+%(guild)s Guiders - %(site)s Guidifer টুল"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Insights"
 msgstr "+%(guild)s পরিসংখ্যান"
 
@@ -2148,17 +2188,17 @@ msgstr "<strong>ব্রাউজার:</strong> %(browser)s"
 msgid "<strong>Email:</strong> %(email)s"
 msgstr "<strong>ই-মেইল:</strong> %(email)s"
 
-#, machine, plain1
+#, machine, plain2
 msgid "<strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device."
-msgstr "<strong>যদি তুমি না হও,</strong> পাসওয়ার্ড পরিবর্তন করুন এটা অন্যান্য ডিভাইসও পরিবর্তন করে।"
+msgstr "<strong>যদি তুমি না হও,</strong> পাসওয়ার্ড পরিবর্তন করুন এটা অন্য ডিভাইস সংযোগ বিচ্ছিন্ন করে দেয়।"
 
 #, python-format
 msgid "<strong>Member bot</strong>: you run it with your own key or pay for its source (for example X). It stays yours, says \"Automated by @%(name)s\" and you manage it."
 msgstr ""
 
-#, machine, plain1
-msgid "<strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app can't send one."
-msgstr "<strong>এখনো না:</strong> ছবি এবং ফাইল। চ্যাট সার্ভারের মধ্যে কোনো ফাইল উপস্থিত নেই, ফলে একটি অ্যাপ্লিকেশন দ্বারা এটি প্রেরণ করা সম্ভব হবে না।"
+#, machine, plain2
+msgid "<strong>Not in apps:</strong> files, pictures and voice notes. Those sent on this site are kept, encrypted, in the sender's own storage, which an app can't reach, and an app can't send one."
+msgstr "<strong>টুল-টিপ:</strong> ফাইল, ছবি এবং ভয়েস নোট। যারা এই সাইটে পাঠানো হয়েছে তাদের কাছে পাঠানো হয়, যা প্রেরকের সংগ্রহে রাখা হয়, যা একটি অ্যাপ্লিকেশন পৌঁছাতে পারে না এবং একটি অ্যাপ্লিকেশন পাঠানো সম্ভব না।"
 
 #, machine, plain1
 msgid "<strong>On this site only:</strong> starting a chat, accepting a message request, making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a call on this server: the site keeps who can reach you as it does here."
@@ -2444,6 +2484,13 @@ msgid "@%(name)s stepped off as co-author of [your post](%(link)s)."
 msgstr ""
 
 #, python-format
+msgid ""
+"@%(name)s told everyone in #%(channel)s of +%(guild)s.\n"
+"\n"
+"[Open the channel](%(link)s)"
+msgstr ""
+
+#, python-format
 msgid "@%(name)s unblocked."
 msgstr ""
 
@@ -2520,6 +2567,10 @@ msgstr "একটি বৃত্ত একটি ভাল জন্য প্�
 #, machine, plain1
 msgid "A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose. Keep it private just for yourself, or make it public so others can follow or fork it."
 msgstr "গ্রিল্ডস এবং একাউন্টের সংগ্রহ আপনার নিজের নাম গ্রিল্ডস এবং একাউন্টের সংগ্রহ - যেমন একটি কাস্টম ফিড আপনি বেছে নিতে পারেন। এটাকে নিজের জন্য ব্যক্তিগত ভাবে রাখো, অথবা জনগণকে এটা করতে দাও যাতে অন্যেরা তা অনুসরণ করতে পারে বা আঘাত করতে পারে।"
+
+#, machine, plain1
+msgid "A QR code to sign in with. Scan it with your phone, where you are signed in."
+msgstr "একটিও নয় QR সাইন ইন করতে কোড. আপনার ফোন দিয়ে স্ক্যান করুন, যেখানে আপনি স্বাক্ষর করেছেন।"
 
 #, machine, plain1
 msgid "A Space"
@@ -2742,6 +2793,10 @@ msgstr ""
 #, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
 msgstr ""
+
+#, machine, plain2, python-format
+msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
+msgstr "একটি আড্ডা অধিকাংশ ক্ষেত্রে ব্যবহার করা যাবে %(num)s বার্তা মুছে ফেলো প্রথম পিনটা না।"
 
 #, machine, plain1, python-format
 msgid "A circle can have %(num)s person at most."
@@ -3160,6 +3215,10 @@ msgstr[0] "একটি পোস্ট এর লেখা হতে পার�
 msgstr[1] "একটি পোস্ট এর লেখা হতে পারে %(count)s অক্ষর (চীনা, জাপানি ও কোরিয়ান অক্ষর এবং ইমোজি ২ হিসেবে)।"
 
 #, machine, plain1
+msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
+msgstr "এটি একটি ব্যক্তিগত কপির কাজ যখন আপনি গোপনভাবে মুছে ফেলতে পারেন, অথবা মুছে ফেলা হয়েছে। শুধুমাত্র এর লেখক, guiddidgers এটি লুকানো ছিল এবং সাইটের প্রশাসকরা এটি খুলতে পারে, আর এটা কখনো সংরক্ষণ করা হয় না।"
+
+#, machine, plain1
 msgid "A private guild can only go in a private curation."
 msgstr "একটি ব্যক্তিগত guidd শুধুমাত্র একটি ব্যক্তিগত সংরক্ষিত ফিডে যেতে পারে."
 
@@ -3288,6 +3347,10 @@ msgid "A role name can't contain control or invisible characters."
 msgstr "একটি ভূমিকার নাম কন্ট্রোল বা অদৃশ্য অক্ষর অন্তর্ভুক্ত করা যাবে না।"
 
 #, machine, plain1
+msgid "A rule of the guild"
+msgstr "Guiল্ডের নিয়ম"
+
+#, machine, plain1
 msgid "A scheduled post needs a title."
 msgstr "একটি নির্ধারিত পোস্টের একটি শিরোনাম প্রয়োজন।"
 
@@ -3341,6 +3404,10 @@ msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] ""
 msgstr[1] ""
+
+#, machine, plain1
+msgid "A suspension or ban needs a public reason, so the Log can say why."
+msgstr "সাময়িকভাবে বরখাস্ত বা নিষিদ্ধ করার জন্যে একটি উন্মুক্ত কারণ প্রয়োজন, তাই লগটি বলতে পারেন কেন।"
 
 #, machine, plain1
 msgid "A template needs some text."
@@ -3426,7 +3493,7 @@ msgstr "একটি শব্দ বা শব্দসমষ্টি কন�
 msgid "A year"
 msgstr "বছর"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "API App"
 msgstr "API অ্যাপ"
 
@@ -3438,16 +3505,16 @@ msgstr "API নথিপত্র"
 msgid "API requests must be authenticated with an access token. To obtain an access token, follow <a href=\"%(url)s\">these instructions.</a>"
 msgstr "API পরিচয় প্রমাণে ব্যর্থ। একটি টোকেন পেতে, অনুসরণ করুন <a href=\"%(url)s\">এই নির্দেশ.</a>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About"
 msgstr "আমাদের সম্পর্কে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "About"
 msgstr "আমাদের সম্পর্কে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: about the guild"
 msgid "About"
 msgstr "সম্পর্কে"
@@ -3456,11 +3523,11 @@ msgstr "সম্পর্কে"
 msgid "About @%(name)s"
 msgstr "পরিচিতি%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About Guild"
 msgstr "গিল্ড সম্পর্কে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About this account"
 msgstr "এই অ্যাকাউন্ট সম্পর্কে"
 
@@ -3510,7 +3577,7 @@ msgstr "অ্যাকাউন্টের পাসওয়ার্ড (স
 msgid "Account to add"
 msgstr "অ্যাকাউন্ট যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts"
 msgstr "অ্যাকাউন্ট"
 
@@ -3522,7 +3589,7 @@ msgstr "অ্যাকাউন্ট ব্লক"
 msgid "Accounts you block are not told, but they may work it out if they try to comment on something of yours."
 msgstr "আপনি হয়তো বলবেন না যে আপনি ব্লক করে দিয়েছেন, কিন্তু তারা যদি আপনার কোন মন্তব্য করার চেষ্টা করে, তাহলে তারা তা করতে পারে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts you follow"
 msgstr "আপনি যাদের ফলো করেন"
 
@@ -3534,7 +3601,7 @@ msgstr "একটি বেনামী পোস্টের জন্য আ�
 msgid "Accounts you mute"
 msgstr "অ্যাকাউন্ট চুপ কর"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Achievements"
 msgstr "অর্জন"
 
@@ -3571,17 +3638,17 @@ msgstr "সম্প্রতি ব্যবহৃত"
 msgid "Activism"
 msgstr "কর্ম:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Activity"
 msgstr "সক্রিয়তা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Add"
 msgstr "যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Add"
 msgstr "যোগ করুন"
@@ -3590,7 +3657,7 @@ msgstr "যোগ করুন"
 msgid "Add %(name)s"
 msgstr "যোগ করুন %(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a GIF"
 msgstr "GIF যোগ করুন"
 
@@ -3606,7 +3673,7 @@ msgstr "ফিড যোগ করুন"
 msgid "Add a flair"
 msgstr "একটি লেবেল যোগ করো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a link"
 msgstr "লিংক যোগ করুন"
 
@@ -3618,7 +3685,7 @@ msgstr "বার্তা যোগ করুন"
 msgid "Add a message (optional)"
 msgstr "একটি বার্তা যোগ করুন (ঐচ্ছিক)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a picture"
 msgstr "ছবি যোগ করুন"
 
@@ -3630,7 +3697,7 @@ msgstr "একটি ছবি যোগ করো"
 msgid "Add a picture."
 msgstr "একটি ছবি যোগ করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a poll"
 msgstr "পোল যোগ করুন"
 
@@ -3642,11 +3709,11 @@ msgstr "একটি রিসোর্স যোগ করুন"
 msgid "Add a screenshot"
 msgstr "একটি স্ক্রিন-শট যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a sound"
 msgstr "সাউন্ড যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a video"
 msgstr "ভিডিও যোগ করুন"
 
@@ -3670,11 +3737,11 @@ msgstr "একটি অ্যাকাউন্ট যোগ করুন"
 msgid "Add an email to secure your account in case you forget your password."
 msgstr "পাসওয়ার্ড মনে রাখা হবে না."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an emoji"
 msgstr "ইমোজি যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an image"
 msgstr "ছবি যোগ করুন"
 
@@ -3686,7 +3753,13 @@ msgstr "আপনার অ্যাকাউন্টের জন্য অন
 msgid "Add at least one person."
 msgstr "অন্তত একজন যোগ করো।"
 
-#, glossary, machine, plain1
+#, python-format
+msgid "Add at most %(num)s person at a time."
+msgid_plural "Add at most %(num)s people at a time."
+msgstr[0] ""
+msgstr[1] ""
+
+#, glossary, machine, plain2
 msgid "Add audio"
 msgstr "অডিও যোগ করুন"
 
@@ -3731,15 +3804,15 @@ msgstr "আপনার পোস্টের মধ্যে টেক্সট
 msgid "Add to calendar"
 msgstr "বর্ষপঞ্জি যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to circles"
 msgstr "সার্কেলে যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to curation"
 msgstr "সংকলনে যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to your post"
 msgstr "আপনার পোস্টে যোগ করুন"
 
@@ -3751,7 +3824,7 @@ msgstr "আপনার গল্পে যোগ করুন"
 msgid "Add user"
 msgstr "ব্যবহারকারী যোগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add your comment..."
 msgstr "আপনার মন্তব্য লিখুন..."
 
@@ -3780,7 +3853,7 @@ msgstr "যোগ করা হয়েছে। একবার প্রশ�
 msgid "Address, page or post"
 msgstr "ঠিকানা, পৃষ্ঠা অথবা পোস্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "অ্যাডমিন"
 
@@ -3797,20 +3870,20 @@ msgstr "প্রশাসনিকরা তাদের নাম বদলা
 msgid "Admins can't disconnect Discord."
 msgstr "প্রশাসনিকভাবে সংযোগ বিচ্ছিন্ন করা সম্ভব নয় Discord."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "the Advanced filter, as a short tab"
 msgid "Advanced"
 msgstr "উন্নত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter"
 msgstr "উন্নত ফিল্টার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter:"
 msgstr "উন্নত ফিল্টার:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced search"
 msgstr "উন্নত সার্চ"
 
@@ -3850,17 +3923,21 @@ msgstr "প্রত্যেক লাইনে যে নাম লেখা �
 msgid "Algorithm"
 msgstr "কি-র অ্যালগোরিদম"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "অ্যালগোরিদম সংরক্ষিত।"
+
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
 msgstr "সব"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "filter"
 msgid "All"
 msgstr "সব"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "All"
 msgstr "সব সময়"
@@ -3871,7 +3948,7 @@ msgid_plural "All %(num)s channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All Time"
 msgstr "সব সময়"
 
@@ -3879,7 +3956,7 @@ msgstr "সব সময়"
 msgid "All events"
 msgstr "সকল অনুষ্ঠান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All guilds"
 msgstr "সব গিল্ড"
 
@@ -3887,15 +3964,15 @@ msgstr "সব গিল্ড"
 msgid "All of these words"
 msgstr "এই সমস্ত শব্দ"
 
-#, machine, plain1
+#, machine, plain2
 msgid "All other devices have been logged out"
-msgstr "ব্যবহৃত সকল ডিভাইস লক করা হয়েছে"
+msgstr "সকল ডিভাইস বিচ্ছিন্ন করা হয়েছে"
 
 #, machine, plain1
 msgid "All pages"
 msgstr "সমস্ত পাতা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All posts"
 msgstr "সব"
 
@@ -3919,7 +3996,7 @@ msgstr "সব সময়। একটি guiguid এর নিজস্ব �
 msgid "All tips are anonymous :)"
 msgstr "সকল ধরনের পরামর্শ অজ্ঞাত :)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All topics"
 msgstr "সব বিষয়"
 
@@ -4004,12 +4081,24 @@ msgid "An account with that username or email already exists."
 msgstr "এই নামের একটি অ্যাকাউন্ট বর্তমানে উপস্থিত রয়েছে।"
 
 #, machine, plain1
+msgid "An admin cleared the age answer on your account. You'll be asked again."
+msgstr "একজন প্রশাসক আপনার অ্যাকাউন্টের উত্তর দিয়েছেন। তোমাকে আবার জিজ্ঞেস করা হবে।"
+
+#, machine, plain1
 msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
 msgstr "একজন প্রশাসক নিশ্চিত করেছে যে আপনার বয়স ১৮ বা তারও বেশি। আপনার অ্যাকাউন্ট এখন আর বাচ্চা লক করা হবে না। আপনার ব্যবহৃত শব্দ ফিল্টার পরিবর্তিত হয়নি: বৈশিষ্ট্য পরিবর্তন করা যাবে > বিষয়বস্তু, চাইল্ড ফিল্টারের জন্য আপনার পাসওয়ার্ড প্রয়োজন।"
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "আহরণকারী +%(guild)s সংবেদনশীল: এর পোস্ট সব থেকে বাকি আছে এবং আপনি যদি সংবেদনশীল বিষয়বস্তু দেখতে না চান তাহলে আপনার জন্যে। শুধুমাত্র প্রশাসক এটা পরিবর্তন করতে পারে।"
+
+#, python-format
+msgid "An admin marked [your post](%(link)s) sensitive: it is blurred until someone clicks to reveal it, and left out of All and For You unless they choose to see sensitive content. Only an admin can change this."
+msgstr ""
+
+#, machine, plain1
+msgid "An admin marked this account as belonging to someone 18 or over. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "একজন প্রশাসক এই অ্যাকাউন্টটিকে ১৮ বা তার বেশী হিসাবে চিহ্নিত করেছেন। আপনার ব্যবহৃত শব্দ ফিল্টার পরিবর্তিত হয়নি: বৈশিষ্ট্য পরিবর্তন করা যাবে > বিষয়বস্তু, চাইল্ড ফিল্টারের জন্য আপনার পাসওয়ার্ড প্রয়োজন।"
 
 #, machine, plain1
 msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
@@ -4050,6 +4139,10 @@ msgstr "আপনার অ্যাকাউন্ট বন্ধ করে �
 #, machine, plain1, python-format
 msgid "An admin unlocked the sensitive setting of +%(guild)s. Its guildmasters can change it again."
 msgstr "আই. ডি.%(guild)s.এটা guididgers আবার পরিবর্তন করতে পারে."
+
+#, python-format
+msgid "An admin unlocked the sensitive setting of [your post](%(link)s). You can change it again."
+msgstr ""
 
 #, machine, plain1
 msgid "An admin unlocked the sensitive setting on your account. You can change it in Settings > Content."
@@ -4152,7 +4245,7 @@ msgstr "আনিম ও মাঙ্গা"
 msgid "Announcement channel"
 msgstr "ঘোষণা করার চ্যানেল"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Announcements from +%(guild)s"
 msgstr "+%(guild)s-এর ঘোষণা"
 
@@ -4165,20 +4258,20 @@ msgid "Annular solar eclipse"
 msgstr "আনলার সোলার সোলার গ্রহণ"
 
 #. short for Anonymous: who wrote a deleted post
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anon"
 msgstr "বেনামী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymity"
 msgstr "নাম গোপন রাখা"
 
 #. a kind of post in the Post type filter: posts made anonymously
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "বেনামী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "label"
 msgid "Anonymous"
 msgstr "বেনামী"
@@ -4200,10 +4293,14 @@ msgid "Another language you read"
 msgstr "অন্য একটি ভাষা পড়া"
 
 #, machine, plain1
+msgid "Another reason"
+msgstr "আরেকটা কারণ"
+
+#, machine, plain1
 msgid "Answer Going or Interested."
 msgstr "উত্তর অথবা আগ্রহী।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any account"
 msgstr "যেকোনো অ্যাকাউন্ট"
 
@@ -4219,11 +4316,11 @@ msgstr "যে কোন লেখক প্রকাশ করতে পার�
 msgid "Any author can publish."
 msgstr "যে কোন লেখক প্রকাশ করতে পারেন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any guild"
 msgstr "যেকোনো গিল্ড"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any language"
 msgstr "যেকোনো ভাষা"
 
@@ -4250,12 +4347,12 @@ msgstr "যে কোন শব্দ"
 msgid "Anyone"
 msgstr "যে কোনো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Anyone"
 msgstr "যে কেউ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anyone can see it"
 msgstr "যে কেউ দেখতে পারবে"
 
@@ -4267,7 +4364,7 @@ msgstr "যে কেউ দেখতে পাবে কে তোমাকে 
 msgid "App Name"
 msgstr "নির্মাণকারী নাম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Appearance"
 msgstr "চেহারা"
 
@@ -4292,7 +4389,7 @@ msgctxt "button"
 msgid "Apply"
 msgstr "প্রয়োগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approve"
 msgstr "অনুমোদন করুন"
 
@@ -4342,15 +4439,23 @@ msgstr "অনুমোদিত সদস্য এবং guidid moss"
 msgid "Approved since"
 msgstr "আরম্ভ থেকে প্রাপ্ত অনুমোদন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approved users"
 msgstr "অনুমোদিত ব্যবহারকারী"
+
+#, machine, plain1
+msgid "Approved. Press Confirm on that screen to finish signing in."
+msgstr "অনুমোদিত. স্বাক্ষর করার জন্য পর্দার উপর নিশ্চিত করুন।"
 
 #, machine, plain1
 msgid "Approved: run by the site"
 msgstr "অনুমোদন: সাইটটির দ্বারা পরিচালিত"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Approving a code needs script, which is off in this browser. Sign in on the computer with your password instead."
+msgstr "একটি কোডের প্রয়োজন স্ক্রিপ্ট, যেটা এই ব্রাউজারে বন্ধ রয়েছে। এর পরিবর্তে আপনার পাসওয়ার্ড দিয়ে কম্পিউটার সাইন করুন।"
+
+#, glossary, machine, plain2
 msgid "Apps"
 msgstr "অ্যাপ"
 
@@ -4374,7 +4479,7 @@ msgstr "গঠন"
 msgid "Architecture"
 msgstr "স্থাপত্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Archived post"
 msgstr "আর্কাইভ করা পোস্ট"
 
@@ -4386,7 +4491,7 @@ msgstr "কৃতিম মেধা"
 msgid "Artisan"
 msgstr "আরিসান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Arts"
 msgstr "শিল্পকলা"
 
@@ -4507,19 +4612,19 @@ msgstr "লেখক"
 msgid "Auto-moderation"
 msgstr "স্বয়ংক্রিয় সংরক্ষণ ব্যবস্থা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated"
 msgstr "স্বয়ংক্রিয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated account"
 msgstr "স্বয়ংক্রিয় অ্যাকাউন্ট"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(owner)s"
 msgstr "%(owner)s দ্বারা স্বয়ংক্রিয়"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(site)s"
 msgstr "%(site)s দ্বারা স্বয়ংক্রিয়"
 
@@ -4535,11 +4640,11 @@ msgstr "আপনার অ্যাকাউন্টের জন্য স্
 msgid "Automated posting on your own account is set up in its own section."
 msgstr "আপনার নিজের একাউন্টে স্বয়ংক্রিয়ভাবে পোস্ট করা হয়েছে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatic"
 msgstr "স্বয়ংক্রিয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "স্বয়ংক্রিয়"
@@ -4556,7 +4661,7 @@ msgstr "স্বয়ংক্রিয় স্প্যাম অপসা�
 msgid "Automatic, not an official warning"
 msgstr "স্বয়ংক্রিয়, কোনো অফিসিয়াল সতর্কবার্তা নয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatically Join Chats"
 msgstr "স্বয়ংক্রিয়ভাবে চ্যাটে যোগদান"
 
@@ -4564,7 +4669,7 @@ msgstr "স্বয়ংক্রিয়ভাবে চ্যাটে য�
 msgid "Automatically join Guild chat channels."
 msgstr "স্বয়ংক্রিয়ভাবে Guidt আড্ডার চ্যানেলে যোগদান করো."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automaton"
 msgstr "বট"
 
@@ -4573,7 +4678,7 @@ msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "স্বয়ংক্রিয় বৈশিষ্ট্যের মান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Autoplay"
 msgstr "অটোপ্লে"
 
@@ -4588,7 +4693,7 @@ msgstr "৮৫-৩৫ জন প্রখ্যাত ব্যবহারক�
 msgid "Awarded to users who provide major technical expertise. Current awardees: @mutageno, @AmoralAtBest, @p2hang"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome T-Shirts"
 msgstr "দারুণ টি-শার্ট"
 
@@ -4598,11 +4703,15 @@ msgid "BBC Top Stories"
 msgstr "বিবিসির শীর্ষ গল্প"
 
 #, machine, plain1
+msgid "Back"
+msgstr "পূর্ববর্তী"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Back"
 msgstr "পূর্ববর্তী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Back"
 msgstr "পিছনে"
@@ -4626,6 +4735,10 @@ msgstr "খসড়াতে প্রত্যাবর্তন করুন"
 #, machine, plain1
 msgid "Back to the history"
 msgstr "পূর্বের ওয়েবপেজ"
+
+#, machine, plain1
+msgid "Back to the log"
+msgstr "লগ-ইন করতে ব্যবহৃত"
 
 #, machine, plain1
 msgid "Back to the post"
@@ -4701,7 +4814,7 @@ msgstr "বাটু কোর্ডোর"
 msgid "Baseball"
 msgstr "বল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Based"
 msgstr "বেসড"
@@ -4738,7 +4851,7 @@ msgstr "আপনি%(guild)sই-মেইল ঠিকানা. অ্যা�
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "সমাজের অংশ হবেন, ই-মেইল ঠিকানার প্রয়োজন নেই। অ্যাকাউন্ট তৈরি করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
 msgstr "Ruqqus-এ ৩০ দিনেরও কম সময় ধরে আছেন"
 
@@ -4758,7 +4871,7 @@ msgstr "সন্ধ্যা শুরু হয়"
 msgid "Behind the scenes"
 msgstr "পিছনে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Beta"
 msgstr "বেটা"
 
@@ -4770,7 +4883,7 @@ msgstr "বিটা ব্যবহারকারী"
 msgid "Bicycles"
 msgstr "সাইকেল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bio"
 msgstr "পরিচিতি"
 
@@ -4790,7 +4903,7 @@ msgstr "বার্ডওয়াচিং"
 msgid "Block &amp; Mute"
 msgstr "স্তম্ভ &amp; নিঃশব্দ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s"
 msgstr "@%(name)s-কে ব্লক করুন"
 
@@ -4802,11 +4915,11 @@ msgstr "অ্যাকাউন্ট"
 msgid "Block and Mute - %(site)s"
 msgstr "Block এবং নিঃশব্দ - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block and mute"
 msgstr "ব্লক ও মিউট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block user"
 msgstr "ব্যবহারকারীকে ব্লক করুন"
 
@@ -4840,7 +4953,7 @@ msgstr "বই চর্চা"
 msgid "Book Recommendations"
 msgstr "প্রস্তাবিত বই"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Bookmark"
 msgstr "বুকমার্ক করুন"
@@ -4855,11 +4968,11 @@ msgid_plural "Bookmark, %(num)s bookmarks"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarked"
 msgstr "বুকমার্ক করা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarks"
 msgstr "বুকমার্ক"
 
@@ -4895,7 +5008,7 @@ msgstr "বোট ব্যবহারকারীর নাম"
 msgid "Bot's name"
 msgstr "বোটের নাম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bots"
 msgstr "বট"
 
@@ -4944,12 +5057,20 @@ msgid "Briefly describe what the guild is about..."
 msgstr "Guid এর ব্যাপারে সংক্ষিপ্ত বর্ণনা..."
 
 #, machine, plain1
+msgid "Briefly say what you changed (optional)"
+msgstr "সংক্ষিপ্তভাবে বললে আপনি কি পরিবর্তন করেছেন (ঐচ্ছিক)"
+
+#, machine, plain1
 msgid "Bronze Patron"
 msgstr "বম্বন পেট্রোনাম"
 
 #, machine, plain1
 msgid "Bronze Recruiter"
 msgstr "ব্রিজ পুনরায় নির্ধারণ"
+
+#, machine, plain1
+msgid "Browser"
+msgstr "ব্রাউজার"
 
 #, machine, plain1
 msgid "Browser not recorded"
@@ -4983,7 +5104,7 @@ msgstr "খালি পয়সা কিনলে Premium প্রথম স
 msgid "By royal decree, we are unable to show this to you right now."
 msgstr "রাজকীয় আদেশ অনুসারে, আমরা তোমাকে এটা দেখাতে পারবো না।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "CSS"
 msgstr "CSS"
 
@@ -5000,7 +5121,7 @@ msgstr "কল"
 msgid "Call controls"
 msgstr "কল নিয়ন্ত্রণ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Calls"
 msgstr "কল"
 
@@ -5019,6 +5140,10 @@ msgid_plural "Calls end after %(num)s hours."
 msgstr[0] "%(num)s ঘণ্টা পর কল শেষ."
 msgstr[1] "%(num)s ঘন্টা পরে কল শেষ হয়।"
 
+#, machine, plain2
+msgid "Calls only"
+msgstr "শুধুমাত্র কল"
+
 #, machine, plain1
 msgid "Camera off"
 msgstr "ক্যামেরা বন্ধ"
@@ -5031,7 +5156,7 @@ msgstr "ক্যামেরা সচল"
 msgid "Camping"
 msgstr "ক্যাম্পিং"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "বাতিল"
 
@@ -5073,7 +5198,7 @@ msgstr "বাতিল করা হয়েছে"
 msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
 msgstr "রাজধানী, উচ্চারণ এবং পুনরাবৃত্তিমূলক অক্ষর কোন কিছু পরিবর্তন করে না: রাজধানীর একই শব্দ, উচ্চারণ বা লিখিত অক্ষর দিয়ে একই শব্দ পড়া হয়।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Captions"
 msgstr "ক্যাপশন"
 
@@ -5081,7 +5206,7 @@ msgstr "ক্যাপশন"
 msgid "Car Repair"
 msgstr "কার্মান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "Card"
 msgstr "কার্ড"
@@ -5110,7 +5235,7 @@ msgstr "আপনি যেভাবে ভোট দিন"
 msgid "Casual Discussion"
 msgstr "ভাষাগত আলোচনা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Categorical"
 msgstr "বিভাগ অনুযায়ী"
 
@@ -5158,11 +5283,11 @@ msgstr "শ্রেণীর নাম"
 msgid "Category: %(category)s"
 msgstr "শ্রেণী: %(category)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Category: %(category)s / %(subcategory)s"
 msgstr "বিভাগ: %(category)s / %(subcategory)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Category: Uncategorized"
 msgstr "বিভাগ: বিভাগহীন"
 
@@ -5178,7 +5303,7 @@ msgstr "উদযাপন"
 msgid "Central Andes"
 msgstr "মধ্য ইউরোপিয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Change"
 msgstr "বদলান"
@@ -5191,7 +5316,7 @@ msgstr "পাসওয়ার্ড পরিবর্তন করুন"
 msgid "Change Username"
 msgstr "ব্যবহারকারীর নাম পরিবর্তন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change categories"
 msgstr "বিভাগ বদলান"
 
@@ -5200,7 +5325,7 @@ msgctxt "guildmaster action"
 msgid "Change invite"
 msgstr "আমন্ত্রণ জানাও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change languages"
 msgstr "ভাষা বদলান"
 
@@ -5212,11 +5337,11 @@ msgctxt "guildmaster action"
 msgid "Change perms"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change post types"
 msgstr "পোস্টের ধরন বদলান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change regions"
 msgstr "অঞ্চল বদলান"
 
@@ -5224,7 +5349,7 @@ msgstr "অঞ্চল বদলান"
 msgid "Change the capitilization of your guild's name."
 msgstr "আপনার guiল্ডের নাম ক্যাপ্টেন পরিবর্তন করুন."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change the default sorting for posts."
 msgstr "পোস্টের ডিফল্ট ক্রম পরিবর্তন করুন।"
 
@@ -5256,7 +5381,7 @@ msgstr "পাসওয়ার্ড পরিবর্তন করুন"
 msgid "Change your password."
 msgstr "পাসওয়ার্ড পরিবর্তন করুন."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change your word filter"
 msgstr "শব্দ ফিল্টার পরিবর্তন করুন"
 
@@ -5273,11 +5398,19 @@ msgid "Changing these rules always needs every counted author."
 msgstr "এই নিয়ম পরিবর্তন করে সব গণনার লেখক দরকার।"
 
 #, machine, plain1
+msgid "Changing your password doesn't end the access of an app you allowed. Check your apps and your chat apps in Settings too."
+msgstr "আপনার পাসওয়ার্ড পরিবর্তন করা যাবে না । আপনার অ্যাপ এর মেয়াদ শেষ হতে পারে । ক্যাশের মধ্যে আপনার অ্যাপ এবং বৈশিষ্ট্যাবলীও পরীক্ষা করুন।"
+
+#, machine, plain2
+msgid "Changing your password signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "অন্যান্য ডিভাইসের সাথে সংযোগ স্থাপন করতে পাসওয়ার্ড পরিবর্তন করুন ও আড্ডার বোতাম ব্যতীত অন্য কোনো ডিভাইসের সাথে সংযোগ স্থাপন করা না হলে, এই বাগ-রিপোর্টটি ব্যবহার করা হবে।"
+
+#, machine, plain1
 msgctxt "chat kind"
 msgid "Channel"
 msgstr "চ্যানেল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Channel"
 msgstr "চ্যানেল"
@@ -5330,7 +5463,7 @@ msgstr "চ্যানেল আন-লোড করা"
 msgid "Channel's own rules"
 msgstr "চ্যানেলের নিজস্ব নিয়ম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "চ্যানেল"
 
@@ -5342,25 +5475,25 @@ msgstr "চ্যানেল হল +%(guild)s'মাগিল্ডের চ�
 msgid "Charter Supporter"
 msgstr "সনদ সমর্থনকারী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "চ্যাট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading"
 msgid "Chat"
 msgstr "চ্যাট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Chat"
 msgstr "চ্যাট"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Chat - %(site)s"
 msgstr "চ্যাট - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat apps"
 msgstr "চ্যাট অ্যাপ"
 
@@ -5373,8 +5506,44 @@ msgid "Chat apps aren't switched on for this site yet."
 msgstr "এই সাইটের জন্য আড্ডা টুল এখনো চালু করা হয়নি।"
 
 #, machine, plain1
+msgid "Chat can't start right now. Try again in a moment."
+msgstr "আলাপন এখন শুরু হবে না। আবার চেষ্টা করো।"
+
+#, machine, plain2
+msgid "Chat couldn't take those keys."
+msgstr "চ্যাট ঐ চাবি নিতে পারেনি."
+
+#, machine, plain2
+msgid "Chat isn't answering right now. Try again in a minute."
+msgstr "চ্যাট এখনই সাড়া দিচ্ছে না। আবার চেষ্টা করো।"
+
+#, machine, plain1
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "চ্যাট এখনই সাড়া দিচ্ছে না। আবার চেষ্টা করো।"
+
+#, machine, plain1
+msgid "Chat isn't available"
+msgstr "আলাপন উপলব্ধ নয়"
+
+#, machine, plain1
+msgid "Chat isn't available for your account right now. The site's admins have been told."
+msgstr "আপনার অ্যাকাউন্ট বর্তমানে উপলব্ধ নেই। সাইটের প্রশাসককে বলা হয়েছে।"
+
+#, machine, plain2
+msgid "Chat isn't set up for your account yet."
+msgstr "আপনার অ্যাকাউন্টের জন্য প্রস্তুত করা হয়নি।"
+
+#, machine, plain2
+msgid "Chat isn't set up on your account yet. Open Chat once to set it up and get your recovery code."
+msgstr "আপনার অ্যাকাউন্ট এখনও নির্ধারণ করা হয়নি। একবার একটা চ্যাট খোলো যাতে তুমি সুস্থ হয়ে কোড পাও."
+
+#, machine, plain2, python-format
+msgid "Chat was started over on your %(site)s account"
+msgstr "আপনার ওপর আলাপন আরম্ভ করা হয়েছে %(site)s অ্যাকাউন্ট"
+
+#, machine, plain1
+msgid "Chat with this account isn't available right now. The site's admins have been told."
+msgstr "এই অ্যাকাউন্টটি এখন বিদ্যমান নয়। সাইটের প্রশাসককে বলা হয়েছে।"
 
 #, machine, plain1
 msgid "Chat, group chats and calls"
@@ -5385,7 +5554,7 @@ msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "আলাপনের ব্যবহারকারী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "চ্যাট"
 
@@ -5483,6 +5652,10 @@ msgstr "কীভাবে সিদ্ধান্ত নেওয়া হয
 msgid "Choose how long a proposal stays open."
 msgstr "একটি প্রস্তাব কতদিন খোলা থাকবে তা বেছে নিন ।"
 
+#, machine, plain2
+msgid "Choose how long messages last."
+msgstr "কত সময় পরে বার্তাগুলি নির্বাচন করুন ।"
+
 #, machine, plain1
 msgid "Choose how long people wait between messages."
 msgstr "যে সংখ্যক দিন অপেক্ষা করা হবে তা বেছে নিন ।"
@@ -5526,6 +5699,10 @@ msgstr "কি ধরনের প্রতিক্রিয়া বেছে
 #, machine, plain1
 msgid "Choose what to propose."
 msgstr "প্রস্তাবটা বেছে নিন."
+
+#, machine, plain2
+msgid "Choose what you're told of."
+msgstr "যা বলা হয়েছে তা বেছে নিন।"
 
 #, machine, plain1
 msgid "Choose when an author stops being counted."
@@ -5591,7 +5768,7 @@ msgstr "ক্রিসমাস সন্ধ্যা"
 msgid "Chronic Illness"
 msgstr "( ১ করি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Circle"
 msgstr "সার্কেল"
@@ -5612,11 +5789,11 @@ msgstr "বৃত্ত guids আপনি যেতে"
 msgid "Circle member"
 msgstr "বৃত্ত সদস্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "সার্কেল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Circles"
 msgstr "সার্কেল"
@@ -5637,7 +5814,7 @@ msgstr "মার্গ সংগীত"
 msgid "Cleaning & Organizing"
 msgstr "পরিষ্কার (C)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: clear the advanced filter"
 msgid "Clear"
 msgstr "মুছে দিন"
@@ -5658,7 +5835,7 @@ msgstr "ক্লায়েন্ট ID"
 msgid "Client Secret"
 msgstr "ক্লায়েন্ট গোপনীয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "বন্ধ করুন"
 
@@ -5666,7 +5843,7 @@ msgstr "বন্ধ করুন"
 msgid "Close Friends are never shown on any list."
 msgstr "বন্ধু কখনো প্রদর্শন করা হয় না ।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close panel"
 msgstr "প্যানেল বন্ধ করুন"
 
@@ -5690,7 +5867,7 @@ msgstr "Cod-author আমন্ত্রণ %(site)s"
 msgid "Co-authored"
 msgstr "কোয়েরী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Co-authors"
 msgstr "সহ-লেখক"
 
@@ -5714,11 +5891,11 @@ msgstr "কফি ও চা"
 msgid "Coin balance:"
 msgstr "সর্বনিম্নbalance:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Coins"
 msgstr "কয়েন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Coins"
 msgstr "কয়েন"
@@ -5751,7 +5928,7 @@ msgstr "কন্সস, টিপস, Premium এবং প্রিন্ট�
 msgid "Collaborative"
 msgstr "সহযোগিতামূলক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Collapse"
 msgstr "সংকুচিত করুন"
 
@@ -5771,7 +5948,7 @@ msgstr "রঙ"
 msgid "Coloured: a post with mostly upvotes shows its upvotes in <span class=\"font-weight-bold vote-ratio-10\">blue</span>, one with mostly downvotes in <span class=\"font-weight-bold vote-ratio-0\">red</span>, and anything between in a shade between. Hover a score to see both counts."
 msgstr "রঙ করা: একটি পোস্ট যেখানে বেশীরভাগ খোলা থাকে তার দৃশ্য প্রদর্শন করছে। <span class=\"font-weight-bold vote-ratio-10\">নীল</span>যাদের বেশিরভাগই খারাপ থাকে <span class=\"font-weight-bold vote-ratio-0\">লাল</span>এবং ছায়ার মাঝে একটা স্কোর ঠিক করতে হবে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Combat Sports"
 msgstr "লড়াইয়ের খেলা"
 
@@ -5791,7 +5968,7 @@ msgstr "কমিক ও কার্টুন"
 msgid "Coming up"
 msgstr "আসছি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
 msgstr "মন্তব্য করুন"
@@ -5808,7 +5985,7 @@ msgstr "নাম: অন্যান্য ব্যবহারকারী �
 msgid "Comment bookmarked."
 msgstr "বুকমার্ক."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "মন্তব্য পোস্ট হয়েছে!"
 
@@ -5816,11 +5993,11 @@ msgstr "মন্তব্য পোস্ট হয়েছে!"
 msgid "Commenting"
 msgstr "মন্তব্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments"
 msgstr "মন্তব্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Comments"
 msgstr "মন্তব্য"
@@ -5843,11 +6020,11 @@ msgstr "মন্তব্য আড়াল অথবা অপসারণ �
 msgid "Comments on your anonymous post are anonymous"
 msgstr "আপনার বেনামী পোস্টে মন্তব্য অজানা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments:"
 msgstr "মন্তব্য:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Commercial promotion"
 msgstr "বাণিজ্যিক প্রচার"
 
@@ -5884,6 +6061,10 @@ msgid "Computers"
 msgstr "কম্পিউটার"
 
 #, machine, plain1
+msgid "Confirm"
+msgstr "নিশ্চায়ণ:"
+
+#, machine, plain1
 msgid "Confirm New Password"
 msgstr "নতুন পাসওয়ার্ড নিশ্চিত করুন"
 
@@ -5895,11 +6076,15 @@ msgstr "পাসওয়ার্ড নিশ্চায়ন:"
 msgid "Confirm my age"
 msgstr "আমার বয়স নিশ্চিত করুন"
 
+#, machine, plain2
+msgid "Confirm with your password again."
+msgstr "পাসওয়ার্ড আবার লিখুন:."
+
 #, machine, plain1
 msgid "Confirm your age"
 msgstr "আপনার বয়স নিশ্চিত করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Connect"
 msgstr "যুক্ত থাকুন"
 
@@ -5931,17 +6116,17 @@ msgstr "- সংযুক্ত %(site)s"
 msgid "Console"
 msgstr "কনসোল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contact"
 msgstr "যোগাযোগ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Contact"
 msgstr "যোগাযোগ"
 
 #. a group of post types in the Post type filter (text, links, pictures...)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content"
 msgstr "কনটেন্ট"
 
@@ -5953,7 +6138,7 @@ msgstr "ফিল্টার ব্যবস্থাName"
 msgid "Content awarded:"
 msgstr "বিষয়বস্তু পুরস্কার:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content disclosure"
 msgstr "কনটেন্ট প্রকাশ"
 
@@ -5961,16 +6146,24 @@ msgstr "কনটেন্ট প্রকাশ"
 msgid "Content immediately before this action:"
 msgstr "এই কাজটি করার আগে:"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Content standards"
+msgstr "বিষয়বস্তুর মান"
+
+#, glossary, machine, plain2
 msgid "Context"
 msgstr "প্রসঙ্গ"
+
+#, machine, plain1
+msgid "Continue"
+msgstr "এগিয়ে চলুন"
 
 #, machine, plain1
 msgctxt "button"
 msgid "Continue"
 msgstr "এগিয়ে চলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Continuous scroll"
 msgstr "একটানা স্ক্রল"
 
@@ -5979,11 +6172,11 @@ msgctxt "guildmaster action"
 msgid "Contrib user"
 msgstr "কালের বিবরণ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute"
 msgstr "অবদান রাখুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute Code"
 msgstr "কোডে অবদান রাখুন"
 
@@ -6029,15 +6222,15 @@ msgctxt "button"
 msgid "Copy"
 msgstr "নোট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy Link"
 msgstr "লিংক কপি করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link"
 msgstr "লিংক কপি করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link to profile"
 msgstr "প্রোফাইলের লিংক কপি করুন"
 
@@ -6074,6 +6267,10 @@ msgid "Counter-Culture"
 msgstr "বিপরীত শব্দ"
 
 #, machine, plain1
+msgid "Country"
+msgstr "দেশ"
+
+#, machine, plain1
 msgid "Country Music"
 msgstr "দেশের সংগীত"
 
@@ -6085,7 +6282,7 @@ msgstr "আপনি যোগদানকারী muguids"
 msgid "Crafts"
 msgstr "কর্ম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bottom bar button that opens Create post"
 msgid "Create"
 msgstr "তৈরি করুন"
@@ -6098,7 +6295,7 @@ msgstr "তৈরি করুন ( r) &amp; স্থানান্তরণ"
 msgid "Create Curation"
 msgstr "প্রদত্ত ফিড তৈরি করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create Guild"
 msgstr "গিল্ড তৈরি করুন"
 
@@ -6122,7 +6319,7 @@ msgstr "একটি Graid- %(site)s"
 msgid "Create a community for something you love."
 msgstr "আপনার ভালবাসার জন্য একটি সম্প্রদায় তৈরি করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a curation"
 msgstr "সংকলন তৈরি করুন"
 
@@ -6134,7 +6331,7 @@ msgstr "Guiল্ড তৈরি করুন"
 msgid "Create a key"
 msgstr "কি নির্মাণ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a post"
 msgstr "পোস্ট তৈরি করুন"
 
@@ -6155,7 +6352,7 @@ msgctxt "guildmaster action"
 msgid "Create guild"
 msgstr "Guiল্ড তৈরি করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create post"
 msgstr "পোস্ট তৈরি করুন"
 
@@ -6171,7 +6368,7 @@ msgstr "আপনার অ্যাকাউন্ট তৈরি করুন
 msgid "Creative Writing"
 msgstr "সৃজনশীল লেখা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio"
 msgstr "Creator Studio"
 
@@ -6179,7 +6376,7 @@ msgstr "Creator Studio"
 msgid "Creator Studio - %(site)s"
 msgstr "নির্মাতা স্টুডিও - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio is part of Premium"
 msgstr "Creator Studio প্রিমিয়ামের অংশ"
 
@@ -6187,7 +6384,7 @@ msgstr "Creator Studio প্রিমিয়ামের অংশ"
 msgid "Creator Studio: your earnings and paid circles"
 msgstr "সৃষ্টিকর্তা স্টুডিওঃ আপনার আয় এবং খরচের বৃত্ত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator fund"
 msgstr "ক্রিয়েটর ফান্ড"
 
@@ -6207,7 +6404,11 @@ msgstr "অপরাধ ও আদালত"
 msgid "Crime & Mystery"
 msgstr "অপরাধ ও অপরাধ"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Criminal activity and prohibited conduct"
+msgstr "অপরাধ কার্যকলাপ এবং নিষিদ্ধ আচরণ"
+
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "ক্রিঞ্জ"
 
@@ -6219,15 +6420,15 @@ msgstr "ক্রিপ্টো"
 msgid "Cuisine"
 msgstr "কুনইইন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Culture"
 msgstr "সংস্কৃতি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curation"
 msgstr "সংকলন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curations"
 msgstr "সংকলন"
 
@@ -6250,7 +6451,7 @@ msgstr[1] "বর্তমান ভারসাম্য: <span class=\"text-bl
 msgid "Custom Filters"
 msgstr "স্বনির্বাচিত ফিল্টার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom Stickers"
 msgstr "কাস্টম স্টিকার"
 
@@ -6258,7 +6459,7 @@ msgstr "কাস্টম স্টিকার"
 msgid "Custom URI scheme can be used. Separate multiple options with comma."
 msgstr "স্বনির্ধারিত URI স্কিম ব্যবহার করা যাবে। কমা চিহ্ন দ্বারা পৃথক একাধিক বিকল্প।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom User Feed"
 msgstr "কাস্টম ইউজার ফিড"
 
@@ -6306,7 +6507,7 @@ msgstr "বিপদ সংকেত"
 msgid "Danubian Steppe"
 msgstr "ডানবিয়ান ধাপ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "ডার্ক মোড"
 
@@ -6330,16 +6531,16 @@ msgstr "তারিখ অনুযায়ী, চাঁদ চাঁদ দ�
 msgid "Dating Advice"
 msgstr "সংশোধন করা হচ্ছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Day"
 msgstr "দিন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Day"
 msgstr "দিন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Day"
 msgstr "দিন"
@@ -6387,15 +6588,15 @@ msgctxt "button"
 msgid "Decline"
 msgstr "প্রত্যাখ্যান করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default"
 msgstr "ডিফল্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Sorting"
 msgstr "ডিফল্ট ক্রম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Time Filter"
 msgstr "ডিফল্ট সময় ফিল্টার"
 
@@ -6412,7 +6613,7 @@ msgctxt "button"
 msgid "Delete"
 msgstr "মুছে ফেলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Delete"
 msgstr "মুছুন"
@@ -6565,7 +6766,7 @@ msgstr "সমগ্র নির্বাচন বাতিল করুন"
 msgid "Designate whether your guild discusses sensitive topics."
 msgstr "কল্পনা করুন যে আপনার guild নামক বিষয়টি সংবেদনশীল বিষয় কিনা।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Details"
 msgstr "বিস্তারিত"
 
@@ -6660,13 +6861,13 @@ msgstr "Dailymotion বিচ্ছিন্ন করা হবে কি? আ�
 msgid "Disconnect Discord"
 msgstr "বিচ্ছিন্ন করুন Discord"
 
-#, machine, plain1
-msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing."
-msgstr "বিচ্ছিন্ন করুন Googleএ বিষয়ে যে , তোমাদের কর ্ ম ও কর ্ ম সম ্ পর ্ কে । Google Drive আপনার পোস্টে দেখানো বন্ধ করা হবে। ভিডিও সচল YouTube খেলতে থাকো।"
+#, machine, plain2
+msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts, and files you sent in chats from it can no longer be opened. Videos on YouTube keep playing."
+msgstr "বিচ্ছিন্ন করুন Googleএ বিষয়ে যে , তোমাদের কর ্ ম ও কর ্ ম সম ্ পর ্ কে । Google Drive আপনার পোস্টে দেখানো বন্ধ করা হবে, এবং আপনি এই তালিকা থেকে বার্তা পাঠাবেন যা এখন আর খোলা যাবে না। ভিডিও সচল YouTube খেলতে থাকো।"
 
-#, machine, plain1
-msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts."
-msgstr "OneDrive বিচ্ছিন্ন করা হবে কি? আপনার পোস্টে ছবি আর অডিও সংরক্ষণ থাকবে না।"
+#, machine, plain2
+msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts, and files you sent in chats from it can no longer be opened."
+msgstr "OneDrive বিচ্ছিন্ন করা হবে কি? আপনার পোস্টে ছবি ও অডিও সংরক্ষণ করা হবে, এবং আপনি আড্ডা থেকে বার্তা পাঠাবার পর তা আর খোলা যাবে না।"
 
 #, machine, plain1
 msgid "Disconnect? Images and audio from this storage will stop showing in your posts."
@@ -6680,7 +6881,7 @@ msgstr "সংযোগ বিচ্ছিন্ন ।"
 msgid "Disconnecting your Discord account will remove you from the %(site)s Discord server."
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discord Server"
 msgstr "Discord সার্ভার"
 
@@ -6688,7 +6889,7 @@ msgstr "Discord সার্ভার"
 msgid "Discord account already linked."
 msgstr "Discord অ্যাকাউন্ট বর্তমানে উপস্থিত রয়েছে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover Curations"
 msgstr "সংকলন খুঁজে দেখুন"
 
@@ -6696,7 +6897,7 @@ msgstr "সংকলন খুঁজে দেখুন"
 msgid "Discover amazing communities across <span class=\"text-purple\">%(site)s</span>."
 msgstr "সর্বত্র বিস্ময়কর সম্প্রদায় অনুসন্ধান করুন <span class=\"text-purple\">%(site)s</span>."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover guilds"
 msgstr "গিল্ড খুঁজে দেখুন"
 
@@ -6727,12 +6928,12 @@ msgstr "প্রদর্শন করা হবে"
 msgid "Display name"
 msgstr "প্রদর্শনের নাম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Disputed"
 msgstr "বিতর্কিত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Distinguish"
 msgstr "বিশেষ চিহ্ন দিন"
 
@@ -6756,25 +6957,37 @@ msgstr "কোনো অ্যাকাউন্ট আছে কি? <a href=\"
 msgid "Don't quote"
 msgstr "উদ্ধৃত করা হবে না"
 
+#, machine, plain2
+msgid "Don't say who it's from"
+msgstr "কে এটা থেকে"
+
 #, machine, plain1, python-format
 msgid "Don't show +%(guild)s content in All or Trending for users that aren't members of the guild."
 msgstr "প্রদর্শন করা হবে না%(guild)s সব ধরনের বিষয়বস্তু ব্যবহারকারীদের জন্য, যারা গিল্ডের সদস্য নয়।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate"
 msgstr "অনুদান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Donate"
 msgstr "অনুদান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate Cash or Crypto"
 msgstr "নগদ বা ক্রিপ্টো দান করুন"
 
 #, machine, plain1
 msgid "Done"
+msgstr "সম্পন্ন"
+
+#, machine, plain1
+msgid "Done by"
+msgstr "সম্পন্ন"
+
+#, machine, plain1
+msgid "Done to"
 msgstr "সম্পন্ন"
 
 #, machine, plain1
@@ -6806,7 +7019,7 @@ msgstr "আপনার তথ্য ডাউনলোড করুন"
 msgid "Downvote"
 msgstr "বিপরীত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Downvote"
 msgstr "ডাউনভোট করুন"
@@ -6819,7 +7032,7 @@ msgstr "পতন"
 msgid "Doxxing is not allowed."
 msgstr "( ১ করি."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Drafts"
 msgstr "খসড়া"
 
@@ -6902,12 +7115,12 @@ msgctxt "button"
 msgid "Edit"
 msgstr "সম্পাদনা বাটন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: edit the advanced filter"
 msgid "Edit"
 msgstr "সম্পাদনা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Edit"
 msgstr "সম্পাদনা করুন"
@@ -6944,7 +7157,7 @@ msgstr "অন্যদের আপনি কীভাবে দেখেন %(
 msgid "Edit permissions"
 msgstr "অনুমতি সম্পাদনা করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Edit profile"
 msgstr "প্রোফাইল সম্পাদনা"
 
@@ -6968,7 +7181,7 @@ msgstr "এই পোস্টটিতে শেয়ার করা খস�
 msgid "Edit your posts and comments"
 msgstr "আপনার পোস্ট এবং মন্তব্য সম্পাদন করুন"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Edited %(when)s"
 msgstr "সম্পাদিত %(when)s"
 
@@ -7145,10 +7358,22 @@ msgid "Enter your account password to turn the Child filter down."
 msgstr "চাইল্ড ফিল্টারের জন্য আপনার অ্যাকাউন্টের পাসওয়ার্ড লিখুন।"
 
 #, machine, plain1
+msgid "Enter your password"
+msgstr "পাসওয়ার্ড লিখুন"
+
+#, machine, plain1, python-format
+msgid "Enter your password - %(site)s"
+msgstr "আপনার পাসওয়ার্ড লিখুন %(site)s"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "আপনার দুই র‍্যান্ড কোড লিখুন ।"
+
+#, machine, plain1
 msgid "Entertainment"
 msgstr "বিনোদন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Entertainment News"
 msgstr "বিনোদন সংবাদ"
 
@@ -7201,6 +7426,10 @@ msgid "Evading a site-wide ban"
 msgstr "একটি সাইটের উপর করা নিষেধাজ্ঞা"
 
 #, machine, plain1
+msgid "Evading and manipulating the site"
+msgstr "স্থান পরিবর্তন ও ব্যবহার করা"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Event cancel"
 msgstr "ইভেন্ট বাতিল করা হয়েছে"
@@ -7219,7 +7448,7 @@ msgstr "ইভেন্ট নিরীক্ষণ ব্যবস্থা"
 msgid "Event hidden by your word filter"
 msgstr "ফিল্টার ব্যবহার করে ঘটনা আড়াল করা হচ্ছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Events"
 msgstr "ইভেন্ট"
 
@@ -7259,9 +7488,9 @@ msgid_plural "Every bot rule applies, %(num)s posts a day included."
 msgstr[0] ""
 msgstr[1] ""
 
-#, machine, plain1
+#, machine, plain2
 msgid "Every browser and app signed in to your chats. Sign out any you don't recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat."
-msgstr "প্রত্যেক ব্রাউজার এবং অ্যাপ আপনার চ্যাটে স্বাক্ষর করুন। আপনি যে কোন নাম জানেন না তা দিয়ে সাইন করুন; যদি আপনি ব্রাউজার থেকে আপনার পাসওয়ার্ড চান, তবে পরবর্তীবার আলাপনের জন্য আপনার পাসওয়ার্ড জিজ্ঞাসা করুন।"
+msgstr "প্রত্যেক ব্রাউজার এবং অ্যাপ আপনার চ্যাটে স্বাক্ষর করুন। আপনি যে কোন সংযোগ চিনতে পারবেন না বা তা ব্যবহার করতে পারবেন না; একটি ব্রাউজার সংযোগ বিচ্ছিন্ন করে পরবর্তীবার আড্ডার জন্য পাসওয়ার্ড জিজ্ঞাসা করবে ।"
 
 #, machine, plain1
 msgid "Every character is credited to whoever typed or pasted it."
@@ -7275,8 +7504,12 @@ msgstr "প্রতিটি%(guild)s একটি লেবেলের প্
 msgid "Every guild's comments in one list. Open a guild to comment in it."
 msgstr "একটি তালিকার প্রতিটি guidd এর মন্তব্য। এতে মন্তব্য করতে একটি guidd খুলুন।"
 
+#, machine, plain2
+msgid "Every message"
+msgstr "প্রতি বার্তা"
+
 #. who may open one of a profile's lists (Following, Followers...).
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Everyone"
 msgstr "সবাই"
 
@@ -7363,7 +7596,7 @@ msgstr "উদাহরণস্বরূপ: বিড়ালের কুক
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "উদাহরণস্বরূপ: সুখী ঘন্টা য়েটার সঠিক শব্দ রয়েছে \"ধন্য ঘন্টা\""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
 msgstr "@%(name)s-কে নির্বাসন দিন"
 
@@ -7396,7 +7629,7 @@ msgstr "+ থেকে প্রাপ্ত%(guild)s."
 msgid "Exiled since"
 msgstr "চিহ্নিত সময়ের পরে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Exiles"
 msgstr "নির্বাসিত"
 
@@ -7413,7 +7646,7 @@ msgstr "নির্বাসিত ও চ্যাট নিষেধাজ্
 msgid "Expected"
 msgstr "প্রত্যাশিত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Explore"
 msgstr "এক্সপ্লোর"
 
@@ -7421,7 +7654,7 @@ msgstr "এক্সপ্লোর"
 msgid "Explore curations - %(site)s"
 msgstr "ফিড অনুসন্ধান করুন - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Explore guilds - %(site)s"
 msgstr "গিল্ড এক্সপ্লোর করুন - %(site)s"
 
@@ -7438,7 +7671,7 @@ msgstr "এক্সটেনশন"
 msgid "Extend for"
 msgstr "অনুসন্ধান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Extra large"
 msgstr "খুব বড়"
 
@@ -7503,31 +7736,39 @@ msgstr "কল্পনা"
 msgid "File"
 msgstr "ফাইল"
 
+#, machine, plain2
+msgid "Files you send in chats are kept here too, encrypted: only the people in that chat can open them."
+msgstr "আপনি আড্ডার ফাইলগুলোও এখানে পাঠাতে পারবেন। উল্লেখ্য: শুধুমাত্র আড্ডার লোকেরাই খোলা খুলতে পারে।"
+
 #, machine, plain1
 msgid "Film & TV"
 msgstr "চলচ্চিত্র ও টিভি"
+
+#, machine, plain1
+msgid "Filter"
+msgstr "ফিল্টার"
 
 #, machine, plain1, python-format
 msgid "Filter +%(guild)s by flair"
 msgstr "ফিল্টার +%(guild)s লেবেল অনুযায়ী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filter by"
 msgstr "ফিল্টার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filtered words"
 msgstr "ফিল্টার করা শব্দ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Filtered words - %(site)s"
 msgstr "ফিল্টার করা শব্দ - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters"
 msgstr "ফিল্টার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters in this search"
 msgstr "এই সার্চের ফিল্টার"
 
@@ -7584,7 +7825,7 @@ msgstr "দাঁত পরিষ্কার করুন"
 msgid "Fitness"
 msgstr "গুরুত্বের মাত্রা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Flag"
 msgstr "রিপোর্ট করুন"
@@ -7593,11 +7834,11 @@ msgstr "রিপোর্ট করুন"
 msgid "Flagged Posts"
 msgstr "ফ্ল্যাগ করা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Flair"
 msgstr "লেবেল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Flair"
 msgstr "লেবেল"
@@ -7640,7 +7881,7 @@ msgstr "সকল লেবেল দ্বারা চিহ্নিত স�
 msgid "Flights & Airlines"
 msgstr "ফ্লাইট & এয়ারলাইন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Fold the sidebar"
 msgstr "সাইডবার গুটিয়ে নিন"
 
@@ -7660,7 +7901,7 @@ msgstr "ফোল্ডারের নাম পরিবর্তন করু
 msgid "Folder:"
 msgstr "ফোল্ডার খুলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Follow"
 msgstr "ফলো করুন"
@@ -7673,7 +7914,7 @@ msgstr "অনুসরণ করুন%(name)s"
 msgid "Follow accounts and join guilds, and their posts show here."
 msgstr "এই সমস্ত একাউন্ট অনুসরণ করুন এবং গিল্ডস-এর সাথে যোগ দিন এবং তাদের পোস্ট এখানে প্রদর্শন করা হল।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follow post"
 msgstr "পোস্ট ফলো করুন"
 
@@ -7693,11 +7934,11 @@ msgid_plural "Followed by %(num)s people you follow"
 msgstr[0] "অনুসরণ করো %(num)s জনের"
 msgstr[1] "অনুসরণ করুন %(num)s লোক দ্বারা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Followers"
 msgstr "ফলোয়ার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Followers"
 msgstr "ফলোয়ার"
@@ -7713,31 +7954,31 @@ msgstr "অনুসরণ করুন%(name)s -কি? %(site)s"
 #. the names of a profile's lists: the accounts it follows, its followers, who
 #. pays for its paid circles,
 #. and the paid circles it pays for.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Following"
 msgstr "ফলো করছেন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you follow"
 msgid "Following"
 msgstr "ফলো করছেন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "Following"
 msgstr "ফলো করছেন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: curations you follow"
 msgid "Following"
 msgstr "ফলো করছেন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Following"
 msgstr "ফলো করছেন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Following"
 msgstr "ফলো করছেন"
@@ -7750,7 +7991,7 @@ msgstr "@র অনুসরণ%(name)s"
 msgid "Following · @%(name)s - %(site)s"
 msgstr "এর পরে @%(name)s -কি? %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follows you"
 msgstr "আপনাকে ফলো করে"
 
@@ -7758,11 +7999,11 @@ msgstr "আপনাকে ফলো করে"
 msgid "Food"
 msgstr "খাদ্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For You"
 msgstr "আপনার জন্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For a circle"
 msgstr "একটি সার্কেলের জন্য"
 
@@ -7814,12 +8055,12 @@ msgstr "প্রশাসকদের জন্য যারা এটা প�
 msgid "For the admins who review it: what the bot is for and where its posts come from."
 msgstr "প্রশাসকদের জন্য যারা এটাকে পর্যালোচনা করেছেন: এই রোবটটি কোথায় এবং এর পোস্টগুলো কোথা থেকে এসেছে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: forget the saved default filters"
 msgid "Forget"
 msgstr "মুছুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forget my default"
 msgstr "আমার ডিফল্ট মুছুন"
 
@@ -7827,7 +8068,7 @@ msgstr "আমার ডিফল্ট মুছুন"
 msgid "Forgot password?"
 msgstr "পাসওয়ার্ড ভুলে গেলে?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Fork"
 msgstr "ফর্ক করুন"
@@ -7854,15 +8095,15 @@ msgstr "আটক করা হয়েছে <a href=\"%(url)s\">%(title)s</a>
 msgid "Formatting"
 msgstr "বিন্যাস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Formatting help"
 msgstr "ফরম্যাটিং সাহায্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Former Admin"
 msgstr "সাবেক অ্যাডমিন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Forward"
 msgstr "ফরোয়ার্ড করুন"
@@ -7897,7 +8138,7 @@ msgstr "Guids- এ এগিয়ে যাও"
 msgid "Forward to guilds (optional)"
 msgstr "Guids (ঐচ্ছিক)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile tab"
 msgid "Forwarded"
 msgstr "ফরোয়ার্ড করা"
@@ -7923,11 +8164,11 @@ msgstr "Guirds এ ফরওয়ার্ড করা হয়েছে"
 msgid "Forwarded!"
 msgstr "ফরওয়ার্ড করা হয়েছে!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwarding to"
 msgstr "ফরোয়ার্ড করা হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwards"
 msgstr "ফরোয়ার্ড"
 
@@ -7935,11 +8176,11 @@ msgstr "ফরোয়ার্ড"
 msgid "Forwards then come from the post's Forward dialog, where a flair is picked."
 msgstr "এরপর এই পোস্টের পরবর্তী আলোচনা থেকে এগিয়ে আসে, যেখানে একটি লেবেল বাছাই করা হয়।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Founded"
 msgstr "প্রতিষ্ঠিত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Founder"
 msgstr "প্রতিষ্ঠাতা"
@@ -7947,6 +8188,10 @@ msgstr "প্রতিষ্ঠাতা"
 #, machine, plain1
 msgid "Free circles"
 msgstr "মুক্ত চক্র"
+
+#, machine, plain1
+msgid "Free expression and good faith"
+msgstr "মুক্ত মত প্রকাশ এবং উত্তম বিশ্বাস"
 
 #, machine, plain1
 msgid "Fresh and rising"
@@ -7980,7 +8225,7 @@ msgstr "তোমরা সবাই তোমাদের পিছু পি�
 msgid "Friends is your automatic circle of mutual follows. Choose another name."
 msgstr "বন্ধু হলো তোমার পরস্পরের সাথে সম্পর্ক গড়ে তোলা। অন্য একটি নাম নির্বাচন করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Friends liked"
 msgstr "বন্ধুরা পছন্দ করেছেন"
 
@@ -7988,7 +8233,7 @@ msgstr "বন্ধুরা পছন্দ করেছেন"
 msgid "Friendship"
 msgstr "বন্ধুত্ব"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "From"
 msgstr "লেখক"
@@ -8033,7 +8278,7 @@ msgstr "সংশোধন থেকে %(older)s ( চিহ্ন)%(older_by)s
 msgid "From these accounts"
 msgstr "এই অ্যাকাউন্ট থেকে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "From:"
 msgstr "সময়কাল:"
 
@@ -8045,7 +8290,7 @@ msgstr "ফ্রুগাল জীবন্ত"
 msgid "Full Moon"
 msgstr "পূর্ণ চাঁদ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Full editor"
 msgstr "পূর্ণ এডিটর"
 
@@ -8069,7 +8314,7 @@ msgstr "খেলার নাইট অংশগ্রহণকারী"
 msgid "Gaming"
 msgstr "গেমিং"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gaming News"
 msgstr "গেমিং সংবাদ"
 
@@ -8085,11 +8330,11 @@ msgstr "জিয়ামিন্‌স উল্‌বাতো বৃষ্�
 msgid "General Information"
 msgstr "সাধারণ তথ্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Memes"
 msgstr "সাধারণ মিম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Science"
 msgstr "সাধারণ বিজ্ঞান"
 
@@ -8113,13 +8358,17 @@ msgstr "পয়সা নাও"
 msgid "Get coins to send a tip"
 msgstr "একটি বকশিশ পাঠাতে পয়সা পান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Get involved"
 msgstr "যুক্ত হোন"
 
 #, machine, plain1
 msgid "Get more coins"
 msgstr "আরো পয়সা নিয়ে আয়"
+
+#, machine, plain1
+msgid "Give a reason"
+msgstr "একটা কারণ দাও"
 
 #, machine, plain1
 msgid "Give the Space's post address or id."
@@ -8185,7 +8434,7 @@ msgstr "এই ভূমিকা প্রদান করুন"
 msgid "Give this ruqqie a tip!"
 msgstr "একটা বকশিশ দাও!"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Glad to have you back. Make a %(site)s!"
 msgstr "আবার পেয়ে ভালো লাগছে। একটা %(site)s হয়ে যাক!"
 
@@ -8309,11 +8558,11 @@ msgid_plural "Group · %(num)s people"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Groups"
 msgstr "গ্রুপ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild"
 msgstr "গিল্ড"
 
@@ -8341,7 +8590,7 @@ msgstr "Guidi বিবরণ"
 msgid "Guild Icon"
 msgstr "Guided আইকন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild Name"
 msgstr "গিল্ডের নাম"
 
@@ -8353,7 +8602,11 @@ msgstr "রিডিফ্ট"
 msgid "Guild Styling"
 msgstr "Guidifarিং"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Guild changes"
+msgstr "Guided পরিবর্তন"
+
+#, glossary, machine, plain2
 msgid "Guild details"
 msgstr "গিল্ডের বিবরণ"
 
@@ -8381,11 +8634,11 @@ msgstr "Guided নাম, + + ছাড়া …"
 msgid "Guild names must be 3-25 letters or numbers."
 msgstr "নাম অবশ্যই ৩-২৫ অক্ষর বা সংখ্যা হতে হবে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild settings"
 msgstr "গিল্ড সেটিংস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Guildmaster"
 msgstr "গিল্ডমাস্টার"
@@ -8394,23 +8647,23 @@ msgstr "গিল্ডমাস্টার"
 msgid "Guildmaster Since"
 msgstr "Guided মহোদয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster Tools"
 msgstr "গিল্ডমাস্টার টুলস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster of"
 msgstr "যেসব গিল্ডের গিল্ডমাস্টার"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Guildmaster of +%(guild)s"
 msgstr "+%(guild)s-এর গিল্ডমাস্টার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster tools"
 msgstr "গিল্ডমাস্টার টুলস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmasters"
 msgstr "গিল্ডমাস্টার"
 
@@ -8436,7 +8689,7 @@ msgid_plural "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "Guidi প্রোফাইলার<span class=\"text-primary\"> %(num)s</span>"
 msgstr[1] "Guidi প্রোফাইলার<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "গিল্ড"
 
@@ -8486,15 +8739,15 @@ msgstr "এখন হচ্ছে"
 msgid "Hardware"
 msgstr "হার্ডওয়্যার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Health"
 msgstr "স্বাস্থ্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Help"
 msgstr "সাহায্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Help"
 msgstr "সাহায্য"
@@ -8503,7 +8756,7 @@ msgstr "সাহায্য"
 msgid "Helped test features in development"
 msgstr "ডিভেলপমেন্ট আরম্ভের সময় সহায়তা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Herald"
 msgstr "হাইলাইট করুন"
@@ -8521,6 +8774,18 @@ msgstr "হাইলাইট করা অংশ"
 #, machine, plain1, python-format
 msgid "Hey there, %(name)s"
 msgstr "এই যে, %(name)s"
+
+#, python-format
+msgid "Hi %(name)s, QR sign-in was turned back on for your %(site)s account, with its password. It lets a phone that is signed in to your account approve a sign-in on another screen."
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "Hi %(name)s, chat encryption was started over on your %(site)s account, after its password was given. Messages from before can no longer be read on your devices unless a browser where you used chat brings them back."
+msgstr "Hi %(name)s, আপনার %(site)s-এ চ্যাট এনক্রিপশন চালু হয়েছে অ্যাকাউন্টের বিবরণ উল্লেখ করার পর, এর পাসওয়ার্ড সরবরাহ করা হয়েছিল । প্রস্তুত না করা হলে, আপনার ডিভাইসের মধ্যে কোনো ব্রাউজারের বার্তা পড়া সম্ভব হবে না।"
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, someone signed in to your %(site)s account with a QR code that was approved on your phone."
+msgstr "হাই %(name)sআর তোমার সাথে কেউ %(site)s অ্যাকাউন্টের সাথে QR তোমার ফোনে যে কোড অনুমোদন করা হয়েছে."
 
 #, machine, plain1, python-format
 msgid "Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently."
@@ -8562,7 +8827,7 @@ msgstr "আড়াল করা পৃষ্ঠা"
 msgid "Hidden until you confirm your age"
 msgstr "আপনার বয়স নিশ্চিত না হওয়া পর্যন্ত আড়াল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Hide"
 msgstr "লুকান"
 
@@ -8571,7 +8836,7 @@ msgctxt "button"
 msgid "Hide"
 msgstr "আড়াল করা হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Hide"
 msgstr "লুকান"
@@ -8585,7 +8850,7 @@ msgctxt "guildmaster action"
 msgid "Hide comment from guild"
 msgstr "Guid থেকে মন্তব্য আড়াল করো"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Hide from +%(guild)s"
 msgstr "+%(guild)s থেকে লুকান"
 
@@ -8597,6 +8862,10 @@ msgstr "Gu দিক থেকে পোস্ট আড়াল করো"
 #, machine, plain1
 msgid "Hide posts or collapse comments that are made by bots."
 msgstr "রোবট দ্বারা তৈরি করা পোস্ট বা মন্তব্যগুলোকে আড়াল করো।"
+
+#, machine, plain1
+msgid "Hide this version"
+msgstr "এই সংস্করণ আড়াল করো"
 
 #, machine, plain1
 msgid "Hides matching content from your feeds, and collapses matching comments."
@@ -8622,7 +8891,7 @@ msgstr "হাইকিং"
 msgid "Hip-Hop"
 msgstr "হাইপ-হপ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "History"
 msgstr "ইতিহাস"
 
@@ -8646,7 +8915,7 @@ msgstr "এই পোস্টটির ইতিহাস"
 msgid "Hobbies"
 msgstr "শখ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Home"
 msgstr "হোম"
 
@@ -8674,7 +8943,7 @@ msgstr "ঘোড়া"
 msgid "Hosted by %(name)s"
 msgstr "হোস্ট দ্বারা %(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Hot"
 msgstr "জনপ্রিয়"
@@ -8726,6 +8995,10 @@ msgid "How long it runs"
 msgstr "কতক্ষণ লাগে এটা"
 
 #, machine, plain1
+msgid "How old are you?"
+msgstr "বয়স কত তোমার?"
+
+#, machine, plain1
 msgid "How scores read"
 msgstr "মাইন সংখ্যা"
 
@@ -8753,7 +9026,7 @@ msgstr "কিভাবে একটি কী ব্যবহার করা �
 msgid "How to write this post"
 msgstr "কিভাবে এই পোস্টটি লিখতে হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "How words are matched"
 msgstr "শব্দ কীভাবে চেনা হয়"
 
@@ -8794,6 +9067,10 @@ msgid "I'm %(min)s to 17"
 msgstr "আমি %(min)s থেকে ১৭"
 
 #, machine, plain1
+msgid "I'm 18 or over"
+msgstr "আমার বয়স ১৮ বা তার বেশি"
+
+#, machine, plain1
 msgid "Ice Hockey"
 msgstr "বরফ হবকি"
 
@@ -8825,6 +9102,10 @@ msgstr "আপনার বয়স যদি ১৮ বা তার বেশ
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
 msgstr "তোমার কাছে না থাকলে 2FA ডিভাইস, আপনার ব্যাকআপ কোডের একটিতে প্রবেশ করুন। প্রত্যেকটা ব্যাকআপ কোড একবার কাজ করে. এমন একটি একাউন্ট যা কখনো ব্যাক কোড তৈরী করেনি। 2FA থামো."
 
+#, machine, plain2
+msgid "If you forget your password, your recovery code, or a browser where you've used chat, brings your old messages back. The code can't be shown again: this site never has it. A new one replaces it."
+msgstr "যদি আপনি পাসওয়ার্ড ভুলে যান, তবে আপনার ব্যাকআপ কোড, অথবা কোন ব্রাউজার যেখানে আপনি আড্ডার বার্তা নিয়ে এসেছেন, তা হলে আপনার পুরনো বার্তা পুনরুদ্ধার করতে পারবেন। এই কোডটি আবার প্রদর্শন করা যাবে না: এই সাইট কখনো তা করে নি। নতুন একটা প্রতিস্থাপন।"
+
 #, machine, plain1, python-format
 msgid "If you have any questions, feel free to <a href=\"%(mail)s\">email the %(site)s team.</a>."
 msgstr "কোন প্রশ্ন থাকলে, নিজেকে মুক্ত মনে <a href=\"%(mail)s\">ই-মেইল %(site)s টিম.</a>."
@@ -8853,7 +9134,7 @@ msgctxt "button"
 msgid "Ignore"
 msgstr "উপেক্ষা করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Image"
 msgstr "ছবি"
@@ -8902,7 +9183,7 @@ msgstr "ইন %(language)s"
 msgid "In %(place)s"
 msgstr "ইন %(place)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "In guild"
 msgstr "গিল্ডে"
 
@@ -8926,7 +9207,7 @@ msgstr "এই guirds"
 msgid "Inadvertantly broke Ruqqus"
 msgstr "বিজ্ঞাপনীভাবে রুকেস ভেঙ্গে যায়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Inbox"
 msgstr "ইনবক্স"
 
@@ -8937,6 +9218,22 @@ msgstr "অন্তর্ভুক্ত করা হবে"
 #, machine, plain1
 msgid "Includes accounts you follow"
 msgstr "অ্যাকাউন্টের নাম অন্তর্ভুক্ত করো"
+
+#, machine, plain2
+msgid "Incoming call"
+msgstr "আগত কল"
+
+#, machine, plain2, python-format
+msgid "Incoming call from %(name)s"
+msgstr "কলের উৎসস্থল %(name)s"
+
+#, machine, plain2
+msgid "Incoming video call"
+msgstr "আগত ভিডিও কল"
+
+#, machine, plain2, python-format
+msgid "Incoming video call from %(name)s"
+msgstr "আগত ভিডিও কল %(name)s"
 
 #, machine, plain1
 msgid "Incorrect Password"
@@ -8971,7 +9268,7 @@ msgstr "সাব- রুটিন"
 msgid "Influencers"
 msgstr "প্রভাব সৃষ্টিকারী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Insights"
 msgstr "পরিসংখ্যান"
 
@@ -9004,7 +9301,7 @@ msgstr "আগ্রহী"
 msgid "Interior Design"
 msgstr "অভ্যন্তরীণ ডিজাইন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "International Affairs"
 msgstr "আন্তর্জাতিক বিষয়"
 
@@ -9236,6 +9533,10 @@ msgstr "এটা আপনার অ্যাপ্লিকেশন দ্ব
 msgid "It's called %(name)s now."
 msgstr "এটাকে বলে %(name)s এখন."
 
+#, machine, plain2
+msgid "It's too late to refuse this code: it has run out or has been used. If you don't recognise a sign-in, log out everywhere, and check your apps too."
+msgstr "এই কোডটি প্রত্যাখ্যান করতে দেরী হয়ে গেছে: এটা শেষ হয়ে গেছে অথবা ব্যবহৃত হয়েছে। যদি আপনি সাইন ইন-ইনকে চিনতে না পারেন, তাহলে সব জায়গায় বিচ্ছিন্ন হয়ে যান এবং আপনার অ্যাপ চেক করুন।"
+
 #, machine, plain1
 msgid "Its feed server has not named any posts you can see."
 msgstr "তার ফিড সার্ভার আপনি দেখতে পাচ্ছেন না।"
@@ -9261,7 +9562,7 @@ msgstr ""
 msgid "Jazz & Blues"
 msgstr "জ্যাজ এবং ব্লু"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Job"
 msgstr "পেশা"
 
@@ -9275,7 +9576,7 @@ msgstr[1] "ইয়োব সর্বোচ্চ %(num)s অক্ষর ব�
 msgid "Job can't contain < or >."
 msgstr "ইয়োব < > - এ লেখা যাবে না ।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Join"
 msgstr "যোগ দিন"
@@ -9288,7 +9589,7 @@ msgid_plural "Join %(circle)s &middot; %(num)s coins/month"
 msgstr[0] "যোগ দিন %(circle)s &middot; %(num)s মাস"
 msgstr[1] "যোগ দিন %(circle)s &middot; %(num)s মাস"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join +%(guild)s"
 msgstr "+%(guild)s-এ যোগ দিন"
 
@@ -9302,11 +9603,11 @@ msgid_plural "Join Circle &middot; %(num)s coins/month"
 msgstr[0] "খেলায় যোগ দিন &middot; %(num)s মাস"
 msgstr[1] "খেলায় যোগ দিন &middot; %(num)s মাস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join Guild"
 msgstr "গিল্ডে যোগ দিন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join guild"
 msgstr "গিল্ডে যোগ দিন"
 
@@ -9333,7 +9634,7 @@ msgctxt "people who joined the guild, table heading"
 msgid "Joined"
 msgstr "যোগ দিন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Joined"
 msgstr "যোগ দিয়েছেন"
@@ -9354,7 +9655,7 @@ msgstr "আলফা তে যোগদান"
 msgid "Joined Ruqqus during open beta"
 msgstr "খোলা বেটার সময় রুকুকুসে যোগদান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Jump in the discussion."
 msgstr "আলোচনায় যোগ দিন।"
 
@@ -9428,7 +9729,7 @@ msgstr "বোটের মত"
 msgid "Kind of story"
 msgstr "গল্পের মত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Kinds of Space"
 msgstr "স্পেসের ধরন"
 
@@ -9444,7 +9745,7 @@ msgstr "লেখার মত <span class=\"text-muted\">(শূণ্য চ�
 msgid "Knitting & Sewing"
 msgstr "ক্লিং (Cont)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "badge"
 msgid "LIVE"
 msgstr "লাইভ"
@@ -9461,7 +9762,7 @@ msgstr "লেবেল"
 msgid "Landscaping"
 msgstr "ভূমি পরিষ্কার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Language"
 msgstr "ভাষা"
 
@@ -9474,7 +9775,7 @@ msgstr "ভাষা শেখা"
 msgid "Languages on this page"
 msgstr "এই পৃষ্ঠায় ভাষা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Large"
 msgstr "বড়"
 
@@ -9511,12 +9812,12 @@ msgstr "আইন"
 msgid "Layout"
 msgstr "বিন্যাস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Leave"
 msgstr "ছেড়ে যান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: leave the guild"
 msgid "Leave"
 msgstr "ছেড়ে যান"
@@ -9529,7 +9830,7 @@ msgstr "প্রস্থান করুন%(guild)s"
 msgid "Leave group"
 msgstr "দল থেকে প্রস্থান করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave guild desktop"
 msgstr "গিল্ড ছেড়ে যান"
 
@@ -9544,7 +9845,7 @@ msgstr "এটি এখন থেকে শুরু করার জন্য 
 msgid "Leave out"
 msgstr "প্রস্থান করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave out forwarded copies"
 msgstr "ফরোয়ার্ড করা কপি বাদ দিন"
 
@@ -9627,7 +9928,7 @@ msgstr "বাঁদিকে"
 msgid "Left +%(guild)s"
 msgstr "বাম +%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Legal"
 msgstr "আইনি"
 
@@ -9647,7 +9948,7 @@ msgstr "শব্দকে শতাংশ হিসাবে চিহ্নি
 msgid "Letters, numbers and underscores, 3 to 25 characters."
 msgstr "অক্ষর, সংখ্যা এবং ফাঁকা, ৩ থেকে ২৫ অক্ষর বিশিষ্ট।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Lifestyle"
 msgstr "লাইফস্টাইল"
 
@@ -9669,12 +9970,12 @@ msgstr "১০০০ অক্ষরের সীমা"
 msgid "Limit of 256 characters"
 msgstr "২৫৬ অক্ষরের সীমা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Link"
 msgstr "লিংক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Link"
 msgstr "লিংক"
@@ -9687,7 +9988,7 @@ msgstr "লিংক (ঐচ্ছিক)"
 msgid "Link Discord"
 msgstr "লিংক Discord"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Link copied to clipboard"
 msgstr "লিংক ক্লিপবোর্ডে কপি হয়েছে"
 
@@ -9737,7 +10038,7 @@ msgstr "এই সাইটের লিংক দেয়া যাবে ন�
 msgid "Linux & Open Source"
 msgstr "লিনাক্স & ওপেন সোর্সName"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "List"
 msgstr "তালিকা"
@@ -9759,7 +10060,7 @@ msgstr "সাহিত্য"
 msgid "Live"
 msgstr "লাইভ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "Space state"
 msgid "Live"
 msgstr "লাইভ"
@@ -9768,7 +10069,7 @@ msgstr "লাইভ"
 msgid "Live Spaces"
 msgstr "শূণ্যস্থান প্রয়োগ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Live and upcoming"
 msgstr "লাইভ ও আসন্ন"
 
@@ -9807,11 +10108,11 @@ msgstr "জীবন কাহিনী %(kind)s"
 msgid "Loading..."
 msgstr "লোড করা হচ্ছে..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "লোড হচ্ছে…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Location"
 msgstr "অবস্থান"
 
@@ -9839,14 +10140,22 @@ msgid "Locked: guildmasters edit it."
 msgstr "লক করা হয়েছে: guidid Sorys সম্পাদনা করে."
 
 #, machine, plain1
+msgid "Log"
+msgstr "লগ"
+
+#, machine, plain1, python-format
+msgid "Log - %(site)s"
+msgstr "- লগ %(site)s"
+
+#, glossary, machine, plain2
 msgid "Log Out Everywhere"
-msgstr "সর্বত্র লগ আউট করুন"
+msgstr "সব জায়গা থেকে লগ আউট"
 
 #, machine, plain1, python-format
 msgid "Log all other devices out of your %(site)s account."
 msgstr "আপনার কম্পিউটার থেকে অন্যান্য সকল ডিভাইস লগ করুন %(site)s অ্যাকাউন্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Log in to bookmark"
 msgstr "বুকমার্ক করতে লগ ইন করুন"
 
@@ -9854,13 +10163,29 @@ msgstr "বুকমার্ক করতে লগ ইন করুন"
 msgid "Log in to vote"
 msgstr "ভোটের জন্য লগ-ইন করুন"
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Log of @%(name)s"
+msgstr "@- র লগ%(name)s"
+
+#, machine, plain1, python-format
+msgid "Log of post #%(id)s"
+msgstr "পোস্টের লগ #%(id)s"
+
+#, machine, plain1
+msgid "Log of this comment"
+msgstr "এই কমেন্টের লগ"
+
+#, glossary, machine, plain2
 msgid "Log out"
 msgstr "লগ আউট"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Log out everywhere"
-msgstr "সর্বত্র লগ-আউট করুন"
+msgstr "সব জায়গা থেকে লগ আউট"
+
+#, machine, plain2
+msgid "Logging out everywhere ends that sign-in. It doesn't end an app's access, so check those too."
+msgstr "সব জায়গা থেকে বিচ্ছিন্ন হয়ে যাওয়া, সাইন ইন। এটা কোন অ্যাপ্লিকেশনের প্রবেশাধিকার শেষ করে না, তাই চেকও করে দেখুন।"
 
 #, machine, plain1, python-format
 msgid "Login - %(site)s"
@@ -9890,11 +10215,11 @@ msgstr "Lysysys উল্ঠক বৃষ্টিপাত"
 msgid "Made on %(date)s."
 msgstr "তৈরি হয়েছে %(date)s এ।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Made with AI"
 msgstr "AI দিয়ে তৈরি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "navigation landmark"
 msgid "Main"
 msgstr "প্রধান"
@@ -9952,7 +10277,7 @@ msgstr "নতুন ব্যাক-আপ কোড তৈরি করুন"
 msgid "Make one with New event."
 msgstr "নতুন অনুষ্ঠান শুরু করো।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Make or change your circles"
 msgstr "সার্কেল তৈরি বা পরিবর্তন করুন"
 
@@ -10004,7 +10329,7 @@ msgstr "ম্যাঙ্গাName"
 msgid "March equinox"
 msgstr "মার্চ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mark Sensitive Content"
 msgstr "সংবেদনশীল কনটেন্ট হিসেবে চিহ্নিত করুন"
 
@@ -10030,7 +10355,7 @@ msgstr "ব্যবসায়িক এবং বিক্রয়"
 msgid "Marriage"
 msgstr "বিয়ে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Matches your interests"
 msgstr "আপনার আগ্রহের সাথে মেলে"
 
@@ -10038,7 +10363,7 @@ msgstr "আপনার আগ্রহের সাথে মেলে"
 msgid "Mathematics"
 msgstr "গণিতName"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media"
 msgstr "মিডিয়া"
 
@@ -10050,7 +10375,7 @@ msgstr "শুধুমাত্র মিডিয়া"
 msgid "Media settings"
 msgstr "মিডিয়া সংক্রান্ত বৈশিষ্ট্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media storage"
 msgstr "মিডিয়া স্টোরেজ"
 
@@ -10098,7 +10423,7 @@ msgid_plural "Members<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "সদস্য<span class=\"text-primary\"> %(num)s</span>"
 msgstr[1] "সদস্য<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Members"
 msgstr "সদস্য"
 
@@ -10122,7 +10447,7 @@ msgid_plural "Members with at least %(num)s points in a month share that month's
 msgstr[0] "এক মাসের মধ্যে অন্তত %(num)s টি পয়েন্টের সদস্য তাদের বাজেট শেয়ার করেন।"
 msgstr[1] "মাসে অন্তত %(num)s পয়েন্টের মাধ্যমে সদস্যগণ তাদের বাজেট শেয়ার করেন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Memes"
 msgstr "মিম"
 
@@ -10138,7 +10463,7 @@ msgstr "#মুর্দনেশন%(name)s"
 msgid "Mentioning these accounts"
 msgstr "এই অ্যাকাউন্টটির কথা উল্লেখ করে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mentions"
 msgstr "উল্লেখ"
 
@@ -10162,11 +10487,11 @@ msgid_plural "Mentions any of: %(num)s words or phrases at most."
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Merch and more. Support %(site)s today!"
 msgstr "পণ্য ও আরও কিছু। আজই %(site)s-কে সমর্থন করুন!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Message"
 msgstr "মেসেজ"
@@ -10238,11 +10563,11 @@ msgstr "মোবাইল- এ্যাপ (T)"
 msgid "Mobile Games"
 msgstr "মোবাইল খেলা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Log"
 msgstr "মডারেশন লগ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Queue"
 msgstr "মডারেশন সারি"
 
@@ -10254,11 +10579,11 @@ msgstr "মডেল নির্মাণ করুন"
 msgid "Moderation"
 msgstr "মাঝারি তুষার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Moderation log"
 msgstr "মডারেশন লগ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Modern Culture"
 msgstr "আধুনিক সংস্কৃতি"
 
@@ -10276,7 +10601,7 @@ msgctxt "table heading"
 msgid "Month"
 msgstr "মাস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Month"
 msgstr "মাস"
@@ -10289,24 +10614,24 @@ msgstr "মাস অনুযায়ী তারা জন্ম নেয�
 msgid "Monthly creator fund payouts"
 msgstr "মাসিক সৃষ্টিকর্তা তহবিল খরচ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "আরও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "More"
 msgstr "আরও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More actions"
 msgstr "আরও অ্যাকশন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More comments"
 msgstr "আরও মন্তব্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More options"
 msgstr "আরও বিকল্প"
 
@@ -10358,7 +10683,7 @@ msgstr "সরাও %(name)s নিচে"
 msgid "Move %(name)s up"
 msgstr "%(name)s উপরে স্থানান্তর"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Move to folder"
 msgstr "ফোল্ডারে সরান"
 
@@ -10386,12 +10711,12 @@ msgstr "সঙ্গীত উৎপাদন"
 msgid "Must attempt to buy at least one coin"
 msgstr "অন্তত একটি মুদ্রা কেনার চেষ্টা করতে হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Mute"
 msgstr "মিউট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "microphone"
 msgid "Mute"
 msgstr "মিউট"
@@ -10400,11 +10725,11 @@ msgstr "মিউট"
 msgid "Mute +%(guild)s"
 msgstr "নিঃশব্দ%(guild)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Mute @%(name)s"
 msgstr "@%(name)s-কে মিউট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute guild"
 msgstr "গিল্ড মিউট করুন"
 
@@ -10424,7 +10749,7 @@ msgstr "চ্যানেল মধ্যে নিঃশব্দ"
 msgid "Muted since"
 msgstr "তারপর থেকে অকার্যকর"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My Curations"
 msgstr "আমার সংকলন"
 
@@ -10432,7 +10757,7 @@ msgstr "আমার সংকলন"
 msgid "My Friends"
 msgstr "আমার বন্ধু"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My account"
 msgstr "আমার অ্যাকাউন্ট"
 
@@ -10440,7 +10765,7 @@ msgstr "আমার অ্যাকাউন্ট"
 msgid "My account is sensitive"
 msgstr "আমার অ্যাকাউন্ট সংবেদনশীল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My guilds"
 msgstr "আমার গিল্ড"
 
@@ -10448,7 +10773,7 @@ msgstr "আমার গিল্ড"
 msgid "My languages"
 msgstr "আমার ভাষা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My profile"
 msgstr "আমার প্রোফাইল"
 
@@ -10492,7 +10817,7 @@ msgstr "নেট ভোট"
 msgid "Neuroscience"
 msgstr "নর্থেল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Never counted"
 msgstr "কখনও গোনা হয় না"
 
@@ -10533,7 +10858,7 @@ msgctxt "new highlight"
 msgid "New"
 msgstr "নতুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "New"
 msgstr "নতুন"
@@ -10579,6 +10904,10 @@ msgid "New circle"
 msgstr "নতুন বৃত্ত"
 
 #, machine, plain1
+msgid "New code"
+msgstr "নতুন কোড"
+
+#, machine, plain1
 msgid "New comments · Show them"
 msgstr "নতুন মন্তব্য তাদের দেখাও"
 
@@ -10594,7 +10923,7 @@ msgstr "নতুন অনুষ্ঠান"
 msgid "New folder"
 msgstr "নতুন ফোল্ডার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "New group"
 msgstr "নতুন গ্রুপ"
 
@@ -10611,6 +10940,22 @@ msgid "New members pay %(num)s coin every 30 days. Current members keep their pr
 msgid_plural "New members pay %(num)s coins every 30 days. Current members keep their price."
 msgstr[0] "নতুন সদস্য প্রতি 30 দিনের মধ্যে %(num)s পয়সা দেয়। বর্তমান সদস্যরা তাদের মূল্য বজায় রাখে।"
 msgstr[1] "নতুন সদস্য প্রতি 30 দিনের মধ্যে %(num)s পয়সা দেয়। বর্তমান সদস্যরা তাদের মূল্য বজায় রাখে।"
+
+#, machine, plain2
+msgid "New message"
+msgstr "নতুন বার্তা"
+
+#, machine, plain2, python-format
+msgid "New message from %(name)s"
+msgstr "নতুন বার্তা %(name)s"
+
+#, machine, plain2
+msgid "New message request"
+msgstr "নতুন বার্তা প্রাপ্ত হয়েছে"
+
+#, python-format
+msgid "New message request from %(name)s"
+msgstr ""
 
 #, machine, plain1
 msgid "New page address"
@@ -10670,20 +11015,20 @@ msgstr "প্রথম"
 msgid "Newest first."
 msgstr "একদম নতুন."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "News"
 msgstr "খবর"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Next"
 msgstr "পরবর্তী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "next page"
 msgid "Next"
 msgstr "পরবর্তী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "story"
 msgid "Next"
 msgstr "পরের স্টোরি"
@@ -10709,7 +11054,7 @@ msgstr "না"
 msgid "No Space is shown on this stage right now."
 msgstr "এই পর্যায়ে কোন স্থান নেই।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No Spaces are scheduled."
 msgstr "কোনো স্পেস শিডিউল করা নেই।"
 
@@ -10757,7 +11102,7 @@ msgstr "প্রদর্শন করার জন্য কোনো চ্�
 msgid "No channels yet."
 msgstr "এখন পর্যন্ত কোন চ্যানেল নেই।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No comments"
 msgstr "কোনো মন্তব্য নেই"
 
@@ -10801,7 +11146,7 @@ msgstr "বহিস্থিত লিঙ্ক নির্মাণ করত
 msgid "No feeds."
 msgstr "কোন ফিড নয়।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "লেবেল নেই"
 
@@ -10821,7 +11166,7 @@ msgstr "কোন guild + নয়%(guild)s."
 msgid "No guild called +%(name)s."
 msgstr "কোন guild + নয়%(name)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guildmasters"
 msgstr "কোনো গিল্ডমাস্টার নেই"
 
@@ -10835,7 +11180,7 @@ msgid_plural "No guilds are in these topics yet."
 msgstr[0] "এই বিষয়ে কোন gulists নেই."
 msgstr[1] "কোন gulists এখনো এই বিষয়ে আছে."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guilds here yet."
 msgstr "এখানে এখনও কোনো গিল্ড নেই।"
 
@@ -10872,7 +11217,7 @@ msgstr "কোন নাম এখনো প্রস্তাব নেই - �
 msgid "No older than"
 msgstr "বড় নয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No one"
 msgstr "কেউ না"
 
@@ -10916,7 +11261,7 @@ msgstr "কোনো শেয়ার করা ফিডের মিল প�
 msgid "No public curations yet. Be the first!"
 msgstr "এখনো কোন পাবলিক ফিড পাওয়া যায়নি। প্রথমে!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No recordings yet."
 msgstr "এখনও কোনো রেকর্ডিং নেই।"
 
@@ -10976,6 +11321,10 @@ msgstr "কিন্তু কেউ এটা পড়তে পারে ন�
 msgid "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."
 msgstr "কেউ এখন যোগদানের জন্য টাকা দিতে পারবে না: guiল্ড কেবল আমন্ত্রণ করে। বর্তমান সদস্যরা তাদের কত টাকা দিয়েছেন।"
 
+#, machine, plain1
+msgid "Nobody can sign in to your account with a code."
+msgstr "কোড দিয়ে কেউ আপনার অ্যাকাউন্টে সাইন করতে পারবে না।"
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "কেউই বেশি পায় না %(share)s%% এক মাসের বাজেট। সব পয়সা নিয়ে শেয়ারগুলো খালি করে দেয়া হয়েছে।"
@@ -11015,6 +11364,10 @@ msgstr "এখানে কেউ নেই"
 #, machine, plain1, python-format
 msgid "Nobody under %(age)s may have an account where you are."
 msgstr "কেউ না %(age)s আপনি যেখানে আছেন সেখানে একটা অ্যাকাউন্ট থাকতে পারে।"
+
+#, machine, plain1
+msgid "Nobody was signed in. If someone asked you to scan that code, they can't use it now."
+msgstr "কেউ স্বাক্ষর করেনি. কেউ যদি তোমাকে ঐ কোডটা স্ক্যান করতে বলেছে, তারা এটা এখন ব্যবহার করতে পারবে না।"
 
 #, machine, plain1
 msgid "Nobody yet."
@@ -11067,6 +11420,10 @@ msgid "Not flaired \"%(flair)s\""
 msgstr "এরকম নয়%(flair)s\"\""
 
 #, machine, plain1
+msgid "Not found"
+msgstr "পাওয়া যায়নি"
+
+#, machine, plain1
 msgid "Not found."
 msgstr "ফাইলটি পাওয়া যায়নি।"
 
@@ -11097,7 +11454,7 @@ msgstr "এ নয় %(place)s"
 msgid "Not in these guilds"
 msgstr "এই guirds মধ্যে নয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not known yet"
 msgstr "এখনও জানা নেই"
 
@@ -11108,6 +11465,10 @@ msgstr "%(domain)s এর সাথে লিঙ্ক করা যাচ্ছ
 #, machine, plain1
 msgid "Not made with AI"
 msgstr "AI দ্বারা প্রস্তুত করা হয়নি"
+
+#, machine, plain1
+msgid "Not me"
+msgstr "আমি না"
 
 #, machine, plain1
 msgid "Not now"
@@ -11141,9 +11502,13 @@ msgstr "আর কোন আলোচিত ঘটনা নয়"
 msgid "Not yet"
 msgstr "এখন নয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not your default:"
 msgstr "আপনার ডিফল্ট নয়:"
+
+#, machine, plain2
+msgid "Nothing"
+msgstr "শূণ্য"
 
 #, machine, plain1
 msgid "Nothing bookmarked yet"
@@ -11164,6 +11529,10 @@ msgstr "কিছুই অবান্তর করা হয়নি (মি�
 #, machine, plain1
 msgid "Nothing downvoted yet (posts)"
 msgstr "কিছুই অবান্তিত হয়নি (পোস্ট)"
+
+#, machine, plain1
+msgid "Nothing has been logged yet."
+msgstr "এখনও লগ করা হয়নি ।"
 
 #, machine, plain1
 msgid "Nothing has changed since the last publish."
@@ -11196,6 +11565,10 @@ msgstr "কিছুই এখন বেঁচে নেই।"
 #, machine, plain1
 msgid "Nothing marked for today."
 msgstr "আজকের জন্য কিছুই নির্ধারিত হয়নি।"
+
+#, machine, plain1
+msgid "Nothing matches this filter."
+msgstr "এই ফিল্টারের সাথে কোন মিল নেই."
 
 #, machine, plain1, python-format
 msgid "Nothing on %(site)s can translate into it right now, so the Translate button won't show."
@@ -11269,13 +11642,33 @@ msgstr "এখনো না।"
 msgid "Notification types"
 msgstr "বিজ্ঞপ্তির ধরন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "বিজ্ঞপ্তি"
+
+#, machine, plain2
+msgid "Notifications aren't available on this site yet."
+msgstr "সূচনাবার্তা এখনো উপলব্ধ নেই."
+
+#, machine, plain2
+msgid "Notifications don't say who a message is from."
+msgstr "কে মেসেজ পাঠিয়েছে সেটা কেউ বলে না।"
 
 #, python-format
 msgid "Notifications for @%(name)s turned off."
 msgstr ""
+
+#, machine, plain2
+msgid "Notifications from this group"
+msgstr "এই গ্রুপ থেকে বিজ্ঞপ্তি"
+
+#, machine, plain2
+msgid "Notifications need this page's script."
+msgstr "বিজ্ঞপ্তি এই পাতার স্ক্রিপ্টের প্রয়োজন ।"
+
+#, machine, plain2
+msgid "Notifications say who a message is from."
+msgstr "কে একজন বার্তা পাঠিয়েছে."
 
 #, machine, plain1, python-format
 msgid "Notifications, %(num)s new"
@@ -11335,7 +11728,7 @@ msgstr "সংবেদনশীল"
 msgid "Offline on %(service)s"
 msgstr "অফ-লাইন %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Old"
 msgstr "পুরনো"
@@ -11361,6 +11754,10 @@ msgstr "চালু করুন %(date)s"
 #, machine, plain1
 msgid "On Ruqqus for one year"
 msgstr "এক বছরের জন্য"
+
+#, machine, plain2
+msgid "On an iPhone or iPad, add this site to your Home Screen first (Share, then Add to Home Screen), and turn notifications on from there."
+msgstr "আইফোন বা আইপ্যাডে এই সাইটটি প্রথমে আপনার হোম স্ক্রীনে যোগ করুন (কিন্তু এর পরে হোম স্ক্রীনে যোগ করুন), এবং সেখান থেকে বিভিন্ন খবর আসছে।"
 
 #, machine, plain1
 msgid "On by default"
@@ -11467,6 +11864,10 @@ msgstr "এই পোস্টে শুধুমাত্র Premium একা�
 msgid "Only a call has a stage."
 msgstr "শুধু একটা কল একটা ধাপ আছে।"
 
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "শুধুমাত্র একটা দলের মালিক আর প্রশাসকরা এটা পরিবর্তন করতে পারে।"
+
 #, machine, plain1
 msgid "Only a guild's copy of a post has a flair."
 msgstr "শুধুমাত্র একটি guid এর কপির একটি লেবেল আছে।"
@@ -11526,6 +11927,10 @@ msgstr "শুধু সদস্যদের এই চ্যানেলে �
 #, machine, plain1
 msgid "Only continue if you started signing in to a chat app just now."
 msgstr "যদি আপনি এখন একটি আড্ডাতে স্বাক্ষর করতে শুরু করেন তবে এখন থেকে আবার চেষ্টা করবেন ।"
+
+#, machine, plain1
+msgid "Only continue if you started this yourself on a screen in front of you. If a post, comment, message or website asked you to scan this, someone may be trying to take your account."
+msgstr "যদি আপনি এটা আপনার সামনে শুরু করেন। যদি কোন পোস্ট, মন্তব্য, মেসেজ অথবা ওয়েবসাইট আপনাকে এটা স্ক্যান করতে বলে, তাহলে কেউ হয়ত আপনার একাউন্ট গ্রহণের চেষ্টা করছে।"
 
 #, machine, plain1, python-format
 msgid "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s member, so a small guild's numbers can't point at one person."
@@ -11623,7 +12028,7 @@ msgstr "শুধু চ্যানেলটির মালিক আর স�
 msgid "Only the channel's owner chooses its helpers."
 msgstr "শুধু চ্যানেলের মালিকই তার সাহায্যকারীকে পছন্দ করেন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Only the circles you pick"
 msgstr "শুধু আপনার বাছাই করা সার্কেল"
 
@@ -11792,7 +12197,7 @@ msgstr "আলাপনের মধ্যে খুলুন"
 msgid "Open in the guild"
 msgstr "Guiল্ডে খুলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open page"
 msgstr "পেজ খুলুন"
 
@@ -11813,10 +12218,14 @@ msgid "Open the post"
 msgstr "পোস্ট খুলুন"
 
 #, machine, plain1
+msgid "Open the preserved copy"
+msgstr "সংরক্ষিত প্রতিলিপি খুলুন"
+
+#, machine, plain1
 msgid "Open the quoted post"
 msgstr "উদ্ধৃতির অংশ খুলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open the shared draft"
 msgstr "শেয়ার করা খসড়া খুলুন"
 
@@ -11848,11 +12257,11 @@ msgstr "মতামত & বিশ্লেষণ"
 msgid "Opt Out of All/Trending"
 msgstr "সব থেকে কম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Opted out of All"
 msgstr "সব ফিড থেকে বাদ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Option %(number)s"
 msgstr "বিকল্প %(number)s"
 
@@ -11944,11 +12353,11 @@ msgstr "নিজস্ব মিশ্রণের নির্দেশ: ভ�
 msgid "Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s."
 msgstr "নিজস্ব মিশ্রণের নির্দেশ: ভোট এবং পরামর্শ %(votes)sমন্তব্য %(comments)sচল , চল যাই , %(fade)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Original post"
 msgstr "মূল পোস্ট"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Original username: @%(name)s"
 msgstr "আসল ইউজারনেম: @%(name)s"
 
@@ -11956,7 +12365,7 @@ msgstr "আসল ইউজারনেম: @%(name)s"
 msgid "Orionids meteor shower"
 msgstr "অরিয়ন উল্‌ভিল বৃষ্টিপাতweather forecast"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other Sports"
 msgstr "অন্যান্য খেলা"
 
@@ -11970,7 +12379,7 @@ msgstr "অন্যান্য ভাষা"
 msgid "Other or unknown"
 msgstr "অন্যান্য অথবা অজানা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other spellings:"
 msgstr "অন্য বানান:"
 
@@ -12015,7 +12424,7 @@ msgstr "সারসংক্ষেপ"
 msgid "Own account"
 msgstr "নিজস্ব অ্যাকাউন্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you made"
 msgid "Owned"
 msgstr "আমার তৈরি"
@@ -12027,7 +12436,7 @@ msgstr "PC"
 msgid "PNG, JPEG, GIF or WebP, 8 MB at most."
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Page navigation"
 msgstr "পেজ নেভিগেশন"
 
@@ -12063,7 +12472,7 @@ msgstr "কৃত্তিকা বৃত্ত"
 msgid "Paid circles are part of Premium."
 msgstr "প্যাডি স্পেস হল Premium এর অংশ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Paid circles you are in"
 msgstr "আপনি যেসব পেইড সার্কেলে আছেন"
 
@@ -12158,15 +12567,15 @@ msgctxt "events"
 msgid "Past"
 msgstr "পূর্বে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Day"
 msgstr "গত এক দিন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Month"
 msgstr "গত এক মাস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Year"
 msgstr "গত এক বছর"
 
@@ -12187,7 +12596,7 @@ msgstr "স্থগিত"
 msgid "Paused"
 msgstr "সাময়িক বিরতি চলছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Paused"
 msgstr "বিরতিতে"
@@ -12274,7 +12683,15 @@ msgid_plural "People who follow you, or whom you follow, are in at once. Anyone 
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "People you chat with don't see when you've read their messages or are typing, and you don't see theirs."
+msgstr "আপনি যখন তাদের বার্তা পড়ে অথবা টাইপ করেন, তখন আপনি তাদের দেখতে পাবেন না।"
+
+#, machine, plain2
+msgid "People you chat with see when you've read their messages and when you're typing."
+msgstr "আপনি যখন এগুলো পড়েন, তখন তারাও আপনার সাথে কথা বলে এবং আপনি যখন এগুলো পড়েন, তখন তারাও আপনার সাথে আলাপ করে।"
+
+#, glossary, machine, plain2
 msgid "People you follow liked"
 msgstr "আপনি যাদের ফলো করেন তারা পছন্দ করেছেন"
 
@@ -12346,7 +12763,7 @@ msgstr "ছবি অথবা ভিডিও"
 msgid "Photography"
 msgstr "আলোকচিত্রবিদ্যা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "word filter entry"
 msgid "Phrase"
 msgstr "বাক্যাংশ"
@@ -12359,7 +12776,7 @@ msgstr "পদার্থবিদ্যা"
 msgid "Pick a date and time."
 msgstr "একটি তারিখ এবং সময় বাছাই করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "একটি লেবেল বেছে নিন"
 
@@ -12403,12 +12820,16 @@ msgstr "একটি ধীর মোড নির্বাচন করুন."
 msgid "Pick who it is for"
 msgstr "কার জন্য এটি বাছাই করুন"
 
+#, machine, plain2
+msgid "Picture"
+msgstr "ছবি"
+
 #, machine, plain1
 msgctxt "kind of story"
 msgid "Picture"
 msgstr "ছবি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Picture"
 msgstr "ছবি"
@@ -12454,11 +12875,11 @@ msgstr "ছবি"
 msgid "Pictures, video and sound, nothing else."
 msgstr "ছবি, ভিডিও আর শব্দ ছাড়া আর কিছু না।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pin"
 msgstr "পিন করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Pin"
 msgstr "পিন করুন"
@@ -12482,20 +12903,20 @@ msgctxt "colour"
 msgid "Pink"
 msgstr "গোলাপি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading of pinned posts"
 msgid "Pinned"
 msgstr "পিন করা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned comment"
 msgstr "পিন করা মন্তব্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned posts"
 msgstr "পিন করা পোস্ট"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Pinned to +%(guild)s"
 msgstr "+%(guild)s-এ পিন করা"
 
@@ -12548,6 +12969,10 @@ msgid "Play with sound"
 msgstr "শব্দ সহ শব্দ বাজানো হবে"
 
 #, machine, plain1
+msgid "Please choose one of the two answers."
+msgstr "অনুগ্রহ করে দুটি উত্তর নির্বাচন করুন ।"
+
+#, machine, plain1
 msgid "Please enter a better title"
 msgstr "অনুগ্রহ করে একটি ভাল শিরোনাম লিখুন"
 
@@ -12562,6 +12987,10 @@ msgstr "দয়া করে এটা নোট দিন %(site)s ই-মে
 #, machine, plain1
 msgid "Please remove the following link(s) from your comment, and then you will be able to post it:"
 msgstr "অনুগ্রহ করে নিম্নলিখিত লিঙ্ক মুছে ফেলুন আপনার মন্তব্য থেকে, এবং তারপর আপনি তা পোস্ট করতে পারবেন:"
+
+#, machine, plain1
+msgid "Please say how old you are."
+msgstr "দয়া করে বলুন তোমার বয়স কত।"
 
 #, machine, plain1
 msgid "Please select a reason for flagging below."
@@ -12580,6 +13009,10 @@ msgid "Poetry"
 msgstr "কবিতা"
 
 #, machine, plain1
+msgid "Point your phone's camera at this. It runs out after two minutes."
+msgstr "তোমার ফোন ক্যামেরা এই দিকে তাক করো। দুই মিনিট পর এটা শেষ হয়ে যায়।"
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Points"
 msgstr "বিন্দু"
@@ -12588,11 +13021,11 @@ msgstr "বিন্দু"
 msgid "Political"
 msgstr "রাজনৈতিক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political Ideas & Debate"
 msgstr "রাজনৈতিক ধারণা ও বিতর্ক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political News"
 msgstr "রাজনৈতিক সংবাদ"
 
@@ -12600,24 +13033,24 @@ msgstr "রাজনৈতিক সংবাদ"
 msgid "Politics"
 msgstr "রাজনীতি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll"
 msgstr "পোল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Poll"
 msgstr "পোল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll (optional)"
 msgstr "পোল (ঐচ্ছিক)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll length"
 msgstr "পোলের সময়কাল"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Poll option %(number)s"
 msgstr "পোল বিকল্প %(number)s"
 
@@ -12649,12 +13082,12 @@ msgstr "সাইটে জনপ্রিয়"
 msgid "Popular this week"
 msgstr "এই সপ্তাহে জনপ্রিয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "পোস্ট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Post"
 msgstr "পোস্ট"
@@ -12667,7 +13100,7 @@ msgstr "পোস্ট সংক্রান্ত তথ্য"
 msgid "Post an update"
 msgstr "পোস্ট করার গন্তব্যস্থল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "বেনামে পোস্ট করুন"
 
@@ -12705,15 +13138,15 @@ msgstr "পোস্টস্‌ সৃষ্টিকর্তা স্টু�
 msgid "Post on %(service)s"
 msgstr "%(service)s-এ পোস্ট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post text"
 msgstr "পোস্টের লেখা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post title"
 msgstr "পোস্টের শিরোনাম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post type"
 msgstr "পোস্টের ধরন"
 
@@ -12754,11 +13187,11 @@ msgstr "পোস্ট করার গন্তব্যস্থল"
 msgid "Posting cooldown"
 msgstr "পোস্ট করার গন্তব্যস্থল"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Posting to +%(guild)s"
 msgstr "+%(guild)s-এ পোস্ট করা হচ্ছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "আপনার প্রোফাইলে পোস্ট করা হচ্ছে"
 
@@ -12766,11 +13199,11 @@ msgstr "আপনার প্রোফাইলে পোস্ট করা �
 msgid "Postponed"
 msgstr "পান্টানাল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts"
 msgstr "পোস্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Posts"
 msgstr "পোস্ট"
@@ -12889,7 +13322,7 @@ msgstr "এই সপ্তাহে বাসের মন্তব্য ব�
 msgid "Posts you forward to a guild, and comments you forward into a new post, will show here."
 msgstr "আপনি একটি guild এর জন্য আপনার পোস্ট ও মন্তব্য একটি নতুন পোস্টে পাবেন এখানে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts you save will show up here."
 msgstr "আপনার সেভ করা পোস্ট এখানে দেখাবে।"
 
@@ -12917,7 +13350,7 @@ msgstr "অনুমান"
 msgid "Pregnancy & Babies"
 msgstr "পুরুষ:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium"
 msgstr "প্রিমিয়াম"
 
@@ -12925,7 +13358,7 @@ msgstr "প্রিমিয়াম"
 msgid "Premium Settings - %(site)s"
 msgstr "Premium - %(site)s সংক্রান্ত বৈশিষ্ট্য"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium accounts"
 msgstr "প্রিমিয়াম অ্যাকাউন্ট"
 
@@ -12942,16 +13375,24 @@ msgstr "Premium জন্য যতক্ষণ না পর্যন্ত %(d
 msgid "Premium until: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 msgstr "Premium জন্য যতক্ষণ না পর্যন্ত <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Preserved copy"
+msgstr "অনুলিপি করা নয়"
+
+#, machine, plain1, python-format
+msgid "Preserved copy - %(site)s"
+msgstr "সংরক্ষিত কপি - কপি %(site)s"
+
+#, glossary, machine, plain2
 msgid "Press"
 msgstr "প্রেস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Press"
 msgstr "প্রেস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "link to the page for journalists"
 msgid "Press"
 msgstr "প্রেস"
@@ -12960,11 +13401,15 @@ msgstr "প্রেস"
 msgid "Pressing play loads %(player)s, which can set cookies, see your address and record what you watch."
 msgstr "লোড করা হচ্ছে %(player)sযা কুকি সেট করতে পারে, আপনার ঠিকানা দেখুন এবং আপনি কি দেখছেন তা রেকর্ড করুন।"
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Pressing play loads %(player)s."
+msgstr "লোড করা হচ্ছে %(player)s."
+
+#, glossary, machine, plain2
 msgid "Prev"
 msgstr "আগের"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Prev"
 msgstr "আগের"
@@ -13000,15 +13445,15 @@ msgctxt "button"
 msgid "Print"
 msgstr "প্রিন্ট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy"
 msgstr "গোপনীয়তা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy Policy"
 msgstr "গোপনীয়তা নীতি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy and cookie settings"
 msgstr "গোপনীয়তা ও কুকি সেটিংস"
 
@@ -13016,7 +13461,7 @@ msgstr "গোপনীয়তা ও কুকি সেটিংস"
 msgid "Privacy page"
 msgstr "পড- পেজ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Private"
 msgstr "প্রাইভেট"
@@ -13049,7 +13494,7 @@ msgstr "গোপনীয় উপাদান, দৃশ্যমান ক�
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "গোপনীয় সামগ্রী, দৃশ্যমান কারণ আপনি +তে একজন অনুমোদিত প্রদায়ক%(guild)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Private mode."
 msgstr "প্রাইভেট মোড।"
 
@@ -13141,7 +13586,7 @@ msgstr "উৎপাদন"
 msgid "Productivity"
 msgstr "উৎপাদন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Profile"
 msgstr "প্রোফাইল"
 
@@ -13246,12 +13691,12 @@ msgstr "একটি মুছে ফেলা অ্যাকাউন্টে
 msgid "Psychology"
 msgstr "মনোবিজ্ঞান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Public"
 msgstr "পাবলিক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Public"
 msgstr "পাবলিক"
@@ -13331,7 +13776,7 @@ msgstr "পূর্ববর্তী তথ্য মুছে ফেলুন
 msgid "Purchase history"
 msgstr "ব্রাউজ-ইতিহাস মুছে ফেলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Purge"
 msgstr "চিরতরে মুছুন"
@@ -13366,6 +13811,29 @@ msgstr "ধাঁধা"
 #, machine, plain1
 msgid "Q&A"
 msgstr "Q&A"
+
+#, machine, plain1
+msgid "QR code"
+msgstr "QR কোড"
+
+#, machine, plain1
+msgid "QR sign-in"
+msgstr "QR-in স্বাক্ষর করতে ব্যর্থ"
+
+#, machine, plain1
+msgid "QR sign-in is off."
+msgstr "QR সাইন ইন বন্ধ."
+
+#, machine, plain1
+msgid "QR sign-in is on."
+msgstr "QR সাইন ইন চালু হয়েছে।"
+
+#, machine, plain1, python-format
+msgid "QR sign-in was turned on for your %(site)s account"
+msgstr "QR আপনার জন্য সাইন ইন করা হয়েছে %(site)s অ্যাকাউন্ট"
+
+msgid "QR sign-in was turned on for your account. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr ""
 
 #, machine, plain1
 msgid "Quadrantids meteor shower"
@@ -13473,7 +13941,7 @@ msgstr "পতাকা মারার কারণ?"
 msgid "Reason:"
 msgstr "কারণ:"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Reason: %(reason)s"
 msgstr "কারণ: %(reason)s"
 
@@ -13507,6 +13975,10 @@ msgstr "রেকর্ড করা হচ্ছে"
 msgid "Recordings"
 msgstr "রেকর্ডিং"
 
+#, machine, plain2
+msgid "Recovery code"
+msgstr "কোড থেকে পুনরুদ্ধার"
+
 #, machine, plain1
 msgid "Recruited 1 friend to join Ruqqus"
 msgstr "রুকুস্কে যোগদানের জন্য 1 বন্ধু"
@@ -13536,19 +14008,19 @@ msgstr "এক সপ্তাহের জন্য রেডম ১ পয়�
 msgid "Redirect URI"
 msgstr "রি-ডাইরেক্ট URI"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region"
 msgstr "অঞ্চল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region not known yet"
 msgstr "অঞ্চল এখনও জানা যায়নি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regional"
 msgstr "আঞ্চলিক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regions"
 msgstr "অঞ্চল"
 
@@ -13578,7 +14050,7 @@ msgstr "@ -এর জন্য পোস্ট বাতিল%(name)sতাদ�
 msgid "Rejected"
 msgstr "প্রত্যাখ্যান করা হয়েছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Rejected"
 msgstr "প্রত্যাখ্যাত"
@@ -13611,7 +14083,7 @@ msgstr "আমাকে মনে করিয়ে দাও"
 msgid "Reminder set"
 msgstr "তাগাদার বার্তা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "সরান"
 
@@ -13636,7 +14108,7 @@ msgstr "মুছে ফেলুন%(name)s"
 msgid "Remove an author"
 msgstr "লেখক অপসারণ করো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove bookmark"
 msgstr "বুকমার্ক সরান"
 
@@ -13646,7 +14118,7 @@ msgid_plural "Remove bookmark, %(num)s bookmarks"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove from +%(guild)s"
 msgstr "+%(guild)s থেকে সরান"
 
@@ -13663,11 +14135,11 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "সরিয়ে ফেলুন"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "বিকল্প %(number)s সরান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove poll"
 msgstr "পোল সরান"
 
@@ -13699,7 +14171,7 @@ msgstr "আপনার পোস্ট থেকে %(domain)s লিংক ম
 msgid "Remove the %(domain)s link from your post and try again. %(reason)s"
 msgstr "মুছে ফেলুন %(domain)s আপনার পোস্ট থেকে লিংক এবং পুনরায় চেষ্টা করুন। %(reason)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove the filter: %(filter)s"
 msgstr "ফিল্টার সরান: %(filter)s"
 
@@ -13707,7 +14179,7 @@ msgstr "ফিল্টার সরান: %(filter)s"
 msgid "Remove the following link and try again: `%(link)s`. Reason: %(reason)s"
 msgstr "নিম্নলিখিত লিংক মুছে ফেলা হবে: `%(link)s`কারণ: %(reason)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove the image"
 msgstr "ছবিটি সরান"
 
@@ -13723,7 +14195,7 @@ msgstr "বার্তা মুছে ফেলুন"
 msgid "Remove the server"
 msgstr "সার্ভার থেকে মুছে ফেলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove this topic"
 msgstr "এই বিষয়টি সরান"
 
@@ -13732,7 +14204,7 @@ msgctxt "diff line"
 msgid "Removed"
 msgstr "অপসারণ করা হয়েছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by administrators"
 msgstr "অ্যাডমিনরা সরিয়ে দিয়েছেন"
 
@@ -13740,7 +14212,7 @@ msgstr "অ্যাডমিনরা সরিয়ে দিয়েছে�
 msgid "Removed by admins"
 msgstr "দ্বারা ব্যবহৃত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by guildmasters"
 msgstr "গিল্ডমাস্টাররা সরিয়ে দিয়েছেন"
 
@@ -13785,7 +14257,7 @@ msgstr "আমার মুদ্রা থেকে নতুন স্বয�
 msgid "Renews every 30 days from your coins at this price until you cancel. Cancelling keeps your access until the day you paid to. No refunds."
 msgstr "আপনি বাতিল না করা পর্যন্ত প্রতি ৩০ দিন আপনার পয়সা থেকে রিপোর্ট. তোমার টাকা না পাওয়া পর্যন্ত তোমার প্রবেশাধিকার বজায় রাখবে। টাকা নেই."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Rep"
 msgstr "সুনাম"
 
@@ -13793,13 +14265,13 @@ msgstr "সুনাম"
 msgid "Replay of this Space"
 msgstr "এই স্থানের পুনরাবৃত্তি করো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Report"
 msgstr "রিপোর্ট করুন"
 
 #. the account's @name, filled in by the page
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report %(name)s"
 msgstr "%(name)s-কে রিপোর্ট করুন"
 
@@ -13813,19 +14285,19 @@ msgstr "%(name)s-র মন্তব্য"
 msgid "Report %(name)s's post"
 msgstr "প্রতিবেদন %(name)s এর পোস্ট"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report @%(name)s"
 msgstr "@%(name)s-কে রিপোর্ট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report Bugs"
 msgstr "বাগ রিপোর্ট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "মন্তব্য রিপোর্ট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "পোস্ট রিপোর্ট করুন"
 
@@ -13837,7 +14309,7 @@ msgstr "প্রতিবেদন পোস্ট করুন - %(site)s"
 msgid "Reported messages"
 msgstr "প্রেরিত বার্তা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Reports"
 msgstr "রিপোর্ট"
@@ -13850,12 +14322,12 @@ msgstr "তাদের সম্পর্কে রিপোর্ট"
 msgid "Reports opened"
 msgstr "রিপোর্ট খোলা হয়েছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Repost"
 msgstr "রিপোস্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Repost"
 msgstr "রিপোস্ট করুন"
@@ -13864,7 +14336,7 @@ msgstr "রিপোস্ট করুন"
 msgid "Repost removed."
 msgstr "প্রতিস্থাপন মুছে ফেলা হয়েছে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposted"
 msgstr "রিপোস্ট করা হয়েছে"
 
@@ -13872,7 +14344,7 @@ msgstr "রিপোস্ট করা হয়েছে"
 msgid "Reposted to your profile."
 msgstr "আপনার প্রোফাইল পুনরায় প্রকাশ করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposts"
 msgstr "রিপোস্ট"
 
@@ -13888,7 +14360,7 @@ msgstr "গঠন"
 msgid "Request API Key"
 msgstr "অনুরোধ করা API কি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Requests"
 msgstr "অনুরোধ"
 
@@ -13900,7 +14372,7 @@ msgstr "লেবেল আবশ্যক"
 msgid "Reroll Secret"
 msgstr "মুছে ফেলা গোপন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: go back to the saved default filters"
 msgid "Reset"
 msgstr "রিসেট"
@@ -13917,7 +14389,7 @@ msgstr "পাসওয়ার্ড পরিবর্তন করুন"
 msgid "Reset password"
 msgstr "পাসওয়ার্ড পরিবর্তন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reset to my default"
 msgstr "আমার ডিফল্টে ফিরিয়ে নিন"
 
@@ -13937,11 +14409,15 @@ msgstr "ফিডের জন্য আপনি কি রি-সেট কর
 msgid "Reset your password."
 msgstr "পাসওয়ার্ড পরিবর্তন পুনরায় স্থাপন করুন।"
 
+#, machine, plain2
+msgid "Resetting your password signs chat out on all your devices, chat apps included. Your chat key stays locked with your old password, so to keep your chat history you'll need your chat recovery code, or a browser where you've used chat."
+msgstr "সর্বধরনের ডিভাইসের মধ্যে উপস্থিত পাসওয়ার্ডগুলি আপনার পাসওয়ার্ড সহযোগে সংযোগ করে পুনরায় স্থাপন করুন। আলাপনের পাসওয়ার্ড রূপে আপনার আলাপনের কি-র সাথে সংযোগ স্থাপন করা হবে। এর ফলে আপনার আলাপনের জন্য আড্ডার বাটন উপস্থিত সকল তথ্য নিরাপদভাবে ব্যবহার করা আবশ্যক হবে। এর ফলে, আড্ডার জন্য আলাপন ব্যবস্থা প্রয়োগ করা আবশ্যক।"
+
 #, machine, plain1
 msgid "Resign"
 msgstr "সমর্পণ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Resources"
 msgstr "রিসোর্স"
 
@@ -13958,7 +14434,7 @@ msgstr "রেসপন্সলি নিরাপত্তার বিষয�
 msgid "Restaurants"
 msgstr "রেস্তোরা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restore"
 msgstr "পুনরুদ্ধার করুন"
 
@@ -13991,7 +14467,7 @@ msgstr "প্রদর্শন, ফরওয়ার্ড, এবং মন�
 msgid "Restricted Forwarding"
 msgstr "ফরওয়ার্ড করা হয়েছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restricted forwarding mode."
 msgstr "সীমিত ফরোয়ার্ডিং মোড।"
 
@@ -14039,7 +14515,7 @@ msgstr "সংশোধনের %(number)s"
 msgid "Revision %(number)s, published %(age)s."
 msgstr "পরিমার্জন %(number)sপ্রকাশিত %(age)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Revisions"
 msgstr "সংশোধন"
 
@@ -14113,7 +14589,7 @@ msgstr "ভূমিকাহীন"
 msgid "Role-Playing Games"
 msgstr "ভূমিকার খেলা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Roles"
 msgstr "ভূমিকা"
 
@@ -14133,7 +14609,11 @@ msgstr "আরশূহাহ"
 msgid "Rugby"
 msgstr "রগবি"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Rule"
+msgstr "নিয়ম ( R)"
+
+#, glossary, machine, plain2
 msgid "Rules"
 msgstr "নিয়মাবলি"
 
@@ -14179,11 +14659,15 @@ msgid "Saharan Belt"
 msgstr "সাহারা"
 
 #, machine, plain1
+msgid "Sanctions"
+msgstr "মাত্রা"
+
+#, machine, plain1
 msgctxt "weekday"
 msgid "Sat"
 msgstr "শনি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "সংরক্ষণ করুন"
 
@@ -14214,7 +14698,7 @@ msgstr "০ চ্যানেল"
 msgid "Save Display Name"
 msgstr "প্রদর্শন সংরক্ষণ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save Edit"
 msgstr "সম্পাদনা সংরক্ষণ করুন"
 
@@ -14226,7 +14710,7 @@ msgstr "স্বাক্ষরকারী অ্যালগরিদম"
 msgid "Save as a draft"
 msgstr "খসড়া হিসাবে সংরক্ষণ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save as my default"
 msgstr "আমার ডিফল্ট হিসেবে রাখুন"
 
@@ -14242,11 +14726,11 @@ msgstr "পরিবর্তন সংরক্ষণ করা হবে"
 msgid "Save description"
 msgstr "বিবরণ সংরক্ষণ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save draft"
 msgstr "খসড়া সংরক্ষণ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save for later"
 msgstr "পরের জন্য রাখুন"
 
@@ -14278,11 +14762,11 @@ msgstr "এখন এগুলো রাখো। তারা দেখা য�
 msgid "Save word filter"
 msgstr "শব্দের ফাইল সংরক্ষণ করো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "সংরক্ষিত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved as your default"
 msgstr "আপনার ডিফল্ট হিসেবে সংরক্ষিত"
 
@@ -14298,7 +14782,7 @@ msgstr "সংরক্ষিত। লোকে আগে দেখে।"
 msgid "Saved. Your lists are shown as you chose."
 msgstr "সংরক্ষিত। আপনার পছন্দের তালিকা হিসাবে চিহ্নিত করা হয়।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "সংরক্ষণ হচ্ছে"
 
@@ -14310,6 +14794,10 @@ msgstr "এই একাউন্টের সমস্যা কি."
 msgid "Say what the bot will post and where it comes from (at least 10 characters)."
 msgstr "এই রোবট কি পোস্ট করবে তা বলুন এবং কোথা থেকে তা এসেছে ( অন্তত ১০ অক্ষর)।"
 
+#, machine, plain2
+msgid "Say who it's from"
+msgstr "বলো কে থেকে এসেছে"
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "এই বার কোডটি স্ক্যান করুন (অথবা কোড হিসেবে) Google সংশোধনকারী অথবা কোডি।"
@@ -14318,7 +14806,7 @@ msgstr "এই বার কোডটি স্ক্যান করুন (অ
 msgid "Scandinavia"
 msgstr "স্ক্যানডিনাভিয়া"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Schedule"
 msgstr "শিডিউল করুন"
@@ -14352,7 +14840,7 @@ msgstr "Sc-ফাই"
 msgid "Science"
 msgstr "বিজ্ঞান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Science News"
 msgstr "বিজ্ঞান সংবাদ"
 
@@ -14364,11 +14852,11 @@ msgstr "স্কোর"
 msgid "Sculpture"
 msgstr "পাতন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "খুঁজুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Search"
 msgstr "খুঁজুন"
@@ -14381,11 +14869,11 @@ msgstr "পি- জি- পি অনুসন্ধান%(guild)s \"%(query)s-
 msgid "Search Tenor and press enter"
 msgstr "অনুসন্ধান Tenor এবং ফন্ট চাপুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search categories…"
 msgstr "বিভাগ খুঁজুন…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search chats and channels"
 msgstr "চ্যাট ও চ্যানেল খুঁজুন"
 
@@ -14405,7 +14893,7 @@ msgstr "অনুসন্ধান ও সন্ধান"
 msgid "Search guilds to post to"
 msgstr "পোস্ট করার জন্য guidds অনুসন্ধান করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search languages…"
 msgstr "ভাষা খুঁজুন…"
 
@@ -14421,19 +14909,19 @@ msgstr "আপনি অনুসরণ করুন"
 msgid "Search people, or type an @handle"
 msgstr "একটি মানুষ বা ধরন অনুসন্ধান করুন @handle"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Search posts in +%(guild)s"
 msgstr "+%(guild)s-এ পোস্ট খুঁজুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search posts, +guilds, @users, #topics, &curations"
 msgstr "পোস্ট, +গিল্ড, @ব্যবহারকারী, #বিষয়, &সংকলন খুঁজুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search regions…"
 msgstr "অঞ্চল খুঁজুন…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search tips"
 msgstr "অনুসন্ধানের টিপস"
 
@@ -14441,7 +14929,7 @@ msgstr "অনুসন্ধানের টিপস"
 msgid "Secret Rerolled"
 msgstr "মুছে ফেলা হয়েছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Security"
 msgstr "নিরাপত্তা"
 
@@ -14467,7 +14955,7 @@ msgstr "দেখুন Premium"
 msgid "See all"
 msgstr "সব দেখুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See everything in All"
 msgstr "সব ফিডে সবকিছু দেখুন"
 
@@ -14479,7 +14967,7 @@ msgstr "সব লাইভ দেখুন"
 msgid "See the current page"
 msgstr "বর্তমান পৃষ্ঠা দেখুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See the filtered words"
 msgstr "ফিল্টার করা শব্দগুলো দেখুন"
 
@@ -14507,6 +14995,10 @@ msgstr "আপনার নাম পরিবর্তন করুন"
 msgid "See: %(choice)s"
 msgstr "দেখুন: %(choice)s"
 
+#, machine, plain2
+msgid "Seen and typing"
+msgstr "টাইপিং বিরতি"
+
 #, machine, plain1
 msgid "Select Category"
 msgstr "শ্রেণীবিভাগ নির্বাচন করুন"
@@ -14519,7 +15011,7 @@ msgstr "প্যাকেজ নির্বাচন করুন"
 msgid "Select a Category"
 msgstr "একটি শ্রেণী নির্বাচন করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "একটি কথোপকথন বেছে নিন"
 
@@ -14552,7 +15044,7 @@ msgstr "একটি বকক তথ্য পাঠান"
 msgid "Send feedback"
 msgstr "প্রতিবেদন পাঠাও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Send in chat"
 msgstr "চ্যাটে পাঠান"
 
@@ -14564,12 +15056,12 @@ msgstr "লিংক পুনরুদ্ধার করা হবে"
 msgid "Send report"
 msgstr "রিপোর্ট পাঠাও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild with sensitive content"
 msgid "Sensitive"
 msgstr "সংবেদনশীল"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive Content"
 msgstr "সংবেদনশীল কনটেন্ট"
 
@@ -14577,7 +15069,7 @@ msgstr "সংবেদনশীল কনটেন্ট"
 msgid "Sensitive Content?"
 msgstr "স্পর্শকাতর তথ্য?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "সংবেদনশীল কনটেন্ট"
 
@@ -14643,11 +15135,11 @@ msgstr "মন্তব্য নির্ধারণ করুন"
 msgid "Setting not saved. Try again."
 msgstr "সংরক্ষিত নয় । আবার চেষ্টা করো।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Settings"
 msgstr "সেটিংস"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Settings - %(site)s"
 msgstr "সেটিংস - %(site)s"
 
@@ -14671,12 +15163,12 @@ msgstr "( ১ করি"
 msgid "Sexualizing minors is strictly prohibited."
 msgstr "( হিতো."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Share"
 msgstr "শেয়ার করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Share"
 msgstr "শেয়ার করুন"
@@ -14695,7 +15187,11 @@ msgstr "সবার পরিবর্তে আপনার বৃত্তে
 msgid "Share of the text"
 msgstr "শব্দের টেক্সট শেয়ার করুন"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Share screen"
+msgstr "শেয়ার"
+
+#, glossary, machine, plain2
 msgid "Share something"
 msgstr "কিছু শেয়ার করুন"
 
@@ -14763,11 +15259,11 @@ msgstr[1] ""
 msgid "Show as a table"
 msgstr "টেবিলের নাম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show every topic"
 msgstr "সব বিষয় দেখান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show fewer"
 msgstr "কম দেখান"
 
@@ -14783,11 +15279,11 @@ msgstr "এটা আপনার জন্য এবং আপনার জন�
 msgid "Show its card in guilds"
 msgstr "Guiguids এ তার কার্ড দেখাও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "কম দেখান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "আরও দেখুন"
 
@@ -14812,7 +15308,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. the kinds of post the feed is narrowed to, e.g. "Showing Polls, Videos."
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing <strong>%(types)s</strong>."
 msgstr "<strong>%(types)s</strong> দেখানো হচ্ছে।"
 
@@ -14820,11 +15316,11 @@ msgstr "<strong>%(types)s</strong> দেখানো হচ্ছে।"
 msgid "Showing posts detected as <strong>%(languages)s</strong>."
 msgstr "প্রাপ্ত ফলাফল প্রদর্শন করা হবে <strong>%(languages)s</strong>."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts from <strong>%(regions)s</strong>."
 msgstr "<strong>%(regions)s</strong> থেকে পোস্ট দেখানো হচ্ছে।"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts in <strong>%(categories)s</strong>."
 msgstr "<strong>%(categories)s</strong> বিভাগের পোস্ট দেখানো হচ্ছে।"
 
@@ -14862,7 +15358,7 @@ msgstr "আপনার বায়োগ্রাফির অধীনে। 
 msgid "Shows posts of any type you tick."
 msgstr "আপনি যে কোন ধরণের টিক দেন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Side panel"
 msgstr "পাশের প্যানেল"
 
@@ -14870,17 +15366,34 @@ msgstr "পাশের প্যানেল"
 msgid "Siege against +%(guild)s Failed"
 msgstr "+ এর বিরুদ্ধে দাবি গ্রহণ করুন%(guild)s ব্যর্থ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign In"
 msgstr "সাইন ইন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign Up"
 msgstr "সাইন আপ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in"
 msgstr "সাইন ইন"
+
+#. %(name)s is the account's @handle. The script puts it in, as text
+#, machine, plain1, python-format
+msgid "Sign in as %(name)s?"
+msgstr "%(name)s এ স্বাক্ষর করুন?"
+
+#, machine, plain1
+msgid "Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in."
+msgstr "কম্পিউটারের মধ্যে স্বাক্ষর করুন এমন একটি ফোনে যার মধ্যে ইতিমধ্যেই স্বাক্ষর করা হয়েছে। আপনার দু'টো র কোড জানতে ফোন করুন, অথবা কম্পিউটার চালু করার আগে আপনার পাসওয়ার্ড দু'টি ব্যবহার না করে।"
+
+#, machine, plain1
+msgid "Sign in on another screen?"
+msgstr "অন্য পর্দায় স্বাক্ষর করা হবে কি?"
+
+#, machine, plain1
+msgid "Sign in on this phone first, then scan a new code."
+msgstr "এই ফোনে সাইন করুন, তারপর নতুন কোড স্ক্যান করুন."
 
 #, machine, plain1, python-format
 msgid "Sign in to %(site)s"
@@ -14914,7 +15427,7 @@ msgstr "রোবটের জন্য সাইন ইন করুন।"
 msgid "Sign in to chat in +%(guild)s's channels."
 msgstr "+তে সাইন করুন%(guild)sচ্যানেলগুলো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to downvote"
 msgstr "ডাউনভোট করতে সাইন ইন করুন"
 
@@ -14938,11 +15451,19 @@ msgstr "সাইন ইন করুন"
 msgid "Sign in to see them here."
 msgstr "এখানে তাদের দেখতে সাইন করুন।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to upvote"
 msgstr "আপভোট করতে সাইন ইন করুন"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Sign in with a QR code"
+msgstr "QR সহ স্বাক্ষর করুন কোড"
+
+#, machine, plain1, python-format
+msgid "Sign in with a QR code - %(site)s"
+msgstr "QR-র একটি অংশ স্বাক্ষর করুন - %(site)s-এ"
+
+#, glossary, machine, plain2
 msgid "Sign up"
 msgstr "সাইন আপ"
 
@@ -14961,6 +15482,14 @@ msgstr "এখনই সাইন করো! %(site)s হচ্ছে অনল�
 #, machine, plain1
 msgid "Sign-in emails are off."
 msgstr "সাইন ইন-ইন বন্ধ হয়ে গেছে।"
+
+#, machine, plain1, python-format
+msgid "Signed in here as @%(name)s"
+msgstr "এখানে স্বাক্ষর করুন @%(name)s"
+
+#, glossary, machine, plain2
+msgid "Signed out"
+msgstr "লগ আউট হয়েছে"
 
 #, machine, plain1
 msgid "Signed-in viewers"
@@ -14986,7 +15515,7 @@ msgstr "অনুরূপ বন্ধনীচিহ্ন"
 msgid "Simulation Games"
 msgstr "সিমুলেশন খেলা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Since"
 msgstr "থেকে"
@@ -15076,7 +15605,7 @@ msgstr "তো আমরা তাদের প্রোফাইল দেখ�
 msgid "Soccer"
 msgstr "ফুটবলার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Issues"
 msgstr "সামাজিক বিষয়"
 
@@ -15084,7 +15613,7 @@ msgstr "সামাজিক বিষয়"
 msgid "Social Media"
 msgstr "সামাজিক মিডিয়া"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Sciences"
 msgstr "সামাজিক বিজ্ঞান"
 
@@ -15106,7 +15635,7 @@ msgstr[1] "কিছু অ্যাকাউন্ট এই ব্যক্ত
 msgid "Some of my circles (end-to-end encrypted)"
 msgstr "আমার কিছু বৃত্ত (কিছু সময়-পশ্চাৎ)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Some posts are automated"
 msgstr "কিছু পোস্ট স্বয়ংক্রিয়"
 
@@ -15156,6 +15685,14 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "সম্পাদনা করার সময় কেউ এই পেজটি রক্ষা করেছিল। আপনার লেখা এখনো আছে: এইটি কপি করো তাদের পরিবর্তন দেখতে, এবং পুনরায় আপনার টি যোগ করো ।"
 
+#, python-format
+msgid ""
+"Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
+"\n"
+"\n"
+"If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
+msgstr ""
+
 #, machine, plain1
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
 msgstr "যারা আপনার বার্তাকে তাদের ইনবক্সে নিক; অন্য যে কেউ এটা অনুরোধ করে। আড্ডা শেষ হয়ে গেছে।"
@@ -15181,6 +15718,10 @@ msgid "Something went wrong while publishing. Please try again."
 msgstr "প্রকাশনার সময় কিছু সমস্যা হয়েছে। অনুগ্রহ করে পুনরায় প্রচেষ্টা করুন।"
 
 #, machine, plain1
+msgid "Something went wrong, so this code has stopped. Wait a moment and try a new one."
+msgstr "কিছু একটা ভুল হয়ে গেছে, তাই এই কোড বন্ধ হয়ে গেছে। এক মিনিট অপেক্ষা করো আর নতুন একটা চেষ্টা করো।"
+
+#, machine, plain1
 msgid "Soon"
 msgstr "♪ তাড়াতাড়ি ♪"
 
@@ -15188,19 +15729,19 @@ msgstr "♪ তাড়াতাড়ি ♪"
 msgid "Sorry, I've been cursed and can't make you coffee right now."
 msgstr "দুঃখিত, আমি অভিশপ্ত এবং আপনি কফি এখন করতে পারেন না."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort By:"
 msgstr "সাজান:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort by"
 msgstr "সাজান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort comments"
 msgstr "মন্তব্য সাজান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort guilds"
 msgstr "গিল্ড সাজান"
 
@@ -15208,7 +15749,7 @@ msgstr "গিল্ড সাজান"
 msgid "Sound"
 msgstr "শব্দ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Sound"
 msgstr "সাউন্ড"
@@ -15221,16 +15762,16 @@ msgstr "শব্দ"
 msgid "Southern Cone"
 msgstr "দক্ষিণ কন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Space"
 msgstr "স্পেস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "a live Space"
 msgid "Space"
 msgstr "স্পেস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Space"
 msgstr "স্পেস"
@@ -15245,7 +15786,7 @@ msgstr "স্পেস রেকর্ডিং"
 
 #. a group of post types in the Post type filter (live, upcoming and recorded
 #. Spaces)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Spaces"
 msgstr "স্পেস"
 
@@ -15303,7 +15844,7 @@ msgstr "কুভিলা"
 msgid "Standard - hide extremely offensive language"
 msgstr "আদর্শ - জঘন্য ভাষা লুকিয়ে রাখো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start a Space"
 msgstr "স্পেস শুরু করুন"
 
@@ -15323,7 +15864,7 @@ msgstr "আরম্ভ থেকে আরম্ভ"
 msgid "Start now"
 msgstr "এখন আরম্ভ করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start one"
 msgstr "একটি শুরু করুন"
 
@@ -15381,7 +15922,7 @@ msgstr "এই পোস্টের সহ-authorী হিসেবে?"
 msgid "Stepping down"
 msgstr "নামো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sticky post"
 msgstr "পিন করা পোস্ট"
 
@@ -15409,7 +15950,7 @@ msgstr "স্বয়ংক্রিয়ভাবে বাতিল কর�
 msgid "Stopped after failing"
 msgstr "বন্ধ করার পরে বন্ধ করা হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Story"
 msgstr "স্টোরি"
@@ -15434,16 +15975,16 @@ msgstr "স্ট্রিমিং করা হচ্ছে"
 msgid "Study Tips"
 msgstr "অধ্যয়ন প্রবন্ধগুলো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Submitter"
 msgstr "পোস্টকারী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Subscribe"
 msgstr "সাবস্ক্রাইব করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "calendar feed"
 msgid "Subscribe"
 msgstr "সাবস্ক্রাইব করুন"
@@ -15472,7 +16013,7 @@ msgid_plural "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coins/mo
 msgstr[0] "সাবস্ক্রাইব করা<span class=\"profile-x-price\">&nbsp;প্রতি মাসে %(num)s পয়সা</span>"
 msgstr[1] "সাবস্ক্রাইব করা<span class=\"profile-x-price\">&nbsp;প্রতি মাসে %(num)s পয়সা</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribed"
 msgstr "সাবস্ক্রাইব করা হয়েছে"
 
@@ -15480,15 +16021,15 @@ msgstr "সাবস্ক্রাইব করা হয়েছে"
 msgid "Subscribed · renews %(date)s"
 msgstr "সাবস্ক্রাইব করা %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscriber"
 msgstr "সাবস্ক্রাইবার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribers"
 msgstr "সাবস্ক্রাইবার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Subscribers"
 msgstr "সাবস্ক্রাইবার"
@@ -15543,6 +16084,10 @@ msgstr "আপনি অনুসরণ করা একাউন্ট থে�
 msgid "Summary"
 msgstr "সারাংশ"
 
+#, machine, plain1, python-format
+msgid "Summary: %(summary)s"
+msgstr "সারাংশ: %(summary)s"
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Sun"
@@ -15556,7 +16101,7 @@ msgstr "শেলোস"
 msgid "Support"
 msgstr "সাহায্য"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Support %(site)s"
 msgstr "%(site)s-কে সমর্থন করুন"
 
@@ -15597,8 +16142,12 @@ msgstr "উইকি বন্ধ করুন"
 msgid "Switch the wiki off? Its pages are kept; only guildmasters see them until it is on again."
 msgstr "উইকি বন্ধ? এই পাতাগুলো রাখা আছে; একমাত্র guidid Sandsites সেগুলো আবার দেখার জন্য।"
 
+#, machine, plain2
+msgid "Switching two-factor on or off signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "অন্যান্য ডিভাইসের সাথে সংযোগ বিচ্ছিন্ন অথবা বিচ্ছিন্ন করা হলে, এই কম্পিউটারের মধ্যে সংযোগ স্থাপন করা যাবে না ও সেটি এইখানে যোগ করার পরে ব্যবহার করা হয়েছে।"
+
 #. the tab of notices from the site itself
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "notifications"
 msgid "System"
 msgstr "সিস্টেম"
@@ -15629,7 +16178,7 @@ msgstr "এই দ্রাক্ষাফলটা কি তার বাই�
 msgid "Taking part"
 msgstr "গ্রহণ করা হচ্ছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tap to play"
 msgstr "চালাতে ট্যাপ করুন"
 
@@ -15642,11 +16191,11 @@ msgctxt "colour"
 msgid "Teal"
 msgstr "তেভেত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech News"
 msgstr "প্রযুক্তি সংবাদ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech Support"
 msgstr "প্রযুক্তি সহায়তা"
 
@@ -15674,11 +16223,11 @@ msgstr "আমাদের বলুন কেন আপনি %(site)s ত্�
 msgid "Tennis"
 msgstr "হিয়ানিস"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Terms"
 msgstr "শর্তাবলি"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Terms"
 msgstr "শর্তাবলি"
@@ -15705,7 +16254,7 @@ msgctxt "kind of story"
 msgid "Text"
 msgstr "টেক্সট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post body"
 msgid "Text"
 msgstr "লেখা"
@@ -15725,7 +16274,7 @@ msgstr "টেক্সট চ্যানেল"
 msgid "Text posts"
 msgstr "টেক্সট পোস্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Text size"
 msgstr "লেখার আকার"
 
@@ -15854,6 +16403,10 @@ msgstr "ঐ রোবটটা এই চ্যানেলটা খায়�
 msgid "That category isn't in this guild."
 msgstr "এই বিভাগটা এই guild এ নেই।"
 
+#, machine, plain2
+msgid "That chat was not found."
+msgstr "আলাপনের নাম পাওয়া যায়নি।"
+
 #, machine, plain1
 msgid "That circle isn't taking subscribers."
 msgstr "এই বৃত্ত গ্রাহক নিচ্ছে না।"
@@ -15861,6 +16414,10 @@ msgstr "এই বৃত্ত গ্রাহক নিচ্ছে না।"
 #, machine, plain1
 msgid "That circle isn't yours."
 msgstr "ঐ বৃত্তটা তোমার না।"
+
+#, machine, plain1
+msgid "That code isn't right."
+msgstr "কোডটা ঠিক নয়।"
 
 #, machine, plain1
 msgid "That comment has been deleted."
@@ -15878,9 +16435,13 @@ msgstr "সংযোগের মেয়াদ উত্তীর্ণ হয
 msgid "That description is too long once formatted."
 msgstr "এই বর্ণনাটি একযোগে টেনে আনা হয়েছে।"
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "এই যন্ত্রটা এখনই সাইন করা যায়নি."
+msgstr "এই ডিভাইসটা এখন বিচ্ছিন্ন করা যায়নি।"
+
+#, machine, plain1
+msgid "That didn't go through. Wait a moment and try again."
+msgstr "তাতে আর কিছু যায় আসে না। একটু অপেক্ষা করুন, আবার চেষ্টা করুন।"
 
 #, machine, plain1
 msgid "That didn’t work."
@@ -15954,6 +16515,10 @@ msgstr "ফাইলটি অতিরিক্ত বড়।"
 msgid "That file is too big. The limit for audio files is %(size)s MB."
 msgstr "ফাইলটি অতিরিক্ত বড়। অডিও ফাইলের সর্বাধিক সীমা %(size)s MB."
 
+#, machine, plain2, python-format
+msgid "That file is too big. The limit for files in chats is %(size)s MB."
+msgstr "ফাইলটি অতিরিক্ত বড়। আলাপনের জন্য সীমা উপস্থিত রয়েছে %(size)s MB."
+
 #, machine, plain1, python-format
 msgid "That file is too big. The limit for image files is %(size)s MB."
 msgstr "ফাইলটি অতিরিক্ত বড়। ছবির ফাইলের সীমা %(size)s MB."
@@ -16013,6 +16578,10 @@ msgid "That is another account's username, so it can't be your display name."
 msgstr "এটা অন্য ব্যবহারকারীর নাম, তাই আপনার নাম প্রদর্শন করা সম্ভব নয়।"
 
 #, machine, plain1
+msgid "That is how someone would try this on you. Press Not me unless you are sure."
+msgstr "কেউ তোমার উপর এটা চেষ্টা করবে. প্রেস তুমি নিশ্চিত না হলে."
+
+#, machine, plain1
 msgid "That is not a usable address."
 msgstr "এটা কোন প্রবেশযোগ্য ঠিকানা নয়।"
 
@@ -16049,8 +16618,16 @@ msgid "That isn't a valid username."
 msgstr "এটি বৈধ ব্যবহারকারীর নাম নয়।"
 
 #, machine, plain1
+msgid "That isn't right. Try again."
+msgstr "এটা ঠিক না। আবার চেষ্টা করো।"
+
+#, machine, plain1
 msgid "That isn't something you can switch."
 msgstr "এটা কোন ব্যাপার না যে আপনি সুইচ করতে পারেন।"
+
+#, machine, plain2
+msgid "That isn't your password."
+msgstr "এটা তোমার পাসওয়ার্ড না।"
 
 #, machine, plain1
 msgid "That key couldn't be saved."
@@ -16084,6 +16661,10 @@ msgstr "এই বার্তা উদ্ধৃত করা যাবে ন�
 msgid "That message can't have a thread."
 msgstr "একটা থ্রেডও থাকতে পারবে না।"
 
+#, machine, plain2
+msgid "That message isn't in this chat any more."
+msgstr "এই বার্তাটি আর কোনো শরিক নেই।"
+
 #, machine, plain1
 msgid "That name is kept for the site's staff."
 msgstr "এই নামটি সাইটের কর্মীদের জন্য রাখা হয়েছে।"
@@ -16107,6 +16688,10 @@ msgstr "পাসওয়ার্ডের মেয়াদ উত্তী�
 #, machine, plain1
 msgid "That password reset link has expired."
 msgstr "পাসওয়ার্ডের মেয়াদ উত্তীর্ণ হয়েছে।"
+
+#, machine, plain2
+msgid "That picture can't be used here."
+msgstr "ছবি এখানে ব্যবহার করা যাবে না।"
 
 #, machine, plain1
 msgid "That picture is already used somewhere else. Upload it again."
@@ -16164,9 +16749,17 @@ msgstr "যে প্রোমো কোড এই আদেশকে মুক�
 msgid "That recording can no longer be used."
 msgstr "এই রেকর্ডিং আর ব্যবহার করা যাবে না।"
 
+#, machine, plain2
+msgid "That report couldn't be read. Try again."
+msgstr "ঐ রিপোর্ট পড়া যায়নি. আবার চেষ্টা করো।"
+
 #, machine, plain1
 msgid "That request was bad and you should feel bad."
 msgstr "সেই অনুরোধ ছিল খারাপ এবং তোমার খারাপ লাগছে।"
+
+#, machine, plain1
+msgid "That request wasn't understood."
+msgstr "অনুরোধটা বুঝতে পারিনি।"
 
 #, machine, plain1
 msgid "That server is not on the public internet."
@@ -16268,7 +16861,7 @@ msgstr "বিবিসির প্রযুক্তি শিরোনাম,
 msgid "The Child word filter hides sensitive content everywhere, so this is off."
 msgstr "শিশুদের শব্দ ফিল্টার করা সব জায়গায় সংবেদনশীল বিষয়বস্তু লুকিয়ে রাখে, তাই এটা বন্ধ।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "The Platform"
 msgstr "প্ল্যাটফর্ম"
 
@@ -16433,8 +17026,16 @@ msgid "The dates leave no days."
 msgstr "তারিখ কোন দিন থাকবে না।"
 
 #, machine, plain1
+msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "সিদ্ধান্ত নেওয়ার সময় নতুন, নতুন: কে, কখন, কোথায়, কোন শাসন এবং কেন? এর শিরোনাম বা টেক্সট যা গোপন ছিল, তা কখনো প্রদর্শন করে না ।"
+
+#, machine, plain1
 msgid "The draft has changes the post doesn't show yet."
 msgstr "এই খসড়া আইন এখনো পরিবর্তন হয়নি।"
+
+#, machine, plain1
+msgid "The earlier versions aren't shown while this is hidden."
+msgstr "আগের সংস্করণটি আড়াল হওয়ার সময় দেখা যাচ্ছে না।"
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -16788,6 +17389,10 @@ msgstr "স্পেসের স্থান পরিবর্তন করা
 msgid "The text isn't shown: this was removed by the site's administrators."
 msgstr "এই লেখাটি প্রদর্শন করা হয়নি: এটি সাইটের প্রশাসক সরিয়ে ফেলা হয়েছে।"
 
+#, machine, plain1
+msgid "The text of this version was hidden by a site administrator."
+msgstr "এই সংস্করণটি একটি সাইট দ্বারা সুরক্ষিত।"
+
 #, machine, plain1, python-format
 msgid "The time before links must be a whole number of days, 0 to %(max)s."
 msgstr "লিংককে একটি পূর্ণ সংখ্যক দিন পর্যন্ত অপেক্ষা করতে হবে, ০ থেকে ৯ %(max)s."
@@ -16956,6 +17561,10 @@ msgstr "এই নামের কোন অ্যাকাউন্ট নে�
 msgid "There's no invitation to speak."
 msgstr "কথা বলার কোন আমন্ত্রণ নেই।"
 
+#, machine, plain2
+msgid "There's no recovery code to keep yet."
+msgstr "কোন পুনরুদ্ধার কোড এখনো বাকি আছে।"
+
 #, machine, plain1
 msgid "There's nothing here right now."
 msgstr "এখানে কিছুই নেই."
@@ -17000,9 +17609,9 @@ msgstr "তারা ইতিমধ্যেই এই বৃত্তের �
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "তাদের বলা হয় নি। যে কেউ তোমার বৃত্ত ছেড়ে দিয়েছে।"
 
-#, machine, plain1
-msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
-msgstr "তারা সব জায়গায় স্বাক্ষর করা হয়েছে। যদি তারা চ্যাট করতে থাকে, তাহলে তাদের সুস্থ হয়ে উঠতে পারে।"
+#, machine, plain2
+msgid "They are signed out everywhere, chat apps included. If they use chat, they may need their recovery code, or a browser where they've used chat, to read their old messages."
+msgstr "তারা সব জায়গায় বিচ্ছিন্ন, চ্যাট অ্যাপস। কোনো আলাপনের জন্য প্রস্তুত করা হলে, সংশ্লিষ্ট আলাপনের তথ্য বিশিষ্ট একটি ডাটাবেস অথবা সেগুলি ব্যবহার করা যাবে।"
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -17179,6 +17788,10 @@ msgid "This account can't use chat apps."
 msgstr "এই অ্যাকাউন্ট সহযোগে সার্ভারের নাম ব্যবহার করা সম্ভব নয়।"
 
 #, machine, plain1, python-format
+msgid "This account has been marked 18 or over since %(date)s."
+msgstr "এই অ্যাকাউন্টটি চিহ্নিত করা হয়েছে ১৮ বা তার পরে %(date)s."
+
+#, machine, plain1, python-format
 msgid "This account has been permanently suspended from %(site)s."
 msgstr "এই অ্যাকাউন্টটি %(site)s থেকে স্থায়ীভাবে স্থগিত করা হয়েছে।"
 
@@ -17202,6 +17815,10 @@ msgstr "এই একাউন্টের মূল্য টাকা, তা�
 msgid "This account posts about sensitive topics"
 msgstr "এই অ্যাকাউন্টটি সংবেদনশীল বিষয়ে পোস্ট করেছে"
 
+#, machine, plain2
+msgid "This also signs out chat everywhere else, chat apps included, except the chat this browser has used since you signed in here."
+msgstr "এটি অন্যান্য সকল স্থানে চ্যাট- তালিকাও সংযোগ করে, যার মধ্যে দিয়ে আড্ডার অ্যাপও অন্তর্ভুক্ত করা হয়, কিন্তু এখানে স্বাক্ষর করার পর থেকে এই ব্রাউজারটি ব্যবহার করা হয়েছে ।"
+
 #. %(time)s is a length of time, such as "6 months"
 #, machine, plain1, python-format
 msgid "This author hasn't been active for %(time)s, so isn't counted."
@@ -17222,6 +17839,14 @@ msgstr "এই রোবটটি চলছে না।"
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "এই রোবটের মালিক এখন এটা চালাতে পারবেনা."
+
+#, machine, plain2
+msgid "This browser was signed out. Sign in again to carry on."
+msgstr "এই ব্রাউজারের সাথে সংযোগ বিচ্ছিন্ন করা হয়েছে। আবার সাইন করুন."
+
+#, machine, plain2
+msgid "This browser's notifications couldn't be turned on. Try again."
+msgstr "ব্রাউজারের সূচনাবার্তা ব্রাউজার আরম্ভ করতে ব্যর্থ। আবার চেষ্টা করো।"
 
 #, python-format
 msgid "This call is full (%(num)s person)."
@@ -17266,6 +17891,14 @@ msgid "This circle isn't taking subscribers."
 msgstr "এই বৃত্ত গ্রাহক নিচ্ছে না।"
 
 #, machine, plain1
+msgid "This code can't be used. Get a new one on the computer, or sign in there with your password."
+msgstr "এই কোড ব্যবহার করা যাবে না। নতুন কম্পিউটারে একটা নতুন ফোন করুন, অথবা আপনার পাসওয়ার্ডের সাথে সাইন করুন।"
+
+#, machine, plain1
+msgid "This code has run out."
+msgstr "কোড শেষ হয়েছে."
+
+#, machine, plain1
 msgid "This comment and the comments under it"
 msgstr "এই মন্তব্য এবং মন্তব্য এর নীচে"
 
@@ -17305,6 +17938,10 @@ msgid "This content has already been posted"
 msgstr "এই সামগ্রী পূর্বেই প্রেরিত হয়েছে"
 
 #, machine, plain1
+msgid "This copy is no longer kept."
+msgstr "এই কপি আর রাখা হয় না।"
+
+#, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "এই বিষয়টি একটি নতুন, স্বাধীন পোস্ট তৈরি করেছে যে guid এ নিজস্ব ভোট এবং মন্তব্য রয়েছে। মন্তব্যের লেখা থেকে এই শিরোনামটি নেওয়া হয়েছে। মূল মন্তব্যে আবার একটি লিঙ্ক নতুন পোস্টে দেখানো হবে।"
 
@@ -17335,6 +17972,10 @@ msgstr "এই সংরক্ষিত খাবারের নিয়ম �
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
 msgstr "এটা তাদের একাউন্ট এবং সবকিছু মুছে ফেলে। এটা বাতিল করা যাবে না। আপনি প্রথমে তাদের তথ্য ডাউনলোড করতে পারেন।"
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "এই ডিভাইসটি বিচ্ছিন্ন করা হবে।"
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17388,9 +18029,17 @@ msgstr "এটি একটি স্থান: এর আলোচনা স্
 msgid "This is a Space: its host and co-hosts post its updates from the Space."
 msgstr "এটি একটি স্থান: এর হোস্ট এবং সহ-হোদয় স্পেস থেকে তার সর্বশেষ খবর পোস্ট করেছে।"
 
+#, machine, plain1, python-format
+msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
+msgstr "+তে এটি একটি মডারেটর ক্রিয়ার লগ%(guild)sযারা পড়তে পারে তারা সাইটেও আছে <a href=\"%(url)s\">লগ</a>.যারা নিজেদেরকে মুছে ফেলে, প্রকাশ করা হয় না."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "এটা আপনার ভাষায় ইতিমধ্যে রয়েছে ।"
+
+#, machine, plain2
+msgid "This is for chat on this site. A chat app you use outside it follows its own setting."
+msgstr "এই সাইটের জন্য। এটি একটি আড্ডার অ্যাপ্লিকেশন।"
 
 #, machine, plain1
 msgid "This is for the members of a Circle guild."
@@ -17464,6 +18113,10 @@ msgid "This page may not be embedded in other webpages."
 msgstr "এই পৃষ্ঠাটি অন্যান্য ওয়েবপেজের মধ্যে সংযোজন করা সম্ভব হয়নি ।"
 
 #, machine, plain1
+msgid "This page was opened from a link, not by your camera."
+msgstr "এই ওয়েবপেজটি একটি লিংক থেকে খোলা হয়েছে, ক্যামেরা দ্বারা নয়।"
+
+#, machine, plain1
 msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
 msgstr "এই লেখাকে স্থায়ীভাবে মুছে ফেলা হবে। এটা বাতিল করা যাবে না, এমনকি একজন প্রশাসকও এটা বাতিল করতে পারেন না।"
 
@@ -17474,6 +18127,10 @@ msgstr "এই নোটের শিরোনাম, টেক্সট ও ল
 #, machine, plain1
 msgid "This person is blocking you."
 msgstr "এই ব্যক্তি আপনাকে বাধা দিচ্ছে।"
+
+#, machine, plain1
+msgid "This phone signed in with a QR code, so it can't approve another one. Enter your password here, then scan a new code."
+msgstr "এই ফোনটি QR সহ সংযুক্ত হয়েছে কোড, যাতে অন্য কাউকে মেনে নিতে না পারে। পাসওয়ার্ড এখানে লিখুন, তারপর একটি নতুন কোড স্ক্যান করুন ।"
 
 #, machine, plain1
 msgid "This poll has ended."
@@ -17607,6 +18264,10 @@ msgid "This sign-in can't go on"
 msgstr "এই সাইন ইন করতে পারেন না"
 
 #, machine, plain1
+msgid "This sign-in lasts 12 hours, and chat, coins, apps, following, who can see what you share and account settings ask for your password first."
+msgstr "এই সাইন ইন ১২ ঘন্টা, চ্যাট, মুদ্রা, অ্যাপস, যার নিচে আপনারা দেখতে পারেন আপনার শেয়ার এবং একাউন্ট সংক্রান্ত তথ্য প্রথমে জানতে পারবেন।"
+
+#, machine, plain1
 msgid "This sign-in request didn't come from a chat app this site knows."
 msgstr "এই সাইন ইন-ইন অনুরোধটি একটি চ্যাট অ্যাপ্লিকেশন থেকে এখানে আসেনি।"
 
@@ -17656,6 +18317,10 @@ msgstr "এটাই তো নিয়ম।"
 msgid "Those dates leave no days to search."
 msgstr "ঐ তারিখগুলো অনুসন্ধানের আর কোন দিন বাকি নেই।"
 
+#, machine, plain2
+msgid "Those keys couldn't be used."
+msgstr "এগুলো ব্যবহার করা যাবে না।"
+
 #, machine, plain1
 msgid "Through the app"
 msgstr "অ্যাপ্লিকেশন সহযোগে"
@@ -17678,7 +18343,7 @@ msgstr "প্রথমে নিয়ম মেনে চলার জন্�
 msgid "Ticks all its subcategories. Untick them to keep only the guilds filed under the category itself."
 msgstr "সব সাব মিলে দেখো. ওদেরকে শুধু guds ফাইল রাখার জন্য ছেড়ে দাও."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Time"
 msgstr "সময়"
 
@@ -17699,7 +18364,7 @@ msgstr "সময় তোমার টাইম জোনে."
 msgid "Times the post's page was opened by someone other than you. A repeat from the same visitor within half an hour, robots and link previews are not counted. Views before this feature are not counted either."
 msgstr "এই পোস্টের পাতা আপনার চেয়ে অন্য কারো দ্বারা খোলা হয়েছে। প্রায় আধা ঘন্টার মধ্যেই একই পর্যটকের কাছ থেকে পুনরাবৃত্তি গণনা করা হয় না। এই বৈশিষ্ট্যের আগে দেখা যাবে না ।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Tip"
 msgstr "বখশিশ"
@@ -17720,16 +18385,16 @@ msgid_plural "Tip, %(num)s coins tipped"
 msgstr[0] "টিপ, %(num)s পয়সা"
 msgstr[1] "টিপ, %(num)s পয়সা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "coins received"
 msgid "Tips"
 msgstr "বখশিশ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Title"
 msgstr "শিরোনাম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile title"
 msgid "Title"
 msgstr "খেতাব"
@@ -17819,7 +18484,7 @@ msgstr "অবস্থান প্রদর্শন বন্ধ করো"
 msgid "Toggle Privacy"
 msgstr "ব্যক্তিগত তথ্য মুছে ফেলুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Toggle navigation"
 msgstr "নেভিগেশন টগল করুন"
 
@@ -17839,7 +18504,7 @@ msgstr "অনেক লাইভ স্ট্রিম খোলা আছে�
 msgid "Too much spam!"
 msgstr "অনেক স্প্যাম!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Top"
 msgstr "সেরা"
@@ -17861,7 +18526,7 @@ msgstr "উপরে %(share)s%% পোস্টটিতে %(site)s এর উ
 msgid "Topic"
 msgstr "বিষয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Topics"
 msgstr "বিষয়"
 
@@ -17900,6 +18565,10 @@ msgid "Translation isn't available right now. Try again in a little while."
 msgstr "অনুবাদ এখনই বিদ্যমান নয়। একটু পরে চেষ্টা করো।"
 
 #, machine, plain1
+msgid "Transparency and disclosure"
+msgstr "স্বচ্ছতা এবং প্রকাশ করুন"
+
+#, machine, plain1
 msgid "Travel"
 msgstr "ভ্রমণ"
 
@@ -17907,11 +18576,11 @@ msgstr "ভ্রমণ"
 msgid "Travel Advice"
 msgstr "ভ্রমণ নির্বাচন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Trending"
 msgstr "ট্রেন্ডিং"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Trending"
 msgstr "ট্রেন্ডিং"
@@ -17934,6 +18603,10 @@ msgid "True Crime"
 msgstr "প্রকৃত অপরাধ"
 
 #, machine, plain1
+msgid "Try again"
+msgstr "পুনরায় প্রচেষ্টা করুন"
+
+#, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
 msgstr "মঙ্গল"
@@ -17946,6 +18619,22 @@ msgstr "তুনিয়ান ধাপ"
 msgid "Turn it off"
 msgstr "এটা বন্ধ কর"
 
+#, machine, plain1
+msgid "Turn it off if you'll never use it: your password keeps working as it does now."
+msgstr "এটি বন্ধ করুন যদি আপনি এটি ব্যবহার না করেন: আপনার পাসওয়ার্ড এখন কাজ করছে।"
+
+#, machine, plain2
+msgid "Turn it on in Security"
+msgstr "এটা সিকিউরিটিতে চালু কর"
+
+#, machine, plain1
+msgid "Turn off"
+msgstr "নিষ্ক্রিয় করা হবে (f)"
+
+#, machine, plain2
+msgid "Turn off Seen and typing"
+msgstr "টাইপিং বিরতির প্লাগ-ইন সক্রিয় করুন"
+
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
 msgstr "+ থেকে সূচনাবার্তা বন্ধ করা হবে%(guild)s"
@@ -17953,6 +18642,18 @@ msgstr "+ থেকে সূচনাবার্তা বন্ধ করা 
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "সূত্র থেকে সূচনাবার্তা বন্ধ করা হবে (t)%(name)s"
+
+#, machine, plain2
+msgid "Turn off notifications in this browser"
+msgstr "এই ব্রাউজারের মধ্যে সূচনাবার্তা প্রদর্শন বন্ধ করা হবে"
+
+#, machine, plain1
+msgid "Turn on"
+msgstr "চালু করো"
+
+#, machine, plain2
+msgid "Turn on Seen and typing"
+msgstr "টাইপিং বিরতির প্লাগ-ইন সক্রিয় করুন"
 
 #, machine, plain1
 msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
@@ -17970,9 +18671,17 @@ msgstr "+ থেকে সূচনাবার্তা সক্রিয় �
 msgid "Turn on notifications from @%(name)s"
 msgstr "সূত্র থেকে সূচনাবার্তা চালু করো%(name)s"
 
+#, machine, plain2
+msgid "Turn on notifications in this browser"
+msgstr "এই ব্রাউজারের মধ্যে সূচনাবার্তা সক্রিয় করা হবে"
+
 #, machine, plain1
 msgid "Turn on two-factor authentication first."
 msgstr "দু'জনের অনুমোদন আগে চালু কর।"
+
+#, machine, plain1
+msgid "Turning it back on needs your password, and we'll tell you it happened."
+msgstr "এটা আবার চালু করা প্রয়োজন আপনার পাসওয়ার্ড, এবং আমরা আপনাকে বলতে হবে যে এটা ঘটেছে।"
 
 #, machine, plain1
 msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
@@ -17998,17 +18707,29 @@ msgstr "দুই-আক্রমিক প্রমাণীকরণ"
 msgid "Two-Factor Code"
 msgstr "দুই-হাতী কোড"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Two-factor authentication disabled. Your other devices have been signed out."
-msgstr "দুটি অনুমোদন নিষ্ক্রিয় । তোমার অন্য ডিভাইসও বন্ধ করা হয়েছে।"
+msgstr "দুটি অনুমোদন নিষ্ক্রিয় । আপনার অন্যান্য ডিভাইস বিচ্ছিন্ন করা হয়েছে।"
 
 #, machine, plain1
 msgid "Two-factor authentication is already on. Turn it off first to set up a new device."
 msgstr "দু'টো অনুমোদন ইতিমধ্যে রয়েছে। নতুন ডিভাইস সেট করার জন্য প্রথমে বন্ধ করুন।"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Two-factor authentication is on. Your other devices have been signed out."
-msgstr "২ জনের অনুমোদন আছে। তোমার অন্য ডিভাইসও বন্ধ করা হয়েছে।"
+msgstr "২ জনের অনুমোদন আছে। আপনার অন্যান্য ডিভাইস বিচ্ছিন্ন করা হয়েছে।"
+
+#, machine, plain1
+msgid "Two-factor code or backup code"
+msgstr "দুই-কনফিগারকৃত কোড অথবা ব্যাকআপ কোড"
+
+#, machine, plain2
+msgid "Two-factor sign-in"
+msgstr "দুই-পালক সাইন ইন"
+
+#, machine, plain2
+msgid "Two-factor sign-in keeps someone who learns your password out of your account, and so out of your chats."
+msgstr "২-৩ জন সই করে রাখে এমন একজন তোমার একাউন্ট থেকে পাসওয়ার্ড জানা যায়, এবং তোমার আড্ডার বাইরে।"
 
 #, machine, plain1
 msgid "Two-step login"
@@ -18034,7 +18755,7 @@ msgstr "ধরন অনুসারে %(name)s"
 msgid "Unable to copy data"
 msgstr "তথ্য কপি করতে ব্যর্থ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unable to copy link"
 msgstr "লিংক কপি করা যায়নি"
 
@@ -18076,15 +18797,15 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "আনবান পোস্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "আনব্লক করুন"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unblock @%(name)s"
 msgstr "@%(name)s-কে আনব্লক করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock user"
 msgstr "ব্যবহারকারীকে আনব্লক করুন"
 
@@ -18108,11 +18829,11 @@ msgctxt "guildmaster action"
 msgid "Uncontrib user"
 msgstr "ব্যবহারকারী নির্ধারিত নয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undistinguish"
 msgstr "বিশেষ চিহ্ন সরান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "ফিরিয়ে নিন"
 
@@ -18121,7 +18842,7 @@ msgctxt "guildmaster action"
 msgid "Unexile user"
 msgstr "ব্যবহারকারী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Unfollow"
 msgstr "আনফলো"
@@ -18130,7 +18851,7 @@ msgstr "আনফলো"
 msgid "Unfollow @%(name)s"
 msgstr "@আন্সেক্ট:%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unfollow post"
 msgstr "পোস্ট আনফলো করুন"
 
@@ -18148,11 +18869,11 @@ msgctxt "guildmaster action"
 msgid "Unherald post"
 msgstr "অপরিচিত পোস্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unhide"
 msgstr "আবার দেখান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unhide"
 msgstr "আবার দেখান"
@@ -18162,7 +18883,7 @@ msgctxt "guildmaster action"
 msgid "Unhide comment from guild"
 msgstr "Guiguid থেকে প্রাপ্ত প্রতিক্রিয়া প্রদর্শন করুন"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unhide from +%(guild)s"
 msgstr "+%(guild)s-এ আবার দেখান"
 
@@ -18216,11 +18937,11 @@ msgstr "সমস্ত উচিত নয় বৈশিষ্ট্য অ�
 msgid "Unlock animated emojis with %(site)s Premium."
 msgstr "অ্যানিমেশন দিয়ে বন্ধ করুন %(site)s Premium."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmark Sensitive Content"
 msgstr "সংবেদনশীল কনটেন্ট চিহ্ন সরান"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "আনমিউট"
 
@@ -18237,19 +18958,19 @@ msgstr "পরিত্যাগকারী%(guild)s"
 msgid "Unmute @%(name)s"
 msgstr "নালা%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute guild"
 msgstr "গিল্ড আনমিউট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute user"
 msgstr "ব্যবহারকারীকে আনমিউট করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "আনপিন করুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unpin"
 msgstr "আনপিন করুন"
@@ -18268,7 +18989,7 @@ msgstr "আনপিন পোস্ট"
 msgid "Unpopular Opinions"
 msgstr "মতামতবিহীন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unread"
 msgstr "অপঠিত"
 
@@ -18304,7 +19025,7 @@ msgctxt "button"
 msgid "Unsubscribe"
 msgstr "(বাটন)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Until"
 msgstr "পর্যন্ত"
@@ -18408,7 +19129,7 @@ msgstr "ছবি আপলোড করুন"
 msgid "Upvote"
 msgstr "গুরুত্বপূর্ণ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Upvote"
 msgstr "আপভোট করুন"
@@ -18417,11 +19138,11 @@ msgstr "আপভোট করুন"
 msgid "Upvoted"
 msgstr "ক্ষতিগ্রস্ত"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes"
 msgstr "আপভোট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Upvotes"
 msgstr "আপভোট"
@@ -18438,7 +19159,7 @@ msgstr "আপভোস, রঙ করা রং কয়টি"
 msgid "Upvotes, comments and bookmarks per day"
 msgstr "নিয়মিত মন্তব্য এবং বুকমার্ক"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes:"
 msgstr "আপভোট:"
 
@@ -18472,6 +19193,10 @@ msgid "Use a new line for each filter entry. Limit of 1000 characters."
 msgstr "প্রতিটি ফিল্টারের জন্য একটি নতুন রেখা ব্যবহার করুন । ১০০০ অক্ষরের সীমা ।"
 
 #, machine, plain1
+msgid "Use your password"
+msgstr "আপনার পাসওয়ার্ড ব্যবহার করুন"
+
+#, machine, plain1
 msgid "User"
 msgstr "ব্যবহারকারী"
 
@@ -18491,7 +19216,7 @@ msgstr "এই মন্তব্যের জন্য ব্যবহারক
 msgid "User was exiled from +%(guild)s for this post."
 msgstr "+ থেকে ব্যবহারকারীদের বহিষ্কার করা হয়েছে%(guild)s এই পোস্টের জন্য।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username"
 msgstr "ইউজারনেম"
 
@@ -18516,7 +19241,7 @@ msgid_plural "Username changes cost 20 Coins. You only have a balance of %(num)s
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username or Email Address"
 msgstr "ইউজারনেম বা ইমেল ঠিকানা"
 
@@ -18639,7 +19364,7 @@ msgctxt "kind of story"
 msgid "Video"
 msgstr "ভিডিও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Video"
 msgstr "ভিডিও"
@@ -18652,7 +19377,7 @@ msgstr "ভিডিও এবং অডিও"
 msgid "Video call - %(site)s"
 msgstr "ভিডিও কল %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Video from %(domain)s"
 msgstr "%(domain)s থেকে ভিডিও"
 
@@ -18714,11 +19439,11 @@ msgstr "এই সাইটের ভিডিও এসেছে YouTube এব
 msgid "View %(site)s as you, including private or restricted content"
 msgstr "প্রদর্শন %(site)s আপনি যেমন, ব্যক্তিগত বা সীমিত বিষয়বস্তুসহ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View all"
 msgstr "সব দেখুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View anyway"
 msgstr "তবুও দেখুন"
 
@@ -18726,7 +19451,7 @@ msgstr "তবুও দেখুন"
 msgid "View comment"
 msgstr "মন্তব্য দেখুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View entire discussion"
 msgstr "পুরো আলোচনা দেখুন"
 
@@ -18738,7 +19463,7 @@ msgstr "সঠিক লগ রেকর্ড প্রদর্শন কর�
 msgid "View on %(service)s"
 msgstr "%(service)s-এ প্রদর্শন করা হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "মূল ছবি দেখুন"
 
@@ -18853,9 +19578,13 @@ msgid "Waiting for an admin. You will get a notification when they decide; until
 msgstr "প্রশাসকের জন্য অপেক্ষা করা হচ্ছে। যখন তারা সিদ্ধান্ত নেবে, তখন আপনি একটি সূচনাবার্তা পাবেন; তারপর রোবট প্রোফাইল আপনার এবং প্রশাসকদের কাছে দৃশ্যমান হবে।"
 
 #. the state of a bot account, shown as a badge on its page.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Waiting for approval"
 msgstr "অনুমোদনের অপেক্ষায়"
+
+#, machine, plain1
+msgid "Wasn't you?"
+msgstr "তাই না?"
 
 #, machine, plain1
 msgctxt "button"
@@ -18917,7 +19646,7 @@ msgstr ""
 msgid "Web Development"
 msgstr "ওয়েব ডিভেলপমেন্ট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Website"
 msgstr "ওয়েবসাইট"
 
@@ -18930,7 +19659,7 @@ msgstr "অস্বীকৃত"
 msgid "Weddings"
 msgstr "বিয়ে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Week"
 msgstr "সপ্তাহ"
@@ -18939,7 +19668,7 @@ msgstr "সপ্তাহ"
 msgid "Weekend plans"
 msgstr "উইকএন্ড পরিকল্পনা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Welcome back."
 msgstr "আবার স্বাগতম।"
 
@@ -18982,6 +19711,14 @@ msgid "What do you want to say?"
 msgstr "তুমি কি বলতে চাও?"
 
 #, machine, plain1
+msgid "What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "যা guigued মডারেটর এবং সাইটটি সিদ্ধান্ত নিয়েছে, নতুন করে সিদ্ধান্ত নিয়েছে: কখন, কখন, কোথায় শাসন এবং কেন। এর শিরোনাম বা টেক্সট যা গোপন ছিল, তা কখনো প্রদর্শন করে না ।"
+
+#, machine, plain1
+msgid "What guildmasters and the site decided: hides, removals, exiles and bans, with the rule and the reason."
+msgstr "যা প্রখ্যাত মডারেটর এবং সাইটটি সিদ্ধান্ত নিয়েছে যে, তারা এই নিয়ম এবং এর কারণ এবং কারণকে লুকিয়ে রাখবে।"
+
+#, machine, plain1
 msgid "What is it about?"
 msgstr "কি বিষয়ে?"
 
@@ -18992,6 +19729,10 @@ msgstr "কেন?"
 #, machine, plain1
 msgid "What is wrong with this account? For example spam, impersonation, harassment or ban evasion. To report one post or comment, use its own menu."
 msgstr "এই অ্যাকাউন্টের কি হয়েছে? যেমন, স্প্যাম, আমি আক্রান্ত, হয়রানি বা নিষেধাজ্ঞা। একটি পোস্ট বা মন্তব্যের জন্য নিজস্ব মেনু ব্যবহার করুন।"
+
+#, machine, plain1
+msgid "What it could already read comes back once it is unlocked."
+msgstr "এটি ইতোমধ্যে পড়া সম্ভব হয়েছে যখন এটি আন-লক করা হবে ।"
 
 #, machine, plain1
 msgid "What it does now"
@@ -19010,6 +19751,10 @@ msgid "What kind of Space?"
 msgstr "কোন স্পেস?"
 
 #, machine, plain1
+msgid "What members delete themselves is not published here."
+msgstr "যে সদস্যরা নিজেদের মুছে ফেলে তারা এখানে প্রকাশ করে না।"
+
+#, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
 msgstr "মানুষ যা বলছে, এখন কি হচ্ছে, আর কি আসছে, এক জায়গায়।"
 
@@ -19025,7 +19770,7 @@ msgstr "Guidid Sulid Sory কি করল"
 msgid "What to say"
 msgstr "কি বলতে হবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "What to search"
 msgstr "কী খুঁজবেন"
 
@@ -19095,7 +19840,7 @@ msgstr "কোথায় থেকে পোস্ট আসে"
 msgid "Where this account is based, from where it uses %(site)s"
 msgstr "এই অ্যাকাউন্টটি কোথায়, যেখানে থেকে এর %(site)s ব্যবহার করা হয়"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Where to post"
 msgstr "কোথায় পোস্ট করবেন"
 
@@ -19135,11 +19880,11 @@ msgstr "কোন পোস্ট"
 msgid "White Hat"
 msgstr "ওয়াইট হ্যাট"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment"
 msgstr "কে মন্তব্য করতে পারবে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment?"
 msgstr "কে মন্তব্য করতে পারবে?"
 
@@ -19159,7 +19904,7 @@ msgstr "কে যোগদান করতে পারে"
 msgid "Who can read"
 msgstr "কে পড়তে পারে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this"
 msgstr "কে এটি দেখতে পারবে"
 
@@ -19179,11 +19924,11 @@ msgstr "কে এই পোস্টটি দেখতে পারে"
 msgid "Who can see this post?"
 msgstr "এই পোস্ট কে দেখেছে?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this:"
 msgstr "কে এটি দেখতে পারবে:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this?"
 msgstr "কে এটি দেখতে পারবে?"
 
@@ -19215,7 +19960,7 @@ msgstr "কে তোমাকে অনুসরণ করছে"
 msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
 msgstr "কে তাদের রিপোর্ট করেছে, আর তারা যা লিখেছে, তা কাউকে দেখা যাচ্ছে না কিন্তু প্রশাসকরা।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who subscribes to your Circle"
 msgstr "কারা আপনার সার্কেলে সাবস্ক্রাইব করেছে"
 
@@ -19237,13 +19982,17 @@ msgstr "কে অনুসরণ করছে - %(site)s"
 msgid "Who wrote it"
 msgstr "কে লিখেছে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who wrote what"
 msgstr "কে কী লিখেছে"
 
 #, machine, plain1
 msgid "Who you follow"
 msgstr "আপনি অনুসরণ"
+
+#, machine, plain1
+msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
+msgstr "যে কেউ এই রিপোর্ট করেছে যে, তারা নিজেরাই ব্রাউজার এবং স্থান, তাই তারা কিছুই প্রমান করে না।"
 
 #, machine, plain1
 msgid "Wholesome"
@@ -19254,7 +20003,7 @@ msgid "Whoops!"
 msgstr "ওপস!"
 
 #. the reason an admin pauses a bot
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "কেন"
 
@@ -19272,7 +20021,7 @@ msgid "Why not (they are told)"
 msgstr "কেন নয় (তারা বলা হয়)"
 
 #. the guild's wiki is switched off
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Wiki"
 msgstr "উইকি"
 
@@ -19314,7 +20063,7 @@ msgid "Wildlife"
 msgstr "বন্যপ্রাণী"
 
 #. posts with a link, a picture, a video... (the ticks below)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "With"
 msgstr "সহ"
@@ -19351,7 +20100,7 @@ msgstr "শব্দ সহ"
 msgid "With a video"
 msgstr "ভিডিও সহ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "With textarea"
 msgstr "টেক্সট বক্স"
 
@@ -19406,6 +20155,10 @@ msgid "Without a video"
 msgstr "কোন ভিডিও ছাড়া"
 
 #, machine, plain1, python-format
+msgid "Without it, this sign-in ends on %(when)s."
+msgstr "এটা ছাড়া, এই সাইন ইন এর সমাপ্তি %(when)s."
+
+#, machine, plain1, python-format
 msgid "Won't renew, access ends %(date)s"
 msgstr "আবার শেষ হবে না, শেষ %(date)s"
 
@@ -19417,7 +20170,7 @@ msgstr "উড কাজ"
 msgid "Word filter"
 msgstr "শব্দ ফিল্টার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Words"
 msgstr "শব্দ"
 
@@ -19593,7 +20346,7 @@ msgstr "একসাথে \"অউন্মুক্ত খসড়া\" ল�
 msgid "Write: %(choice)s"
 msgstr "লেখার মাত্রা: %(choice)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Written together"
 msgstr "একসাথে লেখা"
 
@@ -19606,7 +20359,7 @@ msgstr "ইয়ান্ক পোস্ট"
 msgid "Year"
 msgstr "বছর"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Year"
 msgstr "বছর"
@@ -19624,6 +20377,10 @@ msgstr "হলুদ"
 msgctxt "vote"
 msgid "Yes"
 msgstr "হ্যাঁ"
+
+#, machine, plain1
+msgid "Yes, sign in on that screen"
+msgstr "হ্যাঁ, পর্দায় চিহ্ন"
 
 #, machine, plain1
 msgid "Yoga"
@@ -19723,7 +20480,7 @@ msgstr "আপনি ইতিমধ্যে সাবস্ক্রাইব 
 msgid "You are already the author."
 msgstr "তুমি ইতিমধ্যে একজন লেখক."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "আপনি @%(name)s-কে ব্লক করেছেন"
 
@@ -19814,6 +20571,10 @@ msgstr "আপনি যে কোনো সময় সিস্টেম স�
 #, machine, plain1
 msgid "You can change this for each video when you add it. Videos are uploaded as not made for kids."
 msgstr "যোগ করার সময় প্রতিটি ভিডিওর জন্য এই পরিবর্তন করা যাবে। বাচ্চাদের জন্য তৈরি না হওয়ায় ভিডিও আপলোড করা হয়েছে।"
+
+#, machine, plain2
+msgid "You can change this once they've accepted your message request."
+msgstr "একবার যদি তারা তোমার বার্তা গ্রহন করে তাহলে এটা পরিবর্তন করতে পারবে।"
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20022,6 +20783,10 @@ msgstr "আপনি এই আড্ডায় কল করতে পার�
 #, machine, plain1
 msgid "You can't change perms on guildmasters above you."
 msgstr "তুমি guiddugers পরিবর্তন করতে পারবে না."
+
+#, machine, plain1, python-format
+msgid "You can't change this answer yourself. If it's wrong, <a href=\"%(url)s\">contact us</a>: only an admin can change it."
+msgstr "তুমি নিজেই এই উত্তর বদলাতে পারবে না। যদি ভুল হয়, <a href=\"%(url)s\">আমাদের সাথে যোগাযোগ করুন</a>: শুধুমাত্র একটি প্রশাসন এটাকে পরিবর্তন করতে পারে।"
 
 #, machine, plain1
 msgid "You can't comment on content from users that are blocking you."
@@ -20395,6 +21160,14 @@ msgstr "তুমি এখনো ব্যাকআপ কোড তৈরি �
 msgid "You haven't posted anything in the last 28 days."
 msgstr "গত ২৮ দিনে আপনি কিছুই পোস্ট করেননি।"
 
+#, machine, plain2
+msgid "You haven't said you kept your recovery code."
+msgstr "তুমি এখনো বলোনি যে তুমি তোমার সুস্থতা বজায় রাখছ."
+
+#, machine, plain1
+msgid "You haven't told us yet."
+msgstr "তুমি এখনো বলোনি।"
+
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
 msgstr "তুমি পারবে <a href=\"%(url)s\">অনুমান করা হবে</a> এই সম্প্রদায় এবং guiguid Sud Sudber হয়ে ওঠে।"
@@ -20415,7 +21188,7 @@ msgstr "অন্তত হতে হবে %(min)s আপনি কোথায
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "টর মাধ্যমে ছবি আপলোড করার জন্য আপনাকে একটি ই-মেইল ঠিকানা দিতে হবে।"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You muted @%(name)s"
 msgstr "আপনি @%(name)s-কে মিউট করেছেন"
 
@@ -20471,6 +21244,30 @@ msgstr "একটু অপেক্ষা করতে হবে।"
 msgid "You post timestamped updates as things happen; everyone comments under them."
 msgstr "ঘটনা ঘটার সাথে সাথে আপনি তাজা সংবাদ পোস্ট করেছেন।"
 
+#, machine, plain2, python-format
+msgid "You said you kept your recovery code on %(date)s."
+msgstr "তুমি বলেছিলে তুমি তোমার সুস্থ কোড %(date)s এ রেখেছো।"
+
+#, machine, plain1
+msgid "You signed in with a QR code, so chat, coins, apps, following, who can see what you share, your account's name and its security settings ask for your password first."
+msgstr "আপনি সাথে স্বাক্ষর করেছেন QR কোড, চ্যাট, মুদ্রা, এ্যাপস, অনুসরণ করুন, আপনি কি শেয়ার করবেন, আপনার একাউন্টের নাম এবং নিরাপত্তা সংক্রান্ত তথ্য প্রথমে জিজ্ঞাসা করুন।"
+
+#, machine, plain1
+msgid "You signed in with a QR code."
+msgstr "আপনি QR কোড সহযোগে স্বাক্ষর করেছেন।"
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to do this."
+msgstr "আপনি QR কোড সহযোগে স্বাক্ষর করেছেন। আপনার পাসওয়ার্ড লিখুন।"
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to join a call."
+msgstr "আপনি QR কোড সহযোগে স্বাক্ষর করেছেন। আপনার ইমেইল ঠিকানা লিখুন।"
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to use this form."
+msgstr "আপনি QR কোড সহযোগে স্বাক্ষর করেছেন। এই ফর্ম ব্যবহার করে ব্যবহারযোগ্য পাসওয়ার্ড লিখুন।"
+
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "আপনি বলেছিলেন আপনি আপনার পরিবর্তন চান %(site)s অ্যাকাউন্ট ইম্পোর্ট করুন এই চলমান প্রক্রিয়া সম্পন্ন করতে, অনুগ্রহ করে আপনার নতুন ই-মেইল ঠিকানা পরীক্ষা করুন:"
@@ -20519,7 +21316,7 @@ msgstr "আপনি এই ব্যবহারকারী ব্লক ক�
 msgid "You're blocking this user, but you can see this comment because you're an admin."
 msgstr "আপনি এই ব্যবহারকারীটিকে বন্ধ করে দিয়েছেন, কিন্তু আপনি এই মন্তব্যটি দেখতে পারেন কারণ আপনি একজন প্রশাসক ।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You're blocking this user."
 msgstr "আপনি এই ব্যবহারকারীকে ব্লক করেছেন।"
 
@@ -20542,6 +21339,10 @@ msgid "You're invited to write a shared draft with others. [See the invitation](
 msgstr ""
 
 #, machine, plain1
+msgid "You're no longer signed in here. Sign in again to use chat."
+msgstr "তুমি এখানে আর সই করছ না। আলাপনের জন্য পুনরায় লগ-ইন করুন."
+
+#, machine, plain1
 msgid "You're not following any curations yet."
 msgstr "আপনি এখনো কোনো ফিড অনুসরণ করছেন না।"
 
@@ -20559,6 +21360,10 @@ msgid_plural "You're subscribed. It renews in 30 days for %(num)s coins unless y
 msgstr[0] ""
 msgstr[1] ""
 
+#, machine, plain2
+msgid "You're told of new messages and calls in your chats, never what a message says. Each group can be set to every message, calls only or nothing, in the group's people sheet."
+msgstr "আপনি নতুন বার্তা সম্পর্কে বলা হয়েছে এবং আপনার চ্যাটে কল, কোন বার্তা নেই. প্রতিটি গ্রুপ প্রতিটি বার্তার জন্য সেট করতে পারে, কল বা কিছুই না, এই দলের লোকদের পাতায়।"
+
 #, machine, plain1
 msgid "You're writing very fast. Wait a moment."
 msgstr "তুমি খুব দ্রুত লিখেছো। এক মিনিট."
@@ -20566,6 +21371,10 @@ msgstr "তুমি খুব দ্রুত লিখেছো। এক ম�
 #, machine, plain1
 msgid "You've added a lot of people to groups today. Try again tomorrow."
 msgstr "তুমি আজকে অনেক মানুষকে দলে যোগ দিয়েছ। কালকে আবার চেষ্টা করো।"
+
+#, machine, plain1
+msgid "You've already answered this. Only an admin can change your answer."
+msgstr "আপনি ইতিমধ্যে এর উত্তর দিয়েছেন. শুধুমাত্র প্রশাসক আপনার উত্তর পরিবর্তন করতে পারেন."
 
 #, machine, plain1
 msgid "You've already reported this Space."
@@ -20597,9 +21406,17 @@ msgstr "গত এক ঘন্টার মধ্যে তুমি ভয়�
 msgid "You've sent a lot of feedback today. Try again tomorrow."
 msgstr "আপনি আজ অনেক সাড়া দিয়েছেন. কালকে আবার চেষ্টা করো।"
 
+#, machine, plain2
+msgid "You've sent a lot of files today. Try again tomorrow."
+msgstr "আপনি আজ অনেক ফাইল পাঠিয়েছি. কালকে আবার চেষ্টা করো।"
+
 #, machine, plain1
 msgid "You've sent a lot of reports today. Try again tomorrow."
 msgstr "আপনি আজ অনেক রিপোর্ট পাঠিয়েছেন. কালকে আবার চেষ্টা করো।"
+
+#, machine, plain2
+msgid "You've sent a lot of reports. Try again later."
+msgstr "আপনি অনেক রিপোর্ট পাঠিয়েছেন. পরে চেষ্টা করো।"
 
 #, machine, plain1
 msgid "You've started a lot of calls in the last hour. Try again later."
@@ -20713,7 +21530,7 @@ msgstr "আপনার RSS ফিডের ঠিকানা"
 msgid "Your Subscribed Users"
 msgstr "আপনার সাবস্ক্রাইব করা ব্যবহারকারী"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your account"
 msgstr "আপনার অ্যাকাউন্ট"
 
@@ -20854,6 +21671,10 @@ msgstr "আপনার অ্যাকাউন্টের স্বয়ং�
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr ""
 
+#, machine, plain1
+msgid "Your age"
+msgstr "তোমার বয়স"
+
 #, machine, plain1, python-format
 msgid "Your age was confirmed on %(date)s."
 msgstr "আপনার বয়স %(date)s নিশ্চিত."
@@ -20861,6 +21682,10 @@ msgstr "আপনার বয়স %(date)s নিশ্চিত."
 #, machine, plain1
 msgid "Your answer"
 msgstr "আপনার উত্তর"
+
+#, machine, plain1
+msgid "Your apps"
+msgstr "টুল-টিপ"
 
 #, machine, plain1
 msgid "Your backup codes"
@@ -20896,9 +21721,13 @@ msgstr ""
 msgid "Your bots"
 msgstr "আপনার বোটের তালিকা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your channels"
 msgstr "আপনার চ্যানেল"
+
+#, machine, plain1
+msgid "Your chat apps"
+msgstr "আপনার আড্ডা টুল-টিপ"
 
 #, machine, plain1
 msgid "Your chat devices"
@@ -20907,6 +21736,9 @@ msgstr "আপনার চ্যাট ডিভাইস"
 #, machine, plain1
 msgid "Your chat devices can't be listed right now."
 msgstr "আপনার চ্যাট ডিভাইস বর্তমানে ব্যবহার করা সম্ভব নয়।"
+
+msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr ""
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -20924,13 +21756,17 @@ msgstr "আপনার চ্যাট ম্যাট্রিক্সে চ
 msgid "Your child accounts will be deleted with yours."
 msgstr "আপনার বাচ্চা অ্যাকাউন্ট মুছে ফেলা হবে।"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your circles"
 msgstr "আপনার সার্কেল"
 
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "তোমার বৃত্ত- %(site)s"
+
+#, machine, plain1
+msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "আপনার মন্তব্য সাইটের পাতা থেকে সরিয়ে নেওয়া হবে। সাইটটি ৯০ দিনের জন্য ব্যক্তিগত কপি রাখে, যা আপনি আর আপনার সাইটের প্রশাসকরা খুলতে পারেন। এই কাজ নাকচ করা যাবে না।"
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -21043,9 +21879,9 @@ msgstr "তোমার নতুন চাবি। এখন কপি কর�
 msgid "Your original username will always stay reserved for you: <code>%(name)s</code>"
 msgstr "আপনার জন্য সংরক্ষিত ব্যবহারকারীর নাম সর্বদা সংরক্ষণ করা হবে: <code>%(name)s</code>"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your other devices have been signed out."
-msgstr "তোমার অন্য ডিভাইসও বন্ধ করা হয়েছে।"
+msgstr "আপনার অন্যান্য ডিভাইস বিচ্ছিন্ন করা হয়েছে।"
 
 #, machine, plain1
 msgid "Your own circles"
@@ -21115,9 +21951,9 @@ msgstr "আপনার অভিভাবক বা অভিভাবকের
 msgid "Your password"
 msgstr "আপনার পাসওয়ার্ড"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your password has been changed. Your other devices have been signed out."
-msgstr "আপনার পাসওয়ার্ড পরিবর্তিত হয়েছে। তোমার অন্য ডিভাইসও বন্ধ করা হয়েছে।"
+msgstr "আপনার পাসওয়ার্ড পরিবর্তিত হয়েছে। আপনার অন্যান্য ডিভাইস বিচ্ছিন্ন করা হয়েছে।"
 
 #, machine, plain1
 msgid "Your password meets the requirements."
@@ -21128,8 +21964,20 @@ msgid "Your payouts"
 msgstr "আপনার টাকা"
 
 #, machine, plain1
+msgid "Your phone approved this. Only continue if this is your account."
+msgstr "তোমার ফোন এটা অনুমোদন করেছে। যদি এটা আপনার অ্যাকাউন্ট হয়ে থাকে."
+
+#, machine, plain1
+msgid "Your phone said no, so nobody was signed in."
+msgstr "তোমার ফোন না বললে, কেউ স্বাক্ষর করেনি।"
+
+#, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "আপনার পোস্ট আপনার প্রোফাইল পদ্ধতিতে তালিকা করা হয়েছে। নির্বাচন করুন আমার প্রোফাইল সেখানেও মন্তব্য করতে হবে এবং এর সাথে guilds যোগ করতে হবে যাতে সরাসরি তাদের লেখা পোস্ট করা যায়: প্রতিটি guild তার নিজস্ব একটি কপি নিজেই পেয়েছে এবং মন্তব্য করেছে।"
+
+#, machine, plain1
+msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "আপনার পোস্ট আপনার প্রোফাইল, ফিড এবং গ্রিল্ডস থেকে নেয়া হবে। সাইটটি ৯০ দিনের জন্য ব্যক্তিগত কপি রাখে, যা আপনি আর আপনার সাইটের প্রশাসকরা খুলতে পারেন। এই কাজ নাকচ করা যাবে না।"
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -21328,7 +22176,7 @@ msgstr ""
 msgid "[Privacy Policy](/help/privacy)"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[Removed by admin]"
 msgstr "[অ্যাডমিন সরিয়েছেন]"
 
@@ -21365,7 +22213,7 @@ msgstr ""
 msgid "[banned]"
 msgstr "[বানেজ]"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[deleted account]"
 msgstr "[মুছে ফেলা অ্যাকাউন্ট]"
 
@@ -21385,6 +22233,11 @@ msgstr "[নির্জন]"
 msgid "[doc pending]"
 msgstr "[docr]"
 
+#. stands in a preserved copy's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[ ছবি]"
+
 #, machine, plain1
 msgid "[removed by admin]"
 msgstr "[ গাড়ির হর্ন বাজবে ]"
@@ -21396,6 +22249,11 @@ msgstr "[ গাড়ির শব্দ ]"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "[ঘোড়ার শব্দ ]"
+
+#. stands in a preserved copy's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[প্রতিধ্বনি]"
 
 #, machine, plain1
 msgid "a day"
@@ -21430,7 +22288,7 @@ msgctxt "sort"
 msgid "activity"
 msgstr "কর্ম"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "activity"
 msgstr "সক্রিয়তা"
@@ -21500,6 +22358,16 @@ msgstr "অবতারের ছবি"
 msgid "ban evasion"
 msgstr "প্রতিরোধ"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "banned %(target)s"
+msgstr "নিষিদ্ধ %(target)s"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "banned the guild +%(guild)s"
+msgstr "guiল্ড + নিষিদ্ধ করুন%(guild)s"
+
 #, machine, plain1
 msgctxt "story background"
 msgid "berry"
@@ -21512,7 +22380,7 @@ msgid "bots"
 msgstr "বোটের তালিকা"
 
 #. the author's name, with their badges
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by %(author)s"
 msgstr "লিখেছেন %(author)s"
 
@@ -21533,7 +22401,7 @@ msgid "by <a href=\"/@%(name)s\">@%(name)s</a>"
 msgstr ""
 
 #. a curation that ranks posts with its own algorithm
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by @%(name)s"
 msgstr "তৈরি করেছেন @%(name)s"
 
@@ -21622,6 +22490,10 @@ msgctxt "unit"
 msgid "coins"
 msgstr "মুদ্রা"
 
+#, glossary, machine, plain2
+msgid "comment"
+msgstr "মন্তব্য"
+
 #, machine, plain1
 msgid "commercial promotion"
 msgstr "বাণিজ্যিক প্রচারণা"
@@ -21651,6 +22523,11 @@ msgctxt "time filter"
 msgid "day"
 msgstr "দিন"
 
+#. follows the author's name in the Log; %(target)s is a link to a comment
+#, machine, plain1, python-format
+msgid "deleted a %(target)s"
+msgstr "মুছে ফেলা %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "deleted a channel"
@@ -21676,12 +22553,17 @@ msgstr "একটি ভূমিকা মুছে ফেলা হচ্ছ�
 msgid "deleted a wiki page"
 msgstr "একটি উইকি পাতা মুছে ফেলুনname"
 
+#. follows the author's name in the Log; %(target)s is a link to a post
+#, machine, plain1, python-format
+msgid "deleted post %(target)s"
+msgstr "মুছে ফেলা %(target)s"
+
 #, machine, plain1
 msgctxt "sort"
 msgid "disputed"
 msgstr "বিচ্ছিন্ন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "disputed"
 msgstr "বিতর্কিত"
@@ -21772,7 +22654,7 @@ msgid "forest"
 msgstr "বন"
 
 #. the title of the post it was forked from, a link
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "forked from %(post)s"
 msgstr "%(post)s থেকে ফর্ক করা"
 
@@ -21824,13 +22706,19 @@ msgstr "তাদের পোস্ট তুলে ধরেছেন %(target
 msgid "hid a %(target)s from this guild"
 msgstr "এই gudev থেকে একটি %(target)s আড়াল করা হবে"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain1, python-format
+msgid "hid a revision of %(target)s"
+msgstr "%(target)s- র পরিবর্তন প্রত্যাহার করুন"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "hid post %(target)s from this guild"
 msgstr "গোপন পোস্ট %(target)s এই guiguid থেকে"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "hidden from +%(guild)s"
 msgstr "+%(guild)s থেকে লুকানো"
 
@@ -21840,7 +22728,7 @@ msgid "hot"
 msgstr "হট"
 
 #. the guild page's current sort order, written in lowercase on its bar
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "hot"
 msgstr "জনপ্রিয়"
@@ -21915,7 +22803,22 @@ msgstr "আপনার নিজের দোকানে পুনরায়
 msgid "kicked post %(target)s"
 msgstr "পোস্ট- আউট %(target)s"
 
-#, glossary, machine, plain1
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the ban on %(target)s"
+msgstr "%(target)s এর উপর নিষেধাজ্ঞা প্রত্যাহার করুন"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "lifted the ban on the guild +%(guild)s"
+msgstr "guiguid + নিষেধাজ্ঞা প্রত্যাহার%(guild)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the suspension of %(target)s"
+msgstr "%(target)s বরখাস্ত"
+
+#, glossary, machine, plain2
 msgid "link preview"
 msgstr "লিংক প্রিভিউ"
 
@@ -21959,7 +22862,7 @@ msgctxt "time filter"
 msgid "month"
 msgstr "মাস"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "moved from <a href=\"%(url)s\">+%(guild)s</a>"
 msgstr "<a href=\"%(url)s\">+%(guild)s</a> থেকে সরানো হয়েছে"
 
@@ -21983,7 +22886,7 @@ msgctxt "sort"
 msgid "new"
 msgstr "নতুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "new"
 msgstr "নতুন"
@@ -22012,7 +22915,7 @@ msgctxt "sort"
 msgid "old"
 msgstr "পুরোনো"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "old"
 msgstr "পুরনো"
@@ -22021,11 +22924,11 @@ msgstr "পুরনো"
 msgid "only guildmasters write here"
 msgstr "শুধু guidid saders এখানে লিখেছেন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "outside server"
 msgstr "বাইরের সার্ভার"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "own algorithm"
 msgstr "নিজস্ব অ্যালগরিদম"
 
@@ -22078,7 +22981,7 @@ msgstr "একটি চ্যানেল থেকে বার্তা প�
 msgid "pinned post %(target)s"
 msgstr "পিন করা অক্ষর %(target)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post image"
 msgstr "পোস্টের ছবি"
 
@@ -22100,7 +23003,7 @@ msgstr "ছবি আপলোড করেছে %(age)s @%(name)s +%(guild)s"
 msgid "posts made with AI"
 msgstr "aI সহযোগে পোস্ট করা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild badge"
 msgid "private"
 msgstr "প্রাইভেট"
@@ -22150,6 +23053,11 @@ msgstr "অপসারণ করা হয়েছে %(target)s"
 msgid "removed a message by %(target)s from a channel"
 msgstr "এক চ্যানেল থেকে %(target)s বার্তা মুছে ফেলা হচ্ছে"
 
+#. follows the moderator's name in the Log
+#, machine, plain1
+msgid "removed a revision of a guild's wiki"
+msgstr "guiল্ডের উইকির একটি পরিবর্তন"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22177,7 +23085,7 @@ msgstr "চ্যানেলের বিভাগ পরিবর্তন ক
 msgid "renews %(date)s"
 msgstr "নতুন করে পড়ো %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "repost"
 msgstr "রিপোস্ট"
@@ -22197,7 +23105,7 @@ msgstr "উইকি পাতা আবার চালু করো"
 msgid "see it"
 msgstr "এটা দেখুন"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "sensitive content"
 msgstr "সংবেদনশীল কনটেন্ট"
 
@@ -22257,6 +23165,11 @@ msgctxt "story background"
 msgid "sunset"
 msgstr "সূর্যাস্ত"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "suspended %(target)s"
+msgstr "স্থগিত %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "switched the wiki"
@@ -22267,7 +23180,7 @@ msgstr "উইকি বদল করা"
 msgid "test storage"
 msgstr "সংগ্রহস্থল পরীক্ষা"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "text post"
 msgstr "টেক্সট পোস্ট"
 
@@ -22330,7 +23243,7 @@ msgctxt "sort"
 msgid "top"
 msgstr "উপরে"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "top"
 msgstr "সেরা"
@@ -22443,7 +23356,7 @@ msgstr "v. %(version)s, © 2021 %(company)s"
 msgid "video"
 msgstr "ভিডিও"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "video preview"
 msgstr "ভিডিও প্রিভিউ"
 
@@ -22522,9 +23435,9 @@ msgstr "আপনি হ্যাঁ ভোট"
 msgid "you were posting too fast, and it couldn't wait any longer."
 msgstr "আপনি খুব দ্রুত পোস্ট করছিলেন, এবং এটি আর অপেক্ষা করতে পারেনি।"
 
-#, machine, plain1
+#, machine, plain2
 msgid "you were signed out."
-msgstr "তুমি সাইন করেছ."
+msgstr "বিচ্ছিন্ন."
 
 #, machine, plain1
 msgid "you're invited to write it"

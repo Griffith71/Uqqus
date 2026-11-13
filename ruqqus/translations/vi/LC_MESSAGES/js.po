@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: vi\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s đang gõ…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s đặt tin nhắn để ẩn sau %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s Tắt tin nhắn biến mất."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -114,10 +122,20 @@ msgid "%(num)s member"
 msgid_plural "%(num)s members"
 msgstr[0] "%(num)s Thành viên"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s Tìm thấy tin nhắn."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s tin nhắn trong chỉ"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s Đang đọc tin nhắn…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -208,6 +226,14 @@ msgstr[0] "%(owner)s · %(num)s Thành viên"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Cứu?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -237,6 +263,14 @@ msgid "+%(guild)s · %(num)s comment"
 msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s ghi chú"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 ngày"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 tuần"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s thêm bạn vào nhóm này. Chấp nhận đọc và viết vào đó."
@@ -245,10 +279,6 @@ msgstr "@%(name)s thêm bạn vào nhóm này. Chấp nhận đọc và viết v
 msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s Vẫn chưa mở cuộc trò chuyện. Của bạn %(num)s Tin nhắn sẽ được gửi khi họ gửi."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s đang gõ…"
 
 #, machine, plain1
 msgid "A Space"
@@ -300,6 +330,11 @@ msgid "A message that isn't there any more"
 msgstr "Một thông điệp không còn nữa"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "%(num)s Thông điệp bạn viết ở đây không được gửi: tán gẫu đã dừng lại trong trang này trước khi chúng có thể đi."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Một bưu điện có thể có %(num)s Nhiều nhất là đồng tác giả."
@@ -317,9 +352,13 @@ msgid "Accept"
 msgstr "Chấp nhận"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Thêm"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Thêm một trợ giúp bằng tên người dùng"
 
 #, machine, plain1
 msgid "Add image"
@@ -358,12 +397,12 @@ msgid "Adding..."
 msgstr "Đang thêm..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Quản trị viên"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Đồng ý"
 
@@ -383,6 +422,10 @@ msgstr "Canh lề phải"
 msgid "Alignment"
 msgstr "Sắp hàng"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Cũng có khối%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -392,7 +435,7 @@ msgstr "Ở đây cũng có: %(names)s"
 msgid "An app"
 msgstr "Một ứng dụng"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Tức giận"
 
@@ -402,7 +445,7 @@ msgstr "Tức giận"
 msgid "Announcements"
 msgstr "Thông báo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Ẩn danh"
 
@@ -410,6 +453,10 @@ msgstr "Ẩn danh"
 #, machine, plain1
 msgid "Answer"
 msgstr "Trả lời"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Bất cứ ai trong cuộc trò chuyện cũng có thể sao chép hoặc chụp ảnh màn hình trước khi nó đi."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -423,23 +470,23 @@ msgstr "Đính kèm một liên kết tới cột này"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Ôi trời. Không GIFs Tìm thấy..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Tuyệt vời"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Ngại ngùng"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Lên đầu trang"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Chặn"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Chặn @%(name)s?"
 
@@ -450,6 +497,10 @@ msgstr "Bị chặn%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Độ đậm (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Đem chìa khóa tán gẫu của anh qua đây. Nhập mật khẩu để hoàn tất."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -522,7 +573,7 @@ msgstr "Tắt máy ảnh"
 msgid "Camera on"
 msgstr "Máy ảnh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Hủy"
 
@@ -556,7 +607,7 @@ msgid "Channel · %(num)s member"
 msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kênh %(num)s Thành viên"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kênh"
 
@@ -566,13 +617,45 @@ msgstr "Bạn đang ở kênh"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Trò chuyện"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Tán gẫu không thể mang chìa khóa lại. Nạp đạn để thử lại."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Tán gẫu không kết nối được."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chuyện trò không thể kết thúc từ đầu. Hãy nhập mật khẩu của bạn để thử lại."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chuyện trò không thể kết thúc từ đầu. Nạp đạn để thử lại."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Tán gẫu không thể mở ra những gì trình duyệt đã tiết kiệm, vì vậy nó bắt đầu lại ở đây."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Tán gẫu không thể bắt đầu trong trình duyệt này."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Tán gẫu không trả lời. Thử lại đi."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Tán gẫu đã không được sử dụng trên trình duyệt này một thời gian dài, vì vậy nó bắt đầu lại ở đây."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Tán gẫu lại kết thúc ở trang khác…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -586,6 +669,26 @@ msgstr "Đang bắt đầu tán gẫu."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Đang bắt đầu tán gẫu. Hãy thử lại lần nữa."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Lúc này, trò chuyện không tiện cho tài khoản của anh."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Tán gẫu mất kết nối rồi. Đang thử lại…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Tán gẫu cần trình duyệt này để giữ dữ liệu trang web, và nó không thể ở đây. Tán gẫu không thể bắt đầu từ cửa sổ này."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Tán gẫu đã dừng lại trong trang này."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Tán gẫu bị ngắt kết nối với thiết bị khác. Bắt đầu lại từ đây…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Tán gẫu với@%(name)s"
@@ -594,7 +697,7 @@ msgstr "Tán gẫu với@%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Bây giờ chìa khóa của chat không có sẵn."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Trò chuyện"
 
@@ -634,11 +737,11 @@ msgstr "Chọn xem ai có thể thấy cái này."
 msgid "Choose your profile or at least one guild."
 msgstr "Chọn hồ sơ của bạn hoặc ít nhất một guild."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Nhóm kín"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Đóng"
 
@@ -674,7 +777,7 @@ msgstr "So sánh chúng với những cái mà ứng dụng của bạn cho th�
 msgid "Confirm in the app as well."
 msgstr "Xác nhận cũng trong ứng dụng."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Bối rối"
 
@@ -826,6 +929,10 @@ msgstr "Không thể nạp các thông điệp đã đính"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Không thể tải ô xem thử."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Không thể nạp các cuộc trò chuyện"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -987,7 +1094,11 @@ msgstr "Không thể sao chép: chọn mã và sao chép chúng."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Không thể tải tin nhắn sớm hơn. Hãy thử lại lần nữa."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Không nạp đạn được. Thử lại lần nữa…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Đang tạo bài đăng"
 
@@ -995,7 +1106,7 @@ msgstr "Đang tạo bài đăng"
 msgid "Creating…"
 msgstr "Đang tạo…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Sượng trân"
 
@@ -1003,7 +1114,7 @@ msgstr "Sượng trân"
 msgid "Cross out"
 msgstr "Băng qua"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Chế độ tối"
 
@@ -1068,13 +1179,21 @@ msgstr "Xóa câu chuyện này?"
 msgid "Delete this update?"
 msgstr "Xoá bản cập nhật này không?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Đang xóa bình luận"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Đang xóa bài đăng"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Đang xoá các tin nhắn"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Tin nhắn biến mất đã bị tắt."
 
 #, machine, plain1
 msgid "Discard"
@@ -1108,6 +1227,10 @@ msgstr "Hoàn tất"
 #, machine, plain1
 msgid "Done."
 msgstr "Xong."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Tải về"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1162,7 +1285,7 @@ msgstr "Mã hóa từ cuối đến cuối: chỉ người trong kênh này mớ
 msgid "Ended"
 msgstr "Kết thúc"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Nhập URL"
 
@@ -1173,6 +1296,10 @@ msgstr "Nhập một địa chỉ Mạng, nhưhttps://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Nhập mật khẩu một lần. Nó khóa chìa khóa vào tin nhắn của bạn trong trình duyệt này, để trang web không bao giờ đọc được."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Nhập mật khẩu để xác nhận."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1186,9 +1313,49 @@ msgstr "Nhập mật khẩu."
 msgid "Enter your recovery code"
 msgstr "Nhập mã hồi phục của bạn"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Nhập mật mã hai mặt của bạn"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Nhập mã 2 mặt của bạn."
+
+#, machine, plain2
+msgid "File"
+msgstr "Tập tin"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Tập tin có thể được gửi một lần%(name)s đã mở cuộc trò chuyện."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Có thể gửi tập tin một khi đã mở khóa trên thiết bị này."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Không thể gửi tập tin tới đây."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Cuối cùng"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Kết thúc"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Kết thúc trò chuyện của bạn qua"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Hoàn tất bắt đầu lại"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Kết thúc trò chuyện được sắp xếp trong một thẻ khác…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1208,16 +1375,32 @@ msgid "Formatting"
 msgstr "Định dạng"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Chuyển tiếp"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Chuyển tiếp thông điệp này"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
 msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Tiến về phía %(num)s Các tội phạm."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Tiến tới…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Tới"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Tiến lên."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Đang chuyển tiếp"
 
@@ -1257,11 +1440,11 @@ msgstr "Nhắn tin đi."
 msgid "Give the template a name."
 msgstr "Cho mẫu một cái tên."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Đến trang web"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Ghê tởm"
 
@@ -1269,7 +1452,7 @@ msgstr "Ghê tởm"
 msgid "Group info"
 msgstr "Thông tin nhóm"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Hội"
 
@@ -1281,13 +1464,25 @@ msgstr "Name"
 msgid "Hand raised"
 msgstr "Giơ tay lên"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Vui vẻ"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Anh có giữ mật mã hồi phục không? Không có nó, mật khẩu bị lãng quên có thể mất tin nhắn cũ của bạn."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Hướng %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Trợ giúp"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Người giúp việc viết trên kênh này với bạn. Chọn cho 3 người trong đó."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1330,6 +1525,10 @@ msgstr "Tôi đồng ý với luật"
 msgid "I don't have it: start over"
 msgstr "Tôi không có nó: bắt đầu lại"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Tôi có rồi"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Tôi đã giữ nó lại"
@@ -1337,6 +1536,10 @@ msgstr "Tôi đã giữ nó lại"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Nếu bạn đã bao giờ quên mật khẩu của bạn, đây là cách duy nhất để đọc tin nhắn cũ của bạn. Giữ nó ở nơi an toàn, như một người quản lý mật khẩu."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Nếu bạn vẫn còn mã hồi phục, hãy dùng nó: một số tin nhắn cũ chỉ được mở trong bản sao lưu."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1428,11 +1631,11 @@ msgstr "Những câu chuyện của nó vẫn còn trong kho lưu trữ của an
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Tham gia"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Tham gia %(channel)s"
 
@@ -1460,12 +1663,16 @@ msgstr "Các sự kiện then chốt và liên kết mọi người nên xem đ�
 msgid "Last used %(date)s"
 msgstr "Lần cuối dùng%(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Sau này"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Cười"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Rời khỏi"
 
@@ -1481,7 +1688,7 @@ msgstr "Rời khỏi nhóm này? Một người khác ở đó trở thành ch�
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Rời khỏi nhóm này? Bạn sẽ không thấy tin nhắn mới trừ khi ai đó thêm vào bạn."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Chế độ sáng"
 
@@ -1525,6 +1732,10 @@ msgstr "Sống ngay bây giờ"
 msgid "Load earlier messages"
 msgstr "Tải tin nhắn trước"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Đang nạp chú thích…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Đang tải bài…"
@@ -1549,17 +1760,25 @@ msgstr "Đang nạp mẫu..."
 msgid "Loading..."
 msgstr "Đang nạp..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Đang tải…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Yêu thương"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Tay dưới"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Tạo một mã mới"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Làm một mã phục hồi mới?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1577,7 +1796,7 @@ msgstr "Xuất hiện trước công chúng? Mọi người sẽ có thể thấ
 msgid "Making the channel…"
 msgstr "Làm cho kênh…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Bình thường"
 
@@ -1594,6 +1813,14 @@ msgstr "Thông điệp đã được xóa"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Yêu cầu thông điệp. Họ sẽ không biết anh đã thấy cái này cho đến khi anh chấp nhận."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Thông điệp biến mất sau khi %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Thông điệp cho trình duyệt này sẽ trở lại đây."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1605,7 +1832,7 @@ msgid "Microphone %(number)s"
 msgstr "Microphone%(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Thêm"
 
@@ -1613,11 +1840,11 @@ msgstr "Thêm"
 msgid "Move to listeners"
 msgstr "Chuyển tới thính giả"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Tắt mic"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Đã tắt tiếng"
 
@@ -1637,7 +1864,11 @@ msgstr "Tên thư mục"
 msgid "New channel"
 msgstr "Kênh mới"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Tin nhắn mới trong cuộc trò chuyện này biến mất cho tất cả mọi người sau khi bạn chọn. Thông điệp gửi trước khi gửi đi."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Không"
 
@@ -1657,17 +1888,29 @@ msgstr "Chưa có cuộc gọi nào. Bắt đầu cuộc gọi bằng tiếng n�
 msgid "No camera was found."
 msgstr "Không tìm thấy camera."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Không tìm thấy cuộc trò chuyện."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Chưa có đồng tác giả."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Không có quy tắc? Ký với mật khẩu mới của bạn trên một trình duyệt mà bạn đã dùng trò chuyện: nó có thể mang cuộc trò chuyện trở lại."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Chưa có thiết bị. Mở cuộc tán gẫu để bắt đầu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Không có nhãn"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Chưa có trợ giúp."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1676,6 +1919,10 @@ msgstr "Không tìm thấy micro."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Không ai khớp cả. Bạn có thể gửi tin nhắn đến những người bạn theo dõi."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Vẫn chưa có tin nhắn nào."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1721,6 +1968,10 @@ msgstr "Không lưu"
 msgid "Not used yet"
 msgstr "Chưa dùng"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Không tìm thấy gì trong tin nhắn mà trình duyệt này có thể đọc."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Không tìm thấy gì."
@@ -1749,17 +2000,45 @@ msgstr "Vẫn chưa có gì để xem thử."
 msgid "Nothing was connected."
 msgstr "Không có gì liên quan."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Thông báo"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Thông báo về nơi Mạng này bị chặn trong trình duyệt này. Cho phép chúng trong thiết lập của trình duyệt để bật chúng."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Thông báo bị tắt trong trình duyệt này."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Thông báo đã được bật trong trình duyệt này."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Không thể kiểm tra thông báo. Nạp lại trang để thử lại."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Thông báo không mở được. Thử lại đi."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Thông báo không được cho phép vào trang này."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Danh sách đã định"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "Trời ơi"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Tắt"
 
 #, machine, plain1
 msgid "Offline"
@@ -1768,6 +2047,10 @@ msgstr "Comment"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Comment"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Chỉ có người sở hữu và quản trị nhóm mới có thể thay đổi điều này."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1803,6 +2086,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Mở chat một lần để mở tin nhắn, sau đó thử lại."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Mở Chat để hoàn tất cài đặt tin nhắn trên thiết bị này."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Mở thiết lập phương tiện"
 
@@ -1813,6 +2100,10 @@ msgstr "Mở khoảng trống"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Mở cuộc trò chuyện của%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Mở tập tin…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1839,7 +2130,7 @@ msgstr "Những người bạn theo dõi"
 msgid "Pick a date and time."
 msgstr "Chọn ngày và giờ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Chọn nhãn"
 
@@ -1873,11 +2164,15 @@ msgstr "Các câu chuyện về hình ảnh chưa có trên trang này."
 msgid "Pin this message"
 msgstr "Hãy bật lại tin nhắn này"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pined"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Comment"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Làm ơn"
 
@@ -1885,12 +2180,18 @@ msgstr "Làm ơn"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Hãy nhập vào một hợp lệURL (bao gồm cả http vội vàng hoặchttps://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Vui lòng đăng nhập lại."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Name"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Đăng"
 
@@ -1902,7 +2203,7 @@ msgstr "Đăng. Nạp lại trang để xem."
 msgid "Posting to %(guilds)s"
 msgstr "Đang gửi tới%(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Đăng lên hồ sơ của bạn"
 
@@ -1911,7 +2212,7 @@ msgstr "Đăng lên hồ sơ của bạn"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Gửi hồ sơ của bạn,%(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Đang đăng…"
 
@@ -2010,6 +2311,14 @@ msgstr "Phản ứng"
 msgid "React with %(emoji)s"
 msgstr "Phản ứng với%(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Ghi âm giọng nói"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Ghi âm… ấn micro một lần nữa để gửi nó."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Mã phục hồi"
@@ -2022,13 +2331,17 @@ msgstr "Làm lại"
 msgid "Refreshing…"
 msgstr "Đang cập nhật…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Đang đăng ký"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Name"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Tải lại"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2043,13 +2356,17 @@ msgstr "Thiết lập nhắc nhở"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Gỡ"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Bỏ %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Bỏ%(name)s Là người giúp việc"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2102,15 +2419,15 @@ msgstr "Tên thư mục này"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Báo cáo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Báo cáo bình luận"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Báo cáo bài đăng"
 
@@ -2118,11 +2435,11 @@ msgstr "Báo cáo bài đăng"
 msgid "Report this message"
 msgstr "Thông báo tin này"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Đang báo cáo bình luận"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Đang báo cáo bài đăng"
 
@@ -2139,13 +2456,13 @@ msgstr "Đang rung…"
 msgid "Rules of this channel"
 msgstr "Quy tắc của kênh này"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Buồn"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Lưu"
 
@@ -2161,11 +2478,15 @@ msgstr "& Xuất ra danh sách."
 msgid "Save your recovery code"
 msgstr "Tiết kiệm mã phục hồi của bạn"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Đã lưu"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Được cứu."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Đang lưu"
 
@@ -2199,7 +2520,7 @@ msgstr "Đang lưu…"
 msgid "Say what is wrong with this account."
 msgstr "Nói xem tài khoản này có vấn đề gì."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Sợ hãi"
 
@@ -2218,7 +2539,8 @@ msgstr "Đã lên lịch cho %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Tìm kiếm"
 
@@ -2229,6 +2551,14 @@ msgstr "Tìm ai đó để thêm vào."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Tìm kiếm kênh này"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Tìm kiếm cuộc trò chuyện này"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Tìm kiếm các cuộc trò chuyện của bạn"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2250,7 +2580,7 @@ msgid "Seen by %(num)s"
 msgid_plural "Seen by %(num)s"
 msgstr[0] "Nhìn thấy bởi%(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Chọn một cuộc trò chuyện"
 
@@ -2259,6 +2589,10 @@ msgstr "Chọn một cuộc trò chuyện"
 #, machine, plain1
 msgid "Send"
 msgstr "Gởi"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Gửi tập tin"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2275,6 +2609,19 @@ msgstr "Gửi hình kế tiếp cho:"
 #, machine, plain1
 msgid "Send your next videos to:"
 msgstr "Gửi video kế tiếp cho:"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Đang gửi %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Đang gửi %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Đang gửi %(num)s tin nhắn khi đã sẵn sàng…"
 
 #, machine, plain1
 msgid "Sending..."
@@ -2293,6 +2640,14 @@ msgstr "Gửi"
 msgid "Several people are typing…"
 msgstr "Nhiều người đang gõ…"
 
+#, machine, plain2
+msgid "Share screen"
+msgstr "Chia sẻ màn hình"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Chia sẻ chú thích"
+
 #, machine, plain1
 msgid "Shared a post"
 msgstr "Chia sẻ một bài"
@@ -2310,11 +2665,20 @@ msgstr[0] "Hiện %(num)s Bài mới"
 msgid "Show formatting"
 msgstr "Hiện định dạng"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Hiện trong kênh"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Name"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Ẩn bớt"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Xem thêm"
 
@@ -2327,19 +2691,19 @@ msgstr "Hiện ảnh gốc"
 msgid "Show translation"
 msgstr "Hiện bản dịch"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Ký đi"
+msgstr "Đăng xuất"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Ký đi. %(device)s"
+msgstr "Đăng xuất %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Ký đi. %(device)sNó sẽ cần đăng ký lại để đọc những cuộc trò chuyện của bạn."
+msgstr "Ngắt kết nối %(device)sNó sẽ cần đăng ký lại để đọc những cuộc trò chuyện của bạn."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Đang đăng nhập"
 
@@ -2455,6 +2819,11 @@ msgstr "Bắt đầu trò chuyện…"
 msgid "Starting…"
 msgstr "Bắt đầu…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Dừng chia sẻ"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Vượt qua"
@@ -2505,7 +2874,7 @@ msgstr "Định dạng văn bản"
 msgid "Text style"
 msgstr "Kiểu văn bản"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Cảm ơn yêu cầu của bạn"
 
@@ -2529,27 +2898,39 @@ msgstr "Cảm ơn. Quản lý sẽ xem nó."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Cảm ơn: thiết bị điều hòa của hội thẩm đoàn sẽ xem xét."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Cảm ơn: các quản lý của trang web sẽ xem xét, và bạn đã chặn @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Cảm ơn."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Cảm ơn. @%(name)s Không thể bị chặn ở đây: chặn họ khỏi hồ sơ của họ."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Cuộc trò chuyện đó chưa sẵn sàng trên thiết bị này. Mở ra một lần rồi thử lại."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Mật mã đó không mở được. Kiểm tra lỗi chính tả."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Không thể lưu."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Thiết bị đó không thể được ký ngay bây giờ."
+msgstr "Thiết bị đó không thể ngắt kết nối lúc này."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Không thể dùng thiết bị đó."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Không gửi được"
 
@@ -2588,6 +2969,14 @@ msgstr "Đó không phải mật khẩu của anh."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Không thể gửi tin nhắn đó."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Tin nhắn đó không thể được tìm thấy trong kênh nữa."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Tin nhắn đó không thể tìm thấy trong cuộc trò chuyện này nữa."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2673,6 +3062,10 @@ msgstr "Cuộc trò chuyện kết thúc: không gian này đã kết thúc."
 msgid "The chat opens when the Space starts."
 msgstr "Cuộc trò chuyện mở ra khi không gian bắt đầu."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Mã số từ ứng dụng xác thực của anh, hoặc mã dự phòng của anh."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Bản nháp đã thay đổi dưới bản chỉnh sửa cuối cùng của bạn, vì vậy nó đã được tải lại. Hãy xem những lời cuối cùng của anh."
@@ -2680,6 +3073,10 @@ msgstr "Bản nháp đã thay đổi dưới bản chỉnh sửa cuối cùng c�
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji để so sánh"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Không thể gửi tập tin. Thử lại đi."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2696,6 +3093,10 @@ msgstr "Không thể sao chép được."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Không thể khởi động micro."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Không thể dùng micro. Hãy kiểm tra xem nơi này có thể dùng nó không."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2735,6 +3136,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Hồi âm không được lưu: việc tải lên thất bại. Thay vào đó bạn có thể tải về."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Chìa khóa của trang web đã thay đổi, nên trò chuyện lại bắt đầu từ đây."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Bản tóm tắt bị che khuất bởi bộ lọc từ của bạn."
 
@@ -2770,6 +3175,10 @@ msgstr "Không còn chỗ nào khác để gửi họ đến nơi này."
 msgid "These comments could not be loaded. Try again."
 msgstr "Không thể tải những lời bình luận này. Thử lại đi."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Họ không bao giờ được cho biết ai báo cáo."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Họ từ chối cuộc gọi."
@@ -2782,6 +3191,10 @@ msgstr "Chúng không khớp"
 msgid "They match"
 msgstr "Chúng trùng nhau"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Chúng ở trong tài khoản riêng của anh, được mã hóa, sử dụng không gian tự do của nó. Chỉ những người trong cuộc trò chuyện mới có thể mở lòng họ."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Họ sẽ không thể theo bạn, nhắn tin cho bạn hay bình luận về các bài viết của bạn, và bạn sẽ không thấy các bài viết của họ. Anh có thể tháo chúng ra bất cứ lúc nào."
@@ -2790,9 +3203,9 @@ msgstr "Họ sẽ không thể theo bạn, nhắn tin cho bạn hay bình luận
 msgid "This Space has ended."
 msgstr "Không gian này đã kết thúc."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Trình duyệt này"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Điều này cũng kết thúc bất kỳ giải cứu nào từ trình duyệt nơi bạn dùng trò chuyện."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2802,9 +3215,29 @@ msgstr "Trình duyệt này không thể gọi điện."
 msgid "This browser can't record the Space."
 msgstr "Trình duyệt này không thể ghi lại không gian."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Trình duyệt này không thể chia sẻ màn hình của nó."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Trình duyệt này không thể hiển thị thông báo từ nơi Mạng này."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Trình duyệt này không thể chuẩn bị ảnh để tải lên. Thử trình duyệt khác xem."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Trình duyệt này còn giữ các phím trò chuyện của bạn trước khi mật khẩu của bạn thay đổi. Dùng chúng để đọc tin nhắn cũ ở đây và các thiết bị khác?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Trình duyệt này bị ngắt kết nối khỏi thiết bị khác, vậy trò chuyện lại bắt đầu ở đây."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Dữ liệu trò chuyện của trình duyệt này đã được xóa, vì vậy trò chuyện lại bắt đầu ở đây."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2814,6 +3247,26 @@ msgstr "Điều này không thể thay đổi được."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Kênh này bị tắt cho bạn: không có dấu chấm chưa đọc và không có thông báo nào đề cập."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Cuộc trò chuyện này được mã hóa từ cuối đến cuối, nên trang web không thể đọc nó. Báo cáo gửi tin nhắn này và lên đến 4 người trước nó, như bạn thấy ở đây, ban quản trị trang web."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Không thể đưa ra bình luận này."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Thiết bị này sẽ được ngắt kết nối ngay."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Không thể mở tập tin này. Hãy thử lại sau."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Tập tin này không còn sẵn sàng."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Sợi chỉ này đã kết thúc"
@@ -2821,6 +3274,10 @@ msgstr "Sợi chỉ này đã kết thúc"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Tin nhắn này không thể đọc được trên thiết bị này."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Tin nhắn này đã bị xóa."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2835,10 +3292,22 @@ msgstr "Bài viết này không thể được trình bày."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Bài này là ngoài mục tiêu cho +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Dấu hiệu này"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Điều này cũng ngắt kết nối trò chuyện trong trình duyệt này, nếu nó là của trình duyệt này. Nó sẽ bắt đầu lại như một thiết bị mới."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Kênh giọng nói này đầy%(num)s mọi người)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Chìa khóa đó không còn là tài khoản của anh nữa. Dùng mã phục hồi hoặc bắt đầu lại."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2870,7 +3339,7 @@ msgid "Too long by %(num)s (%(note)s)"
 msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Lâu quá rồi %(num)s (Tiếng cười)%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Hôm nay có quá nhiều yêu cầu"
 
@@ -2901,13 +3370,21 @@ msgstr "Bây giờ không có dịch."
 msgid "Try again"
 msgstr "Thử lại đi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Hãy thử lại vào ngày mai."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Bật thông báo"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Mã hai mặt"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Có hai dấu hiệu đã được thay đổi, vì vậy nói chuyện lại bắt đầu từ đây."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2941,12 +3418,12 @@ msgstr "Không thể gỡ bỏ chú thích vào lúc này. Vui lòng gọi lại
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Không thể bỏ phiếu lúc này. Vui lòng gọi lại sau."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Bỏ chặn"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Hoàn tác"
 
@@ -2966,17 +3443,13 @@ msgstr "Bỏ khoá"
 msgid "Unlock your messages"
 msgstr "Bỏ khoá tin nhắn"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Bỏ khoá tin nhắn trước: Nạp lại trang để nhập mật khẩu."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Bỏ tắt tiếng"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Bỏ ghim"
 
@@ -3032,11 +3505,15 @@ msgstr "Dùng ở đây"
 msgid "Use my recovery code instead"
 msgstr "Dùng mã phục hồi của tôi"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Dùng đi"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Tên người dùng đã được sử dụng :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Tên người dùng hợp lệ!"
 
@@ -3117,7 +3594,7 @@ msgstr[0] "Cuộc gọi video # %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video được bật trong cuộc gọi này: bạn đang nghe âm thanh."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Xem ảnh gốc"
 
@@ -3155,6 +3632,10 @@ msgid "Voice goes browser to browser through the site's relay, so nobody sees an
 msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
 msgstr[0] "Giọng nói đến trình duyệt qua rơle của trang web, để không ai thấy địa chỉ của ai. Lên %(num)s Mọi người."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Ghi chú giọng nói"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Chờ một chút: những thay đổi cuối cùng của bạn vẫn đang được cứu."
@@ -3162,6 +3643,10 @@ msgstr "Chờ một chút: những thay đổi cuối cùng của bạn vẫn đ
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Đang chờ ứng dụng"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Chúng tôi tìm thấy cuộc trò chuyện của bạn trên trình duyệt này"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3182,6 +3667,10 @@ msgstr "Không gian này bị sao vậy? (tùy chọn)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Tin nhắn này có gì sai? (tùy chọn)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Tập tin anh gửi trong cuộc trò chuyện nên ở đâu?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3208,7 +3697,7 @@ msgstr "Ai nói thế"
 msgid "Who upvoted"
 msgstr "Ai đã lên tiếng"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Tại sao"
 
@@ -3223,6 +3712,10 @@ msgstr "Tại sao chuyện này lại phá vỡ quy tắc của cô? Điều nà
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Tại sao chuyện này lại phá vỡ quy tắc của cô? Điều này sẽ được hiển thị cho bất cứ ai tìm kiếm lịch sử của giai đoạn hậu kỳ này."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Tại sao lời bình luận này bị loại bỏ? Lý do của anh được trình bày trong nhật ký công cộng."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3241,7 +3734,7 @@ msgstr "Viết gì đó trước đi."
 msgid "Write what you want to tell us."
 msgstr "Hãy viết những gì anh muốn nói."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Có"
 
@@ -3259,7 +3752,7 @@ msgstr "Phải, hủy nó đi"
 msgid "You"
 msgstr "Ngươi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Bạn đã làm việc này rồi"
 
@@ -3275,7 +3768,7 @@ msgstr "Anh đã báo cáo rồi."
 msgid "You already voted on this post."
 msgstr "Anh đã bỏ phiếu rồi."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Bạn đang chặn @%(name)s"
 
@@ -3312,7 +3805,7 @@ msgstr "Bạn có thể đọc kênh này nhưng không thể viết vào nó."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Bạn có thể thấy ai ở đây, nhưng bạn không thể nói trong kênh này."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Bạn không thể làm việc này."
 
@@ -3356,6 +3849,14 @@ msgstr "Anh đã rời không gian."
 msgid "You left the call."
 msgstr "Anh đã bỏ cuộc gọi."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Anh ngắt kết nối với thiết bị khác, nên trò chuyện lại bắt đầu ở đây."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Anh đã ký hợp đồng phục hồi hai mặt, nên trò chuyện lại bắt đầu từ đây."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Bạn không theo dõi%(name)s."
@@ -3363,6 +3864,10 @@ msgstr "Bạn không theo dõi%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Anh đã bị loại khỏi không gian này."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Anh sẽ có mã phục hồi mới, và cái cũ sẽ ngừng hoạt động."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3388,6 +3893,10 @@ msgstr "Trình duyệt của bạn đã chặn cửa sổ để kết nối. Cho
 msgid "Your chat devices can't be listed right now."
 msgstr "Các thiết bị chat của bạn không thể được liệt kê ngay bây giờ."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Comment"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Trò chuyện của bạn"
@@ -3399,6 +3908,10 @@ msgstr "Cuộc trò chuyện của bạn sẽ hoạt động lại trên thiết
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Không thể cập nhật bình luận của bạn. Thử lại đi."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Mã phục hồi hiện tại của anh sẽ ngừng hoạt động."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3430,9 +3943,30 @@ msgstr "Chìa khóa của anh không thể hiện ra lúc này."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Chìa khóa của anh bị khóa bằng mật khẩu cũ. Mở chat trên trang web này và nhập mã phục hồi của bạn một lần, sau đó nó mở ra ở đây."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Của bạn %(num)s tin nhắn sẽ được gửi khi thiết bị này mở khóa."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Mã phục hồi cũ của anh không còn hoạt động nữa."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Mật khẩu của bạn đã thay đổi kể từ khi khóa chat này được khóa với nó. Mã thu hồi cậu để lại khi chat được cài đặt mở nó ra."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Mật khẩu của bạn đã được thay đổi cho bạn, vì vậy chat đang bắt đầu lại ở đây."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Mật khẩu của bạn đã được thay đổi, vì vậy chat đang bắt đầu lại ở đây."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Mật khẩu của bạn đã được đặt lại, vì vậy chat đang bắt đầu lại ở đây."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3441,6 +3975,14 @@ msgstr "Mã của anh"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Các mẫu được lưu của anh xuất hiện ở đây."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Màn hình của bạn chỉ có thể được chia sẻ khi bạn đang trên video trong cuộc gọi này."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Màn hình của bạn không thể được chia sẻ."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3480,7 +4022,7 @@ msgid "blue"
 msgstr "nâu sẫm"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "bình luận"
 
@@ -3549,7 +4091,7 @@ msgstr "cam"
 msgid "pink"
 msgstr "hồng"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "bài đăng"
 

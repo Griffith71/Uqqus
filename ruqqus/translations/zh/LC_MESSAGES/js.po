@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s正在输入…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s 设定信件在%(time)s 之后消失 ."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s 关闭消失的消息."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, python-format
@@ -114,10 +122,20 @@ msgid "%(num)s member"
 msgid_plural "%(num)s members"
 msgstr[0] "%(num)s成员"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s 信件已经找到 ."
+
 #, machine, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s 线索中的信息"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s 已读信件…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -208,6 +226,14 @@ msgstr[0] "%(owner)s %(num)s 成员"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s 无论如何保存?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB 键"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, python-format
@@ -237,6 +263,14 @@ msgid "+%(guild)s · %(num)s comment"
 msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+ 键%(guild)s * 妇女 %(num)s 评论"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1天时间"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1个星期"
+
 #, machine, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "页:1%(name)s 把你加入这个组。 接受读写."
@@ -245,10 +279,6 @@ msgstr "页:1%(name)s 把你加入这个组。 接受读写."
 msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "页:1%(name)s 还没有打开聊天。 你们 %(num)s 信件一收到就会发出。"
-
-#, machine, python-format
-msgid "@%(name)s is typing…"
-msgstr "页:1%(name)s 正在输入…"
 
 #, machine
 msgid "A Space"
@@ -299,6 +329,11 @@ msgstr "被你封锁的人的讯息"
 msgid "A message that isn't there any more"
 msgstr "一个不再存在的信息"
 
+#, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "%(num)s 您在此写的信件没有被发送 : 在此标签中, 聊天在它们可以去之前已停止 ."
+
 #, machine, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -317,9 +352,13 @@ msgid "Accept"
 msgstr "接受"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "添加"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "通过用户名添加助手"
 
 #, machine
 msgid "Add image"
@@ -358,12 +397,12 @@ msgid "Adding..."
 msgstr "正在添加..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "管理员"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "同意"
 
@@ -383,6 +422,10 @@ msgstr "右对齐"
 msgid "Alignment"
 msgstr "对齐"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "还封堵@%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, python-format
 msgid "Also here: %(names)s"
@@ -392,7 +435,7 @@ msgstr "还有这里:%(names)s"
 msgid "An app"
 msgstr "一个应用"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "生气"
 
@@ -402,7 +445,7 @@ msgstr "生气"
 msgid "Announcements"
 msgstr "通知"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "匿名用户"
 
@@ -410,6 +453,10 @@ msgstr "匿名用户"
 #, machine
 msgid "Answer"
 msgstr "答复"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "在聊天中,任何人仍然可以复制一个消息,或者在屏幕走之前拍照."
 
 #, machine
 msgid "Ask to mute"
@@ -423,23 +470,23 @@ msgstr "附加链接到此文章"
 msgid "Aw shucks. No GIFs found..."
 msgstr "胡说八道 找不到GIFs..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "太棒了"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "尴尬"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "回到顶部"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "屏蔽"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "要屏蔽 @%(name)s 吗？"
 
@@ -450,6 +497,10 @@ msgstr "封锁@%(name)s。"
 #, machine
 msgid "Bold (Ctrl+B)"
 msgstr "粗体( Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "把你的聊天钥匙带过来 停止了 输入要完成的密码 ."
 
 #, machine
 msgid "Bulleted list"
@@ -522,7 +573,7 @@ msgstr "关闭相机"
 msgid "Camera on"
 msgstr "摄像头打开"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "取消"
 
@@ -556,7 +607,7 @@ msgid "Channel · %(num)s member"
 msgid_plural "Channel · %(num)s members"
 msgstr[0] "频道 %(num)s 成员"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "频道"
 
@@ -566,13 +617,45 @@ msgstr "您所在的频道"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "聊天"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "查特不能把你的钥匙拿过来 重新装弹再试一次."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "聊天无法连接."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "查特无法重新开始 输入密码以再次尝试 ."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "查特无法重新开始 重新装弹再试一次."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "查特无法打开浏览器所保存的东西, 所以它再次在这里开始 ."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "查特无法在这个浏览器中启动 ."
 
 #, machine
 msgid "Chat did not answer. Try again."
 msgstr "聊天没有回答。 再试一次."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "查特已经很久没有在这个浏览器上使用过,所以它从这里重新开始."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "聊天在另一个标签中关闭…"
 
 #, machine
 msgid "Chat is open in another tab."
@@ -586,6 +669,26 @@ msgstr "聊天还在开始."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "聊天还在开始 再试一下."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "聊天现在不可用."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "查特失去了联系 正在重试…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "查特需要这个浏览器来保存网站数据,不能在这里. 聊天不能从这个窗口开始 ."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "聊天在此标签中停止 ."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "此浏览器与其它设备断开聊天 。 从这里开始…"
+
 #, machine, python-format
 msgid "Chat with @%(name)s"
 msgstr "与 @%(name)s"
@@ -594,7 +697,7 @@ msgstr "与 @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "查特的钥匙现在没有了."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "聊天"
 
@@ -634,11 +737,11 @@ msgstr "选谁能见此."
 msgid "Choose your profile or at least one guild."
 msgstr "选择您的简介或至少一个盾 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "圈子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "关闭"
 
@@ -674,7 +777,7 @@ msgstr "跟你的应用显示的比较,顺序相同."
 msgid "Confirm in the app as well."
 msgstr "在应用程序中确认."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "困惑"
 
@@ -826,6 +929,10 @@ msgstr "无法装入绑定的信件"
 #, machine
 msgid "Could not load the preview."
 msgstr "无法装入预览 ."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "无法装入您的聊天"
 
 #, machine
 msgid "Could not load your chats. Try again."
@@ -987,7 +1094,11 @@ msgstr "无法复制:选择代码并复制."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "无法装入早期的消息。 再试一下."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "无法加载您的聊天。 再次尝试…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "正在创建帖子"
 
@@ -995,7 +1106,7 @@ msgstr "正在创建帖子"
 msgid "Creating…"
 msgstr "正在创建…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "下头"
 
@@ -1003,7 +1114,7 @@ msgstr "下头"
 msgid "Cross out"
 msgstr "交叉"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "深色模式"
 
@@ -1068,13 +1179,21 @@ msgstr "删除这个故事吗 ?"
 msgid "Delete this update?"
 msgstr "删除此更新 ?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "正在删除评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "正在删除帖子"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "丢弃信件"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "消失的信息关闭."
 
 #, machine, plain1
 msgid "Discard"
@@ -1108,6 +1227,10 @@ msgstr "完成"
 #, machine, plain1
 msgid "Done."
 msgstr "结束了."
+
+#, machine, plain2
+msgid "Download"
+msgstr "下载"
 
 #, machine
 msgid "Downloaded."
@@ -1162,7 +1285,7 @@ msgstr "端对端加密:只有本频道的观众才能阅读."
 msgid "Ended"
 msgstr "结束"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "输入网址"
 
@@ -1173,6 +1296,10 @@ msgstr "输入一个网页地址, 如https://example.com"
 #, machine
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "输入密码一次 。 它将您信件的密钥锁定在这个浏览器中,因此该网站永远无法读取."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "输入密码确认 ."
 
 #, machine
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1186,9 +1313,49 @@ msgstr "输入密码 ."
 msgid "Enter your recovery code"
 msgstr "输入恢复代码"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "输入二要素代码"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "输入二因子代码 ."
+
+#, machine, plain2
+msgid "File"
+msgstr "文件"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "文件可以发送一次@%(name)s 已打开聊天。"
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "一旦在此设备上解锁聊天, 文件就可以被发送 ."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "文件不能在这里发送 ."
+
 #, machine, plain1
 msgid "Final"
 msgstr "最终"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "完成"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "完成您的聊天"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "重新开始"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "在另一个标签中完成聊天设置…"
 
 #, machine
 msgid "Follow someone to add them to a group."
@@ -1208,16 +1375,32 @@ msgid "Formatting"
 msgstr "格式化"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "转发"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "转发此信件"
 
 #, machine, python-format
 msgid "Forward to at most %(num)s guild."
 msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "最多转到%(num)s盾."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "向…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "已转发"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "前进."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "转发中"
 
@@ -1257,11 +1440,11 @@ msgstr "给按钮一些文字."
 msgid "Give the template a name."
 msgstr "给模板一个名字."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "前往网站"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "恶心"
 
@@ -1269,7 +1452,7 @@ msgstr "恶心"
 msgid "Group info"
 msgstr "分组信息"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "公会"
 
@@ -1281,13 +1464,25 @@ msgstr "联系聊天"
 msgid "Hand raised"
 msgstr "手举起来"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "开心"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "你保留了聊天恢复代码吗? 没有它,一个被遗忘的密码 会丢失你的旧消息."
 
 #, machine, python-format
 msgid "Heading %(level)s"
 msgstr "标题%(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "帮助者"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "帮手在这频道里跟你写 最多选三个人."
 
 #, machine
 msgid "Hidden by your word filter"
@@ -1330,6 +1525,10 @@ msgstr "我同意规矩"
 msgid "I don't have it: start over"
 msgstr "我没有 重新开始"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "我拿着"
+
 #, machine
 msgid "I've saved it"
 msgstr "我省下来了"
@@ -1337,6 +1536,10 @@ msgstr "我省下来了"
 #, machine
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "如果你忘记了密码 这个密码是读你旧消息的唯一方法 把它保存在安全的地方, 像一个密码管理员."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "如果您还有恢复代码, 请使用它 : 一些旧消息只在它打开的备份中 ."
 
 #, machine
 msgid "Image (coming soon)"
@@ -1428,11 +1631,11 @@ msgstr "它的故事留在你的档案里."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "加入"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "加入 %(channel)s"
 
@@ -1460,12 +1663,16 @@ msgstr "关键事实和联系应首先看到."
 msgid "Last used %(date)s"
 msgstr "上次使用的%(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "回头见"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "大笑"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "退出"
 
@@ -1481,7 +1688,7 @@ msgstr "离开这群人? 里面还有别人成为它的主人."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "离开这群人? 除非有人再加你 否则你不会看到新消息的."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "浅色模式"
 
@@ -1525,6 +1732,10 @@ msgstr "现在活着"
 msgid "Load earlier messages"
 msgstr "装入较早的消息"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "正在装入注释…"
+
 #, machine
 msgid "Loading post…"
 msgstr "正在装入邮件…"
@@ -1549,17 +1760,25 @@ msgstr "正在装入您的模板..."
 msgid "Loading..."
 msgstr "正在装入..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "加载中…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "爱"
 
 #, machine
 msgid "Lower hand"
 msgstr "低点手"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "制作新代码"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "做一个新的恢复代码?"
 
 #, machine
 msgid "Make admin"
@@ -1577,7 +1796,7 @@ msgstr "让这篇文章公开? 皆悉能见."
 msgid "Making the channel…"
 msgstr "让频道…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "无感"
 
@@ -1594,6 +1813,14 @@ msgstr "信件已删除"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "消息请求. 在你接受之前 他们不会知道你看过这个."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "%(time)s 后信件消失 ."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "浏览器已经读到的信件会回到这里 ."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine
@@ -1605,7 +1832,7 @@ msgid "Microphone %(number)s"
 msgstr "麦克风%(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "更多"
 
@@ -1613,11 +1840,11 @@ msgstr "更多"
 msgid "Move to listeners"
 msgstr "移动到听众"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "静音"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "已隐藏"
 
@@ -1637,7 +1864,11 @@ msgstr "命名文件夹"
 msgid "New channel"
 msgstr "新建频道"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "本次聊天中的新消息在您选择的时间后都会消失. 在发送之前发送的信息保留了发送时间."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "不要"
 
@@ -1657,17 +1888,29 @@ msgstr "还没有打电话。 从聊天的语音通话或视频通话开始一�
 msgid "No camera was found."
 msgstr "没有找到相机 ."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "未找到聊天内容 ."
+
 #, machine
 msgid "No co-authors yet."
 msgstr "还没有合著者."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "没有密码? 在您使用过聊天的浏览器上用您的新密码签名:它可以将您的聊天带回."
 
 #, machine
 msgid "No devices yet. Open Chat to start."
 msgstr "还没有设备。 打开聊天开始 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "无标签"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "还没有帮手."
 
 #, machine
 msgid "No microphone was found."
@@ -1676,6 +1919,10 @@ msgstr "没有找到麦克风."
 #, machine
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "没有人符合。 你可以去聊天,去跟随的人."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "还没有被锁定的消息 ."
 
 #, machine
 msgid "No special characters or spaces allowed."
@@ -1721,6 +1968,10 @@ msgstr "未保存"
 msgid "Not used yet"
 msgstr "尚未使用"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "浏览器无法读取的信件中找不到任何信息 ."
+
 #, machine
 msgid "Nothing found."
 msgstr "没找到."
@@ -1749,17 +2000,45 @@ msgstr "还没有预览."
 msgid "Nothing was connected."
 msgstr "没有任何关联."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "通知"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "在此浏览器中屏蔽此网站的通知 。 让他们在浏览器的设置中打开它们."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "此浏览器取消了通知 ."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "此浏览器中正在发布通知 ."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "通知无法检查 。 重新装入页面以再次尝试 ."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "通知无法打开。 再试一次."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "这个网站不允许有通知."
 
 #, machine
 msgid "Numbered list"
 msgstr "编号列表"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "我的天"
+
+#, machine, plain2
+msgid "Off"
+msgstr "关"
 
 #, machine
 msgid "Offline"
@@ -1768,6 +2047,10 @@ msgstr "离线"
 #, machine
 msgid "Offline · retrying"
 msgstr "离线 ・ 重试"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "只有团体的主人和管理员才能改变这一点."
 
 #, machine
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1802,6 +2085,10 @@ msgstr "打开 先在这个网站聊天一次,所以你的钥匙就设置好了.
 msgid "Open Chat once to unlock your messages, then try again."
 msgstr "打开一次聊天打开留言,然后再试一次."
 
+#, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "打开聊天以完成您在此设备上的信息设置 ."
+
 #, machine
 msgid "Open media settings"
 msgstr "打开媒体设置"
@@ -1813,6 +2100,10 @@ msgstr "打开空间"
 #, machine, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "打开+的聊天%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "打开文件…"
 
 #, machine
 msgid "Options saved."
@@ -1839,7 +2130,7 @@ msgstr "你跟着的人"
 msgid "Pick a date and time."
 msgstr "挑个日期和时间."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "选择标签"
 
@@ -1873,11 +2164,15 @@ msgstr "图片故事尚未在此网站上提供 ."
 msgid "Pin this message"
 msgstr "绑定此消息"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "绑定"
+
 #, machine
 msgid "Pinned messages"
 msgstr "已绑定的消息"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "拜托"
 
@@ -1885,12 +2180,18 @@ msgstr "拜托"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "请输入有效的URL (包括 http:// 或https://).)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "请重新登录。"
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "大众频道"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "发布"
 
@@ -1902,7 +2203,7 @@ msgstr "贴出. 重装页面以查看."
 msgid "Posting to %(guilds)s"
 msgstr "张贴到 %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "发布到你的个人资料"
 
@@ -1911,7 +2212,7 @@ msgstr "发布到你的个人资料"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "张贴到你的档案,%(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "发布中…"
 
@@ -2010,6 +2311,14 @@ msgstr "反应"
 msgid "React with %(emoji)s"
 msgstr "与 %(emoji)s 反应"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "记录语音符"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "录音… 再次按下麦克风发送它."
+
 #, machine
 msgid "Recovery code"
 msgstr "回收代码"
@@ -2022,13 +2331,17 @@ msgstr "重装"
 msgid "Refreshing…"
 msgstr "刷新中…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "注册中"
 
 #, machine
 msgid "Release to refresh"
 msgstr "释放至刷新"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "重新加载"
 
 #, machine
 msgid "Remind me"
@@ -2043,13 +2356,17 @@ msgstr "提醒设置"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "移除"
 
 #, machine, python-format
 msgid "Remove %(name)s"
 msgstr "删除%(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "删除@%(name)s 作为帮手"
 
 #, machine, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2102,15 +2419,15 @@ msgstr "重命名此文件夹"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "举报"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "举报评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "举报帖子"
 
@@ -2118,11 +2435,11 @@ msgstr "举报帖子"
 msgid "Report this message"
 msgstr "报告此消息"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "正在举报评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "正在举报帖子"
 
@@ -2139,13 +2456,13 @@ msgstr "铃声…"
 msgid "Rules of this channel"
 msgstr "本频道的规则"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "难过"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "保存"
 
@@ -2161,11 +2478,15 @@ msgstr "另存为模板..."
 msgid "Save your recovery code"
 msgstr "保存您的恢复代码"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "已保存"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "获救."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "保存中"
 
@@ -2199,7 +2520,7 @@ msgstr "正在保存…"
 msgid "Say what is wrong with this account."
 msgstr "说这账户有什么问题."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "害怕"
 
@@ -2218,7 +2539,8 @@ msgstr "计划为%(time)s ."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "搜索"
 
@@ -2229,6 +2551,14 @@ msgstr "寻人加之."
 #, machine
 msgid "Search this channel"
 msgstr "搜索此频道"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "搜索此聊天"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "搜索您的聊天内容"
 
 #, machine, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2250,7 +2580,7 @@ msgid "Seen by %(num)s"
 msgid_plural "Seen by %(num)s"
 msgstr[0] "见%(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "选择一个对话"
 
@@ -2259,6 +2589,10 @@ msgstr "选择一个对话"
 #, machine
 msgid "Send"
 msgstr "发送"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "发送文件"
 
 #, machine
 msgid "Send it somewhere else:"
@@ -2275,6 +2609,19 @@ msgstr "发送您的下一张图片到 :"
 #, machine
 msgid "Send your next videos to:"
 msgstr "发送您的下一个视频到 :"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "正在发送%(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "发送 %(name)s.  … %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "聊天准备好后发送%(num)s信件…"
 
 #, machine
 msgid "Sending..."
@@ -2293,6 +2640,14 @@ msgstr "发送"
 msgid "Several people are typing…"
 msgstr "有几个人在打字…"
 
+#, machine, plain2
+msgid "Share screen"
+msgstr "共享屏幕"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "共享评论"
+
 #, machine
 msgid "Shared a post"
 msgstr "共用一个员额"
@@ -2310,11 +2665,20 @@ msgstr[0] "显示 %(num)s 新职位"
 msgid "Show formatting"
 msgstr "显示格式"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "在频道中显示"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "在聊天时显示"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "收起"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "显示更多"
 
@@ -2327,19 +2691,19 @@ msgstr "显示原始"
 msgid "Show translation"
 msgstr "显示翻译"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "签字"
+msgstr "退出登录"
 
-#, machine, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "签名%(device)s"
+msgstr "让 %(device)s 退出登录"
 
-#, machine, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "签出%(device)s? 它需要再次签名 阅读您的聊天."
+msgstr "断开%(device)s? 它需要再次签名 阅读您的聊天."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "登录中"
 
@@ -2455,6 +2819,11 @@ msgstr "开始聊天…"
 msgid "Starting…"
 msgstr "开始…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "停止共享"
+
 #, machine
 msgid "Strikethrough"
 msgstr "切线"
@@ -2505,7 +2874,7 @@ msgstr "文本格式化"
 msgid "Text style"
 msgstr "文本样式"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "感谢你的请求"
 
@@ -2529,27 +2898,39 @@ msgstr "谢谢 一个管理员会看的."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "谢谢,荷兰盾的主持人会看看的."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "谢谢,网站的管理员会看看,你已经封锁了@%(name)s。"
+
 #, machine
 msgid "Thanks: the site's admins will take a look."
 msgstr "谢谢 网站管理员会看看的."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "谢谢 网站管理员会看看的 页:1%(name)s 无法从这里封锁: 封锁他们的档案."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "这个设备上的聊天还没有准备好 打开一次,再试一次."
 
 #, machine
 msgid "That code doesn't open it. Check for typos."
 msgstr "密码不能打开 查查字迹."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "无法保存。"
 
-#, machine
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "那个装置现在不能签字."
+msgstr "那个装置现在不能断开."
 
 #, machine
 msgid "That device couldn't be used."
 msgstr "那个装置不能用."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "发送失败"
 
@@ -2588,6 +2969,14 @@ msgstr "这不是你的密码."
 #, machine
 msgid "That message can't be sent."
 msgstr "那条消息不能发出."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "在频道里找不到那封信."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "这场谈话中再也找不到这个消息了."
 
 #, machine
 msgid "That password isn't right."
@@ -2673,6 +3062,10 @@ msgstr "聊天结束: 此空格已经结束 ."
 msgid "The chat opens when the Space starts."
 msgstr "空格开始时聊天会打开 ."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "密码来自您的认证程序, 或者一个备份代码."
+
 #, machine
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "草稿在您上次编辑时更改了, 因此重新装入 。 检查你最后的几句话."
@@ -2680,6 +3073,10 @@ msgstr "草稿在您上次编辑时更改了, 因此重新装入 。 检查你�
 #, machine
 msgid "The emoji to compare"
 msgstr "来比较一下"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "文件无法发送 。 再试一次."
 
 #, machine, python-format
 msgid "The guild, +%(name)s"
@@ -2696,6 +3093,10 @@ msgstr "链接无法复制 ."
 #, machine
 msgid "The microphone couldn't be started."
 msgstr "麦克风无法启动."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "麦克风不能用 请检查date=中的日期值 (帮助) 本站可能使用."
 
 #, machine
 msgid "The microphone is in use by another app."
@@ -2734,6 +3135,10 @@ msgstr "重播没有保存 :%(reason)s. 你可以下载它."
 msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "重播未保存: 上传失败 。 你可以下载它."
 
+#, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "网站的密钥被改变,所以这里重新开始聊天."
+
 #, machine
 msgid "The summary is hidden by your word filter."
 msgstr "内容摘要由您的文字过滤器隐藏 ."
@@ -2770,6 +3175,10 @@ msgstr "还有别的地方可以寄到这个网站."
 msgid "These comments could not be loaded. Try again."
 msgstr "无法装入这些评论 。 再试一次."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "他们从未被告知是谁举报的."
+
 #, machine
 msgid "They declined the call."
 msgstr "他们拒绝了电话."
@@ -2782,6 +3191,10 @@ msgstr "他们不匹配"
 msgid "They match"
 msgstr "它们很匹配"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "他们留在你自己的账户里,加密,使用它的空闲空间. 只有聊天的人才能打开."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "他们不会跟随你,留言或评论你的文章,你也不会看到他们的文章. 你可以随时解锁他们."
@@ -2790,9 +3203,9 @@ msgstr "他们不会跟随你,留言或评论你的文章,你也不会看到他�
 msgid "This Space has ended."
 msgstr "这个空间已经结束了."
 
-#, machine
-msgid "This browser"
-msgstr "此浏览器"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "这也结束了您使用聊天的浏览器的救援 ."
 
 #, machine
 msgid "This browser can't make calls."
@@ -2802,9 +3215,29 @@ msgstr "这个浏览器不能打电话."
 msgid "This browser can't record the Space."
 msgstr "此浏览器无法记录空间 ."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "此浏览器无法共享其屏幕 ."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "此浏览器无法从该网站显示通知 ."
+
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "此浏览器无法为上传准备图片 。 尝试另一个浏览器 ."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "此浏览器仍然持有您密码更改前的聊天密钥 。 用它们来读你的旧消息吗?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "这个浏览器从另一个设备的聊天中断开,所以聊天在此重新开始."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "这个浏览器保存的聊天数据被清除,所以聊天在这里重新开始."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2814,6 +3247,26 @@ msgstr "这不能消除."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "此频道为您默音 : 没有未读的点和未提及通知 ."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "这个聊天是端到端加密的,因此网站无法读取. 报告向网站的管理员发送了这个信息,在它之前最多有四条信息."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "此评论不能显示."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "此设备很快就会断开 ."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "此文件无法打开 。 以后再试."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "此文件已无法使用 ."
+
 #, machine
 msgid "This live thread has ended"
 msgstr "这个直播线结束了"
@@ -2821,6 +3274,10 @@ msgstr "这个直播线结束了"
 #, machine
 msgid "This message can't be read on this device."
 msgstr "此信件无法在此设备上读取 ."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "此信件被删除 ."
 
 #, machine
 msgid "This picture is no longer available."
@@ -2835,10 +3292,22 @@ msgstr "此帖不能显示."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "此帖为 + 的离题%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "这个签注"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "如果这是浏览器的, 此浏览器也会断开聊天 。 它会再次作为一个新设备开始."
+
 #, machine, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "这个语音频道是满的(%(num)s人)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "那些钥匙不再是你的账户了 使用恢复代码,或者重新开始."
 
 #, machine
 msgid "Thou've reached the end of the list!"
@@ -2870,7 +3339,7 @@ msgid "Too long by %(num)s (%(note)s)"
 msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "时间过长 %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "今日请求过多"
 
@@ -2901,13 +3370,21 @@ msgstr "翻译现在不可用."
 msgid "Try again"
 msgstr "再试一次"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "请明天再试。"
 
 #, machine
 msgid "Turn notifications back on"
 msgstr "重新打开通知"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "二要素代码"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "双因子签入被更改,所以在这里再次开始聊天."
 
 #, machine
 msgid "Type words to look for."
@@ -2941,12 +3418,12 @@ msgstr "此时无法删除注释 。 请稍候再试."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "此时无法投票. 请稍候再试."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "取消屏蔽"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "撤销"
 
@@ -2966,17 +3443,13 @@ msgstr "解锁"
 msgid "Unlock your messages"
 msgstr "解锁信件"
 
-#, machine
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "先解锁您的信件: 重新装入页面以输入您的密码 ."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "取消隐藏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "取消置顶"
 
@@ -3032,11 +3505,15 @@ msgstr "用在这里"
 msgid "Use my recovery code instead"
 msgstr "用我的复原密码代替"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "用他们"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "用户名已被占用 :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "用户名可用！"
 
@@ -3117,7 +3594,7 @@ msgstr[0] "视频通话 %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "视频是关闭在这个电话: 你在音频."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "查看原图"
 
@@ -3155,6 +3632,10 @@ msgid "Voice goes browser to browser through the site's relay, so nobody sees an
 msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
 msgstr[0] "语音通过网站的转发器去浏览器,所以没有人看到任何人的地址. 最高为%(num)s人."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "语音符"
+
 #, machine
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "等等, 您的最后更改仍在保存中 ."
@@ -3162,6 +3643,10 @@ msgstr "等等, 您的最后更改仍在保存中 ."
 #, machine
 msgid "Waiting for the app"
 msgstr "等待应用程序"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "我们在这个浏览器上找到了你的聊天"
 
 #, machine
 msgid "We'll show fewer posts like this."
@@ -3182,6 +3667,10 @@ msgstr "这太空怎么了? (可选)"
 #, machine
 msgid "What's wrong with this message? (optional)"
 msgstr "这消息有什么问题? (可选)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "你寄来的文件应该去哪里?"
 
 #, machine
 msgid "Where should your audio go?"
@@ -3208,7 +3697,7 @@ msgstr "谁说的"
 msgid "Who upvoted"
 msgstr "谁投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "为什么"
 
@@ -3223,6 +3712,10 @@ msgstr "为什么这违反你盾的规则? 这将会被展示给任何关注这�
 #, machine
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "为什么这违反你盾的规则? 这将会展示给任何关注这篇文章/评论历史的人."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "为什么删除这一评论? 你的理由在公共日志中显示."
 
 #, machine
 msgid "Working it out…"
@@ -3241,7 +3734,7 @@ msgstr "先写点什么."
 msgid "Write what you want to tell us."
 msgstr "写下你想告诉我们的."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "是的"
 
@@ -3259,7 +3752,7 @@ msgstr "对,取消吧"
 msgid "You"
 msgstr "你们"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "你已经这样做过了"
 
@@ -3275,7 +3768,7 @@ msgstr "你已经报告过了."
 msgid "You already voted on this post."
 msgstr "你已经投票了."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "你已屏蔽 @%(name)s"
 
@@ -3312,7 +3805,7 @@ msgstr "您可以读取此频道, 但不能在其中写入 ."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "你可以看到谁在这里, 但你不能在这个频道说话."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "你无权执行此操作。"
 
@@ -3356,6 +3849,14 @@ msgstr "你离开了太空."
 msgid "You left the call."
 msgstr "你离开了电话."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "你从其他设备上断线了 所以这里重新开始聊天了."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "你用你的两要素恢复代码签了字 所以这里重新开始聊天了."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "你没有跟随 @%(name)s。"
@@ -3363,6 +3864,10 @@ msgstr "你没有跟随 @%(name)s。"
 #, machine
 msgid "You were removed from this Space."
 msgstr "你被从太空中带走了."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "你会得到一个新的恢复代码, 而旧的会停止工作."
 
 #, machine
 msgid "You're doing that too much. Try again later."
@@ -3388,6 +3893,10 @@ msgstr "您的浏览器屏蔽了连接窗口 。 允许弹出此站点, 或在�
 msgid "Your chat devices can't be listed right now."
 msgstr "您的聊天设备现在无法挂载 ."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "您的聊天恢复代码"
+
 #, machine
 msgid "Your chats"
 msgstr "你们的聊天"
@@ -3399,6 +3908,10 @@ msgstr "您的聊天将再次在这个设备上工作, 但来自之前的消息�
 #, machine
 msgid "Your comment could not be posted. Try again."
 msgstr "您的评论无法张贴 。 再试一次."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "您目前的恢复代码将停止工作."
 
 #, machine
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3430,9 +3943,30 @@ msgstr "你的钥匙现在不能显示."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "你的钥匙是用旧密码锁的 在此网站上打开聊天并输入一次恢复代码;然后在这里打开."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "一旦此设备解锁聊天, 您的%(num)s 消息将会被发送 ."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "你的旧恢复代码已经失效了."
+
 #, machine
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "自此聊天密钥被锁定后, 您的密码就变了 。 聊天时你保存的恢复代码打开了它."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "您的密码被更改了, 所以这里重新开始聊天 ."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "您的密码被更改了, 所以这里重新开始聊天 ."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "您的密码被重置, 所以聊天重新开始了 ."
 
 #, machine
 msgid "Your recovery code"
@@ -3441,6 +3975,14 @@ msgstr "您的恢复代码"
 #, machine
 msgid "Your saved templates show up here."
 msgstr "您保存的模板出现在这里 ."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "您的屏幕只能在此通话视频时共享."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "你的屏幕无法共享."
 
 #, machine
 msgid "Your settings have been updated."
@@ -3480,7 +4022,7 @@ msgid "blue"
 msgstr "蓝色"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "评论"
 
@@ -3549,7 +4091,7 @@ msgstr "橙红色"
 msgid "pink"
 msgstr "粉红色"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "帖子"
 

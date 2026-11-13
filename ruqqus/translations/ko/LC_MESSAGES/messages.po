@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 20:16+1100\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -351,7 +351,7 @@ msgstr "%(name)s의 채널"
 msgid "%(name)s's channels - %(site)s"
 msgstr "%(name)s의 채널 - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(name)s's profile - %(site)s"
 msgstr "%(name)s님의 프로필 - %(site)s"
 
@@ -916,7 +916,7 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 
 #. in a post's facts line: the share of its votes that are upvotes ("97%
 #. upvoted")
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% 추천"
 
@@ -952,7 +952,7 @@ msgstr "%(role)s: 쓰기"
 
 #. the member's reputation in the navbar, e.g. "1234 Rep" (Rep: the upvotes
 #. other people gave them)
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(score)s Rep"
 msgstr "평판 %(score)s"
 
@@ -1011,28 +1011,28 @@ msgstr "%(site)s - 오픈, 자유롭고 소셜 플랫폼"
 msgid "%(site)s API Documentation"
 msgstr "%(site)s API 문서"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Administrator, speaking officially"
 msgstr "%(site)s 관리자 공식 발언"
 
 #. the site's name and the feed being read, as a heading
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s All"
 msgstr "%(site)s 전체"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Curations"
 msgstr "%(site)s 큐레이션"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Feeds"
 msgstr "%(site)s 피드"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Following"
 msgstr "%(site)s 팔로잉"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s For You"
 msgstr "%(site)s 추천"
 
@@ -1044,7 +1044,7 @@ msgstr "%(site)s 도움말"
 msgid "%(site)s Homepage"
 msgstr "%(site)s 홈페이지"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Notification"
 msgstr "%(site)s 알림"
 
@@ -1056,11 +1056,11 @@ msgstr "%(site)s 비밀번호 재설정"
 msgid "%(site)s Policies"
 msgstr "%(site)s 정책"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Premium"
 msgstr "%(site)s Premium"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Search"
 msgstr "%(site)s 검색"
 
@@ -1194,6 +1194,14 @@ msgstr "%(who)s 추가 guild moderator @%(name)s"
 msgid "%(who)s approved post %(title)s"
 msgstr "%(who)s 승인 된 게시물 %(title)s"
 
+#, machine, plain1, python-format
+msgid "%(who)s banned %(name)s"
+msgstr "%(who)s 금지 %(name)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s banned the guild +%(guild)s"
+msgstr "%(who)s guild +%(guild)s을 금지"
+
 #, machine, python-format
 msgid "%(who)s cancelled an event"
 msgstr "%(who)s 행사 취소"
@@ -1263,6 +1271,10 @@ msgid "%(who)s deleted a channel category"
 msgstr "%(who)s 채널 범주 삭제"
 
 #, machine, plain1, python-format
+msgid "%(who)s deleted a comment"
+msgstr "%(who)s 댓글 삭제"
+
+#, machine, plain1, python-format
 msgid "%(who)s deleted a flair"
 msgstr "%(who)s 라벨 삭제"
 
@@ -1273,6 +1285,10 @@ msgstr "%(who)s 역할 삭제"
 #, machine, python-format
 msgid "%(who)s deleted a wiki page"
 msgstr "%(who)s wiki 페이지 삭제"
+
+#, machine, plain1, python-format
+msgid "%(who)s deleted post %(title)s"
+msgstr "%(who)s 삭제 된 게시물 %(title)s"
 
 #, machine, python-format
 msgid "%(who)s edited a wiki page"
@@ -1302,6 +1318,10 @@ msgstr "%(who)s 그들의 게시물을 강조 %(title)s"
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s 이 길드에서 댓글을 숨겼습니다"
 
+#, machine, plain1, python-format
+msgid "%(who)s hid a revision of %(title)s"
+msgstr "%(who)s %(title)s의 개정을 숨깁니다"
+
 #, machine, python-format
 msgid "%(who)s hid post %(title)s from this guild"
 msgstr "%(who)s hid post %(title)s 이 길드에서"
@@ -1313,6 +1333,18 @@ msgstr "%(who)s 초대 길드 모더레이터 @%(name)s"
 #, machine, python-format
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s 킥 포스트 %(title)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on %(name)s"
+msgstr "%(who)s %(name)s에서 금지를 해제"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on the guild +%(guild)s"
+msgstr "%(who)s guild +%(guild)s에서 금지를 해제"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the suspension of %(name)s"
+msgstr "%(who)s %(name)s의 서스펜션을 해제"
 
 #, machine, python-format
 msgid "%(who)s made a channel"
@@ -1374,6 +1406,10 @@ msgstr "%(who)s reinstated 게시물 %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s 채널 메시지를 제거"
 
+#, machine, plain1, python-format
+msgid "%(who)s removed a revision of a guild's wiki"
+msgstr "%(who)s guild's wiki의 개정을 제거"
+
 #, machine, python-format
 msgid "%(who)s removed comment"
 msgstr "%(who)s 댓글 제거"
@@ -1413,6 +1449,10 @@ msgstr "%(who)s 게시물의 레이블을 설정 %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
 msgstr "%(who)s guild moderator로 밟아"
+
+#, machine, plain1, python-format
+msgid "%(who)s suspended %(name)s"
+msgstr "%(who)s 이름 * %(name)s"
 
 #, machine, python-format
 msgid "%(who)s switched the wiki"
@@ -1490,7 +1530,7 @@ msgstr "%(who)s stylesheet 업데이트"
 msgid "%(who)s yanked post %(title)s"
 msgstr "%(who)s yanked 게시물 %(title)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "&copy; 2021 %(company)s"
 msgstr "&copy; 2021 %(company)s"
 
@@ -1522,7 +1562,7 @@ msgstr "(개인 장소에서)"
 msgid "(no title)"
 msgstr "( 제목 없음)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(off)"
 msgstr "(꺼짐)"
 
@@ -1542,7 +1582,7 @@ msgstr "(선택)"
 msgid "(required in this guild)"
 msgstr "(이 길드에 필요)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(required)"
 msgstr "(필수)"
 
@@ -1586,7 +1626,7 @@ msgstr "** 법률 요청**"
 msgid "**Press**"
 msgstr "**압력**"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ 항목 추가"
 
@@ -1598,7 +1638,7 @@ msgstr "+%(guild)s 승인 기여자"
 msgid "+%(guild)s CSS - %(site)s Guildmaster Tools"
 msgstr "+ %(guild)s CSS - %(site)s Guild moderator 도구"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Channels"
 msgstr "+%(guild)s 채널"
 
@@ -1606,11 +1646,11 @@ msgstr "+%(guild)s 채널"
 msgid "+%(guild)s Chat Bans"
 msgstr "+%(guild)s 채팅 금지"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Circle"
 msgstr "+%(guild)s 서클"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Comments"
 msgstr "+%(guild)s 댓글"
 
@@ -1618,7 +1658,7 @@ msgstr "+%(guild)s 댓글"
 msgid "+%(guild)s Exiles"
 msgstr "+%(guild)s 개요"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Flair"
 msgstr "+%(guild)s 플레어"
 
@@ -1626,7 +1666,7 @@ msgstr "+%(guild)s 플레어"
 msgid "+%(guild)s Guildmasters - %(site)s Guildmaster Tools"
 msgstr "+%(guild)s 길드 모더레이터 - %(site)s Guild moderator 도구"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Insights"
 msgstr "+%(guild)s 인사이트"
 
@@ -2030,17 +2070,17 @@ msgstr "<strong>브라우저:</strong> %(browser)s"
 msgid "<strong>Email:</strong> %(email)s"
 msgstr "<strong>이메일:</strong> %(email)s"
 
-#, machine
+#, machine, plain2
 msgid "<strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device."
-msgstr "<strong>그렇지 않은 경우,</strong> 비밀번호 변경 그것은 또한 다른 모든 장치를 표시."
+msgstr "<strong>그렇지 않은 경우,</strong> 비밀번호 변경 다른 장치도 분리합니다."
 
 #, machine, python-format
 msgid "<strong>Member bot</strong>: you run it with your own key or pay for its source (for example X). It stays yours, says \"Automated by @%(name)s\" and you manage it."
 msgstr "<strong>회원 봇</strong>: 자체 키로 실행하거나 소스로 지불하십시오 (예 : X). 그것은 당신, 말한다 \"자동 @%(name)s\"당신은 그것을 관리합니다."
 
-#, machine
-msgid "<strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app can't send one."
-msgstr "<strong>아직:</strong> 그림과 파일. 채팅 서버는 파일을 유지하지 않습니다, 그래서 앱은 하나를 보낼 수 없습니다."
+#, machine, plain2
+msgid "<strong>Not in apps:</strong> files, pictures and voice notes. Those sent on this site are kept, encrypted, in the sender's own storage, which an app can't reach, and an app can't send one."
+msgstr "<strong>앱에서:</strong> 파일, 그림 및 음성 메모. 이 사이트에 전송 된 사람들은, 암호화, 보낸 사람의 자신의 저장, 응용 프로그램은 도달 할 수 없습니다, 응용 프로그램은 하나를 보낼 수 없습니다."
 
 #, machine
 msgid "<strong>On this site only:</strong> starting a chat, accepting a message request, making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a call on this server: the site keeps who can reach you as it does here."
@@ -2141,9 +2181,9 @@ msgstr ""
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "@%(name)s has a new password and is signed out everywhere."
-msgstr "@%(name)s는 새로운 암호를 가지고 있으며 어디서나 서명됩니다."
+msgstr "@%(name)s는 새로운 암호를 가지고 있으며 어디서나 차단됩니다."
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2325,6 +2365,13 @@ msgstr ""
 msgid "@%(name)s stepped off as co-author of [your post](%(link)s)."
 msgstr ""
 
+#, python-format
+msgid ""
+"@%(name)s told everyone in #%(channel)s of +%(guild)s.\n"
+"\n"
+"[Open the channel](%(link)s)"
+msgstr ""
+
 #, machine, python-format
 msgid "@%(name)s unblocked."
 msgstr "@%(name)s 차단 해제."
@@ -2403,6 +2450,10 @@ msgstr "A Circle guild는 좋은 개인입니다 : 그 회원만이 그것을보
 #, machine, plain1
 msgid "A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose. Keep it private just for yourself, or make it public so others can follow or fork it."
 msgstr "Curated Feed is your own named collection of guilds and account - like a custom feed, with the 알고리즘 you choose. 자신을 위해 단지 개인을 유지, 또는 그것을 공개 그래서 다른 사람을 따를 수 또는 포크 그것을."
+
+#, machine, plain1
+msgid "A QR code to sign in with. Scan it with your phone, where you are signed in."
+msgstr "A QR 코드를 사용하여 로그인합니다. 휴대 전화로 스캔, 어디에 서명."
 
 #, machine
 msgid "A Space"
@@ -2609,6 +2660,10 @@ msgstr "채팅 앱은 채팅에 로그인하고 싶습니다. <strong>·%(name)s
 #, machine, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
 msgstr "채팅 앱은 %(site)s 계정에 로그인되었습니다. 그렇지 않은 경우, [설정 > 채팅 앱](/settings/chat_apps)에서 서명하고 암호를 변경하십시오."
+
+#, machine, plain2, python-format
+msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
+msgstr "채팅은 대부분의 %(num)s 핀 메시지를 가질 수 있습니다. 첫 번째 언핀."
 
 #, machine, python-format
 msgid "A circle can have %(num)s person at most."
@@ -2997,6 +3052,10 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "게시물의 텍스트는 %(count)s 문자 (중국, 일본어 및 한국어 문자 및 이모티콘 수 2) 수 있습니다."
 
 #, machine, plain1
+msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
+msgstr "그것은 숨겨져있을 때이의 개인 사본, 제거 또는 삭제. 그 저자만, 길드의 길드 모더레이터가 숨겨져 있고 사이트의 관리자가 열릴 수 있고, 이제까지 유지되지 않습니다."
+
+#, machine, plain1
 msgid "A private guild can only go in a private curation."
 msgstr "Private guild는 사적인 curated 급식에서만 갈 수 있습니다."
 
@@ -3120,6 +3179,10 @@ msgstr "역할 이름은 @를 포함 할 수 없습니다 : 손잡이로 읽을 
 msgid "A role name can't contain control or invisible characters."
 msgstr "역할 이름은 제어 또는 보이지 않는 문자를 포함 할 수 없습니다."
 
+#, machine, plain1
+msgid "A rule of the guild"
+msgstr "길드의 규칙"
+
 #, machine
 msgid "A scheduled post needs a title."
 msgstr "예약된 게시물은 제목을 필요로 합니다."
@@ -3171,6 +3234,10 @@ msgstr "Curated Feed의 알고리즘의 시작점. 당신은 길드와 계정을
 msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "이야기는 %(num)s 문자 (중국, 일본어 및 한국어 문자 및 이모티콘 수 2)."
+
+#, machine, plain1
+msgid "A suspension or ban needs a public reason, so the Log can say why."
+msgstr "서스펜션 또는 금지는 공공의 이유를 필요로하므로 로그인은 왜 말할 수 있습니다."
 
 #, machine
 msgid "A template needs some text."
@@ -3252,7 +3319,7 @@ msgstr "단어 또는 구문은 제어 또는 보이지 않는 문자를 포함 
 msgid "A year"
 msgstr "1 년"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "API App"
 msgstr "API 앱"
 
@@ -3264,16 +3331,16 @@ msgstr "API 문서"
 msgid "API requests must be authenticated with an access token. To obtain an access token, follow <a href=\"%(url)s\">these instructions.</a>"
 msgstr "API 요청은 액세스 토큰으로 인증되어야 합니다. 액세스 토큰을 얻기 위해, 따라 <a href=\"%(url)s\">이 지침.</a>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About"
 msgstr "소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "About"
 msgstr "소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: about the guild"
 msgid "About"
 msgstr "소개"
@@ -3282,11 +3349,11 @@ msgstr "소개"
 msgid "About @%(name)s"
 msgstr "ღ♥ღ%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About Guild"
 msgstr "길드 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About this account"
 msgstr "이 계정 정보"
 
@@ -3336,7 +3403,7 @@ msgstr "계정 암호 (아이 필터를 켜기 위해 필요)"
 msgid "Account to add"
 msgstr "계정 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts"
 msgstr "계정"
 
@@ -3348,7 +3415,7 @@ msgstr "계정 차단"
 msgid "Accounts you block are not told, but they may work it out if they try to comment on something of yours."
 msgstr "당신이 블록이 말하지 않는 계정, 그러나 그들은 당신이 당신의 무언가에 댓글을 시도하는 경우 밖으로 작동 할 수 있습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts you follow"
 msgstr "내가 팔로우하는 계정"
 
@@ -3360,7 +3427,7 @@ msgstr "당신이 따르는 계정은 익명 게시물에 대해 선택할 수 �
 msgid "Accounts you mute"
 msgstr "계정으로"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Achievements"
 msgstr "업적"
 
@@ -3397,17 +3464,17 @@ msgstr "최근 활동"
 msgid "Activism"
 msgstr "활동"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Activity"
 msgstr "활동순"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Add"
 msgstr "추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Add"
 msgstr "추가할 곳"
@@ -3416,7 +3483,7 @@ msgstr "추가할 곳"
 msgid "Add %(name)s"
 msgstr "%(name)s 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a GIF"
 msgstr "GIF 추가"
 
@@ -3432,7 +3499,7 @@ msgstr "관련 제품"
 msgid "Add a flair"
 msgstr "라벨 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a link"
 msgstr "링크 추가"
 
@@ -3444,7 +3511,7 @@ msgstr "메시지 추가"
 msgid "Add a message (optional)"
 msgstr "메시지 추가 (옵션)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a picture"
 msgstr "사진 추가"
 
@@ -3456,7 +3523,7 @@ msgstr "사진 추가 (사용할 수 없음)"
 msgid "Add a picture."
 msgstr "사진 추가."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a poll"
 msgstr "투표 추가"
 
@@ -3468,11 +3535,11 @@ msgstr "자원 추가"
 msgid "Add a screenshot"
 msgstr "스크린 샷 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a sound"
 msgstr "오디오 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a video"
 msgstr "동영상 추가"
 
@@ -3495,11 +3562,11 @@ msgstr "계정 추가"
 msgid "Add an email to secure your account in case you forget your password."
 msgstr "비밀번호를 잊으셨나요."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an emoji"
 msgstr "이모지 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an image"
 msgstr "이미지 추가"
 
@@ -3511,7 +3578,12 @@ msgstr "당신의 계정에 대한 적어도 하나의 피드를 추가하여 �
 msgid "Add at least one person."
 msgstr "1명 이상 추가."
 
-#, glossary, machine, plain1
+#, machine, plain2, python-format
+msgid "Add at most %(num)s person at a time."
+msgid_plural "Add at most %(num)s people at a time."
+msgstr[0] "한 번에 가장 %(num)s 사람들에 추가하십시오."
+
+#, glossary, machine, plain2
 msgid "Add audio"
 msgstr "오디오 추가"
 
@@ -3556,15 +3628,15 @@ msgstr "당신의 게시물에 텍스트를 추가 ..."
 msgid "Add to calendar"
 msgstr "달력에 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to circles"
 msgstr "서클에 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to curation"
 msgstr "큐레이션에 추가"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to your post"
 msgstr "게시물에 추가"
 
@@ -3576,7 +3648,7 @@ msgstr "당신의 이야기에 추가"
 msgid "Add user"
 msgstr "사용자 정의"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add your comment..."
 msgstr "댓글을 입력하세요..."
 
@@ -3605,7 +3677,7 @@ msgstr "추가. 그것은 한 번 관리자가 그것을 승인."
 msgid "Address, page or post"
 msgstr "주소, 페이지 또는 게시물"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "관리자"
 
@@ -3622,20 +3694,20 @@ msgstr "관리자는 이름을 변경할 수 없습니다."
 msgid "Admins can't disconnect Discord."
 msgstr "관리자는 Discord을 차단할 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "the Advanced filter, as a short tab"
 msgid "Advanced"
 msgstr "고급"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter"
 msgstr "고급 필터"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter:"
 msgstr "고급 필터:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced search"
 msgstr "고급 검색"
 
@@ -3675,17 +3747,21 @@ msgstr "경고와 헤드 라인은 각 라인에 이름을 붙인 소스에서 �
 msgid "Algorithm"
 msgstr "Algorithm, 그리스"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "Algorithm 저장."
+
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
 msgstr "전체"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "filter"
 msgid "All"
 msgstr "전체"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "All"
 msgstr "전체"
@@ -3695,7 +3771,7 @@ msgid "All %(num)s channel"
 msgid_plural "All %(num)s channels"
 msgstr[0] "모든 %(num)s 채널"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All Time"
 msgstr "전체 기간"
 
@@ -3703,7 +3779,7 @@ msgstr "전체 기간"
 msgid "All events"
 msgstr "모든 행사"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All guilds"
 msgstr "모든 길드"
 
@@ -3711,15 +3787,15 @@ msgstr "모든 길드"
 msgid "All of these words"
 msgstr "이 단어의 모든"
 
-#, machine
+#, machine, plain2
 msgid "All other devices have been logged out"
-msgstr "다른 모든 장치가 로그아웃되었습니다"
+msgstr "다른 모든 장치가 분리되었습니다"
 
 #, machine
 msgid "All pages"
 msgstr "모든 페이지"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All posts"
 msgstr "전체"
 
@@ -3743,7 +3819,7 @@ msgstr "모든 시간. 길드에 앞으로 자신의 투표와 의견이 있습�
 msgid "All tips are anonymous :)"
 msgstr "모든 팁은 익명입니다 :)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All topics"
 msgstr "모든 주제"
 
@@ -3828,12 +3904,24 @@ msgid "An account with that username or email already exists."
 msgstr "사용자 이름 또는 이메일이 이미 존재합니다."
 
 #, machine, plain1
+msgid "An admin cleared the age answer on your account. You'll be asked again."
+msgstr "관리자는 귀하의 계정에 연령 응답을 취소했습니다. 자주 묻는 질문."
+
+#, machine, plain1
 msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
 msgstr "관리자는 18 이상임을 확인했습니다. 당신의 계정은 더 이상 아이 자물쇠가 없습니다. 워드 필터가 변경되지 않았습니다: 설정에서 변경할 수 있습니다 > 콘텐츠 및 어린이 필터를 설정하면 비밀번호가 필요합니다."
 
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "관리자는 +%(guild)s 민감한 것으로 표시되어 있습니다. 그 메시지는 모든 것을 남았고 누군가가 민감한 콘텐츠를 볼 수 없으면됩니다. 관리자 만이 변경할 수 있습니다."
+
+#, python-format
+msgid "An admin marked [your post](%(link)s) sensitive: it is blurred until someone clicks to reveal it, and left out of All and For You unless they choose to see sensitive content. Only an admin can change this."
+msgstr ""
+
+#, machine, plain1
+msgid "An admin marked this account as belonging to someone 18 or over. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "관리자는 누군가 18 이상으로이 계정을 표시했습니다. 워드 필터가 변경되지 않았습니다: 설정에서 변경할 수 있습니다 > 콘텐츠 및 어린이 필터를 설정하면 비밀번호가 필요합니다."
 
 #, machine, plain1
 msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
@@ -3874,6 +3962,10 @@ msgstr "관리자는 계정의 자동화된 게시물을 차단했습니다. 귀
 #, machine, plain1, python-format
 msgid "An admin unlocked the sensitive setting of +%(guild)s. Its guildmasters can change it again."
 msgstr "관리자는 +%(guild)s의 민감한 설정을 해제했습니다. 그것의 길드 모더레이터는 그것을 다시 바꿀 수 있습니다."
+
+#, python-format
+msgid "An admin unlocked the sensitive setting of [your post](%(link)s). You can change it again."
+msgstr ""
 
 #, machine
 msgid "An admin unlocked the sensitive setting on your account. You can change it in Settings > Content."
@@ -3972,7 +4064,7 @@ msgstr "애니메이션 & 만화"
 msgid "Announcement channel"
 msgstr "공지사항"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Announcements from +%(guild)s"
 msgstr "+%(guild)s 공지"
 
@@ -3985,20 +4077,20 @@ msgid "Annular solar eclipse"
 msgstr "Annular 태양 eclipse"
 
 #. short for Anonymous: who wrote a deleted post
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anon"
 msgstr "익명"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymity"
 msgstr "익명"
 
 #. a kind of post in the Post type filter: posts made anonymously
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "익명"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "label"
 msgid "Anonymous"
 msgstr "익명"
@@ -4019,11 +4111,15 @@ msgstr "또 다른 계정은 현재 주소를 사용합니다. 다른 설정을 
 msgid "Another language you read"
 msgstr "당신이 읽는 다른 언어"
 
+#, machine, plain1
+msgid "Another reason"
+msgstr "다른 이유"
+
 #, machine
 msgid "Answer Going or Interested."
 msgstr "답하기 또는 관심."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any account"
 msgstr "모든 계정"
 
@@ -4039,11 +4135,11 @@ msgstr "모든 저자는 게시 할 수 있습니다"
 msgid "Any author can publish."
 msgstr "모든 저자는 게시 할 수 있습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any guild"
 msgstr "모든 길드"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any language"
 msgstr "모든 언어"
 
@@ -4069,12 +4165,12 @@ msgstr "이 단어들"
 msgid "Anyone"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Anyone"
 msgstr "누구나"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anyone can see it"
 msgstr "누구나 볼 수 있음"
 
@@ -4086,7 +4182,7 @@ msgstr "누구든지 당신이 따르는 것을 볼 수 있습니다, 누가 당
 msgid "App Name"
 msgstr "앱 이름"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Appearance"
 msgstr "디자인"
 
@@ -4111,7 +4207,7 @@ msgctxt "button"
 msgid "Apply"
 msgstr "적용"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approve"
 msgstr "승인"
 
@@ -4161,15 +4257,23 @@ msgstr "승인된 회원과 길드 모더레이터"
 msgid "Approved since"
 msgstr "이후의 승인"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approved users"
 msgstr "승인된 사용자"
+
+#, machine, plain1
+msgid "Approved. Press Confirm on that screen to finish signing in."
+msgstr "인증. 로그인을 완료하려면 화면에 확인을 누릅니다."
 
 #, machine
 msgid "Approved: run by the site"
 msgstr "승인: 사이트에 의해 실행"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Approving a code needs script, which is off in this browser. Sign in on the computer with your password instead."
+msgstr "이 브라우저에서 코드가 필요한 스크립트를 Approving. 비밀번호로 컴퓨터에 로그인하십시오."
+
+#, glossary, machine, plain2
 msgid "Apps"
 msgstr "앱"
 
@@ -4193,7 +4297,7 @@ msgstr "고고학"
 msgid "Architecture"
 msgstr "회사연혁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Archived post"
 msgstr "보관된 게시물"
 
@@ -4205,7 +4309,7 @@ msgstr "인공지능"
 msgid "Artisan"
 msgstr "아티스안"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Arts"
 msgstr "예술"
 
@@ -4318,19 +4422,19 @@ msgstr "이름 *"
 msgid "Auto-moderation"
 msgstr "자동 모드"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated"
 msgstr "봇"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated account"
 msgstr "봇 계정"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(owner)s"
 msgstr "운영자: %(owner)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(site)s"
 msgstr "%(site)s 공식 봇"
 
@@ -4346,11 +4450,11 @@ msgstr "계정의 자동화된 게시는 승인되지 않았습니다. 관리자
 msgid "Automated posting on your own account is set up in its own section."
 msgstr "자신의 계정에 자동 게시는 자체 섹션에서 설정됩니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatic"
 msgstr "자동"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "자동"
@@ -4367,7 +4471,7 @@ msgstr "자동적인 스팸 제거. 이 게시물의 제작자가 너무 많은 
 msgid "Automatic, not an official warning"
 msgstr "자동, 공식 경고 없음"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatically Join Chats"
 msgstr "채팅 자동 참여"
 
@@ -4375,7 +4479,7 @@ msgstr "채팅 자동 참여"
 msgid "Automatically join Guild chat channels."
 msgstr "자동으로 Guild 채팅 채널에 가입."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automaton"
 msgstr "봇"
 
@@ -4384,7 +4488,7 @@ msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "Automod 설정"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Autoplay"
 msgstr "자동 재생"
 
@@ -4400,7 +4504,7 @@ msgstr "서버가 분쇄 된 동안 Ruqqus에 가입 할 수 관리 된 8535 Ten
 msgid "Awarded to users who provide major technical expertise. Current awardees: @mutageno, @AmoralAtBest, @p2hang"
 msgstr "주요 기술 전문성을 제공하는 사용자에게 수여됩니다. 현재 수상자: @mutageno, @AmoralAtBest, @p2hang"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome T-Shirts"
 msgstr "멋진 티셔츠"
 
@@ -4409,12 +4513,16 @@ msgstr "멋진 티셔츠"
 msgid "BBC Top Stories"
 msgstr "BBC 탑 스토리"
 
+#, machine, plain1
+msgid "Back"
+msgstr "이름 *"
+
 #, machine
 msgctxt "button"
 msgid "Back"
 msgstr "뒤"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Back"
 msgstr "이전"
@@ -4438,6 +4546,10 @@ msgstr "초안으로 돌아가기"
 #, machine
 msgid "Back to the history"
 msgstr "본문 바로가기"
+
+#, machine, plain1
+msgid "Back to the log"
+msgstr "로그인"
 
 #, machine
 msgid "Back to the post"
@@ -4512,7 +4624,7 @@ msgstr "Bantu 복도"
 msgid "Baseball"
 msgstr "야구"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Based"
 msgstr "Based"
@@ -4549,7 +4661,7 @@ msgstr "+%(guild)s의 회원이 되려면 이메일이 필요하지 않습니다
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "커뮤니티의 일원이 되려면 이메일이 필요하지 않습니다. 계정 만들기."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
 msgstr "Ruqqus 가입 30일 미만"
 
@@ -4569,7 +4681,7 @@ msgstr "저녁 전에 시작"
 msgid "Behind the scenes"
 msgstr "무대 뒤에서"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Beta"
 msgstr "베타"
 
@@ -4581,7 +4693,7 @@ msgstr "Beta 사용자"
 msgid "Bicycles"
 msgstr "뚱 베어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bio"
 msgstr "소개"
 
@@ -4601,7 +4713,7 @@ msgstr "새워킹"
 msgid "Block &amp; Mute"
 msgstr "블록 &amp; 이름 *"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s"
 msgstr "@%(name)s 차단"
 
@@ -4613,11 +4725,11 @@ msgstr "블록 계정"
 msgid "Block and Mute - %(site)s"
 msgstr "블록과 분 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block and mute"
 msgstr "차단 및 뮤트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block user"
 msgstr "사용자 차단"
 
@@ -4651,7 +4763,7 @@ msgstr "책 토론"
 msgid "Book Recommendations"
 msgstr "자주 묻는 질문"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Bookmark"
 msgstr "북마크"
@@ -4665,11 +4777,11 @@ msgid "Bookmark, %(num)s bookmark"
 msgid_plural "Bookmark, %(num)s bookmarks"
 msgstr[0] "책갈피, %(num)s 북마크"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarked"
 msgstr "북마크함"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarks"
 msgstr "북마크"
 
@@ -4705,7 +4817,7 @@ msgstr "Bot 사용자 이름"
 msgid "Bot's name"
 msgstr "Bot의 이름"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bots"
 msgstr "봇"
 
@@ -4753,6 +4865,10 @@ msgstr "뉴스 레터"
 msgid "Briefly describe what the guild is about..."
 msgstr "Briefly 설명 무엇 guild 이다 약..."
 
+#, machine, plain1
+msgid "Briefly say what you changed (optional)"
+msgstr "(선택 사항)"
+
 #, machine
 msgid "Bronze Patron"
 msgstr "청동 Patron"
@@ -4760,6 +4876,10 @@ msgstr "청동 Patron"
 #, machine
 msgid "Bronze Recruiter"
 msgstr "청동 Recruiter"
+
+#, machine, plain1
+msgid "Browser"
+msgstr "이름 *"
 
 #, machine
 msgid "Browser not recorded"
@@ -4793,7 +4913,7 @@ msgstr "Premium없이 동전을 구입하면 일주일에 첫 번째 것을 재�
 msgid "By royal decree, we are unable to show this to you right now."
 msgstr "왕 법령에 의해, 우리는 지금 당신에게 이것을 보여줄 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "CSS"
 msgstr "CSS"
 
@@ -4810,7 +4930,7 @@ msgstr "이름 *"
 msgid "Call controls"
 msgstr "연락처"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Calls"
 msgstr "통화"
 
@@ -4828,6 +4948,10 @@ msgid "Calls end after %(num)s hour."
 msgid_plural "Calls end after %(num)s hours."
 msgstr[0] "%(num)s 시간 후에 종료됩니다."
 
+#, machine, plain2
+msgid "Calls only"
+msgstr "통화 만"
+
 #, machine
 msgid "Camera off"
 msgstr "카메라 오프"
@@ -4840,7 +4964,7 @@ msgstr "카메라 켜기"
 msgid "Camping"
 msgstr "채용 정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "취소"
 
@@ -4882,7 +5006,7 @@ msgstr "이름 *"
 msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
 msgstr "자본, 악센트 및 반복 된 문자는 아무것도 변경하지 않습니다 : 단어는 몇 번 작성 한 문자와 악센트와 같은 자본을 읽습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Captions"
 msgstr "자막"
 
@@ -4890,7 +5014,7 @@ msgstr "자막"
 msgid "Car Repair"
 msgstr "자동차 수리"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "Card"
 msgstr "카드"
@@ -4919,7 +5043,7 @@ msgstr "당신으로 던지기 투표"
 msgid "Casual Discussion"
 msgstr "캐주얼 토론"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Categorical"
 msgstr "카테고리별"
 
@@ -4967,11 +5091,11 @@ msgstr "범주 이름"
 msgid "Category: %(category)s"
 msgstr "범주: %(category)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Category: %(category)s / %(subcategory)s"
 msgstr "카테고리: %(category)s / %(subcategory)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Category: Uncategorized"
 msgstr "카테고리: 미분류"
 
@@ -4987,7 +5111,7 @@ msgstr "회사 소개"
 msgid "Central Andes"
 msgstr "중앙 Andes"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Change"
 msgstr "변경"
@@ -5000,7 +5124,7 @@ msgstr "비밀번호"
 msgid "Change Username"
 msgstr "사용자 이름"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change categories"
 msgstr "카테고리 변경"
 
@@ -5009,7 +5133,7 @@ msgctxt "guildmaster action"
 msgid "Change invite"
 msgstr "공지사항"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change languages"
 msgstr "언어 변경"
 
@@ -5022,11 +5146,11 @@ msgctxt "guildmaster action"
 msgid "Change perms"
 msgstr "변화 perms"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change post types"
 msgstr "게시물 유형 변경"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change regions"
 msgstr "지역 변경"
 
@@ -5034,7 +5158,7 @@ msgstr "지역 변경"
 msgid "Change the capitilization of your guild's name."
 msgstr "당신의 guild의 이름의 capitilization를 변경하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change the default sorting for posts."
 msgstr "게시물의 기본 정렬 방식을 변경합니다."
 
@@ -5066,7 +5190,7 @@ msgstr "비밀번호"
 msgid "Change your password."
 msgstr "비밀번호 변경."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change your word filter"
 msgstr "단어 필터 변경"
 
@@ -5082,12 +5206,20 @@ msgstr "관련 기사"
 msgid "Changing these rules always needs every counted author."
 msgstr "이 규칙을 변경하면 항상 모든 계산 된 저자가 필요합니다."
 
+#, machine, plain1
+msgid "Changing your password doesn't end the access of an app you allowed. Check your apps and your chat apps in Settings too."
+msgstr "비밀번호 변경은 허용된 앱의 액세스가 종료되지 않습니다. 설정에서 앱과 채팅 앱을 확인하십시오."
+
+#, machine, plain2
+msgid "Changing your password signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "비밀번호가 다른 장치와 채팅 앱에서 채팅을 차단하고, 채팅을 제외한이 브라우저가 여기에 서명한 이후로 사용되었습니다."
+
 #, machine
 msgctxt "chat kind"
 msgid "Channel"
 msgstr "채널 :"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Channel"
 msgstr "채널"
@@ -5140,7 +5272,7 @@ msgstr "채널 unpin"
 msgid "Channel's own rules"
 msgstr "채널의 자신의 규칙"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "채널"
 
@@ -5152,25 +5284,25 @@ msgstr "채널은 여기서 +%(guild)s의 회원 이야기, guild의 채팅 탭�
 msgid "Charter Supporter"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "채팅"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading"
 msgid "Chat"
 msgstr "채팅"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Chat"
 msgstr "채팅"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Chat - %(site)s"
 msgstr "채팅 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat apps"
 msgstr "채팅 앱"
 
@@ -5182,9 +5314,45 @@ msgstr "채팅 앱 - %(site)s"
 msgid "Chat apps aren't switched on for this site yet."
 msgstr "채팅 앱은이 사이트에 아직 전환되지 않습니다."
 
+#, machine, plain1
+msgid "Chat can't start right now. Try again in a moment."
+msgstr "지금 채팅을 시작할 수 없습니다. 순간에 다시 시도."
+
+#, machine, plain2
+msgid "Chat couldn't take those keys."
+msgstr "채팅은 그 키를 취할 수 없습니다."
+
+#, machine, plain2
+msgid "Chat isn't answering right now. Try again in a minute."
+msgstr "채팅은 지금 당장 응답하지 않습니다. 1 분에 다시 시도하십시오."
+
 #, machine
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "채팅은 지금 당장 응답하지 않습니다. 순간에 다시 시도."
+
+#, machine, plain1
+msgid "Chat isn't available"
+msgstr "채팅은 사용할 수 없습니다"
+
+#, machine, plain1
+msgid "Chat isn't available for your account right now. The site's admins have been told."
+msgstr "지금 계정을 사용할 수 없습니다. 사이트의 관리자는 말했다."
+
+#, machine, plain2
+msgid "Chat isn't set up for your account yet."
+msgstr "채팅은 아직 계정을 설정하지 않습니다."
+
+#, machine, plain2
+msgid "Chat isn't set up on your account yet. Open Chat once to set it up and get your recovery code."
+msgstr "채팅은 아직 계정에서 설정되지 않습니다. 한 번 채팅을 열고 복구 코드를 얻을."
+
+#, machine, plain2, python-format
+msgid "Chat was started over on your %(site)s account"
+msgstr "채팅은 %(site)s 계정에서 시작되었습니다"
+
+#, machine, plain1
+msgid "Chat with this account isn't available right now. The site's admins have been told."
+msgstr "이 계정과 채팅은 지금 사용할 수 없습니다. 사이트의 관리자는 말했다."
 
 #, machine, plain1
 msgid "Chat, group chats and calls"
@@ -5195,7 +5363,7 @@ msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban 사용자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "채팅"
 
@@ -5293,6 +5461,10 @@ msgstr "어떻게 결정하고 누가 게시 할 수 있는지 선택하십시�
 msgid "Choose how long a proposal stays open."
 msgstr "긴 제안이 어떻게 열려 있는지 선택하십시오."
 
+#, machine, plain2
+msgid "Choose how long messages last."
+msgstr "긴 메시지가 지속되는 방법을 선택하십시오."
+
 #, machine
 msgid "Choose how long people wait between messages."
 msgstr "긴 사람들이 메시지를 기다립니다."
@@ -5336,6 +5508,10 @@ msgstr "어떤 종류의 피드백을 선택하십시오."
 #, machine
 msgid "Choose what to propose."
 msgstr "제안하는 것을 선택하십시오."
+
+#, machine, plain2
+msgid "Choose what you're told of."
+msgstr "당신이 말한 것을 선택하십시오."
 
 #, machine
 msgid "Choose when an author stops being counted."
@@ -5401,7 +5577,7 @@ msgstr "크리스마스 이브"
 msgid "Chronic Illness"
 msgstr "만성 질병"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Circle"
 msgstr "서클"
@@ -5422,11 +5598,11 @@ msgstr "당신이 지불하는 원형 길드"
 msgid "Circle member"
 msgstr "Circle 회원"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "서클"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Circles"
 msgstr "서클"
@@ -5447,7 +5623,7 @@ msgstr "한국어"
 msgid "Cleaning & Organizing"
 msgstr "청소 & 구성"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: clear the advanced filter"
 msgid "Clear"
 msgstr "지우기"
@@ -5468,7 +5644,7 @@ msgstr "고객 ID"
 msgid "Client Secret"
 msgstr "고객 비밀"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "닫기"
 
@@ -5476,7 +5652,7 @@ msgstr "닫기"
 msgid "Close Friends are never shown on any list."
 msgstr "가까운 친구는 어떤 목록에 표시되지 않습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close panel"
 msgstr "패널 닫기"
 
@@ -5500,7 +5676,7 @@ msgstr "Co-author 초대 - %(site)s"
 msgid "Co-authored"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Co-authors"
 msgstr "공동 작성자"
 
@@ -5524,11 +5700,11 @@ msgstr "커피 & 차"
 msgid "Coin balance:"
 msgstr "동전 균형:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Coins"
 msgstr "코인"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Coins"
 msgstr "코인"
@@ -5561,7 +5737,7 @@ msgstr "동전, 팁, Premium 및 유료 원"
 msgid "Collaborative"
 msgstr "회사연혁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Collapse"
 msgstr "접기"
 
@@ -5581,7 +5757,7 @@ msgstr "색깔: 백색"
 msgid "Coloured: a post with mostly upvotes shows its upvotes in <span class=\"font-weight-bold vote-ratio-10\">blue</span>, one with mostly downvotes in <span class=\"font-weight-bold vote-ratio-0\">red</span>, and anything between in a shade between. Hover a score to see both counts."
 msgstr "착색된: 다량 upvotes를 가진 포스트는 그것의 upvotes를 안으로 보여줍니다 <span class=\"font-weight-bold vote-ratio-10\">뚱 베어</span>, 주로 downvotes와 함께 <span class=\"font-weight-bold vote-ratio-0\">빨간</span>, 그리고 사이 그늘에서 무엇이든. 두 개를 볼 수있는 점수를 배로."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Combat Sports"
 msgstr "격투 스포츠"
 
@@ -5601,7 +5777,7 @@ msgstr "만화 & 만화"
 msgid "Coming up"
 msgstr "가입하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
 msgstr "댓글 달기"
@@ -5618,7 +5794,7 @@ msgstr "댓글 익명으로: 다른 사용자는 당신의 이름을 볼 수 없
 msgid "Comment bookmarked."
 msgstr "댓글 책갈피."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "댓글이 게시되었습니다!"
 
@@ -5626,11 +5802,11 @@ msgstr "댓글이 게시되었습니다!"
 msgid "Commenting"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments"
 msgstr "댓글"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Comments"
 msgstr "댓글"
@@ -5652,11 +5828,11 @@ msgstr "댓글 숨겨진 또는 제거"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "댓글 익명 게시물 익명"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments:"
 msgstr "댓글:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Commercial promotion"
 msgstr "유료 광고"
 
@@ -5692,6 +5868,10 @@ msgstr "이 버전 비교"
 msgid "Computers"
 msgstr "컴퓨터"
 
+#, machine, plain1
+msgid "Confirm"
+msgstr "이름 *"
+
 #, machine
 msgid "Confirm New Password"
 msgstr "새 비밀번호"
@@ -5704,11 +5884,15 @@ msgstr "비밀번호"
 msgid "Confirm my age"
 msgstr "내 나이"
 
+#, machine, plain2
+msgid "Confirm with your password again."
+msgstr "비밀번호 재설정."
+
 #, machine, plain1
 msgid "Confirm your age"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Connect"
 msgstr "소셜"
 
@@ -5740,17 +5924,17 @@ msgstr "로그인 - %(site)s"
 msgid "Console"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contact"
 msgstr "문의하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Contact"
 msgstr "문의하기"
 
 #. a group of post types in the Post type filter (text, links, pictures...)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content"
 msgstr "콘텐츠"
 
@@ -5762,7 +5946,7 @@ msgstr "콘텐츠 필터"
 msgid "Content awarded:"
 msgstr "수여되는 내용:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content disclosure"
 msgstr "콘텐츠 고지"
 
@@ -5770,16 +5954,24 @@ msgstr "콘텐츠 고지"
 msgid "Content immediately before this action:"
 msgstr "이 활동의 앞에 즉시 내용:"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Content standards"
+msgstr "내용 기준"
+
+#, glossary, machine, plain2
 msgid "Context"
 msgstr "문맥 보기"
+
+#, machine, plain1
+msgid "Continue"
+msgstr "계속하기"
 
 #, machine
 msgctxt "button"
 msgid "Continue"
 msgstr "계속"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Continuous scroll"
 msgstr "연속 스크롤"
 
@@ -5788,11 +5980,11 @@ msgctxt "guildmaster action"
 msgid "Contrib user"
 msgstr "Contrib 사용자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute"
 msgstr "기여하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute Code"
 msgstr "코드 기여하기"
 
@@ -5838,15 +6030,15 @@ msgctxt "button"
 msgid "Copy"
 msgstr "복사"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy Link"
 msgstr "링크 복사"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link"
 msgstr "링크 복사"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link to profile"
 msgstr "프로필 링크 복사"
 
@@ -5883,6 +6075,10 @@ msgid "Counter-Culture"
 msgstr "카운터 컬쳐"
 
 #, machine, plain1
+msgid "Country"
+msgstr "이름 *"
+
+#, machine, plain1
 msgid "Country Music"
 msgstr "국가 음악"
 
@@ -5894,7 +6090,7 @@ msgstr "결합된 길드 커버"
 msgid "Crafts"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bottom bar button that opens Create post"
 msgid "Create"
 msgstr "만들기"
@@ -5907,7 +6103,7 @@ msgstr "&amp; 이동"
 msgid "Create Curation"
 msgstr "Curated 피드 생성"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create Guild"
 msgstr "길드 만들기"
 
@@ -5931,7 +6127,7 @@ msgstr "길드 만들기 - %(site)s"
 msgid "Create a community for something you love."
 msgstr "당신이 사랑하는 무언가를 위한 공동체를 창조하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a curation"
 msgstr "큐레이션 만들기"
 
@@ -5943,7 +6139,7 @@ msgstr "Guild 만들기"
 msgid "Create a key"
 msgstr "키 만들기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a post"
 msgstr "게시물 만들기"
 
@@ -5964,7 +6160,7 @@ msgctxt "guildmaster action"
 msgid "Create guild"
 msgstr "Guild 만들기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create post"
 msgstr "게시물 만들기"
 
@@ -5980,7 +6176,7 @@ msgstr "계정 만들기."
 msgid "Creative Writing"
 msgstr "크리에이티브 글쓰기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio"
 msgstr "Creator Studio"
 
@@ -5988,7 +6184,7 @@ msgstr "Creator Studio"
 msgid "Creator Studio - %(site)s"
 msgstr "제작자 스튜디오 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio is part of Premium"
 msgstr "Creator Studio는 프리미엄 전용입니다"
 
@@ -5996,7 +6192,7 @@ msgstr "Creator Studio는 프리미엄 전용입니다"
 msgid "Creator Studio: your earnings and paid circles"
 msgstr "Creator Studio: 당신의 수입 및 유료 원"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator fund"
 msgstr "크리에이터 펀드"
 
@@ -6016,7 +6212,11 @@ msgstr "범죄 및 법원"
 msgid "Crime & Mystery"
 msgstr "범죄 및 미스터리"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Criminal activity and prohibited conduct"
+msgstr "범죄 행위 및 금지 행위"
+
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "오글"
 
@@ -6028,15 +6228,15 @@ msgstr "프로젝트"
 msgid "Cuisine"
 msgstr "【특전】"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Culture"
 msgstr "문화"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curation"
 msgstr "큐레이션"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curations"
 msgstr "큐레이션"
 
@@ -6058,7 +6258,7 @@ msgstr[0] "현재 균형: <span class=\"text-black font-weight-bold\">%(num)s �
 msgid "Custom Filters"
 msgstr "주문 필터"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom Stickers"
 msgstr "맞춤 스티커"
 
@@ -6066,7 +6266,7 @@ msgstr "맞춤 스티커"
 msgid "Custom URI scheme can be used. Separate multiple options with comma."
 msgstr "Custom URI 계획은 사용될 수 있습니다. comma를 가진 분리되는 다수 선택권."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom User Feed"
 msgstr "사용자 맞춤 피드"
 
@@ -6114,7 +6314,7 @@ msgstr "위험 구역"
 msgid "Danubian Steppe"
 msgstr "댄비안 Steppe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "다크 모드"
 
@@ -6138,16 +6338,16 @@ msgstr "표시된 날짜는 달 광경에 따라 달라지고 어느 날도 다�
 msgid "Dating Advice"
 msgstr "데이트 Advice"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Day"
 msgstr "날짜"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Day"
 msgstr "날짜"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Day"
 msgstr "오늘"
@@ -6194,15 +6394,15 @@ msgctxt "button"
 msgid "Decline"
 msgstr "(버튼)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default"
 msgstr "기본"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Sorting"
 msgstr "기본 정렬"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Time Filter"
 msgstr "기본 기간 필터"
 
@@ -6219,7 +6419,7 @@ msgctxt "button"
 msgid "Delete"
 msgstr "삭제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Delete"
 msgstr "삭제"
@@ -6372,7 +6572,7 @@ msgstr "모두 선택"
 msgid "Designate whether your guild discusses sensitive topics."
 msgstr "당신의 길드가 민감한 주제에 대해 설명합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Details"
 msgstr "세부 정보"
 
@@ -6466,13 +6666,13 @@ msgstr "연결 Dailymotion? 동영상에 이미 채널을 계속 재생."
 msgid "Disconnect Discord"
 msgstr "연결 Discord"
 
-#, machine
-msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing."
-msgstr "연결 Google? Google Drive에 저장된 사진 및 오디오는 게시물에 표시됩니다. YouTube에 대한 동영상이 재생됩니다."
+#, machine, plain2
+msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts, and files you sent in chats from it can no longer be opened. Videos on YouTube keep playing."
+msgstr "연결 Google? Google Drive에 저장된 사진 및 오디오 게시물을 표시하고, 파일이 더 이상 열 수 없습니다. YouTube에 대한 동영상이 재생됩니다."
 
-#, machine
-msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts."
-msgstr "연결 OneDrive? 사진 및 오디오는 게시물에 표시됩니다."
+#, machine, plain2
+msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts, and files you sent in chats from it can no longer be opened."
+msgstr "연결 OneDrive? 사진과 오디오는 게시물을 표시하고, 파일이 더 이상 열 수 없습니다."
 
 #, machine
 msgid "Disconnect? Images and audio from this storage will stop showing in your posts."
@@ -6486,7 +6686,7 @@ msgstr "연결."
 msgid "Disconnecting your Discord account will remove you from the %(site)s Discord server."
 msgstr "Discord 계정이 %(site)s Discord 서버에서 제거됩니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discord Server"
 msgstr "Discord 서버"
 
@@ -6494,7 +6694,7 @@ msgstr "Discord 서버"
 msgid "Discord account already linked."
 msgstr "Discord 계정이 이미 연결되었습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover Curations"
 msgstr "큐레이션 둘러보기"
 
@@ -6502,7 +6702,7 @@ msgstr "큐레이션 둘러보기"
 msgid "Discover amazing communities across <span class=\"text-purple\">%(site)s</span>."
 msgstr "주변의 놀라운 커뮤니티를 만나보세요 <span class=\"text-purple\">%(site)s</span>·"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover guilds"
 msgstr "길드 둘러보기"
 
@@ -6532,12 +6732,12 @@ msgstr "표시 이름"
 msgid "Display name"
 msgstr "표시 이름"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Disputed"
 msgstr "논란"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Distinguish"
 msgstr "공식 표시"
 
@@ -6561,26 +6761,38 @@ msgstr "계정이 없나요? <a href=\"%(url)s\" class=\"font-weight-bold toggle
 msgid "Don't quote"
 msgstr "견적 요청"
 
+#, machine, plain2
+msgid "Don't say who it's from"
+msgstr "그에게서 누구인지 말하지 말라"
+
 #, machine, python-format
 msgid "Don't show +%(guild)s content in All or Trending for users that aren't members of the guild."
 msgstr "+%(guild)s 콘텐츠를 표시하지 마십시오. 또는 사용자에 대한 동향은 guild의 구성원이 아닙니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate"
 msgstr "후원하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Donate"
 msgstr "후원하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate Cash or Crypto"
 msgstr "현금 또는 암호화폐 후원"
 
 #, machine
 msgid "Done"
 msgstr "이름 *"
+
+#, machine, plain1
+msgid "Done by"
+msgstr "에 의해"
+
+#, machine, plain1
+msgid "Done to"
+msgstr "Done에"
 
 #, machine, plain1
 msgid "Download"
@@ -6611,7 +6823,7 @@ msgstr "데이터 다운로드"
 msgid "Downvote"
 msgstr "전체장편"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Downvote"
 msgstr "비추천"
@@ -6624,7 +6836,7 @@ msgstr "전체장편"
 msgid "Doxxing is not allowed."
 msgstr "Doxxing은 허용되지 않습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Drafts"
 msgstr "임시저장"
 
@@ -6706,12 +6918,12 @@ msgctxt "button"
 msgid "Edit"
 msgstr "편집"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: edit the advanced filter"
 msgid "Edit"
 msgstr "수정"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Edit"
 msgstr "수정"
@@ -6748,7 +6960,7 @@ msgstr "다른 사람이 %(site)s에 당신을 볼 수있는 방법을 편집합
 msgid "Edit permissions"
 msgstr "편집 권한"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Edit profile"
 msgstr "프로필 수정"
 
@@ -6772,7 +6984,7 @@ msgstr "이 게시물을 공유 초안에서 편집 한 다음 변경 사항을 
 msgid "Edit your posts and comments"
 msgstr "게시물 및 의견 편집"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Edited %(when)s"
 msgstr "%(when)s 수정됨"
 
@@ -6948,11 +7160,23 @@ msgstr "정통 앱과 %(site)s 계정 암호로 생성된 6자리 코드를 입�
 msgid "Enter your account password to turn the Child filter down."
 msgstr "자녀 필터를 켜려면 계정 암호를 입력하십시오."
 
+#, machine, plain1
+msgid "Enter your password"
+msgstr "비밀번호"
+
+#, machine, plain1, python-format
+msgid "Enter your password - %(site)s"
+msgstr "비밀번호 입력 - %(site)s"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "2단계 코드를 입력합니다."
+
 #, machine
 msgid "Entertainment"
 msgstr "팟캐스트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Entertainment News"
 msgstr "엔터테인먼트 뉴스"
 
@@ -7004,6 +7228,10 @@ msgstr "윤리경영"
 msgid "Evading a site-wide ban"
 msgstr "사이트 전체 금지"
 
+#, machine, plain1
+msgid "Evading and manipulating the site"
+msgstr "사이트 탐색"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Event cancel"
@@ -7023,7 +7251,7 @@ msgstr "이벤트 편집"
 msgid "Event hidden by your word filter"
 msgstr "당신의 워드 필터에 의해 숨겨진 이벤트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Events"
 msgstr "이벤트"
 
@@ -7061,9 +7289,9 @@ msgid "Every bot rule applies, %(num)s post a day included."
 msgid_plural "Every bot rule applies, %(num)s posts a day included."
 msgstr[0] "모든 봇 규칙이 적용됩니다. %(num)s 게시물이 포함되어 있습니다."
 
-#, machine
+#, machine, plain2
 msgid "Every browser and app signed in to your chats. Sign out any you don't recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat."
-msgstr "모든 브라우저 및 앱은 채팅에 서명합니다. 로그인하지 않거나 더 이상 사용되지 않습니다. 브라우저는 다음 시간 채팅을 엽니다."
+msgstr "모든 브라우저 및 앱은 채팅에 서명합니다. 당신이 인식하지 않거나 더 이상 사용하지 않는 모든 연결을 차단; 브라우저는 당신이 암호에 대한 요청을 차단 다음 채팅을 엽니 다."
 
 #, machine
 msgid "Every character is credited to whoever typed or pasted it."
@@ -7077,8 +7305,12 @@ msgstr "+%(guild)s에 전달하는 라벨이 필요합니다"
 msgid "Every guild's comments in one list. Open a guild to comment in it."
 msgstr "모든 guild의 의견에 한 목록. 댓글을 닫습니다."
 
+#, machine, plain2
+msgid "Every message"
+msgstr "모든 메시지"
+
 #. who may open one of a profile's lists (Following, Followers...).
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Everyone"
 msgstr "모든 사람"
 
@@ -7165,7 +7397,7 @@ msgstr "예 : 고양이 개 · \"cats\"또는 \"dogs\"가 없습니다"
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "예 : 행복한 시간 · 정확한 문구 \"해피 시간\""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
 msgstr "@%(name)s 추방"
 
@@ -7198,7 +7430,7 @@ msgstr "+ %(guild)s에서 발췌."
 msgid "Exiled since"
 msgstr "현재 위치"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Exiles"
 msgstr "추방된 사용자"
 
@@ -7215,7 +7447,7 @@ msgstr "Exiles와 채팅 금지"
 msgid "Expected"
 msgstr "현재 위치"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Explore"
 msgstr "탐색"
 
@@ -7223,7 +7455,7 @@ msgstr "탐색"
 msgid "Explore curations - %(site)s"
 msgstr "Curated feeds - %(site)s를 탐험하십시오"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Explore guilds - %(site)s"
 msgstr "길드 탐색 - %(site)s"
 
@@ -7240,7 +7472,7 @@ msgstr "확장"
 msgid "Extend for"
 msgstr "지원하다"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Extra large"
 msgstr "아주 크게"
 
@@ -7305,31 +7537,39 @@ msgstr "공지사항"
 msgid "File"
 msgstr "파일 형식"
 
+#, machine, plain2
+msgid "Files you send in chats are kept here too, encrypted: only the people in that chat can open them."
+msgstr "채팅에서 보내는 파일은 여기에 보관됩니다. 암호화 된 : 채팅의 사람들이 열 수 있습니다."
+
 #, machine
 msgid "Film & TV"
 msgstr "영화 & TV"
+
+#, machine, plain1
+msgid "Filter"
+msgstr "제품정보"
 
 #, machine, plain1, python-format
 msgid "Filter +%(guild)s by flair"
 msgstr "필터 +%(guild)s 라벨"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filter by"
 msgstr "필터 기준"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filtered words"
 msgstr "필터링되는 단어"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Filtered words - %(site)s"
 msgstr "필터링되는 단어 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters"
 msgstr "필터"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters in this search"
 msgstr "이 검색의 필터"
 
@@ -7386,7 +7626,7 @@ msgstr "언어: 영어"
 msgid "Fitness"
 msgstr "* 필수"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Flag"
 msgstr "신고"
@@ -7395,11 +7635,11 @@ msgstr "신고"
 msgid "Flagged Posts"
 msgstr "비밀번호"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Flair"
 msgstr "플레어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Flair"
 msgstr "플레어"
@@ -7442,7 +7682,7 @@ msgstr "라벨 태그는 +%(guild)s에 전달 된 게시물을 표시하고 독�
 msgid "Flights & Airlines"
 msgstr "항공편 & 항공"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Fold the sidebar"
 msgstr "사이드바 접기"
 
@@ -7462,7 +7702,7 @@ msgstr "폴더 이름."
 msgid "Folder:"
 msgstr "폴더:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Follow"
 msgstr "팔로우"
@@ -7475,7 +7715,7 @@ msgstr "@ %(name)s을 따르십시오"
 msgid "Follow accounts and join guilds, and their posts show here."
 msgstr "계정과 함께 guilds, 그리고 그들의 게시물이 여기에."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follow post"
 msgstr "게시물 팔로우"
 
@@ -7493,11 +7733,11 @@ msgid "Followed by %(num)s person you follow"
 msgid_plural "Followed by %(num)s people you follow"
 msgstr[0] "%(num)s에 의해 따르는 사람들"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Followers"
 msgstr "팔로워"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Followers"
 msgstr "팔로워"
@@ -7513,31 +7753,31 @@ msgstr "추종자 · @%(name)s - %(site)s"
 #. the names of a profile's lists: the accounts it follows, its followers, who
 #. pays for its paid circles,
 #. and the paid circles it pays for.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Following"
 msgstr "팔로잉"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you follow"
 msgid "Following"
 msgstr "팔로잉"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "Following"
 msgstr "팔로잉"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: curations you follow"
 msgid "Following"
 msgstr "팔로잉"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Following"
 msgstr "팔로잉"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Following"
 msgstr "팔로잉"
@@ -7550,18 +7790,18 @@ msgstr "@%(name)s에 대하여"
 msgid "Following · @%(name)s - %(site)s"
 msgstr "다음 것 · @%(name)s - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follows you"
 msgstr "나를 팔로우함"
 
 msgid "Food"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For You"
 msgstr "추천"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For a circle"
 msgstr "서클 전용"
 
@@ -7612,12 +7852,12 @@ msgstr "그것을 검토하는 관리자를 위해."
 msgid "For the admins who review it: what the bot is for and where its posts come from."
 msgstr "그것을 검토하는 관리자의 경우 : 봇이 무엇인지와 그 게시물이 어디에서 왔는지."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: forget the saved default filters"
 msgid "Forget"
 msgstr "삭제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forget my default"
 msgstr "내 기본값 삭제"
 
@@ -7625,7 +7865,7 @@ msgstr "내 기본값 삭제"
 msgid "Forgot password?"
 msgstr "비밀번호를 잊으셨나요?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Fork"
 msgstr "포크"
@@ -7651,15 +7891,15 @@ msgstr "인기있는 <a href=\"%(url)s\">%(title)s</a>"
 msgid "Formatting"
 msgstr "파일 형식"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Formatting help"
 msgstr "서식 도움말"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Former Admin"
 msgstr "전 관리자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Forward"
 msgstr "전달하기"
@@ -7693,7 +7933,7 @@ msgstr "Guilds에 앞으로"
 msgid "Forward to guilds (optional)"
 msgstr "(선택) guilds에 앞으로"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile tab"
 msgid "Forwarded"
 msgstr "전달함"
@@ -7719,11 +7959,11 @@ msgstr "Guilds에 앞으로"
 msgid "Forwarded!"
 msgstr "지원하다!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwarding to"
 msgstr "전달 대상"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwards"
 msgstr "전달"
 
@@ -7731,11 +7971,11 @@ msgstr "전달"
 msgid "Forwards then come from the post's Forward dialog, where a flair is picked."
 msgstr "앞으로는 다음 포스트의 앞으로 대화 상자에서 온다, 라벨이 선택되는 곳."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Founded"
 msgstr "개설일"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Founder"
 msgstr "개설자"
@@ -7743,6 +7983,10 @@ msgstr "개설자"
 #, machine
 msgid "Free circles"
 msgstr "무료 원"
+
+#, machine, plain1
+msgid "Free expression and good faith"
+msgstr "무료 표현과 좋은 믿음"
 
 #, machine
 msgid "Fresh and rising"
@@ -7776,7 +8020,7 @@ msgstr "친구는 당신이 뒤를 따르는 모든 사람이 있습니다. 가�
 msgid "Friends is your automatic circle of mutual follows. Choose another name."
 msgstr "친구는 상호의 당신의 자동적인 원형입니다. 다른 이름을 선택하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Friends liked"
 msgstr "친구들이 추천함"
 
@@ -7784,7 +8028,7 @@ msgstr "친구들이 추천함"
 msgid "Friendship"
 msgstr "한국어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "From"
 msgstr "작성자"
@@ -7829,7 +8073,7 @@ msgstr "%(older)s (%(older_by)s)의 개정에서 %(newer)s (%(newer_by)s)."
 msgid "From these accounts"
 msgstr "이 계정에서"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "From:"
 msgstr "기간:"
 
@@ -7841,7 +8085,7 @@ msgstr "Frugal 생활"
 msgid "Full Moon"
 msgstr "전체 달"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Full editor"
 msgstr "전체 편집기"
 
@@ -7865,7 +8109,7 @@ msgstr "게임 밤 참가자"
 msgid "Gaming"
 msgstr "주요 특징"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gaming News"
 msgstr "게임 뉴스"
 
@@ -7881,11 +8125,11 @@ msgstr "Geminids meteor 샤워"
 msgid "General Information"
 msgstr "일반 정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Memes"
 msgstr "일반 밈"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Science"
 msgstr "일반 과학"
 
@@ -7909,13 +8153,17 @@ msgstr "동전 받기"
 msgid "Get coins to send a tip"
 msgstr "팁을 보낼 동전을"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Get involved"
 msgstr "참여하기"
 
 #, machine
 msgid "Get more coins"
 msgstr "더 많은 코인"
+
+#, machine, plain1
+msgid "Give a reason"
+msgstr "이름 *"
 
 #, machine
 msgid "Give the Space's post address or id."
@@ -7981,7 +8229,7 @@ msgstr "이 역할"
 msgid "Give this ruqqie a tip!"
 msgstr "이 ruqqie에게 팁을주십시오!"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Glad to have you back. Make a %(site)s!"
 msgstr "다시 만나 반가워요. %(site)s 하나 올려 볼까요?"
 
@@ -8104,11 +8352,11 @@ msgid "Group · %(num)s people"
 msgid_plural "Group · %(num)s people"
 msgstr[0] "그룹 · %(num)s 사람들"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Groups"
 msgstr "그룹"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild"
 msgstr "길드"
 
@@ -8136,7 +8384,7 @@ msgstr "길드 Description"
 msgid "Guild Icon"
 msgstr "Guild 아이콘"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild Name"
 msgstr "길드 이름"
 
@@ -8148,7 +8396,11 @@ msgstr "Guild 정보"
 msgid "Guild Styling"
 msgstr "Guild 스타일링"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Guild changes"
+msgstr "Guild 변화"
+
+#, glossary, machine, plain2
 msgid "Guild details"
 msgstr "길드 정보"
 
@@ -8176,11 +8428,11 @@ msgstr "구ild 이름, +없이 …"
 msgid "Guild names must be 3-25 letters or numbers."
 msgstr "구ild 이름은 3-25 문자 또는 숫자이어야합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild settings"
 msgstr "길드 설정"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Guildmaster"
 msgstr "길드 마스터"
@@ -8189,23 +8441,23 @@ msgstr "길드 마스터"
 msgid "Guildmaster Since"
 msgstr "Guild 모더레이터 이후"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster Tools"
 msgstr "길드 마스터 도구"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster of"
 msgstr "관리 중인 길드"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Guildmaster of +%(guild)s"
 msgstr "+%(guild)s 길드 마스터"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster tools"
 msgstr "길드 마스터 도구"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmasters"
 msgstr "길드 마스터"
 
@@ -8230,7 +8482,7 @@ msgid "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgid_plural "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "Guild 모더레이터<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "길드"
 
@@ -8280,15 +8532,15 @@ msgstr "지금 신청"
 msgid "Hardware"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Health"
 msgstr "건강"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Help"
 msgstr "도움말"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Help"
 msgstr "도움말"
@@ -8297,7 +8549,7 @@ msgstr "도움말"
 msgid "Helped test features in development"
 msgstr "개발중인 테스트 기능"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Herald"
 msgstr "강조하기"
@@ -8315,6 +8567,18 @@ msgstr "높은 빛 포스트"
 #, machine, python-format
 msgid "Hey there, %(name)s"
 msgstr "안녕하세요, %(name)s"
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, QR sign-in was turned back on for your %(site)s account, with its password. It lets a phone that is signed in to your account approve a sign-in on another screen."
+msgstr "안녕하세요 %(name)s, QR 로그인은 %(site)s에 대해 다시 설정되었습니다. 계정, 비밀번호. 계정이 다른 화면에서 서명을 승인하는 휴대폰을 할 수 있습니다."
+
+#, machine, plain2, python-format
+msgid "Hi %(name)s, chat encryption was started over on your %(site)s account, after its password was given. Messages from before can no longer be read on your devices unless a browser where you used chat brings them back."
+msgstr "안녕 %(name)s, 채팅 암호화는 %(site)s에서 시작되었습니다. 계정, 암호가 부여 된 후. 이전의 메시지는 더 이상 사용자의 장치에 읽을 수 없습니다. 브라우저가 사용되는 채팅이 다시 가져옵니다."
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, someone signed in to your %(site)s account with a QR code that was approved on your phone."
+msgstr "안녕 %(name)s, %(site)s 계정에 로그인 한 사람 QR 휴대폰에서 승인 된 코드."
 
 #, machine, python-format
 msgid "Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently."
@@ -8356,7 +8620,7 @@ msgstr "숨겨진 페이지"
 msgid "Hidden until you confirm your age"
 msgstr "당신이 당신의 나이를 확인 때까지 숨겨지은"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Hide"
 msgstr "숨기기"
 
@@ -8365,7 +8629,7 @@ msgctxt "button"
 msgid "Hide"
 msgstr "숨기기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Hide"
 msgstr "숨기기"
@@ -8379,7 +8643,7 @@ msgctxt "guildmaster action"
 msgid "Hide comment from guild"
 msgstr "Guild에서 코멘트 숨기기"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Hide from +%(guild)s"
 msgstr "+%(guild)s에서 숨기기"
 
@@ -8391,6 +8655,10 @@ msgstr "Guild에서 게시물 숨기기"
 #, machine
 msgid "Hide posts or collapse comments that are made by bots."
 msgstr "봇에 의해 만들어진 게시물이나 붕괴 의견 숨기기."
+
+#, machine, plain1
+msgid "Hide this version"
+msgstr "이 버전 숨기기"
 
 #, machine
 msgid "Hides matching content from your feeds, and collapses matching comments."
@@ -8416,7 +8684,7 @@ msgstr "뚱 베어"
 msgid "Hip-Hop"
 msgstr "채용 정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "History"
 msgstr "기록"
 
@@ -8440,7 +8708,7 @@ msgstr "이 게시물의 역사"
 msgid "Hobbies"
 msgstr "인기있는"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Home"
 msgstr "홈"
 
@@ -8468,7 +8736,7 @@ msgstr "이름 *"
 msgid "Hosted by %(name)s"
 msgstr "에 의해 호스팅 %(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Hot"
 msgstr "인기"
@@ -8518,6 +8786,10 @@ msgstr "긴 수명"
 msgid "How long it runs"
 msgstr "어떻게 실행"
 
+#, machine, plain1
+msgid "How old are you?"
+msgstr "당신은 어떻게?"
+
 #, machine
 msgid "How scores read"
 msgstr "어떻게 점수 읽기"
@@ -8546,7 +8818,7 @@ msgstr "열쇠를 사용하는 방법"
 msgid "How to write this post"
 msgstr "이 게시물을 작성하는 방법"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "How words are matched"
 msgstr "단어를 찾아내는 방식"
 
@@ -8587,6 +8859,10 @@ msgid "I'm %(min)s to 17"
 msgstr "나는 %(min)s에 17"
 
 #, machine, plain1
+msgid "I'm 18 or over"
+msgstr "18세 이상"
+
+#, machine, plain1
 msgid "Ice Hockey"
 msgstr "아이스 하키"
 
@@ -8618,6 +8894,10 @@ msgstr "18세 이상인 경우 부모와 보호자가 귀하의 계정을 공개
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
 msgstr "2FA을 가지고 있지 않은 경우 장치, 대신 백업 코드 중 하나를 입력. 각 백업 코드는 한 번 작동합니다. 백업 코드를 작성하지 않은 계정은 복구 코드를 입력 할 수 있습니다, 또한 2FA 해제."
 
+#, machine, plain2
+msgid "If you forget your password, your recovery code, or a browser where you've used chat, brings your old messages back. The code can't be shown again: this site never has it. A new one replaces it."
+msgstr "비밀번호, 복구 코드 또는 채팅을 사용하는 브라우저를 잊어버린 경우, 이전 메시지를 다시 가져옵니다. 코드를 다시 볼 수 없습니다: 이 사이트는 그것을 가지고 있지 않습니다. 새로운 것은 그것을 대체합니다."
+
 #, machine, python-format
 msgid "If you have any questions, feel free to <a href=\"%(mail)s\">email the %(site)s team.</a>."
 msgstr "궁금한 점이 있으시면 언제든지 자유롭게 느끼십시오. <a href=\"%(mail)s\">이메일: %(site)s 팀.</a>·"
@@ -8647,7 +8927,7 @@ msgctxt "button"
 msgid "Ignore"
 msgstr "Ignore"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Image"
 msgstr "이미지"
@@ -8695,7 +8975,7 @@ msgstr ".에서 %(language)s"
 msgid "In %(place)s"
 msgstr ".에서 %(place)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "In guild"
 msgstr "길드"
 
@@ -8719,7 +8999,7 @@ msgstr "이 길들"
 msgid "Inadvertantly broke Ruqqus"
 msgstr "Inadvertantly broke 루크"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Inbox"
 msgstr "받은 메시지"
 
@@ -8730,6 +9010,22 @@ msgstr "이름 *"
 #, machine
 msgid "Includes accounts you follow"
 msgstr "계정 포함"
+
+#, machine, plain2
+msgid "Incoming call"
+msgstr "자주 묻는 질문"
+
+#, machine, plain2, python-format
+msgid "Incoming call from %(name)s"
+msgstr "%(name)s에서 수신 호출"
+
+#, machine, plain2
+msgid "Incoming video call"
+msgstr "수신 비디오 호출"
+
+#, machine, plain2, python-format
+msgid "Incoming video call from %(name)s"
+msgstr "들어오는 비디오 호출에서 %(name)s"
 
 #, machine
 msgid "Incorrect Password"
@@ -8764,7 +9060,7 @@ msgstr "Indus 구독"
 msgid "Influencers"
 msgstr "관심분야"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Insights"
 msgstr "인사이트"
 
@@ -8797,7 +9093,7 @@ msgstr "이름 *"
 msgid "Interior Design"
 msgstr "인테리어 디자인"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "International Affairs"
 msgstr "국제 문제"
 
@@ -9028,6 +9324,10 @@ msgstr "앱을 통해 작동 <strong>%(app)s</strong> (고객 ID) <code>%(client
 msgid "It's called %(name)s now."
 msgstr "그것은 라고 %(name)s 지금."
 
+#, machine, plain2
+msgid "It's too late to refuse this code: it has run out or has been used. If you don't recognise a sign-in, log out everywhere, and check your apps too."
+msgstr "이 코드를 거부하기 위해 너무 늦습니다. 실행되거나 사용되었습니다. 로그인을 인식하지 않는 경우, 어디서나 차단하고 앱을 확인하십시오."
+
 #, machine
 msgid "Its feed server has not named any posts you can see."
 msgstr "피드 서버는 당신이 볼 수 있는 어떤 게시물을 명명하지 않았습니다."
@@ -9056,7 +9356,7 @@ msgstr "JPG, PNG, GIF 파일 지원. 최대 파일 크기 16MB. (106:25의 환�
 msgid "Jazz & Blues"
 msgstr "재즈 & 블루스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Job"
 msgstr "직업"
 
@@ -9069,7 +9369,7 @@ msgstr[0] "작업은 대부분의 %(num)s 문자에있을 수 있습니다."
 msgid "Job can't contain < or >."
 msgstr "작업은 < 또는 >을 포함할 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Join"
 msgstr "가입"
@@ -9081,7 +9381,7 @@ msgid "Join %(circle)s &middot; %(num)s coin/month"
 msgid_plural "Join %(circle)s &middot; %(num)s coins/month"
 msgstr[0] "%(circle)s &middot; %(num)s 동전 / 월"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join +%(guild)s"
 msgstr "+%(guild)s 가입"
 
@@ -9094,11 +9394,11 @@ msgid "Join Circle &middot; %(num)s coin/month"
 msgid_plural "Join Circle &middot; %(num)s coins/month"
 msgstr[0] "Join Circle &middot; %(num)s 동전 / 월"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join Guild"
 msgstr "길드 가입"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join guild"
 msgstr "길드 가입"
 
@@ -9124,7 +9424,7 @@ msgctxt "people who joined the guild, table heading"
 msgid "Joined"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Joined"
 msgstr "참여 중"
@@ -9145,7 +9445,7 @@ msgstr "열린 알파 중 Ruqqus 가입"
 msgid "Joined Ruqqus during open beta"
 msgstr "오픈 베타 중 Ruqqus 가입"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Jump in the discussion."
 msgstr "토론에 참여하세요."
 
@@ -9219,7 +9519,7 @@ msgstr "봇의 종류"
 msgid "Kind of story"
 msgstr "뉴스 레터"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Kinds of Space"
 msgstr "스페이스 종류"
 
@@ -9235,7 +9535,7 @@ msgstr "게시물의 종류 <span class=\"text-muted\">(none ticked는 각 종�
 msgid "Knitting & Sewing"
 msgstr "뜨개질 & 꿰매기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "badge"
 msgid "LIVE"
 msgstr "LIVE"
@@ -9252,7 +9552,7 @@ msgstr "이름 *"
 msgid "Landscaping"
 msgstr "연락처"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Language"
 msgstr "언어"
 
@@ -9265,7 +9565,7 @@ msgstr "언어 학습"
 msgid "Languages on this page"
 msgstr "이 페이지의 언어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Large"
 msgstr "크게"
 
@@ -9301,12 +9601,12 @@ msgstr "법적고지"
 msgid "Layout"
 msgstr "제품정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Leave"
 msgstr "탈퇴"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: leave the guild"
 msgid "Leave"
 msgstr "탈퇴"
@@ -9319,7 +9619,7 @@ msgstr "자주 묻는 질문%(guild)s"
 msgid "Leave group"
 msgstr "그룹 여행"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave guild desktop"
 msgstr "길드 탈퇴"
 
@@ -9335,7 +9635,7 @@ msgstr "지금 시작하세요."
 msgid "Leave out"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave out forwarded copies"
 msgstr "전달된 사본 제외"
 
@@ -9414,7 +9714,7 @@ msgstr "왼쪽"
 msgid "Left +%(guild)s"
 msgstr "왼쪽 + %(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Legal"
 msgstr "법적 고지"
 
@@ -9434,7 +9734,7 @@ msgstr "편지는 점 또는 다른 표에 의해 밖으로 또는 분할 한 �
 msgid "Letters, numbers and underscores, 3 to 25 characters."
 msgstr "문자, 숫자 및 밑줄, 3 ~ 25 문자."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Lifestyle"
 msgstr "라이프스타일"
 
@@ -9455,12 +9755,12 @@ msgstr "1000자 제한"
 msgid "Limit of 256 characters"
 msgstr "256자 제한"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Link"
 msgstr "링크"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Link"
 msgstr "링크"
@@ -9473,7 +9773,7 @@ msgstr "링크 (옵션)"
 msgid "Link Discord"
 msgstr "링크 Discord"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Link copied to clipboard"
 msgstr "링크가 클립보드에 복사되었습니다"
 
@@ -9522,7 +9822,7 @@ msgstr "해당 사이트에 대한 링크는 허용되지 않습니다."
 msgid "Linux & Open Source"
 msgstr "Linux 및 오픈 소스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "List"
 msgstr "목록"
@@ -9544,7 +9844,7 @@ msgstr "연구분야"
 msgid "Live"
 msgstr "라이브"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "Space state"
 msgid "Live"
 msgstr "라이브"
@@ -9553,7 +9853,7 @@ msgstr "라이브"
 msgid "Live Spaces"
 msgstr "라이브 스페이스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Live and upcoming"
 msgstr "라이브 및 예정"
 
@@ -9592,11 +9892,11 @@ msgstr ""
 msgid "Loading..."
 msgstr "로드 중 ..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "불러오는 중…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Location"
 msgstr "위치"
 
@@ -9622,15 +9922,23 @@ msgstr "로그아웃"
 msgid "Locked: guildmasters edit it."
 msgstr "Locked: guild moderators는 그것을 편집합니다."
 
-#, machine
+#, machine, plain1
+msgid "Log"
+msgstr "로그인"
+
+#, machine, plain1, python-format
+msgid "Log - %(site)s"
+msgstr "로그인 - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Log Out Everywhere"
-msgstr "자주 묻는 질문"
+msgstr "모든 기기에서 로그아웃"
 
 #, machine, python-format
 msgid "Log all other devices out of your %(site)s account."
 msgstr "%(site)s 계정에서 다른 모든 장치를 로그인하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Log in to bookmark"
 msgstr "로그인하고 북마크하기"
 
@@ -9638,13 +9946,29 @@ msgstr "로그인하고 북마크하기"
 msgid "Log in to vote"
 msgstr "투표하기"
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Log of @%(name)s"
+msgstr "로그인 @%(name)s"
+
+#, machine, plain1, python-format
+msgid "Log of post #%(id)s"
+msgstr "게시물 #%(id)s"
+
+#, machine, plain1
+msgid "Log of this comment"
+msgstr "이 댓글을"
+
+#, glossary, machine, plain2
 msgid "Log out"
 msgstr "로그아웃"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Log out everywhere"
-msgstr "자주 묻는 질문"
+msgstr "모든 기기에서 로그아웃"
+
+#, machine, plain2
+msgid "Logging out everywhere ends that sign-in. It doesn't end an app's access, so check those too."
+msgstr "어디에나 연결하면 로그인이 종료됩니다. 앱의 액세스가 종료되지 않습니다."
 
 #, machine, python-format
 msgid "Login - %(site)s"
@@ -9674,11 +9998,11 @@ msgstr "Lyrids meteor 샤워"
 msgid "Made on %(date)s."
 msgstr "%(date)s에 만든."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Made with AI"
 msgstr "AI로 생성됨"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "navigation landmark"
 msgid "Main"
 msgstr "메인"
@@ -9736,7 +10060,7 @@ msgstr "새 백업 코드 만들기"
 msgid "Make one with New event."
 msgstr "새로운 이벤트로 하나 만들기."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Make or change your circles"
 msgstr "서클 만들기 또는 수정"
 
@@ -9788,7 +10112,7 @@ msgstr "이름 *"
 msgid "March equinox"
 msgstr "3 월 equinox"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mark Sensitive Content"
 msgstr "민감한 콘텐츠로 표시"
 
@@ -9813,7 +10137,7 @@ msgstr "마케팅 및 판매"
 msgid "Marriage"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Matches your interests"
 msgstr "회원님의 관심사와 일치"
 
@@ -9821,7 +10145,7 @@ msgstr "회원님의 관심사와 일치"
 msgid "Mathematics"
 msgstr "수학"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media"
 msgstr "미디어"
 
@@ -9833,7 +10157,7 @@ msgstr "미디어 전용"
 msgid "Media settings"
 msgstr "Media 설정"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media storage"
 msgstr "미디어 저장공간"
 
@@ -9879,7 +10203,7 @@ msgid "Member<span class=\"text-primary\"> %(num)s</span>"
 msgid_plural "Members<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "이름 *<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Members"
 msgstr "멤버"
 
@@ -9901,7 +10225,7 @@ msgid "Members with at least %(num)s point in a month share that month's budget 
 msgid_plural "Members with at least %(num)s points in a month share that month's budget by their points."
 msgstr[0] "한 달에 최소 %(num)s 포인트를 가진 회원은 포인트로 월 예산을 공유합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Memes"
 msgstr "밈"
 
@@ -9917,7 +10241,7 @@ msgstr "멘션 @%(name)s"
 msgid "Mentioning these accounts"
 msgstr "이 계정의 언급"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mentions"
 msgstr "멘션"
 
@@ -9939,11 +10263,11 @@ msgid "Mentions any of: %(num)s word or phrase at most."
 msgid_plural "Mentions any of: %(num)s words or phrases at most."
 msgstr[0] "모든 언급 : %(num)s 단어 또는 대부분의 구문."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Merch and more. Support %(site)s today!"
 msgstr "굿즈 등 다양한 상품. 지금 %(site)s 후원하기!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Message"
 msgstr "메시지"
@@ -10015,11 +10339,11 @@ msgstr "모바일 & 앱"
 msgid "Mobile Games"
 msgstr "모바일 게임"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Log"
 msgstr "관리 로그"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Queue"
 msgstr "관리 대기열"
 
@@ -10031,11 +10355,11 @@ msgstr "모형 건물"
 msgid "Moderation"
 msgstr "회사연혁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Moderation log"
 msgstr "관리 기록"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Modern Culture"
 msgstr "현대 문화"
 
@@ -10053,7 +10377,7 @@ msgctxt "table heading"
 msgid "Month"
 msgstr "월 ~ 월"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Month"
 msgstr "이번 달"
@@ -10066,24 +10390,24 @@ msgstr "그들이 태어난 달"
 msgid "Monthly creator fund payouts"
 msgstr "월간 제작자 펀드 지급"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "더 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "More"
 msgstr "더 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More actions"
 msgstr "작업 더 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More comments"
 msgstr "댓글 더 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More options"
 msgstr "옵션 더 보기"
 
@@ -10135,7 +10459,7 @@ msgstr "이동 %(name)s 아래로"
 msgid "Move %(name)s up"
 msgstr "위로 이동 %(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Move to folder"
 msgstr "폴더로 이동"
 
@@ -10162,12 +10486,12 @@ msgstr "음악 제작"
 msgid "Must attempt to buy at least one coin"
 msgstr "적어도 하나의 동전을 구입하려고 시도"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Mute"
 msgstr "뮤트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "microphone"
 msgid "Mute"
 msgstr "음소거"
@@ -10176,11 +10500,11 @@ msgstr "음소거"
 msgid "Mute +%(guild)s"
 msgstr "분 +%(guild)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Mute @%(name)s"
 msgstr "@%(name)s 뮤트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute guild"
 msgstr "길드 뮤트"
 
@@ -10200,7 +10524,7 @@ msgstr "채널에서 Muted"
 msgid "Muted since"
 msgstr "현재 위치"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My Curations"
 msgstr "내 큐레이션"
 
@@ -10208,7 +10532,7 @@ msgstr "내 큐레이션"
 msgid "My Friends"
 msgstr "내 친구"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My account"
 msgstr "내 계정"
 
@@ -10216,7 +10540,7 @@ msgstr "내 계정"
 msgid "My account is sensitive"
 msgstr "내 계정은 민감한"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My guilds"
 msgstr "내 길드"
 
@@ -10224,7 +10548,7 @@ msgstr "내 길드"
 msgid "My languages"
 msgstr "내 언어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My profile"
 msgstr "내 프로필"
 
@@ -10268,7 +10592,7 @@ msgstr "Net 투표"
 msgid "Neuroscience"
 msgstr "신경 과학"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Never counted"
 msgstr "항상 제외"
 
@@ -10307,7 +10631,7 @@ msgctxt "new highlight"
 msgid "New"
 msgstr "- 한국어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "New"
 msgstr "최신"
@@ -10352,6 +10676,10 @@ msgstr "새로운 채팅"
 msgid "New circle"
 msgstr "새로운 원"
 
+#, machine, plain1
+msgid "New code"
+msgstr "새로운 코드"
+
 #, machine
 msgid "New comments · Show them"
 msgstr "새로운 의견 · 표시"
@@ -10368,7 +10696,7 @@ msgstr "새로운 이벤트"
 msgid "New folder"
 msgstr "새 폴더"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "New group"
 msgstr "새 그룹"
 
@@ -10384,6 +10712,22 @@ msgstr "새 항목은 가장 오래된 첫 번째, 대부분의 %(max)s에서 �
 msgid "New members pay %(num)s coin every 30 days. Current members keep their price."
 msgid_plural "New members pay %(num)s coins every 30 days. Current members keep their price."
 msgstr[0] "새로운 회원은 %(num)s 동전을 30 일마다 지불합니다. 현재 회원은 가격을 유지합니다."
+
+#, machine, plain2
+msgid "New message"
+msgstr "새 메시지"
+
+#, machine, plain2, python-format
+msgid "New message from %(name)s"
+msgstr "%(name)s의 새로운 메시지"
+
+#, machine, plain2
+msgid "New message request"
+msgstr "새 메시지 요청"
+
+#, machine, plain2, python-format
+msgid "New message request from %(name)s"
+msgstr "%(name)s의 새로운 메시지 요청"
 
 #, machine
 msgid "New page address"
@@ -10442,20 +10786,20 @@ msgstr "가장 새로운"
 msgid "Newest first."
 msgstr "가장 먼저."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "News"
 msgstr "뉴스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Next"
 msgstr "다음"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "next page"
 msgid "Next"
 msgstr "다음"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "story"
 msgid "Next"
 msgstr "다음 스토리"
@@ -10481,7 +10825,7 @@ msgstr "이름 *"
 msgid "No Space is shown on this stage right now."
 msgstr "지금이 단계에 스페이스가 표시됩니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No Spaces are scheduled."
 msgstr "예정된 스페이스가 없습니다."
 
@@ -10529,7 +10873,7 @@ msgstr "채널이 표시되지 않습니다."
 msgid "No channels yet."
 msgstr "아직 채널 없음."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No comments"
 msgstr "댓글 없음"
 
@@ -10573,7 +10917,7 @@ msgstr "외부 링크는 없습니다."
 msgid "No feeds."
 msgstr "피드 없음."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "플레어 없음"
 
@@ -10593,7 +10937,7 @@ msgstr "+%(guild)s 라는 길드가 없습니다."
 msgid "No guild called +%(name)s."
 msgstr "+%(name)s 라는 길드가 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guildmasters"
 msgstr "길드 마스터 없음"
 
@@ -10606,7 +10950,7 @@ msgid "No guilds are in this topic yet."
 msgid_plural "No guilds are in these topics yet."
 msgstr[0] "이 주제는 아직 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guilds here yet."
 msgstr "아직 길드가 없습니다."
 
@@ -10643,7 +10987,7 @@ msgstr "아직 이름 제안이 없습니다 - 첫 번째!"
 msgid "No older than"
 msgstr "더 이상"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No one"
 msgstr "없음"
 
@@ -10687,7 +11031,7 @@ msgstr "공개 curated 피드 일치 %(query)s."
 msgid "No public curations yet. Be the first!"
 msgstr "아직 대중적인 curated 급식 없음. 처음!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No recordings yet."
 msgstr "아직 녹음이 없습니다."
 
@@ -10747,6 +11091,10 @@ msgstr "아무도하지만 그 사람들은 그것을 읽을 수 있습니다 : 
 msgid "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."
 msgstr "아무도 지금 가입 할 수 없습니다 : guild는 초대에 의해서만 있습니다. 현재 회원은 그들이 지불 한 것을 유지."
 
+#, machine, plain1
+msgid "Nobody can sign in to your account with a code."
+msgstr "Nobody는 코드로 계정에 로그인할 수 있습니다."
+
 #, machine, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Nobody는 월 예산의 %(share)s%%보다 더 많은 것을 얻습니다. 공유는 전체 동전으로 돌립니다."
@@ -10786,6 +11134,10 @@ msgstr "Nobody 유형 여기에"
 #, machine, plain1, python-format
 msgid "Nobody under %(age)s may have an account where you are."
 msgstr "%(age)s 미만은 계정이있을 수 있습니다."
+
+#, machine, plain1
+msgid "Nobody was signed in. If someone asked you to scan that code, they can't use it now."
+msgstr "아무도 서명했다. 누군가가 그 코드를 스캔하도록 요청하면 이제 사용할 수 없습니다."
 
 #, machine
 msgid "Nobody yet."
@@ -10837,6 +11189,10 @@ msgstr "연결되지 않음 - %(site)s"
 msgid "Not flaired \"%(flair)s\""
 msgstr "\"%(flair)s\"를 뿌려"
 
+#, machine, plain1
+msgid "Not found"
+msgstr "견적 요청"
+
 #, machine
 msgid "Not found."
 msgstr "없습니다."
@@ -10868,7 +11224,7 @@ msgstr "이름 * %(place)s"
 msgid "Not in these guilds"
 msgstr "이 길드에"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not known yet"
 msgstr "아직 알 수 없음"
 
@@ -10879,6 +11235,10 @@ msgstr "%(domain)s에 연결하지 않음"
 #, machine
 msgid "Not made with AI"
 msgstr "AI로 만든"
+
+#, machine, plain1
+msgid "Not me"
+msgstr "아니"
 
 #, machine
 msgid "Not now"
@@ -10912,9 +11272,13 @@ msgstr "더 이상 유행하지 않음"
 msgid "Not yet"
 msgstr "아직 없음"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not your default:"
 msgstr "기본값과 다름:"
+
+#, machine, plain2
+msgid "Nothing"
+msgstr "이름 *"
 
 #, machine
 msgid "Nothing bookmarked yet"
@@ -10935,6 +11299,10 @@ msgstr "아직 열애 (comments)"
 #, machine
 msgid "Nothing downvoted yet (posts)"
 msgstr "아직 열애 (posts)"
+
+#, machine, plain1
+msgid "Nothing has been logged yet."
+msgstr "아직 로그인하지 않았습니다."
 
 #, machine
 msgid "Nothing has changed since the last publish."
@@ -10967,6 +11335,10 @@ msgstr "현재는 없습니다."
 #, machine, plain1
 msgid "Nothing marked for today."
 msgstr "오늘에 표시되지 않았습니다."
+
+#, machine, plain1
+msgid "Nothing matches this filter."
+msgstr "이 필터는 없습니다."
 
 #, machine, python-format
 msgid "Nothing on %(site)s can translate into it right now, so the Translate button won't show."
@@ -11040,13 +11412,33 @@ msgstr "아직 없습니다."
 msgid "Notification types"
 msgstr "공지사항"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "알림"
+
+#, machine, plain2
+msgid "Notifications aren't available on this site yet."
+msgstr "이 사이트에서는 알림이 없습니다."
+
+#, machine, plain2
+msgid "Notifications don't say who a message is from."
+msgstr "알림 메시지가 있는지 말하지 않습니다."
 
 #, machine, python-format
 msgid "Notifications for @%(name)s turned off."
 msgstr "@%(name)s에 대한 알림이 꺼집니다."
+
+#, machine, plain2
+msgid "Notifications from this group"
+msgstr "이 그룹의 알림"
+
+#, machine, plain2
+msgid "Notifications need this page's script."
+msgstr "알림이 페이지의 스크립트가 필요합니다."
+
+#, machine, plain2
+msgid "Notifications say who a message is from."
+msgstr "알림은 메시지가 있는지 말한다."
 
 #, machine, python-format
 msgid "Notifications, %(num)s new"
@@ -11105,7 +11497,7 @@ msgstr "옵션 정보"
 msgid "Offline on %(service)s"
 msgstr "%(service)s에 대한 개요"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Old"
 msgstr "오래된순"
@@ -11131,6 +11523,10 @@ msgstr "에 %(date)s"
 #, machine
 msgid "On Ruqqus for one year"
 msgstr "1 년간 Ruqqus에"
+
+#, machine, plain2
+msgid "On an iPhone or iPad, add this site to your Home Screen first (Share, then Add to Home Screen), and turn notifications on from there."
+msgstr "IPhone 또는 iPad에서이 사이트를 홈 화면에 먼저 추가하십시오 (공유, 다음 홈 화면에 추가), 거기에서 알림을 켜십시오."
 
 #, machine, plain1
 msgid "On by default"
@@ -11236,6 +11632,10 @@ msgstr "만 Premium 계정은이 게시물에 댓글을 달 수 있습니다."
 msgid "Only a call has a stage."
 msgstr "전화 만 단계가 있습니다."
 
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "그룹 소유자 및 관리자 만이 변경할 수 있습니다."
+
 #, machine, plain1
 msgid "Only a guild's copy of a post has a flair."
 msgstr "게시물의 guild의 사본 만 레이블이 있습니다."
@@ -11295,6 +11695,10 @@ msgstr "만 승인 된 회원은이 채널에 쓰기."
 #, machine
 msgid "Only continue if you started signing in to a chat app just now."
 msgstr "이제 채팅 앱에 가입하면 계속됩니다."
+
+#, machine, plain1
+msgid "Only continue if you started this yourself on a screen in front of you. If a post, comment, message or website asked you to scan this, someone may be trying to take your account."
+msgstr "화면에 직접 시작하면 계속됩니다. 게시물, 의견, 메시지 또는 웹 사이트가이를 스캔하도록 요청하면 누군가가 계정을 가지고 시도 할 수 있습니다."
 
 #, machine, python-format
 msgid "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s member, so a small guild's numbers can't point at one person."
@@ -11390,7 +11794,7 @@ msgstr "채널의 소유자 및 헬퍼가 그것을 작성합니다."
 msgid "Only the channel's owner chooses its helpers."
 msgstr "채널의 소유자만이 그 도우미를 선택합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Only the circles you pick"
 msgstr "선택한 서클만"
 
@@ -11559,7 +11963,7 @@ msgstr "채팅하기"
 msgid "Open in the guild"
 msgstr "길드에서 열기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open page"
 msgstr "페이지 열기"
 
@@ -11579,11 +11983,15 @@ msgstr "새로운 탭에서 %(domain)s에 원본을 엽니 다"
 msgid "Open the post"
 msgstr "게시물 열기"
 
+#, machine, plain1
+msgid "Open the preserved copy"
+msgstr "보존된 복사"
+
 #, machine
 msgid "Open the quoted post"
 msgstr "견적 요청"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open the shared draft"
 msgstr "공유 초안 열기"
 
@@ -11615,11 +12023,11 @@ msgstr "Opinion & 분석"
 msgid "Opt Out of All/Trending"
 msgstr "모든 / 훈련 중 Opt Out"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Opted out of All"
 msgstr "전체 피드에서 제외됨"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Option %(number)s"
 msgstr "항목 %(number)s"
 
@@ -11712,11 +12120,11 @@ msgstr "자신의 믹스에 의해 주문 : 투표 및 팁 %(votes)s, 댓글 %(c
 msgid "Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s."
 msgstr "자신의 믹스에 의해 주문 : 투표 및 팁 %(votes)s, 댓글 %(comments)s, %(fade)s 이상 퇴색."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Original post"
 msgstr "원본 게시물"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Original username: @%(name)s"
 msgstr "원래 사용자 이름: @%(name)s"
 
@@ -11724,7 +12132,7 @@ msgstr "원래 사용자 이름: @%(name)s"
 msgid "Orionids meteor shower"
 msgstr "Orionids meteor 샤워"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other Sports"
 msgstr "기타 스포츠"
 
@@ -11738,7 +12146,7 @@ msgstr "당신이 읽는 다른 언어"
 msgid "Other or unknown"
 msgstr "다른 또는 알 수없는"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other spellings:"
 msgstr "다른 표기:"
 
@@ -11783,7 +12191,7 @@ msgstr "제품정보"
 msgid "Own account"
 msgstr "계정 관리"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you made"
 msgid "Owned"
 msgstr "내가 만든"
@@ -11796,7 +12204,7 @@ msgstr "PC 버전"
 msgid "PNG, JPEG, GIF or WebP, 8 MB at most."
 msgstr "PNG, JPEG, GIF 또는 WebP, 8 MB 대부분의 경우."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Page navigation"
 msgstr "페이지 탐색"
 
@@ -11832,7 +12240,7 @@ msgstr "유료 원형"
 msgid "Paid circles are part of Premium."
 msgstr "유료 원형은 Premium의 일부입니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Paid circles you are in"
 msgstr "가입한 유료 서클"
 
@@ -11927,15 +12335,15 @@ msgctxt "events"
 msgid "Past"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Day"
 msgstr "지난 24시간"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Month"
 msgstr "지난 한 달"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Year"
 msgstr "지난 1년"
 
@@ -11956,7 +12364,7 @@ msgstr "일시"
 msgid "Paused"
 msgstr "이용 약관"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Paused"
 msgstr "일시 중지됨"
@@ -12042,7 +12450,15 @@ msgid "People who follow you, or whom you follow, are in at once. Anyone else ge
 msgid_plural "People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to %(num)s people and is end-to-end encrypted."
 msgstr[0] "당신을 따르는 사람들, 또는 당신이 따르는 누구, 한 번에 있습니다. 다른 사람은 그들의 요청에 초대를받습니다. 그룹은 %(num)s 사람들까지 가지고 있으며 암호화 된 엔드 투 엔드입니다."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "People you chat with don't see when you've read their messages or are typing, and you don't see theirs."
+msgstr "당신은 자신의 메시지를 읽거나 입력 할 때 보이지 않는 사람들과 채팅하고, 당신은 그들의 것을 볼 수 없습니다."
+
+#, machine, plain2
+msgid "People you chat with see when you've read their messages and when you're typing."
+msgstr "당신이 그들의 메시지를 읽을 때 보이는 사람들과 대화를 나누는 사람들."
+
+#, glossary, machine, plain2
 msgid "People you follow liked"
 msgstr "팔로우한 사람들이 추천함"
 
@@ -12114,7 +12530,7 @@ msgstr "사진 또는 비디오"
 msgid "Photography"
 msgstr "사진 갤러리"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "word filter entry"
 msgid "Phrase"
 msgstr "구문"
@@ -12127,7 +12543,7 @@ msgstr "물리학"
 msgid "Pick a date and time."
 msgstr "날짜와 시간을 선택."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "플레어 선택"
 
@@ -12171,12 +12587,16 @@ msgstr "느린 모드 길이 중 하나를 선택합니다."
 msgid "Pick who it is for"
 msgstr "누가 그것을 위해"
 
+#, machine, plain2
+msgid "Picture"
+msgstr "이름 *"
+
 #, machine
 msgctxt "kind of story"
 msgid "Picture"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Picture"
 msgstr "사진"
@@ -12222,11 +12642,11 @@ msgstr "사진은"
 msgid "Pictures, video and sound, nothing else."
 msgstr "그림, 비디오 및 사운드, 다른 아무것도."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pin"
 msgstr "고정"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Pin"
 msgstr "고정하기"
@@ -12250,20 +12670,20 @@ msgctxt "colour"
 msgid "Pink"
 msgstr "핑크"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading of pinned posts"
 msgid "Pinned"
 msgstr "고정됨"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned comment"
 msgstr "고정된 댓글"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned posts"
 msgstr "고정된 게시물"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Pinned to +%(guild)s"
 msgstr "+%(guild)s에 고정됨"
 
@@ -12314,6 +12734,10 @@ msgstr "재생 비디오에서 %(domain)s"
 msgid "Play with sound"
 msgstr "소리로 재생"
 
+#, machine, plain1
+msgid "Please choose one of the two answers."
+msgstr "두 가지 답변 중 하나를 선택하십시오."
+
 #, machine
 msgid "Please enter a better title"
 msgstr "더 나은 제목을 입력하세요"
@@ -12329,6 +12753,10 @@ msgstr "%(site)s는 이메일, 비밀번호 또는 이메일, 텍스트 또는 �
 #, machine
 msgid "Please remove the following link(s) from your comment, and then you will be able to post it:"
 msgstr "댓글에서 다음 링크를 제거하십시오. 다음을 게시 할 수 있습니다"
+
+#, machine, plain1
+msgid "Please say how old you are."
+msgstr "당신이 얼마나 오래 된지 말하십시오."
 
 #, machine
 msgid "Please select a reason for flagging below."
@@ -12346,6 +12774,10 @@ msgstr "팟캐스트"
 msgid "Poetry"
 msgstr "팟캐스트"
 
+#, machine, plain1
+msgid "Point your phone's camera at this. It runs out after two minutes."
+msgstr "휴대 전화의 카메라를 포인트. 2 분 후에 실행됩니다."
+
 #, machine
 msgctxt "table heading"
 msgid "Points"
@@ -12355,35 +12787,35 @@ msgstr "이름 *"
 msgid "Political"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political Ideas & Debate"
 msgstr "정치 사상과 토론"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political News"
 msgstr "정치 뉴스"
 
 msgid "Politics"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll"
 msgstr "투표"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Poll"
 msgstr "투표"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll (optional)"
 msgstr "투표 (선택 사항)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll length"
 msgstr "투표 기간"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Poll option %(number)s"
 msgstr "투표 항목 %(number)s"
 
@@ -12415,12 +12847,12 @@ msgstr "사이트 맵"
 msgid "Popular this week"
 msgstr "이번 주에 인기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "게시"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Post"
 msgstr "게시물"
@@ -12433,7 +12865,7 @@ msgstr "게시물 정보"
 msgid "Post an update"
 msgstr "업데이트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "익명으로 게시"
 
@@ -12471,15 +12903,15 @@ msgstr "게시물 통찰력 · Creator Studio - %(site)s"
 msgid "Post on %(service)s"
 msgstr "%(service)s에 게시"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post text"
 msgstr "게시물 내용"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post title"
 msgstr "게시물 제목"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post type"
 msgstr "게시물 유형"
 
@@ -12520,11 +12952,11 @@ msgstr "이름 *"
 msgid "Posting cooldown"
 msgstr "연락처"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Posting to +%(guild)s"
 msgstr "+%(guild)s에 게시"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "내 프로필에 게시"
 
@@ -12532,11 +12964,11 @@ msgstr "내 프로필에 게시"
 msgid "Postponed"
 msgstr "제출하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts"
 msgstr "게시물"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Posts"
 msgstr "게시물"
@@ -12654,7 +13086,7 @@ msgstr "이번 주 Busiest 댓글 섹션으로 게시물."
 msgid "Posts you forward to a guild, and comments you forward into a new post, will show here."
 msgstr "당신은 길드에 전달, 새로운 게시물에 전달 코멘트, 여기에 표시 할 것입니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts you save will show up here."
 msgstr "저장한 게시물이 여기에 표시됩니다."
 
@@ -12682,7 +13114,7 @@ msgstr "관련 기사"
 msgid "Pregnancy & Babies"
 msgstr "임신 & 아기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium"
 msgstr "프리미엄"
 
@@ -12690,7 +13122,7 @@ msgstr "프리미엄"
 msgid "Premium Settings - %(site)s"
 msgstr "Premium 설정 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium accounts"
 msgstr "프리미엄 계정"
 
@@ -12707,16 +13139,24 @@ msgstr "Premium 까지 %(date)s UTC."
 msgid "Premium until: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 msgstr "Premium 까지: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Preserved copy"
+msgstr "숙박 약관"
+
+#, machine, plain1, python-format
+msgid "Preserved copy - %(site)s"
+msgstr "보존된 복사 - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Press"
 msgstr "언론"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Press"
 msgstr "언론"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "link to the page for journalists"
 msgid "Press"
 msgstr "언론"
@@ -12725,11 +13165,15 @@ msgstr "언론"
 msgid "Pressing play loads %(player)s, which can set cookies, see your address and record what you watch."
 msgstr "Pressing play loads %(player)s, 쿠키를 설정할 수 있는, 귀하의 주소와 기록을 볼 수 있습니다."
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Pressing play loads %(player)s."
+msgstr "프레스 놀이로드 %(player)s."
+
+#, glossary, machine, plain2
 msgid "Prev"
 msgstr "이전"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Prev"
 msgstr "이전"
@@ -12765,15 +13209,15 @@ msgctxt "button"
 msgid "Print"
 msgstr "인쇄"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy"
 msgstr "개인정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy Policy"
 msgstr "개인정보처리방침"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy and cookie settings"
 msgstr "개인정보 및 쿠키 설정"
 
@@ -12781,7 +13225,7 @@ msgstr "개인정보 및 쿠키 설정"
 msgid "Privacy page"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Private"
 msgstr "비공개"
@@ -12814,7 +13258,7 @@ msgstr "+%(guild)s의 길드 모더레이터이기 때문에 보이는 개인 �
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "+%(guild)s에서 승인 된 기여자이기 때문에 개인 콘텐츠."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Private mode."
 msgstr "비공개 모드."
 
@@ -12906,7 +13350,7 @@ msgstr "제품정보"
 msgid "Productivity"
 msgstr "회사연혁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Profile"
 msgstr "프로필"
 
@@ -13011,12 +13455,12 @@ msgstr "삭제 된 계정에 의해 제안."
 msgid "Psychology"
 msgstr "심리학"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Public"
 msgstr "전체 공개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Public"
 msgstr "공개"
@@ -13095,7 +13539,7 @@ msgstr "구매 내역"
 msgid "Purchase history"
 msgstr "구매 내역"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Purge"
 msgstr "영구 삭제"
@@ -13130,6 +13574,30 @@ msgstr "이름 *"
 #, machine
 msgid "Q&A"
 msgstr "Q&A"
+
+#, machine, plain1
+msgid "QR code"
+msgstr "QR 코드"
+
+#, machine, plain1
+msgid "QR sign-in"
+msgstr "QR 로그인"
+
+#, machine, plain1
+msgid "QR sign-in is off."
+msgstr "QR 로그인이 꺼집니다."
+
+#, machine, plain1
+msgid "QR sign-in is on."
+msgstr "QR 로그인입니다."
+
+#, machine, plain1, python-format
+msgid "QR sign-in was turned on for your %(site)s account"
+msgstr "QR 로그인이 설정되었습니다. %(site)s 계정"
+
+#, machine, plain1
+msgid "QR sign-in was turned on for your account. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr "QR 로그인은 계정으로 설정되었습니다. 그렇지 않은 경우, [설정 > 보안](/settings/security)에서 비밀번호를 변경하십시오."
 
 #, machine, plain1
 msgid "Quadrantids meteor shower"
@@ -13234,7 +13702,7 @@ msgstr "주력을 위한 이유?"
 msgid "Reason:"
 msgstr "이유:"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Reason: %(reason)s"
 msgstr "사유: %(reason)s"
 
@@ -13268,6 +13736,10 @@ msgstr "기록"
 msgid "Recordings"
 msgstr "관련 기사"
 
+#, machine, plain2
+msgid "Recovery code"
+msgstr "복구 코드"
+
 #, machine
 msgid "Recruited 1 friend to join Ruqqus"
 msgstr "Ruqqus에 가입하는 1 친구 모집"
@@ -13297,19 +13769,19 @@ msgstr "일주일에 1 동전"
 msgid "Redirect URI"
 msgstr "로그인 URI"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region"
 msgstr "지역"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region not known yet"
 msgstr "아직 지역 정보 없음"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regional"
 msgstr "지역"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regions"
 msgstr "지역"
 
@@ -13339,7 +13811,7 @@ msgstr "@%(name)s에 자동 게시를 거부합니까? 그들의 계정은 터�
 msgid "Rejected"
 msgstr "관련 상품"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Rejected"
 msgstr "거부됨"
@@ -13372,7 +13844,7 @@ msgstr "나를 제거"
 msgid "Reminder set"
 msgstr "Reminder 세트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "삭제"
 
@@ -13397,7 +13869,7 @@ msgstr "@%(name)s를 제거하십시오"
 msgid "Remove an author"
 msgstr "저자 제거"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove bookmark"
 msgstr "북마크 삭제"
 
@@ -13406,7 +13878,7 @@ msgid "Remove bookmark, %(num)s bookmark"
 msgid_plural "Remove bookmark, %(num)s bookmarks"
 msgstr[0] "책갈피 제거, %(num)s 책갈피"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove from +%(guild)s"
 msgstr "+%(guild)s에서 삭제"
 
@@ -13423,11 +13895,11 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Moderator를 제거"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "항목 %(number)s 삭제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove poll"
 msgstr "투표 삭제"
 
@@ -13459,7 +13931,7 @@ msgstr "게시물에서 %(domain)s 링크를 제거하고 다시 시도하십시
 msgid "Remove the %(domain)s link from your post and try again. %(reason)s"
 msgstr "게시물에서 %(domain)s 링크를 제거하고 다시 시도하십시오. %(reason)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove the filter: %(filter)s"
 msgstr "필터 삭제: %(filter)s"
 
@@ -13467,7 +13939,7 @@ msgstr "필터 삭제: %(filter)s"
 msgid "Remove the following link and try again: `%(link)s`. Reason: %(reason)s"
 msgstr "다음 링크를 제거하고 다시 시도: `%(link)s`. Reason: %(reason)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove the image"
 msgstr "이미지 삭제"
 
@@ -13483,7 +13955,7 @@ msgstr "메시지 제거"
 msgid "Remove the server"
 msgstr "서버 제거"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove this topic"
 msgstr "이 주제 해제"
 
@@ -13492,7 +13964,7 @@ msgctxt "diff line"
 msgid "Removed"
 msgstr "기타 제품"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by administrators"
 msgstr "관리자가 삭제함"
 
@@ -13500,7 +13972,7 @@ msgstr "관리자가 삭제함"
 msgid "Removed by admins"
 msgstr "Admins에 의해 제거"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by guildmasters"
 msgstr "길드 마스터가 삭제함"
 
@@ -13545,7 +14017,7 @@ msgstr "일주일이 떨어지면 내 동전에서 자동으로 갱신됩니다"
 msgid "Renews every 30 days from your coins at this price until you cancel. Cancelling keeps your access until the day you paid to. No refunds."
 msgstr "이 가격에서 모든 30 일마다 취소 할 수 있습니다. 취소는 지불 한 날까지 귀하의 액세스를 유지합니다. 환불 없음."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Rep"
 msgstr "평판"
 
@@ -13553,13 +14025,13 @@ msgstr "평판"
 msgid "Replay of this Space"
 msgstr "이 공간의 재생"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Report"
 msgstr "신고"
 
 #. the account's @name, filled in by the page
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report %(name)s"
 msgstr "%(name)s 신고"
 
@@ -13573,19 +14045,19 @@ msgstr "%(name)s의 댓글"
 msgid "Report %(name)s's post"
 msgstr "%(name)s의 게시물을보고"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report @%(name)s"
 msgstr "@%(name)s 신고"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report Bugs"
 msgstr "버그 신고"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "댓글 신고"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "게시물 신고"
 
@@ -13597,7 +14069,7 @@ msgstr "로그인 - %(site)s"
 msgid "Reported messages"
 msgstr "메시지 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Reports"
 msgstr "신고"
@@ -13610,12 +14082,12 @@ msgstr "그들에게 대한 보고서"
 msgid "Reports opened"
 msgstr "공지사항"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Repost"
 msgstr "재게시"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Repost"
 msgstr "재게시"
@@ -13624,7 +14096,7 @@ msgstr "재게시"
 msgid "Repost removed."
 msgstr "재 게시 제거."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposted"
 msgstr "재게시함"
 
@@ -13632,7 +14104,7 @@ msgstr "재게시함"
 msgid "Reposted to your profile."
 msgstr "귀하의 프로필에 게시."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposts"
 msgstr "재게시"
 
@@ -13648,7 +14120,7 @@ msgstr "비옥한 & Amphibians"
 msgid "Request API Key"
 msgstr "제품 정보 API 이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Requests"
 msgstr "요청"
 
@@ -13660,7 +14132,7 @@ msgstr "라벨 요구"
 msgid "Reroll Secret"
 msgstr "Reroll 비밀"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: go back to the saved default filters"
 msgid "Reset"
 msgstr "재설정"
@@ -13677,7 +14149,7 @@ msgstr "비밀번호 재설정"
 msgid "Reset password"
 msgstr "비밀번호 재설정"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reset to my default"
 msgstr "기본값으로 재설정"
 
@@ -13697,11 +14169,15 @@ msgstr "당신을 위해 재설정?"
 msgid "Reset your password."
 msgstr "비밀번호 재설정."
 
+#, machine, plain2
+msgid "Resetting your password signs chat out on all your devices, chat apps included. Your chat key stays locked with your old password, so to keep your chat history you'll need your chat recovery code, or a browser where you've used chat."
+msgstr "비밀번호 재설정은 모든 장치에서 채팅을 차단, 채팅 앱 포함. 채팅 키는 오래된 암호로 잠겨있어 채팅 기록을 유지하려면 채팅 복구 코드 또는 채팅을 사용하는 브라우저가 필요합니다."
+
 #, machine
 msgid "Resign"
 msgstr "공지사항"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Resources"
 msgstr "리소스"
 
@@ -13718,7 +14194,7 @@ msgstr "책임감있게 보안 문제를 보고"
 msgid "Restaurants"
 msgstr "레스토랑"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restore"
 msgstr "복원"
 
@@ -13751,7 +14227,7 @@ msgstr "+%(guild)s에 대한보고, 전달 및 코멘트를 제한하십시오."
 msgid "Restricted Forwarding"
 msgstr "제한된 운송"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restricted forwarding mode."
 msgstr "전달 제한 모드."
 
@@ -13798,7 +14274,7 @@ msgstr "수정 %(number)s"
 msgid "Revision %(number)s, published %(age)s."
 msgstr "Revision %(number)s, 출판 %(age)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Revisions"
 msgstr "수정 기록"
 
@@ -13872,7 +14348,7 @@ msgstr "역할 불명"
 msgid "Role-Playing Games"
 msgstr "롤플레이 게임"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Roles"
 msgstr "역할"
 
@@ -13892,7 +14368,11 @@ msgstr "콜롬비아"
 msgid "Rugby"
 msgstr "기타"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Rule"
+msgstr "【특전】"
+
+#, glossary, machine, plain2
 msgid "Rules"
 msgstr "규칙"
 
@@ -13937,11 +14417,15 @@ msgstr "Ruqqus는 이 사용자의 정보를 끄는 외국 순서를 거부했�
 msgid "Saharan Belt"
 msgstr "Saharan 벨트"
 
+#, machine, plain1
+msgid "Sanctions"
+msgstr "연락처"
+
 msgctxt "weekday"
 msgid "Sat"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "저장"
 
@@ -13972,7 +14456,7 @@ msgstr "저장 변화"
 msgid "Save Display Name"
 msgstr "저장 표시 이름"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save Edit"
 msgstr "수정 저장"
 
@@ -13984,7 +14468,7 @@ msgstr "저장 알고리즘"
 msgid "Save as a draft"
 msgstr "초안으로 저장"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save as my default"
 msgstr "기본값으로 저장"
 
@@ -14000,11 +14484,11 @@ msgstr "비밀번호"
 msgid "Save description"
 msgstr "자주 묻는 질문"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save draft"
 msgstr "임시저장"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save for later"
 msgstr "나중에 게시"
 
@@ -14036,11 +14520,11 @@ msgstr "지금 저장하십시오. 그들은 보여 <strong>1시간</strong>: �
 msgid "Save word filter"
 msgstr "워드 필터를 저장"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "저장됨"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved as your default"
 msgstr "기본값으로 저장됨"
 
@@ -14056,7 +14540,7 @@ msgstr "다운로드 사람들은 그들이 구독하기 전에 그것을 참조
 msgid "Saved. Your lists are shown as you chose."
 msgstr "다운로드 목록은 당신이 선택한대로 표시됩니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "저장 중"
 
@@ -14068,6 +14552,10 @@ msgstr "이 계정으로 잘못되었는지."
 msgid "Say what the bot will post and where it comes from (at least 10 characters)."
 msgstr "봇이 게시물을 게시하고 어디 (최소 10 자)."
 
+#, machine, plain2
+msgid "Say who it's from"
+msgstr "그대는"
+
 #, machine
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Google과 같은 2단계 인증 앱을 사용하여 이 바코드를 스캔합니다. Authenticator 또는 Authy."
@@ -14076,7 +14564,7 @@ msgstr "Google과 같은 2단계 인증 앱을 사용하여 이 바코드를 스
 msgid "Scandinavia"
 msgstr "스칸디나비아"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Schedule"
 msgstr "예약"
@@ -14110,7 +14598,7 @@ msgstr "사이트맵"
 msgid "Science"
 msgstr "연구분야"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Science News"
 msgstr "과학 뉴스"
 
@@ -14122,11 +14610,11 @@ msgstr "이름 *"
 msgid "Sculpture"
 msgstr "제품정보"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "검색"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Search"
 msgstr "검색"
@@ -14139,11 +14627,11 @@ msgstr "검색 +%(guild)s \"에 대한%(query)s\" - %(site)s"
 msgid "Search Tenor and press enter"
 msgstr "Tenor를 검색하고 Enter 키를 누릅니다"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search categories…"
 msgstr "카테고리 검색…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search chats and channels"
 msgstr "채팅 및 채널 검색"
 
@@ -14163,7 +14651,7 @@ msgstr "검색 guilds"
 msgid "Search guilds to post to"
 msgstr "검색 guilds 에 게시물"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search languages…"
 msgstr "언어 검색…"
 
@@ -14179,19 +14667,19 @@ msgstr "자주 묻는 질문"
 msgid "Search people, or type an @handle"
 msgstr "사람들, 또는 유형 @handle"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Search posts in +%(guild)s"
 msgstr "+%(guild)s 게시물 검색"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search posts, +guilds, @users, #topics, &curations"
 msgstr "게시물, +길드, @사용자, #주제, &큐레이션 검색"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search regions…"
 msgstr "지역 검색…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search tips"
 msgstr "검색 팁"
 
@@ -14199,7 +14687,7 @@ msgstr "검색 팁"
 msgid "Secret Rerolled"
 msgstr "비밀 Rerolled"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Security"
 msgstr "보안"
 
@@ -14224,7 +14712,7 @@ msgstr "보기 Premium"
 msgid "See all"
 msgstr "모두 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See everything in All"
 msgstr "전체 피드 보기"
 
@@ -14236,7 +14724,7 @@ msgstr "모두보기"
 msgid "See the current page"
 msgstr "현재 페이지보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See the filtered words"
 msgstr "필터링되는 단어 보기"
 
@@ -14264,6 +14752,10 @@ msgstr "사용자 이름"
 msgid "See: %(choice)s"
 msgstr "참조 : %(choice)s"
 
+#, machine, plain2
+msgid "Seen and typing"
+msgstr "본문 바로가기"
+
 #, machine
 msgid "Select Category"
 msgstr "회사 소개"
@@ -14276,7 +14768,7 @@ msgstr "옵션 선택"
 msgid "Select a Category"
 msgstr "자주 묻는 질문"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "대화를 선택하세요"
 
@@ -14309,7 +14801,7 @@ msgstr "팁 보내기"
 msgid "Send feedback"
 msgstr "견적 요청"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Send in chat"
 msgstr "채팅으로 보내기"
 
@@ -14321,12 +14813,12 @@ msgstr "복구 링크"
 msgid "Send report"
 msgstr "견적 요청"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild with sensitive content"
 msgid "Sensitive"
 msgstr "민감"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive Content"
 msgstr "민감한 콘텐츠"
 
@@ -14334,7 +14826,7 @@ msgstr "민감한 콘텐츠"
 msgid "Sensitive Content?"
 msgstr "민감한 내용?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "민감한 콘텐츠"
 
@@ -14400,11 +14892,11 @@ msgstr "민감한 의견"
 msgid "Setting not saved. Try again."
 msgstr "저장되지 않는 설정. 다시 시도하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Settings"
 msgstr "설정"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Settings - %(site)s"
 msgstr "설정 - %(site)s"
 
@@ -14428,12 +14920,12 @@ msgstr "성적 미성년자"
 msgid "Sexualizing minors is strictly prohibited."
 msgstr "성적 미성년자는 엄격히 금지됩니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Share"
 msgstr "공유"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Share"
 msgstr "공유"
@@ -14451,7 +14943,11 @@ msgstr "게시물을 공유하거나 모든 사람 대신 원의 일부와 이�
 msgid "Share of the text"
 msgstr "본문 바로가기"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Share screen"
+msgstr "공유 화면"
+
+#, glossary, machine, plain2
 msgid "Share something"
 msgstr "무언가를 공유하세요"
 
@@ -14516,11 +15012,11 @@ msgstr[0] "모두보기 %(num)s"
 msgid "Show as a table"
 msgstr "테이블로 표시"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show every topic"
 msgstr "모든 주제 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show fewer"
 msgstr "간략히 보기"
 
@@ -14536,11 +15032,11 @@ msgstr "모두에서 그것을 표시하고 당신을 위해"
 msgid "Show its card in guilds"
 msgstr "Guilds에서 카드보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "간략히"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "더 보기"
 
@@ -14564,7 +15060,7 @@ msgid_plural "Showing %(shown)s of %(num)s results for"
 msgstr[0] "%(shown)s 의 %(num)s 결과"
 
 #. the kinds of post the feed is narrowed to, e.g. "Showing Polls, Videos."
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing <strong>%(types)s</strong>."
 msgstr "<strong>%(types)s</strong> 표시 중."
 
@@ -14572,11 +15068,11 @@ msgstr "<strong>%(types)s</strong> 표시 중."
 msgid "Showing posts detected as <strong>%(languages)s</strong>."
 msgstr "표시된 게시물 <strong>%(languages)s</strong>·"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts from <strong>%(regions)s</strong>."
 msgstr "<strong>%(regions)s</strong> 게시물 표시 중."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts in <strong>%(categories)s</strong>."
 msgstr "<strong>%(categories)s</strong> 게시물 표시 중."
 
@@ -14613,7 +15109,7 @@ msgstr "당신의 생물의 밑에 보여주십시오. 귀하의 지역 (%(regio
 msgid "Shows posts of any type you tick."
 msgstr "당신이 진드기의 모든 유형의 게시물을 표시합니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Side panel"
 msgstr "사이드 패널"
 
@@ -14621,17 +15117,34 @@ msgstr "사이드 패널"
 msgid "Siege against +%(guild)s Failed"
 msgstr "+%(guild)s에 대한 Takeover 주장 실패"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign In"
 msgstr "로그인"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign Up"
 msgstr "회원가입"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in"
 msgstr "로그인"
+
+#. %(name)s is the account's @handle. The script puts it in, as text
+#, machine, plain1, python-format
+msgid "Sign in as %(name)s?"
+msgstr "로그인 %(name)s?"
+
+#, machine, plain1
+msgid "Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in."
+msgstr "이미 로그인 한 전화와 코드를 스캔하여 컴퓨터에 로그인하십시오. 휴대폰은 2단계 코드 또는 암호를 요청합니다. 2단계를 사용하지 않으면 컴퓨터를 하게 됩니다."
+
+#, machine, plain1
+msgid "Sign in on another screen?"
+msgstr "다른 화면에 로그인?"
+
+#, machine, plain1
+msgid "Sign in on this phone first, then scan a new code."
+msgstr "이 전화에 로그인 한 다음 새로운 코드를 스캔합니다."
 
 #, machine, python-format
 msgid "Sign in to %(site)s"
@@ -14665,7 +15178,7 @@ msgstr "봇에 적용하려면 로그인하십시오."
 msgid "Sign in to chat in +%(guild)s's channels."
 msgstr "+%(guild)s의 채널에서 채팅하려면 로그인하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to downvote"
 msgstr "로그인하고 비추천하기"
 
@@ -14689,11 +15202,19 @@ msgstr "자주 묻는 질문"
 msgid "Sign in to see them here."
 msgstr "여기에 표시하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to upvote"
 msgstr "로그인하고 추천하기"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Sign in with a QR code"
+msgstr "로그인 QR 이름 *"
+
+#, machine, plain1, python-format
+msgid "Sign in with a QR code - %(site)s"
+msgstr "QR 코드로 로그인 - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Sign up"
 msgstr "회원가입"
 
@@ -14712,6 +15233,14 @@ msgstr "지금 가입! %(site)s는 온라인 커뮤니티를위한 오픈 소스
 #, machine
 msgid "Sign-in emails are off."
 msgstr "로그인 이메일이 꺼집니다."
+
+#, machine, plain1, python-format
+msgid "Signed in here as @%(name)s"
+msgstr "로그인 @%(name)s"
+
+#, glossary, machine, plain2
+msgid "Signed out"
+msgstr "로그아웃됨"
 
 #, machine
 msgid "Signed-in viewers"
@@ -14737,7 +15266,7 @@ msgstr "비슷한 guilds"
 msgid "Simulation Games"
 msgstr "시뮬레이션 게임"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Since"
 msgstr "시작일"
@@ -14825,7 +15354,7 @@ msgstr "그래서 우리는 당신의 프로필을 표시하지 않습니다."
 msgid "Soccer"
 msgstr "회사 소개"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Issues"
 msgstr "사회 문제"
 
@@ -14833,7 +15362,7 @@ msgstr "사회 문제"
 msgid "Social Media"
 msgstr "소셜 미디어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Sciences"
 msgstr "사회과학"
 
@@ -14854,7 +15383,7 @@ msgstr[0] "일부 계정은이 개인을 유지, 그래서 %(num)s 나열되지 
 msgid "Some of my circles (end-to-end encrypted)"
 msgstr "몇몇의 내 원 (암호화되는 최후)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Some posts are automated"
 msgstr "일부 게시물은 자동 게시됨"
 
@@ -14907,6 +15436,18 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "이 페이지를 저장하면 편집되었습니다. 귀하의 텍스트는 여전히 여기에 있습니다: 복사, 자신의 변경을 볼 페이지를 다시로드, 그리고 다시 추가."
 
+#, machine, plain2, python-format
+msgid ""
+"Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
+"\n"
+"\n"
+"If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
+msgstr ""
+"승인되는 QR 코드로 계정에 로그인 한 누군가 : %(browser)s, %(place)s, %(when)s.\n"
+"\n"
+"\n"
+"그렇지 않은 경우, [disconnect everywhere](/settings/security#log-out-everywhere) 및 [your apps](/settings/apps) 및 [your chat apps](/settings/chat_apps)를 체크하십시오. 연결이 종료되지 않습니다."
+
 #, machine
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
 msgstr "당신이 자신의 Inbox에 메시지를 얻는 누군가; 다른 사람이 요청으로 가져옵니다. 채팅은 암호화된 엔드 투 엔드입니다."
@@ -14932,6 +15473,10 @@ msgid "Something went wrong while publishing. Please try again."
 msgstr "출판 중에 뭔가 잘못되었습니다. 다시 시도하십시오."
 
 #, machine, plain1
+msgid "Something went wrong, so this code has stopped. Wait a moment and try a new one."
+msgstr "뭔가 잘못되었는지, 그래서이 코드가 중지되었습니다. 순간을 기대하고 새로운 것을 시도하십시오."
+
+#, machine, plain1
 msgid "Soon"
 msgstr "현재 위치"
 
@@ -14939,19 +15484,19 @@ msgstr "현재 위치"
 msgid "Sorry, I've been cursed and can't make you coffee right now."
 msgstr "죄송합니다. 지금 바로 커피를 만들 수 없습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort By:"
 msgstr "정렬 기준:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort by"
 msgstr "정렬 기준"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort comments"
 msgstr "댓글 정렬"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort guilds"
 msgstr "길드 정렬"
 
@@ -14959,7 +15504,7 @@ msgstr "길드 정렬"
 msgid "Sound"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Sound"
 msgstr "오디오"
@@ -14972,16 +15517,16 @@ msgstr "언어 선택"
 msgid "Southern Cone"
 msgstr "남부 콘"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Space"
 msgstr "스페이스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "a live Space"
 msgid "Space"
 msgstr "스페이스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Space"
 msgstr "스페이스"
@@ -14996,7 +15541,7 @@ msgstr "우주 기록"
 
 #. a group of post types in the Post type filter (live, upcoming and recorded
 #. Spaces)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Spaces"
 msgstr "스페이스"
 
@@ -15053,7 +15598,7 @@ msgstr "스탠드 업 코미디"
 msgid "Standard - hide extremely offensive language"
 msgstr "Standard - 매우 공격적인 언어를 숨깁니다"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start a Space"
 msgstr "스페이스 시작"
 
@@ -15073,7 +15618,7 @@ msgstr "시작하기"
 msgid "Start now"
 msgstr "지금 시작"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start one"
 msgstr "스페이스 시작"
 
@@ -15131,7 +15676,7 @@ msgstr "이 게시물의 공동 저자로 단계?"
 msgid "Stepping down"
 msgstr "맨 위로"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sticky post"
 msgstr "고정 게시물"
 
@@ -15159,7 +15704,7 @@ msgstr "자주 묻는 질문 귀하의 계정과 모든 게시물은 그대로 �
 msgid "Stopped after failing"
 msgstr "실패 후 중지"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Story"
 msgstr "스토리"
@@ -15184,16 +15729,16 @@ msgstr "방송 서비스"
 msgid "Study Tips"
 msgstr "학습 팁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Submitter"
 msgstr "작성자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Subscribe"
 msgstr "구독하기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "calendar feed"
 msgid "Subscribe"
 msgstr "구독"
@@ -15220,7 +15765,7 @@ msgid "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coin/mo</span>"
 msgid_plural "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coins/mo</span>"
 msgstr[0] "이름 *<span class=\"profile-x-price\">&nbsp;· %(num)s 월별 동전</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribed"
 msgstr "구독 중"
 
@@ -15228,15 +15773,15 @@ msgstr "구독 중"
 msgid "Subscribed · renews %(date)s"
 msgstr "가입 · 갱신 %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscriber"
 msgstr "구독자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribers"
 msgstr "구독자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Subscribers"
 msgstr "구독자"
@@ -15291,6 +15836,10 @@ msgstr "당신이 따르는 계정에서 제안, 당신이 가입하고 당신�
 msgid "Summary"
 msgstr "제품정보"
 
+#, machine, plain1, python-format
+msgid "Summary: %(summary)s"
+msgstr "요약: %(summary)s"
+
 #, machine
 msgctxt "weekday"
 msgid "Sun"
@@ -15304,7 +15853,7 @@ msgstr "슈퍼 영웅"
 msgid "Support"
 msgstr "지원하다"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Support %(site)s"
 msgstr "%(site)s 후원하기"
 
@@ -15345,8 +15894,12 @@ msgstr "Wiki를 해제"
 msgid "Switch the wiki off? Its pages are kept; only guildmasters see them until it is on again."
 msgstr "위키를 끄세요? 그 페이지는 보관됩니다. guild moderators 만 다시 볼 수 있습니다."
 
+#, machine, plain2
+msgid "Switching two-factor on or off signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "다른 장치와 채팅 앱에서 채팅을 차단하거나 차단 해제하는 두 가지 요인을 전환하면이 브라우저가 여기에 서명 한 이후로 사용되었습니다."
+
 #. the tab of notices from the site itself
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "notifications"
 msgid "System"
 msgstr "시스템"
@@ -15377,7 +15930,7 @@ msgstr "이 curated 피드를 외부 서버에서?"
 msgid "Taking part"
 msgstr "관련 기사"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tap to play"
 msgstr "탭하여 재생"
 
@@ -15390,11 +15943,11 @@ msgctxt "colour"
 msgid "Teal"
 msgstr "팟캐스트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech News"
 msgstr "기술 뉴스"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech Support"
 msgstr "기술 지원"
 
@@ -15422,11 +15975,11 @@ msgstr "%(site)s를 떠나는 이유를 알려주십시오. (선택 사항)"
 msgid "Tennis"
 msgstr "Ღ♥ღ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Terms"
 msgstr "이용약관"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Terms"
 msgstr "이용약관"
@@ -15453,7 +16006,7 @@ msgctxt "kind of story"
 msgid "Text"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post body"
 msgid "Text"
 msgstr "본문"
@@ -15473,7 +16026,7 @@ msgstr "텍스트 채널"
 msgid "Text posts"
 msgstr "문자 메시지"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Text size"
 msgstr "글자 크기"
 
@@ -15602,6 +16155,10 @@ msgstr "그 봇은 이 채널을 공급하지 않습니다."
 msgid "That category isn't in this guild."
 msgstr "그 범주는이 길드에 없습니다."
 
+#, machine, plain2
+msgid "That chat was not found."
+msgstr "그 채팅이 발견되지 않았습니다."
+
 #, machine
 msgid "That circle isn't taking subscribers."
 msgstr "그 원은 가입자를 가지고 있지 않습니다."
@@ -15609,6 +16166,10 @@ msgstr "그 원은 가입자를 가지고 있지 않습니다."
 #, machine
 msgid "That circle isn't yours."
 msgstr "그 원은 너의 것 아닙니다."
+
+#, machine, plain1
+msgid "That code isn't right."
+msgstr "그 코드는 맞지 않습니다."
 
 #, machine
 msgid "That comment has been deleted."
@@ -15626,9 +16187,13 @@ msgstr "그 연결 시도가 만료되었습니다. 다시 시도하십시오."
 msgid "That description is too long once formatted."
 msgstr "그 설명은 너무 긴 한 번 형식."
 
-#, machine
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "그 장치는 지금 서명할 수 없습니다."
+msgstr "그 장치는 지금 막을 수 없습니다."
+
+#, machine, plain1
+msgid "That didn't go through. Wait a moment and try again."
+msgstr "그것은 계속하지 않았다. 잠시 후 다시 시도하십시오."
 
 #, machine
 msgid "That didn’t work."
@@ -15702,6 +16267,10 @@ msgstr "그 파일은 너무 크다."
 msgid "That file is too big. The limit for audio files is %(size)s MB."
 msgstr "그 파일은 너무 크다. 오디오 파일의 제한은 %(size)s MB입니다."
 
+#, machine, plain2, python-format
+msgid "That file is too big. The limit for files in chats is %(size)s MB."
+msgstr "그 파일은 너무 크다. 채팅의 파일에 대한 제한은 %(size)s MB입니다."
+
 #, machine, plain1, python-format
 msgid "That file is too big. The limit for image files is %(size)s MB."
 msgstr "그 파일은 너무 크다. 이미지 파일의 제한은 %(size)s MB입니다."
@@ -15760,6 +16329,10 @@ msgstr "즉, 다른 계정의 사용자 이름이므로, 디스플레이 이름�
 msgid "That is another account's username, so it can't be your display name."
 msgstr "즉, 다른 계정의 사용자 이름이므로, 디스플레이 이름이 될 수 없습니다."
 
+#, machine, plain1
+msgid "That is how someone would try this on you. Press Not me unless you are sure."
+msgstr "그것은 누군가가 당신을 시도 할 수있는 방법입니다. 제품정보 당신이 확실하지 않은 경우."
+
 #, machine
 msgid "That is not a usable address."
 msgstr "그것은 쓸모없는 주소입니다."
@@ -15797,8 +16370,16 @@ msgid "That isn't a valid username."
 msgstr "그것은 유효한 사용자 이름이 아닙니다."
 
 #, machine, plain1
+msgid "That isn't right. Try again."
+msgstr "그것은 맞지 않습니다. 다시 시도하십시오."
+
+#, machine, plain1
 msgid "That isn't something you can switch."
 msgstr "전환 할 수있는 것은 아닙니다."
+
+#, machine, plain2
+msgid "That isn't your password."
+msgstr "비밀번호가 없습니다."
 
 #, machine
 msgid "That key couldn't be saved."
@@ -15832,6 +16413,10 @@ msgstr "그 메시지는 인용할 수 없습니다."
 msgid "That message can't have a thread."
 msgstr "그 메시지는 스레드가 없습니다."
 
+#, machine, plain2
+msgid "That message isn't in this chat any more."
+msgstr "이 메시지는 더 이상 채팅하지 않습니다."
+
 #, machine
 msgid "That name is kept for the site's staff."
 msgstr "그 이름은 사이트의 직원을 위해 보관됩니다."
@@ -15855,6 +16440,10 @@ msgstr "비밀번호 재설정 양식이 만료되었습니다."
 #, machine
 msgid "That password reset link has expired."
 msgstr "비밀번호 재설정 링크가 만료되었습니다."
+
+#, machine, plain2
+msgid "That picture can't be used here."
+msgstr "그 그림은 여기에 사용할 수 없습니다."
 
 #, machine
 msgid "That picture is already used somewhere else. Upload it again."
@@ -15912,9 +16501,17 @@ msgstr "그 프로모션 코드는이 주문 무료, 이는 지불 할 수 없�
 msgid "That recording can no longer be used."
 msgstr "기록은 더 이상 사용될 수 없습니다."
 
+#, machine, plain2
+msgid "That report couldn't be read. Try again."
+msgstr "그 보고서는 읽을 수 없습니다. 다시 시도하십시오."
+
 #, machine
 msgid "That request was bad and you should feel bad."
 msgstr "그 요청은 나쁘고 나쁜 느낌을한다."
+
+#, machine, plain1
+msgid "That request wasn't understood."
+msgstr "그것은 이해하지 않았다."
 
 #, machine
 msgid "That server is not on the public internet."
@@ -16016,7 +16613,7 @@ msgstr "BBC의 기술 헤드 라인, 그것의 공개 RSS 피드에서."
 msgid "The Child word filter hides sensitive content everywhere, so this is off."
 msgstr "아이 워드 필터는 민감한 콘텐츠를 어디에 숨기고, 그래서이 꺼집니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "The Platform"
 msgstr "플랫폼"
 
@@ -16177,9 +16774,17 @@ msgstr[0] "%(guilds)s에 전달 된 사본은 아래로 촬영됩니다."
 msgid "The dates leave no days."
 msgstr "날짜는 날이 없습니다."
 
+#, machine, plain1
+msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "그것에 대해 만든 결정, 가장 새로운 첫 번째: 누구, 언제, 어디, 어떤 규칙과 왜. 그것은 숨겨진 또는 제거 된 것의 제목 또는 텍스트를 결코 보여줍니다."
+
 #, machine
 msgid "The draft has changes the post doesn't show yet."
 msgstr "초안은 게시물이 아직 표시되지 않습니다."
+
+#, machine, plain1
+msgid "The earlier versions aren't shown while this is hidden."
+msgstr "이전 버전은 숨겨져 있지 않습니다."
 
 #, machine, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -16526,6 +17131,10 @@ msgstr "요약은 우주가 살고있는 동안 변경 될 수 있습니다."
 msgid "The text isn't shown: this was removed by the site's administrators."
 msgstr "텍스트는 표시되지 않습니다 : 사이트 관리자에 의해 제거되었습니다."
 
+#, machine, plain1
+msgid "The text of this version was hidden by a site administrator."
+msgstr "이 버전의 텍스트는 사이트 관리자에 의해 숨겨졌습니다."
+
 #, machine, python-format
 msgid "The time before links must be a whole number of days, 0 to %(max)s."
 msgstr "링크 전에 시간은 전체 일 수, 0 ~ %(max)s이어야합니다."
@@ -16692,6 +17301,10 @@ msgstr "그 이름에는 계정이 없습니다."
 msgid "There's no invitation to speak."
 msgstr "자주 묻는 질문."
 
+#, machine, plain2
+msgid "There's no recovery code to keep yet."
+msgstr "아직 유지하려면 복구 코드가 없습니다."
+
 #, machine
 msgid "There's nothing here right now."
 msgstr "이제는 아무것도 없습니다."
@@ -16736,9 +17349,9 @@ msgstr "그들은 이미이 원에 있습니다."
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "그들은 말하지 않습니다. 누구든지 당신은 당신의 원형을 나눕니다."
 
-#, machine, plain1
-msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
-msgstr "그들은 어디에 나와 있습니다. 그들이 채팅을 사용하는 경우, 그들은 그들의 복구 코드를 요청할 수 있습니다."
+#, machine, plain2
+msgid "They are signed out everywhere, chat apps included. If they use chat, they may need their recovery code, or a browser where they've used chat, to read their old messages."
+msgstr "모든것이 편안하게 느껴집니다. 채팅을 사용하는 경우, 그들은 그들의 복구 코드를 필요로 할 수 있습니다, 또는 그들이 사용하는 채팅 브라우저, 그들의 오래된 메시지를 읽을 수."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16913,6 +17526,10 @@ msgstr "이 액세스는 1 시간 이내에 만료됩니다. 또는 이전 경�
 msgid "This account can't use chat apps."
 msgstr "이 계정은 채팅 앱을 사용할 수 없습니다."
 
+#, machine, plain1, python-format
+msgid "This account has been marked 18 or over since %(date)s."
+msgstr "이 계정은 18 이상으로 표시됩니다. %(date)s."
+
 #, machine, python-format
 msgid "This account has been permanently suspended from %(site)s."
 msgstr "이 계정은 %(site)s에서 영구적으로 중단되었습니다."
@@ -16937,6 +17554,10 @@ msgstr "이 계정 owes 돈, 그래서 아직 삭제 될 수 없습니다."
 msgid "This account posts about sensitive topics"
 msgstr "이 계정은 민감한 주제에 대한 게시물"
 
+#, machine, plain2
+msgid "This also signs out chat everywhere else, chat apps included, except the chat this browser has used since you signed in here."
+msgstr "이 또한 다른 곳에서 채팅을 차단, 채팅 앱 포함, 채팅이 브라우저가 여기에 서명 한 이후 사용."
+
 #. %(time)s is a length of time, such as "6 months"
 #, machine, python-format
 msgid "This author hasn't been active for %(time)s, so isn't counted."
@@ -16957,6 +17578,14 @@ msgstr "이 봇은 실행되지 않습니다."
 #, machine
 msgid "This bot's owner can't run it right now."
 msgstr "이 봇의 소유자는 지금 그것을 실행할 수 없습니다."
+
+#, machine, plain2
+msgid "This browser was signed out. Sign in again to carry on."
+msgstr "이 브라우저가 차단되었습니다. 자주 묻는 질문."
+
+#, machine, plain2
+msgid "This browser's notifications couldn't be turned on. Try again."
+msgstr "이 브라우저의 알림이 켜질 수 없습니다. 다시 시도하십시오."
 
 #, machine, python-format
 msgid "This call is full (%(num)s person)."
@@ -16999,6 +17628,14 @@ msgstr "이 채널은 사용할 수 없습니다."
 msgid "This circle isn't taking subscribers."
 msgstr "이 원은 가입자를 가지고 있지 않습니다."
 
+#, machine, plain1
+msgid "This code can't be used. Get a new one on the computer, or sign in there with your password."
+msgstr "이 코드는 사용할 수 없습니다. 컴퓨터에서 새로운 것을 얻거나 암호로 서명하십시오."
+
+#, machine, plain1
+msgid "This code has run out."
+msgstr "이 코드가 실행되었습니다."
+
 #, machine
 msgid "This comment and the comments under it"
 msgstr "이 댓글과 의견 아래"
@@ -17039,6 +17676,10 @@ msgstr "이 댓글 섹션은 유령 마을입니다 ..."
 msgid "This content has already been posted"
 msgstr "이 콘텐츠는 이미 게시되었습니다"
 
+#, machine, plain1
+msgid "This copy is no longer kept."
+msgstr "이 복사는 더 이상 유지되지 않습니다."
+
 #, machine
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "이것은 새로운, 독립적 인 게시물 그 길드 자체 투표와 의견. 제목은 댓글의 텍스트에서 생성됩니다. 원래 댓글에 다시 링크는 새로운 게시물에 표시됩니다."
@@ -17070,6 +17711,10 @@ msgstr "이 curated feed's 규칙은 너무 오래 걸렸습니다. 그것의 �
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
 msgstr "이 계정과 모든 것을 삭제합니다. 그것은 undone일 수 없습니다. 먼저 데이터를 다운로드 할 수 있습니다."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "이 장치는 곧 차단됩니다."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17123,9 +17768,17 @@ msgstr "이 공간은 우주의 토론입니다. <a href=\"%(url)s\">본문 바�
 msgid "This is a Space: its host and co-hosts post its updates from the Space."
 msgstr "이 공간은: 호스트와 공동 호스트는 스페이스에서 업데이트를 게시합니다."
 
+#, machine, plain1, python-format
+msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
+msgstr "이것은 +에서 수행 된 모더레이터 작업의 로그입니다.%(guild)s. 모든 사람이 사이트에서도 읽을 수 있습니다 <a href=\"%(url)s\">로그인</a>. 어떤 회원이 출판되지 않습니다."
+
 #, machine
 msgid "This is already in your language."
 msgstr "이것은 이미 당신의 언어로."
+
+#, machine, plain2
+msgid "This is for chat on this site. A chat app you use outside it follows its own setting."
+msgstr "이 사이트에 채팅입니다. 채팅 앱을 사용하면 자체 설정을 따르십시오."
 
 #, machine
 msgid "This is for the members of a Circle guild."
@@ -17198,6 +17851,10 @@ msgid "This page may not be embedded in other webpages."
 msgstr "이 페이지는 다른 웹 사이트에 포함되지 않을 수 있습니다."
 
 #, machine, plain1
+msgid "This page was opened from a link, not by your camera."
+msgstr "이 페이지는 귀하의 카메라에 의해 링크에서 열렸다."
+
+#, machine, plain1
 msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
 msgstr "이 영구적으로 코멘트 텍스트를 지우십시오. 관리자도 undone이 될 수 없습니다."
 
@@ -17208,6 +17865,10 @@ msgstr "이 영구적으로 게시물 제목, 텍스트 및 링크. 관리자도
 #, machine
 msgid "This person is blocking you."
 msgstr "이 사람이 당신을 막고있다."
+
+#, machine, plain1
+msgid "This phone signed in with a QR code, so it can't approve another one. Enter your password here, then scan a new code."
+msgstr "이 전화는 QR에 서명 코드, 그래서 그것은 다른 하나를 승인 할 수 없습니다. 비밀번호를 입력하면 새 코드를 스캔합니다."
 
 #, machine
 msgid "This poll has ended."
@@ -17340,6 +18001,10 @@ msgstr "이 검색은 너무 오래 걸렸다. 단어를 추가, 또는 아래�
 msgid "This sign-in can't go on"
 msgstr "이 로그인은 갈 수 없습니다"
 
+#, machine, plain1
+msgid "This sign-in lasts 12 hours, and chat, coins, apps, following, who can see what you share and account settings ask for your password first."
+msgstr "이 로그인은 12 시간, 채팅, 동전, 앱, 다음, 당신이 공유하고 계정 설정이 암호를 먼저 묻는 것을 볼 수 있습니다."
+
 #, machine
 msgid "This sign-in request didn't come from a chat app this site knows."
 msgstr "이 로그인 요청은 채팅 앱이 사이트에서 알 수 없습니다."
@@ -17389,6 +18054,10 @@ msgstr "그들은 이미 규칙입니다."
 msgid "Those dates leave no days to search."
 msgstr "그 날짜는 검색 할 수 없습니다."
 
+#, machine, plain2
+msgid "Those keys couldn't be used."
+msgstr "그 키는 사용할 수 없습니다."
+
 #, machine
 msgid "Through the app"
 msgstr "앱을 통해"
@@ -17411,7 +18080,7 @@ msgstr "규칙에 동의합니다."
 msgid "Ticks all its subcategories. Untick them to keep only the guilds filed under the category itself."
 msgstr "모든 하위 카테고리를 핥습니다. 범주 자체에 제출 된 guilds 만 유지하지 마십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Time"
 msgstr "기간"
 
@@ -17432,7 +18101,7 @@ msgstr "시간은 시간대에 있습니다."
 msgid "Times the post's page was opened by someone other than you. A repeat from the same visitor within half an hour, robots and link previews are not counted. Views before this feature are not counted either."
 msgstr "게시물의 페이지가 다른 사람에 의해 열렸다. 반 시간 내에 동일한 방문자에서 반복, 로봇 및 링크 미리보기는 계산되지 않습니다. 이 특징의 앞에 전망은 둘 다 계산되지 않습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Tip"
 msgstr "팁 주기"
@@ -17451,16 +18120,16 @@ msgid "Tip, %(num)s coin tipped"
 msgid_plural "Tip, %(num)s coins tipped"
 msgstr[0] "팁, %(num)s 동전 담긴"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "coins received"
 msgid "Tips"
 msgstr "받은 팁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Title"
 msgstr "제목"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile title"
 msgid "Title"
 msgstr "칭호"
@@ -17548,7 +18217,7 @@ msgstr "옵트 아웃"
 msgid "Toggle Privacy"
 msgstr "웹 사이트"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Toggle navigation"
 msgstr "메뉴 열기/닫기"
 
@@ -17568,7 +18237,7 @@ msgstr "너무 많은 라이브 스트림이 열려 있습니다. 탭을 닫고 
 msgid "Too much spam!"
 msgstr "너무 많은 스팸!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Top"
 msgstr "상위"
@@ -17590,7 +18259,7 @@ msgstr "이름 * %(share)s%% 게시물의 글 %(site)s 에 의해 %(date)s"
 msgid "Topic"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Topics"
 msgstr "주제"
 
@@ -17629,6 +18298,10 @@ msgid "Translation isn't available right now. Try again in a little while."
 msgstr "번역은 지금 사용할 수 없습니다. 잠시 다시 시도하십시오."
 
 #, machine, plain1
+msgid "Transparency and disclosure"
+msgstr "투명성 및 공개"
+
+#, machine, plain1
 msgid "Travel"
 msgstr "여행 정보"
 
@@ -17636,11 +18309,11 @@ msgstr "여행 정보"
 msgid "Travel Advice"
 msgstr "여행 조언"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Trending"
 msgstr "트렌드"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Trending"
 msgstr "트렌드"
@@ -17662,6 +18335,10 @@ msgstr "트럭 및 SUV"
 msgid "True Crime"
 msgstr "진정한 범죄"
 
+#, machine, plain1
+msgid "Try again"
+msgstr "다시 시도"
+
 #, machine
 msgctxt "weekday"
 msgid "Tue"
@@ -17675,6 +18352,22 @@ msgstr "Turanian 단계"
 msgid "Turn it off"
 msgstr "설정하기"
 
+#, machine, plain1
+msgid "Turn it off if you'll never use it: your password keeps working as it does now."
+msgstr "당신이 그것을 사용하지 않을 경우 그것을 해제: 당신의 암호는 지금 그것으로 작동 유지."
+
+#, machine, plain2
+msgid "Turn it on in Security"
+msgstr "보안 켜기"
+
+#, machine, plain1
+msgid "Turn off"
+msgstr "공지사항"
+
+#, machine, plain2
+msgid "Turn off Seen and typing"
+msgstr "테이크아웃 및 타이핑"
+
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
 msgstr "+%(guild)s에서 알림 해제"
@@ -17682,6 +18375,18 @@ msgstr "+%(guild)s에서 알림 해제"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "@%(name)s에서 알림 설정"
+
+#, machine, plain2
+msgid "Turn off notifications in this browser"
+msgstr "이 브라우저에서 알림을 해제"
+
+#, machine, plain1
+msgid "Turn on"
+msgstr "기타 제품"
+
+#, machine, plain2
+msgid "Turn on Seen and typing"
+msgstr "본문내용 바로가기"
 
 #, machine, plain1
 msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
@@ -17699,9 +18404,17 @@ msgstr "+%(guild)s에서 알림 켜기"
 msgid "Turn on notifications from @%(name)s"
 msgstr "@%(name)s에서 알림 켜기"
 
+#, machine, plain2
+msgid "Turn on notifications in this browser"
+msgstr "이 브라우저에서 알림 켜기"
+
 #, machine
 msgid "Turn on two-factor authentication first."
 msgstr "2단계 인증을 먼저 켜십시오."
+
+#, machine, plain1
+msgid "Turning it back on needs your password, and we'll tell you it happened."
+msgstr "당신의 암호를 요구하고, 우리는 당신이 일어난 것을 말할 것입니다."
 
 #, machine, plain1
 msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
@@ -17727,17 +18440,29 @@ msgstr "2단계 인증"
 msgid "Two-Factor Code"
 msgstr "2단계 코드"
 
-#, machine
+#, machine, plain2
 msgid "Two-factor authentication disabled. Your other devices have been signed out."
-msgstr "2단계 인증 가능 다른 장치가 서명되었습니다."
+msgstr "2단계 인증 가능 다른 장치가 분리되었습니다."
 
 #, machine
 msgid "Two-factor authentication is already on. Turn it off first to set up a new device."
 msgstr "2단계 인증이 이미 있습니다. 새로운 장치를 설정하기 위해 먼저 꺼집니다."
 
-#, machine
+#, machine, plain2
 msgid "Two-factor authentication is on. Your other devices have been signed out."
-msgstr "2단계 인증 다른 장치가 서명되었습니다."
+msgstr "2단계 인증 다른 장치가 분리되었습니다."
+
+#, machine, plain1
+msgid "Two-factor code or backup code"
+msgstr "2단계 코드 또는 백업 코드"
+
+#, machine, plain2
+msgid "Two-factor sign-in"
+msgstr "2단계 로그인"
+
+#, machine, plain2
+msgid "Two-factor sign-in keeps someone who learns your password out of your account, and so out of your chats."
+msgstr "계정에서 암호를 배우는 두 가지 요소 로그인은 누군가를 유지하고 채팅에서."
 
 #, machine
 msgid "Two-step login"
@@ -17763,7 +18488,7 @@ msgstr "에 의해 구동 %(name)s"
 msgid "Unable to copy data"
 msgstr "데이터 복사 가능"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unable to copy link"
 msgstr "링크를 복사할 수 없습니다"
 
@@ -17805,15 +18530,15 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "사이트 맵"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "차단 해제"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unblock @%(name)s"
 msgstr "@%(name)s 차단 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock user"
 msgstr "사용자 차단 해제"
 
@@ -17837,11 +18562,11 @@ msgctxt "guildmaster action"
 msgid "Uncontrib user"
 msgstr "Uncontrib 사용자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undistinguish"
 msgstr "공식 표시 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "실행 취소"
 
@@ -17850,7 +18575,7 @@ msgctxt "guildmaster action"
 msgid "Unexile user"
 msgstr "Unexile 사용자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Unfollow"
 msgstr "팔로우 취소"
@@ -17859,7 +18584,7 @@ msgstr "팔로우 취소"
 msgid "Unfollow @%(name)s"
 msgstr "사이트 맵%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unfollow post"
 msgstr "게시물 팔로우 취소"
 
@@ -17877,11 +18602,11 @@ msgctxt "guildmaster action"
 msgid "Unherald post"
 msgstr "Unherald 게시물"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unhide"
 msgstr "숨김 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unhide"
 msgstr "숨김 해제"
@@ -17891,7 +18616,7 @@ msgctxt "guildmaster action"
 msgid "Unhide comment from guild"
 msgstr "Guild의 댓글"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unhide from +%(guild)s"
 msgstr "+%(guild)s에서 숨김 해제"
 
@@ -17945,11 +18670,11 @@ msgstr "모든 Reputation-gated 기능 잠금 해제"
 msgid "Unlock animated emojis with %(site)s Premium."
 msgstr "%(site)s Premium로 애니메이션 이모티콘을 잠금 해제하십시오."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmark Sensitive Content"
 msgstr "민감한 콘텐츠 표시 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "뮤트 해제"
 
@@ -17966,19 +18691,19 @@ msgstr "취소 +%(guild)s"
 msgid "Unmute @%(name)s"
 msgstr "@%(name)s 을"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute guild"
 msgstr "길드 뮤트 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute user"
 msgstr "사용자 뮤트 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "고정 해제"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unpin"
 msgstr "고정 해제"
@@ -17997,7 +18722,7 @@ msgstr "Unpin 포스트"
 msgid "Unpopular Opinions"
 msgstr "인기 게시물"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unread"
 msgstr "읽지 않음"
 
@@ -18033,7 +18758,7 @@ msgctxt "button"
 msgid "Unsubscribe"
 msgstr "구독 취소"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Until"
 msgstr "종료일"
@@ -18135,7 +18860,7 @@ msgstr "그림 업로드"
 msgid "Upvote"
 msgstr "전체장편"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Upvote"
 msgstr "추천"
@@ -18144,11 +18869,11 @@ msgstr "추천"
 msgid "Upvoted"
 msgstr "전체장편"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes"
 msgstr "추천"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Upvotes"
 msgstr "추천"
@@ -18165,7 +18890,7 @@ msgstr "Upvotes, 얼마나 많은가 있었는지에 의해 착색"
 msgid "Upvotes, comments and bookmarks per day"
 msgstr "Upvotes, 일 당 의견 및 책갈피"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes:"
 msgstr "추천:"
 
@@ -18198,6 +18923,10 @@ msgstr "다른 Microsoft 계정 사용"
 msgid "Use a new line for each filter entry. Limit of 1000 characters."
 msgstr "각 필터 항목에 대한 새로운 라인을 사용합니다. 1000 문자의 한계."
 
+#, machine, plain1
+msgid "Use your password"
+msgstr "비밀번호"
+
 #, machine
 msgid "User"
 msgstr "사용자 이름"
@@ -18218,7 +18947,7 @@ msgstr "사용자는이 의견에 대해 exiled."
 msgid "User was exiled from +%(guild)s for this post."
 msgstr "사용자는 이 게시물에 대해 +%(guild)s에서 발췌했습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username"
 msgstr "사용자 이름"
 
@@ -18243,7 +18972,7 @@ msgid "Username changes cost 20 Coins. You only have a balance of %(num)s Coin"
 msgid_plural "Username changes cost 20 Coins. You only have a balance of %(num)s Coins"
 msgstr[0] "사용자 이름 변경 비용 20 동전. %(num)s의 균형을 가지고 있습니다. 한국어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username or Email Address"
 msgstr "사용자 이름 또는 이메일 주소"
 
@@ -18366,7 +19095,7 @@ msgctxt "kind of story"
 msgid "Video"
 msgstr "한국어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Video"
 msgstr "동영상"
@@ -18379,7 +19108,7 @@ msgstr "비디오 및 오디오"
 msgid "Video call - %(site)s"
 msgstr "비디오 통화 - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Video from %(domain)s"
 msgstr "%(domain)s 동영상"
 
@@ -18440,11 +19169,11 @@ msgstr "이 사이트에 비디오는 YouTube 및 기타 사이트에서 제공�
 msgid "View %(site)s as you, including private or restricted content"
 msgstr "보기 %(site)s 너와 같이, 개인 또는 제한된 내용 포함"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View all"
 msgstr "모두 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View anyway"
 msgstr "그래도 보기"
 
@@ -18452,7 +19181,7 @@ msgstr "그래도 보기"
 msgid "View comment"
 msgstr "댓글보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View entire discussion"
 msgstr "전체 댓글 보기"
 
@@ -18464,7 +19193,7 @@ msgstr "Moderation 로그 기록 보기"
 msgid "View on %(service)s"
 msgstr "%(service)s에 보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "원본 보기"
 
@@ -18579,9 +19308,13 @@ msgid "Waiting for an admin. You will get a notification when they decide; until
 msgstr "관리자를 기다리고 있습니다. 당신이 결정할 때 알림을 얻을 것이다; 그 후 봇의 프로필은 당신과 관리자에 볼 수 있습니다."
 
 #. the state of a bot account, shown as a badge on its page.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Waiting for approval"
 msgstr "승인 대기 중"
+
+#, machine, plain1
+msgid "Wasn't you?"
+msgstr "당신은하지?"
 
 #, machine
 msgctxt "button"
@@ -18644,7 +19377,7 @@ msgstr "[약관](/help/terms)의 나이 섹션을 변경했습니다. 18의 밑�
 msgid "Web Development"
 msgstr "웹 개발"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Website"
 msgstr "웹사이트"
 
@@ -18657,7 +19390,7 @@ msgstr "사이트맵"
 msgid "Weddings"
 msgstr "웨딩"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Week"
 msgstr "이번 주"
@@ -18666,7 +19399,7 @@ msgstr "이번 주"
 msgid "Weekend plans"
 msgstr "주말 계획"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Welcome back."
 msgstr "돌아오셨군요!"
 
@@ -18718,6 +19451,14 @@ msgstr "자주 묻는 질문 <span class=\"text-muted font-weight-normal\">(선�
 msgid "What do you want to say?"
 msgstr "당신이 말하는 무엇을?"
 
+#, machine, plain1
+msgid "What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "어떤 길드 모더레이터와 사이트가 결정, 가장 먼저: 누구, 언제, 어디, 어떤 규칙과 왜. 그것은 숨겨진 또는 제거 된 것의 제목 또는 텍스트를 결코 보여줍니다."
+
+#, machine, plain1
+msgid "What guildmasters and the site decided: hides, removals, exiles and bans, with the rule and the reason."
+msgstr "어떤 길드 모더레이터와 사이트 결정: 숨, 제거, 내기 및 금지, 규칙과 이유."
+
 #, machine
 msgid "What is it about?"
 msgstr "그것은 무엇입니까?"
@@ -18729,6 +19470,10 @@ msgstr "그것은 무엇입니까?"
 #, machine
 msgid "What is wrong with this account? For example spam, impersonation, harassment or ban evasion. To report one post or comment, use its own menu."
 msgstr "이 계정으로 잘못되었습니까? 예를 들어 스팸, 침수, harasssment 또는 금지 evasion. 하나의 게시물이나 댓글을보고, 자신의 메뉴를 사용합니다."
+
+#, machine, plain1
+msgid "What it could already read comes back once it is unlocked."
+msgstr "이미 읽을 수 있는 것은 한 번 자물쇠로 엽니다."
 
 #, machine
 msgid "What it does now"
@@ -18747,6 +19492,10 @@ msgid "What kind of Space?"
 msgstr "어떤 종류의 공간?"
 
 #, machine, plain1
+msgid "What members delete themselves is not published here."
+msgstr "어떤 회원들은 여기에 게시되지 않습니다."
+
+#, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
 msgstr "어떤 사람들은 이야기하고 있습니다. 이제는 무엇이고, 어떤 것이 일어나고 있습니다."
 
@@ -18762,7 +19511,7 @@ msgstr "길드 모더레이터는"
 msgid "What to say"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "What to search"
 msgstr "검색 대상"
 
@@ -18832,7 +19581,7 @@ msgstr "자주 묻는 질문"
 msgid "Where this account is based, from where it uses %(site)s"
 msgstr "이 계정이 기반이 어디에서 사용 %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Where to post"
 msgstr "게시할 곳"
 
@@ -18872,11 +19621,11 @@ msgstr "어떤 게시물"
 msgid "White Hat"
 msgstr "백색 모자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment"
 msgstr "댓글 허용 대상"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment?"
 msgstr "댓글을 달 수 있는 사람은?"
 
@@ -18896,7 +19645,7 @@ msgstr "누가 참여할 수 있습니다"
 msgid "Who can read"
 msgstr "누가 읽을 수 있습니다"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this"
 msgstr "공개 범위"
 
@@ -18916,11 +19665,11 @@ msgstr "이 게시물을 볼 수 있습니다"
 msgid "Who can see this post?"
 msgstr "누가이 게시물을 볼 수 있습니까?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this:"
 msgstr "공개 범위:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this?"
 msgstr "공개 범위"
 
@@ -18952,7 +19701,7 @@ msgstr "누가 너를 따르고"
 msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
 msgstr "누가 그들을보고, 그들이 쓴 것, 누구에게도 표시되지 않지만 관리자."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who subscribes to your Circle"
 msgstr "내 서클 구독자"
 
@@ -18974,13 +19723,17 @@ msgstr "누가 따르는가 - %(site)s"
 msgid "Who wrote it"
 msgstr "누가 그것을 썼다"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who wrote what"
 msgstr "누가 무엇을 썼나"
 
 #, machine
 msgid "Who you follow"
 msgstr "당신이 따르는"
+
+#, machine, plain1
+msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
+msgstr "누가이 브라우저를보고 자신을 배치, 그래서 그들은 아무것도 증명."
 
 #, machine
 msgid "Wholesome"
@@ -18991,7 +19744,7 @@ msgid "Whoops!"
 msgstr "한국어!"
 
 #. the reason an admin pauses a bot
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "왜"
 
@@ -19009,7 +19762,7 @@ msgid "Why not (they are told)"
 msgstr "왜 (그들은 말했다)"
 
 #. the guild's wiki is switched off
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Wiki"
 msgstr "위키"
 
@@ -19051,7 +19804,7 @@ msgid "Wildlife"
 msgstr "야생 동물"
 
 #. posts with a link, a picture, a video... (the ticks below)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "With"
 msgstr "포함"
@@ -19088,7 +19841,7 @@ msgstr "소리로"
 msgid "With a video"
 msgstr "동영상"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "With textarea"
 msgstr "텍스트 영역"
 
@@ -19142,6 +19895,10 @@ msgstr "소리 없이"
 msgid "Without a video"
 msgstr "동영상 없이"
 
+#, machine, plain1, python-format
+msgid "Without it, this sign-in ends on %(when)s."
+msgstr "그것 없이, 이 로그인은 %(when)s에 끝납니다."
+
 #, machine, python-format
 msgid "Won't renew, access ends %(date)s"
 msgstr "갱신되지 않음, 접속 종료 %(date)s"
@@ -19154,7 +19911,7 @@ msgstr "채용정보"
 msgid "Word filter"
 msgstr "워드 필터"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Words"
 msgstr "키워드"
 
@@ -19330,7 +20087,7 @@ msgstr "“부제되지 않은 초안”을 함께 쓰세요?"
 msgid "Write: %(choice)s"
 msgstr "쓰기: %(choice)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Written together"
 msgstr "공동 작성"
 
@@ -19343,7 +20100,7 @@ msgstr "Yank 포스트"
 msgid "Year"
 msgstr "1 년"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Year"
 msgstr "올해"
@@ -19361,6 +20118,10 @@ msgstr "황색"
 msgctxt "vote"
 msgid "Yes"
 msgstr "이름 *"
+
+#, machine, plain1
+msgid "Yes, sign in on that screen"
+msgstr "예, 그 화면에 로그인"
 
 #, machine, plain1
 msgid "Yoga"
@@ -19457,7 +20218,7 @@ msgstr "당신은 이미 가입."
 msgid "You are already the author."
 msgstr "당신은 이미 저자입니다."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "@%(name)s 님을 차단 중입니다"
 
@@ -19548,6 +20309,10 @@ msgstr "설정에서 언제든지 변경할 수 있습니다."
 #, machine
 msgid "You can change this for each video when you add it. Videos are uploaded as not made for kids."
 msgstr "추가할 때 각 비디오에 이것을 변경할 수 있습니다. 동영상은 아이를 위해 제작되지 않습니다."
+
+#, machine, plain2
+msgid "You can change this once they've accepted your message request."
+msgstr "메시지 요청을 받아 들일 수 있습니다."
 
 #, machine
 msgid "You can close this window."
@@ -19734,6 +20499,10 @@ msgstr "이 채팅에서 호출 할 수 없습니다."
 #, machine, plain1
 msgid "You can't change perms on guildmasters above you."
 msgstr "위 guild moderators에 perms를 변경할 수 없습니다."
+
+#, machine, plain1, python-format
+msgid "You can't change this answer yourself. If it's wrong, <a href=\"%(url)s\">contact us</a>: only an admin can change it."
+msgstr "이 대답을 스스로 변경할 수 없습니다. 그것이 잘못되면, <a href=\"%(url)s\">연락처</a>: admin만 변경할 수 있습니다."
 
 #, machine
 msgid "You can't comment on content from users that are blocking you."
@@ -20105,6 +20874,14 @@ msgstr "아직 백업 코드를 만들지 않았습니다."
 msgid "You haven't posted anything in the last 28 days."
 msgstr "28 일 동안 모든 것을 게시하지 않았습니다."
 
+#, machine, plain2
+msgid "You haven't said you kept your recovery code."
+msgstr "당신은 당신의 복구 코드를 보관하지 않았다."
+
+#, machine, plain1
+msgid "You haven't told us yet."
+msgstr "아직 알려지지 않았습니다."
+
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
 msgstr "당신은 할 수 있습니다 <a href=\"%(url)s\">회사 소개</a> 이 공동체는 길드 모더레이터가 됩니다."
@@ -20125,7 +20902,7 @@ msgstr "당신은 적어도해야합니다 %(min)s 당신이 어디에 계정을
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "Tor를 통해 이미지를 업로드 할 수있는 확인 된 이메일 주소를해야합니다."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You muted @%(name)s"
 msgstr "@%(name)s 님을 뮤트했습니다"
 
@@ -20179,6 +20956,30 @@ msgstr "조금 기다려야 합니다."
 msgid "You post timestamped updates as things happen; everyone comments under them."
 msgstr "당신은 일로 업데이트를 게시합니다; 그들 아래에 모든 의견."
 
+#, machine, plain2, python-format
+msgid "You said you kept your recovery code on %(date)s."
+msgstr "당신은 %(date)s에 복구 코드를 유지했다."
+
+#, machine, plain1
+msgid "You signed in with a QR code, so chat, coins, apps, following, who can see what you share, your account's name and its security settings ask for your password first."
+msgstr "QR으로 로그인 코드, 그래서 채팅, 동전, 앱, 다음, 누가 당신이 공유하는 것을 볼 수, 계정의 이름과 보안 설정은 암호를 먼저 요청."
+
+#, machine, plain1
+msgid "You signed in with a QR code."
+msgstr "QR 코드로 로그인하십시오."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to do this."
+msgstr "QR 코드로 로그인하십시오. 비밀번호를 입력하세요."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to join a call."
+msgstr "QR 코드로 로그인하십시오. 비밀번호 입력."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to use this form."
+msgstr "QR 코드로 로그인하십시오. 비밀번호 입력."
+
 #, machine, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "%(site)s 계정 이메일 변경을 원했습니다. 이 절차를 완료하려면 새로운 이메일 주소를 확인하시기 바랍니다:"
@@ -20227,7 +21028,7 @@ msgstr "이 사용자를 차단하지만, 당신은 당신의 길드에 있기 �
 msgid "You're blocking this user, but you can see this comment because you're an admin."
 msgstr "이 사용자를 차단하지만, 당신은 관리자이기 때문에이 코멘트를 볼 수 있습니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You're blocking this user."
 msgstr "이 사용자를 차단하고 있습니다."
 
@@ -20249,6 +21050,10 @@ msgid "You're invited to write a shared draft with others. [See the invitation](
 msgstr ""
 
 #, machine, plain1
+msgid "You're no longer signed in here. Sign in again to use chat."
+msgstr "더 이상 여기에 서명하지 않습니다. 채팅을 사용하려면 다시 로그인하십시오."
+
+#, machine, plain1
 msgid "You're not following any curations yet."
 msgstr "당신은 아직 curated 피드를 따르지 않습니다."
 
@@ -20265,6 +21070,10 @@ msgid "You're subscribed. It renews in 30 days for %(num)s coins unless you canc
 msgid_plural "You're subscribed. It renews in 30 days for %(num)s coins unless you cancel."
 msgstr[0] "가입하세요. %(num)s에 대한 30 일에서 갱신됩니다. 취소하지 않는 한 동전."
 
+#, machine, plain2
+msgid "You're told of new messages and calls in your chats, never what a message says. Each group can be set to every message, calls only or nothing, in the group's people sheet."
+msgstr "당신은 새로운 메시지와 채팅에 통화, 어떤 메시지가 말한다. 각 그룹은 각 메시지에 설정할 수 있으며, 그룹의 사람들 시트에만 전화할 수 있습니다."
+
 #, machine
 msgid "You're writing very fast. Wait a moment."
 msgstr "아주 빨리 쓰고 있다. 현재 위치."
@@ -20272,6 +21081,10 @@ msgstr "아주 빨리 쓰고 있다. 현재 위치."
 #, machine
 msgid "You've added a lot of people to groups today. Try again tomorrow."
 msgstr "오늘 그룹에 많은 사람들을 추가했습니다. 내일 다시 시도하십시오."
+
+#, machine, plain1
+msgid "You've already answered this. Only an admin can change your answer."
+msgstr "이미 대답했습니다. 관리자 만 응답을 변경할 수 있습니다."
 
 #, machine
 msgid "You've already reported this Space."
@@ -20302,9 +21115,17 @@ msgstr "당신은 지난 시간에 많은 목소리 채널에 합류했습니다
 msgid "You've sent a lot of feedback today. Try again tomorrow."
 msgstr "오늘 많은 피드백을 보냈습니다. 내일 다시 시도하십시오."
 
+#, machine, plain2
+msgid "You've sent a lot of files today. Try again tomorrow."
+msgstr "오늘 많은 파일을 보냈습니다. 내일 다시 시도하십시오."
+
 #, machine
 msgid "You've sent a lot of reports today. Try again tomorrow."
 msgstr "오늘 많은 보고서를 보냈습니다. 내일 다시 시도하십시오."
+
+#, machine, plain2
+msgid "You've sent a lot of reports. Try again later."
+msgstr "많은 보고서를 보냈습니다. 나중에 다시 시도하십시오."
 
 #, machine
 msgid "You've started a lot of calls in the last hour. Try again later."
@@ -20418,7 +21239,7 @@ msgstr "당신의 RSS 피드 주소"
 msgid "Your Subscribed Users"
 msgstr "당신의 가입 사용자"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your account"
 msgstr "내 계정"
 
@@ -20566,6 +21387,10 @@ msgstr "귀하의 계정의 자동화된 게시물은 %(url)s %(fails)s가 실�
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "계정의 자동화된 게시물이 승인되었습니다. 당신의 피드의 새로운 게시물은 프로필에 나타납니다, 자동화 된로 표시, 몇 분 안에. [Settings > Bots](/settings/bots)에서 관리합니다."
 
+#, machine, plain1
+msgid "Your age"
+msgstr "당신의 나이"
+
 #, machine, plain1, python-format
 msgid "Your age was confirmed on %(date)s."
 msgstr "당신의 나이는 %(date)s에 확인되었습니다."
@@ -20573,6 +21398,10 @@ msgstr "당신의 나이는 %(date)s에 확인되었습니다."
 #, machine
 msgid "Your answer"
 msgstr "당신의 대답"
+
+#, machine, plain1
+msgid "Your apps"
+msgstr "당신의 앱"
 
 #, machine
 msgid "Your backup codes"
@@ -20608,9 +21437,13 @@ msgstr ""
 msgid "Your bots"
 msgstr "봇"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your channels"
 msgstr "내 채널"
+
+#, machine, plain1
+msgid "Your chat apps"
+msgstr "채팅 앱"
 
 #, machine
 msgid "Your chat devices"
@@ -20619,6 +21452,10 @@ msgstr "채팅 장치"
 #, machine
 msgid "Your chat devices can't be listed right now."
 msgstr "채팅 장치가 지금 나열되지 않습니다."
+
+#, machine, plain2
+msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr "채팅 암호화가 시작되었습니다. 채팅을 사용하는 브라우저가 뒤로 가져 오는 브라우저가 아닌 기기에서 메시지를 읽을 수 없습니다. 그렇지 않은 경우, [설정 > 보안](/settings/security)에서 비밀번호를 변경하십시오."
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -20636,13 +21473,17 @@ msgstr "여러분의 채팅은 Matrix에서 실행되며, 오픈 표준은 %(sit
 msgid "Your child accounts will be deleted with yours."
 msgstr "자녀의 계정이 삭제됩니다."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your circles"
 msgstr "내 서클"
 
 #, machine, python-format
 msgid "Your circles - %(site)s"
 msgstr "당신의 원 - %(site)s"
+
+#, machine, plain1
+msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "귀하의 의견은 사이트 페이지에서 촬영됩니다. 이 사이트는 90 일 동안 개인 사본을 유지하고 사이트 관리자 만 열 수 있습니다. 이것은 undone일 수 없습니다."
 
 #, machine
 msgid "Your commenting history will show here."
@@ -20709,10 +21550,10 @@ msgid "Your language"
 msgstr "이름 *"
 
 #. the English uses "sign-ins" for every number
-#, machine, python-format
+#, machine, plain2, python-format
 msgid "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
 msgid_plural "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
-msgstr[0] "당신의 마지막 %(num)s 기호. 이 장소는 국가이며 연결에서 일했습니다. 아무도 인식하지 않습니까? 비밀번호 변경: 다른 모든 기기를 표시하는 것."
+msgstr[0] "당신의 마지막 %(num)s 기호. 이 장소는 국가이며 연결에서 일했습니다. 아무도 인식하지 않습니까? 비밀번호 변경: 다른 모든 장치를 분리합니다."
 
 #, machine
 msgid "Your media storage is no longer connected."
@@ -20754,9 +21595,9 @@ msgstr "당신의 새로운 열쇠. 지금 복사: 그것은 다시 표시되지
 msgid "Your original username will always stay reserved for you: <code>%(name)s</code>"
 msgstr "사용자 이름은 항상 당신을 위해 유지됩니다: <code>%(name)s</code>"
 
-#, machine
+#, machine, plain2
 msgid "Your other devices have been signed out."
-msgstr "다른 장치가 서명되었습니다."
+msgstr "다른 장치가 분리되었습니다."
 
 #, machine
 msgid "Your own circles"
@@ -20804,9 +21645,9 @@ msgstr "당신의 부모 또는 보호자는 당신의 계정에 이 꺼집니�
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
 msgstr "귀하의 부모 또는 보호자는이 계정을 만들었습니다. 그들은 당신이 사이트에 무엇을 볼 수 있습니다 (당신의 게시물, 댓글, 표, 북마크, 다음과, guilds, 당신은과 채팅, 당신의 계정이보고되고 당신의 최근 로그인; 사이트 결코 당신의 채팅이 말하는 것을 보여줍니다) 그들은 어떤 기능을 선택. [설정 > 내용](/settings/content)에서 볼 수 있습니다. 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하여 당신이 그것을 알고 있기 때문에, 당신이 당신과 채팅을 읽을 때 로그인 할 수 있기 때문에."
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "귀하의 부모 또는 보호자는 귀하의 계정에 대한 새로운 암호를 설정하고 서명되었습니다. 새로운 비밀번호로 로그인하면 [설정 > 보안](/settings/security)에서 변경할 수 있습니다."
+msgstr "당신의 부모 또는 보호자는 당신의 계정에 대한 새로운 암호를 설정하고 당신은 차단되었습니다. 새로운 비밀번호로 로그인하면 [설정 > 보안](/settings/security)에서 변경할 수 있습니다."
 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
@@ -20828,9 +21669,9 @@ msgstr "당신의 부모 또는 보호자의 계정이 중단되었습니다, �
 msgid "Your password"
 msgstr "비밀번호"
 
-#, machine
+#, machine, plain2
 msgid "Your password has been changed. Your other devices have been signed out."
-msgstr "비밀번호가 변경되었습니다. 다른 장치가 서명되었습니다."
+msgstr "비밀번호가 변경되었습니다. 다른 장치가 분리되었습니다."
 
 #, machine
 msgid "Your password meets the requirements."
@@ -20840,9 +21681,21 @@ msgstr "비밀번호는 요구 사항을 충족합니다."
 msgid "Your payouts"
 msgstr "당신의 지불금"
 
+#, machine, plain1
+msgid "Your phone approved this. Only continue if this is your account."
+msgstr "휴대폰이 승인되었습니다. 계정이 있다면 계속됩니다."
+
+#, machine, plain1
+msgid "Your phone said no, so nobody was signed in."
+msgstr "휴대폰은 아무도 서명하지 않았다."
+
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "귀하의 게시물은 프로필에 나열되어 있습니다. 제품 정보 내 프로필은 그 의견이 너무 많고 길드를 추가하여 곧 게시합니다. 각 길드는 자신의 투표와 의견으로 자신의 사본을 가져옵니다."
+
+#, machine, plain1
+msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "귀하의 게시물은 프로필, 피드 및 길드에서 촬영됩니다. 이 사이트는 90 일 동안 개인 사본을 유지하고 사이트 관리자 만 열 수 있습니다. 이것은 undone일 수 없습니다."
 
 #, machine
 msgid "Your posting history will show here."
@@ -21053,7 +21906,7 @@ msgstr "[보도자료](/help/press)"
 msgid "[Privacy Policy](/help/privacy)"
 msgstr "[개인정보 보호정책](/help/privacy)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[Removed by admin]"
 msgstr "[관리자가 삭제함]"
 
@@ -21097,7 +21950,7 @@ msgstr "[기타] (/help/titles)"
 msgid "[banned]"
 msgstr "[배우]"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[deleted account]"
 msgstr "[삭제된 계정]"
 
@@ -21117,6 +21970,11 @@ msgstr "[출판]"
 msgid "[doc pending]"
 msgstr "[문헌]"
 
+#. stands in a preserved copy's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[그림]"
+
 #, machine
 msgid "[removed by admin]"
 msgstr "[관리자에 의해 제거]"
@@ -21128,6 +21986,11 @@ msgstr "[관리자에 의해 제거]"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "[ guild moderators에 의해 제거]"
+
+#. stands in a preserved copy's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[음향]"
 
 #, machine
 msgid "a day"
@@ -21162,7 +22025,7 @@ msgctxt "sort"
 msgid "activity"
 msgstr "이름 *"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "activity"
 msgstr "활동순"
@@ -21231,6 +22094,16 @@ msgstr "아바타"
 msgid "ban evasion"
 msgstr "금지 사항"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "banned %(target)s"
+msgstr "금지 %(target)s"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "banned the guild +%(guild)s"
+msgstr "guild + %(guild)s를 금지"
+
 #, machine
 msgctxt "story background"
 msgid "berry"
@@ -21243,7 +22116,7 @@ msgid "bots"
 msgstr "봇"
 
 #. the author's name, with their badges
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by %(author)s"
 msgstr "작성자 %(author)s"
 
@@ -21264,7 +22137,7 @@ msgid "by <a href=\"/@%(name)s\">@%(name)s</a>"
 msgstr "이름 * <a href=\"/@%(name)s\">·%(name)s</a>"
 
 #. a curation that ranks posts with its own algorithm
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by @%(name)s"
 msgstr "작성자 @%(name)s"
 
@@ -21353,6 +22226,10 @@ msgctxt "unit"
 msgid "coins"
 msgstr "가격 책정"
 
+#, glossary, machine, plain2
+msgid "comment"
+msgstr "댓글"
+
 #, machine
 msgid "commercial promotion"
 msgstr "회사 소개"
@@ -21382,6 +22259,11 @@ msgctxt "time filter"
 msgid "day"
 msgstr "일 시"
 
+#. follows the author's name in the Log; %(target)s is a link to a comment
+#, machine, plain1, python-format
+msgid "deleted a %(target)s"
+msgstr "%(target)s을 삭제"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "deleted a channel"
@@ -21407,12 +22289,17 @@ msgstr "자주 묻는 질문"
 msgid "deleted a wiki page"
 msgstr "위키 페이지 삭제"
 
+#. follows the author's name in the Log; %(target)s is a link to a post
+#, machine, plain1, python-format
+msgid "deleted post %(target)s"
+msgstr "삭제 된 게시물 %(target)s"
+
 #, machine
 msgctxt "sort"
 msgid "disputed"
 msgstr "법적고지"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "disputed"
 msgstr "논란"
@@ -21502,7 +22389,7 @@ msgid "forest"
 msgstr "이름 *"
 
 #. the title of the post it was forked from, a link
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "forked from %(post)s"
 msgstr "%(post)s에서 포크됨"
 
@@ -21553,13 +22440,19 @@ msgstr "게시물 강조 %(target)s"
 msgid "hid a %(target)s from this guild"
 msgstr "hid a %(target)s 부터 이 guild"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain1, python-format
+msgid "hid a revision of %(target)s"
+msgstr "%(target)s의 개정을 숨겼습니다"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
 msgid "hid post %(target)s from this guild"
 msgstr "hid post %(target)s 이 길드에서"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "hidden from +%(guild)s"
 msgstr "+%(guild)s에서 숨겨짐"
 
@@ -21569,7 +22462,7 @@ msgid "hot"
 msgstr "인기있는"
 
 #. the guild page's current sort order, written in lowercase on its bar
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "hot"
 msgstr "인기"
@@ -21641,7 +22534,22 @@ msgstr "자신의 저장에서 재생으로 유지; 모두가 참여하기 전�
 msgid "kicked post %(target)s"
 msgstr "킥 포스트 %(target)s"
 
-#, glossary, machine, plain1
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the ban on %(target)s"
+msgstr "%(target)s에 금지를 들어"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "lifted the ban on the guild +%(guild)s"
+msgstr "guild +%(guild)s에서 금지를 해제"
+
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the suspension of %(target)s"
+msgstr "%(target)s의 서스펜션을 해제"
+
+#, glossary, machine, plain2
 msgid "link preview"
 msgstr "링크 미리보기"
 
@@ -21685,7 +22593,7 @@ msgctxt "time filter"
 msgid "month"
 msgstr "1 개월"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "moved from <a href=\"%(url)s\">+%(guild)s</a>"
 msgstr "<a href=\"%(url)s\">+%(guild)s</a>에서 이동됨"
 
@@ -21709,7 +22617,7 @@ msgctxt "sort"
 msgid "new"
 msgstr "새로운 소식"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "new"
 msgstr "최신"
@@ -21738,7 +22646,7 @@ msgctxt "sort"
 msgid "old"
 msgstr "뚱 베어"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "old"
 msgstr "오래된순"
@@ -21747,11 +22655,11 @@ msgstr "오래된순"
 msgid "only guildmasters write here"
 msgstr "guild moderators 쓰기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "outside server"
 msgstr "외부 서버"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "own algorithm"
 msgstr "자체 알고리즘"
 
@@ -21804,7 +22712,7 @@ msgstr "채널에 메시지를 핀으로"
 msgid "pinned post %(target)s"
 msgstr "pinned 포스트 %(target)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post image"
 msgstr "게시물 이미지"
 
@@ -21826,7 +22734,7 @@ msgstr "%(age)s 으로 @%(name)s 으로 +%(guild)s"
 msgid "posts made with AI"
 msgstr "aI로 만든 게시물"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild badge"
 msgid "private"
 msgstr "비공개"
@@ -21876,6 +22784,11 @@ msgstr "제거 %(target)s"
 msgid "removed a message by %(target)s from a channel"
 msgstr "으로 메시지 제거 %(target)s 채널에서"
 
+#. follows the moderator's name in the Log
+#, machine, plain1
+msgid "removed a revision of a guild's wiki"
+msgstr "guild의 위키의 개정을 제거"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -21903,7 +22816,7 @@ msgstr "채널 범주를 renamed"
 msgid "renews %(date)s"
 msgstr "%(date)s을 갱신"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "repost"
 msgstr "재게시"
@@ -21923,7 +22836,7 @@ msgstr "위키 페이지 개정"
 msgid "see it"
 msgstr "자세히보기"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "sensitive content"
 msgstr "민감한 콘텐츠"
 
@@ -21982,6 +22895,11 @@ msgctxt "story background"
 msgid "sunset"
 msgstr "【특전】"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "suspended %(target)s"
+msgstr "중단 %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "switched the wiki"
@@ -21992,7 +22910,7 @@ msgstr "wiki를 전환"
 msgid "test storage"
 msgstr "시험 저장"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "text post"
 msgstr "텍스트 게시물"
 
@@ -22055,7 +22973,7 @@ msgctxt "sort"
 msgid "top"
 msgstr "맨 위로"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "top"
 msgstr "상위"
@@ -22166,7 +23084,7 @@ msgstr "v. %(version)s, © 2021 %(company)s"
 msgid "video"
 msgstr "동영상"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "video preview"
 msgstr "동영상 미리보기"
 
@@ -22244,9 +23162,9 @@ msgstr "견적 요청"
 msgid "you were posting too fast, and it couldn't wait any longer."
 msgstr "너무 빨리 게시하고 더 이상 기다릴 수 없었다."
 
-#, machine
+#, machine, plain2
 msgid "you were signed out."
-msgstr "로그인했습니다."
+msgstr "연결되었습니다."
 
 #, machine
 msgid "you're invited to write it"

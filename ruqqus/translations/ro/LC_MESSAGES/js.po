@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ro\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s Scrie…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s setează mesajele pentru a dispărea după %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s oprit mesajele dispar."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -132,12 +140,26 @@ msgstr[0] "%(num)s membru"
 msgstr[1] "%(num)s membri"
 msgstr[2] "%(num)s de membri"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s mesaj găsit."
+msgstr[1] "%(num)s mesaje găsite."
+msgstr[2] "%(num)s de mesaje găsite."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s mesaj în fir"
 msgstr[1] "%(num)s mesaje în fir"
 msgstr[2] "%(num)s de mesaje în fir"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s mesaj citit…"
+msgstr[1] "%(num)s mesaje citite…"
+msgstr[2] "%(num)s de mesaje citite…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -258,6 +280,14 @@ msgstr[2] "%(owner)s · %(num)s membri"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Salvare oricum?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -291,6 +321,14 @@ msgstr[0] "+ %(guild)s · %(num)s comentariu"
 msgstr[1] "+ %(guild)s · %(num)s comentarii"
 msgstr[2] "+ %(guild)s · %(num)s comentarii"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 zi"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 săptămână"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s te-a adăugat la acest grup. Acceptă să o citeşti şi scrie în ea."
@@ -301,10 +339,6 @@ msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be se
 msgstr[0] "@ %(name)s nu a deschis încă chat-ul. Mesajul tău va fi trimis când o vor face."
 msgstr[1] "@ %(name)s nu a deschis încă chat-ul. Mesajele tale %(num)s vor fi trimise când o vor face."
 msgstr[2] "@ %(name)s nu a deschis încă chat-ul. Cele %(num)s de mesaje vor fi trimise atunci când o vor face."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s dactilografierea…"
 
 #, machine, plain1
 msgid "A Space"
@@ -358,6 +392,13 @@ msgid "A message that isn't there any more"
 msgstr "Un mesaj care nu mai există"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Un mesaj scris aici nu a fost trimis: chat oprit în această filă înainte de a putea merge."
+msgstr[1] "%(num)s mesaje pe care le-ai scris aici nu au fost trimise: chat-ul s-a oprit în această filă înainte să poată pleca."
+msgstr[2] "%(num)s de mesaje pe care le-ai scris aici nu au fost trimise: chat-ul s-a oprit în această filă înainte să poată pleca."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Un post poate avea cel mult un co-autor."
@@ -377,9 +418,13 @@ msgid "Accept"
 msgstr "Acceptă"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Adaugă"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Adaugă un ajutor după nume de utilizator"
 
 #, machine, plain1
 msgid "Add image"
@@ -418,12 +463,12 @@ msgid "Adding..."
 msgstr "Adăugare..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "De acord"
 
@@ -443,6 +488,10 @@ msgstr "Aliniază dreapta"
 msgid "Alignment"
 msgstr "Aliniere"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "De asemenea, blocul @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -452,7 +501,7 @@ msgstr "De asemenea, aici: %(names)s"
 msgid "An app"
 msgstr "O aplicație"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Furios"
 
@@ -462,7 +511,7 @@ msgstr "Furios"
 msgid "Announcements"
 msgstr "Anunțuri"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonim"
 
@@ -470,6 +519,10 @@ msgstr "Anonim"
 #, machine, plain1
 msgid "Answer"
 msgstr "Răspuns"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Oricine în chat mai poate copia un mesaj sau face o fotografie a ecranului înainte de a merge."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -483,23 +536,23 @@ msgstr "Atașează un link la acest post"
 msgid "Aw shucks. No GIFs found..."
 msgstr "La naiba. Nu. GIFs găsit..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Super"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Penibil"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Înapoi sus"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Blochează"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Blochează @%(name)s?"
 
@@ -510,6 +563,10 @@ msgstr "Blocat @ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Curaj (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Ţi-am adus cheile de la chat. Introduceți parola pentru a termina."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -584,7 +641,7 @@ msgstr "Camera oprita"
 msgid "Camera on"
 msgstr "Camera pornită"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Anulează"
 
@@ -622,7 +679,7 @@ msgstr[0] "Channel · %(num)s membru"
 msgstr[1] "Canal · %(num)s membri"
 msgstr[2] "Canal · %(num)s membri"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Canale"
 
@@ -632,13 +689,45 @@ msgstr "Canalele în care eşti"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Chat"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat nu a putut aduce cheile. Reîncarcă pentru a încerca din nou."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Chat nu a putut conecta."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chat nu a putut termina de la început. Introduceți parola pentru a încerca din nou."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chat nu a putut termina de la început. Reîncarcă pentru a încerca din nou."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat nu a putut deschide ce a salvat acest browser, așa că începe din nou aici."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat nu a putut începe în acest browser."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Chat nu a răspuns. Încearcă din nou."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat nu a fost folosit pe acest browser pentru o lungă perioadă de timp, așa că începe din nou aici."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Chat se închide într-o altă filă…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -652,6 +741,26 @@ msgstr "Chat încă începe."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Chat încă începe. Încearcă din nou într-o clipă."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Chat nu este disponibil pentru contul tău acum."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat şi-a pierdut legătura. Retezare…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat are nevoie de acest browser pentru a păstra datele site-ului, și nu se poate aici. Chat nu poate începe în această fereastră."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "S-a oprit discuţia."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Chat a fost deconectat pe acest browser de la un alt dispozitiv. Din nou aici…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Discutaţi cu @%(name)s"
@@ -660,7 +769,7 @@ msgstr "Discutaţi cu @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Cheia lui Chat nu e disponibilă acum."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Chaturi"
 
@@ -700,11 +809,11 @@ msgstr "Alege cine poate vedea asta."
 msgid "Choose your profile or at least one guild."
 msgstr "Alege-ţi profilul sau cel puţin o breaslă."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Cercuri"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Închide"
 
@@ -740,7 +849,7 @@ msgstr "Compară-le cu cele pe care le arată aplicația ta, în aceeași ordine
 msgid "Confirm in the app as well."
 msgstr "Confirmă și în aplicație."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Confuz"
 
@@ -892,6 +1001,10 @@ msgstr "Nu am putut încărca mesajele blocate"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Nu am putut încărca previzualizarea."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Nu s-a putut încărca chat-urile"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1053,7 +1166,11 @@ msgstr "Nu am putut copia: selectați codurile și copiați-le."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Nu am putut încărca mesajele de mai devreme. Încearcă din nou într-o clipă."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Nu a putut încărca chat-uri. Încerc din nou…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Se creează postarea"
 
@@ -1061,7 +1178,7 @@ msgstr "Se creează postarea"
 msgid "Creating…"
 msgstr "Crearea…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1069,7 +1186,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Traversează"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Mod întunecat"
 
@@ -1134,13 +1251,21 @@ msgstr "Să şterg povestea asta?"
 msgid "Delete this update?"
 msgstr "Ștergeți această actualizare?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Se șterge comentariul"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Se șterge postarea"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Mesajele dispar"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Mesajele dispar."
 
 #, machine, plain1
 msgid "Discard"
@@ -1174,6 +1299,10 @@ msgstr "Gata"
 #, machine, plain1
 msgid "Done."
 msgstr "Gata."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Descărcare"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1228,7 +1357,7 @@ msgstr "End-to-end criptate: numai oamenii din acest canal pot citi."
 msgid "Ended"
 msgstr "Sfârşit"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Introdu un URL"
 
@@ -1239,6 +1368,10 @@ msgstr "Introduceți o adresă web, cum ar fi https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Introduceți parola o dată. Încuie cheia mesajelor tale în acest browser, astfel încât site-ul să nu le poată citi niciodată."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Introduceți parola pentru a confirma."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1252,9 +1385,49 @@ msgstr "Introduceţi parola."
 msgid "Enter your recovery code"
 msgstr "Introduceți codul de recuperare"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Introduceți codul de doi factori"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Introduceţi codul de doi factori."
+
+#, machine, plain2
+msgid "File"
+msgstr "Fișier"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Fișierele pot fi trimise odată ce @ %(name)s a deschis chat-ul."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Fișierele pot fi trimise odată ce chat-ul este deblocat pe acest dispozitiv."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Dosarele nu pot fi trimise aici."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Final"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Termină"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Termină de vorbit"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Termină de început peste"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Terminarea chat-up într-o altă filă…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1276,9 +1449,13 @@ msgid "Formatting"
 msgstr "Formatare"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Redirecționează"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Transmite acest mesaj"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1287,7 +1464,19 @@ msgstr[0] "Înainte la cel mult %(num)s breaslă."
 msgstr[1] "Înainte la cel mult %(num)s bresle."
 msgstr[2] "Înaintează la cel mult %(num)s de bresle."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Înaintează spre…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Retrimis"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Înainte."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Se redirecționează"
 
@@ -1327,11 +1516,11 @@ msgstr "Dă-i butonului un text."
 msgid "Give the template a name."
 msgstr "Dă şablonul un nume."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Mergi la site"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Dezgustat"
 
@@ -1339,7 +1528,7 @@ msgstr "Dezgustat"
 msgid "Group info"
 msgstr "Informaţii despre grup"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Bresle"
 
@@ -1351,13 +1540,25 @@ msgstr "Ghilde cu chat"
 msgid "Hand raised"
 msgstr "Mână ridicată"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Fericit"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Ţi-ai păstrat codul de recuperare? Fără ea, o parolă uitată poate pierde mesajele vechi."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Rubrica %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Ajutor"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Ajutatorii scriu pe acest canal cu tine. Alege până la trei persoane care sunt în ea."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1400,6 +1601,10 @@ msgstr "Sunt de acord cu regulile"
 msgid "I don't have it: start over"
 msgstr "Nu o am: o iau de la capăt"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "O am"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "L-am salvat"
@@ -1407,6 +1612,10 @@ msgstr "L-am salvat"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Dacă uitaţi vreodată parola, acest cod este singura cale de a vă citi mesajele vechi. Păstrați-l undeva în condiții de siguranță, ca un manager de parole."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Dacă mai aveți codul de recuperare, utilizați-l în schimb: unele mesaje mai vechi sunt doar în backup se deschide."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1498,11 +1707,11 @@ msgstr "Poveştile ei rămân în arhiva ta."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Alătură-te"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Intră în %(channel)s"
 
@@ -1530,12 +1739,16 @@ msgstr "Fapte cheie și link-uri oamenii ar trebui să vadă mai întâi."
 msgid "Last used %(date)s"
 msgstr "Ultima utilizare %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Mai târziu"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Râs"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Părăsește"
 
@@ -1551,7 +1764,7 @@ msgstr "Să părăsesc acest grup? Altcineva din ea devine proprietarul ei."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Să părăsesc acest grup? Nu vei vedea mesaje noi decât dacă cineva te adaugă din nou."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Mod luminos"
 
@@ -1597,6 +1810,10 @@ msgstr "Trăieşte acum"
 msgid "Load earlier messages"
 msgstr "Încarcă mesajele anterioare"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Se încarcă comentariul…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Post de încărcare…"
@@ -1621,17 +1838,25 @@ msgstr "Încărcare șabloane..."
 msgid "Loading..."
 msgstr "Se încarcă..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Se încarcă…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Dragoste"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Mâna inferioară"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Face un nou cod"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Să facem un nou cod de recuperare?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1649,7 +1874,7 @@ msgstr "Să fac acest post public? Toată lumea va putea să-l vadă."
 msgid "Making the channel…"
 msgstr "Fac canalul…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1666,6 +1891,14 @@ msgstr "Mesaj șters"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Cerere de mesaj. Nu vor şti că ai văzut asta până nu accepţi."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Mesajele dispar după %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Mesaje acest browser ar putea citi deja va veni înapoi aici."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1677,7 +1910,7 @@ msgid "Microphone %(number)s"
 msgstr "Microfon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Mai mult"
 
@@ -1685,11 +1918,11 @@ msgstr "Mai mult"
 msgid "Move to listeners"
 msgstr "Mută la ascultători"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Mut"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Ignorat"
 
@@ -1709,7 +1942,11 @@ msgstr "Numeește dosarul"
 msgid "New channel"
 msgstr "Canal nou"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Mesaje noi în acest chat dispar pentru toată lumea după momentul ales. Mesaje trimise înainte de a păstra timpul cu care au fost trimise."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Nu"
 
@@ -1729,17 +1966,29 @@ msgstr "Nici un apel încă. Începeți unul de la un apel vocal de chat sau ape
 msgid "No camera was found."
 msgstr "Nu a fost găsită nicio cameră."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Nu s-au găsit discuţii."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Nu co-autori încă."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Niciun cod? Conectați-vă cu noua parolă pe un browser unde ați folosit chat: vă poate aduce chat-ul înapoi."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Nu există dispozitive încă. Deschide chat pentru a începe."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Fără etichetă"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Nu există ajutoare încă."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1748,6 +1997,10 @@ msgstr "Nu a fost găsit niciun microfon."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Nimeni nu se potriveşte. Puteți trimite la chat-uri și la oameni te urmeze."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Nici un mesaj prins încă."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1793,6 +2046,10 @@ msgstr "Nesalvat"
 msgid "Not used yet"
 msgstr "Neutilizat încă"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Nimic din mesajele pe care acest browser le poate citi."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Nimic găsit."
@@ -1821,17 +2078,45 @@ msgstr "Încă nu avem nimic de văzut."
 msgid "Nothing was connected."
 msgstr "Nimic nu a fost conectat."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Notificări"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Notificările sunt blocate pentru acest site în acest browser. Permiteți-le în setările browser-ului să le activeze."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Notificările sunt oprite în acest browser."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Notificările sunt pe acest browser."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Notificările nu au putut fi verificate. Reîncarcă pagina pentru a încerca din nou."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Notificările nu au putut fi pornite. Încearcă din nou."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Notificările nu au fost permise pentru acest site."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Lista numerotată"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Off"
 
 #, machine, plain1
 msgid "Offline"
@@ -1840,6 +2125,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline · Rejudecarea"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Doar proprietarul şi administratorul grupului pot schimba asta."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1875,6 +2164,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Deschideți chat o dată pentru a debloca mesajele, apoi încercați din nou."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Deschide chat pentru a termina configurarea mesajelor pe acest dispozitiv."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Configurări media deschise"
 
@@ -1885,6 +2178,10 @@ msgstr "Deschideţi spaţiul"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Deschideţi chatul cu + %(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Deschide fişierul…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1911,7 +2208,7 @@ msgstr "Oameni pe care îi urmăreşti"
 msgid "Pick a date and time."
 msgstr "Alege data şi ora."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Alege o etichetă"
 
@@ -1945,11 +2242,15 @@ msgstr "Povestirile nu sunt disponibile încă pe acest site."
 msgid "Pin this message"
 msgstr "Pin acest mesaj"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pinned"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Mesaje codate"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Te rog"
 
@@ -1957,12 +2258,18 @@ msgstr "Te rog"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Introduceți un URL valid (inclusiv http:// sau https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Conectează-te din nou."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Canale populare"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Postează"
 
@@ -1974,7 +2281,7 @@ msgstr "Postat. Reîncarcă pagina să o vezi."
 msgid "Posting to %(guilds)s"
 msgstr "Postare la %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Postezi pe profilul tău"
 
@@ -1983,7 +2290,7 @@ msgstr "Postezi pe profilul tău"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Postarea la profilul dumneavoastră, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Se postează…"
 
@@ -2084,6 +2391,14 @@ msgstr "Reacționează"
 msgid "React with %(emoji)s"
 msgstr "Reacţionează cu %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Înregistrează o notă vocală"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Înregistrez… apăs din nou microfonul ca să-l trimit."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Codul de recuperare"
@@ -2096,13 +2411,17 @@ msgstr "Refă"
 msgid "Refreshing…"
 msgstr "Revigorant…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Se înregistrează"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Eliberare la reîmprospătare"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Reîncarcă"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2117,13 +2436,17 @@ msgstr "Set de reamintire"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Elimină"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Elimină %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Elimină @ %(name)s ca ajutor"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2176,15 +2499,15 @@ msgstr "Redenumește acest dosar"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Raportează"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Raportează comentariul"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Raportează postarea"
 
@@ -2192,11 +2515,11 @@ msgstr "Raportează postarea"
 msgid "Report this message"
 msgstr "Raportează acest mesaj"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Se raportează comentariul"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Se raportează postarea"
 
@@ -2213,13 +2536,13 @@ msgstr "Sună…"
 msgid "Rules of this channel"
 msgstr "Regulile acestui canal"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Trist"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Salvează"
 
@@ -2235,11 +2558,15 @@ msgstr "Salvează ca șablon..."
 msgid "Save your recovery code"
 msgstr "Salvează codul de recuperare"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Salvat"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Salvat."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Se salvează"
 
@@ -2273,7 +2600,7 @@ msgstr "Salvarea…"
 msgid "Say what is wrong with this account."
 msgstr "Spune ce este în neregulă cu această relatare."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Speriat"
 
@@ -2292,7 +2619,8 @@ msgstr "Programat pentru %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Caută"
 
@@ -2303,6 +2631,14 @@ msgstr "Caută pe cineva să adauge."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Caută acest canal"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Caută acest chat"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Caută în chat-uri"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2328,7 +2664,7 @@ msgstr[0] "Văzut de %(num)s"
 msgstr[1] "Văzut de %(num)s"
 msgstr[2] "Văzut de %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Selectează o conversație"
 
@@ -2337,6 +2673,10 @@ msgstr "Selectează o conversație"
 #, machine, plain1
 msgid "Send"
 msgstr "Trimite"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Trimite un fișier"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2354,6 +2694,21 @@ msgstr "Trimiteți următoarele imagini la:"
 msgid "Send your next videos to:"
 msgstr "Trimiteți următoarele videoclipuri la:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Trimitere %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Trimitere %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Trimiterea odată ce chat-ul este gata…"
+msgstr[1] "Trimiterea %(num)s mesaje odată ce chat-ul este gata…"
+msgstr[2] "Trimiterea %(num)s de mesaje odată ce chat-ul este gata…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Trimit..."
@@ -2370,6 +2725,14 @@ msgstr "Trimis"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Mai mulţi oameni scriu…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Partajează ecranul"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Partajat un comentariu"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2390,11 +2753,20 @@ msgstr[2] "Arată %(num)s de posturi noi"
 msgid "Show formatting"
 msgstr "Arată formatarea"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Arată pe canal"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Arată în chat"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Arată mai puțin"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Arată mai mult"
 
@@ -2407,19 +2779,19 @@ msgstr "Arată original"
 msgid "Show translation"
 msgstr "Arată traducerea"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Semnează"
+msgstr "Deconectează"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Semnează %(device)s"
+msgstr "Deconectează %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Semnaţi %(device)s? Acesta va trebui să semneze din nou pentru a citi chat-urile."
+msgstr "Deconectare %(device)s? Acesta va trebui să semneze din nou pentru a citi chat-urile."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Se conectează"
 
@@ -2539,6 +2911,11 @@ msgstr "Începem discuţia…"
 msgid "Starting…"
 msgstr "Începând…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Nu mai partaja"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "StrikeThrough"
@@ -2589,7 +2966,7 @@ msgstr "Formatare text"
 msgid "Text style"
 msgstr "Stil text"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Mulțumim pentru solicitare"
 
@@ -2613,27 +2990,39 @@ msgstr "Mulţumesc. Un admin se va uita la ea."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Multumesc: moderatorii breslei vor arunca o privire."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Multumesc: adminii site-ului vor arunca o privire, si ati blocat @ %(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Mulţumesc: adminii site-ului vor arunca o privire."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Mulţumesc: adminii site-ului vor arunca o privire. @ %(name)s nu a putut fi blocat de aici: blocați-le de la profilul lor."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Acest chat nu este gata pe acest dispozitiv încă. Deschide-l o dată, apoi încearcă din nou."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Codul nu-l deschide. Verificati dactilografele."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Nu s-a putut salva."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Acest dispozitiv nu a putut fi semnat chiar acum."
+msgstr "Dispozitivul nu poate fi deconectat acum."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Acest dispozitiv nu a putut fi folosit."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Nu a funcționat"
 
@@ -2672,6 +3061,14 @@ msgstr "Asta nu e parola ta."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Acest mesaj nu poate fi trimis."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Acest mesaj nu a mai putut fi găsit pe canal."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Acest mesaj nu a mai putut fi găsit în această discuţie."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2757,6 +3154,10 @@ msgstr "Discuţia este închisă: acest spaţiu s-a încheiat."
 msgid "The chat opens when the Space starts."
 msgstr "Discuţia se deschide când începe Spaţiul."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Codul din aplicația dumneavoastră de autentificare, sau unul dintre codurile de rezervă."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Proiectul s-a schimbat la ultima ta editare, aşa că a fost reîncărcat. Verifică ultimele tale cuvinte."
@@ -2764,6 +3165,10 @@ msgstr "Proiectul s-a schimbat la ultima ta editare, aşa că a fost reîncărca
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji pentru a compara"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Dosarul nu a putut fi trimis. Încearcă din nou."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2780,6 +3185,10 @@ msgstr "Legătura nu a putut fi copiată."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Microfonul nu a putut fi pornit."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Microfonul nu a putut fi folosit. Verificaţi dacă acest site îl poate folosi."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2819,6 +3228,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Repetarea nu a fost salvată: încărcarea a eșuat. O poţi descărca în schimb."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Cheile site-ului schimbat, astfel încât chat-ul începe din nou aici."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Rezumatul este ascuns de filtrul de cuvânt."
 
@@ -2854,6 +3267,10 @@ msgstr "Încă nu avem unde să-i trimitem pe acest site."
 msgid "These comments could not be loaded. Try again."
 msgstr "Aceste observații nu au putut fi încărcate. Încearcă din nou."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Nu li se spune niciodată cine le-a raportat."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Au refuzat apelul."
@@ -2866,6 +3283,10 @@ msgstr "Nu se potrivesc"
 msgid "They match"
 msgstr "Se potrivesc"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Ei stau în propriul cont acolo, criptate, folosind spațiul liber. Numai oamenii din chat le pot deschide."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Nu vor putea să te urmărească, să-ţi transmită sau să comenteze mesajele tale, şi nu le vei vedea mesajele. Poţi să le deblochezi oricând."
@@ -2874,9 +3295,9 @@ msgstr "Nu vor putea să te urmărească, să-ţi transmită sau să comenteze m
 msgid "This Space has ended."
 msgstr "Acest spațiu sa încheiat."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Acest browser"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Acest lucru se termină, de asemenea, orice salvare de la un browser în cazul în care ați folosit chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2886,9 +3307,29 @@ msgstr "Acest browser nu poate da telefoane."
 msgid "This browser can't record the Space."
 msgstr "Acest browser nu poate înregistra spaţiul."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Acest browser nu poate partaja ecranul."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Acest browser nu poate arăta notificări de pe acest site."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Acest browser nu poate pregăti fotografii pentru încărcare. Încearcă alt browser."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Acest browser încă deține cheile de chat înainte de a schimba parola. Utilizați-le pentru a citi mesajele vechi aici și pe alte dispozitive?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Acest browser a fost deconectat de la chat de la un alt dispozitiv, astfel încât chat-ul începe din nou aici."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Datele salvate ale acestui browser au fost șterse, așa că chat-ul începe din nou aici."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2898,6 +3339,26 @@ msgstr "Acest lucru nu poate fi anulată."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Acest canal este dezactivat pentru tine: nici un punct necitit și nici o mențiune notificări."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Acest chat este criptat până la capăt, deci site-ul nu-l poate citi. Raportarea trimite acest mesaj și până la patru înainte, așa cum le vedeți aici, la admin site-ului."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Acest comentariu nu poate fi arătat."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Acest dispozitiv va fi deconectat în scurt timp."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Acest fișier nu a putut fi deschis. Încearcă mai târziu."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Acest fișier nu mai este disponibil."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Acest fir viu sa încheiat"
@@ -2905,6 +3366,10 @@ msgstr "Acest fir viu sa încheiat"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Acest mesaj nu poate fi citit pe acest dispozitiv."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Acest mesaj a fost şters."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2919,12 +3384,24 @@ msgstr "Acest post nu poate fi arătat."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Acest post este off-topic pentru + %(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Acest semn-in"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Acest lucru deconectează chat-ul din acest browser, dacă este al acestui browser. Va începe din nou ca un nou dispozitiv."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Acest canal vocal este plin (%(num)s persoană)."
 msgstr[1] "Acest canal vocal este plin (%(num)s persoane)."
 msgstr[2] "Acest canal vocal este plin (%(num)s de persoane)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Cheile alea nu mai sunt ale contului tău. Utilizați codul de recuperare, sau începe peste."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2958,7 +3435,7 @@ msgstr[0] "Prea mult timp până la %(num)s (%(note)s)"
 msgstr[1] "Prea mult timp până la %(num)s (%(note)s"
 msgstr[2] "Prea mult timp cu %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Prea multe solicitări azi"
 
@@ -2989,13 +3466,21 @@ msgstr "Traducerea nu este disponibilă acum."
 msgid "Try again"
 msgstr "Încearcă din nou"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Încearcă din nou mâine."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Reporneşte notificările"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Codul din doi factori"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Semnarea a doi factori a fost schimbată, aşa că discuţia începe din nou aici."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -3029,12 +3514,12 @@ msgstr "Imposibil de eliminat comentariul în acest moment. Vă rugăm să înce
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Nu pot vota în acest moment. Vă rugăm să încercați din nou mai târziu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Deblochează"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Anulează"
 
@@ -3054,17 +3539,13 @@ msgstr "Deblochează"
 msgid "Unlock your messages"
 msgstr "Deblochează mesajele"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Deblochează mesajele mai întâi: reîncarcă pagina pentru a introduce parola."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Nu mai ignora"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Nu mai fixa"
 
@@ -3120,11 +3601,15 @@ msgstr "Foloseşte-l aici"
 msgid "Use my recovery code instead"
 msgstr "Foloseşte codul meu de recuperare"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Foloseşte-le"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Numele de utilizator e deja luat :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Numele de utilizator e în regulă!"
 
@@ -3211,7 +3696,7 @@ msgstr[2] "Apel video · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video este oprit în acest apel: sunteți pe audio."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Vezi originalul"
 
@@ -3257,6 +3742,10 @@ msgstr[0] "Voce merge browser la browser prin releul site-ului, astfel încât n
 msgstr[1] "Voce merge browser la browser prin releul site-ului, astfel încât nimeni nu vede adresa nimănui. Până la %(num)s oameni."
 msgstr[2] "Voce merge browser la browser prin releul site-ului, astfel încât nimeni nu vede adresa nimănui. Până la %(num)s de persoane."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Notă vocală"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Stai puţin: ultimele tale schimbări sunt încă salvate."
@@ -3264,6 +3753,10 @@ msgstr "Stai puţin: ultimele tale schimbări sunt încă salvate."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Așteptarea aplicației"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Am găsit chat-ul tău pe acest browser"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3284,6 +3777,10 @@ msgstr "Ce este în neregulă cu acest spațiu? (opțional)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Ce e în neregulă cu acest mesaj? (opțional)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Unde ar trebui să meargă dosarele pe care le trimiteți în chat-uri?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3310,7 +3807,7 @@ msgstr "Cine a spus-o"
 msgid "Who upvoted"
 msgstr "Cine a votat"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "De ce"
 
@@ -3325,6 +3822,10 @@ msgstr "De ce încalcă asta regulile breslei tale? Acest lucru va fi arătat la
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "De ce încalcă asta regulile breslei tale? Acest lucru va fi arătat la oricine care se uită în sus istoria acestui post / comment lui."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "De ce se elimină acest comentariu? Motivul tău este arătat în jurnalul public."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3343,7 +3844,7 @@ msgstr "Scrie ceva mai întâi."
 msgid "Write what you want to tell us."
 msgstr "Scrie ce vrei să ne spui."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Da"
 
@@ -3361,7 +3862,7 @@ msgstr "Da, anulează"
 msgid "You"
 msgstr "Tu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Ai făcut deja asta"
 
@@ -3377,7 +3878,7 @@ msgstr "Ai raportat deja acest post."
 msgid "You already voted on this post."
 msgstr "Deja ai votat pentru acest post."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Ai blocat contul @%(name)s"
 
@@ -3416,7 +3917,7 @@ msgstr "Puteți citi acest canal, dar nu scrie în el."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Poţi vedea cine e aici, dar nu poţi vorbi pe acest canal."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Nu poți face asta."
 
@@ -3460,6 +3961,14 @@ msgstr "Ai părăsit Spaţiul."
 msgid "You left the call."
 msgstr "Ai lăsat telefonul."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Ai deconectat peste tot de la un alt dispozitiv, astfel încât chat începe din nou aici."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Ai semnat cu codul tău de recuperare, deci discuţia începe din nou aici."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Ai neurmați @ %(name)s."
@@ -3467,6 +3976,10 @@ msgstr "Ai neurmați @ %(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Ai fost scos din acest spaţiu."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Vei primi un nou cod de recuperare, și cel vechi se va opri de lucru."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3492,6 +4005,10 @@ msgstr "Browser-ul dvs. blocat fereastra pentru conectarea. Permite pop-up-uri p
 msgid "Your chat devices can't be listed right now."
 msgstr "Dispozitivele tale de chat nu pot fi listate acum."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Codul tău de recuperare chat"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Discuţiile tale"
@@ -3503,6 +4020,10 @@ msgstr "Discuțiile tale vor funcționa din nou pe acest dispozitiv, dar mesajel
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Comentariile dvs. nu au putut fi postate. Încearcă din nou."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Codul curent de recuperare se va opri de lucru."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3534,9 +4055,32 @@ msgstr "Cheia ta nu poate fi arătată acum."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Cheia ta era încuiată cu o parolă mai veche. Deschide chat pe acest site și introduceți codul de recuperare o dată; apoi se deschide aici."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Mesajul dvs. va fi trimis odată ce chat este deblocat pe acest dispozitiv."
+msgstr[1] "Mesajele %(num)s vor fi trimise odată ce chat-ul este deblocat pe acest dispozitiv."
+msgstr[2] "Cele %(num)s de mesaje vor fi trimise odată ce chat-ul este deblocat pe acest dispozitiv."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Vechiul tău cod de recuperare nu mai funcţionează."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Parola ţi-a fost schimbată de când această cheie de chat era încuiată cu ea. Codul de recuperare pe care l-ai salvat când s-a deschis discuţia."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Parola ta a fost schimbată pentru tine, aşa că discuţia începe din nou aici."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Parola ta a fost schimbată, aşa că discuţia începe din nou aici."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Parola ta a fost resetată, aşa că discuţia începe din nou aici."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3545,6 +4089,14 @@ msgstr "Codul de recuperare"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Şabloanele salvate apar aici."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Ecranul dvs. poate fi partajat doar în timp ce sunteți pe video în acest apel."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Ecranul tău nu putea fi împărţit."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3584,7 +4136,7 @@ msgid "blue"
 msgstr "albastru"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "comentariu"
 
@@ -3663,7 +4215,7 @@ msgstr "portocaliu"
 msgid "pink"
 msgstr "roz"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "postare"
 

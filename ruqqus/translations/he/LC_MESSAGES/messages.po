@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 20:16+1100\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: he\n"
@@ -376,7 +376,7 @@ msgstr "%(name)sערוצים"
 msgid "%(name)s's channels - %(site)s"
 msgstr "%(name)sערוצים - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(name)s's profile - %(site)s"
 msgstr "הפרופיל של %(name)s - %(site)s"
 
@@ -1035,7 +1035,7 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 
 #. in a post's facts line: the share of its votes that are upvotes ("97%
 #. upvoted")
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% הצבעות בעד"
 
@@ -1071,7 +1071,7 @@ msgstr "%(role)sכותב:"
 
 #. the member's reputation in the navbar, e.g. "1234 Rep" (Rep: the upvotes
 #. other people gave them)
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(score)s Rep"
 msgstr "%(score)s מוניט'"
 
@@ -1130,28 +1130,28 @@ msgstr "%(site)s פלטפורמה חברתית פתוחה, חופשית"
 msgid "%(site)s API Documentation"
 msgstr "%(site)s API מסמך"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Administrator, speaking officially"
 msgstr "מנהל מערכת של %(site)s, בהודעה רשמית"
 
 #. the site's name and the feed being read, as a heading
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s All"
 msgstr "הכל ב-%(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Curations"
 msgstr "אוספים של %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Feeds"
 msgstr "פידים של %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Following"
 msgstr "במעקב ב-%(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s For You"
 msgstr "בשבילך ב-%(site)s"
 
@@ -1163,7 +1163,7 @@ msgstr "%(site)s עזרה"
 msgid "%(site)s Homepage"
 msgstr "%(site)s אתר Site"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Notification"
 msgstr "התראה מ-%(site)s"
 
@@ -1175,11 +1175,11 @@ msgstr "%(site)s סיסמה איפוס"
 msgid "%(site)s Policies"
 msgstr "%(site)s מדיניות"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Premium"
 msgstr "%(site)s Premium"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Search"
 msgstr "חיפוש ב-%(site)s"
 
@@ -1314,6 +1314,14 @@ msgid "%(who)s approved post %(title)s"
 msgstr "%(who)s הודעה מאושרת %(title)s"
 
 #, machine, plain1, python-format
+msgid "%(who)s banned %(name)s"
+msgstr "%(who)s איסור %(name)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s banned the guild +%(guild)s"
+msgstr "%(who)s איסור על gild +%(guild)s"
+
+#, machine, plain1, python-format
 msgid "%(who)s cancelled an event"
 msgstr "%(who)s ביטול אירוע"
 
@@ -1382,6 +1390,10 @@ msgid "%(who)s deleted a channel category"
 msgstr "%(who)s נמחק קטגוריה ערוץ"
 
 #, machine, plain1, python-format
+msgid "%(who)s deleted a comment"
+msgstr "%(who)s למחוק תגובה"
+
+#, machine, plain1, python-format
 msgid "%(who)s deleted a flair"
 msgstr "%(who)s מחק תווית"
 
@@ -1392,6 +1404,10 @@ msgstr "%(who)s מחקה תפקיד"
 #, machine, plain1, python-format
 msgid "%(who)s deleted a wiki page"
 msgstr "%(who)s למחוק דף wiki"
+
+#, machine, plain1, python-format
+msgid "%(who)s deleted post %(title)s"
+msgstr "%(who)s פוסט נמחק %(title)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
@@ -1422,6 +1438,10 @@ msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s הסתיר תגובה מהגיל הזה"
 
 #, machine, plain1, python-format
+msgid "%(who)s hid a revision of %(title)s"
+msgstr "%(who)s הסתיר תיקון %(title)s"
+
+#, machine, plain1, python-format
 msgid "%(who)s hid post %(title)s from this guild"
 msgstr "%(who)s פוסט נסתר %(title)s מהגיל הזה"
 
@@ -1432,6 +1452,18 @@ msgstr "%(who)s עקבו אחרי guild Moderator @%(name)s"
 #, machine, plain1, python-format
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s עקבו אחרי %(title)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on %(name)s"
+msgstr "%(who)s הסרת האיסור על %(name)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on the guild +%(guild)s"
+msgstr "%(who)s הורד את האיסור על הגליד +%(guild)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the suspension of %(name)s"
+msgstr "%(who)s הרים את השעיה %(name)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s made a channel"
@@ -1494,6 +1526,10 @@ msgid "%(who)s removed a channel message"
 msgstr "%(who)s הסרת הודעת ערוץ"
 
 #, machine, plain1, python-format
+msgid "%(who)s removed a revision of a guild's wiki"
+msgstr "%(who)s הסרתו של ויקי"
+
+#, machine, plain1, python-format
 msgid "%(who)s removed comment"
 msgstr "%(who)s תגובה"
 
@@ -1532,6 +1568,10 @@ msgstr "%(who)s להגדיר את התווית של הפוסט %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
 msgstr "%(who)s ירד למטה כמו מארגן גיליד"
+
+#, machine, plain1, python-format
+msgid "%(who)s suspended %(name)s"
+msgstr "%(who)s מושעה %(name)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s switched the wiki"
@@ -1609,7 +1649,7 @@ msgstr "%(who)s עדכון סגנון"
 msgid "%(who)s yanked post %(title)s"
 msgstr "%(who)s הפוסט הקודם %(title)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "&copy; 2021 %(company)s"
 msgstr "&copy; 2021 %(company)s"
 
@@ -1641,7 +1681,7 @@ msgstr "(במקום פרטי)"
 msgid "(no title)"
 msgstr "(אין כותרת)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(off)"
 msgstr "(כבוי)"
 
@@ -1661,7 +1701,7 @@ msgstr "(אופציונלי)"
 msgid "(required in this guild)"
 msgstr "(הופנה מהדף הזה)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(required)"
 msgstr "(חובה)"
 
@@ -1705,7 +1745,7 @@ msgstr "* בקשות ליליות*"
 msgid "**Press**"
 msgstr "**עיתונות**"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ הוסף אפשרות"
 
@@ -1717,7 +1757,7 @@ msgstr "+%(guild)s אישור Contributors"
 msgid "+%(guild)s CSS - %(site)s Guildmaster Tools"
 msgstr "+%(guild)s CSS - %(site)s תגית: Guild Moderator Tools"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Channels"
 msgstr "הערוצים של +%(guild)s"
 
@@ -1725,11 +1765,11 @@ msgstr "הערוצים של +%(guild)s"
 msgid "+%(guild)s Chat Bans"
 msgstr "+%(guild)s Chat Bans"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Circle"
 msgstr "המעגל של +%(guild)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Comments"
 msgstr "התגובות של +%(guild)s"
 
@@ -1737,7 +1777,7 @@ msgstr "התגובות של +%(guild)s"
 msgid "+%(guild)s Exiles"
 msgstr "+%(guild)s Exiles"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Flair"
 msgstr "התוויות של +%(guild)s"
 
@@ -1745,7 +1785,7 @@ msgstr "התוויות של +%(guild)s"
 msgid "+%(guild)s Guildmasters - %(site)s Guildmaster Tools"
 msgstr "+%(guild)s Guild Moders - %(site)s תגית: Guild Moderator Tools"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Insights"
 msgstr "תובנות על +%(guild)s"
 
@@ -2156,17 +2196,17 @@ msgstr "<strong>דפדפן:</strong> %(browser)s"
 msgid "<strong>Email:</strong> %(email)s"
 msgstr "<strong>דואר אלקטרוני:</strong> %(email)s"
 
-#, machine, plain1
+#, machine, plain2
 msgid "<strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device."
-msgstr "<strong>אם זה לא אתה,</strong> לשנות את הסיסמה שלך עכשיו. שינוי זה גם מסמן כל מכשיר אחר."
+msgstr "<strong>אם זה לא אתה,</strong> לשנות את הסיסמה שלך עכשיו. שינוי זה גם ניתוק כל מכשיר אחר."
 
 #, machine, plain1, python-format
 msgid "<strong>Member bot</strong>: you run it with your own key or pay for its source (for example X). It stays yours, says \"Automated by @%(name)s\" and you manage it."
 msgstr "<strong>בוט</strong>אתה מפעיל אותו עם מפתח משלך או לשלם עבור המקור שלו (לדוגמה X). הוא נשאר שלך, אומר: \"מוסמך על ידי @%(name)s\"ואתה מנהל את זה."
 
-#, machine, plain1
-msgid "<strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app can't send one."
-msgstr "<strong>עדיין לא:</strong> תמונות וקבצים שרת הצ'אט אינה שומרת קבצים, ולכן אפליקציה לא יכולה לשלוח אחד."
+#, machine, plain2
+msgid "<strong>Not in apps:</strong> files, pictures and voice notes. Those sent on this site are kept, encrypted, in the sender's own storage, which an app can't reach, and an app can't send one."
+msgstr "<strong>לא באפליקציות:</strong> קבצים, תמונות והערות קוליות. אלה שנשלחו באתר זה נשמרים, מוצפנים, במחסן של השולח, אשר אפליקציה לא יכולה להגיע, אפליקציה לא יכולה לשלוח אחד."
 
 #, machine, plain1
 msgid "<strong>On this site only:</strong> starting a chat, accepting a message request, making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a call on this server: the site keeps who can reach you as it does here."
@@ -2267,9 +2307,9 @@ msgstr ""
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr ""
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "@%(name)s has a new password and is signed out everywhere."
-msgstr "@%(name)s יש סיסמה חדשה וחתומה בכל מקום."
+msgstr "@%(name)s יש סיסמה חדשה והוא מנותק בכל מקום."
 
 #, machine, plain1, python-format
 msgid "@%(name)s has already been invited."
@@ -2451,6 +2491,13 @@ msgstr ""
 msgid "@%(name)s stepped off as co-author of [your post](%(link)s)."
 msgstr ""
 
+#, python-format
+msgid ""
+"@%(name)s told everyone in #%(channel)s of +%(guild)s.\n"
+"\n"
+"[Open the channel](%(link)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "@%(name)s unblocked."
 msgstr "@%(name)s לא חסם."
@@ -2527,6 +2574,9 @@ msgstr "גור מעגל הוא פרטי לטוב: רק חבריו רואים א�
 #, machine, plain1
 msgid "A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose. Keep it private just for yourself, or make it public so others can follow or fork it."
 msgstr "מזון מתואם הוא אוסף משלך של גילידים וחשבונות - כמו להאכיל מותאם אישית, עם אלגוריתם שאתה בוחר. שמור את זה פרטי רק עבור עצמך, או לעשות את זה בפומבי, כך שאחרים יכולים לעקוב אחר זה."
+
+msgid "A QR code to sign in with. Scan it with your phone, where you are signed in."
+msgstr ""
 
 #, machine, plain1
 msgid "A Space"
@@ -2750,6 +2800,10 @@ msgstr "אפליקציית צ'אט רוצה להיכנס לצ'אטים שלך כ
 #, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
 msgstr ""
+
+#, machine, plain2, python-format
+msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
+msgstr "צ'אט יכול להיות לרוב %(num)s הודעות מסומנים. קודם כל אחד"
 
 #, machine, plain1, python-format
 msgid "A circle can have %(num)s person at most."
@@ -3169,6 +3223,10 @@ msgstr[0] "טקסט של פוסט יכול להיות %(count)s דמות סינ�
 msgstr[1] "טקסט של פוסט יכול להיות %(count)s דמויות סיניות, יפניות וקוריאניות וספירת אימוג'י כ- 2)."
 
 #, machine, plain1
+msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
+msgstr "עותק פרטי של זה כפי שהיה כאשר הוא היה חבוי, הוסר או נמחק. רק המחבר שלו, המודולטורים של הגליד הוא היה חבוי בתוך ומנהלי האתר יכולים לפתוח אותו, והוא לא נשמר לנצח."
+
+#, machine, plain1
 msgid "A private guild can only go in a private curation."
 msgstr "גור פרטי יכול רק ללכת באכילה פרטית."
 
@@ -3297,6 +3355,10 @@ msgid "A role name can't contain control or invisible characters."
 msgstr "שם תפקיד לא יכול להכיל שליטה או דמויות בלתי נראות."
 
 #, machine, plain1
+msgid "A rule of the guild"
+msgstr "חוק של הגולגולת"
+
+#, machine, plain1
 msgid "A scheduled post needs a title."
 msgstr "פוסט מתוכנן צריך כותרת."
 
@@ -3351,6 +3413,10 @@ msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] ""
 msgstr[1] ""
+
+#, machine, plain1
+msgid "A suspension or ban needs a public reason, so the Log can say why."
+msgstr "השעיה או איסור צריכים סיבה ציבורית, כך שהלוג יכול לומר למה."
 
 #, machine, plain1
 msgid "A template needs some text."
@@ -3436,7 +3502,7 @@ msgstr "מילה או ביטוי לא יכולים להכיל שליטה או ד
 msgid "A year"
 msgstr "שנה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "API App"
 msgstr "אפליקציית API"
 
@@ -3448,16 +3514,16 @@ msgstr "API מסמך"
 msgid "API requests must be authenticated with an access token. To obtain an access token, follow <a href=\"%(url)s\">these instructions.</a>"
 msgstr "API בקשות חייבות להיות אותנטיות עם אסימוני גישה. כדי לקבל אסימונים גישה, בצע <a href=\"%(url)s\">ההוראות האלה.</a>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About"
 msgstr "אודות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "About"
 msgstr "אודות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: about the guild"
 msgid "About"
 msgstr "אודות"
@@ -3466,11 +3532,11 @@ msgstr "אודות"
 msgid "About @%(name)s"
 msgstr "אודות @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About Guild"
 msgstr "אודות הגילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About this account"
 msgstr "אודות החשבון"
 
@@ -3520,7 +3586,7 @@ msgstr "הסיסמה של חשבון (הצריך להפוך את הילד לסנ
 msgid "Account to add"
 msgstr "חשבון להוסיף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts"
 msgstr "חשבונות"
 
@@ -3532,7 +3598,7 @@ msgstr "חשבונות שאתה חוסם"
 msgid "Accounts you block are not told, but they may work it out if they try to comment on something of yours."
 msgstr "חשבונות שאתה חוסם אינם נאמרים, אבל הם עשויים לעבוד אם הם מנסים להגיב על משהו משלך."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts you follow"
 msgstr "חשבונות שאתה עוקב אחריהם"
 
@@ -3544,7 +3610,7 @@ msgstr "חשבונות שאתה עוקב לא ניתן לבחור עבור פו�
 msgid "Accounts you mute"
 msgstr "חשבונות שאתה מזיז"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Achievements"
 msgstr "הישגים"
 
@@ -3581,17 +3647,17 @@ msgstr "פעיל לאחרונה"
 msgid "Activism"
 msgstr "אקטיביזם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Activity"
 msgstr "פעילות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Add"
 msgstr "הוסף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Add"
 msgstr "הוסף אל"
@@ -3600,7 +3666,7 @@ msgstr "הוסף אל"
 msgid "Add %(name)s"
 msgstr "הוסף %(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a GIF"
 msgstr "הוסף GIF"
 
@@ -3616,7 +3682,7 @@ msgstr "הוסף להאכיל"
 msgid "Add a flair"
 msgstr "הוסף תווית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a link"
 msgstr "הוסף קישור"
 
@@ -3628,7 +3694,7 @@ msgstr "הוסף הודעה"
 msgid "Add a message (optional)"
 msgstr "הוסף הודעה (אופציונלי)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a picture"
 msgstr "הוסף תמונה"
 
@@ -3640,7 +3706,7 @@ msgstr "הוסף תמונה (עדיין לא זמינה)"
 msgid "Add a picture."
 msgstr "הוסף תמונה."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a poll"
 msgstr "הוסף סקר"
 
@@ -3652,11 +3718,11 @@ msgstr "הוסף משאב"
 msgid "Add a screenshot"
 msgstr "הוסף צילום מסך"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a sound"
 msgstr "הוסף צליל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a video"
 msgstr "הוסף סרטון"
 
@@ -3680,11 +3746,11 @@ msgstr "הוסף חשבון"
 msgid "Add an email to secure your account in case you forget your password."
 msgstr "הוסף דוא\"ל כדי לאבטח את החשבון שלך במקרה שאתה שוכח את הסיסמה שלך."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an emoji"
 msgstr "הוסף אימוג'י"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an image"
 msgstr "הוסף תמונה"
 
@@ -3696,7 +3762,13 @@ msgstr "הוסף לפחות מזון אחד לחשבון שלך כדי לפרס�
 msgid "Add at least one person."
 msgstr "הוסף לפחות אדם אחד."
 
-#, glossary, machine, plain1
+#, machine, plain2, python-format
+msgid "Add at most %(num)s person at a time."
+msgid_plural "Add at most %(num)s people at a time."
+msgstr[0] "הוסף לכל אדם אחד בכל פעם."
+msgstr[1] "הוסף כמעט %(num)s אנשים בכל פעם."
+
+#, glossary, machine, plain2
 msgid "Add audio"
 msgstr "הוסף אודיו"
 
@@ -3741,15 +3813,15 @@ msgstr "הוסף טקסט לפוסט שלך..."
 msgid "Add to calendar"
 msgstr "הוסף לוח השנה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to circles"
 msgstr "הוסף למעגלים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to curation"
 msgstr "הוספה לאוסף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to your post"
 msgstr "הוסף לפוסט שלך"
 
@@ -3761,7 +3833,7 @@ msgstr "הוסף לסיפור שלך"
 msgid "Add user"
 msgstr "הוסף משתמשים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add your comment..."
 msgstr "הוסף תגובה..."
 
@@ -3790,7 +3862,7 @@ msgstr "נוסף. זה מתחיל פעם שמנהל מאשר את זה."
 msgid "Address, page or post"
 msgstr "כתובת, דף או פוסט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "מנהל מערכת"
 
@@ -3807,20 +3879,20 @@ msgstr "אנשים לא יכולים לשנות את השם שלהם."
 msgid "Admins can't disconnect Discord."
 msgstr "אנשים לא יכולים להתנתק Discord."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "the Advanced filter, as a short tab"
 msgid "Advanced"
 msgstr "מתקדם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter"
 msgstr "מסנן מתקדם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter:"
 msgstr "מסנן מתקדם:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced search"
 msgstr "חיפוש מתקדם"
 
@@ -3860,17 +3932,21 @@ msgstr "אזהרות וכותרות מגיעות ממקור בשם כל קו, כ
 msgid "Algorithm"
 msgstr "אלגוריהם"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "אלגוריה הצילה."
+
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
 msgstr "הכל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "filter"
 msgid "All"
 msgstr "הכל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "All"
 msgstr "הכל"
@@ -3881,7 +3957,7 @@ msgid_plural "All %(num)s channels"
 msgstr[0] "ערוץ %(num)s"
 msgstr[1] "כל %(num)s ערוצים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All Time"
 msgstr "כל הזמנים"
 
@@ -3889,7 +3965,7 @@ msgstr "כל הזמנים"
 msgid "All events"
 msgstr "כל האירועים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All guilds"
 msgstr "כל הגילדות"
 
@@ -3897,15 +3973,15 @@ msgstr "כל הגילדות"
 msgid "All of these words"
 msgstr "כל המילים האלה"
 
-#, machine, plain1
+#, machine, plain2
 msgid "All other devices have been logged out"
-msgstr "כל המכשירים האחרים כבר פורסמו"
+msgstr "כל המכשירים האחרים מנותקים"
 
 #, machine, plain1
 msgid "All pages"
 msgstr "כל הדפים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All posts"
 msgstr "הכל"
 
@@ -3929,7 +4005,7 @@ msgstr "כל הזמן. למצוץ יש קולות והערות משלו; המס�
 msgid "All tips are anonymous :)"
 msgstr "כל הטיפים הם אנונימיים :)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All topics"
 msgstr "כל הנושאים"
 
@@ -4014,12 +4090,24 @@ msgid "An account with that username or email already exists."
 msgstr "חשבון עם שם המשתמש או הדואר האלקטרוני כבר קיים."
 
 #, machine, plain1
+msgid "An admin cleared the age answer on your account. You'll be asked again."
+msgstr "מנהל קבע את התשובה לגיל על חשבונך. שוב תתבקשו."
+
+#, machine, plain1
 msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
 msgstr "מנהל המערכת אישר שאתה בן 18 ומעלה. לחשבון שלך כבר אין מנעול ילדים. המילה מסנן לא השתנתה: אתה יכול לשנות את זה בהגדרות > תוכן, ולהפוך את מסנן הילד למטה צריך את הסיסמה שלך."
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "ניהול מסומן + %(guild)s רגיש: הפוסטים שלו נותרו מחוץ לכל, אלא אם כן מישהו בוחר לראות תוכן רגיש. רק מנהל יכול לשנות את זה."
+
+#, python-format
+msgid "An admin marked [your post](%(link)s) sensitive: it is blurred until someone clicks to reveal it, and left out of All and For You unless they choose to see sensitive content. Only an admin can change this."
+msgstr ""
+
+#, machine, plain1
+msgid "An admin marked this account as belonging to someone 18 or over. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "מנהל קבע את החשבון כשייך למישהו 18 או מעל. המילה מסנן לא השתנתה: אתה יכול לשנות את זה בהגדרות > תוכן, ולהפוך את מסנן הילד למטה צריך את הסיסמה שלך."
 
 #, machine, plain1
 msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
@@ -4060,6 +4148,10 @@ msgstr "מנהל התקן ביטל את הפרסום האוטומטי של הח�
 #, machine, plain1, python-format
 msgid "An admin unlocked the sensitive setting of +%(guild)s. Its guildmasters can change it again."
 msgstr "מנהל מערכת פתח את ההגדרה הרגישה של + %(guild)s מעצבי הציד שלו יכולים לשנות את זה שוב."
+
+#, python-format
+msgid "An admin unlocked the sensitive setting of [your post](%(link)s). You can change it again."
+msgstr ""
 
 #, machine, plain1
 msgid "An admin unlocked the sensitive setting on your account. You can change it in Settings > Content."
@@ -4162,7 +4254,7 @@ msgstr "Anime & Manga"
 msgid "Announcement channel"
 msgstr "ערוץ"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Announcements from +%(guild)s"
 msgstr "הודעות מ-+%(guild)s"
 
@@ -4175,20 +4267,20 @@ msgid "Annular solar eclipse"
 msgstr "ליקוי חמה"
 
 #. short for Anonymous: who wrote a deleted post
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anon"
 msgstr "אנונימי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymity"
 msgstr "אנונימיות"
 
 #. a kind of post in the Post type filter: posts made anonymously
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "אנונימי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "label"
 msgid "Anonymous"
 msgstr "אנונימי"
@@ -4210,10 +4302,14 @@ msgid "Another language you read"
 msgstr "שפה נוספת שתקרא"
 
 #, machine, plain1
+msgid "Another reason"
+msgstr "סיבה נוספת"
+
+#, machine, plain1
 msgid "Answer Going or Interested."
 msgstr "ענה או מתעניין."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any account"
 msgstr "כל חשבון"
 
@@ -4229,11 +4325,11 @@ msgstr "כל סופר יכול לפרסם"
 msgid "Any author can publish."
 msgstr "כל סופר יכול לפרסם."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any guild"
 msgstr "כל גילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any language"
 msgstr "כל שפה"
 
@@ -4260,12 +4356,12 @@ msgstr "כל המילים האלה"
 msgid "Anyone"
 msgstr "מישהו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Anyone"
 msgstr "כל אחד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anyone can see it"
 msgstr "כולם יכולים לראות"
 
@@ -4277,7 +4373,7 @@ msgstr "כל אחד יכול לראות מי אתה עוקב, מי עוקב אח
 msgid "App Name"
 msgstr "שם App Name"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Appearance"
 msgstr "מראה"
 
@@ -4302,7 +4398,7 @@ msgctxt "button"
 msgid "Apply"
 msgstr "(button)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approve"
 msgstr "אשר"
 
@@ -4352,15 +4448,23 @@ msgstr "מוסמך חברים ומודולטורים"
 msgid "Approved since"
 msgstr "אישור מאז"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approved users"
 msgstr "משתמשים מאושרים"
+
+#, machine, plain1
+msgid "Approved. Press Confirm on that screen to finish signing in."
+msgstr "אישור. הודעה לעיתונות על המסך כדי לסיים את החתימה."
 
 #, machine, plain1
 msgid "Approved: run by the site"
 msgstr "אישור: לרוץ על ידי האתר"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Approving a code needs script, which is off in this browser. Sign in on the computer with your password instead."
+msgstr "אישור קוד צריך תסריט, אשר נמצא בדפדפן זה. היכנס למחשב עם הסיסמה שלך במקום."
+
+#, glossary, machine, plain2
 msgid "Apps"
 msgstr "אפליקציות"
 
@@ -4384,7 +4488,7 @@ msgstr "ארכיאולוגיה"
 msgid "Architecture"
 msgstr "אדריכלות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Archived post"
 msgstr "פוסט בארכיון"
 
@@ -4396,7 +4500,7 @@ msgstr "אינטליגנציה מלאכותית"
 msgid "Artisan"
 msgstr "Artisan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Arts"
 msgstr "אמנויות"
 
@@ -4517,19 +4621,19 @@ msgstr "סופרים"
 msgid "Auto-moderation"
 msgstr "רכב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated"
 msgstr "אוטומטי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated account"
 msgstr "חשבון אוטומטי"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(owner)s"
 msgstr "מופעל אוטומטית על ידי %(owner)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(site)s"
 msgstr "מופעל אוטומטית על ידי %(site)s"
 
@@ -4545,11 +4649,11 @@ msgstr "פרסום אוטומטי לחשבון שלך לא אושר. המנהל 
 msgid "Automated posting on your own account is set up in its own section."
 msgstr "פרסום אוטומטי בחשבון שלך מוגדר בסעיף משלו."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatic"
 msgstr "אוטומטי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "אוטומטי"
@@ -4566,7 +4670,7 @@ msgstr "הסרת ספאם אוטומטית זה קרה כי היוצר של הפ
 msgid "Automatic, not an official warning"
 msgstr "לא אזהרה רשמית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatically Join Chats"
 msgstr "הצטרפות אוטומטית לצ'אטים"
 
@@ -4574,7 +4678,7 @@ msgstr "הצטרפות אוטומטית לצ'אטים"
 msgid "Automatically join Guild chat channels."
 msgstr "הצטרף באופן אוטומטי ל- Guild chat ערוצים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automaton"
 msgstr "בוט"
 
@@ -4583,7 +4687,7 @@ msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "הגדרות Automod"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Autoplay"
 msgstr "הפעלה אוטומטית"
 
@@ -4599,7 +4703,7 @@ msgstr "הוענק ל-8535 משתמשים זדוניים שהצליחו להיר
 msgid "Awarded to users who provide major technical expertise. Current awardees: @mutageno, @AmoralAtBest, @p2hang"
 msgstr "הוענק למשתמשים המספקים מומחיות טכנית גדולה. הפרס הנוכחי: @mutageno, @AmoralAtBest, @p2hang"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome T-Shirts"
 msgstr "חולצות מגניבות"
 
@@ -4609,11 +4713,15 @@ msgid "BBC Top Stories"
 msgstr "BBC Top Stories"
 
 #, machine, plain1
+msgid "Back"
+msgstr "בחזרה"
+
+#, machine, plain1
 msgctxt "button"
 msgid "Back"
 msgstr "Back"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Back"
 msgstr "הקודם"
@@ -4637,6 +4745,10 @@ msgstr "חזרה לדראפט"
 #, machine, plain1
 msgid "Back to the history"
 msgstr "חזרה להיסטוריה"
+
+#, machine, plain1
+msgid "Back to the log"
+msgstr "חזרה לThe Log"
 
 #, machine, plain1
 msgid "Back to the post"
@@ -4712,7 +4824,7 @@ msgstr "Bantu Corridor"
 msgid "Baseball"
 msgstr "כדורסל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Based"
 msgstr "בייסד"
@@ -4749,7 +4861,7 @@ msgstr "להיות חבר + %(guild)s, אין כתובת דואר אלקטרונ
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "להיות חלק מהקהילה, אין כתובת דואר אלקטרוני הנדרשת. עשה חשבון."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
 msgstr "ב-Ruqqus פחות מ-30 יום"
 
@@ -4769,7 +4881,7 @@ msgstr "מתחילים את הערב לפני"
 msgid "Behind the scenes"
 msgstr "מאחורי הקלעים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Beta"
 msgstr "בטא"
 
@@ -4781,7 +4893,7 @@ msgstr "Beta User"
 msgid "Bicycles"
 msgstr "אופניים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bio"
 msgstr "ביוגרפיה"
 
@@ -4801,7 +4913,7 @@ msgstr "צפייה ב Birdwatch"
 msgid "Block &amp; Mute"
 msgstr "בלוק &amp; המונחים"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s"
 msgstr "חסום את @%(name)s"
 
@@ -4813,11 +4925,11 @@ msgstr "לחסום חשבון"
 msgid "Block and Mute - %(site)s"
 msgstr "בלוק ומטה - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block and mute"
 msgstr "חסימה והשתקה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block user"
 msgstr "חסום משתמש"
 
@@ -4851,7 +4963,7 @@ msgstr "ספר דיון"
 msgid "Book Recommendations"
 msgstr "המלצות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Bookmark"
 msgstr "הוסף לסימניות"
@@ -4866,11 +4978,11 @@ msgid_plural "Bookmark, %(num)s bookmarks"
 msgstr[0] "שם הספר: %(num)s Bookmark"
 msgstr[1] "תגית: %(num)s Bookmarks"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarked"
 msgstr "בסימניות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarks"
 msgstr "סימניות"
 
@@ -4906,7 +5018,7 @@ msgstr "שם משתמש"
 msgid "Bot's name"
 msgstr "שמו של בוט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bots"
 msgstr "בוטים"
 
@@ -4955,12 +5067,20 @@ msgid "Briefly describe what the guild is about..."
 msgstr "בקצרה לתאר מה הגילד עומד..."
 
 #, machine, plain1
+msgid "Briefly say what you changed (optional)"
+msgstr "תגידו מה שיניתם (אופציונלי)"
+
+#, machine, plain1
 msgid "Bronze Patron"
 msgstr "ברונזה פטרון"
 
 #, machine, plain1
 msgid "Bronze Recruiter"
 msgstr "ברונזה מגייס"
+
+#, machine, plain1
+msgid "Browser"
+msgstr "הדפדפן Browser"
 
 #, machine, plain1
 msgid "Browser not recorded"
@@ -4994,7 +5114,7 @@ msgstr "קניית מטבעות ללא Premium לרוץ הראשון לשבוע.
 msgid "By royal decree, we are unable to show this to you right now."
 msgstr "לפי צו מלכותי, אנחנו לא יכולים להראות לכם את זה כרגע."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "CSS"
 msgstr "CSS"
 
@@ -5011,7 +5131,7 @@ msgstr "Call"
 msgid "Call controls"
 msgstr "Call Control"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Calls"
 msgstr "שיחות"
 
@@ -5030,6 +5150,10 @@ msgid_plural "Calls end after %(num)s hours."
 msgstr[0] "שיחות מסתיימת אחרי שעה אחת."
 msgstr[1] "שיחות מסתיימת אחרי %(num)s שעות."
 
+#, machine, plain2
+msgid "Calls only"
+msgstr "שיחות רק"
+
 #, machine, plain1
 msgid "Camera off"
 msgstr "מצלמות"
@@ -5042,7 +5166,7 @@ msgstr "מצלמה"
 msgid "Camping"
 msgstr "קמפינג"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "ביטול"
 
@@ -5084,7 +5208,7 @@ msgstr "ביטול"
 msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
 msgstr "קפיצות, מבטאים ומכתבים חוזרים אינם משנים דבר: מילה קוראת את אותו הדבר בבירות, עם מבטאים או עם מכתב שנכתב מספר פעמים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Captions"
 msgstr "כתוביות"
 
@@ -5092,7 +5216,7 @@ msgstr "כתוביות"
 msgid "Car Repair"
 msgstr "תיקון רכב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "Card"
 msgstr "כרטיס"
@@ -5121,7 +5245,7 @@ msgstr "קולות כפי שאתה"
 msgid "Casual Discussion"
 msgstr "דיון קטלני"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Categorical"
 msgstr "לפי קטגוריה"
 
@@ -5169,11 +5293,11 @@ msgstr "שם קטגוריה"
 msgid "Category: %(category)s"
 msgstr "קטגוריה: %(category)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Category: %(category)s / %(subcategory)s"
 msgstr "קטגוריה: %(category)s / %(subcategory)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Category: Uncategorized"
 msgstr "קטגוריה: ללא קטגוריה"
 
@@ -5189,7 +5313,7 @@ msgstr "סלבריטאים"
 msgid "Central Andes"
 msgstr "מרכזי Andes"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Change"
 msgstr "שנה"
@@ -5202,7 +5326,7 @@ msgstr "שינוי הסיסמה"
 msgid "Change Username"
 msgstr "שינוי שם המשתמש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change categories"
 msgstr "שינוי קטגוריות"
 
@@ -5211,7 +5335,7 @@ msgctxt "guildmaster action"
 msgid "Change invite"
 msgstr "שינוי ההזמנה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change languages"
 msgstr "שינוי שפות"
 
@@ -5224,11 +5348,11 @@ msgctxt "guildmaster action"
 msgid "Change perms"
 msgstr "שינוי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change post types"
 msgstr "שינוי סוגי פוסטים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change regions"
 msgstr "שינוי אזורים"
 
@@ -5236,7 +5360,7 @@ msgstr "שינוי אזורים"
 msgid "Change the capitilization of your guild's name."
 msgstr "לשנות את הכניעה של השם שלך."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change the default sorting for posts."
 msgstr "שינוי מיון ברירת המחדל של פוסטים."
 
@@ -5268,7 +5392,7 @@ msgstr "לשנות את הסיסמה שלך"
 msgid "Change your password."
 msgstr "לשנות את הסיסמה שלך."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change your word filter"
 msgstr "שינוי מסנן המילים"
 
@@ -5285,11 +5409,19 @@ msgid "Changing these rules always needs every counted author."
 msgstr "שינוי החוקים האלה תמיד צריך כל סופר."
 
 #, machine, plain1
+msgid "Changing your password doesn't end the access of an app you allowed. Check your apps and your chat apps in Settings too."
+msgstr "שינוי הסיסמה שלך לא מסתיים הגישה של אפליקציה שאפשרת. בדוק גם את היישומים שלך ואת יישומי הצ'אט שלך בהגדרות."
+
+#, machine, plain2
+msgid "Changing your password signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "שינוי הסיסמה שלך ניתוק צ'אט במכשירים האחרים שלך ובאפליקציות צ'אט, למעט הצ'אט שהדפדפן הזה השתמש מאז שחתמת כאן."
+
+#, machine, plain1
 msgctxt "chat kind"
 msgid "Channel"
 msgstr "ערוץ ערוצים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Channel"
 msgstr "ערוץ"
@@ -5342,7 +5474,7 @@ msgstr "ערוץ unpin"
 msgid "Channel's own rules"
 msgstr "הכללים של ערוץ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "ערוצים"
 
@@ -5354,25 +5486,25 @@ msgstr "ערוצים נמצאים במקום +%(guild)s\"חברים מדברים
 msgid "Charter Supporter"
 msgstr "Charter Supporter"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "צ'אט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading"
 msgid "Chat"
 msgstr "צ'אט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Chat"
 msgstr "צ'אט"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Chat - %(site)s"
 msgstr "צ'אט - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat apps"
 msgstr "אפליקציות צ'אט"
 
@@ -5385,8 +5517,44 @@ msgid "Chat apps aren't switched on for this site yet."
 msgstr "יישומי צ'אט עדיין לא עוברים לאתר זה."
 
 #, machine, plain1
+msgid "Chat can't start right now. Try again in a moment."
+msgstr "צ'אט לא יכול להתחיל עכשיו. נסה שוב לרגע."
+
+#, machine, plain2
+msgid "Chat couldn't take those keys."
+msgstr "צ'אט לא יכול לקחת את המפתחות האלה."
+
+#, machine, plain2
+msgid "Chat isn't answering right now. Try again in a minute."
+msgstr "צ'אט לא עונה כרגע. נסה שוב תוך דקה."
+
+#, machine, plain1
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "צ'אט לא עונה כרגע. נסה שוב לרגע."
+
+#, machine, plain1
+msgid "Chat isn't available"
+msgstr "צ'אט לא זמין"
+
+#, machine, plain1
+msgid "Chat isn't available for your account right now. The site's admins have been told."
+msgstr "צ'אט אינו זמין לחשבון שלך כרגע. מנהל האתר נמסר."
+
+#, machine, plain2
+msgid "Chat isn't set up for your account yet."
+msgstr "צ'אט עדיין לא מוגדר לחשבון שלך."
+
+#, machine, plain2
+msgid "Chat isn't set up on your account yet. Open Chat once to set it up and get your recovery code."
+msgstr "צ'אט עדיין לא מוגדר בחשבון שלך. פתח צ'אט פעם כדי להגדיר אותו ולקבל את קוד ההתאוששות שלך."
+
+#, machine, plain2, python-format
+msgid "Chat was started over on your %(site)s account"
+msgstr "צ'אט התחיל על שלך %(site)s חשבון"
+
+#, machine, plain1
+msgid "Chat with this account isn't available right now. The site's admins have been told."
+msgstr "צ'אט עם חשבון זה אינו זמין כרגע. מנהל האתר נמסר."
 
 #, machine, plain1
 msgid "Chat, group chats and calls"
@@ -5397,7 +5565,7 @@ msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban User"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "צ'אטים"
 
@@ -5495,6 +5663,10 @@ msgstr "בחרו כיצד החלטות מתקבלות ומי יכול לפרסם
 msgid "Choose how long a proposal stays open."
 msgstr "בחרו כמה זמן ההצעה נשארת פתוחה."
 
+#, machine, plain2
+msgid "Choose how long messages last."
+msgstr "בחרו כמה הודעות ארוכות נמשכות."
+
 #, machine, plain1
 msgid "Choose how long people wait between messages."
 msgstr "בחרו כמה זמן מחכים בין הודעות."
@@ -5538,6 +5710,10 @@ msgstr "בחרו איזה סוג של משוב זה."
 #, machine, plain1
 msgid "Choose what to propose."
 msgstr "בחרו מה להציע."
+
+#, machine, plain2
+msgid "Choose what you're told of."
+msgstr "בחרו את מה שנאמר לכם."
 
 #, machine, plain1
 msgid "Choose when an author stops being counted."
@@ -5603,7 +5779,7 @@ msgstr "חג המולד"
 msgid "Chronic Illness"
 msgstr "מחלה כרונית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Circle"
 msgstr "מעגל"
@@ -5624,11 +5800,11 @@ msgstr "גורי מעגל אתה משלם להיות"
 msgid "Circle member"
 msgstr "חבר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "מעגלים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Circles"
 msgstr "מעגלים"
@@ -5649,7 +5825,7 @@ msgstr "קלאסית"
 msgid "Cleaning & Organizing"
 msgstr "ניקיון וסידור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: clear the advanced filter"
 msgid "Clear"
 msgstr "נקה"
@@ -5670,7 +5846,7 @@ msgstr "מזהה לקוחות"
 msgid "Client Secret"
 msgstr "לקוח סודי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "סגור"
 
@@ -5678,7 +5854,7 @@ msgstr "סגור"
 msgid "Close Friends are never shown on any list."
 msgstr "חברים קרובים אף פעם לא מופיעים באף רשימה."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close panel"
 msgstr "סגור חלונית"
 
@@ -5702,7 +5878,7 @@ msgstr "הזמנה משותפת - %(site)s"
 msgid "Co-authored"
 msgstr "שותף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Co-authors"
 msgstr "שותפים לכתיבה"
 
@@ -5726,11 +5902,11 @@ msgstr "קפה ותה"
 msgid "Coin balance:"
 msgstr "איזון מטבע:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Coins"
 msgstr "מטבעות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Coins"
 msgstr "מטבעות"
@@ -5763,7 +5939,7 @@ msgstr "מטבעות, טיפים Premium מעגלים בתשלום"
 msgid "Collaborative"
 msgstr "שיתוף פעולה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Collapse"
 msgstr "כיווץ"
 
@@ -5782,7 +5958,7 @@ msgstr "צבע צבע צבעים"
 msgid "Coloured: a post with mostly upvotes shows its upvotes in <span class=\"font-weight-bold vote-ratio-10\">blue</span>, one with mostly downvotes in <span class=\"font-weight-bold vote-ratio-0\">red</span>, and anything between in a shade between. Hover a score to see both counts."
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Combat Sports"
 msgstr "ספורט לחימה"
 
@@ -5802,7 +5978,7 @@ msgstr "קומיקס וקריקטורה"
 msgid "Coming up"
 msgstr "לקום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
 msgstr "הגב"
@@ -5819,7 +5995,7 @@ msgstr "הערה: משתמשים אחרים לא יראו את שמך"
 msgid "Comment bookmarked."
 msgstr "הערה מציין."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "התגובה פורסמה!"
 
@@ -5827,11 +6003,11 @@ msgstr "התגובה פורסמה!"
 msgid "Commenting"
 msgstr "הערות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments"
 msgstr "תגובות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Comments"
 msgstr "תגובות"
@@ -5854,11 +6030,11 @@ msgstr "הערות נסתרות או הוסרו"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "הערות על הפוסט האנונימי שלך הן"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments:"
 msgstr "תגובות:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Commercial promotion"
 msgstr "קידום מסחרי"
 
@@ -5895,6 +6071,10 @@ msgid "Computers"
 msgstr "מחשבים"
 
 #, machine, plain1
+msgid "Confirm"
+msgstr "אישור"
+
+#, machine, plain1
 msgid "Confirm New Password"
 msgstr "אישור סיסמה חדשה"
 
@@ -5906,11 +6086,15 @@ msgstr "אישור סיסמה"
 msgid "Confirm my age"
 msgstr "אישור הגיל שלי"
 
+#, machine, plain2
+msgid "Confirm with your password again."
+msgstr "חזור על הסיסמה שלך."
+
 #, machine, plain1
 msgid "Confirm your age"
 msgstr "לאשר את הגיל שלך"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Connect"
 msgstr "עקבו אחרינו"
 
@@ -5942,17 +6126,17 @@ msgstr "מחובר - %(site)s"
 msgid "Console"
 msgstr "הקונסולה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contact"
 msgstr "צור קשר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Contact"
 msgstr "צור קשר"
 
 #. a group of post types in the Post type filter (text, links, pictures...)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content"
 msgstr "תוכן"
 
@@ -5964,7 +6148,7 @@ msgstr "פילטר"
 msgid "Content awarded:"
 msgstr "תוכן הוענק:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content disclosure"
 msgstr "הצהרת תוכן"
 
@@ -5972,16 +6156,24 @@ msgstr "הצהרת תוכן"
 msgid "Content immediately before this action:"
 msgstr "תוכן מיידי לפני פעולה זו:"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Content standards"
+msgstr "תקני תוכן"
+
+#, glossary, machine, plain2
 msgid "Context"
 msgstr "הקשר"
+
+#, machine, plain1
+msgid "Continue"
+msgstr "המשך"
 
 #, machine, plain1
 msgctxt "button"
 msgid "Continue"
 msgstr "המשך"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Continuous scroll"
 msgstr "גלילה רציפה"
 
@@ -5990,11 +6182,11 @@ msgctxt "guildmaster action"
 msgid "Contrib user"
 msgstr "משתמש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute"
 msgstr "תרום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute Code"
 msgstr "תרום קוד"
 
@@ -6040,15 +6232,15 @@ msgctxt "button"
 msgid "Copy"
 msgstr "עותק"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy Link"
 msgstr "העתק קישור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link"
 msgstr "העתק קישור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link to profile"
 msgstr "העתק קישור לפרופיל"
 
@@ -6085,6 +6277,10 @@ msgid "Counter-Culture"
 msgstr "Counter-Culture"
 
 #, machine, plain1
+msgid "Country"
+msgstr "מדינה"
+
+#, machine, plain1
 msgid "Country Music"
 msgstr "מוזיקת קאנה"
 
@@ -6096,7 +6292,7 @@ msgstr "רשימות קריאה בהן"
 msgid "Crafts"
 msgstr "אמנות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bottom bar button that opens Create post"
 msgid "Create"
 msgstr "יצירה"
@@ -6109,7 +6305,7 @@ msgstr "יצירת &amp; לזוז"
 msgid "Create Curation"
 msgstr "יצירת מזון מעובד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create Guild"
 msgstr "יצירת גילדה"
 
@@ -6133,7 +6329,7 @@ msgstr "ליצור גילדה - %(site)s"
 msgid "Create a community for something you love."
 msgstr "ליצור קהילה למשהו שאתה אוהב."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a curation"
 msgstr "צור אוסף"
 
@@ -6145,7 +6341,7 @@ msgstr "ליצור גור"
 msgid "Create a key"
 msgstr "ליצור מפתח"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a post"
 msgstr "צור פוסט"
 
@@ -6166,7 +6362,7 @@ msgctxt "guildmaster action"
 msgid "Create guild"
 msgstr "יצירת guild"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create post"
 msgstr "צור פוסט"
 
@@ -6182,7 +6378,7 @@ msgstr "צור את החשבון שלך."
 msgid "Creative Writing"
 msgstr "כתיבה יצירתית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio"
 msgstr "Creator Studio"
 
@@ -6190,7 +6386,7 @@ msgstr "Creator Studio"
 msgid "Creator Studio - %(site)s"
 msgstr "סטודיו בורא - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio is part of Premium"
 msgstr "Creator Studio כלול ב-Premium"
 
@@ -6198,7 +6394,7 @@ msgstr "Creator Studio כלול ב-Premium"
 msgid "Creator Studio: your earnings and paid circles"
 msgstr "סטודיו בורא: הרווחים שלך ועיגולים בתשלום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator fund"
 msgstr "קרן יוצרים"
 
@@ -6218,7 +6414,11 @@ msgstr "פשע ובתי משפט"
 msgid "Crime & Mystery"
 msgstr "פשע ומסתורין"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Criminal activity and prohibited conduct"
+msgstr "פעילות פלילית אסורה"
+
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "קרינג'"
 
@@ -6230,15 +6430,15 @@ msgstr "Cryptocurrency"
 msgid "Cuisine"
 msgstr "מטבח"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Culture"
 msgstr "תרבות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curation"
 msgstr "אוסף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curations"
 msgstr "אוספים"
 
@@ -6261,7 +6461,7 @@ msgstr[1] "איזון נוכחי: <span class=\"text-black font-weight-bold\">%(
 msgid "Custom Filters"
 msgstr "פילטר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom Stickers"
 msgstr "מדבקות מותאמות אישית"
 
@@ -6269,7 +6469,7 @@ msgstr "מדבקות מותאמות אישית"
 msgid "Custom URI scheme can be used. Separate multiple options with comma."
 msgstr "מותאם אישית URI ניתן להשתמש בתוכנה. אפשרויות נפרדות עם comma."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom User Feed"
 msgstr "פיד משתמש מותאם אישית"
 
@@ -6317,7 +6517,7 @@ msgstr "אזורי סכנה"
 msgid "Danubian Steppe"
 msgstr "Danubian Steppe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "מצב כהה"
 
@@ -6341,16 +6541,16 @@ msgstr "תאריכים המסומנים צפויים להיות תלויים ל�
 msgid "Dating Advice"
 msgstr "היכרויות עצה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Day"
 msgstr "יום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Day"
 msgstr "יום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Day"
 msgstr "יום"
@@ -6398,15 +6598,15 @@ msgctxt "button"
 msgid "Decline"
 msgstr "המונחים: Button"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default"
 msgstr "ברירת מחדל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Sorting"
 msgstr "מיון ברירת מחדל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Time Filter"
 msgstr "מסנן זמן ברירת מחדל"
 
@@ -6423,7 +6623,7 @@ msgctxt "button"
 msgid "Delete"
 msgstr "לקט ספרים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Delete"
 msgstr "מחק"
@@ -6576,7 +6776,7 @@ msgstr "בטל את כל"
 msgid "Designate whether your guild discusses sensitive topics."
 msgstr "בדוק אם הגור שלך מדבר על נושאים רגישים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Details"
 msgstr "פרטים"
 
@@ -6671,13 +6871,13 @@ msgstr "קישורים Dailymotionקטעי וידאו כבר על הערוץ ש�
 msgid "Disconnect Discord"
 msgstr "חיבור Discord"
 
-#, machine, plain1
-msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing."
-msgstr "קישורים Googleתמונות וסאונד מאוחסנים בך Google Drive תפסיקו להופיע בפוסטים שלכם. וידאו YouTube תמשיך לשחק."
+#, machine, plain2
+msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts, and files you sent in chats from it can no longer be opened. Videos on YouTube keep playing."
+msgstr "קישורים Googleתמונות וסאונד מאוחסנים בך Google Drive יפסיק להופיע בפוסטים שלך, וקבצים ששלחת בצ'אטים ממנו כבר לא ניתן לפתוח. וידאו YouTube תמשיך לשחק."
 
-#, machine, plain1
-msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts."
-msgstr "קישורים OneDriveתמונות וסאונד מאוחסנים שם יפסיקו להופיע בפוסטים שלך."
+#, machine, plain2
+msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts, and files you sent in chats from it can no longer be opened."
+msgstr "קישורים OneDriveתמונות ואודיו מאוחסנים שם יפסיקו להופיע בפוסטים שלך, וקבצים ששלחתם בצ'אטים ממנו כבר לא ניתן לפתוח."
 
 #, machine, plain1
 msgid "Disconnect? Images and audio from this storage will stop showing in your posts."
@@ -6691,7 +6891,7 @@ msgstr "מחובר."
 msgid "Disconnecting your Discord account will remove you from the %(site)s Discord server."
 msgstr "חיבור שלך Discord החשבון יסיר אותך מה %(site)s Discord שרת."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discord Server"
 msgstr "שרת Discord"
 
@@ -6699,7 +6899,7 @@ msgstr "שרת Discord"
 msgid "Discord account already linked."
 msgstr "Discord החשבון כבר מקושר."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover Curations"
 msgstr "גלה אוספים"
 
@@ -6707,7 +6907,7 @@ msgstr "גלה אוספים"
 msgid "Discover amazing communities across <span class=\"text-purple\">%(site)s</span>."
 msgstr "לגלות קהילות מדהימות <span class=\"text-purple\">%(site)s</span>."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover guilds"
 msgstr "גלה גילדות"
 
@@ -6738,12 +6938,12 @@ msgstr "שם תצוגה"
 msgid "Display name"
 msgstr "שם תצוגה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Disputed"
 msgstr "שנוי במחלוקת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Distinguish"
 msgstr "סמן כרשמי"
 
@@ -6767,26 +6967,38 @@ msgstr "אין לך חשבון? <a href=\"%(url)s\" class=\"font-weight-bold tog
 msgid "Don't quote"
 msgstr "אל תצטט"
 
+#, machine, plain2
+msgid "Don't say who it's from"
+msgstr "אל תגידו מי זה"
+
 #, machine, plain1, python-format
 msgid "Don't show +%(guild)s content in All or Trending for users that aren't members of the guild."
 msgstr "אל תציג + %(guild)s תוכן ב-All or Trending עבור משתמשים שאינם חברים ב- guild."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate"
 msgstr "תרומה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Donate"
 msgstr "תרומה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate Cash or Crypto"
 msgstr "תרומה בכסף או בקריפטו"
 
 #, machine, plain1
 msgid "Done"
 msgstr "עשה"
+
+#, machine, plain1
+msgid "Done by"
+msgstr "נעשה על ידי"
+
+#, machine, plain1
+msgid "Done to"
+msgstr "לעשות כדי"
 
 #, machine, plain1
 msgid "Download"
@@ -6817,7 +7029,7 @@ msgstr "הורד את הנתונים שלך"
 msgid "Downvote"
 msgstr "Downvote"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Downvote"
 msgstr "הצבע נגד"
@@ -6830,7 +7042,7 @@ msgstr "המונחים:"
 msgid "Doxxing is not allowed."
 msgstr "לא מותר לעשות xing."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Drafts"
 msgstr "טיוטות"
 
@@ -6913,12 +7125,12 @@ msgctxt "button"
 msgid "Edit"
 msgstr "Edit"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: edit the advanced filter"
 msgid "Edit"
 msgstr "עריכה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Edit"
 msgstr "ערוך"
@@ -6955,7 +7167,7 @@ msgstr "איך אחרים רואים אותך על %(site)s."
 msgid "Edit permissions"
 msgstr "Edit הרשאות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Edit profile"
 msgstr "ערוך פרופיל"
 
@@ -6979,7 +7191,7 @@ msgstr "ערוך את הפוסט הזה בטיוטה המשותפת שלו, ול
 msgid "Edit your posts and comments"
 msgstr "ערוך את הפוסטים וההערות שלך"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Edited %(when)s"
 msgstr "נערך %(when)s"
 
@@ -7156,10 +7368,22 @@ msgid "Enter your account password to turn the Child filter down."
 msgstr "הזן את הסיסמה החשבון שלך כדי להפוך את מסנן הילד למטה."
 
 #, machine, plain1
+msgid "Enter your password"
+msgstr "הזן את הסיסמה שלך"
+
+#, machine, plain1, python-format
+msgid "Enter your password - %(site)s"
+msgstr "הכנס את הסיסמה שלך - %(site)s"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "הכנס את הקוד השני שלך."
+
+#, machine, plain1
 msgid "Entertainment"
 msgstr "בידור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Entertainment News"
 msgstr "חדשות בידור"
 
@@ -7212,6 +7436,10 @@ msgid "Evading a site-wide ban"
 msgstr "הערכת איסור כללי"
 
 #, machine, plain1
+msgid "Evading and manipulating the site"
+msgstr "הערכה ומניפולציות באתר"
+
+#, machine, plain1
 msgctxt "guildmaster action"
 msgid "Event cancel"
 msgstr "ביטול האירוע"
@@ -7230,7 +7458,7 @@ msgstr "אירוע עריכה"
 msgid "Event hidden by your word filter"
 msgstr "אירוע חבוי במילה שלך filter"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Events"
 msgstr "אירועים"
 
@@ -7270,9 +7498,9 @@ msgid_plural "Every bot rule applies, %(num)s posts a day included."
 msgstr[0] "כל כלל בוט חל, %(num)s לאחר יום הכלול."
 msgstr[1] "כל כלל בוט חל, %(num)s פוסטים ביום הכלול."
 
-#, machine, plain1
+#, machine, plain2
 msgid "Every browser and app signed in to your chats. Sign out any you don't recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat."
-msgstr "כל דפדפן ואפליקציית חתומה בצ'אטים שלך. הירשם כל מה שאתה לא מכיר או לא משתמש יותר; דפדפן שאתה מצלם מבקש את הסיסמה שלך בפעם הבאה זה פותח צ'אט."
+msgstr "כל דפדפן ואפליקציית חתומה בצ'אטים שלך. לנתק כל מה שאתה לא מכיר או לא משתמש יותר; דפדפן שאתה מתנתק מבקש את הסיסמה שלך בפעם הבאה זה פותח צ'אט."
 
 #, machine, plain1
 msgid "Every character is credited to whoever typed or pasted it."
@@ -7286,8 +7514,12 @@ msgstr "כל אחד קדימה +%(guild)s צריך תווית"
 msgid "Every guild's comments in one list. Open a guild to comment in it."
 msgstr "כל הערותיו של גולד ברשימה אחת. פתחו את הגור כדי להגיב בו."
 
+#, machine, plain2
+msgid "Every message"
+msgstr "כל הודעה"
+
 #. who may open one of a profile's lists (Following, Followers...).
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Everyone"
 msgstr "כולם"
 
@@ -7374,7 +7606,7 @@ msgstr "דוגמה: כלבים חתולים אין \"חתולים\" ולא \"כ�
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "דוגמה: שעה מאושרת - יש את הביטוי המדויק \"שעה מאושרת\""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
 msgstr "הרחקת @%(name)s"
 
@@ -7407,7 +7639,7 @@ msgstr "מתוך + %(guild)s."
 msgid "Exiled since"
 msgstr "מאז"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Exiles"
 msgstr "מורחקים"
 
@@ -7424,7 +7656,7 @@ msgstr "איסורים וצ'אטים"
 msgid "Expected"
 msgstr "מצפה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Explore"
 msgstr "גלה"
 
@@ -7432,7 +7664,7 @@ msgstr "גלה"
 msgid "Explore curations - %(site)s"
 msgstr "חקור מזון מחוספס - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Explore guilds - %(site)s"
 msgstr "גלה גילדות - %(site)s"
 
@@ -7449,7 +7681,7 @@ msgstr "הגייה"
 msgid "Extend for"
 msgstr "אישור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Extra large"
 msgstr "גדול מאוד"
 
@@ -7514,31 +7746,39 @@ msgstr "סיפורים"
 msgid "File"
 msgstr "File"
 
+#, machine, plain2
+msgid "Files you send in chats are kept here too, encrypted: only the people in that chat can open them."
+msgstr "קבצים שאתה שולח בצ'אטים נשמרים גם כאן, מוצפנים: רק האנשים בצ'אט זה יכולים לפתוח אותם."
+
 #, machine, plain1
 msgid "Film & TV"
 msgstr "קולנוע וטלוויזיה"
+
+#, machine, plain1
+msgid "Filter"
+msgstr "פילטר"
 
 #, machine, plain1, python-format
 msgid "Filter +%(guild)s by flair"
 msgstr "פילטר +%(guild)s תוויות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filter by"
 msgstr "סינון לפי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filtered words"
 msgstr "מילים מסוננות"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Filtered words - %(site)s"
 msgstr "מילים מסוננות - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters"
 msgstr "מסננים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters in this search"
 msgstr "מסננים בחיפוש זה"
 
@@ -7595,7 +7835,7 @@ msgstr "דגים"
 msgid "Fitness"
 msgstr "כושר הכושר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Flag"
 msgstr "דווח"
@@ -7604,11 +7844,11 @@ msgstr "דווח"
 msgid "Flagged Posts"
 msgstr "Posts Tagged"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Flair"
 msgstr "תווית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Flair"
 msgstr "תוויות"
@@ -7651,7 +7891,7 @@ msgstr "תוויות תגים את הפוסטים שהוצגו ל- +%(guild)sק�
 msgid "Flights & Airlines"
 msgstr "טיסות & Airlines"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Fold the sidebar"
 msgstr "כווץ את סרגל הצד"
 
@@ -7671,7 +7911,7 @@ msgstr "שם לב Folder."
 msgid "Folder:"
 msgstr "קרדר:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Follow"
 msgstr "עקוב"
@@ -7684,7 +7924,7 @@ msgstr "עקבו אחרי @%(name)s"
 msgid "Follow accounts and join guilds, and their posts show here."
 msgstr "עקבו אחרי חשבונות והצטרפו ל-Gilds, והפוסטים שלהם מופיעים כאן."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follow post"
 msgstr "עקוב אחר הפוסט"
 
@@ -7704,11 +7944,11 @@ msgid_plural "Followed by %(num)s people you follow"
 msgstr[0] "עקבו אחרי One Person You Follow"
 msgstr[1] "עקבו אחרי %(num)s אנשים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Followers"
 msgstr "עוקבים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Followers"
 msgstr "עוקבים"
@@ -7724,31 +7964,31 @@ msgstr "עקבו אחרי @%(name)s - %(site)s"
 #. the names of a profile's lists: the accounts it follows, its followers, who
 #. pays for its paid circles,
 #. and the paid circles it pays for.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Following"
 msgstr "במעקב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you follow"
 msgid "Following"
 msgstr "במעקב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "Following"
 msgstr "במעקב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: curations you follow"
 msgid "Following"
 msgstr "במעקב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Following"
 msgstr "במעקב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Following"
 msgstr "במעקב"
@@ -7761,7 +8001,7 @@ msgstr "בעקבות @%(name)s"
 msgid "Following · @%(name)s - %(site)s"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follows you"
 msgstr "עוקב אחריך"
 
@@ -7769,11 +8009,11 @@ msgstr "עוקב אחריך"
 msgid "Food"
 msgstr "מזון אוכל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For You"
 msgstr "בשבילך"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For a circle"
 msgstr "לחברי מעגל"
 
@@ -7825,12 +8065,12 @@ msgstr "עבור המנהלים אשר בודקים אותו."
 msgid "For the admins who review it: what the bot is for and where its posts come from."
 msgstr "עבור המנהלים אשר בודקים את זה: מה הוא הבוט והיכן הפוסטים שלו באים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: forget the saved default filters"
 msgid "Forget"
 msgstr "שכח"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forget my default"
 msgstr "שכח את ברירת המחדל שלי"
 
@@ -7838,7 +8078,7 @@ msgstr "שכח את ברירת המחדל שלי"
 msgid "Forgot password?"
 msgstr "שכחת סיסמה?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Fork"
 msgstr "שכפל"
@@ -7865,15 +8105,15 @@ msgstr "מקור: <a href=\"%(url)s\">%(title)s</a>"
 msgid "Formatting"
 msgstr "עיצוב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Formatting help"
 msgstr "עזרה בעיצוב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Former Admin"
 msgstr "מנהל מערכת לשעבר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Forward"
 msgstr "העבר"
@@ -7908,7 +8148,7 @@ msgstr "קדימה to guilds"
 msgid "Forward to guilds (optional)"
 msgstr "קדימה ל guilds (אופציונלי)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile tab"
 msgid "Forwarded"
 msgstr "הועברו"
@@ -7935,11 +8175,11 @@ msgstr "קדימה to guilds"
 msgid "Forwarded!"
 msgstr "קדימה!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwarding to"
 msgstr "מעביר אל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwards"
 msgstr "העברות"
 
@@ -7947,11 +8187,11 @@ msgstr "העברות"
 msgid "Forwards then come from the post's Forward dialog, where a flair is picked."
 msgstr "לאחר מכן הגיעו מהשיח של הפוסט-קדימה, שם נבחרה תווית."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Founded"
 msgstr "נוסדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Founder"
 msgstr "מייסד"
@@ -7959,6 +8199,10 @@ msgstr "מייסד"
 #, machine, plain1
 msgid "Free circles"
 msgstr "מעגלים חופשיים"
+
+#, machine, plain1
+msgid "Free expression and good faith"
+msgstr "ביטוי חופשי ואמונה טובה"
 
 #, machine, plain1
 msgid "Fresh and rising"
@@ -7992,7 +8236,7 @@ msgstr "חברים הם כל מי שעוקב אחריך. לחלוק עם המש�
 msgid "Friends is your automatic circle of mutual follows. Choose another name."
 msgstr "חברים הם המעגל האוטומטי שלך של העיון. בחרו שם אחר."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Friends liked"
 msgstr "חברים אהבו"
 
@@ -8000,7 +8244,7 @@ msgstr "חברים אהבו"
 msgid "Friendship"
 msgstr "ידידות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "From"
 msgstr "מאת"
@@ -8045,7 +8289,7 @@ msgstr "מתוך התיקון %(older)s (()%(older_by)s) to %(newer)s (()%(newer
 msgid "From these accounts"
 msgstr "מהחשבונות האלה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "From:"
 msgstr "תקופה:"
 
@@ -8057,7 +8301,7 @@ msgstr "לחיות חיים"
 msgid "Full Moon"
 msgstr "ירח מלא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Full editor"
 msgstr "עורך מלא"
 
@@ -8081,7 +8325,7 @@ msgstr "משחק Night Participant"
 msgid "Gaming"
 msgstr "משחקים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gaming News"
 msgstr "חדשות גיימינג"
 
@@ -8097,11 +8341,11 @@ msgstr "מקלחות: Gemini"
 msgid "General Information"
 msgstr "מידע כללי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Memes"
 msgstr "ממים כלליים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Science"
 msgstr "מדע כללי"
 
@@ -8125,13 +8369,17 @@ msgstr "קבל מטבעות"
 msgid "Get coins to send a tip"
 msgstr "קבל מטבעות כדי לשלוח טיפ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Get involved"
 msgstr "קחו חלק"
 
 #, machine, plain1
 msgid "Get more coins"
 msgstr "קבל יותר מטבעות"
+
+#, machine, plain1
+msgid "Give a reason"
+msgstr "תן סיבה"
 
 #, machine, plain1
 msgid "Give the Space's post address or id."
@@ -8197,7 +8445,7 @@ msgstr "תן את התפקיד הזה"
 msgid "Give this ruqqie a tip!"
 msgstr "תן ל-ruqchie טיפ!"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Glad to have you back. Make a %(site)s!"
 msgstr "שמחים לראות אותך שוב. צור %(site)s!"
 
@@ -8321,11 +8569,11 @@ msgid_plural "Group · %(num)s people"
 msgstr[0] "קבוצה %(num)s אנשים"
 msgstr[1] "%(num)s אנשים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Groups"
 msgstr "קבוצות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild"
 msgstr "גילדה"
 
@@ -8353,7 +8601,7 @@ msgstr "תגית: Guild"
 msgid "Guild Icon"
 msgstr "Guild Icon"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild Name"
 msgstr "שם הגילדה"
 
@@ -8365,7 +8613,11 @@ msgstr "Guild פרטיות"
 msgid "Guild Styling"
 msgstr "גילדת Styling"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Guild changes"
+msgstr "שינויי הגילדה"
+
+#, glossary, machine, plain2
 msgid "Guild details"
 msgstr "פרטי הגילדה"
 
@@ -8393,11 +8645,11 @@ msgstr "שם גילדת, ללא +…"
 msgid "Guild names must be 3-25 letters or numbers."
 msgstr "שמות גילדת צריכים להיות 3-25 אותיות או מספרים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild settings"
 msgstr "הגדרות הגילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Guildmaster"
 msgstr "מנהל גילדה"
@@ -8406,23 +8658,23 @@ msgstr "מנהל גילדה"
 msgid "Guildmaster Since"
 msgstr "גיל ההתבגרות מאז"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster Tools"
 msgstr "כלי ניהול גילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster of"
 msgstr "גילדות בניהולי"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Guildmaster of +%(guild)s"
 msgstr "מנהל הגילדה +%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster tools"
 msgstr "כלי ניהול גילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmasters"
 msgstr "מנהלי גילדה"
 
@@ -8448,7 +8700,7 @@ msgid_plural "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "גילדות"
 
@@ -8498,15 +8750,15 @@ msgstr "עכשיו קורה"
 msgid "Hardware"
 msgstr "חומרה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Health"
 msgstr "בריאות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Help"
 msgstr "עזרה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Help"
 msgstr "עזרה"
@@ -8515,7 +8767,7 @@ msgstr "עזרה"
 msgid "Helped test features in development"
 msgstr "תכונות בדיקה מסייעות בפיתוח"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Herald"
 msgstr "הבלט"
@@ -8533,6 +8785,18 @@ msgstr "Highlight post"
 #, machine, plain1, python-format
 msgid "Hey there, %(name)s"
 msgstr "שם, %(name)s"
+
+#, python-format
+msgid "Hi %(name)s, QR sign-in was turned back on for your %(site)s account, with its password. It lets a phone that is signed in to your account approve a sign-in on another screen."
+msgstr ""
+
+#, python-format
+msgid "Hi %(name)s, chat encryption was started over on your %(site)s account, after its password was given. Messages from before can no longer be read on your devices unless a browser where you used chat brings them back."
+msgstr ""
+
+#, python-format
+msgid "Hi %(name)s, someone signed in to your %(site)s account with a QR code that was approved on your phone."
+msgstr ""
 
 #, python-format
 msgid "Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently."
@@ -8574,7 +8838,7 @@ msgstr "דף נסתר"
 msgid "Hidden until you confirm your age"
 msgstr "נסתר עד שתאשר את הגיל שלך"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Hide"
 msgstr "הסתר"
 
@@ -8583,7 +8847,7 @@ msgctxt "button"
 msgid "Hide"
 msgstr "(button)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Hide"
 msgstr "הסתר"
@@ -8597,7 +8861,7 @@ msgctxt "guildmaster action"
 msgid "Hide comment from guild"
 msgstr "תגית: guild"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Hide from +%(guild)s"
 msgstr "הסתר מ-+%(guild)s"
 
@@ -8609,6 +8873,10 @@ msgstr "עקבו אחרי guild"
 #, machine, plain1
 msgid "Hide posts or collapse comments that are made by bots."
 msgstr "הודעות או הערות התמוטטות שבוצעו על ידי בוטים."
+
+#, machine, plain1
+msgid "Hide this version"
+msgstr "להסתיר את הגרסה"
 
 #, machine, plain1
 msgid "Hides matching content from your feeds, and collapses matching comments."
@@ -8634,7 +8902,7 @@ msgstr "Hiking"
 msgid "Hip-Hop"
 msgstr "היפ-הופ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "History"
 msgstr "היסטוריה"
 
@@ -8658,7 +8926,7 @@ msgstr "ההיסטוריה של הפוסט הזה"
 msgid "Hobbies"
 msgstr "Hobbies"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Home"
 msgstr "בית"
 
@@ -8686,7 +8954,7 @@ msgstr "סוסים"
 msgid "Hosted by %(name)s"
 msgstr "נתמך על ידי %(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Hot"
 msgstr "חם"
@@ -8738,6 +9006,10 @@ msgid "How long it runs"
 msgstr "כמה זמן זה רץ"
 
 #, machine, plain1
+msgid "How old are you?"
+msgstr "בן כמה אתה?"
+
+#, machine, plain1
 msgid "How scores read"
 msgstr "כיצד מספרים קוראים"
 
@@ -8765,7 +9037,7 @@ msgstr "כיצד להשתמש מפתח"
 msgid "How to write this post"
 msgstr "איך לכתוב את הפוסט הזה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "How words are matched"
 msgstr "איך מזהים מילים"
 
@@ -8806,6 +9078,10 @@ msgid "I'm %(min)s to 17"
 msgstr "אני %(min)s 17"
 
 #, machine, plain1
+msgid "I'm 18 or over"
+msgstr "אני בן 18 ומעלה"
+
+#, machine, plain1
 msgid "Ice Hockey"
 msgstr "קרח הוקי"
 
@@ -8837,6 +9113,10 @@ msgstr "אם אתה בן 18 או יותר, אמור כך והורה או האפ�
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
 msgstr "אם אין לך את 2FA התקן, הזן את אחד קודי הגיבוי שלך במקום. כל קוד גיבוי עובד פעם אחת. חשבון שמעולם לא עשה קודים גיבוי יכול להיכנס לקוד ההחלמה שלו, אשר גם הופך 2FA בחוץ."
 
+#, machine, plain2
+msgid "If you forget your password, your recovery code, or a browser where you've used chat, brings your old messages back. The code can't be shown again: this site never has it. A new one replaces it."
+msgstr "אם שכחת את הסיסמה שלך, קוד ההתאוששות שלך, או דפדפן שבו השתמשת בצ'אט, מחזיר את ההודעות הישנות שלך. הקוד לא יכול להיות מוצג שוב: האתר הזה אף פעם לא קיים. חדש מחליף אותו."
+
 #, machine, plain1, python-format
 msgid "If you have any questions, feel free to <a href=\"%(mail)s\">email the %(site)s team.</a>."
 msgstr "אם יש לך שאלות, תרגיש חופשי <a href=\"%(mail)s\">הדואר האלקטרוני %(site)s צוות.</a>."
@@ -8866,7 +9146,7 @@ msgctxt "button"
 msgid "Ignore"
 msgstr "התעלמות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Image"
 msgstr "תמונה"
@@ -8915,7 +9195,7 @@ msgstr ""
 msgid "In %(place)s"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "In guild"
 msgstr "בגילדה"
 
@@ -8939,7 +9219,7 @@ msgstr "בגורשים אלה"
 msgid "Inadvertantly broke Ruqqus"
 msgstr "באופן בלתי נמנע שבר את רוסק"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Inbox"
 msgstr "דואר נכנס"
 
@@ -8950,6 +9230,22 @@ msgstr "כולל"
 #, machine, plain1
 msgid "Includes accounts you follow"
 msgstr "כולל חשבונות שאתה עוקב"
+
+#, machine, plain2
+msgid "Incoming call"
+msgstr "שיחות נכנסות"
+
+#, machine, plain2, python-format
+msgid "Incoming call from %(name)s"
+msgstr "שיחה: %(name)s"
+
+#, machine, plain2
+msgid "Incoming video call"
+msgstr "שיחות וידאו"
+
+#, machine, plain2, python-format
+msgid "Incoming video call from %(name)s"
+msgstr "שיחת וידאו מתוך %(name)s"
 
 #, machine, plain1
 msgid "Incorrect Password"
@@ -8984,7 +9280,7 @@ msgstr "Indus Subcontinent"
 msgid "Influencers"
 msgstr "השפעה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Insights"
 msgstr "תובנות"
 
@@ -9017,7 +9313,7 @@ msgstr "מתעניינים"
 msgid "Interior Design"
 msgstr "עיצוב פנים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "International Affairs"
 msgstr "יחסים בינלאומיים"
 
@@ -9249,6 +9545,10 @@ msgstr "זה עובד דרך האפליקציה שלך <strong>%(app)s</strong> 
 msgid "It's called %(name)s now."
 msgstr "קוראים לזה %(name)s עכשיו."
 
+#, machine, plain2
+msgid "It's too late to refuse this code: it has run out or has been used. If you don't recognise a sign-in, log out everywhere, and check your apps too."
+msgstr "מאוחר מדי לסרב לקוד הזה: הוא יצא או שימש. אם אתה לא מזהה סימן, ניתוק בכל מקום, ובדוק גם את האפליקציות שלך."
+
 #, machine, plain1
 msgid "Its feed server has not named any posts you can see."
 msgstr "שרת ההזנה שלה לא קראה שום פוסטים שאתה יכול לראות."
@@ -9277,7 +9577,7 @@ msgstr "JPG, PNG, GIF הקבצים תמכו גודל קובץ מקס 16MB (יח�
 msgid "Jazz & Blues"
 msgstr "ג'אז & Blues"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Job"
 msgstr "עיסוק"
 
@@ -9291,7 +9591,7 @@ msgstr[1] "עבודה יכולה להיות ברוב %(num)s תווים."
 msgid "Job can't contain < or >."
 msgstr "עבודה לא יכולה להכיל < או>."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Join"
 msgstr "הצטרף"
@@ -9304,7 +9604,7 @@ msgid_plural "Join %(circle)s &middot; %(num)s coins/month"
 msgstr[0] "להצטרף %(circle)s &middot; מטבע / חודש"
 msgstr[1] "להצטרף %(circle)s &middot; %(num)s מטבעות / חודש"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join +%(guild)s"
 msgstr "הצטרפות אל +%(guild)s"
 
@@ -9318,11 +9618,11 @@ msgid_plural "Join Circle &middot; %(num)s coins/month"
 msgstr[0] "הצטרף ל Circle &middot; %(num)s מטבע / חודש"
 msgstr[1] "הצטרף למעגל &middot; %(num)s מטבעות / חודש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join Guild"
 msgstr "הצטרף לגילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join guild"
 msgstr "הצטרפות לגילדה"
 
@@ -9349,7 +9649,7 @@ msgctxt "people who joined the guild, table heading"
 msgid "Joined"
 msgstr "הצטרף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Joined"
 msgstr "הצטרפת"
@@ -9370,7 +9670,7 @@ msgstr "הצטרף ל-Ruqqus במהלך אלפא פתוחה"
 msgid "Joined Ruqqus during open beta"
 msgstr "הצטרף Ruqqus במהלך בטא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Jump in the discussion."
 msgstr "הצטרף לדיון."
 
@@ -9444,7 +9744,7 @@ msgstr "סוג של בוט"
 msgid "Kind of story"
 msgstr "סוג של סיפור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Kinds of Space"
 msgstr "סוגי מרחבים"
 
@@ -9460,7 +9760,7 @@ msgstr "סוג הפוסט <span class=\"text-muted\">(הופנה מהדף כל �
 msgid "Knitting & Sewing"
 msgstr "סכינים & Swing"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "badge"
 msgid "LIVE"
 msgstr "שידור חי"
@@ -9477,7 +9777,7 @@ msgstr "תוויות"
 msgid "Landscaping"
 msgstr "נחיתה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Language"
 msgstr "שפה"
 
@@ -9490,7 +9790,7 @@ msgstr "לימוד שפה"
 msgid "Languages on this page"
 msgstr "שפות בדף זה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Large"
 msgstr "גדול"
 
@@ -9527,12 +9827,12 @@ msgstr "חוק החוק"
 msgid "Layout"
 msgstr "Layout"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Leave"
 msgstr "עזוב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: leave the guild"
 msgid "Leave"
 msgstr "עזוב"
@@ -9545,7 +9845,7 @@ msgstr "Leave +%(guild)s"
 msgid "Leave group"
 msgstr "לעזוב קבוצה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave guild desktop"
 msgstr "עזיבת גילדה"
 
@@ -9561,7 +9861,7 @@ msgstr "השאירו אותו ריק כדי להתחיל עכשיו."
 msgid "Leave out"
 msgstr "לעזוב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave out forwarded copies"
 msgstr "ללא עותקים שהועברו"
 
@@ -9644,7 +9944,7 @@ msgstr "השמאל"
 msgid "Left +%(guild)s"
 msgstr "שמאל +%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Legal"
 msgstr "משפטי"
 
@@ -9664,7 +9964,7 @@ msgstr "מכתבים שנחצבו או מפוצלים על ידי דוטים א�
 msgid "Letters, numbers and underscores, 3 to 25 characters."
 msgstr "מכתבים, מספרים ומדגישים, 3 עד 25 תווים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Lifestyle"
 msgstr "סגנון חיים"
 
@@ -9686,12 +9986,12 @@ msgstr "גבולות 1000 תווים"
 msgid "Limit of 256 characters"
 msgstr "256 תווים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Link"
 msgstr "קישור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Link"
 msgstr "קישור"
@@ -9704,7 +10004,7 @@ msgstr "קישור (אופציונלי)"
 msgid "Link Discord"
 msgstr "קישור Discord"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Link copied to clipboard"
 msgstr "הקישור הועתק ללוח"
 
@@ -9754,7 +10054,7 @@ msgstr "קישורים לאתר זה אינם מורשים."
 msgid "Linux & Open Source"
 msgstr "מקור: Linux & Open Source"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "List"
 msgstr "רשימה"
@@ -9776,7 +10076,7 @@ msgstr "ספרות"
 msgid "Live"
 msgstr "Live"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "Space state"
 msgid "Live"
 msgstr "בשידור חי"
@@ -9785,7 +10085,7 @@ msgstr "בשידור חי"
 msgid "Live Spaces"
 msgstr "חללים חיים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Live and upcoming"
 msgstr "בשידור חי ובקרוב"
 
@@ -9824,11 +10124,11 @@ msgstr "Live %(kind)s"
 msgid "Loading..."
 msgstr "לטעון..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "טוען…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Location"
 msgstr "מיקום"
 
@@ -9856,14 +10156,22 @@ msgid "Locked: guildmasters edit it."
 msgstr "נעול: מעצבי משנה לערוך אותו."
 
 #, machine, plain1
+msgid "Log"
+msgstr "Log"
+
+#, machine, plain1, python-format
+msgid "Log - %(site)s"
+msgstr "תגית: %(site)s"
+
+#, glossary, machine, plain2
 msgid "Log Out Everywhere"
-msgstr "לצאת בכל מקום"
+msgstr "התנתק מכל המכשירים"
 
 #, machine, plain1, python-format
 msgid "Log all other devices out of your %(site)s account."
 msgstr "שחררו את כל המכשירים האחרים שלכם %(site)s חשבון."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Log in to bookmark"
 msgstr "התחבר כדי לשמור בסימניות"
 
@@ -9871,13 +10179,29 @@ msgstr "התחבר כדי לשמור בסימניות"
 msgid "Log in to vote"
 msgstr "היכנס להצבעה"
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Log of @%(name)s"
+msgstr "תגית: @%(name)s"
+
+#, machine, plain1, python-format
+msgid "Log of post #%(id)s"
+msgstr "המונחים #%(id)s"
+
+#, machine, plain1
+msgid "Log of this comment"
+msgstr "תגית: This comment"
+
+#, glossary, machine, plain2
 msgid "Log out"
 msgstr "התנתק"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Log out everywhere"
-msgstr "לצאת בכל מקום"
+msgstr "התנתק מכל המכשירים"
+
+#, machine, plain2
+msgid "Logging out everywhere ends that sign-in. It doesn't end an app's access, so check those too."
+msgstr "חיבור בכל מקום מסתיים סימן זה. זה לא נגמר גישה של אפליקציה, אז לבדוק גם את זה."
 
 #, machine, plain1, python-format
 msgid "Login - %(site)s"
@@ -9907,11 +10231,11 @@ msgstr "מקלחות ליריד"
 msgid "Made on %(date)s."
 msgstr "מיוצר על %(date)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Made with AI"
 msgstr "נוצר בבינה מלאכותית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "navigation landmark"
 msgid "Main"
 msgstr "ראשי"
@@ -9969,7 +10293,7 @@ msgstr "יצירת קודים חדשים"
 msgid "Make one with New event."
 msgstr "לעשות אחד עם אירוע חדש."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Make or change your circles"
 msgstr "יצירה או שינוי של המעגלים שלך"
 
@@ -10021,7 +10345,7 @@ msgstr "Manga"
 msgid "March equinox"
 msgstr "השוויון במרץ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mark Sensitive Content"
 msgstr "סמן כתוכן רגיש"
 
@@ -10047,7 +10371,7 @@ msgstr "שיווק ומכירות"
 msgid "Marriage"
 msgstr "נישואים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Matches your interests"
 msgstr "מתאים לתחומי העניין שלך"
 
@@ -10055,7 +10379,7 @@ msgstr "מתאים לתחומי העניין שלך"
 msgid "Mathematics"
 msgstr "מתמטיקה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media"
 msgstr "מדיה"
 
@@ -10067,7 +10391,7 @@ msgstr "רק מדיה"
 msgid "Media settings"
 msgstr "הגדרות מדיה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media storage"
 msgstr "אחסון מדיה"
 
@@ -10115,7 +10439,7 @@ msgid_plural "Members<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Members"
 msgstr "חברים"
 
@@ -10139,7 +10463,7 @@ msgid_plural "Members with at least %(num)s points in a month share that month's
 msgstr[0] "חברים עם לפחות נקודה אחת בחודש חולקים את התקציב של החודש על ידי נקודות שלהם."
 msgstr[1] "חברים עם לפחות %(num)s נקודות בחודש חולקים את התקציב של החודש על ידי נקודות."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Memes"
 msgstr "ממים"
 
@@ -10155,7 +10479,7 @@ msgstr "המונחים @%(name)s"
 msgid "Mentioning these accounts"
 msgstr "למחוק חשבונות אלה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mentions"
 msgstr "אזכורים"
 
@@ -10179,11 +10503,11 @@ msgid_plural "Mentions any of: %(num)s words or phrases at most."
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Merch and more. Support %(site)s today!"
 msgstr "מרצ'נדייז ועוד. תמכו ב-%(site)s היום!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Message"
 msgstr "הודעה"
@@ -10255,11 +10579,11 @@ msgstr "Mobile & Apps"
 msgid "Mobile Games"
 msgstr "משחקים ניידים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Log"
 msgstr "יומן ניהול"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Queue"
 msgstr "תור ניהול"
 
@@ -10271,11 +10595,11 @@ msgstr "בניין מודל"
 msgid "Moderation"
 msgstr "שינוי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Moderation log"
 msgstr "יומן ניהול"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Modern Culture"
 msgstr "תרבות מודרנית"
 
@@ -10293,7 +10617,7 @@ msgctxt "table heading"
 msgid "Month"
 msgstr "חודש החודש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Month"
 msgstr "חודש"
@@ -10306,24 +10630,24 @@ msgstr "חודש נולד"
 msgid "Monthly creator fund payouts"
 msgstr "שכר כספי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "עוד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "More"
 msgstr "עוד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More actions"
 msgstr "פעולות נוספות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More comments"
 msgstr "תגובות נוספות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More options"
 msgstr "אפשרויות נוספות"
 
@@ -10375,7 +10699,7 @@ msgstr "לזוז %(name)s למטה למטה"
 msgid "Move %(name)s up"
 msgstr "לזוז %(name)s למעלה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Move to folder"
 msgstr "העבר לתיקייה"
 
@@ -10403,12 +10727,12 @@ msgstr "הפקה מוזיקלית"
 msgid "Must attempt to buy at least one coin"
 msgstr "צריך לנסות לקנות לפחות מטבע אחד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Mute"
 msgstr "השתק"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "microphone"
 msgid "Mute"
 msgstr "השתק"
@@ -10417,11 +10741,11 @@ msgstr "השתק"
 msgid "Mute +%(guild)s"
 msgstr "Mute +%(guild)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Mute @%(name)s"
 msgstr "השתקת @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute guild"
 msgstr "השתק גילדה"
 
@@ -10441,7 +10765,7 @@ msgstr "תקועים בערוצים"
 msgid "Muted since"
 msgstr "מאז"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My Curations"
 msgstr "האוספים שלי"
 
@@ -10449,7 +10773,7 @@ msgstr "האוספים שלי"
 msgid "My Friends"
 msgstr "החברים שלי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My account"
 msgstr "החשבון שלי"
 
@@ -10457,7 +10781,7 @@ msgstr "החשבון שלי"
 msgid "My account is sensitive"
 msgstr "החשבון שלי רגיש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My guilds"
 msgstr "הגילדות שלי"
 
@@ -10465,7 +10789,7 @@ msgstr "הגילדות שלי"
 msgid "My languages"
 msgstr "השפות שלי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My profile"
 msgstr "הפרופיל שלי"
 
@@ -10509,7 +10833,7 @@ msgstr "הצבעה"
 msgid "Neuroscience"
 msgstr "Neuroscience"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Never counted"
 msgstr "לעולם לא נספרים"
 
@@ -10550,7 +10874,7 @@ msgctxt "new highlight"
 msgid "New"
 msgstr "חדש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "New"
 msgstr "חדש"
@@ -10596,6 +10920,10 @@ msgid "New circle"
 msgstr "מעגל חדש"
 
 #, machine, plain1
+msgid "New code"
+msgstr "קוד חדש"
+
+#, machine, plain1
 msgid "New comments · Show them"
 msgstr "תגית: Show them"
 
@@ -10611,7 +10939,7 @@ msgstr "אירוע חדש"
 msgid "New folder"
 msgstr "תיקיה חדשה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "New group"
 msgstr "קבוצה חדשה"
 
@@ -10628,6 +10956,22 @@ msgid "New members pay %(num)s coin every 30 days. Current members keep their pr
 msgid_plural "New members pay %(num)s coins every 30 days. Current members keep their price."
 msgstr[0] ""
 msgstr[1] ""
+
+#, machine, plain2
+msgid "New message"
+msgstr "הודעה חדשה"
+
+#, machine, plain2, python-format
+msgid "New message from %(name)s"
+msgstr "הודעה חדשה מתוך %(name)s"
+
+#, machine, plain2
+msgid "New message request"
+msgstr "בקשת הודעה חדשה"
+
+#, machine, plain2, python-format
+msgid "New message request from %(name)s"
+msgstr "הודעה חדשה מתוך %(name)s"
 
 #, machine, plain1
 msgid "New page address"
@@ -10687,20 +11031,20 @@ msgstr "הראשון"
 msgid "Newest first."
 msgstr "הראשון."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "News"
 msgstr "חדשות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Next"
 msgstr "הבא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "next page"
 msgid "Next"
 msgstr "הבא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "story"
 msgid "Next"
 msgstr "הסטורי הבא"
@@ -10726,7 +11070,7 @@ msgstr "לא"
 msgid "No Space is shown on this stage right now."
 msgstr "שום חלל לא מוצג כרגע על הבמה הזאת."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No Spaces are scheduled."
 msgstr "אין מרחבים מתוזמנים."
 
@@ -10774,7 +11118,7 @@ msgstr "אין ערוצים להראות."
 msgid "No channels yet."
 msgstr "עדיין לא ערוצים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No comments"
 msgstr "אין תגובות"
 
@@ -10818,7 +11162,7 @@ msgstr "אין קישורים חיצוניים שאפשרו."
 msgid "No feeds."
 msgstr "לא להאכיל."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "ללא תווית"
 
@@ -10838,7 +11182,7 @@ msgstr "No guild התקשר +%(guild)s."
 msgid "No guild called +%(name)s."
 msgstr "No guild התקשר +%(name)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guildmasters"
 msgstr "אין מנהלי גילדה"
 
@@ -10852,7 +11196,7 @@ msgid_plural "No guilds are in these topics yet."
 msgstr[0] "עדיין אין גורים בנושא הזה."
 msgstr[1] "עדיין אין גורים בנושאים אלה."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guilds here yet."
 msgstr "אין כאן גילדות עדיין."
 
@@ -10889,7 +11233,7 @@ msgstr "אין עוד הצעות לשמה - להיות הראשון!"
 msgid "No older than"
 msgstr "לא מבוגר יותר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No one"
 msgstr "אף אחד"
 
@@ -10933,7 +11277,7 @@ msgstr "אין התאמות לבישול ציבורי %(query)s."
 msgid "No public curations yet. Be the first!"
 msgstr "עדיין לא נרפאים לציבור. להיות הראשון!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No recordings yet."
 msgstr "אין הקלטות עדיין."
 
@@ -10993,6 +11337,10 @@ msgstr "אף אחד מלבד אנשיו לא יכול לקרוא את זה: לא
 msgid "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."
 msgstr "אף אחד לא יכול לשלם כדי להצטרף עכשיו: הגורל הוא בהזמנה בלבד. החברים הנוכחיים שומרים על מה שהם משלמים."
 
+#, machine, plain1
+msgid "Nobody can sign in to your account with a code."
+msgstr "אף אחד לא יכול להיכנס לחשבון שלך עם קוד."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "אף אחד לא מקבל יותר %(share)s%% תקציב חודש. מניות מעוגלות עד מטבעות שלמים."
@@ -11032,6 +11380,10 @@ msgstr "אף אחד לא כאן"
 #, machine, plain1, python-format
 msgid "Nobody under %(age)s may have an account where you are."
 msgstr "אף אחד מתחת ל- %(age)s יכול להיות חשבון שבו אתה נמצא."
+
+#, machine, plain1
+msgid "Nobody was signed in. If someone asked you to scan that code, they can't use it now."
+msgstr "אף אחד לא חתם. אם מישהו ביקש מכם לסרוק את הקוד הזה, הם לא יכולים להשתמש בו עכשיו."
 
 #, machine, plain1
 msgid "Nobody yet."
@@ -11084,6 +11436,10 @@ msgid "Not flaired \"%(flair)s\""
 msgstr "לא נמוג \"%(flair)s\"\""
 
 #, machine, plain1
+msgid "Not found"
+msgstr "לא נמצאו"
+
+#, machine, plain1
 msgid "Not found."
 msgstr "לא מצאתי."
 
@@ -11114,7 +11470,7 @@ msgstr "לא ב %(place)s"
 msgid "Not in these guilds"
 msgstr "לא במגורים האלה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not known yet"
 msgstr "עדיין לא ידוע"
 
@@ -11125,6 +11481,10 @@ msgstr "לא קישור ל %(domain)s"
 #, machine, plain1
 msgid "Not made with AI"
 msgstr "לא נעשה עם AI"
+
+#, machine, plain1
+msgid "Not me"
+msgstr "לא אני"
 
 #, machine, plain1
 msgid "Not now"
@@ -11158,9 +11518,13 @@ msgstr "לא טרנדים יותר"
 msgid "Not yet"
 msgstr "עדיין לא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not your default:"
 msgstr "לא ברירת המחדל:"
+
+#, machine, plain2
+msgid "Nothing"
+msgstr "אין שום דבר"
 
 #, machine, plain1
 msgid "Nothing bookmarked yet"
@@ -11181,6 +11545,10 @@ msgstr "שום דבר לא יובא עדיין (הדברים)"
 #, machine, plain1
 msgid "Nothing downvoted yet (posts)"
 msgstr "שום דבר לא נכנע עדיין (פוסטים)"
+
+#, machine, plain1
+msgid "Nothing has been logged yet."
+msgstr "שום דבר עדיין לא מחובר."
 
 #, machine, plain1
 msgid "Nothing has changed since the last publish."
@@ -11213,6 +11581,10 @@ msgstr "שום דבר לא חי כרגע."
 #, machine, plain1
 msgid "Nothing marked for today."
 msgstr "שום דבר לא מסומן להיום."
+
+#, machine, plain1
+msgid "Nothing matches this filter."
+msgstr "שום דבר לא מתאים לפילטר הזה."
 
 #, machine, plain1, python-format
 msgid "Nothing on %(site)s can translate into it right now, so the Translate button won't show."
@@ -11286,13 +11658,33 @@ msgstr "עדיין לא כלום."
 msgid "Notification types"
 msgstr "המונחים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "התראות"
+
+#, machine, plain2
+msgid "Notifications aren't available on this site yet."
+msgstr "לא זמין עדיין באתר הזה."
+
+#, machine, plain2
+msgid "Notifications don't say who a message is from."
+msgstr "לא אומרים מי מסר."
 
 #, machine, plain1, python-format
 msgid "Notifications for @%(name)s turned off."
 msgstr "הודעות @%(name)s כבוי."
+
+#, machine, plain2
+msgid "Notifications from this group"
+msgstr "הודעות מהקבוצה"
+
+#, machine, plain2
+msgid "Notifications need this page's script."
+msgstr "הודעות צריכות את התסריט של הדף הזה."
+
+#, machine, plain2
+msgid "Notifications say who a message is from."
+msgstr "הודעות אומרות מי מסר."
 
 #, machine, plain1, python-format
 msgid "Notifications, %(num)s new"
@@ -11352,7 +11744,7 @@ msgstr "Offensive"
 msgid "Offline on %(service)s"
 msgstr "המונחים: %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Old"
 msgstr "ישן"
@@ -11378,6 +11770,10 @@ msgstr "על %(date)s"
 #, machine, plain1
 msgid "On Ruqqus for one year"
 msgstr "על Ruqqus לשנה אחת"
+
+#, machine, plain2
+msgid "On an iPhone or iPad, add this site to your Home Screen first (Share, then Add to Home Screen), and turn notifications on from there."
+msgstr "באייפון או ב-iPad, הוסף אתר זה למסך הבית שלך ראשון (Share, ולאחר מכן הוסף למסך ביתי), ולהפוך הודעות משם."
 
 #, machine, plain1
 msgid "On by default"
@@ -11482,6 +11878,10 @@ msgstr ""
 msgid "Only a call has a stage."
 msgstr "רק קריאה יש שלב."
 
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "רק הבעלים והמנהלים של הקבוצה יכולים לשנות את זה."
+
 #, machine, plain1
 msgid "Only a guild's copy of a post has a flair."
 msgstr "רק עותק של כתב יש תווית."
@@ -11541,6 +11941,10 @@ msgstr "רק חברים מאושרים כותבים בערוץ הזה."
 #, machine, plain1
 msgid "Only continue if you started signing in to a chat app just now."
 msgstr "רק אם התחלתם להיכנס לאפליקציית צ'אט עכשיו."
+
+#, machine, plain1
+msgid "Only continue if you started this yourself on a screen in front of you. If a post, comment, message or website asked you to scan this, someone may be trying to take your account."
+msgstr "רק אם התחלת את זה בעצמך על מסך לפניך. אם פוסט, תגובה, הודעה או אתר אינטרנט ביקשו ממך לסרוק את זה, מישהו עשוי לנסות לקחת את החשבון שלך."
 
 #, machine, plain1, python-format
 msgid "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s member, so a small guild's numbers can't point at one person."
@@ -11638,7 +12042,7 @@ msgstr "רק בעל הערוץ ועוזריו כותבים בו."
 msgid "Only the channel's owner chooses its helpers."
 msgstr "רק בעל הערוץ בוחר את עוזריו."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Only the circles you pick"
 msgstr "רק המעגלים שתבחר"
 
@@ -11807,7 +12211,7 @@ msgstr "פתוח בצ'אט"
 msgid "Open in the guild"
 msgstr "פתוח בGild"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open page"
 msgstr "פתח דף"
 
@@ -11828,10 +12232,14 @@ msgid "Open the post"
 msgstr "פתח את הפוסט"
 
 #, machine, plain1
+msgid "Open the preserved copy"
+msgstr "פתח את העותק שנשמר"
+
+#, machine, plain1
 msgid "Open the quoted post"
 msgstr "פתח את הפוסט המצוטט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open the shared draft"
 msgstr "פתח את הטיוטה המשותפת"
 
@@ -11863,11 +12271,11 @@ msgstr "דעה וניתוח"
 msgid "Opt Out of All/Trending"
 msgstr "אפשרויות ל-All/Trending"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Opted out of All"
 msgstr "לא מופיע בפיד הכל"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Option %(number)s"
 msgstr "אפשרות %(number)s"
 
@@ -11960,11 +12368,11 @@ msgstr "על ידי תערובת משלו: קולות וטיפים %(votes)s, ה
 msgid "Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s."
 msgstr "נכתב על ידי שילוב משלו: קולות וטיפים %(votes)s, הערות %(comments)s, מתפתל מעל %(fade)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Original post"
 msgstr "הפוסט המקורי"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Original username: @%(name)s"
 msgstr "שם משתמש מקורי: @%(name)s"
 
@@ -11972,7 +12380,7 @@ msgstr "שם משתמש מקורי: @%(name)s"
 msgid "Orionids meteor shower"
 msgstr "המונחים:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other Sports"
 msgstr "ענפי ספורט אחרים"
 
@@ -11986,7 +12394,7 @@ msgstr "שפות אחרות קראת"
 msgid "Other or unknown"
 msgstr "אחר או לא ידוע"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other spellings:"
 msgstr "כתיבים נוספים:"
 
@@ -12031,7 +12439,7 @@ msgstr "סקירה"
 msgid "Own account"
 msgstr "חשבון עצמאי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you made"
 msgid "Owned"
 msgstr "בבעלותי"
@@ -12044,7 +12452,7 @@ msgstr "PC"
 msgid "PNG, JPEG, GIF or WebP, 8 MB at most."
 msgstr "PNG, JPEG, GIF או או WebP8 MB לרוב."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Page navigation"
 msgstr "ניווט בין דפים"
 
@@ -12080,7 +12488,7 @@ msgstr "מעגלים בתשלום"
 msgid "Paid circles are part of Premium."
 msgstr "מעגלים בתשלום הם חלק מ- Premium."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Paid circles you are in"
 msgstr "מעגלים בתשלום שאתה חבר בהם"
 
@@ -12175,15 +12583,15 @@ msgctxt "events"
 msgid "Past"
 msgstr "העבר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Day"
 msgstr "היום האחרון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Month"
 msgstr "החודש האחרון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Year"
 msgstr "השנה האחרונה"
 
@@ -12204,7 +12612,7 @@ msgstr "פאוזה"
 msgid "Paused"
 msgstr "פולש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Paused"
 msgstr "מושהה"
@@ -12291,7 +12699,15 @@ msgid_plural "People who follow you, or whom you follow, are in at once. Anyone 
 msgstr[0] "אנשים שעוקבים אחריך, או מי אתה עוקב, נמצאים בבת אחת. כל אחד אחר מקבל הזמנה בבקשות שלו. לקבוצה יש עד %(num)s אדם והוא מוצפן מקצה לקצה."
 msgstr[1] "אנשים שעוקבים אחריך, או מי אתה עוקב, נמצאים בבת אחת. כל אחד אחר מקבל הזמנה בבקשות שלו. לקבוצה יש עד %(num)s אנשים והיא מוצפנת מקצה לקצה."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "People you chat with don't see when you've read their messages or are typing, and you don't see theirs."
+msgstr "אנשים שאתם משוחחים איתם לא רואים כאשר אתם קוראים את ההודעות שלהם או מטיפים, ואתם לא רואים את שלהם."
+
+#, machine, plain2
+msgid "People you chat with see when you've read their messages and when you're typing."
+msgstr "אנשים שאתה משוחח איתם רואים כשאתה קורא את ההודעות שלהם ומתי אתה מקליד."
+
+#, glossary, machine, plain2
 msgid "People you follow liked"
 msgstr "אנשים שאתה עוקב אחריהם אהבו"
 
@@ -12363,7 +12779,7 @@ msgstr "צילום או וידאו"
 msgid "Photography"
 msgstr "צילום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "word filter entry"
 msgid "Phrase"
 msgstr "ביטוי"
@@ -12376,7 +12792,7 @@ msgstr "פיזיקה"
 msgid "Pick a date and time."
 msgstr "בחרו תאריך וזמן."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "בחר תווית"
 
@@ -12420,12 +12836,16 @@ msgstr "בחרו את אחד מאורך מצב איטי."
 msgid "Pick who it is for"
 msgstr "בחרו מי זה"
 
+#, machine, plain2
+msgid "Picture"
+msgstr "תמונה"
+
 #, machine, plain1
 msgctxt "kind of story"
 msgid "Picture"
 msgstr "תמונה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Picture"
 msgstr "תמונה"
@@ -12471,11 +12891,11 @@ msgstr "תמונות מגיעות"
 msgid "Pictures, video and sound, nothing else."
 msgstr "תמונות, וידאו וסאונד, שום דבר אחר."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pin"
 msgstr "הצמד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Pin"
 msgstr "הצמד"
@@ -12499,20 +12919,20 @@ msgctxt "colour"
 msgid "Pink"
 msgstr "ורוד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading of pinned posts"
 msgid "Pinned"
 msgstr "מוצמדים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned comment"
 msgstr "תגובה מוצמדת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned posts"
 msgstr "פוסטים מוצמדים"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Pinned to +%(guild)s"
 msgstr "מוצמד ב-+%(guild)s"
 
@@ -12565,6 +12985,10 @@ msgid "Play with sound"
 msgstr "לשחק עם קול"
 
 #, machine, plain1
+msgid "Please choose one of the two answers."
+msgstr "נא לבחור אחת משתי התשובות."
+
+#, machine, plain1
 msgid "Please enter a better title"
 msgstr "אנא הכנס כותרת טובה יותר"
 
@@ -12579,6 +13003,10 @@ msgstr "אנא שימו לב ש- %(site)s לעולם לא יבקשו מכם את
 #, machine, plain1
 msgid "Please remove the following link(s) from your comment, and then you will be able to post it:"
 msgstr "אנא הסר את הקישור הבא (s) מהתגובה שלך, ולאחר מכן תוכל לפרסם אותו:"
+
+#, machine, plain1
+msgid "Please say how old you are."
+msgstr "בבקשה תגיד כמה אתה זקן."
 
 #, machine, plain1
 msgid "Please select a reason for flagging below."
@@ -12597,6 +13025,10 @@ msgid "Poetry"
 msgstr "שירה"
 
 #, machine, plain1
+msgid "Point your phone's camera at this. It runs out after two minutes."
+msgstr "מצא את המצלמה של הטלפון שלך על זה. זה נגמר אחרי שתי דקות."
+
+#, machine, plain1
 msgctxt "table heading"
 msgid "Points"
 msgstr "נקודות"
@@ -12605,11 +13037,11 @@ msgstr "נקודות"
 msgid "Political"
 msgstr "פוליטית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political Ideas & Debate"
 msgstr "רעיונות פוליטיים ודיון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political News"
 msgstr "חדשות פוליטיות"
 
@@ -12617,24 +13049,24 @@ msgstr "חדשות פוליטיות"
 msgid "Politics"
 msgstr "פוליטיקה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll"
 msgstr "סקר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Poll"
 msgstr "סקר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll (optional)"
 msgstr "סקר (אופציונלי)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll length"
 msgstr "משך הסקר"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Poll option %(number)s"
 msgstr "אפשרות סקר %(number)s"
 
@@ -12666,12 +13098,12 @@ msgstr "פופולרי באתר"
 msgid "Popular this week"
 msgstr "פופולרי השבוע"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "פרסם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Post"
 msgstr "פוסט"
@@ -12684,7 +13116,7 @@ msgstr "Post מידע"
 msgid "Post an update"
 msgstr "פוסט עדכון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "פרסם באופן אנונימי"
 
@@ -12722,15 +13154,15 @@ msgstr "ארכיון תגיות: Creator Studio %(site)s"
 msgid "Post on %(service)s"
 msgstr "הפוסט על %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post text"
 msgstr "טקסט הפוסט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post title"
 msgstr "כותרת הפוסט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post type"
 msgstr "סוג פוסט"
 
@@ -12771,11 +13203,11 @@ msgstr "פוסט"
 msgid "Posting cooldown"
 msgstr "עקבו אחרי Cooldown"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Posting to +%(guild)s"
 msgstr "פרסום ב-+%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "פרסום בפרופיל שלך"
 
@@ -12783,11 +13215,11 @@ msgstr "פרסום בפרופיל שלך"
 msgid "Postponed"
 msgstr "תגובה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts"
 msgstr "פוסטים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Posts"
 msgstr "פוסטים"
@@ -12906,7 +13338,7 @@ msgstr "פוסטים עם קטעי תגובה העמוסים ביותר השבו
 msgid "Posts you forward to a guild, and comments you forward into a new post, will show here."
 msgstr "הפוסטים שאתם מצפים לריצה, והערות שאתם מצפים להודעה חדשה, יופיעו כאן."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts you save will show up here."
 msgstr "פוסטים שתשמור יופיעו כאן."
 
@@ -12934,7 +13366,7 @@ msgstr "תחזיות"
 msgid "Pregnancy & Babies"
 msgstr "הריון ותינוקות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium"
 msgstr "Premium"
 
@@ -12942,7 +13374,7 @@ msgstr "Premium"
 msgid "Premium Settings - %(site)s"
 msgstr "Premium הגדרות - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium accounts"
 msgstr "חשבונות Premium"
 
@@ -12959,16 +13391,24 @@ msgstr "Premium עד %(date)s UTC."
 msgid "Premium until: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 msgstr "Premium עד: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Preserved copy"
+msgstr "עותק מוגן"
+
+#, machine, plain1, python-format
+msgid "Preserved copy - %(site)s"
+msgstr "עותק: %(site)s"
+
+#, glossary, machine, plain2
 msgid "Press"
 msgstr "עיתונות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Press"
 msgstr "עיתונות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "link to the page for journalists"
 msgid "Press"
 msgstr "עיתונות"
@@ -12977,11 +13417,15 @@ msgstr "עיתונות"
 msgid "Pressing play loads %(player)s, which can set cookies, see your address and record what you watch."
 msgstr "לחץ על עומסי משחק %(player)s, אשר יכול להגדיר עוגיות, לראות את הכתובת שלך להקליט את מה שאתה צופה."
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Pressing play loads %(player)s."
+msgstr "לחץ על עומסי משחק %(player)s."
+
+#, glossary, machine, plain2
 msgid "Prev"
 msgstr "הקודם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Prev"
 msgstr "הקודם"
@@ -13017,15 +13461,15 @@ msgctxt "button"
 msgid "Print"
 msgstr "הדפסה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy"
 msgstr "פרטיות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy Policy"
 msgstr "מדיניות פרטיות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy and cookie settings"
 msgstr "הגדרות פרטיות ועוגיות"
 
@@ -13033,7 +13477,7 @@ msgstr "הגדרות פרטיות ועוגיות"
 msgid "Privacy page"
 msgstr "דף פרטיות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Private"
 msgstr "פרטי"
@@ -13066,7 +13510,7 @@ msgstr "תוכן פרטי, גלוי כי אתה מתווך של + %(guild)s."
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "תוכן פרטי, גלוי כי אתה תורם מאושר ב + %(guild)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Private mode."
 msgstr "מצב פרטי."
 
@@ -13158,7 +13602,7 @@ msgstr "המוצר"
 msgid "Productivity"
 msgstr "Productivity"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Profile"
 msgstr "פרופיל"
 
@@ -13263,12 +13707,12 @@ msgstr "מוצג על ידי חשבון נמחק."
 msgid "Psychology"
 msgstr "פסיכולוגיה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Public"
 msgstr "ציבורי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Public"
 msgstr "ציבורי"
@@ -13348,7 +13792,7 @@ msgstr "רכישת ההיסטוריה"
 msgid "Purchase history"
 msgstr "רכישת ההיסטוריה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Purge"
 msgstr "מחק לצמיתות"
@@ -13383,6 +13827,29 @@ msgstr "פאזל"
 #, machine, plain1
 msgid "Q&A"
 msgstr "Q&A"
+
+#, machine, plain1
+msgid "QR code"
+msgstr "QR קודקוד"
+
+#, machine, plain1
+msgid "QR sign-in"
+msgstr "QR Sign-in"
+
+#, machine, plain1
+msgid "QR sign-in is off."
+msgstr "QR סימן-אין כבוי."
+
+#, machine, plain1
+msgid "QR sign-in is on."
+msgstr "QR Sign-in is On"
+
+#, machine, plain1, python-format
+msgid "QR sign-in was turned on for your %(site)s account"
+msgstr "QR Sign-in מופעל עבור שלך %(site)s חשבון"
+
+msgid "QR sign-in was turned on for your account. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr ""
 
 #, machine, plain1
 msgid "Quadrantids meteor shower"
@@ -13490,7 +13957,7 @@ msgstr "סיבה לדגל?"
 msgid "Reason:"
 msgstr "סיבה:"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Reason: %(reason)s"
 msgstr "סיבה: %(reason)s"
 
@@ -13524,6 +13991,10 @@ msgstr "הקלטה"
 msgid "Recordings"
 msgstr "הקלטות"
 
+#, machine, plain2
+msgid "Recovery code"
+msgstr "קוד התאוששות"
+
 #, machine, plain1
 msgid "Recruited 1 friend to join Ruqqus"
 msgstr "גייסו חבר אחד להצטרף ל-ROqqus"
@@ -13553,19 +14024,19 @@ msgstr "Redeem 1 מטבע לשבוע"
 msgid "Redirect URI"
 msgstr "Redirect URI"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region"
 msgstr "אזור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region not known yet"
 msgstr "האזור עדיין לא ידוע"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regional"
 msgstr "אזורי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regions"
 msgstr "אזורים"
 
@@ -13595,7 +14066,7 @@ msgstr "פרסום אוטומטי עבור @ %(name)s החשבון שלהם לא
 msgid "Rejected"
 msgstr "Rejected"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Rejected"
 msgstr "נדחה"
@@ -13628,7 +14099,7 @@ msgstr "מזכיר לי"
 msgid "Reminder set"
 msgstr "תגית: Set"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "הסר"
 
@@ -13653,7 +14124,7 @@ msgstr "הסר @ %(name)s"
 msgid "Remove an author"
 msgstr "להסיר מחבר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove bookmark"
 msgstr "הסר מהסימניות"
 
@@ -13663,7 +14134,7 @@ msgid_plural "Remove bookmark, %(num)s bookmarks"
 msgstr[0] "הסרת סימן ספר, %(num)s"
 msgstr[1] "הסרת סימן ספר, %(num)s סימניות"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove from +%(guild)s"
 msgstr "הסר מ-+%(guild)s"
 
@@ -13680,11 +14151,11 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "הסרת Moderator"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "הסר אפשרות %(number)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove poll"
 msgstr "הסר סקר"
 
@@ -13716,7 +14187,7 @@ msgstr "להסיר את %(domain)s קישור מהפוסט שלך ולנסות �
 msgid "Remove the %(domain)s link from your post and try again. %(reason)s"
 msgstr "להסיר את %(domain)s קישור מהפוסט שלך ולנסות שוב. %(reason)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove the filter: %(filter)s"
 msgstr "הסר את המסנן: %(filter)s"
 
@@ -13724,7 +14195,7 @@ msgstr "הסר את המסנן: %(filter)s"
 msgid "Remove the following link and try again: `%(link)s`. Reason: %(reason)s"
 msgstr "להסיר את הקישור הבא ולנסות שוב: `%(link)s`סיבה: %(reason)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove the image"
 msgstr "הסר את התמונה"
 
@@ -13740,7 +14211,7 @@ msgstr "להסיר את ההודעה"
 msgid "Remove the server"
 msgstr "להסיר את השרת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove this topic"
 msgstr "הסר נושא זה"
 
@@ -13749,7 +14220,7 @@ msgctxt "diff line"
 msgid "Removed"
 msgstr "הסרת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by administrators"
 msgstr "הוסר על ידי מנהלי המערכת"
 
@@ -13757,7 +14228,7 @@ msgstr "הוסר על ידי מנהלי המערכת"
 msgid "Removed by admins"
 msgstr "מסירים על ידי admins"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by guildmasters"
 msgstr "הוסר על ידי מנהלי הגילדה"
 
@@ -13802,7 +14273,7 @@ msgstr "חידוש אוטומטי מהמטבעות שלי כאשר שבוע יו
 msgid "Renews every 30 days from your coins at this price until you cancel. Cancelling keeps your access until the day you paid to. No refunds."
 msgstr "כל 30 יום מהמטבעות שלך במחיר הזה עד שתבוטל. ביטול הגישה שלך עד היום שבו שילמת. אין החזרים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Rep"
 msgstr "מוניט'"
 
@@ -13810,13 +14281,13 @@ msgstr "מוניט'"
 msgid "Replay of this Space"
 msgstr "Replay of This Space"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Report"
 msgstr "דווח"
 
 #. the account's @name, filled in by the page
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report %(name)s"
 msgstr "דיווח על %(name)s"
 
@@ -13830,19 +14301,19 @@ msgstr "דיווח %(name)sתגובה"
 msgid "Report %(name)s's post"
 msgstr "דיווח %(name)sפוסט"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report @%(name)s"
 msgstr "דיווח על @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report Bugs"
 msgstr "דיווח על באגים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "דווח על תגובה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "דווח על פוסט"
 
@@ -13854,7 +14325,7 @@ msgstr "דיווח: %(site)s"
 msgid "Reported messages"
 msgstr "הודעות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Reports"
 msgstr "דיווחים"
@@ -13867,12 +14338,12 @@ msgstr "דוחות עליהם"
 msgid "Reports opened"
 msgstr "דוחות נפתחו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Repost"
 msgstr "פרסום מחדש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Repost"
 msgstr "פרסם מחדש"
@@ -13881,7 +14352,7 @@ msgstr "פרסם מחדש"
 msgid "Repost removed."
 msgstr "Repost הוסר."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposted"
 msgstr "פורסם מחדש"
 
@@ -13889,7 +14360,7 @@ msgstr "פורסם מחדש"
 msgid "Reposted to your profile."
 msgstr "נשלח לפרופיל שלך."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposts"
 msgstr "פרסומים מחדש"
 
@@ -13905,7 +14376,7 @@ msgstr "סליחות & Amphibians"
 msgid "Request API Key"
 msgstr "בקשה API מפתח מפתח"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Requests"
 msgstr "בקשות"
 
@@ -13917,7 +14388,7 @@ msgstr "נדרש תווית"
 msgid "Reroll Secret"
 msgstr "עקבו אחרי Secret"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: go back to the saved default filters"
 msgid "Reset"
 msgstr "איפוס"
@@ -13934,7 +14405,7 @@ msgstr "איפוס הסיסמה שלך"
 msgid "Reset password"
 msgstr "איפוס סיסמה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reset to my default"
 msgstr "איפוס לברירת המחדל שלי"
 
@@ -13954,11 +14425,15 @@ msgstr "צמצם את ההזנה שלך?"
 msgid "Reset your password."
 msgstr "איפוס הסיסמה שלך."
 
+#, machine, plain2
+msgid "Resetting your password signs chat out on all your devices, chat apps included. Your chat key stays locked with your old password, so to keep your chat history you'll need your chat recovery code, or a browser where you've used chat."
+msgstr "איפוס הסיסמה שלך ניתוק צ'אט על כל המכשירים שלך, יישומי צ'אט הכלולים. מפתח הצ'אט שלך נשאר נעול עם הסיסמה הישנה שלך, כדי לשמור על ההיסטוריה של הצ'אט שלך תצטרך את קוד שחזור הצ'אט שלך, או דפדפן שבו השתמשת בצ'אט."
+
 #, machine, plain1
 msgid "Resign"
 msgstr "חתימה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Resources"
 msgstr "משאבים"
 
@@ -13975,7 +14450,7 @@ msgstr "דיווח על נושא אבטחה"
 msgid "Restaurants"
 msgstr "מסעדות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restore"
 msgstr "שחזר"
 
@@ -14008,7 +14483,7 @@ msgstr "צפייה ממושכת, קידום ותגובה ב- + %(guild)s לחב�
 msgid "Restricted Forwarding"
 msgstr "הרחבה מוגבלת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restricted forwarding mode."
 msgstr "מצב העברה מוגבל."
 
@@ -14056,7 +14531,7 @@ msgstr "Revision %(number)s"
 msgid "Revision %(number)s, published %(age)s."
 msgstr "Revision %(number)s , שפורסם %(age)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Revisions"
 msgstr "גרסאות"
 
@@ -14130,7 +14605,7 @@ msgstr "משחק Unassign"
 msgid "Role-Playing Games"
 msgstr "משחקי תפקידים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Roles"
 msgstr "תפקידים"
 
@@ -14150,7 +14625,11 @@ msgstr "ראש הממשלה Hashanah"
 msgid "Rugby"
 msgstr "רוגבי"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Rule"
+msgstr "חוק"
+
+#, glossary, machine, plain2
 msgid "Rules"
 msgstr "כללים"
 
@@ -14196,11 +14675,15 @@ msgid "Saharan Belt"
 msgstr "סהרה Belt"
 
 #, machine, plain1
+msgid "Sanctions"
+msgstr "סנקציות"
+
+#, machine, plain1
 msgctxt "weekday"
 msgid "Sat"
 msgstr "Sat"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "שמור"
 
@@ -14231,7 +14714,7 @@ msgstr "שינויים"
 msgid "Save Display Name"
 msgstr "Save Display Name"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save Edit"
 msgstr "שמור שינויים"
 
@@ -14243,7 +14726,7 @@ msgstr "להציל אלגוריתם"
 msgid "Save as a draft"
 msgstr "שמור כמו טיוטה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save as my default"
 msgstr "שמור כברירת המחדל שלי"
 
@@ -14259,11 +14742,11 @@ msgstr "שינויים"
 msgid "Save description"
 msgstr "שמור תיאור"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save draft"
 msgstr "שמור טיוטה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save for later"
 msgstr "שמור לאחר כך"
 
@@ -14295,11 +14778,11 @@ msgstr "הצילו את זה עכשיו. הם מוצגים <strong>פעם אחת
 msgid "Save word filter"
 msgstr "שמור מילה filter"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "נשמר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved as your default"
 msgstr "נשמר כברירת המחדל שלך"
 
@@ -14315,7 +14798,7 @@ msgstr "הצילו. אנשים רואים את זה לפני שהם מנויים
 msgid "Saved. Your lists are shown as you chose."
 msgstr "הצילו. הרשימות שלך מוצגות כפי שבחרת."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "שומר"
 
@@ -14327,6 +14810,10 @@ msgstr "תגידו מה לא בסדר עם החשבון הזה."
 msgid "Say what the bot will post and where it comes from (at least 10 characters)."
 msgstr "אמור מה הבוט יכתוב והיכן הוא מגיע (לפחות 10 תווים)."
 
+#, machine, plain2
+msgid "Say who it's from"
+msgstr "תגידו מי זה"
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "לסרוק את הברקוד הזה (או להיכנס לקוד) באמצעות יישום אימות של שני גורמים כגון Google Authenticator או Authy."
@@ -14335,7 +14822,7 @@ msgstr "לסרוק את הברקוד הזה (או להיכנס לקוד) באמ�
 msgid "Scandinavia"
 msgstr "סקנדינביה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Schedule"
 msgstr "תזמן"
@@ -14369,7 +14856,7 @@ msgstr "Sci-Fi"
 msgid "Science"
 msgstr "מדע"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Science News"
 msgstr "חדשות מדע"
 
@@ -14381,11 +14868,11 @@ msgstr "תוצאות"
 msgid "Sculpture"
 msgstr "פסלים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "חיפוש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Search"
 msgstr "חיפוש"
@@ -14398,11 +14885,11 @@ msgstr "חיפוש +%(guild)s עבור \"%(query)s\"- %(site)s"
 msgid "Search Tenor and press enter"
 msgstr "חיפוש חיפוש Tenor התקשורת נכנסת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search categories…"
 msgstr "חיפוש קטגוריות…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search chats and channels"
 msgstr "חיפוש צ'אטים וערוצים"
 
@@ -14422,7 +14909,7 @@ msgstr "חיפוש guilds"
 msgid "Search guilds to post to"
 msgstr "חיפוש גורים כדי לפרסם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search languages…"
 msgstr "חיפוש שפות…"
 
@@ -14438,19 +14925,19 @@ msgstr "חפש אנשים שאתה עוקב"
 msgid "Search people, or type an @handle"
 msgstr "חפש אנשים, או הקלד @handle"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Search posts in +%(guild)s"
 msgstr "חיפוש פוסטים ב-+%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search posts, +guilds, @users, #topics, &curations"
 msgstr "חיפוש פוסטים, +גילדות, @משתמשים, #נושאים, &אוספים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search regions…"
 msgstr "חיפוש אזורים…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search tips"
 msgstr "טיפים לחיפוש"
 
@@ -14458,7 +14945,7 @@ msgstr "טיפים לחיפוש"
 msgid "Secret Rerolled"
 msgstr "הסוד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Security"
 msgstr "אבטחה"
 
@@ -14484,7 +14971,7 @@ msgstr "ראה Premium"
 msgid "See all"
 msgstr "ראה הכל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See everything in All"
 msgstr "הצג הכל בפיד הכל"
 
@@ -14496,7 +14983,7 @@ msgstr "ראה הכל חי"
 msgid "See the current page"
 msgstr "ראה הדף הנוכחי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See the filtered words"
 msgstr "הצגת המילים המסוננות"
 
@@ -14524,6 +15011,10 @@ msgstr "ראה שם המשתמש שלך"
 msgid "See: %(choice)s"
 msgstr "תגית: %(choice)s"
 
+#, machine, plain2
+msgid "Seen and typing"
+msgstr "מראה וטיפוס"
+
 #, machine, plain1
 msgid "Select Category"
 msgstr "קטגוריה נבחרים"
@@ -14536,7 +15027,7 @@ msgstr "חבילה"
 msgid "Select a Category"
 msgstr "בחר קטגוריה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "בחר שיחה"
 
@@ -14569,7 +15060,7 @@ msgstr "שלח טיפ"
 msgid "Send feedback"
 msgstr "שלח משוב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Send in chat"
 msgstr "שליחה בצ'אט"
 
@@ -14581,12 +15072,12 @@ msgstr "שלח קישור"
 msgid "Send report"
 msgstr "שלח דיווח"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild with sensitive content"
 msgid "Sensitive"
 msgstr "רגיש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive Content"
 msgstr "תוכן רגיש"
 
@@ -14594,7 +15085,7 @@ msgstr "תוכן רגיש"
 msgid "Sensitive Content?"
 msgstr "תוכן רגיש?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "תוכן רגיש"
 
@@ -14660,11 +15151,11 @@ msgstr "תגובה רגישה"
 msgid "Setting not saved. Try again."
 msgstr "לא להציל. נסה שוב."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Settings"
 msgstr "הגדרות"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Settings - %(site)s"
 msgstr "הגדרות - %(site)s"
 
@@ -14688,12 +15179,12 @@ msgstr "מיני קטינים"
 msgid "Sexualizing minors is strictly prohibited."
 msgstr "מיני קטינים אסורה בהחלט."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Share"
 msgstr "שתף"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Share"
 msgstr "שתף"
@@ -14712,7 +15203,11 @@ msgstr "שתפו פוסט או סיפור עם חלק מהעיגולים שלכ�
 msgid "Share of the text"
 msgstr "שיתוף הטקסט"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Share screen"
+msgstr "שתף מסך"
+
+#, glossary, machine, plain2
 msgid "Share something"
 msgstr "שתף משהו"
 
@@ -14780,11 +15275,11 @@ msgstr[1] "הצג את כל %(num)s"
 msgid "Show as a table"
 msgstr "הצג כשולחן"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show every topic"
 msgstr "הצג את כל הנושאים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show fewer"
 msgstr "הצג פחות"
 
@@ -14800,11 +15295,11 @@ msgstr "הצג את זה בכל ולמען"
 msgid "Show its card in guilds"
 msgstr "הצג את הכרטיס ב guilds"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "הצג פחות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "הצג עוד"
 
@@ -14829,7 +15324,7 @@ msgstr[0] "הצג %(shown)s תוצאה %(num)s"
 msgstr[1] "הצג %(shown)s %(num)s תוצאות"
 
 #. the kinds of post the feed is narrowed to, e.g. "Showing Polls, Videos."
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing <strong>%(types)s</strong>."
 msgstr "מוצגים: <strong>%(types)s</strong>."
 
@@ -14837,11 +15332,11 @@ msgstr "מוצגים: <strong>%(types)s</strong>."
 msgid "Showing posts detected as <strong>%(languages)s</strong>."
 msgstr "הצגת פוסטים שזוהו כ <strong>%(languages)s</strong>."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts from <strong>%(regions)s</strong>."
 msgstr "מוצגים פוסטים מ-<strong>%(regions)s</strong>."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts in <strong>%(categories)s</strong>."
 msgstr "מוצגים פוסטים ב-<strong>%(categories)s</strong>."
 
@@ -14879,7 +15374,7 @@ msgstr "הצג מתחת לביו. האזור שלך (%(region)s) מוצג לצד
 msgid "Shows posts of any type you tick."
 msgstr "הצג פוסטים מכל סוג שאתה מתקתק."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Side panel"
 msgstr "חלונית צד"
 
@@ -14887,17 +15382,34 @@ msgstr "חלונית צד"
 msgid "Siege against +%(guild)s Failed"
 msgstr "תביעה נגד + %(guild)s נכשל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign In"
 msgstr "התחברות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign Up"
 msgstr "הרשמה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in"
 msgstr "התחברות"
+
+#. %(name)s is the account's @handle. The script puts it in, as text
+#, machine, plain1, python-format
+msgid "Sign in as %(name)s?"
+msgstr "היכנס כ- %(name)s?"
+
+#, machine, plain1
+msgid "Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in."
+msgstr "היכנס במחשב על ידי סריקת קוד עם טלפון שכבר נחתם. הטלפון מבקש את הקוד הדו-מנועי שלך, או את הסיסמה שלך אם אתה לא משתמש בשני-ספק, לפני שהוא מאפשר למחשב להיכנס."
+
+#, machine, plain1
+msgid "Sign in on another screen?"
+msgstr "לחתום על מסך אחר?"
+
+#, machine, plain1
+msgid "Sign in on this phone first, then scan a new code."
+msgstr "היכנס בטלפון הראשון, ולאחר מכן לסרוק קוד חדש."
 
 #, machine, plain1, python-format
 msgid "Sign in to %(site)s"
@@ -14931,7 +15443,7 @@ msgstr "לחתום על בוט."
 msgid "Sign in to chat in +%(guild)s's channels."
 msgstr "עקבו אחרי +%(guild)sערוצים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to downvote"
 msgstr "התחבר כדי להצביע נגד"
 
@@ -14955,11 +15467,19 @@ msgstr "היכנס לקריאה"
 msgid "Sign in to see them here."
 msgstr "היכנסו לראות אותם כאן."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to upvote"
 msgstr "התחבר כדי להצביע בעד"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Sign in with a QR code"
+msgstr "היכנס עם QR קודקוד"
+
+#, machine, plain1, python-format
+msgid "Sign in with a QR code - %(site)s"
+msgstr "היכנס עם QR קוד - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Sign up"
 msgstr "הרשמה"
 
@@ -14978,6 +15498,14 @@ msgstr "הירשם עכשיו! %(site)s היא פלטפורמה קוד פתוח 
 #, machine, plain1
 msgid "Sign-in emails are off."
 msgstr "הודעות דוא\"ל של Sign-in כבויות."
+
+#, machine, plain1, python-format
+msgid "Signed in here as @%(name)s"
+msgstr "חתום כאן כמו @ %(name)s"
+
+#, glossary, machine, plain2
+msgid "Signed out"
+msgstr "התנתקת"
 
 #, machine, plain1
 msgid "Signed-in viewers"
@@ -15003,7 +15531,7 @@ msgstr "גורים דומים"
 msgid "Simulation Games"
 msgstr "משחקי Simulation"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Since"
 msgstr "מתאריך"
@@ -15094,7 +15622,7 @@ msgstr "אנחנו לא הולכים להראות לך את הפרופיל של�
 msgid "Soccer"
 msgstr "כדורגל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Issues"
 msgstr "סוגיות חברתיות"
 
@@ -15102,7 +15630,7 @@ msgstr "סוגיות חברתיות"
 msgid "Social Media"
 msgstr "Social Media"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Sciences"
 msgstr "מדעי החברה"
 
@@ -15124,7 +15652,7 @@ msgstr[1] "חלק מהחשבונות שומרים על פרטיות זו, אז %
 msgid "Some of my circles (end-to-end encrypted)"
 msgstr "חלק מהעיגולים שלי (סוף סוף מוצפנים)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Some posts are automated"
 msgstr "חלק מהפוסטים אוטומטיים"
 
@@ -15174,6 +15702,14 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "מישהו הציל את הדף הזה בזמן שאתה עורך. הטקסט שלך עדיין כאן: העתק אותו, לרחוץ את הדף כדי לראות את השינויים שלהם, ולהוסיף לך שוב."
 
+#, python-format
+msgid ""
+"Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
+"\n"
+"\n"
+"If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
+msgstr ""
+
 #, machine, plain1
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
 msgstr "מישהו שעוקב אחריך מקבל את ההודעה שלך בתיבת הדואר הנכנס שלהם; כל אחד אחר מקבל אותה כבקשה. צ'אטים הם מוצפנים מקצה לקצה."
@@ -15199,6 +15735,10 @@ msgid "Something went wrong while publishing. Please try again."
 msgstr "משהו השתבש בזמן פרסום. אנא נסה שוב."
 
 #, machine, plain1
+msgid "Something went wrong, so this code has stopped. Wait a moment and try a new one."
+msgstr "משהו השתבש, כך שהקוד הזה הפסיק. חכה רגע ונסה אחד חדש."
+
+#, machine, plain1
 msgid "Soon"
 msgstr "בקרוב"
 
@@ -15206,19 +15746,19 @@ msgstr "בקרוב"
 msgid "Sorry, I've been cursed and can't make you coffee right now."
 msgstr "אני מקוללת ולא יכולה להכין לך קפה עכשיו."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort By:"
 msgstr "מיון לפי:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort by"
 msgstr "מיון לפי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort comments"
 msgstr "מיון תגובות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort guilds"
 msgstr "מיון גילדות"
 
@@ -15226,7 +15766,7 @@ msgstr "מיון גילדות"
 msgid "Sound"
 msgstr "סאונד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Sound"
 msgstr "אודיו"
@@ -15239,16 +15779,16 @@ msgstr "צלילים"
 msgid "Southern Cone"
 msgstr "דרום קונ"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Space"
 msgstr "מרחב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "a live Space"
 msgid "Space"
 msgstr "מרחב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Space"
 msgstr "מרחב"
@@ -15263,7 +15803,7 @@ msgstr "הקלטות חלל"
 
 #. a group of post types in the Post type filter (live, upcoming and recorded
 #. Spaces)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Spaces"
 msgstr "מרחבים"
 
@@ -15321,7 +15861,7 @@ msgstr "קומדיה"
 msgid "Standard - hide extremely offensive language"
 msgstr "סטנדרט - מסתירה שפה פוגענית"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start a Space"
 msgstr "פתיחת מרחב"
 
@@ -15341,7 +15881,7 @@ msgstr "התחל מההתחלה"
 msgid "Start now"
 msgstr "התחל עכשיו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start one"
 msgstr "התחל אחד"
 
@@ -15399,7 +15939,7 @@ msgstr "צעדו כמחבר משותף של הפוסט הזה?"
 msgid "Stepping down"
 msgstr "מטה למטה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sticky post"
 msgstr "פוסט נעוץ"
 
@@ -15427,7 +15967,7 @@ msgstr "תפסיקו לפרסם באופן אוטומטי? החשבון שלך �
 msgid "Stopped after failing"
 msgstr "נעצר לאחר כישלון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Story"
 msgstr "סטורי"
@@ -15452,16 +15992,16 @@ msgstr "שירותי סטרימינג"
 msgid "Study Tips"
 msgstr "ללמוד טיפים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Submitter"
 msgstr "המפרסם"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Subscribe"
 msgstr "הירשם כמנוי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "calendar feed"
 msgid "Subscribe"
 msgstr "הירשם"
@@ -15490,7 +16030,7 @@ msgid_plural "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coins/mo
 msgstr[0] "Subscribe Subscribe<span class=\"profile-x-price\">&nbsp;מטבע אחד לחודש</span>"
 msgstr[1] "Subscribe Subscribe<span class=\"profile-x-price\">&nbsp;%(num)s מטבעות בחודש</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribed"
 msgstr "רשום כמנוי"
 
@@ -15498,15 +16038,15 @@ msgstr "רשום כמנוי"
 msgid "Subscribed · renews %(date)s"
 msgstr "חידושים %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscriber"
 msgstr "מנוי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribers"
 msgstr "מנויים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Subscribers"
 msgstr "מנויים"
@@ -15561,6 +16101,10 @@ msgstr "הצעות מהחשבונות שאתה עוקב אחריהם, הגמדי
 msgid "Summary"
 msgstr "סיכום"
 
+#, machine, plain1, python-format
+msgid "Summary: %(summary)s"
+msgstr "תגית: %(summary)s"
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Sun"
@@ -15574,7 +16118,7 @@ msgstr "גיבורי העל"
 msgid "Support"
 msgstr "תמיכה"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Support %(site)s"
 msgstr "תמיכה ב-%(site)s"
 
@@ -15615,8 +16159,12 @@ msgstr "עקבו אחרי wiki off"
 msgid "Switch the wiki off? Its pages are kept; only guildmasters see them until it is on again."
 msgstr "להחליף את הוויסקי? דפיו נשמרים, אך ורק משגיחים רואים אותם עד שהוא שוב."
 
+#, machine, plain2
+msgid "Switching two-factor on or off signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "החלפת שני ספקים או ניתוק צ'אט במכשירים האחרים שלך ובאפליקציות צ'אט, למעט הצ'אט שהדפדפן הזה השתמש מאז שחתמת כאן."
+
 #. the tab of notices from the site itself
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "notifications"
 msgid "System"
 msgstr "מערכת"
@@ -15647,7 +16195,7 @@ msgstr "לקחת את הזין המחוספס הזה מחוץ לשרת החיצ�
 msgid "Taking part"
 msgstr "לקחת חלק"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tap to play"
 msgstr "הקש להפעלה"
 
@@ -15660,11 +16208,11 @@ msgctxt "colour"
 msgid "Teal"
 msgstr "Teal"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech News"
 msgstr "חדשות טכנולוגיה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech Support"
 msgstr "תמיכה טכנית"
 
@@ -15692,11 +16240,11 @@ msgstr "ספר לנו למה אתה עוזב %(site)s(Optional)"
 msgid "Tennis"
 msgstr "טניס"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Terms"
 msgstr "תנאים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Terms"
 msgstr "תנאים"
@@ -15723,7 +16271,7 @@ msgctxt "kind of story"
 msgid "Text"
 msgstr "טקסט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post body"
 msgid "Text"
 msgstr "טקסט"
@@ -15743,7 +16291,7 @@ msgstr "ערוץ טקסט"
 msgid "Text posts"
 msgstr "הודעות טקסט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Text size"
 msgstr "גודל טקסט"
 
@@ -15872,6 +16420,10 @@ msgstr "הבוט הזה לא מאכיל את הערוץ הזה."
 msgid "That category isn't in this guild."
 msgstr "קטגוריה זו אינה מצויה בגור הזה."
 
+#, machine, plain2
+msgid "That chat was not found."
+msgstr "הצ'אט הזה לא נמצא."
+
 #, machine, plain1
 msgid "That circle isn't taking subscribers."
 msgstr "המעגל הזה לא לוקח מנויים."
@@ -15879,6 +16431,10 @@ msgstr "המעגל הזה לא לוקח מנויים."
 #, machine, plain1
 msgid "That circle isn't yours."
 msgstr "המעגל הזה הוא לא שלך."
+
+#, machine, plain1
+msgid "That code isn't right."
+msgstr "הקוד הזה לא נכון."
 
 #, machine, plain1
 msgid "That comment has been deleted."
@@ -15896,9 +16452,13 @@ msgstr "ניסיון החיבור הזה הסתיים. נסה שוב."
 msgid "That description is too long once formatted."
 msgstr "התיאור הזה ארוך מדי פעם."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "לא ניתן לחתום על המכשיר כרגע."
+msgstr "לא ניתן לנתק את המכשיר כרגע."
+
+#, machine, plain1
+msgid "That didn't go through. Wait a moment and try again."
+msgstr "זה לא עבר. חכה רגע ונסה שוב."
 
 #, machine, plain1
 msgid "That didn’t work."
@@ -15972,6 +16532,10 @@ msgstr "הקובץ הזה גדול מדי."
 msgid "That file is too big. The limit for audio files is %(size)s MB."
 msgstr "הקובץ הזה גדול מדי. הגבול לקבצי אודיו הוא %(size)s MB."
 
+#, machine, plain2, python-format
+msgid "That file is too big. The limit for files in chats is %(size)s MB."
+msgstr "הקובץ הזה גדול מדי. הגבול לקבצים בצ'אטים הוא %(size)s MB."
+
 #, machine, plain1, python-format
 msgid "That file is too big. The limit for image files is %(size)s MB."
 msgstr "הקובץ הזה גדול מדי. הגבול לקבצי תמונות הוא %(size)s MB."
@@ -16031,6 +16595,10 @@ msgid "That is another account's username, so it can't be your display name."
 msgstr "זהו שם המשתמש של חשבון אחר, כך שזה לא יכול להיות שם התצוגה שלך."
 
 #, machine, plain1
+msgid "That is how someone would try this on you. Press Not me unless you are sure."
+msgstr "ככה מישהו ינסה את זה עליך. Press לא אני אלא אם כן אתה בטוח."
+
+#, machine, plain1
 msgid "That is not a usable address."
 msgstr "זו לא כתובת ניתנת להשגה."
 
@@ -16067,8 +16635,16 @@ msgid "That isn't a valid username."
 msgstr "זה לא שם משתמש חוקי."
 
 #, machine, plain1
+msgid "That isn't right. Try again."
+msgstr "זה לא נכון. נסה שוב."
+
+#, machine, plain1
 msgid "That isn't something you can switch."
 msgstr "זה לא משהו שאתה יכול לעבור."
+
+#, machine, plain2
+msgid "That isn't your password."
+msgstr "זה לא הסיסמה שלך."
 
 #, machine, plain1
 msgid "That key couldn't be saved."
@@ -16102,6 +16678,10 @@ msgstr "המסר הזה לא ניתן לצטט."
 msgid "That message can't have a thread."
 msgstr "הודעה זו לא יכולה להיות חוט."
 
+#, machine, plain2
+msgid "That message isn't in this chat any more."
+msgstr "המסר הזה לא נמצא בצ'אט הזה יותר."
+
 #, machine, plain1
 msgid "That name is kept for the site's staff."
 msgstr "שם זה נשמר עבור צוות האתר."
@@ -16125,6 +16705,10 @@ msgstr "טופס איפוס סיסמה זה הסתיים."
 #, machine, plain1
 msgid "That password reset link has expired."
 msgstr "קישור איפוס סיסמה זה הסתיים."
+
+#, machine, plain2
+msgid "That picture can't be used here."
+msgstr "תמונה זו לא ניתן להשתמש כאן."
 
 #, machine, plain1
 msgid "That picture is already used somewhere else. Upload it again."
@@ -16182,9 +16766,17 @@ msgstr "קוד קידום זה הופך את ההזמנה הזאת בחינם, �
 msgid "That recording can no longer be used."
 msgstr "את ההקלטה כבר לא ניתן להשתמש."
 
+#, machine, plain2
+msgid "That report couldn't be read. Try again."
+msgstr "לא ניתן לקרוא את הדוח הזה. נסה שוב."
+
 #, machine, plain1
 msgid "That request was bad and you should feel bad."
 msgstr "הבקשה הייתה רעה, וצריך להרגיש רע."
+
+#, machine, plain1
+msgid "That request wasn't understood."
+msgstr "הבקשה הזאת לא הובנה."
 
 #, machine, plain1
 msgid "That server is not on the public internet."
@@ -16286,7 +16878,7 @@ msgstr "כותרות הטכנולוגיה של ה-BBC, מהציבור RSS להא
 msgid "The Child word filter hides sensitive content everywhere, so this is off."
 msgstr "מילת הילד המסנן מסתירה תוכן רגיש בכל מקום, כך שזה נגמר."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "The Platform"
 msgstr "הפלטפורמה"
 
@@ -16451,8 +17043,16 @@ msgid "The dates leave no days."
 msgstr "התאריכים לא יוצאים ימים."
 
 #, machine, plain1
+msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "ההחלטות שהתקבלו על זה, קודם כל: מי, מתי, איפה, מי שולט ומדוע. זה אף פעם לא מראה את הכותרת או את הטקסט של מה שהוסתר או הוסר."
+
+#, machine, plain1
 msgid "The draft has changes the post doesn't show yet."
 msgstr "הטיוטה משנה את הפוסט עדיין לא מופיעה."
+
+#, machine, plain1
+msgid "The earlier versions aren't shown while this is hidden."
+msgstr "הגרסאות הקודמות אינן מוצגות בזמן שזה חבוי."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -16806,6 +17406,10 @@ msgstr "ניתן לשנות את הסיכום בזמן שהמרחב חי."
 msgid "The text isn't shown: this was removed by the site's administrators."
 msgstr "הטקסט לא מוצג: זה הוסר על ידי מנהלי האתר."
 
+#, machine, plain1
+msgid "The text of this version was hidden by a site administrator."
+msgstr "הטקסט של גרסה זו הוסתר על ידי מנהל האתר."
+
 #, machine, plain1, python-format
 msgid "The time before links must be a whole number of days, 0 to %(max)s."
 msgstr "הזמן לפני הקישורים חייב להיות מספר שלם של ימים, 0 ל %(max)s."
@@ -16974,6 +17578,10 @@ msgstr "אין חשבון עם השם הזה."
 msgid "There's no invitation to speak."
 msgstr "אין הזמנה לדבר."
 
+#, machine, plain2
+msgid "There's no recovery code to keep yet."
+msgstr "עדיין אין קוד התאוששות."
+
 #, machine, plain1
 msgid "There's nothing here right now."
 msgstr "אין כאן שום דבר כרגע."
@@ -17018,9 +17626,9 @@ msgstr "הם כבר במעגל הזה."
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "הם לא אמרו. כל מי שאתה חוסם משאיר את המעגלים שלך."
 
-#, machine, plain1
-msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
-msgstr "הם חתמו בכל מקום. אם הם משתמשים בצ'אט, הם עשויים לבקש את קוד ההתאוששות שלהם."
+#, machine, plain2
+msgid "They are signed out everywhere, chat apps included. If they use chat, they may need their recovery code, or a browser where they've used chat, to read their old messages."
+msgstr "הם מנותקים בכל מקום, יישומי צ'אט הכלולים. אם הם משתמשים בצ'אט, הם עשויים לדרוש את קוד ההתאוששות שלהם, או דפדפן שבו הם השתמשו בצ'אט, כדי לקרוא את המסרים הישנים שלהם."
 
 #, machine, plain1, python-format
 msgid "They aren't in %(circle)s."
@@ -17197,6 +17805,10 @@ msgid "This account can't use chat apps."
 msgstr "חשבון זה לא יכול להשתמש באפליקציות צ'אט."
 
 #, machine, plain1, python-format
+msgid "This account has been marked 18 or over since %(date)s."
+msgstr "חשבון זה מונה 18 או יותר מאז %(date)s."
+
+#, machine, plain1, python-format
 msgid "This account has been permanently suspended from %(site)s."
 msgstr "חשבון זה הושעה לצמיתות מ- %(site)s."
 
@@ -17220,6 +17832,10 @@ msgstr "חשבון זה חייב כסף, אז עדיין לא ניתן למחו�
 msgid "This account posts about sensitive topics"
 msgstr "מאמר זה עוסק בנושאים רגישים"
 
+#, machine, plain2
+msgid "This also signs out chat everywhere else, chat apps included, except the chat this browser has used since you signed in here."
+msgstr "זה גם ניתוק צ'אט בכל מקום אחר, יישומי צ'אט הכלולים, למעט צ'אט דפדפן זה שימש מאז שחתמת כאן."
+
 #. %(time)s is a length of time, such as "6 months"
 #, machine, plain1, python-format
 msgid "This author hasn't been active for %(time)s, so isn't counted."
@@ -17240,6 +17856,14 @@ msgstr "הבוט הזה לא רץ."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "הבעלים של הרובוט הזה לא יכול לרוץ עכשיו."
+
+#, machine, plain2
+msgid "This browser was signed out. Sign in again to carry on."
+msgstr "הדפדפן הזה היה מנותק. היכנס שוב כדי להמשיך."
+
+#, machine, plain2
+msgid "This browser's notifications couldn't be turned on. Try again."
+msgstr "הודעות הדפדפן הזה לא יכולות להיות מופעלות. נסה שוב."
 
 #, machine, plain1, python-format
 msgid "This call is full (%(num)s person)."
@@ -17284,6 +17908,14 @@ msgid "This circle isn't taking subscribers."
 msgstr "מעגל זה לא לוקח מנויים."
 
 #, machine, plain1
+msgid "This code can't be used. Get a new one on the computer, or sign in there with your password."
+msgstr "לא ניתן להשתמש בקוד הזה. קבל חדש במחשב, או היכנס לשם עם הסיסמה שלך."
+
+#, machine, plain1
+msgid "This code has run out."
+msgstr "הקוד הזה נגמר."
+
+#, machine, plain1
 msgid "This comment and the comments under it"
 msgstr "תגובה זו וההערות שמתחתיו"
 
@@ -17324,6 +17956,10 @@ msgid "This content has already been posted"
 msgstr "תוכן זה כבר פורסם"
 
 #, machine, plain1
+msgid "This copy is no longer kept."
+msgstr "עותק זה כבר לא נשמר."
+
+#, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "זה יוצר פוסט חדש, עצמאי באותו גיל עם קולות והערות משלו. הכותרת נוצרה מהטקסט של ההערה. קישור חזרה להערה המקורית יופיע בפוסט החדש."
 
@@ -17354,6 +17990,10 @@ msgstr "הכללים של מזון מחוספס זה לקח זמן רב מדי �
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
 msgstr "זה מחק את החשבון והכל על זה. זה לא יכול להיות בלתי בודד. אתה יכול להוריד את הנתונים קודם."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "המכשיר הזה יתנתק בקרוב."
 
 #, machine, plain1
 msgid "This draft hasn't been published."
@@ -17407,9 +18047,17 @@ msgstr "זהו חלל: הדיון שלו נמצא בחלל. <a href=\"%(url)s\">
 msgid "This is a Space: its host and co-hosts post its updates from the Space."
 msgstr "זהו חלל: המארח והשותף שלו מפרסמים את העדכונים שלו מהחלל."
 
+#, machine, plain1, python-format
+msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
+msgstr "זהו יומן של פעולות מודולריות שבוצעו ב +%(guild)sאלה שכולם יכולים לקרוא הם גם באתר <a href=\"%(url)s\">Log Log</a>מה שהחברים מחקים את עצמם לא פורסם."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "זה כבר בשפה שלך."
+
+#, machine, plain2
+msgid "This is for chat on this site. A chat app you use outside it follows its own setting."
+msgstr "זה עבור צ'אט באתר זה. אפליקציית צ'אט שבה אתה משתמש בחוץ היא עוקבת אחר ההגדרה שלו."
 
 #, machine, plain1
 msgid "This is for the members of a Circle guild."
@@ -17483,6 +18131,10 @@ msgid "This page may not be embedded in other webpages."
 msgstr "דף זה לא יכול להיות מוטבע באתרי אינטרנט אחרים."
 
 #, machine, plain1
+msgid "This page was opened from a link, not by your camera."
+msgstr "דף זה נפתח מתוך קישור, לא באמצעות המצלמה."
+
+#, machine, plain1
 msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
 msgstr "זה לצמיתות מחק את טקסט התגובה. זה לא יכול להיות פגום, אפילו על ידי מנהל."
 
@@ -17493,6 +18145,10 @@ msgstr "זה לצמיתות מחק את כותרת הפוסט, הטקסט והק
 #, machine, plain1
 msgid "This person is blocking you."
 msgstr "האדם הזה חוסם אותך."
+
+#, machine, plain1
+msgid "This phone signed in with a QR code, so it can't approve another one. Enter your password here, then scan a new code."
+msgstr "הטלפון חתום ב- QR קוד, אז זה לא יכול לאשר עוד אחד. הזן את הסיסמה שלך כאן, ולאחר מכן לסרוק קוד חדש."
 
 #, machine, plain1
 msgid "This poll has ended."
@@ -17626,6 +18282,10 @@ msgid "This sign-in can't go on"
 msgstr "סימן זה אינו יכול להמשיך"
 
 #, machine, plain1
+msgid "This sign-in lasts 12 hours, and chat, coins, apps, following, who can see what you share and account settings ask for your password first."
+msgstr "סימן זה נמשך 12 שעות, וצ'אט, מטבעות, יישומים, לאחר מכן, אשר יכול לראות מה אתה משתף והגדרות חשבון לבקש את הסיסמה שלך קודם."
+
+#, machine, plain1
 msgid "This sign-in request didn't come from a chat app this site knows."
 msgstr "הבקשה הזו לא הגיעה מאפליקציית צ'אט שהאתר הזה יודע."
 
@@ -17675,6 +18335,10 @@ msgstr "אלה כבר הכללים."
 msgid "Those dates leave no days to search."
 msgstr "התאריכים לא משאירים ימים לחיפוש."
 
+#, machine, plain2
+msgid "Those keys couldn't be used."
+msgstr "את המפתחות לא ניתן להשתמש."
+
 #, machine, plain1
 msgid "Through the app"
 msgstr "באמצעות האפליקציה"
@@ -17697,7 +18361,7 @@ msgstr "לחצו על הקופסה כדי להסכים קודם לכללים."
 msgid "Ticks all its subcategories. Untick them to keep only the guilds filed under the category itself."
 msgstr "קטינים את כל subcategories. לא מומלץ לשמור רק את הגורים שהוגשו תחת הקטגוריה עצמה."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Time"
 msgstr "זמן"
 
@@ -17718,7 +18382,7 @@ msgstr "הזמנים נמצאים באזור הזמן שלך."
 msgid "Times the post's page was opened by someone other than you. A repeat from the same visitor within half an hour, robots and link previews are not counted. Views before this feature are not counted either."
 msgstr "דף הפוסט נפתח על ידי מישהו אחר ממך. חזרה מאותו מבקר בתוך חצי שעה, רובוטים ותצוגה מקדימה קישורים אינם נספרים. גם תצוגות לפני שתכונה זו לא נספרות."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Tip"
 msgstr "תן תשר"
@@ -17739,16 +18403,16 @@ msgid_plural "Tip, %(num)s coins tipped"
 msgstr[0] "טיפ: %(num)s מטבע"
 msgstr[1] "טיפ: %(num)s מטבעות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "coins received"
 msgid "Tips"
 msgstr "תשרים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Title"
 msgstr "כותרת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile title"
 msgid "Title"
 msgstr "תואר"
@@ -17838,7 +18502,7 @@ msgstr "עקבו אחרי Opt-Out"
 msgid "Toggle Privacy"
 msgstr "שמירה על פרטיות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Toggle navigation"
 msgstr "הצג/הסתר ניווט"
 
@@ -17858,7 +18522,7 @@ msgstr "יותר מדי זרמים חיים פתוחים. לסגור את הכר
 msgid "Too much spam!"
 msgstr "יותר מדי ספאם!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Top"
 msgstr "מובילים"
@@ -17880,7 +18544,7 @@ msgstr "Top %(share)s%% פוסטים על %(site)s על %(date)s"
 msgid "Topic"
 msgstr "נושא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Topics"
 msgstr "נושאים"
 
@@ -17919,6 +18583,10 @@ msgid "Translation isn't available right now. Try again in a little while."
 msgstr "התרגום אינו זמין כרגע. נסה שוב תוך זמן מה."
 
 #, machine, plain1
+msgid "Transparency and disclosure"
+msgstr "שקיפות וגילוי"
+
+#, machine, plain1
 msgid "Travel"
 msgstr "נסיעות"
 
@@ -17926,11 +18594,11 @@ msgstr "נסיעות"
 msgid "Travel Advice"
 msgstr "ייעוץ נסיעות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Trending"
 msgstr "טרנדים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Trending"
 msgstr "פופולרי עכשיו"
@@ -17953,6 +18621,10 @@ msgid "True Crime"
 msgstr "פשע אמיתי"
 
 #, machine, plain1
+msgid "Try again"
+msgstr "נסה שוב"
+
+#, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
 msgstr "Tue"
@@ -17965,6 +18637,22 @@ msgstr "Turanian Steppe"
 msgid "Turn it off"
 msgstr "סובבו אותו"
 
+#, machine, plain1
+msgid "Turn it off if you'll never use it: your password keeps working as it does now."
+msgstr "כבה אותו אם לעולם לא תשתמש בו: הסיסמה שלך תמשיך לעבוד כפי שהיא עושה עכשיו."
+
+#, machine, plain2
+msgid "Turn it on in Security"
+msgstr "סובבו אותו בביטחון"
+
+#, machine, plain1
+msgid "Turn off"
+msgstr "כבוי"
+
+#, machine, plain2
+msgid "Turn off Seen and typing"
+msgstr "הפוך את הצפייה והקליטה"
+
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
 msgstr "עקבו אחרי + %(guild)s"
@@ -17972,6 +18660,18 @@ msgstr "עקבו אחרי + %(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "עקבו אחרי @ %(name)s"
+
+#, machine, plain2
+msgid "Turn off notifications in this browser"
+msgstr "הפעל הודעות בדפדפן זה"
+
+#, machine, plain1
+msgid "Turn on"
+msgstr "Turn On"
+
+#, machine, plain2
+msgid "Turn on Seen and typing"
+msgstr "סובבו את המראה והטיפות"
 
 #, machine, plain1
 msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
@@ -17989,9 +18689,17 @@ msgstr "עקבו אחרי + %(guild)s"
 msgid "Turn on notifications from @%(name)s"
 msgstr "עקבו אחרי @ %(name)s"
 
+#, machine, plain2
+msgid "Turn on notifications in this browser"
+msgstr "הפעל הודעות בדפדפן זה"
+
 #, machine, plain1
 msgid "Turn on two-factor authentication first."
 msgstr "הפעל תחילה אימות שני."
+
+#, machine, plain1
+msgid "Turning it back on needs your password, and we'll tell you it happened."
+msgstr "הפעל אותו בחזרה על הצרכים של הסיסמה שלך, ואנחנו נספר לך שזה קרה."
 
 #, machine, plain1
 msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
@@ -18017,17 +18725,29 @@ msgstr "2-Factor Authentication"
 msgid "Two-Factor Code"
 msgstr "קוד שני"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Two-factor authentication disabled. Your other devices have been signed out."
-msgstr "שתי אפשרויות אימות מוגבלות. המכשירים האחרים שלך חתמו."
+msgstr "שתי אפשרויות אימות מוגבלות. המכשירים האחרים שלך מנותקים."
 
 #, machine, plain1
 msgid "Two-factor authentication is already on. Turn it off first to set up a new device."
 msgstr "אימות שני כבר קיים. הרחיקו אותו ראשון כדי ליצור מכשיר חדש."
 
-#, machine, plain1
+#, machine, plain2
 msgid "Two-factor authentication is on. Your other devices have been signed out."
-msgstr "אימות שני הוא על המכשירים האחרים שלך חתמו."
+msgstr "אימות שני הוא על המכשירים האחרים שלך מנותקים."
+
+#, machine, plain1
+msgid "Two-factor code or backup code"
+msgstr "קוד שני או קוד גיבוי"
+
+#, machine, plain2
+msgid "Two-factor sign-in"
+msgstr "שני סימנים"
+
+#, machine, plain2
+msgid "Two-factor sign-in keeps someone who learns your password out of your account, and so out of your chats."
+msgstr "שתי נקודות זכות שומרות על מישהו לומד את הסיסמה שלך מתוך החשבון שלך, וכן הלאה מהצ'אטים שלך."
 
 #, machine, plain1
 msgid "Two-step login"
@@ -18053,7 +18773,7 @@ msgstr "סוג של %(name)s"
 msgid "Unable to copy data"
 msgstr "בלתי אפשרי להעתיק נתונים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unable to copy link"
 msgstr "לא ניתן להעתיק את הקישור"
 
@@ -18095,15 +18815,15 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "הודעה אחרונה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "בטל חסימה"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unblock @%(name)s"
 msgstr "בטל חסימה של @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock user"
 msgstr "בטל חסימת משתמש"
 
@@ -18127,11 +18847,11 @@ msgctxt "guildmaster action"
 msgid "Uncontrib user"
 msgstr "משתמש Uncontrib"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undistinguish"
 msgstr "הסר סימון רשמי"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "בטל"
 
@@ -18140,7 +18860,7 @@ msgctxt "guildmaster action"
 msgid "Unexile user"
 msgstr "משתמש Unexile"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Unfollow"
 msgstr "הפסק לעקוב"
@@ -18149,7 +18869,7 @@ msgstr "הפסק לעקוב"
 msgid "Unfollow @%(name)s"
 msgstr "עקבו אחרי @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unfollow post"
 msgstr "הפסק לעקוב אחר הפוסט"
 
@@ -18167,11 +18887,11 @@ msgctxt "guildmaster action"
 msgid "Unherald post"
 msgstr "הפוסט הקודם Unherald"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unhide"
 msgstr "בטל הסתרה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unhide"
 msgstr "בטל הסתרה"
@@ -18181,7 +18901,7 @@ msgctxt "guildmaster action"
 msgid "Unhide comment from guild"
 msgstr "תגובה מGuild"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unhide from +%(guild)s"
 msgstr "בטל הסתרה ב-+%(guild)s"
 
@@ -18235,11 +18955,11 @@ msgstr "Unlock all-gated"
 msgid "Unlock animated emojis with %(site)s Premium."
 msgstr "Unlock Animated emojis with %(site)s Premium."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmark Sensitive Content"
 msgstr "בטל סימון כתוכן רגיש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "בטל השתקה"
 
@@ -18256,19 +18976,19 @@ msgstr "המונחים:%(guild)s"
 msgid "Unmute @%(name)s"
 msgstr "המונחים:%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute guild"
 msgstr "בטל השתקת גילדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute user"
 msgstr "בטל השתקת משתמש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "בטל הצמדה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unpin"
 msgstr "בטל הצמדה"
@@ -18287,7 +19007,7 @@ msgstr "המונחים"
 msgid "Unpopular Opinions"
 msgstr "דעות לא פופולריות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unread"
 msgstr "לא נקראו"
 
@@ -18323,7 +19043,7 @@ msgctxt "button"
 msgid "Unsubscribe"
 msgstr "Unsubscribe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Until"
 msgstr "עד תאריך"
@@ -18427,7 +19147,7 @@ msgstr "תמונה Upload"
 msgid "Upvote"
 msgstr "Upvote"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Upvote"
 msgstr "הצבע בעד"
@@ -18436,11 +19156,11 @@ msgstr "הצבע בעד"
 msgid "Upvoted"
 msgstr "Upvoted"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes"
 msgstr "הצבעות בעד"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Upvotes"
 msgstr "הצבעות בעד"
@@ -18457,7 +19177,7 @@ msgstr "למעלה, צבעוני על ידי כמה היו"
 msgid "Upvotes, comments and bookmarks per day"
 msgstr "הערות והערות ליום"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes:"
 msgstr "הצבעות בעד:"
 
@@ -18491,6 +19211,10 @@ msgid "Use a new line for each filter entry. Limit of 1000 characters."
 msgstr "השתמש קו חדש עבור כל רישום מסנן. הגבלת 1000 תווים."
 
 #, machine, plain1
+msgid "Use your password"
+msgstr "השתמש בסיסמה שלך"
+
+#, machine, plain1
 msgid "User"
 msgstr "המשתמש משתמש"
 
@@ -18510,7 +19234,7 @@ msgstr "המשתמש הוגלה להערה זו."
 msgid "User was exiled from +%(guild)s for this post."
 msgstr "המשתמש הוגלה מ- + %(guild)s עבור הפוסט הזה."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username"
 msgstr "שם משתמש"
 
@@ -18536,7 +19260,7 @@ msgid_plural "Username changes cost 20 Coins. You only have a balance of %(num)s
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username or Email Address"
 msgstr "שם משתמש או כתובת אימייל"
 
@@ -18659,7 +19383,7 @@ msgctxt "kind of story"
 msgid "Video"
 msgstr "וידאו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Video"
 msgstr "סרטון"
@@ -18672,7 +19396,7 @@ msgstr "וידאו אודיו"
 msgid "Video call - %(site)s"
 msgstr "וידאו: %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Video from %(domain)s"
 msgstr "סרטון מ-%(domain)s"
 
@@ -18734,11 +19458,11 @@ msgstr "וידאו באתר זה מגיע YouTube אתרים אחרים. משח�
 msgid "View %(site)s as you, including private or restricted content"
 msgstr "View View %(site)s כמו שאתה, כולל תוכן פרטי או מוגבל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View all"
 msgstr "הצג הכל"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View anyway"
 msgstr "הצג בכל זאת"
 
@@ -18746,7 +19470,7 @@ msgstr "הצג בכל זאת"
 msgid "View comment"
 msgstr "תגובה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View entire discussion"
 msgstr "הצג את כל הדיון"
 
@@ -18758,7 +19482,7 @@ msgstr "תגית: Moderation record"
 msgid "View on %(service)s"
 msgstr "מבט על %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "הצג מקור"
 
@@ -18873,9 +19597,13 @@ msgid "Waiting for an admin. You will get a notification when they decide; until
 msgstr "מחכה למנהל. תקבל הודעה כאשר הם מחליטים; עד אז פרופיל הבוט גלוי לך ולמנהלים בלבד."
 
 #. the state of a bot account, shown as a badge on its page.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Waiting for approval"
 msgstr "ממתין לאישור"
+
+#, machine, plain1
+msgid "Wasn't you?"
+msgstr "נכון?"
 
 #, machine, plain1
 msgctxt "button"
@@ -18937,7 +19665,7 @@ msgstr ""
 msgid "Web Development"
 msgstr "פיתוח אינטרנט"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Website"
 msgstr "אתר אינטרנט"
 
@@ -18950,7 +19678,7 @@ msgstr "Wed"
 msgid "Weddings"
 msgstr "חתונות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Week"
 msgstr "שבוע"
@@ -18959,7 +19687,7 @@ msgstr "שבוע"
 msgid "Weekend plans"
 msgstr "סוף שבוע תוכניות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Welcome back."
 msgstr "ברוכים השבים."
 
@@ -19002,6 +19730,14 @@ msgid "What do you want to say?"
 msgstr "מה אתה רוצה להגיד?"
 
 #, machine, plain1
+msgid "What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "אילו מחוקקים ואתר החליטו לראשונה: מי, מתי, איפה, מי שולט ומדוע. זה אף פעם לא מראה את הכותרת או את הטקסט של מה שהוסתר או הוסר."
+
+#, machine, plain1
+msgid "What guildmasters and the site decided: hides, removals, exiles and bans, with the rule and the reason."
+msgstr "אילו משגיחים והמקום החליטו: מסתתרים, סילוקים, גלות ואיסור, עם הכלל והסיבה."
+
+#, machine, plain1
 msgid "What is it about?"
 msgstr "מה זה על?"
 
@@ -19012,6 +19748,10 @@ msgstr "מה זה?"
 #, machine, plain1
 msgid "What is wrong with this account? For example spam, impersonation, harassment or ban evasion. To report one post or comment, use its own menu."
 msgstr "מה רע עם החשבון הזה? לדוגמה ספאם, התחזות, הטרדה או איסור על התמדה. כדי לדווח על פוסט או תגובה אחת, השתמש בתפריט שלו."
+
+#, machine, plain1
+msgid "What it could already read comes back once it is unlocked."
+msgstr "מה שהוא כבר יכול לקרוא חוזר ברגע שהוא נפתח."
 
 #, machine, plain1
 msgid "What it does now"
@@ -19030,6 +19770,10 @@ msgid "What kind of Space?"
 msgstr "איזה סוג של חלל?"
 
 #, machine, plain1
+msgid "What members delete themselves is not published here."
+msgstr "מה שמבדיל את עצמם לא פורסם כאן."
+
+#, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
 msgstr "על מה אנשים מדברים, על מה יש עכשיו ומה עולה, במקום אחד."
 
@@ -19045,7 +19789,7 @@ msgstr "מה שעשו המשתנים"
 msgid "What to say"
 msgstr "מה לומר"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "What to search"
 msgstr "מה לחפש"
 
@@ -19115,7 +19859,7 @@ msgstr "מאיפה הפוסטים באים"
 msgid "Where this account is based, from where it uses %(site)s"
 msgstr "איפה החשבון הזה מבוסס, מאיפה הוא משתמש %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Where to post"
 msgstr "היכן לפרסם"
 
@@ -19155,11 +19899,11 @@ msgstr "אילו פוסטים"
 msgid "White Hat"
 msgstr "כובע לבן"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment"
 msgstr "מי יכול להגיב"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment?"
 msgstr "מי יכול להגיב?"
 
@@ -19179,7 +19923,7 @@ msgstr "מי יכול להצטרף"
 msgid "Who can read"
 msgstr "מי יכול לקרוא"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this"
 msgstr "מי יכול לראות את זה"
 
@@ -19199,11 +19943,11 @@ msgstr "מי יכול לראות את הפוסט הזה"
 msgid "Who can see this post?"
 msgstr "מי יכול לראות את הפוסט הזה?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this:"
 msgstr "מי יכול לראות את זה:"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this?"
 msgstr "מי יכול לראות את זה?"
 
@@ -19235,7 +19979,7 @@ msgstr "מי עוקב אחריך"
 msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
 msgstr "מי דיווח אותם, ומה שהם כתבו, לא מוצג לאף אחד מלבד המנהלים."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who subscribes to your Circle"
 msgstr "מי מנוי למעגל שלך"
 
@@ -19257,13 +20001,17 @@ msgstr "מי לעקוב - %(site)s"
 msgid "Who wrote it"
 msgstr "מי כתב אותו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who wrote what"
 msgstr "מי כתב מה"
 
 #, machine, plain1
 msgid "Who you follow"
 msgstr "מי אתה עוקב"
+
+#, machine, plain1
+msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
+msgstr "מי שהתחיל את זה דיווח שהדפדפן והמקם את עצמם, אז הם לא מוכיחים דבר."
 
 #, machine, plain1
 msgid "Wholesome"
@@ -19274,7 +20022,7 @@ msgid "Whoops!"
 msgstr "מיפס!"
 
 #. the reason an admin pauses a bot
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "למה"
 
@@ -19292,7 +20040,7 @@ msgid "Why not (they are told)"
 msgstr "למה לא (אומרים)"
 
 #. the guild's wiki is switched off
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Wiki"
 msgstr "ויקי"
 
@@ -19334,7 +20082,7 @@ msgid "Wildlife"
 msgstr "חיות בר"
 
 #. posts with a link, a picture, a video... (the ticks below)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "With"
 msgstr "עם"
@@ -19371,7 +20119,7 @@ msgstr "עם צליל"
 msgid "With a video"
 msgstr "עם וידאו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "With textarea"
 msgstr "תיבת טקסט"
 
@@ -19426,6 +20174,10 @@ msgid "Without a video"
 msgstr "ללא וידאו"
 
 #, machine, plain1, python-format
+msgid "Without it, this sign-in ends on %(when)s."
+msgstr "ללא זה, סימן זה מסתיים על %(when)s."
+
+#, machine, plain1, python-format
 msgid "Won't renew, access ends %(date)s"
 msgstr "לא לחדש, נקודות גישה %(date)s"
 
@@ -19437,7 +20189,7 @@ msgstr "עבודות עץ"
 msgid "Word filter"
 msgstr "Word filter"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Words"
 msgstr "מילים"
 
@@ -19613,7 +20365,7 @@ msgstr "כתוב \"טיוט לא ראוי\" ביחד?"
 msgid "Write: %(choice)s"
 msgstr "תגית: %(choice)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Written together"
 msgstr "נכתב במשותף"
 
@@ -19626,7 +20378,7 @@ msgstr "יאנק פוסט"
 msgid "Year"
 msgstr "שנה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Year"
 msgstr "שנה"
@@ -19644,6 +20396,10 @@ msgstr "צהוב"
 msgctxt "vote"
 msgid "Yes"
 msgstr "כן"
+
+#, machine, plain1
+msgid "Yes, sign in on that screen"
+msgstr "כן, היכנס על המסך"
 
 #, machine, plain1
 msgid "Yoga"
@@ -19743,7 +20499,7 @@ msgstr "אתה כבר רשום."
 msgid "You are already the author."
 msgstr "אתה כבר המחבר."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "חסמת את @%(name)s"
 
@@ -19834,6 +20590,10 @@ msgstr "ניתן לשנות זאת בכל עת בהגדרות."
 #, machine, plain1
 msgid "You can change this for each video when you add it. Videos are uploaded as not made for kids."
 msgstr "אתה יכול לשנות את זה עבור כל וידאו כאשר אתה מוסיף אותו. הסרטונים מועלים כמו לא לילדים."
+
+#, machine, plain2
+msgid "You can change this once they've accepted your message request."
+msgstr "אתה יכול לשנות את זה ברגע שהם קיבלו את בקשת ההודעה שלך."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20042,6 +20802,10 @@ msgstr "אתה לא יכול להתקשר בצ'אט הזה."
 #, machine, plain1
 msgid "You can't change perms on guildmasters above you."
 msgstr "אתה לא יכול לשנות perms על מודולים נפוחים מעליך."
+
+#, machine, plain1, python-format
+msgid "You can't change this answer yourself. If it's wrong, <a href=\"%(url)s\">contact us</a>: only an admin can change it."
+msgstr "אתה לא יכול לשנות את התשובה בעצמך. אם זה לא נכון, <a href=\"%(url)s\">צור איתנו קשר</a>רק מנהל יכול לשנות את זה."
 
 #, machine, plain1
 msgid "You can't comment on content from users that are blocking you."
@@ -20415,6 +21179,14 @@ msgstr "עדיין לא ביצעתם קודים גיבוי."
 msgid "You haven't posted anything in the last 28 days."
 msgstr "לא כתבת כלום ב-28 הימים האחרונים."
 
+#, machine, plain2
+msgid "You haven't said you kept your recovery code."
+msgstr "לא אמרת ששמרת את קוד ההתאוששות שלך."
+
+#, machine, plain1
+msgid "You haven't told us yet."
+msgstr "עדיין לא סיפרת לנו."
+
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
 msgstr "ייתכן שתוכל <a href=\"%(url)s\">תביעה</a> קהילה זו והופכת למכשול."
@@ -20435,7 +21207,7 @@ msgstr "אתה חייב להיות לפחות %(min)s יש לך חשבון אי�
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "יש לך כתובת דואר אלקטרוני מאומתת להעלות תמונות באמצעות Tor."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You muted @%(name)s"
 msgstr "השתקת את @%(name)s"
 
@@ -20491,6 +21263,30 @@ msgstr "אתה צריך לחכות קצת."
 msgid "You post timestamped updates as things happen; everyone comments under them."
 msgstr "אתה מפרסם עדכונים כפי שהדברים קורים; כולם מדברים עליהם."
 
+#, machine, plain2, python-format
+msgid "You said you kept your recovery code on %(date)s."
+msgstr "אמרת ששמרת על קוד ההתאוששות שלך %(date)s."
+
+#, machine, plain1
+msgid "You signed in with a QR code, so chat, coins, apps, following, who can see what you share, your account's name and its security settings ask for your password first."
+msgstr "אתה חתום עם QR קוד, אז צ'אט, מטבעות, יישומים, לאחר מכן, אשר יכול לראות מה אתה משתף, שם החשבון שלך ואת הגדרות האבטחה שלה לבקש את הסיסמה שלך קודם."
+
+#, machine, plain1
+msgid "You signed in with a QR code."
+msgstr "אתה חתום עם QR קוד."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to do this."
+msgstr "אתה חתום עם QR קוד. הזן את הסיסמה שלך כדי לעשות זאת."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to join a call."
+msgstr "אתה חתום עם QR קוד. הזן את הסיסמה שלך כדי להצטרף לקריאה."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to use this form."
+msgstr "אתה חתום עם QR קוד. הזן את הסיסמה שלך כדי להשתמש בצורה זו."
+
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "אמרת לך שאתה רוצה לשנות את %(site)s חשבון דואר אלקטרוני כדי לסיים את התהליך, אנא לאמת את כתובת הדואר האלקטרוני החדשה שלך:"
@@ -20539,7 +21335,7 @@ msgstr "אתה חוסם את המשתמש הזה, אבל אתה יכול לרא�
 msgid "You're blocking this user, but you can see this comment because you're an admin."
 msgstr "אתה חוסם משתמש זה, אבל אתה יכול לראות תגובה זו כי אתה מנהל."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You're blocking this user."
 msgstr "חסמת את המשתמש הזה."
 
@@ -20562,6 +21358,10 @@ msgid "You're invited to write a shared draft with others. [See the invitation](
 msgstr ""
 
 #, machine, plain1
+msgid "You're no longer signed in here. Sign in again to use chat."
+msgstr "אתה כבר לא חתום כאן. היכנס שוב לשימוש בצ'אט."
+
+#, machine, plain1
 msgid "You're not following any curations yet."
 msgstr "אתה עדיין לא עוקב אחרי כל מזון מחוספס."
 
@@ -20579,6 +21379,10 @@ msgid_plural "You're subscribed. It renews in 30 days for %(num)s coins unless y
 msgstr[0] ""
 msgstr[1] ""
 
+#, machine, plain2
+msgid "You're told of new messages and calls in your chats, never what a message says. Each group can be set to every message, calls only or nothing, in the group's people sheet."
+msgstr "אתם מספרים על הודעות חדשות ומתקשרים בצ'אטים שלכם, לעולם לא מה המסר אומר. כל קבוצה יכולה להיות מוגדרת לכל הודעה, קוראת רק או כלום, בגיליון האנשים של הקבוצה."
+
 #, machine, plain1
 msgid "You're writing very fast. Wait a moment."
 msgstr "אתה כותב מהר מאוד. חכה רגע."
@@ -20586,6 +21390,10 @@ msgstr "אתה כותב מהר מאוד. חכה רגע."
 #, machine, plain1
 msgid "You've added a lot of people to groups today. Try again tomorrow."
 msgstr "הוספת הרבה אנשים לקבוצות היום. נסה שוב מחר."
+
+#, machine, plain1
+msgid "You've already answered this. Only an admin can change your answer."
+msgstr "כבר ענית לזה. רק מנהל יכול לשנות את התשובה שלך."
 
 #, machine, plain1
 msgid "You've already reported this Space."
@@ -20617,9 +21425,17 @@ msgstr "הצטרף לערוצי קול הרבה בשעה האחרונה. נסה 
 msgid "You've sent a lot of feedback today. Try again tomorrow."
 msgstr "היום שלחו הרבה משוב. נסה שוב מחר."
 
+#, machine, plain2
+msgid "You've sent a lot of files today. Try again tomorrow."
+msgstr "היום שלחו הרבה קבצים. נסה שוב מחר."
+
 #, machine, plain1
 msgid "You've sent a lot of reports today. Try again tomorrow."
 msgstr "היום שלחו המון דוחות. נסה שוב מחר."
+
+#, machine, plain2
+msgid "You've sent a lot of reports. Try again later."
+msgstr "כתבת הרבה דוחות. נסה שוב מאוחר יותר."
 
 #, machine, plain1
 msgid "You've started a lot of calls in the last hour. Try again later."
@@ -20733,7 +21549,7 @@ msgstr "שלך RSS כתובת להאכיל"
 msgid "Your Subscribed Users"
 msgstr "משתמשים רשומים"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your account"
 msgstr "החשבון שלך"
 
@@ -20874,6 +21690,10 @@ msgstr "הפרסום האוטומטי של החשבון הפסיק לקרוא %(
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr ""
 
+#, machine, plain1
+msgid "Your age"
+msgstr "הגיל שלך"
+
 #, machine, plain1, python-format
 msgid "Your age was confirmed on %(date)s."
 msgstr "הגיל שלך אושר על %(date)s."
@@ -20881,6 +21701,10 @@ msgstr "הגיל שלך אושר על %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "התשובה שלך"
+
+#, machine, plain1
+msgid "Your apps"
+msgstr "היישומים שלך"
 
 #, machine, plain1
 msgid "Your backup codes"
@@ -20916,9 +21740,13 @@ msgstr ""
 msgid "Your bots"
 msgstr "הבוטנים שלך"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your channels"
 msgstr "הערוצים שלך"
+
+#, machine, plain1
+msgid "Your chat apps"
+msgstr "יישומי צ'אט שלך"
 
 #, machine, plain1
 msgid "Your chat devices"
@@ -20927,6 +21755,9 @@ msgstr "מכשירי הצ'אט שלך"
 #, machine, plain1
 msgid "Your chat devices can't be listed right now."
 msgstr "מכשירי הצ'אט שלך לא יכולים להיות רשומים כרגע."
+
+msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr ""
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -20944,13 +21775,17 @@ msgstr "הצ'אטים שלך לרוץ על מטריקס, תקן פתוח, על %
 msgid "Your child accounts will be deleted with yours."
 msgstr "חשבונות הילד שלך יימחקו עם שלך."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your circles"
 msgstr "המעגלים שלך"
 
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "המעגלים שלך - %(site)s"
+
+#, machine, plain1
+msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "התגובה שלך תילקח מהדפים של האתר. האתר שומר עותק פרטי למשך 90 יום, שרק אתם ומנהלי האתר יכולים לפתוח. זה לא יכול להיות בלתי בודד."
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -21017,11 +21852,11 @@ msgid "Your language"
 msgstr "שפה"
 
 #. the English uses "sign-ins" for every number
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
 msgid_plural "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
-msgstr[0] "הסימן האחרון שלך המקום הוא רק המדינה, יצא מהקשר. לא מזהים אחד? לשנות את הסיסמה שלך: זה מסמן כל מכשיר אחר."
-msgstr[1] "ה-%(num)s האחרון שלך המקום הוא רק המדינה, יצא מהקשר. לא מזהים אחד? לשנות את הסיסמה שלך: זה מסמן כל מכשיר אחר."
+msgstr[0] "הסימן האחרון שלך המקום הוא רק המדינה, יצא מהקשר. לא מזהים אחד? לשנות את הסיסמה שלך: זה לנתק כל מכשיר אחר."
+msgstr[1] "ה-%(num)s האחרון שלך המקום הוא רק המדינה, יצא מהקשר. לא מזהים אחד? לשנות את הסיסמה שלך: זה לנתק כל מכשיר אחר."
 
 #, machine, plain1
 msgid "Your media storage is no longer connected."
@@ -21063,9 +21898,9 @@ msgstr "המפתח החדש שלך העתק אותו עכשיו: הוא לא מ�
 msgid "Your original username will always stay reserved for you: <code>%(name)s</code>"
 msgstr "שם המשתמש המקורי שלך תמיד יישאר שמור לך: <code>%(name)s</code>"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your other devices have been signed out."
-msgstr "המכשירים האחרים שלך חתמו."
+msgstr "המכשירים האחרים שלך מנותקים."
 
 #, machine, plain1
 msgid "Your own circles"
@@ -21135,9 +21970,9 @@ msgstr "חשבון ההורה או האפוטרופוס שלך הושעה, כך 
 msgid "Your password"
 msgstr "הסיסמה שלך"
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your password has been changed. Your other devices have been signed out."
-msgstr "הסיסמה שלך השתנתה. המכשירים האחרים שלך חתמו."
+msgstr "הסיסמה שלך השתנתה. המכשירים האחרים שלך מנותקים."
 
 #, machine, plain1
 msgid "Your password meets the requirements."
@@ -21148,8 +21983,20 @@ msgid "Your payouts"
 msgstr "המשכורות שלך"
 
 #, machine, plain1
+msgid "Your phone approved this. Only continue if this is your account."
+msgstr "הטלפון שלך אישר את זה. רק המשך אם זה החשבון שלך."
+
+#, machine, plain1
+msgid "Your phone said no, so nobody was signed in."
+msgstr "הטלפון שלך אמר לא, אז אף אחד לא חתם."
+
+#, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "הפוסט שלך מופיע גם בפרופיל שלך. בוחרים גם לפרופיל שלי יש את הערותיו שם, ולהוסיף גלידות כדי לפרסם אותם ישר: כל גורש מקבל עותק משלו עם קולות והערות משלו."
+
+#, machine, plain1
+msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "הפוסט שלך יוריד את הפרופיל שלך, הזנות והגילים שלך. האתר שומר עותק פרטי למשך 90 יום, שרק אתם ומנהלי האתר יכולים לפתוח. זה לא יכול להיות בלתי בודד."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -21345,7 +22192,7 @@ msgstr ""
 msgid "[Privacy Policy](/help/privacy)"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[Removed by admin]"
 msgstr "[הוסר על ידי מנהל מערכת]"
 
@@ -21382,7 +22229,7 @@ msgstr ""
 msgid "[banned]"
 msgstr "[הופנה מהדף]"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[deleted account]"
 msgstr "[חשבון שנמחק]"
 
@@ -21402,6 +22249,11 @@ msgstr "[מחק]"
 msgid "[doc pending]"
 msgstr "[תיקון:"
 
+#. stands in a preserved copy's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[תמונה]"
+
 #, machine, plain1
 msgid "[removed by admin]"
 msgstr "(הופנה מהדף admin)"
@@ -21413,6 +22265,11 @@ msgstr "(הופנה מהדף admins)"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "(הופנה מהדף guild moderators)"
+
+#. stands in a preserved copy's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[צליל]"
 
 #, machine, plain1
 msgid "a day"
@@ -21447,7 +22304,7 @@ msgctxt "sort"
 msgid "activity"
 msgstr "פעילות"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "activity"
 msgstr "פעילות"
@@ -21517,6 +22374,16 @@ msgstr "avatar"
 msgid "ban evasion"
 msgstr "איסור"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "banned %(target)s"
+msgstr "אסורה %(target)s"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "banned the guild +%(guild)s"
+msgstr "איסור על gild +%(guild)s"
+
 #, machine, plain1
 msgctxt "story background"
 msgid "berry"
@@ -21529,7 +22396,7 @@ msgid "bots"
 msgstr "בוטים"
 
 #. the author's name, with their badges
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by %(author)s"
 msgstr "מאת %(author)s"
 
@@ -21550,7 +22417,7 @@ msgid "by <a href=\"/@%(name)s\">@%(name)s</a>"
 msgstr "על ידי <a href=\"/@%(name)s\">@%(name)s</a>"
 
 #. a curation that ranks posts with its own algorithm
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by @%(name)s"
 msgstr "מאת @%(name)s"
 
@@ -21639,6 +22506,10 @@ msgctxt "unit"
 msgid "coins"
 msgstr "מטבעות"
 
+#, glossary, machine, plain2
+msgid "comment"
+msgstr "תגובה"
+
 #, machine, plain1
 msgid "commercial promotion"
 msgstr "קידום מסחרי"
@@ -21668,6 +22539,11 @@ msgctxt "time filter"
 msgid "day"
 msgstr "יום"
 
+#. follows the author's name in the Log; %(target)s is a link to a comment
+#, machine, plain1, python-format
+msgid "deleted a %(target)s"
+msgstr "למחוק %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "deleted a channel"
@@ -21693,12 +22569,17 @@ msgstr "מחקה תפקיד"
 msgid "deleted a wiki page"
 msgstr "למחוק דף wiki"
 
+#. follows the author's name in the Log; %(target)s is a link to a post
+#, machine, plain1, python-format
+msgid "deleted post %(target)s"
+msgstr "פוסט נמחק %(target)s"
+
 #, machine, plain1
 msgctxt "sort"
 msgid "disputed"
 msgstr "מחלוקת"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "disputed"
 msgstr "שנוי במחלוקת"
@@ -21789,7 +22670,7 @@ msgid "forest"
 msgstr "יער"
 
 #. the title of the post it was forked from, a link
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "forked from %(post)s"
 msgstr "שוכפל מ-%(post)s"
 
@@ -21841,13 +22722,19 @@ msgstr "הדגישו את הפוסט %(target)s"
 msgid "hid a %(target)s from this guild"
 msgstr "הסתירו %(target)s מהגיל הזה"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain1, python-format
+msgid "hid a revision of %(target)s"
+msgstr "הסתיר תיקון של %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "hid post %(target)s from this guild"
 msgstr "פוסט נסתר %(target)s מהגיל הזה"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "hidden from +%(guild)s"
 msgstr "הוסתר מ-+%(guild)s"
 
@@ -21857,7 +22744,7 @@ msgid "hot"
 msgstr "חם"
 
 #. the guild page's current sort order, written in lowercase on its bar
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "hot"
 msgstr "חם"
@@ -21932,7 +22819,22 @@ msgstr "שמור כמשחק מחדש במחסן שלך; כולם אומרים ל
 msgid "kicked post %(target)s"
 msgstr "עקבו אחרי %(target)s"
 
-#, glossary, machine, plain1
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the ban on %(target)s"
+msgstr "הסרת האיסור על %(target)s"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "lifted the ban on the guild +%(guild)s"
+msgstr "הורד את האיסור על הגליד +%(guild)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the suspension of %(target)s"
+msgstr "הסרת ההשעיה של %(target)s"
+
+#, glossary, machine, plain2
 msgid "link preview"
 msgstr "תצוגה מקדימה של קישור"
 
@@ -21976,7 +22878,7 @@ msgctxt "time filter"
 msgid "month"
 msgstr "חודש"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "moved from <a href=\"%(url)s\">+%(guild)s</a>"
 msgstr "הועבר מ-<a href=\"%(url)s\">+%(guild)s</a>"
 
@@ -21998,7 +22900,7 @@ msgctxt "sort"
 msgid "new"
 msgstr "חדש"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "new"
 msgstr "חדש"
@@ -22027,7 +22929,7 @@ msgctxt "sort"
 msgid "old"
 msgstr "זקן"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "old"
 msgstr "ישן"
@@ -22036,11 +22938,11 @@ msgstr "ישן"
 msgid "only guildmasters write here"
 msgstr "רק מעצבי משנה כותבים כאן"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "outside server"
 msgstr "שרת חיצוני"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "own algorithm"
 msgstr "אלגוריתם משלו"
 
@@ -22093,7 +22995,7 @@ msgstr "הנחת הודעה בערוץ"
 msgid "pinned post %(target)s"
 msgstr "המונחים post %(target)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post image"
 msgstr "תמונת הפוסט"
 
@@ -22115,7 +23017,7 @@ msgstr "פורסם %(age)s @%(name)s +%(guild)s"
 msgid "posts made with AI"
 msgstr "פוסטים שנעשו עם AI"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild badge"
 msgid "private"
 msgstr "פרטית"
@@ -22165,6 +23067,11 @@ msgstr "הסרת %(target)s"
 msgid "removed a message by %(target)s from a channel"
 msgstr "הסרת הודעה על ידי %(target)s מתוך ערוץ"
 
+#. follows the moderator's name in the Log
+#, machine, plain1
+msgid "removed a revision of a guild's wiki"
+msgstr "הסרתו של ויקי"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22192,7 +23099,7 @@ msgstr "שם קטגוריה"
 msgid "renews %(date)s"
 msgstr "חידושים %(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "repost"
 msgstr "פרסום מחדש"
@@ -22212,7 +23119,7 @@ msgstr "שחזור דף wiki"
 msgid "see it"
 msgstr "ראה"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "sensitive content"
 msgstr "תוכן רגיש"
 
@@ -22272,6 +23179,11 @@ msgctxt "story background"
 msgid "sunset"
 msgstr "שקיעה"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "suspended %(target)s"
+msgstr "מושעה %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "switched the wiki"
@@ -22282,7 +23194,7 @@ msgstr "עקבו אחרי wiki"
 msgid "test storage"
 msgstr "מבחן אחסון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "text post"
 msgstr "פוסט טקסט"
 
@@ -22345,7 +23257,7 @@ msgctxt "sort"
 msgid "top"
 msgstr "העליון"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "top"
 msgstr "מובילים"
@@ -22458,7 +23370,7 @@ msgstr "v. %(version)s, © 2021 %(company)s"
 msgid "video"
 msgstr "וידאו"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "video preview"
 msgstr "תצוגה מקדימה של סרטון"
 
@@ -22537,9 +23449,9 @@ msgstr "הצבעת כן"
 msgid "you were posting too fast, and it couldn't wait any longer."
 msgstr "אתה מפרסם מהר מדי, וזה לא יכול לחכות עוד."
 
-#, machine, plain1
+#, machine, plain2
 msgid "you were signed out."
-msgstr "חתמתם."
+msgstr "היית מנותק."
 
 #, machine, plain1
 msgid "you're invited to write it"

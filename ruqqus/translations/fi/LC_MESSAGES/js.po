@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s kirjoittaa…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s asetti viestit katoamaan %(time)s jälkeen."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s sammutti katoamisviestit."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s jäsen"
 msgstr[1] "%(num)s jäsentä"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s viesti löytyi."
+msgstr[1] "%(num)s viestiä löytyi."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s viesti säikeessä"
 msgstr[1] "%(num)s viestiä säikeessä"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "yksi viesti luki…"
+msgstr[1] "%(num)s viestiä luettu…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s · %(num)s jäsentä"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Pelastaa?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s kommentti"
 msgstr[1] "+%(guild)s · %(num)s kommenttia"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 vrk"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 viikko"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s lisäsi sinut tähän ryhmään. Hyväksy lukea ja kirjoittaa siihen."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] ""
 msgstr[1] ""
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s kirjoittaa…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Viesti, jota ei enää ole"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Täällä kirjoittamaasi viestiä ei lähetetty: keskustelu pysähtyi tähän välilehteen ennen kuin se voi mennä."
+msgstr[1] "%(num)s viestiä, jotka kirjoitit tänne, ei lähetetty: keskustelu pysähtyi tähän välilehteen ennen kuin he ehtivät lähteä."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Postissa voi olla korkeintaan yksi tekijä."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Hyväksy"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Lisää"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Lisää apuri käyttäjätunnuksella"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Lisään..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Ylläpitäjä"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Samaa mieltä"
 
@@ -413,6 +455,10 @@ msgstr "Tasaa oikealle"
 msgid "Alignment"
 msgstr "Tasaus"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Myös estää @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Myös tässä: %(names)s"
 msgid "An app"
 msgstr "Sovellus"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Vihainen"
 
@@ -432,7 +478,7 @@ msgstr "Vihainen"
 msgid "Announcements"
 msgstr "Ilmoitukset"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Nimetön"
 
@@ -440,6 +486,10 @@ msgstr "Nimetön"
 #, machine, plain1
 msgid "Answer"
 msgstr "Vastaus"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Kuka tahansa chatissa voi edelleen kopioida viestin tai ottaa kuvan ruudusta ennen sen lähtöä."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Liitä linkki tähän virkaan"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Voi paska. Ei GIFs löysi..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Mahtava"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Kiusallinen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Takaisin ylös"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Estä"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Estä @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "Estetty @ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Lihavoitu (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Chat-avaimet pysähtyivät. Anna salasana loppuun."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Kamera pois päältä"
 msgid "Camera on"
 msgstr "Kamera päällä"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Peruuta"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kanava · %(num)s jäsen"
 msgstr[1] "Kanava · %(num)s jäsentä"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanavat"
 
@@ -599,13 +653,45 @@ msgstr "Kanavat olet"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Viestit"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat ei voinut tuoda avaimiasi. Lataa yrittääksesi uudelleen."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Chat ei saanut yhteyttä."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chat ei voinut jatkaa alusta. Anna salasana yrittää uudelleen."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chat ei voinut jatkaa alusta. Lataa yrittääksesi uudelleen."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat ei voinut avata mitä tämä selain säästi, joten se alkaa taas täältä."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat ei voinut aloittaa tällä selaimella."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Chat ei vastannut. Yritä uudelleen."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chatia ei ollut käytetty tässä selaimessa pitkään aikaan, joten se alkaa taas täältä."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Chat lähestyy toista piikkiä…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Chat on vielä alkamassa."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Chat on vielä alkamassa. Yritä uudelleen hetken päästä."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Juttutuokio ei ole käytettävissä juuri nyt."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat menetti yhteyden. Yritän uudelleen…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat tarvitsee tämän selaimen pitääkseen sivuston tiedot, eikä se voi täällä. Jutustelu ei voi alkaa tästä ikkunasta."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Keskustelu päättyi tähän piikkiin."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Chat irrotettiin selaimesta toisesta laitteesta. Aloitan taas täältä…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Keskustele @ %(name)s kanssa"
@@ -627,7 +733,7 @@ msgstr "Keskustele @ %(name)s kanssa"
 msgid "Chat's key isn't available right now."
 msgstr "Chatin avain ei ole nyt saatavilla."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Keskustelut"
 
@@ -667,11 +773,11 @@ msgstr "Valitse kuka näkee tämän."
 msgid "Choose your profile or at least one guild."
 msgstr "Valitse profiilisi tai ainakin yksi killasta."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Piirit"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Sulje"
 
@@ -707,7 +813,7 @@ msgstr "Vertaa niitä sovellus näyttää, samassa järjestyksessä."
 msgid "Confirm in the app as well."
 msgstr "Vahvistakaa myös sovelluksessa."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Hämmentynyt"
 
@@ -859,6 +965,10 @@ msgstr "Pinnoitettuja viestejä ei voitu ladata"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Esikatselua ei voitu ladata."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Keskustelujasi ei voitu ladata"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Valitse koodit ja kopioi ne."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "En pystynyt lataamaan aiempia viestejä. Yritä uudelleen hetken päästä."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "En pystynyt lataamaan puheitasi. Yritän uudelleen…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Luodaan julkaisua"
 
@@ -1028,7 +1142,7 @@ msgstr "Luodaan julkaisua"
 msgid "Creating…"
 msgstr "Luodaan…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Myötähäpeä"
 
@@ -1036,7 +1150,7 @@ msgstr "Myötähäpeä"
 msgid "Cross out"
 msgstr "Ylitä"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Tumma tila"
 
@@ -1101,13 +1215,21 @@ msgstr "Poistaa tämän tarinan?"
 msgid "Delete this update?"
 msgstr "Poista tämä päivitys?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Poistetaan kommenttia"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Poistetaan julkaisua"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Kadonneet viestit"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Kadonneet viestit ovat poissa."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Valmis"
 #, machine, plain1
 msgid "Done."
 msgstr "Selvä."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Lataa"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "Päästä loppuun salattu: vain tämän kanavan ihmiset voivat lukea sen
 msgid "Ended"
 msgstr "Loppu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Anna URL-osoite"
 
@@ -1206,6 +1332,10 @@ msgstr "Anna web-osoite, kuten https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Anna salasana kerran. Se lukitsee avaimen viesteihin tässä selaimessa, joten sivusto ei voi koskaan lukea niitä."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Anna salasana vahvistaaksesi."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Anna salasanasi."
 msgid "Enter your recovery code"
 msgstr "Anna palautuskoodisi"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Anna kahden tekijän koodi"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Syötä kahden tekijän koodi."
+
+#, machine, plain2
+msgid "File"
+msgstr "Tiedosto"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Tiedostot voidaan lähettää, kun @%(name)s on avannut keskustelun."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Tiedostot voidaan lähettää, kun keskustelu on auki tällä laitteella."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Tiedostoja ei voi lähettää tänne."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Lopullinen"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Viimeistely"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Lopeta keskustelusi"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Lopeta alusta alkaen"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Lopetan jutustelun toisessa piikissä…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Muotoilu"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Välitä"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Välitä viesti"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Eteenpäin enintään yhdelle killalle."
 msgstr[1] "Eteenpäin enintään %(num)s killalle."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Eteenpäin…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Toimitettu"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Eteenpäin."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Välitetään"
 
@@ -1292,11 +1478,11 @@ msgstr "Anna napille tekstiviesti."
 msgid "Give the template a name."
 msgstr "Anna mallille nimi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Siirry sivustolle"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Ällöttävä"
 
@@ -1304,7 +1490,7 @@ msgstr "Ällöttävä"
 msgid "Group info"
 msgstr "Ryhmän tiedot"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Killat"
 
@@ -1316,13 +1502,25 @@ msgstr "Killat ja keskustelu"
 msgid "Hand raised"
 msgstr "Käsi ylös"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Iloinen"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Oletko säilyttänyt palautuskoodisi? Ilman sitä unohtunut salasana voi kadottaa vanhat viestit."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Otsake %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Apulaiset"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Apulaiset kirjoittavat kanssasi tällä kanavalla. Valitse jopa kolme ihmistä, jotka ovat siinä."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Hyväksyn säännöt"
 msgid "I don't have it: start over"
 msgstr "Minulla ei ole sitä. Aloita alusta"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Minulla on se"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Pelastin sen"
@@ -1372,6 +1574,10 @@ msgstr "Pelastin sen"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Jos unohdat salasanasi, tämä koodi on ainoa tapa lukea vanhat viestit. Pidä se turvassa, kuten salasanapäällikkö."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Jos sinulla on vielä palautuskoodisi, käytä sitä sen sijaan: jotkut vanhemmat viestit ovat vain varmuuskopiossa."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Sen tarinat pysyvät arkistossasi."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Liity"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Liity kanavaan %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Tärkeimmät tosiasiat ja linkit ihmisten pitäisi nähdä ensin."
 msgid "Last used %(date)s"
 msgstr "Viimeksi käytetty %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Myöhemmin"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Naurua"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Poistu"
 
@@ -1516,7 +1726,7 @@ msgstr "Jättää tämän ryhmän? Joku muu siinä on sen omistaja."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Jättää tämän ryhmän? Et näe uusia viestejä, ellei joku lisää sinua."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Vaalea tila"
 
@@ -1561,6 +1771,10 @@ msgstr "Elä nyt"
 msgid "Load earlier messages"
 msgstr "Lataa aiemmat viestit"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Ladataan kommenttia…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Ladataan…"
@@ -1585,17 +1799,25 @@ msgstr "Ladataan malleja..."
 msgid "Loading..."
 msgstr "Ladataan..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Ladataan…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Rakkaus"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Alakäsi"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Luo uusi koodi"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Teetkö uuden palautuskoodin?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Julkistaako tämä viesti? Kaikki näkevät sen."
 msgid "Making the channel…"
 msgstr "Teen kanavaa…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Ihan sama"
 
@@ -1630,6 +1852,14 @@ msgstr "Viesti poistettu"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Viestipyyntö. He eivät tiedä nähneensä tätä ennen kuin hyväksyt sen."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Viestit katoavat %(time)s jälkeen."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Viestit, jotka tämä selain voi jo lukea, tulevat tänne."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofoni %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Lisää"
 
@@ -1649,11 +1879,11 @@ msgstr "Lisää"
 msgid "Move to listeners"
 msgstr "Siirrä kuulijoille"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Mykistä"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Mykistetty"
 
@@ -1673,7 +1903,11 @@ msgstr "Nimeä kansio"
 msgid "New channel"
 msgstr "Uusi kanava"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Uudet viestit tässä chat katoavat kaikille valitsemasi ajan jälkeen. Viestit, jotka lähetettiin ennen kuin ne lähetettiin."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Ei"
 
@@ -1693,17 +1927,29 @@ msgstr "Ei puheluita vielä. Aloita yksi chat's Voice puhelu tai videopuhelu."
 msgid "No camera was found."
 msgstr "Kameraa ei löytynyt."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Keskusteluja ei löytynyt."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Ei vielä apureita."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Ei koodia? Kirjaudu sisään uudella salasanallasi selaimessa, jossa olet käyttänyt chatia: se voi tuoda chatisi takaisin."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Ei vielä laitteita. Avaa keskustelu aloittaaksesi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Ei tunnistetta"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Ei apureita vielä."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Mikrofonia ei löytynyt."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Kukaan ei täsmää. Voit lähettää puheillesi ja seuraamillesi ihmisille."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Ei vielä viestejä."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Ei tallennettu"
 msgid "Not used yet"
 msgstr "Ei vielä käytössä"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Selaimen lukemista viesteistä ei löytynyt mitään."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Ei löytynyt mitään."
@@ -1785,17 +2039,45 @@ msgstr "Ei vielä mitään esikatseltavaa."
 msgid "Nothing was connected."
 msgstr "Mikään ei ollut yhteydessä."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Ilmoitukset"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Tällä selaimella ei ole ilmoituksia. Anna niiden käynnistää selaimen asetukset."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Ilmoitukset ovat pois päältä tässä selaimessa."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Ilmoitukset ovat tässä selaimessa."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Ilmoitusta ei voitu tarkistaa. Lataa sivu uudelleen yrittääksesi uudelleen."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Ilmoitusta ei voitu käynnistää. Yritä uudelleen."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Tällä sivustolla ei sallittu ilmoituksia."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Numeroitu luettelo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Pois"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline · retrying"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Vain ryhmän omistaja ja ylläpitäjät voivat muuttaa tämän."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Avaa keskustelu kerran avataksesi viestisi ja yritä sitten uudelleen."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Avaa keskustelu saadaksesi viestisi valmiiksi tällä laitteella."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Avoimen median asetukset"
 
@@ -1849,6 +2139,10 @@ msgstr "Avaa tila"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Avaa keskustelunumeron +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Avaan tiedoston…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Ihmiset, joita seuraat"
 msgid "Pick a date and time."
 msgstr "Valitse päivämäärä ja aika."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Valitse tunniste"
 
@@ -1909,11 +2203,15 @@ msgstr "Kuvatarinoita ei ole vielä saatavilla tällä sivustolla."
 msgid "Pin this message"
 msgstr "Pin viesti"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Kiinni"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Viestit"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Pliis"
 
@@ -1921,12 +2219,18 @@ msgstr "Pliis"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Anna kelvollinen URL (mukaan lukien http:// tai https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Kirjaudu uudelleen sisään."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Suositut kanavat"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Julkaise"
 
@@ -1938,7 +2242,7 @@ msgstr "Lähetetty. Lataa sivu uudelleen nähdäksesi sen."
 msgid "Posting to %(guilds)s"
 msgstr "Lähetetään osoitteeseen %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Julkaistaan profiiliisi"
 
@@ -1947,7 +2251,7 @@ msgstr "Julkaistaan profiiliisi"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Julkaisen profiiliasi, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Julkaistaan…"
 
@@ -2047,6 +2351,14 @@ msgstr "React"
 msgid "React with %(emoji)s"
 msgstr "React with %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Tallenna ääniviesti"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Tallennan. Paina mikrofonia lähettääksesi sen."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Perintäkoodi"
@@ -2059,13 +2371,17 @@ msgstr "Tee uudelleen"
 msgid "Refreshing…"
 msgstr "Virkistävää…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Rekisteröidään"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Päivitä"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Lataa uudelleen"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Muistutus asetettu"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Poista"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Poista %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Poista @ %(name)s apurina"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Nimeä tämä kansio uudelleen"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Ilmoita"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Ilmoita kommentista"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Ilmoita julkaisusta"
 
@@ -2155,11 +2475,11 @@ msgstr "Ilmoita julkaisusta"
 msgid "Report this message"
 msgstr "Raportoi tämä viesti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Ilmoitetaan kommentista"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Ilmoitetaan julkaisusta"
 
@@ -2176,13 +2496,13 @@ msgstr "Soitan…"
 msgid "Rules of this channel"
 msgstr "Tämän kanavan säännöt"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Surullinen"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Tallenna"
 
@@ -2198,11 +2518,15 @@ msgstr "Tallenna mallina."
 msgid "Save your recovery code"
 msgstr "Tallenna palautuskoodi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Tallennettu"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Pelastaa."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Tallennetaan"
 
@@ -2236,7 +2560,7 @@ msgstr "Pelastan…"
 msgid "Say what is wrong with this account."
 msgstr "Sano, mikä tässä tilillä on vialla."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Peloissaan"
 
@@ -2255,7 +2579,8 @@ msgstr "Se on varattu %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Hae"
 
@@ -2266,6 +2591,14 @@ msgstr "Etsi joku lisättävä."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Etsi tästä kanavasta"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Etsi tästä keskustelusta"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Etsi keskusteluistasi"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Valitse keskustelu"
 
@@ -2298,6 +2631,10 @@ msgstr "Valitse keskustelu"
 #, machine, plain1
 msgid "Send"
 msgstr "Lähetä"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Lähetä tiedosto"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Lähetä seuraavat kuvat:"
 msgid "Send your next videos to:"
 msgstr "Lähetä seuraavat videot:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Lähetetään %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Lähetetään %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Kun keskustelu on valmis…"
+msgstr[1] "Lähetetään %(num)s viestiä, kun keskustelu on valmis…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Lähetetään..."
@@ -2331,6 +2682,14 @@ msgstr "Lähetetty"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Monet kirjoittavat…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Jaa näyttö"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Jaettu kommentti"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Näytä %(num)s uutta viestiä"
 msgid "Show formatting"
 msgstr "Näytä muotoilu"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Näytä kanavalla"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Näytä chatti"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Näytä vähemmän"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Näytä lisää"
 
@@ -2367,19 +2735,19 @@ msgstr "Näytä alkuperäinen"
 msgid "Show translation"
 msgstr "Näytä käännös"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Kirjaudu ulos"
+msgstr "Kirjaa ulos"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Kirjaudu ulos %(device)s"
+msgstr "Kirjaa %(device)s ulos"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Kirjaudu ulos %(device)s? Sen täytyy kirjautua sisään uudelleen lukeakseen keskustelusi."
+msgstr "Irrota yhteys %(device)s? Sen täytyy kirjautua sisään uudelleen lukeakseen keskustelusi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Kirjaudutaan"
 
@@ -2497,6 +2865,11 @@ msgstr "Aloitan keskustelun…"
 msgid "Starting…"
 msgstr "Aloitan…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Lopeta jakaminen"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Läpivienti"
@@ -2547,7 +2920,7 @@ msgstr "Tekstin muotoilu"
 msgid "Text style"
 msgstr "Tekstityyli"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Kiitos pyynnöstä"
 
@@ -2571,27 +2944,39 @@ msgstr "Kiitos. Hallintoviranomainen katsoo sitä."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Kiitos, killan moderaattorit vilkaisevat."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Kiitos: sivuston ylläpitäjät katsovat, ja olet estänyt @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Kiitos: sivuston ylläpitäjät katsovat."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Kiitos: sivuston ylläpitäjät katsovat. @%(name)s ei voitu estää täältä: estää heitä profiililtaan."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Se keskustelu ei ole vielä valmis. Avaa se kerran ja yritä uudestaan."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Se koodi ei avaa sitä. Etsi kirjoitusvirheitä."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Tallennus epäonnistui."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Laitetta ei voi nyt allekirjoittaa."
+msgstr "Laitetta ei voi kytkeä pois päältä."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Sitä laitetta ei voitu käyttää."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Lähetys epäonnistui"
 
@@ -2630,6 +3015,14 @@ msgstr "Se ei ole salasanasi."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Sitä viestiä ei voi lähettää."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Sitä viestiä ei enää löytynyt kanavalta."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Sitä viestiä ei enää löytynyt tästä keskustelusta."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Keskustelu on päättynyt: tämä tila on päättynyt."
 msgid "The chat opens when the Space starts."
 msgstr "Keskustelu alkaa, kun avaruus alkaa."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Appisi koodi tai varmuuskoodesi."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Luonnos muuttui edellisen muokkauksesi alla, joten se ladattiin uudelleen. Tarkista viimeiset sanasi."
@@ -2722,6 +3119,10 @@ msgstr "Luonnos muuttui edellisen muokkauksesi alla, joten se ladattiin uudellee
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji verrata"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Tiedostoa ei voitu lähettää. Yritä uudelleen."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Linkkiä ei voitu kopioida."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofonia ei voitu käynnistää."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofonia ei voitu käyttää. Tarkista, että tämä sivusto voi käyttää sitä."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Toistamista ei tallennettu: lataus epäonnistui. Voit ladata sen sen sijaan."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Sivuston avaimet muuttuivat, joten keskustelu alkaa taas täältä."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Yhteenveto on piilotettu sanasuodattimen."
 
@@ -2812,6 +3221,10 @@ msgstr "Ei ole mitään muuta, mihin lähettää ne tällä sivustolla vielä."
 msgid "These comments could not be loaded. Try again."
 msgstr "Näitä huomautuksia ei voitu ladata. Yritä uudelleen."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Heille ei koskaan kerrota, kuka niistä ilmoitti."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "He kieltäytyivät puhelusta."
@@ -2824,6 +3237,10 @@ msgstr "Ne eivät täsmää"
 msgid "They match"
 msgstr "Ne täsmäävät"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "He pysyvät omalla tililläsi, salattuna, käyttäen sen vapaata tilaa. Vain ihmiset voivat avata ne."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "He eivät voi seurata sinua, viestittää sinulle tai kommentoida virkasi, ja et näe heidän virkansa. Voit avata ne milloin vain."
@@ -2832,9 +3249,9 @@ msgstr "He eivät voi seurata sinua, viestittää sinulle tai kommentoida virkas
 msgid "This Space has ended."
 msgstr "Tämä tila on päättynyt."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Tämä selain"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Tämä myös lopettaa pelastus selaimen jossa käytit chat."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Tämä selain ei voi soittaa."
 msgid "This browser can't record the Space."
 msgstr "Tämä selain ei voi tallentaa tilaa."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Tämä selain ei voi jakaa ruutuaan."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Tämä selain ei voi näyttää ilmoituksia tältä sivustolta."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Tämä selain ei voi valmistaa kuvia ladattavaksi. Kokeile toista selainta."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Tällä selaimella on edelleen chat-avaimet ennen salasanan muuttamista. Käyttää niitä lukea vanhat viestit täällä ja muissa laitteissa?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Tämä selain on irrotettu keskustelusta toisesta laitteesta, joten keskustelu alkaa taas täältä."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Tämän selaimen tallennetut chat-tiedot tyhjennettiin, joten chat alkaa taas täältä."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Tätä ei voi perua."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Tämä kanava on mykistetty sinulle: ei lukemattomia pilkkuja eikä mainintoja."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Tämä keskustelu on salattu, joten sivusto ei voi lukea sitä. Raportointi lähettää tämän viestin ja jopa neljä ennen sitä, kuten näette ne täällä, sivuston ylläpitäjille."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Tätä kommenttia ei voi näyttää."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Tämä laite kytketään pian pois päältä."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Tätä tiedostoa ei voitu avata. Yritä myöhemmin uudestaan."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Tämä tiedosto ei ole enää saatavilla."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Tämä suora lanka on loppunut"
@@ -2863,6 +3320,10 @@ msgstr "Tämä suora lanka on loppunut"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Tätä viestiä ei voi lukea tästä laitteesta."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Tämä viesti on poistettu."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Tätä viestiä ei voi näyttää."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "This post is off-topic for +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Tämä kirjautuminen"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Tämä katkaisee keskustelun myös tässä selaimessa, jos se on tämän selaimen. Se alkaa taas uutena laitteena."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Tämä äänikanava on täynnä (%(num)s henkilö)."
 msgstr[1] "Tämä äänikanava on täynnä (%(num)s henkilöä)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Avaimet eivät ole enää tilisi. Käytä palautuskoodia tai aloita alusta."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Liian kauan %(num)s (%(note)s)"
 msgstr[1] "Liian pitkä %(num)s: lla (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Liikaa pyyntöjä tänään"
 
@@ -2945,13 +3418,21 @@ msgstr "Käännös ei ole saatavilla juuri nyt."
 msgid "Try again"
 msgstr "Yritä uudelleen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Yritä huomenna uudelleen."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Palauta ilmoitukset päälle"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Kahden tekijän koodi"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Kaksi tekijä kirjautuminen muutettiin, joten chat alkaa taas täällä."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Kommenttia ei voitu poistaa. Yritä uudestaan myöhemmin."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "En voi äänestää tällä kertaa. Yritä uudestaan myöhemmin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Poista esto"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Kumoa"
 
@@ -3010,17 +3491,13 @@ msgstr "Avaa lukitus"
 msgid "Unlock your messages"
 msgstr "Avaa viestit"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Avaa viestit ensin: lataa sivu uudelleen kirjoittaa salasana."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Poista mykistys"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Irrota"
 
@@ -3076,11 +3553,15 @@ msgstr "Käytä sitä täällä"
 msgid "Use my recovery code instead"
 msgstr "Käytä minun palautuskoodia sen sijaan"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Käytä niitä"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Käyttäjänimi on jo varattu :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Käyttäjänimi kelpaa!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Videopuhelu · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video on pois päältä."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Näytä alkuperäinen"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] ""
 msgstr[1] ""
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Ääniviesti"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Odota hetki: viimeiset muutokset ovat yhä tallessa."
@@ -3213,6 +3698,10 @@ msgstr "Odota hetki: viimeiset muutokset ovat yhä tallessa."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Odotetaan sovellusta"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Löysimme keskustelusi selaimelta"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Mikä tätä tilaa vaivaa? (vapaaehtoinen)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Mitä vikaa tässä viestissä on? (vapaaehtoinen)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Minne keskustelutiedostot menevät?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Kuka sen sanoi"
 msgid "Who upvoted"
 msgstr "Kuka äänesti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Miksi"
 
@@ -3274,6 +3767,10 @@ msgstr "Miksi tämä rikkoo killan sääntöjä? Tämä näytetään kaikille, j
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Miksi tämä rikkoo killan sääntöjä? Tämä näytetään kaikille, jotka katsovat tämän post/kommentin historiaa."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Miksi tämä huomautus poistetaan? Syysi näkyy julkisessa lokissa."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Kirjoita ensin jotain."
 msgid "Write what you want to tell us."
 msgstr "Kirjoita, mitä haluat kertoa."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Kyllä"
 
@@ -3310,7 +3807,7 @@ msgstr "Peru se"
 msgid "You"
 msgstr "Sinä"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Teit tämän jo"
 
@@ -3326,7 +3823,7 @@ msgstr "Teit jo ilmoituksen."
 msgid "You already voted on this post."
 msgstr "Äänestitte jo tästä virasta."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Olet estänyt käyttäjän @%(name)s"
 
@@ -3364,7 +3861,7 @@ msgstr "Voit lukea tämän kanavan, mutta et kirjoita siihen."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Voit nähdä, kuka täällä on, mutta et voi puhua tällä kanavalla."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Et voi tehdä tätä."
 
@@ -3408,6 +3905,14 @@ msgstr "Lähdit avaruudesta."
 msgid "You left the call."
 msgstr "Jätit puhelun."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Olet katkaissut joka paikasta toisen laitteen."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Kirjauduit sisään kahden tekijän palautuskoodillasi, joten chatti alkaa taas."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Sinä seurasit.%(name)s."
@@ -3415,6 +3920,10 @@ msgstr "Sinä seurasit.%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Sinut poistettiin täältä."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Saat uuden palautuskoodin, ja vanha lakkaa toimimasta."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Selaimesi tuki ikkunan kytkemistä varten. Salli ponnahdusikkunat tälle
 msgid "Your chat devices can't be listed right now."
 msgstr "Puhelaitteitasi ei voi listata juuri nyt."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Keskustelun palautuskoodi"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Keskustelunne"
@@ -3451,6 +3964,10 @@ msgstr "Chats toimii uudelleen tämän laitteen, mutta viestit ennen ei voida lu
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Kommenttiasi ei voitu lähettää. Yritä uudelleen."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Nykyinen palautuskoodisi lakkaa toimimasta."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Avaintasi ei voi näyttää juuri nyt."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Avaimessasi oli vanhempi salasana. Avaa keskustelu tällä sivustolla ja syötä palautuskoodi kerran; sitten se avautuu täällä."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Viesti lähetetään, kun keskustelu on auki tällä laitteella."
+msgstr[1] "%(num)s viestiä lähetetään, kun keskustelu on auki tällä laitteella."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Vanha toipumiskoodisi ei enää toimi."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Salasanasi muuttui, kun tämä chat-avain oli lukittu siihen. Tallentamasi palautuskoodi avaa sen."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Salasanasi muutettiin, joten keskustelu alkaa taas."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Salasanasi on vaihdettu, joten keskustelu alkaa taas."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Salasanasi oli nollattu, joten keskustelu alkaa taas."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Saantokoodisi"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Tallenne on täällä."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Näytön voi jakaa vain, kun olet videolla tässä puhelussa."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Näyttöäsi ei voitu jakaa."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "sininen"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "kommentti"
 
@@ -3606,7 +4153,7 @@ msgstr "oranssi"
 msgid "pink"
 msgstr "vaaleanpunainen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "julkaisu"
 

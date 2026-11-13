@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: eu\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s idazten ari da…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s(e)k mezuak %(time)s(r)en ondoren desagerrarazten ditu."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s(e)k desagerturiko mezuak itzali zituen."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s kidea"
 msgstr[1] "%(num)s kide"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "mezu bat aurkitu da."
+msgstr[1] "%(num)s mezu aurkitu dira."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "mezu bat harian"
 msgstr[1] "%(num)s mezu harian"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "mezu bat irakurri…"
+msgstr[1] "%(num)s mezu irakurri…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s · %(num)s kide"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Gorde dena den?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · iruzkin bat"
 msgstr[1] "+%(guild)s · %(num)s iruzkin"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "egun bat"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "aste bat"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s(e)k talde honetara gehitu zaitu. Onartu irakurtzea eta bertan idaztea."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s(e)k ez du oraindik berriketa ireki. Zure mezua bidaliko da egiten dutenean."
 msgstr[1] "@%(name)s(e)k ez du oraindik berriketa ireki. Zure %(num)s mezuak bidaliko dira egiten dutenean."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s idazten ari da…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Mezurik ez dago"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Hemen idatzi duzun mezua ez da bidali: berriketak fitxa honetan gelditu dira joan aurretik."
+msgstr[1] "hemen idatzi dituzun %(num)s mezu ez dira bidali: berriketak fitxa honetan gelditu dira joan aurretik."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Posta batek gehienez egilekide bat eduki dezake."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Onartu"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Gehitu"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Gehitu laguntzailea erabiltzaile-izenaren arabera"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Gehitu..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Ados"
 
@@ -413,6 +455,10 @@ msgstr "Lerrokatu eskuinean"
 msgid "Alignment"
 msgstr "Lerrokatzea"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "@%(name)s blokea ere bai"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Hemen ere: %(names)s"
 msgid "An app"
 msgstr "Aplikazio bat"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Haserre"
 
@@ -432,7 +478,7 @@ msgstr "Haserre"
 msgid "Announcements"
 msgstr "Iragarkiak"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonimoa"
 
@@ -440,6 +486,10 @@ msgstr "Anonimoa"
 #, machine, plain1
 msgid "Answer"
 msgstr "Erantzun"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Berriketan dagoen edonork mezu bat kopiatu edo pantailaren argazkia egin dezake joan aurretik."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Erantsi esteka honi"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Ahuntzak. Ez da GIFs aurkitu..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Bikaina"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Deseroso"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Itzuli gora"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Blokeatu"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Blokeatu @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "@%(name)s blokeatua."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Lodia (Ktrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Zure berriketa-gakoak bidean gelditu dira. Idatzi zure pasahitza amaitzeko."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Itzali kamera"
 msgid "Camera on"
 msgstr "Kamera aurrera"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Utzi"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kanala · Kide bat"
 msgstr[1] "Kanala · %(num)s kide"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanalak"
 
@@ -599,13 +653,45 @@ msgstr "Kanaletan zaude"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Txata"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Berriketak ezin izan ditu giltzak ekarri. Birkargatu berriro saiatzeko."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Berriketak ezin zuen konektatu."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Berriketa ezin izan da hasi. Sartu pasahitza berriro saiatzeko."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Berriketa ezin izan da hasi. Birkargatu berriro saiatzeko."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Berriketak ezin izan du arakatzaileak gorde duena ireki, beraz hemen hasten da berriro."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Berriketa ezin izan da arakatzailean hasi."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Berriketak ez zuen erantzun. Saiatu berriro."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Berriketa aspaldian ez da erabili nabigatzaile honetan, beraz, hemen hasten da berriro."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Berriketa beste fitxa batean ixten ari da…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Berriketa hasi da."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Berriketa hasi da. Saiatu berriro une batean."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Berriketa ez dago eskuragarri zure kontuan une honetan."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Berriketak konexioa galdu du. Berriro saiatzen…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Berriketak arakatzaile hau behar du gunearen datuak gordetzeko, eta ezin da hemen egon. Berriketa ezin da leiho honetan hasi."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Berriketa fitxa honetan gelditu da."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Berriketa beste gailu batetik deskonektatu da arakatzaile honetan. Hemen hasten…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "@%(name)s berriketa"
@@ -627,7 +733,7 @@ msgstr "@%(name)s berriketa"
 msgid "Chat's key isn't available right now."
 msgstr "Berriketa-gakoa ez dago erabilgarri oraintxe bertan."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Txatak"
 
@@ -667,11 +773,11 @@ msgstr "Aukeratu nork ikus dezakeen hau."
 msgid "Choose your profile or at least one guild."
 msgstr "Aukeratu zure profila, edo gutxienez gremio bat."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Zirkuluak"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Itxi"
 
@@ -707,7 +813,7 @@ msgstr "Konparatu aplikazioak erakusten dituenekin, ordena berean."
 msgid "Confirm in the app as well."
 msgstr "Berretsi aplikazioan ere."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Nahastuta"
 
@@ -859,6 +965,10 @@ msgstr "Ezin izan dira mezuak kargatu"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Ezin izan da aurrebista kargatu."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Ezin izan dira berriketak kargatu"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Ezin izan da kopiatu: hautatu kodeak eta kopiatu."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Ezin izan dira aurreko mezuak kargatu. Saiatu berriro une batean."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Ezin izan dira berriketak kargatu. Berriro saiatzen…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Argitalpena sortzen"
 
@@ -1028,7 +1142,7 @@ msgstr "Argitalpena sortzen"
 msgid "Creating…"
 msgstr "Sortu…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Lotsagarria"
 
@@ -1036,7 +1150,7 @@ msgstr "Lotsagarria"
 msgid "Cross out"
 msgstr "Cross out"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Modu iluna"
 
@@ -1101,13 +1215,21 @@ msgstr "Ezabatu istorio hau?"
 msgid "Delete this update?"
 msgstr "Ezabatu eguneraketa hau?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Iruzkina ezabatzen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Argitalpena ezabatzen"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Mezuak desagertzea"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Desagertutako mezuak desagertu egin dira."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Eginda"
 #, machine, plain1
 msgid "Done."
 msgstr "Eginda."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Deskargatu"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "Amaieratik amaierara enkriptatuta: kanal honetako jendeak bakarrik iraku
 msgid "Ended"
 msgstr "Amaituta"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Idatzi URL bat"
 
@@ -1206,6 +1332,10 @@ msgstr "Sartu web helbide bat https://example.com bezala"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Sartu pasahitza behin. Arakatzailean zure mezuen gakoa blokeatzen du, eta, beraz, webguneak ezin ditu irakurri."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Sartu pasahitza berresteko."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Sartu zure pasahitza."
 msgid "Enter your recovery code"
 msgstr "Idatzi berreskuratze-kodea"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Sartu zure bi faktoreko kodea"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Sartu zure bi faktoreen kodea."
+
+#, machine, plain2
+msgid "File"
+msgstr "Fitxategia"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Fitxategiak @%(name)s berriketa ireki ondoren bidali daitezke."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Fitxategiak bidal daitezke behin berriketan desblokeatuta gailu honetan."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Ezin dira fitxategiak hona bidali."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Finala"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Amaitu"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Amaitu berriketa ekartzea"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Amaitu hasiera"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Berriketa beste fitxa batean amaitzen…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Formatua"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Birbidali"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Aurrera mezua"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Aurrera, gehienez, %(num)s florinera."
 msgstr[1] "Gehienez ere %(num)s gremiotara."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Aurrera…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Aurrera"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Aurrera."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Birbidaltzen"
 
@@ -1292,11 +1478,11 @@ msgstr "Eman botoiari testu bat."
 msgid "Give the template a name."
 msgstr "Eman izena txantiloiari."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Joan webgunera"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Nazkagarria"
 
@@ -1304,7 +1490,7 @@ msgstr "Nazkagarria"
 msgid "Group info"
 msgstr "Taldearen informazioa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Gremioak"
 
@@ -1316,13 +1502,25 @@ msgstr "Guilds berriketarekin"
 msgid "Hand raised"
 msgstr "Eskua altxatuta"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Pozik"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Berriketa berreskuratzeko kodea gorde duzu? Hori gabe, pasahitz ahaztu batek mezu zaharrak gal ditzake."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "%(level)s zuzentzen"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Laguntzak"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Laguntzaileek kanal honetan idazten dute zurekin. Aukeratu barruan dauden hiru pertsona arte."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Arauak onartzen ditut"
 msgid "I don't have it: start over"
 msgstr "Ez daukat: hasi berriro"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Badut"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Gorde egin dut"
@@ -1372,6 +1574,10 @@ msgstr "Gorde egin dut"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Pasahitza inoiz ahazten baduzu, kode hau da mezu zaharrak irakurtzeko modu bakarra. Gorde leku seguru batean, pasahitz-kudeatzailea bezala."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Berreskuratze-kodea badaukazu, erabili ordez: mezu zaharragoak irekitzen duen babeskopian bakarrik daude."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Bere istorioak zure artxiboan daude."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Batu"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Batu %(channel)s kanalera"
 
@@ -1495,12 +1701,16 @@ msgstr "Gako-ekintzak eta estekak jendeak ikusi beharko lituzke lehenik."
 msgid "Last used %(date)s"
 msgstr "Erabilitako azkena: %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Geroago"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Barrea"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Irten"
 
@@ -1516,7 +1726,7 @@ msgstr "Utzi talde hau? Beste norbait bere jabea bihurtzen da."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Utzi talde hau? Ez duzu mezu berririk ikusiko norbaitek berriro gehitzen ez bazaitu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Modu argia"
 
@@ -1561,6 +1771,10 @@ msgstr "Bizi orain"
 msgid "Load earlier messages"
 msgstr "Kargatu aurreko mezuak"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Iruzkina kargatzen…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Mezuak kargatzen…"
@@ -1585,17 +1799,25 @@ msgstr "Txantiloiak kargatzen..."
 msgid "Loading..."
 msgstr "Kargatzen..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Kargatzen…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Maitasuna"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Beheko eskua"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Egin kode berria"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Berreskuratze-kode berria egin?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Post hau publiko egiten? Denek ikusiko dute."
 msgid "Making the channel…"
 msgstr "Kanala eraikitzen…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Bah"
 
@@ -1630,6 +1852,14 @@ msgstr "Mezua ezabatuta"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Mezu-eskaera. Ez dute jakingo hau ikusi duzula onartu arte."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Mezuak %(time)s ondoren desagertzen dira."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Arakatzaileak irakurritako mezuak hona itzuliko dira."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofonoa %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Gehiago"
 
@@ -1649,11 +1879,11 @@ msgstr "Gehiago"
 msgid "Move to listeners"
 msgstr "Eraman entzuleengana"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Mututu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Isilarazita"
 
@@ -1673,7 +1903,11 @@ msgstr "Izena eman zure karpetari"
 msgid "New channel"
 msgstr "Kanal berria"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Mezu berriak desagertu egiten dira nahi duzunean. Bidalitako mezuak denbora gorde aurretik."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Ez"
 
@@ -1693,17 +1927,29 @@ msgstr "Oraindik ez dago deirik. Hasi bat berriketako ahots-dei edo bideo-dei ba
 msgid "No camera was found."
 msgstr "Ez da kamerarik aurkitu."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Ez da berriketarik aurkitu."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Oraindik ez dago egilekiderik."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Koderik ez? Hasi saioa zure pasahitzarekin arakatzaile batean, non berriketa erabili duzun: zure berriketa ekar dezake."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Oraindik ez dago gailurik. Ireki berriketa hasteko."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Etiketarik ez"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Oraindik ez dago laguntzailerik."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Ez da mikrofonorik aurkitu."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Inor ez dator bat. Zure berriketak eta jarraitzen duzun jendea bidal ditzakezu."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Oraindik ez dago mezurik."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Ez gorde"
 msgid "Not used yet"
 msgstr "Oraindik ez da erabili"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Arakatzaileak irakurri ditzakeen mezuetan ez da ezer aurkitu."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Ez da ezer aurkitu."
@@ -1785,17 +2039,45 @@ msgstr "Oraindik ez dago ezer aurreikusteko."
 msgid "Nothing was connected."
 msgstr "Ez zegoen ezer konektatuta."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Jakinarazpenak"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Web gune honen jakinarazpenak blokeatuta daude arakatzaile honetan. Baimendu arakatzailearen ezarpenetan haiek piztea."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Jakinarazpenak desaktibatuta daude arakatzaile honetan."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Jakinarazpenak arakatzailean daude."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Jakinarazpenak ezin dira egiaztatu. Birkargatu orrialdea berriro saiatzeko."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Jakinarazpenak ezin dira piztu. Saiatu berriro."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Gune honetan ez dago jakinarazpenik."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Zenbatutako zerrenda"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Itzalita"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Lineaz kanpo"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Lineaz kanpo · saiatzea"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Taldeko jabeak eta administratzaileek bakarrik alda dezakete hau."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Ireki berriketa behin mezuak desblokeatzeko, eta saiatu berriro."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Ireki berriketa gailu honetan mezuak konfiguratzen amaitzeko."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Ireki euskarriaren ezarpenak"
 
@@ -1849,6 +2139,10 @@ msgstr "Ireki espazioa"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Ireki +%(guild)s berriketa"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Fitxategia irekitzen…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Jarraitzen duzun jendea"
 msgid "Pick a date and time."
 msgstr "Aukeratu data eta ordua."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Aukeratu etiketa"
 
@@ -1909,11 +2203,15 @@ msgstr "Argazkien istorioak ez daude eskuragarri gune honetan oraindik."
 msgid "Pin this message"
 msgstr "Hartu mezua"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pintatuta"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Jasotako mezuak"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Mesedez"
 
@@ -1921,12 +2219,18 @@ msgstr "Mesedez"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Sartu baliozko URL ( http:// edo https://). barne)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Hasi saioa berriro."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Kanal ezagunak"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Argitaratu"
 
@@ -1938,7 +2242,7 @@ msgstr "Bidalita. Birkargatu orrialdea ikusteko."
 msgid "Posting to %(guilds)s"
 msgstr "%(guilds)s(e)ra bidaltzea"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Zure profilean argitaratzen"
 
@@ -1947,7 +2251,7 @@ msgstr "Zure profilean argitaratzen"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Zure profilera bidaltzea, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Argitaratzen…"
 
@@ -2047,6 +2351,14 @@ msgstr "Erreakzioa"
 msgid "React with %(emoji)s"
 msgstr "%(emoji)s(r)ekin erreakzionatu"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Grabatu ahots-ohar bat"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Grabazioa… sakatu mikrofonoa berriro bidaltzeko."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Berreskuratze-kodea"
@@ -2059,13 +2371,17 @@ msgstr "Redo"
 msgid "Refreshing…"
 msgstr "Freskatu…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Erregistratzen"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Askatu freskatzeko"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Kargatu berriro"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Oroigarria"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Kendu"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Kendu %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Kendu @%(name)s laguntzaile gisa"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Aldatu karpeta honen izena"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Salatu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Salatu iruzkina"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Salatu argitalpena"
 
@@ -2155,11 +2475,11 @@ msgstr "Salatu argitalpena"
 msgid "Report this message"
 msgstr "Bidali mezu hau"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Iruzkina salatzen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Argitalpena salatzen"
 
@@ -2176,13 +2496,13 @@ msgstr "Deitu…"
 msgid "Rules of this channel"
 msgstr "Kanal honen arauak"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Triste"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Gorde"
 
@@ -2198,11 +2518,15 @@ msgstr "Gorde txantiloi gisa..."
 msgid "Save your recovery code"
 msgstr "Gorde berreskuratze-kodea"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Gordeta"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Gordeta."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Gordetzen"
 
@@ -2236,7 +2560,7 @@ msgstr "Gordetzen…"
 msgid "Say what is wrong with this account."
 msgstr "Esan zer gertatzen den kontu honekin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Beldurtuta"
 
@@ -2255,7 +2579,8 @@ msgstr "%(time)s(r)entzat programatua."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Bilatu"
 
@@ -2266,6 +2591,14 @@ msgstr "Bilatu norbait gehitzeko."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Bilatu kanal hau"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Bilatu berriketa hau"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Bilatu zure berriketak"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "%(num)sean ikusia"
 msgstr[1] "%(num)san ikusia"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Hautatu elkarrizketa bat"
 
@@ -2298,6 +2631,10 @@ msgstr "Hautatu elkarrizketa bat"
 #, machine, plain1
 msgid "Send"
 msgstr "Bidali"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Bidali fitxategi bat"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Bidali hurrengo argazkiak hona:"
 msgid "Send your next videos to:"
 msgstr "Bidali zure hurrengo bideoak hona:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "%(name)s bidaltzen…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Bidaltzea %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Behin berriketa prest bidaltzen baduzu…"
+msgstr[1] "%(num)s mezu bidaltzea berriketa prest dagoenean…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Bidaltzen..."
@@ -2331,6 +2682,14 @@ msgstr "Bidalita"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Batzuek idazten dute…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Partekatu pantaila"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Iruzkin bat partekatu"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Erakutsi %(num)s mezu berri"
 msgid "Show formatting"
 msgstr "Erakutsi formatua"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Erakutsi kanalean"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Erakutsi berriketan"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Erakutsi gutxiago"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Erakutsi gehiago"
 
@@ -2367,19 +2735,19 @@ msgstr "Erakutsi jatorrizkoa"
 msgid "Show translation"
 msgstr "Erakutsi itzulpena"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Sinatu"
+msgstr "Amaitu saioa"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Sinatu %(device)s"
+msgstr "Amaitu %(device)s saioa"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Sinatu %(device)s? Berriro sinatu beharko duzu zure berriketak irakurtzeko."
+msgstr "%(device)s deskonektatu? Berriro sinatu beharko duzu zure berriketak irakurtzeko."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Saioa hasten"
 
@@ -2497,6 +2865,11 @@ msgstr "Berriketa hasten…"
 msgid "Starting…"
 msgstr "Hasi…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Gelditu partekatzea"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Marratua"
@@ -2547,7 +2920,7 @@ msgstr "Testuaren formatua"
 msgid "Text style"
 msgstr "Testuaren estiloa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Eskerrik asko eskatzeagatik"
 
@@ -2571,27 +2944,39 @@ msgstr "Eskerrik asko. Administratzailea arduratuko da."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Eskerrik asko, guild-eko moderatzaileek begirada bat botako dute."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Eskerrik asko: guneko administratzaileek begiratu egingo dute, eta @%(name)s blokeatu duzu."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Eskerrik asko. Gunearen administratzaileek begiratu egingo dute."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Eskerrik asko. Gunearen administratzaileek begiratu egingo dute. @%(name)s ezin da hemendik blokeatu: blokeatu profiletik."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Berriketa hori ez dago prest gailu honetan. Ireki behin eta saiatu berriro."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Kode horrek ez du irekitzen. Egiaztatu tipoak."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Ezin izan da gorde."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Gailu hori ezin da orain sinatu."
+msgstr "Gailu hori ezin da deskonektatu oraintxe bertan."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Ezin da gailu hori erabili."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Ez da bidali"
 
@@ -2630,6 +3015,14 @@ msgstr "Hori ez da zure pasahitza."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Ezin da mezu hori bidali."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Mezu hori ezin izan da kanalean aurkitu."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Mezu hori ezin izan da berriketa honetan aurkitu."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Berriketa itxita dago: espazio hau amaitu da."
 msgid "The chat opens when the Space starts."
 msgstr "Gunea hasten denean hasten da berriketa."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Zure aplikazio autentikoaren kodea, edo babeskopia-kodeetako bat."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Zirriborroa azken edizioaren pean aldatu zen, eta berriro kargatu zen. Egiaztatu zure azken hitzak."
@@ -2722,6 +3119,10 @@ msgstr "Zirriborroa azken edizioaren pean aldatu zen, eta berriro kargatu zen. E
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Parekatu beharreko emojia"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Ezin izan da fitxategia bidali. Saiatu berriro."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Esteka ezin da kopiatu."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Ezin izan da mikrofonoa hasi."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofonoa ezin da erabili. Egiaztatu gune honek erabil dezakeela."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Erreprodukzioa ez da gorde: igoerak huts egin du. Horren ordez deskargatu dezakezu."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Gunearen gakoak aldatu egin dira, beraz, berriketa hemen hasten da berriro."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Laburpena zure hitz-iragazkiak ezkutatzen du."
 
@@ -2812,6 +3221,10 @@ msgstr "Oraindik ez dago nora bidali."
 msgid "These comments could not be loaded. Try again."
 msgstr "Iruzkin hauek ezin izan dira kargatu. Saiatu berriro."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Inoiz ez da jakiten nork jakinarazi zien."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Deia baztertu zuten."
@@ -2824,6 +3237,10 @@ msgstr "Ez datoz bat"
 msgid "They match"
 msgstr "Bat datoz"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Zure kontuan gelditzen dira, enkriptatuta, bere leku librea erabiliz. Berriketan daudenek bakarrik ireki ditzakete."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Ezingo dizute jarraitu, mezu bat bidali edo zure mezuei iruzkinik egin, eta ez dituzu haien mezuak ikusiko. Edozein unetan desblokea ditzakezu."
@@ -2832,9 +3249,9 @@ msgstr "Ezingo dizute jarraitu, mezu bat bidali edo zure mezuei iruzkinik egin, 
 msgid "This Space has ended."
 msgstr "Espazio hau amaitu da."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Arakatzailea"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Hau ere arakatzailean amaitzen da, non berriketa erabili duzun."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Arakatzaileak ezin du deirik egin."
 msgid "This browser can't record the Space."
 msgstr "Arakatzaileak ezin du espazioa grabatu."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Arakatzaileak ezin du pantaila partekatu."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Arakatzaileak ezin du gune honen jakinarazpenik erakutsi."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Arakatzaileak ezin ditu argazkiak igo. Saiatu beste arakatzaile batekin."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Arakatzaile honek zure berriketa-gakoak gordetzen ditu pasahitza aldatu aurretik. Erabili mezu zaharrak irakurtzeko hemen eta beste gailuetan?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Arakatzailea beste gailu batetik berriketatik deskonektatu da, beraz, berriketa hemen hasten da berriro."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Arakatzailearen gordetako berriketa-datuak garbitu dira, beraz, berriketa hemen hasten da berriro."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Ezin da desegin."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Kanal hau zuretzat mutu dago: irakurri gabeko punturik ez eta jakinarazpenik ez."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Berriketa hau enkriptatuta dago, beraz, guneak ezin du irakurri. Mezu hau bidali eta lau egunera arte, hemen ikusten denez, guneko administratzaileei."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Iruzkin hau ezin da erakutsi."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Gailu hau berehala deskonektatuko da."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Ezin izan da fitxategia ireki. Saiatu berriro geroago."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Fitxategi hau ez dago erabilgarri."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Hari bizi hau amaitu da"
@@ -2863,6 +3320,10 @@ msgstr "Hari bizi hau amaitu da"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Mezu hau ezin da gailu honetan irakurri."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Mezu hau ezabatu egin da."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Post hau ezin da erakutsi."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Post hau off-topic da +%(guild)s(r)entzat"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Sinatzeko hau"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Honek arakatzailean berriketa ere deskonektatzen du, arakatzaile honena bada. Gailu berri gisa hasiko da berriro."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Ahots-kanal hau beteta dago (%(num)s pertsona)."
 msgstr[1] "Ahots-kanal hau beteta dago (%(num)s pertsona)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Gako horiek ez dira zure kontua. Erabili berreskuratzeko kodea edo hasi berriro."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Luzeegi %(num)serako (%(note)s)"
 msgstr[1] "Gehiegi %(num)srako (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Eskaera gehiegi gaur"
 
@@ -2945,13 +3418,21 @@ msgstr "Itzulpena ez dago eskuragarri orain."
 msgid "Try again"
 msgstr "Saiatu berriro"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Saiatu berriro bihar."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Itzuli jakinarazpenak"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Bi faktoreko kodea"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Bi faktoreko sinadura aldatu egin da, eta berriketa hemen hasten da berriro."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Ezin da iruzkina kendu une honetan. Saiatu berriro beranduago."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Une honetan ezin da bozkatu. Saiatu berriro beranduago."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Desblokeatu"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Desegin"
 
@@ -3010,17 +3491,13 @@ msgstr "Desblokeatu"
 msgid "Unlock your messages"
 msgstr "Desblokeatu mezuak"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Desblokeatu zure mezuak lehenik: birkargatu orria pasahitza sartzeko."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Desisilarazi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Desainguratu"
 
@@ -3076,11 +3553,15 @@ msgstr "Erabili hemen"
 msgid "Use my recovery code instead"
 msgstr "Erabili nire berreskuratze-kodea horren ordez"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Erabili"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Erabiltzaile-izena hartuta dago :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Erabiltzaile-izena ondo dago!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Bideo-deia · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Bideoa desaktibatuta dago dei honetan: audioan zaude."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Ikusi jatorrizkoa"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Ahotsa arakatzailera doa gunearen errelebotik, inork ez dezan ikusi inoren helbidea. Pertsona bat arte."
 msgstr[1] "Ahotsa arakatzailera doa gunearen errelebotik, inork ez dezan ikusi inoren helbidea. %(num)s pertsona arte."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Ahots oharra"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Itxaron une batez: zure azken aldaketak gordetzen ari dira."
@@ -3213,6 +3698,10 @@ msgstr "Itxaron une batez: zure azken aldaketak gordetzen ari dira."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Aplikazioaren zain"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Zure berriketa aurkitu dugu arakatzaile honetan"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Zer gertatzen da espazio honekin? (aukerakoa)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Zer gertatzen da mezu honekin? (aukerakoa)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Nora bidali behar dituzu berriketak?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Nork esan du"
 msgid "Who upvoted"
 msgstr "Errebotatu dutenak"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Zergatik"
 
@@ -3274,6 +3767,10 @@ msgstr "Zergatik hausten ditu horrek zure lantzarien arauak? Iruzkin honen histo
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Zergatik hausten ditu horrek zure lantzarien arauak? Post/comment-en historia aztertzen duen edonori erakutsiko zaio."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Zergatik kentzen da iruzkin hau? Zure arrazoia egunkari publikoan erakusten da."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Idatzi zerbait lehenbizi."
 msgid "Write what you want to tell us."
 msgstr "Idatzi kontatu nahi diguzuna."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Bai"
 
@@ -3310,7 +3807,7 @@ msgstr "Bai, bertan behera utzi"
 msgid "You"
 msgstr "Zu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Hori egina duzu jada"
 
@@ -3326,7 +3823,7 @@ msgstr "Mezu honen berri eman duzu dagoeneko."
 msgid "You already voted on this post."
 msgstr "Post honetan bozkatu duzu dagoeneko."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "@%(name)s blokeatuta duzu"
 
@@ -3364,7 +3861,7 @@ msgstr "Kanal hau irakur dezakezu, baina ez idatzi."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Ikusten duzu nor dagoen hemen, baina ezin duzu kanal honetan hitz egin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Ezin duzu hori egin."
 
@@ -3408,6 +3905,14 @@ msgstr "Espaziotik irten zinen."
 msgid "You left the call."
 msgstr "Deia utzi duzu."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Beste gailu batetik deskonektatu zara, beraz, berriketa hemen hasten da berriro."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Bi faktoreko berreskuratze-kodearekin sinatu duzu, beraz, berriketa hemen hasten da berriro."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Ez duzu @%(name)s betetzen."
@@ -3415,6 +3920,10 @@ msgstr "Ez duzu @%(name)s betetzen."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Leku honetatik bota zintuzten."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Berreskuratze-kode berria lortuko duzu, eta zaharrak funtzionatzeari utziko dio."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Arakatzaileak leihoa blokeatu du konektatzeko. Baimendu gune honetako po
 msgid "Your chat devices can't be listed right now."
 msgstr "Zure berriketa-gailuak ezin dira zerrendatu."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Berriketa berreskuratzeko kodea"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Zure berriketak"
@@ -3451,6 +3964,10 @@ msgstr "Zure berriketak berriro gailu honetan funtzionatuko du, baina aurreko me
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Zure iruzkina ezin izan da argitaratu. Saiatu berriro."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Berreskuratze-kodea funtzionatzeari utziko dio."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Zure gakoa ezin da orain erakutsi."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Zure gakoa pasahitz zahar batekin blokeatuta zegoen. Ireki berriketa gune honetan eta sartu berreskuratzeko kodea behin; gero hemen irekiko da."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Zure mezua bidaliko da gailu honetan berriketa desblokeatu ondoren."
+msgstr[1] "Zure %(num)s mezuak bidaliko dira gailu honetan berriketa desblokeatu ondoren."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Zure berreskuratze-kode zaharrak ez du funtzionatzen."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Zure pasahitza aldatu egin da berriketa-gako hau blokeatu zenetik. Berriketa hastean gorde zenuen berreskuratzeko kodea irekitzen da."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Zure pasahitza aldatu da, beraz, berriketa hemen hasten da berriro."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Zure pasahitza aldatu da, beraz, berriketa hemen hasten da berriro."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Zure pasahitza berrezarri da, beraz, berriketa hemen hasten da berriro."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Zure berreskuratze-kodea"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Gordetako txantiloiak hemen agertzen dira."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Pantaila bakarrik parteka daiteke dei honetan bideoan zauden bitartean."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Ezin izan da pantaila partekatu."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "urdina"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "iruzkina"
 
@@ -3606,7 +4153,7 @@ msgstr "laranja"
 msgid "pink"
 msgstr "arrosa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "argitalpena"
 

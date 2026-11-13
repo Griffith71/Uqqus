@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: id\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s sedang mengetik…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s atur pesan untuk menghilang setelah %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s mematikan pesan yang menghilang."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s anggota"
 msgstr[1] "%(num)s anggota"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s pesan ditemukan."
+msgstr[1] "%(num)s pesan ditemukan."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s pesan dalam thread"
 msgstr[1] "%(num)s pesan dalam thread"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s pesan dibaca…"
+msgstr[1] "%(num)s pesan dibaca…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] ""
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Simpan sih?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] ""
 msgstr[1] ""
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 hari"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 minggu"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s menambahkan anda ke grup ini. Terima untuk membacanya dan tulis di dalamnya."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@ %(name)s belum membuka percakapan. Pesan Anda akan dikirim ketika mereka melakukannya."
 msgstr[1] "@ %(name)s belum membuka percakapan. %(num)s pesan Anda akan dikirim ketika mereka melakukannya."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@ %(name)s sedang mengetik…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Sebuah pesan yang tidak ada lagi"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Sebuah pesan yang Anda tulis di sini tidak dikirim: Percakapan berhenti dalam tab ini sebelum bisa pergi."
+msgstr[1] "%(num)s pesan yang anda tulis di sini tidak dikirim: obrolan dihentikan di tab ini sebelum mereka bisa pergi."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Sebuah posting dapat memiliki %(num)s ko- penulis paling banyak."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Terima"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Tambah"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Tambahkan pembantu dengan nama pengguna"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Menambah..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Setuju"
 
@@ -413,6 +455,10 @@ msgstr "Rata kanan"
 msgid "Alignment"
 msgstr "Perataan"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Blokir juga @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Juga di sini: %(names)s"
 msgid "An app"
 msgstr "Aplikasi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Marah"
 
@@ -432,7 +478,7 @@ msgstr "Marah"
 msgid "Announcements"
 msgstr "Pengumuman"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonim"
 
@@ -440,6 +486,10 @@ msgstr "Anonim"
 #, machine, plain1
 msgid "Answer"
 msgstr "Jawab"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Siapapun di chat masih dapat menyalin pesan atau mengambil gambar layar sebelum ia pergi."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Kaitkan link ke posting ini"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Aw kampret. Tidak ditemukan GIFs..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Keren"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Canggung"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Kembali ke atas"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Blokir"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Blokir @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "Diblokir @ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Tebal (Ctrl + B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Membawa kunci obrolan Anda berhenti. Masukkan kata sandi Anda untuk menyelesaikan."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Matikan kamera"
 msgid "Camera on"
 msgstr "Kamera hidup"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Batal"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] ""
 msgstr[1] ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Saluran"
 
@@ -599,13 +653,45 @@ msgstr "Kanal Anda berada di"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Chat"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Percakapan tidak bisa membawa kunci Anda lebih. Isi ulang untuk mencoba lagi."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Percakapan tidak bisa terhubung."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Percakapan tidak bisa selesai memulai lagi. Masukkan sandi Anda untuk mencoba lagi."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Percakapan tidak bisa selesai memulai lagi. Isi ulang untuk mencoba lagi."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat tidak dapat membuka apa yang disimpan peramban ini, sehingga dimulai lagi di sini."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Percakapan tidak dapat dimulai di browser ini."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Percakapan tidak menjawab. Coba lagi."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat tidak digunakan pada browser ini untuk waktu yang lama, sehingga mulai lagi di sini."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Percakapan akan ditutup di tab lain…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Percakapan masih dimulai."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Percakapan masih dimulai. Coba lagi sebentar lagi."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Percakapan tidak tersedia untuk akun Anda sekarang."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Percakapan kehilangan hubungannya. Mencoba…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat membutuhkan browser ini untuk menjaga data situs, dan tidak bisa di sini. Percakapan tak bisa dimulai dari jendela ini."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Percakapan berhenti di tab ini."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Percakapan terputus pada peramban ini dari perangkat lain. Mulai lagi dari sini…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Obrolan dengan @ %(name)s"
@@ -627,7 +733,7 @@ msgstr "Obrolan dengan @ %(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Kunci obrolan tidak tersedia sekarang."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Chat"
 
@@ -667,11 +773,11 @@ msgstr "Pilih siapa yang bisa melihat ini."
 msgid "Choose your profile or at least one guild."
 msgstr "Pilih profil Anda atau setidaknya satu serikat."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Lingkaran"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Tutup"
 
@@ -707,7 +813,7 @@ msgstr "Bandingkan mereka dengan yang Anda aplikasi menunjukkan, dalam urutan ya
 msgid "Confirm in the app as well."
 msgstr "Konfirmasi di aplikasi juga."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Bingung"
 
@@ -859,6 +965,10 @@ msgstr "Tidak dapat memuat pesan yang disematkan"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Tidak dapat memuat pratinjau."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Tak bisa memuat obrolan Anda"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Tak bisa menyalin: pilih kode dan salin mereka."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Tidak dapat memuat pesan sebelumnya. Coba lagi sebentar lagi."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Tidak bisa memuat percakapan Anda. Mencoba lagi…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Membuat postingan"
 
@@ -1028,7 +1142,7 @@ msgstr "Membuat postingan"
 msgid "Creating…"
 msgstr "Membuat…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1036,7 +1150,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Silangkan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Mode gelap"
 
@@ -1101,13 +1215,21 @@ msgstr "Hapus cerita ini?"
 msgid "Delete this update?"
 msgstr "Hapus pembaruan ini?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Menghapus komentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Menghapus postingan"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Menghilangkan pesan"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Pesan yang hilang mati."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Selesai"
 #, machine, plain1
 msgid "Done."
 msgstr "Selesai."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Unduh"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "End-to-end dienkripsi: hanya orang di saluran ini yang dapat membacanya.
 msgid "Ended"
 msgstr "Berakhir"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Masukkan URL"
 
@@ -1206,6 +1332,10 @@ msgstr "Masukkan alamat web, seperti https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Masukkan kata sandi Anda sekali. Ini mengunci kunci pesan Anda di peramban ini, sehingga situs tidak pernah dapat membacanya."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Masukkan kata sandi Anda untuk mengkonfirmasi."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Masukkan kata sandi Anda."
 msgid "Enter your recovery code"
 msgstr "Masukkan kode pemulihan Anda"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Masukkan kode dua faktor Anda"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Masukkan kode dua faktor Anda."
+
+#, machine, plain2
+msgid "File"
+msgstr "Berkas"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Berkas dapat dikirim sekali @ %(name)s telah membuka percakapan."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Berkas dapat dikirim sekali percakapan tidak terkunci di perangkat ini."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Berkas tidak dapat dikirim ke sini."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Final"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Selesai"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Selesaikan pembicaraanmu"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Selesai memulai dari awal"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Menyelesaikan pemeriksaan percakapan di tab lain…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Memformat"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Teruskan"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Teruskan pesan ini"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Maju ke paling banyak %(num)s serikat."
 msgstr[1] "Maju ke paling %(num)s guilds."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Teruskan ke…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Diforward"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Dibentuk."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Meneruskan"
 
@@ -1292,11 +1478,11 @@ msgstr "Berikan tombol beberapa teks."
 msgid "Give the template a name."
 msgstr "Berikan nama templat itu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Buka situs web"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Jijik"
 
@@ -1304,7 +1490,7 @@ msgstr "Jijik"
 msgid "Group info"
 msgstr "Info grup"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Guild"
 
@@ -1316,13 +1502,25 @@ msgstr "Bersalah dengan percakapan"
 msgid "Hand raised"
 msgstr "Angkat tangan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Senang"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Apakah Anda terus kode pemulihan chatting Anda? Tanpa itu, kata sandi yang dilupakan dapat kehilangan pesan lama Anda."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Tajuk %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Helpers"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Helpers menulis dalam saluran ini dengan Anda. Pilih tiga orang yang ada di dalamnya."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Saya setuju dengan aturan"
 msgid "I don't have it: start over"
 msgstr "Saya tidak memilikinya: mulai dari awal"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Aku memilikinya"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Aku sudah menyimpannya"
@@ -1372,6 +1574,10 @@ msgstr "Aku sudah menyimpannya"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Jika Anda lupa sandi Anda, kode ini adalah satu-satunya cara untuk membaca pesan lama Anda. Simpan di tempat yang aman, seperti manajer sandi."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Jika Anda masih memiliki kode pemulihan Anda, gunakan saja: beberapa pesan lama hanya dalam cadangan itu terbuka."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Cerita-ceritanya tetap dalam arsip Anda."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Gabung"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Gabung ke %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Fakta kunci dan link orang harus melihat terlebih dahulu."
 msgid "Last used %(date)s"
 msgstr "Terakhir digunakan %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Nanti"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Tertawa"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Keluar"
 
@@ -1516,7 +1726,7 @@ msgstr "Meninggalkan kelompok ini? Orang lain di dalamnya menjadi pemiliknya."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Meninggalkan kelompok ini? Anda tidak akan melihat pesan baru kecuali seseorang menambahkan Anda lagi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Mode terang"
 
@@ -1561,6 +1771,10 @@ msgstr "Hiduplah sekarang"
 msgid "Load earlier messages"
 msgstr "Muat pesan sebelumnya"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Memuat komentar…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Memuat post…"
@@ -1585,17 +1799,25 @@ msgstr "Memuat templat Anda..."
 msgid "Loading..."
 msgstr "Memuat..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Memuat…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Cinta"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Turunkan tangan"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Membuat kode baru"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Membuat kode pemulihan baru?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Membuat posting ini publik? Semua orang akan bisa melihatnya."
 msgid "Making the channel…"
 msgstr "Membuat saluran…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1630,6 +1852,14 @@ msgstr "Pesan dihapus"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Permintaan pesan. Mereka tidak akan tahu Anda telah melihat ini sampai Anda menerima."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Pesan hilang setelah %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Pesan browser ini sudah bisa dibaca akan kembali ke sini."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Lainnya"
 
@@ -1649,11 +1879,11 @@ msgstr "Lainnya"
 msgid "Move to listeners"
 msgstr "Pindah ke pendengar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Bisukan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Dibisukan"
 
@@ -1673,7 +1903,11 @@ msgstr "Nama folder Anda"
 msgid "New channel"
 msgstr "Kanal baru"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Pesan baru dalam percakapan ini menghilang untuk semua orang setelah waktu yang Anda pilih. Pesan dikirim sebelum menjaga waktu mereka dikirim dengan."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Tidak"
 
@@ -1693,17 +1927,29 @@ msgstr "Belum ada telepon. Mulai satu dari chat 's Voice panggilan atau Video pa
 msgid "No camera was found."
 msgstr "Tidak ada kamera yang ditemukan."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Tidak ada percakapan yang ditemukan."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Belum ada penulis."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Tidak ada kode? Masuk dengan sandi baru Anda pada peramban di mana Anda telah menggunakan percakapan: ini dapat membawa Anda mengobrol kembali."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Belum ada perangkat. Buka Percakapan untuk memulai."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Tanpa label"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Belum ada pembantu."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Tidak ada mikrofon ditemukan."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Tidak ada yang cocok. Anda dapat mengirim ke percakapan Anda dan kepada orang-orang yang Anda ikuti."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Belum ada pesan yang disematkan."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Tidak disimpan"
 msgid "Not used yet"
 msgstr "Belum digunakan"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Tidak ada yang ditemukan dalam pesan yang dapat dibaca browser ini."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Tidak ada yang ditemukan."
@@ -1785,17 +2039,45 @@ msgstr "Belum ada yang perlu diperjelas."
 msgid "Nothing was connected."
 msgstr "Tidak ada yang terhubung."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Notifikasi"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Pemberitahuan diblokir bagi situs ini dalam peramban ini. Memungkinkan mereka dalam pengaturan peramban untuk menyalakannya."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Pemberitahuan tidak aktif dalam peramban ini."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Pemberitahuan berada di dalam peramban ini."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Pemberitahuan tidak bisa diperiksa. Muat ulang halaman untuk mencoba lagi."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Pemberitahuan tidak bisa dihidupkan. Coba lagi."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Pemberitahuan tidak diperbolehkan untuk situs ini."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Daftar bernomor"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Mati"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Luring"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Luring"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Hanya pemilik grup dan admins yang bisa mengubah ini."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Buka Chat sekali untuk membuka pesan Anda, kemudian coba lagi."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Buka Percakapan untuk menyelesaikan pengaturan pesan Anda pada perangkat ini."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Buka pengaturan media"
 
@@ -1849,6 +2139,10 @@ msgstr "Buka Ruang"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Buka obrolan dari + %(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Membuka berkas…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Orang yang kau ikuti"
 msgid "Pick a date and time."
 msgstr "Pilih tanggal dan waktu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Pilih label"
 
@@ -1909,11 +2203,15 @@ msgstr "Cerita gambar belum tersedia di situs ini."
 msgid "Pin this message"
 msgstr "Pin pesan ini"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Dijepit"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Pesan yang diketikkan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Tolong"
 
@@ -1921,12 +2219,18 @@ msgstr "Tolong"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Silakan masukkan suatu URL yang valid (termasuk http: / / or https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Silakan masuk lagi."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Saluran populer"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Posting"
 
@@ -1938,7 +2242,7 @@ msgstr "Posted. Reload halaman untuk melihatnya."
 msgid "Posting to %(guilds)s"
 msgstr "Posting ke %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Memposting ke profil Anda"
 
@@ -1947,7 +2251,7 @@ msgstr "Memposting ke profil Anda"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Posting ke profil Anda, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Memposting…"
 
@@ -2047,6 +2351,14 @@ msgstr "Beraksi"
 msgid "React with %(emoji)s"
 msgstr "Bereaksi dengan %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Rekam catatan suara"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Rekaman… tekan mikrofon lagi untuk mengirimkannya."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Kode Pemulihan"
@@ -2059,13 +2371,17 @@ msgstr "Jadi Lagi"
 msgid "Refreshing…"
 msgstr "Menyegarkan…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Mendaftar"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Rilis untuk menyegarkan"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Muat ulang"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Set pengingat"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Hapus"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Hapus %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Hapus @ %(name)s sebagai pembantu"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Ubah nama folder ini"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Laporkan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Laporkan komentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Laporkan postingan"
 
@@ -2155,11 +2475,11 @@ msgstr "Laporkan postingan"
 msgid "Report this message"
 msgstr "Laporkan pesan ini"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Melaporkan komentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Melaporkan postingan"
 
@@ -2176,13 +2496,13 @@ msgstr "Berdering…"
 msgid "Rules of this channel"
 msgstr "Aturan kanal ini"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Sedih"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Simpan"
 
@@ -2198,11 +2518,15 @@ msgstr "Simpan sebagai template..."
 msgid "Save your recovery code"
 msgstr "Simpan kode pemulihanmu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Tersimpan"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Selamat."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Menyimpan"
 
@@ -2236,7 +2560,7 @@ msgstr "Menyimpan…"
 msgid "Say what is wrong with this account."
 msgstr "Katakan apa yang salah dengan akun ini."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Takut"
 
@@ -2255,7 +2579,8 @@ msgstr "Dijadwalkan untuk %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Cari"
 
@@ -2266,6 +2591,14 @@ msgstr "Cari seseorang untuk ditambahkan."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Cari kanal ini"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Cari percakapan ini"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Cari percakapan Anda"
 
 #, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Melihat oleh %(num)s"
 msgstr[1] "Terlihat oleh %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Pilih percakapan"
 
@@ -2298,6 +2631,10 @@ msgstr "Pilih percakapan"
 #, machine, plain1
 msgid "Send"
 msgstr "Kirim"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Kirim berkas"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Kirim gambar berikutnya ke:"
 msgid "Send your next videos to:"
 msgstr "Kirim video berikutnya ke:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Mengirim %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Mengirim %(name)s… %(percent)s %%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Mengirim sekali percakapan sudah siap…"
+msgstr[1] "Mengirim %(num)s pesan setelah percakapan siap…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Mengirim..."
@@ -2331,6 +2682,14 @@ msgstr "Dikirim"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Beberapa orang mengetik…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Berbagi layar"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Berbagi komentar"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Tampilkan %(num)s posting baru"
 msgid "Show formatting"
 msgstr "Tampilkan format"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Tampilkan dalam kanal"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Tampilkan dalam percakapan"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Lihat lebih sedikit"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Lihat selengkapnya"
 
@@ -2367,19 +2735,19 @@ msgstr "Tampilkan asli"
 msgid "Show translation"
 msgstr "Tampilkan terjemahan"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Tanda tangan"
+msgstr "Keluarkan"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Tanda tangan %(device)s"
+msgstr "Keluarkan %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Tanda tangan %(device)sIni akan perlu untuk masuk lagi untuk membaca percakapan Anda."
+msgstr "Putuskan %(device)s? Ini perlu untuk masuk lagi untuk membaca percakapan Anda."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Sedang masuk"
 
@@ -2497,6 +2865,11 @@ msgstr "Memulai obrolan…"
 msgid "Starting…"
 msgstr "Mulai…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Berhenti berbagi"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Coret"
@@ -2547,7 +2920,7 @@ msgstr "Memformat teks"
 msgid "Text style"
 msgstr "Gaya teks"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Terima kasih atas permintaan Anda"
 
@@ -2571,27 +2944,39 @@ msgstr "Terima kasih. Sebuah admin akan melihatnya."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Terima kasih: para moderator serikat akan melihatnya."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Terima kasih: admin situs akan melihat, dan Anda telah diblokir @ %(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Terima kasih: admins situs akan melihat."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Terima kasih: admins situs akan melihat. @ %(name)s tidak dapat diblokir dari sini: blok mereka dari profil mereka."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Obrolan itu belum siap pada perangkat ini. Buka sekali, kemudian coba lagi."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Kode itu tidak membukanya. Periksa kesalahan ketik."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Tidak dapat disimpan."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Perangkat itu tidak bisa keluar sekarang."
+msgstr "Perangkat itu tidak bisa diputus sekarang."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Perangkat itu tidak bisa digunakan."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Gagal terkirim"
 
@@ -2630,6 +3015,14 @@ msgstr "Itu bukan passwordmu."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Pesan itu tidak bisa dikirim."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Pesan itu tidak dapat ditemukan di saluran lagi."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Pesan itu tidak dapat ditemukan dalam percakapan ini lagi."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Percakapan ditutup: Ruang ini telah berakhir."
 msgid "The chat opens when the Space starts."
 msgstr "Obrolan terbuka ketika ruang dimulai."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Kode dari aplikasi otentikasi Anda, atau salah satu kode cadangan Anda."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Draft berubah di bawah edit terakhir Anda, sehingga dimuat ulang. Periksa beberapa kata terakhir Anda."
@@ -2722,6 +3119,10 @@ msgstr "Draft berubah di bawah edit terakhir Anda, sehingga dimuat ulang. Periks
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji untuk membandingkan"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "File tidak dapat dikirim. Coba lagi."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Link tidak bisa disalin."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofon tidak bisa dimulai."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofon tidak bisa digunakan. Periksa bahwa situs ini dapat menggunakannya."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Replay tidak disimpan: upload gagal. Anda dapat men-download sebagai gantinya."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Kunci situsnya berubah, jadi obrolan dimulai lagi di sini."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Ringkasan ini disembunyikan oleh filter kata Anda."
 
@@ -2812,6 +3221,10 @@ msgstr "Tidak ada tempat lain untuk mengirim mereka di situs ini belum."
 msgid "These comments could not be loaded. Try again."
 msgstr "Komentar-komentar ini tidak bisa dimuat. Coba lagi."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Mereka tidak pernah diberitahu yang melaporkan mereka."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Mereka menolak panggilan."
@@ -2824,6 +3237,10 @@ msgstr "Mereka tidak cocok"
 msgid "They match"
 msgstr "Mereka cocok"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Mereka tinggal di rekening Anda sendiri di sana, dienkripsi, menggunakan ruang kosong. Hanya orang-orang di chat dapat membukanya."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Mereka tidak akan bisa mengikuti Anda, pesan Anda atau komentar pada posting Anda, dan Anda tidak akan melihat posting mereka. Kau bisa membukanya kapan saja."
@@ -2832,9 +3249,9 @@ msgstr "Mereka tidak akan bisa mengikuti Anda, pesan Anda atau komentar pada pos
 msgid "This Space has ended."
 msgstr "Ruang ini telah berakhir."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Peramban ini"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Ini juga mengakhiri penyelamatan apapun dari peramban di mana Anda menggunakan percakapan."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Browser ini tidak dapat membuat panggilan."
 msgid "This browser can't record the Space."
 msgstr "Browser ini tidak bisa merekam ruang angkasa."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Peramban ini tidak dapat berbagi layarnya."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Peramban ini tidak dapat menampilkan pemberitahuan dari situs ini."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Peramban ini tidak dapat menyiapkan gambar untuk diunggah. Coba browser lain."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Peramban ini masih memegang kunci obrolan Anda sebelum sandi Anda berubah. Menggunakannya untuk membaca pesan lama Anda di sini dan pada perangkat lain Anda?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Peramban ini diputus dari percakapan dari perangkat lain, jadi obrolan dimulai lagi di sini."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Data obrolan peramban disimpan sudah dibersihkan, jadi obrolan dimulai lagi di sini."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Ini tidak bisa dibatalkan."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Saluran ini digumam untuk Anda: tidak ada titik yang belum dibaca dan tidak ada pemberitahuan menyebutkan."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Percakapan ini selesai dienkripsi, jadi situs ini tak bisa membacanya. Laporan mengirimkan pesan ini dan sampai empat sebelum itu, seperti yang Anda lihat mereka di sini, ke admin situs."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Komentar ini tidak dapat ditampilkan."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Perangkat ini akan terputus sebentar lagi."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Berkas ini tidak dapat dibuka. Coba lagi nanti."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Berkas ini tidak lagi tersedia."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Benang hidup ini telah berakhir"
@@ -2863,6 +3320,10 @@ msgstr "Benang hidup ini telah berakhir"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Pesan ini tidak dapat dibaca pada perangkat ini."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Pesan ini dihapus."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Pos ini tidak dapat ditampilkan."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Posting ini off-topik untuk + %(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Tanda-in ini"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Disconnect chat dalam browser ini juga, jika ini adalah browser ini. Ini akan dimulai lagi sebagai perangkat baru."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Saluran suara ini penuh (%(num)s orang)."
 msgstr[1] "Saluran suara ini penuh (%(num)s orang)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Kunci itu bukan milikmu lagi. Gunakan kode pemulihanmu, atau mulai dari awal."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Terlalu panjang oleh %(num)s (%(note)s)"
 msgstr[1] "Terlalu panjang oleh %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Terlalu banyak permintaan hari ini"
 
@@ -2945,13 +3418,21 @@ msgstr "Terjemahan tidak tersedia sekarang."
 msgid "Try again"
 msgstr "Coba lagi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Coba lagi besok."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Nyalakan kembali pemberitahuan"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Dua faktor kode"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Dua-faktor sinyal-in berubah, jadi obrolan dimulai lagi di sini."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Tak bisa menghapus komentar saat ini. Silakan coba lagi nanti."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Tidak dapat memilih saat ini. Silakan coba lagi nanti."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Buka blokir"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Urungkan"
 
@@ -3010,17 +3491,13 @@ msgstr "Buka Kunci"
 msgid "Unlock your messages"
 msgstr "Membuka pesan Anda"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Buka dulu pesan Anda: Muat ulang halaman untuk memasukkan sandi Anda."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Batal bisukan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Lepas sematan"
 
@@ -3076,11 +3553,15 @@ msgstr "Gunakan di sini"
 msgid "Use my recovery code instead"
 msgstr "Gunakan kode penyembuhanku sebagai gantinya"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Gunakan mereka"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Nama pengguna sudah dipakai :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Nama pengguna bisa dipakai!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] ""
 msgid "Video is off in this call: you're on audio."
 msgstr "Video mati dalam panggilan ini: Anda berada di audio."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Lihat asli"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Suara pergi browser untuk browser melalui relay situs, sehingga tidak ada yang melihat alamat siapa pun. Sampai %(num)s orang."
 msgstr[1] "Suara pergi browser untuk browser melalui relay situs, sehingga tidak ada yang melihat alamat siapa pun. Sampai dengan %(num)s orang."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Catatan suara"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Tunggu sebentar: perubahan terakhir Anda masih disimpan."
@@ -3213,6 +3698,10 @@ msgstr "Tunggu sebentar: perubahan terakhir Anda masih disimpan."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Menunggu aplikasi"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Kami menemukan percakapan Anda pada peramban ini"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Apa yang salah dengan ruang ini? (opsional)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Apa yang salah dengan pesan ini? (opsional)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Di mana file yang harus Anda kirim dalam chatting pergi?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Siapa yang mengatakannya"
 msgid "Who upvoted"
 msgstr "Siapa yang memilih"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Kenapa"
 
@@ -3274,6 +3767,10 @@ msgstr "Mengapa ini melanggar aturan serikat Anda? Ini akan ditunjukkan kepada s
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Mengapa ini melanggar aturan serikat Anda? Ini akan ditunjukkan kepada siapa saja yang melihat post / komentar ini sejarah."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Mengapa komentar ini dihapus? Alasan Anda ditunjukkan dalam log publik."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Tulis sesuatu dulu."
 msgid "Write what you want to tell us."
 msgstr "Tulis apa yang ingin kau katakan."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Ya"
 
@@ -3310,7 +3807,7 @@ msgstr "Ya, membatalkannya"
 msgid "You"
 msgstr "Kau"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Anda sudah melakukannya"
 
@@ -3326,7 +3823,7 @@ msgstr "Kau sudah melaporkan pos ini."
 msgid "You already voted on this post."
 msgstr "Kau sudah memilih posisi ini."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Anda memblokir @%(name)s"
 
@@ -3364,7 +3861,7 @@ msgstr "Anda dapat membaca saluran ini tapi tidak menulis di dalamnya."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Anda dapat melihat siapa yang ada di sini, tetapi Anda tidak dapat berbicara dalam saluran ini."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Anda tidak dapat melakukannya."
 
@@ -3408,6 +3905,14 @@ msgstr "Kau meninggalkan Space."
 msgid "You left the call."
 msgstr "Anda meninggalkan panggilan."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Anda terputus di mana-mana dari perangkat lain, jadi chatting dimulai lagi di sini."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Kau bergabung dengan kode pemulihan dua faktor, jadi obrolan dimulai lagi di sini."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Anda tidak diikuti @ %(name)s."
@@ -3415,6 +3920,10 @@ msgstr "Anda tidak diikuti @ %(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Kau dikeluarkan dari ruang ini."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Anda akan mendapatkan kode pemulihan baru, dan yang lama akan berhenti bekerja."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Peramban Anda memblokir jendela untuk menyambung. Ijinkan pop-up untuk s
 msgid "Your chat devices can't be listed right now."
 msgstr "Perangkat percakapan Anda tidak dapat terdaftar sekarang."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Kode pemulihan obrolan Anda"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Obrolan Anda"
@@ -3451,6 +3964,10 @@ msgstr "Percakapan Anda akan bekerja lagi pada perangkat ini, tapi pesan dari se
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Komentar Anda tidak dapat diposting. Coba lagi."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Kode pemulihanmu saat ini akan berhenti bekerja."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Kunci Anda tidak dapat ditampilkan sekarang."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Kunci Anda terkunci dengan sandi yang lebih tua. Buka Percakapan di situs ini dan masukkan kode pemulihan Anda sekali, kemudian terbuka di sini."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Pesan Anda akan dikirim setelah percakapan tidak terkunci di perangkat ini."
+msgstr[1] "Pesan %(num)s Anda akan dikirim sekali percakapan tidak terkunci di perangkat ini."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Kode pemulihan lamamu tidak lagi bekerja."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Sandi Anda berubah sejak kunci obrolan ini terkunci dengannya. Kode pemulihan yang kau simpan ketika percakapan telah ditetapkan membukanya."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Kata sandi Anda diubah untuk Anda, jadi obrolan dimulai lagi di sini."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Sandi Anda diubah, jadi obrolan dimulai lagi di sini."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Kata sandi Anda telah direset, jadi obrolan dimulai lagi di sini."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Kode pemulihanmu"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Templat yang kau simpan muncul di sini."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Layar Anda dapat dibagikan hanya saat Anda berada di video dalam panggilan ini."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Layar Anda tidak dapat dibagi."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "biru"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "komentar"
 
@@ -3606,7 +4153,7 @@ msgstr "oranye"
 msgid "pink"
 msgstr "pink"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "postingan"
 

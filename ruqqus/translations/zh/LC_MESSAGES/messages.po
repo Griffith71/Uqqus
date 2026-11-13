@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-05 20:16+1100\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -351,7 +351,7 @@ msgstr "%(name)s的频道"
 msgid "%(name)s's channels - %(site)s"
 msgstr "%(name)s 频道 - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(name)s's profile - %(site)s"
 msgstr "%(name)s 的个人资料 - %(site)s"
 
@@ -916,7 +916,7 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 
 #. in a post's facts line: the share of its votes that are upvotes ("97%
 #. upvoted")
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% 赞同"
 
@@ -952,7 +952,7 @@ msgstr "%(role)s: 写"
 
 #. the member's reputation in the navbar, e.g. "1234 Rep" (Rep: the upvotes
 #. other people gave them)
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(score)s Rep"
 msgstr "%(score)s 声望"
 
@@ -1011,28 +1011,28 @@ msgstr "%(site)s - 开放的免费社交平台"
 msgid "%(site)s API Documentation"
 msgstr "%(site)sAPI 文档"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Administrator, speaking officially"
 msgstr "%(site)s 管理员，官方发言"
 
 #. the site's name and the feed being read, as a heading
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s All"
 msgstr "%(site)s 全部"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Curations"
 msgstr "%(site)s 精选集"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Feeds"
 msgstr "%(site)s 信息流"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Following"
 msgstr "%(site)s 关注"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s For You"
 msgstr "%(site)s 为你推荐"
 
@@ -1044,7 +1044,7 @@ msgstr "%(site)s 帮助"
 msgid "%(site)s Homepage"
 msgstr "%(site)s 主页"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Notification"
 msgstr "%(site)s 通知"
 
@@ -1056,11 +1056,11 @@ msgstr "%(site)s 密码重置"
 msgid "%(site)s Policies"
 msgstr "%(site)s 政策"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Premium"
 msgstr "%(site)s Premium"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "%(site)s Search"
 msgstr "%(site)s 搜索"
 
@@ -1194,6 +1194,14 @@ msgstr "%(who)s 添加 盾 主持人 %(name)s"
 msgid "%(who)s approved post %(title)s"
 msgstr "%(who)s批准职位%(title)s"
 
+#, machine, plain1, python-format
+msgid "%(who)s banned %(name)s"
+msgstr "%(who)s 被禁 %(name)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s banned the guild +%(guild)s"
+msgstr "%(who)s 禁用盾牌 +%(guild)s"
+
 #, machine, python-format
 msgid "%(who)s cancelled an event"
 msgstr "%(who)s 取消了一个事件"
@@ -1263,6 +1271,10 @@ msgid "%(who)s deleted a channel category"
 msgstr "%(who)s 删除频道类别"
 
 #, machine, plain1, python-format
+msgid "%(who)s deleted a comment"
+msgstr "%(who)s 删除一个注释"
+
+#, machine, plain1, python-format
 msgid "%(who)s deleted a flair"
 msgstr "%(who)s 删除标签"
 
@@ -1273,6 +1285,10 @@ msgstr "%(who)s 删除一个角色"
 #, machine, python-format
 msgid "%(who)s deleted a wiki page"
 msgstr "%(who)s 删除了维基页面"
+
+#, machine, plain1, python-format
+msgid "%(who)s deleted post %(title)s"
+msgstr "%(who)s 删除 %(title)s"
 
 #, machine, python-format
 msgid "%(who)s edited a wiki page"
@@ -1302,6 +1318,10 @@ msgstr "%(who)s突出显示他们的 %(title)s"
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s 隐藏了这个盾的评论"
 
+#, machine, plain1, python-format
+msgid "%(who)s hid a revision of %(title)s"
+msgstr "%(who)s 隐藏了%(title)s 的修订"
+
 #, machine, python-format
 msgid "%(who)s hid post %(title)s from this guild"
 msgstr "%(who)s 从此盾隐藏 %(title)s"
@@ -1313,6 +1333,18 @@ msgstr "%(who)s邀请的盾牌主持人}%(name)s"
 #, machine, python-format
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s踢出 %(title)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on %(name)s"
+msgstr "%(who)s解除了对%(name)s的禁令"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the ban on the guild +%(guild)s"
+msgstr "%(who)s解除了对盾的禁令%(guild)s"
+
+#, machine, plain1, python-format
+msgid "%(who)s lifted the suspension of %(name)s"
+msgstr "%(who)s 取消暂停%(name)s"
 
 #, machine, python-format
 msgid "%(who)s made a channel"
@@ -1374,6 +1406,10 @@ msgstr "%(who)s恢复职位%(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s 已删除频道消息"
 
+#, machine, plain1, python-format
+msgid "%(who)s removed a revision of a guild's wiki"
+msgstr "%(who)s 移除了对 guild wiki 的修订"
+
 #, machine, python-format
 msgid "%(who)s removed comment"
 msgstr "%(who)s 已删除注释"
@@ -1413,6 +1449,10 @@ msgstr "%(who)s 设置 %(title)s 的标签"
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
 msgstr "%(who)s 退出担任盾牌主持人"
+
+#, machine, plain1, python-format
+msgid "%(who)s suspended %(name)s"
+msgstr "%(who)s 暂停 %(name)s"
 
 #, machine, python-format
 msgid "%(who)s switched the wiki"
@@ -1490,7 +1530,7 @@ msgstr "%(who)s 更新样式表"
 msgid "%(who)s yanked post %(title)s"
 msgstr "%(who)s 斜拉杆 %(title)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "&copy; 2021 %(company)s"
 msgstr "&copy; 2021 %(company)s"
 
@@ -1522,7 +1562,7 @@ msgstr "(在私人地点)"
 msgid "(no title)"
 msgstr "(无标题)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(off)"
 msgstr "（已关闭）"
 
@@ -1542,7 +1582,7 @@ msgstr "(可选)"
 msgid "(required in this guild)"
 msgstr "(这盾中需要)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "(required)"
 msgstr "（必填）"
 
@@ -1586,7 +1626,7 @@ msgstr "** 法律请求**"
 msgid "**Press**"
 msgstr "** 新闻**"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ 添加选项"
 
@@ -1598,7 +1638,7 @@ msgstr "+ 键%(guild)s 核定捐款人"
 msgid "+%(guild)s CSS - %(site)s Guildmaster Tools"
 msgstr "%(guild)s CSS - %(site)s (简体中文). 关节主持人工具"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Channels"
 msgstr "+%(guild)s 频道"
 
@@ -1606,11 +1646,11 @@ msgstr "+%(guild)s 频道"
 msgid "+%(guild)s Chat Bans"
 msgstr "+ 键%(guild)s 聊天禁令"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Circle"
 msgstr "+%(guild)s 圈子"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Comments"
 msgstr "+%(guild)s 评论"
 
@@ -1618,7 +1658,7 @@ msgstr "+%(guild)s 评论"
 msgid "+%(guild)s Exiles"
 msgstr "+%(guild)s 流亡"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Flair"
 msgstr "+%(guild)s 标签"
 
@@ -1626,7 +1666,7 @@ msgstr "+%(guild)s 标签"
 msgid "+%(guild)s Guildmasters - %(site)s Guildmaster Tools"
 msgstr "+ 键%(guild)s 团体主持人- %(site)s 关节主持人工具"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "+%(guild)s Insights"
 msgstr "+%(guild)s 数据分析"
 
@@ -2030,17 +2070,17 @@ msgstr "<strong>浏览器 :</strong> %(browser)s"
 msgid "<strong>Email:</strong> %(email)s"
 msgstr "<strong>电子邮件 :</strong> %(email)s"
 
-#, machine
+#, machine, plain2
 msgid "<strong>If it wasn't you,</strong> change your password now. Changing it also signs out every other device."
-msgstr "<strong>如果没有你</strong> 现在更改密码。 改变它 也标记出其他设备。"
+msgstr "<strong>如果没有你</strong> 现在更改密码。 更改它也会断开其他设备."
 
 #, machine, python-format
 msgid "<strong>Member bot</strong>: you run it with your own key or pay for its source (for example X). It stays yours, says \"Automated by @%(name)s\" and you manage it."
 msgstr "<strong>成员机器人</strong>:您用自己的钥匙运行,或者支付其来源(例如X). 它留在你的,说\"自动由 @%(name)s\"你来管理它。"
 
-#, machine
-msgid "<strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app can't send one."
-msgstr "<strong>还没有 :</strong> 图片和文件。 聊天服务器没有保存文件,所以一个应用程序无法发送一个."
+#, machine, plain2
+msgid "<strong>Not in apps:</strong> files, pictures and voice notes. Those sent on this site are kept, encrypted, in the sender's own storage, which an app can't reach, and an app can't send one."
+msgstr "<strong>不在应用程序中 :</strong> 文档、图片和语音注释。 发送到这个网站的都是保存,加密的,在发送者自己的存储器中,一个应用无法到达,一个应用无法发送一个."
 
 #, machine
 msgid "<strong>On this site only:</strong> starting a chat, accepting a message request, making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a call on this server: the site keeps who can reach you as it does here."
@@ -2141,9 +2181,9 @@ msgstr ""
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
 msgstr "[%(name)s将[一个](%(link)s)转发到}%(guild)s."
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "@%(name)s has a new password and is signed out everywhere."
-msgstr "页:1%(name)s 拥有新的密码, 并随处签名。"
+msgstr "页:1%(name)s 拥有新密码, 并被连接到任何地方 。"
 
 #, machine, python-format
 msgid "@%(name)s has already been invited."
@@ -2325,6 +2365,13 @@ msgstr ""
 msgid "@%(name)s stepped off as co-author of [your post](%(link)s)."
 msgstr ""
 
+#, python-format
+msgid ""
+"@%(name)s told everyone in #%(channel)s of +%(guild)s.\n"
+"\n"
+"[Open the channel](%(link)s)"
+msgstr ""
+
 #, machine, python-format
 msgid "@%(name)s unblocked."
 msgstr "页:1%(name)s 解锁."
@@ -2403,6 +2450,10 @@ msgstr "A Circle guild 永远是私人的:只有其成员看到它,他们直接�
 #, machine, plain1
 msgid "A Curation is your own named collection of guilds and accounts - like a custom feed, with an algorithm you choose. Keep it private just for yourself, or make it public so others can follow or fork it."
 msgstr "Curated feed是您自己命名的盾和账号的集合—就像自定义的feed,有您选择的算法. 保持它只为你自己私密,或公开,以便其他人可以跟随或叉开它."
+
+#, machine, plain1
+msgid "A QR code to sign in with. Scan it with your phone, where you are signed in."
+msgstr "以 QR 代码签名 。 用你的手机扫描,你在哪里注册."
 
 #, machine
 msgid "A Space"
@@ -2609,6 +2660,10 @@ msgstr "一个聊天软件想签到您的聊天 <strong>页:1%(name)s</strong>�
 #, machine, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
 msgstr "一个聊天应用程序被签入您的 %(site)s 账户 。 如果不是你,请在 [Settings > Chat apps] (/settings/chat_apps ) 中签名并更改密码 ."
+
+#, machine, plain2, python-format
+msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
+msgstr "聊天最多可以有 %(num)s 绑定的消息 。 先释一."
 
 #, machine, python-format
 msgid "A circle can have %(num)s person at most."
@@ -2997,6 +3052,10 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "帖子的文字可以是%(count)s字符(中文,日文和韩文字符和emoji计数为2)."
 
 #, machine, plain1
+msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
+msgstr "隐匿、删除或删除时的私人副本。 只有它的作者,它隐藏的盾牌的盾牌主持人和网站的管理员可以打开它,它不是永远保存的."
+
+#, machine, plain1
 msgid "A private guild can only go in a private curation."
 msgstr "私家盾只能用私家饲料."
 
@@ -3120,6 +3179,10 @@ msgstr "角色名称不能包含@:它会读作手柄."
 msgid "A role name can't contain control or invisible characters."
 msgstr "角色名称不能包含控制或隐形字符."
 
+#, machine, plain1
+msgid "A rule of the guild"
+msgstr "盾规则"
+
 #, machine
 msgid "A scheduled post needs a title."
 msgstr "预定职位需要职称."
@@ -3171,6 +3234,10 @@ msgstr "编译饲料算法的起点. 在下一页中,您会加入盾和帐号,�
 msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "一个故事可以是%(num)s人物(中文,日文和韩文人物和emoji算作2)."
+
+#, machine, plain1
+msgid "A suspension or ban needs a public reason, so the Log can say why."
+msgstr "暂停或禁止需要公开的理由,所以日志可以说明原因."
 
 #, machine
 msgid "A template needs some text."
@@ -3252,7 +3319,7 @@ msgstr "一个词或短语不能包含控制或隐形字符."
 msgid "A year"
 msgstr "一年时间"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "API App"
 msgstr "API 应用"
 
@@ -3264,16 +3331,16 @@ msgstr "API 文档"
 msgid "API requests must be authenticated with an access token. To obtain an access token, follow <a href=\"%(url)s\">these instructions.</a>"
 msgstr "API 请求必须使用访问符进行认证。 要获得访问符,请跟随 <a href=\"%(url)s\">这些指示。</a>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About"
 msgstr "关于我们"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "About"
 msgstr "关于我们"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: about the guild"
 msgid "About"
 msgstr "公会简介"
@@ -3282,11 +3349,11 @@ msgstr "公会简介"
 msgid "About @%(name)s"
 msgstr "关于 @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About Guild"
 msgstr "关于公会"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "About this account"
 msgstr "关于此账号"
 
@@ -3336,7 +3403,7 @@ msgstr "账户密码( 需要关闭子过滤器)"
 msgid "Account to add"
 msgstr "要添加的账户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts"
 msgstr "账号"
 
@@ -3348,7 +3415,7 @@ msgstr "封锁的账户"
 msgid "Accounts you block are not told, but they may work it out if they try to comment on something of yours."
 msgstr "没有告诉你的账号, 但是如果他们试图评论你的东西, 他们可能会解决它."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Accounts you follow"
 msgstr "你关注的账号"
 
@@ -3360,7 +3427,7 @@ msgstr "你所遵循的帐号不能被选为匿名的帖子:它会向人们显�
 msgid "Accounts you mute"
 msgstr "你哑巴的账号"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Achievements"
 msgstr "成就"
 
@@ -3397,17 +3464,17 @@ msgstr "最近活跃"
 msgid "Activism"
 msgstr "行动主义"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Activity"
 msgstr "活跃"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Add"
 msgstr "添加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Add"
 msgstr "添加到"
@@ -3416,7 +3483,7 @@ msgstr "添加到"
 msgid "Add %(name)s"
 msgstr "添加%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a GIF"
 msgstr "添加 GIF"
 
@@ -3432,7 +3499,7 @@ msgstr "添加种子"
 msgid "Add a flair"
 msgstr "添加标签"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a link"
 msgstr "添加链接"
 
@@ -3444,7 +3511,7 @@ msgstr "添加信件"
 msgid "Add a message (optional)"
 msgstr "添加信件( 可选)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a picture"
 msgstr "添加图片"
 
@@ -3456,7 +3523,7 @@ msgstr "添加图片( 尚未可用)"
 msgid "Add a picture."
 msgstr "增一图."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a poll"
 msgstr "添加投票"
 
@@ -3468,11 +3535,11 @@ msgstr "添加资源"
 msgid "Add a screenshot"
 msgstr "添加截图"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a sound"
 msgstr "添加音频"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add a video"
 msgstr "添加视频"
 
@@ -3495,11 +3562,11 @@ msgstr "添加账户"
 msgid "Add an email to secure your account in case you forget your password."
 msgstr "添加电子邮件来保护您的账户, 以防你忘记密码 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an emoji"
 msgstr "添加表情"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add an image"
 msgstr "添加图片"
 
@@ -3511,7 +3578,12 @@ msgstr "在您的账户中至少添加一个种子 ."
 msgid "Add at least one person."
 msgstr "增加至少一个人."
 
-#, glossary, machine, plain1
+#, machine, plain2, python-format
+msgid "Add at most %(num)s person at a time."
+msgid_plural "Add at most %(num)s people at a time."
+msgstr[0] "最多一次添加%(num)s人 ."
+
+#, glossary, machine, plain2
 msgid "Add audio"
 msgstr "添加音频"
 
@@ -3556,15 +3628,15 @@ msgstr "将文本添加到您的岗位..."
 msgid "Add to calendar"
 msgstr "添加到日历"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to circles"
 msgstr "添加到圈子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to curation"
 msgstr "添加到精选集"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add to your post"
 msgstr "添加到帖子"
 
@@ -3576,7 +3648,7 @@ msgstr "添加到您的故事"
 msgid "Add user"
 msgstr "添加用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add your comment..."
 msgstr "添加评论..."
 
@@ -3605,7 +3677,7 @@ msgstr "补之. 管理者一批准就开始."
 msgid "Address, page or post"
 msgstr "地址、页面或帖子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "管理员"
 
@@ -3622,20 +3694,20 @@ msgstr "行政官不能改名."
 msgid "Admins can't disconnect Discord."
 msgstr "管理员无法断开Discord ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "the Advanced filter, as a short tab"
 msgid "Advanced"
 msgstr "高级"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter"
 msgstr "高级筛选"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced filter:"
 msgstr "高级筛选："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Advanced search"
 msgstr "高级搜索"
 
@@ -3675,17 +3747,21 @@ msgstr "警报和头条来自每条线上命名的源头,显示于其发布时. 
 msgid "Algorithm"
 msgstr "算法"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Algorithm saved."
+msgstr "算法已保存 ."
+
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
 msgstr "全部"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "filter"
 msgid "All"
 msgstr "全部"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "All"
 msgstr "全部"
@@ -3695,7 +3771,7 @@ msgid "All %(num)s channel"
 msgid_plural "All %(num)s channels"
 msgstr[0] "所有 %(num)s 频道"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All Time"
 msgstr "全部时间"
 
@@ -3703,7 +3779,7 @@ msgstr "全部时间"
 msgid "All events"
 msgstr "所有活动"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All guilds"
 msgstr "所有公会"
 
@@ -3711,15 +3787,15 @@ msgstr "所有公会"
 msgid "All of these words"
 msgstr "所有这些词"
 
-#, machine
+#, machine, plain2
 msgid "All other devices have been logged out"
-msgstr "所有其他设备都已登录"
+msgstr "所有其他设备都已断开"
 
 #, machine
 msgid "All pages"
 msgstr "所有页面"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All posts"
 msgstr "全部"
 
@@ -3743,7 +3819,7 @@ msgstr "始终. 向前的荷兰盾有自己的票数和评论;其数目已加到
 msgid "All tips are anonymous :)"
 msgstr "所有提示都是匿名的:)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "All topics"
 msgstr "全部话题"
 
@@ -3828,12 +3904,24 @@ msgid "An account with that username or email already exists."
 msgstr "用户名或电子邮件的账户已经存在 ."
 
 #, machine, plain1
+msgid "An admin cleared the age answer on your account. You'll be asked again."
+msgstr "有个管理员帮你清了年龄问题 还会有人问的."
+
+#, machine, plain1
 msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
 msgstr "一个管理员确认你18岁或以上 你的账户已经没有锁了 您的单词过滤器没有改变: 您可以在设置中更改 > 内容, 关闭儿童过滤器需要您的密码 ."
 
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
 msgstr "标有 + 的管理员%(guild)s 敏感:除非有人选择看到敏感内容,否则其帖子将被排除在All and For You之外。 只有管理员才能改变这一点。"
+
+#, python-format
+msgid "An admin marked [your post](%(link)s) sensitive: it is blurred until someone clicks to reveal it, and left out of All and For You unless they choose to see sensitive content. Only an admin can change this."
+msgstr ""
+
+#, machine, plain1
+msgid "An admin marked this account as belonging to someone 18 or over. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "一个管理员将这个账户标记为属于18岁或18岁以上的人。 您的单词过滤器没有改变: 您可以在设置中更改 > 内容, 关闭儿童过滤器需要您的密码 ."
 
 #, machine, plain1
 msgid "An admin marked this as a child account. It has the child lock: the Child word filter, which hides profanity and anything marked sensitive, and some features are off. You can lift it by confirming your age in Settings > Content."
@@ -3874,6 +3962,10 @@ msgstr "一个管理员关闭了你的账户的自动发送。 你的账户和�
 #, machine, plain1, python-format
 msgid "An admin unlocked the sensitive setting of +%(guild)s. Its guildmasters can change it again."
 msgstr "管理员解锁了 + 的敏感设置%(guild)s。它的盾牌主持人可以再次改变它。"
+
+#, python-format
+msgid "An admin unlocked the sensitive setting of [your post](%(link)s). You can change it again."
+msgstr ""
 
 #, machine
 msgid "An admin unlocked the sensitive setting on your account. You can change it in Settings > Content."
@@ -3972,7 +4064,7 @@ msgstr "动画和漫画"
 msgid "Announcement channel"
 msgstr "宣布频道"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Announcements from +%(guild)s"
 msgstr "+%(guild)s 的公告"
 
@@ -3985,20 +4077,20 @@ msgid "Annular solar eclipse"
 msgstr "日蚀"
 
 #. short for Anonymous: who wrote a deleted post
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anon"
 msgstr "匿名"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymity"
 msgstr "匿名"
 
 #. a kind of post in the Post type filter: posts made anonymously
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "匿名用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "label"
 msgid "Anonymous"
 msgstr "匿名"
@@ -4019,11 +4111,15 @@ msgstr "另一个账户现在使用该地址。 访问您的设置以使用另�
 msgid "Another language you read"
 msgstr "你读的另一种语言"
 
+#, machine, plain1
+msgid "Another reason"
+msgstr "另一个原因"
+
 #, machine
 msgid "Answer Going or Interested."
 msgstr "回答去或感兴趣."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any account"
 msgstr "任意账号"
 
@@ -4039,11 +4135,11 @@ msgstr "任何作者都可以发表"
 msgid "Any author can publish."
 msgstr "任何作者都可以发表."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any guild"
 msgstr "任意公会"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Any language"
 msgstr "任何语言"
 
@@ -4069,12 +4165,12 @@ msgstr "任何一个字"
 msgid "Anyone"
 msgstr "谁都行"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Anyone"
 msgstr "任何人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anyone can see it"
 msgstr "所有人可见"
 
@@ -4086,7 +4182,7 @@ msgstr "任何人都可以看到你跟随谁,谁跟随你和你的圈子的订�
 msgid "App Name"
 msgstr "应用程序名称"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Appearance"
 msgstr "外观"
 
@@ -4111,7 +4207,7 @@ msgctxt "button"
 msgid "Apply"
 msgstr "应用"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approve"
 msgstr "批准"
 
@@ -4161,15 +4257,23 @@ msgstr "核准的成员和盾牌主持人"
 msgid "Approved since"
 msgstr "核定数"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Approved users"
 msgstr "已批准用户"
+
+#, machine, plain1
+msgid "Approved. Press Confirm on that screen to finish signing in."
+msgstr "核准。 按住屏幕确认 完成签名."
 
 #, machine
 msgid "Approved: run by the site"
 msgstr "核准:由场地管理"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Approving a code needs script, which is off in this browser. Sign in on the computer with your password instead."
+msgstr "批准一个代码需要脚本,它在这个浏览器中关闭了. 在电脑上签上密码."
+
+#, glossary, machine, plain2
 msgid "Apps"
 msgstr "应用"
 
@@ -4193,7 +4297,7 @@ msgstr "考古学"
 msgid "Architecture"
 msgstr "建筑"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Archived post"
 msgstr "已归档帖子"
 
@@ -4205,7 +4309,7 @@ msgstr "人工智能"
 msgid "Artisan"
 msgstr "阿尔蒂桑"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Arts"
 msgstr "艺术"
 
@@ -4318,19 +4422,19 @@ msgstr "作者数"
 msgid "Auto-moderation"
 msgstr "自动修改"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated"
 msgstr "自动化"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automated account"
 msgstr "自动化账号"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(owner)s"
 msgstr "由 %(owner)s 自动运行"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Automated by %(site)s"
 msgstr "由 %(site)s 自动运行"
 
@@ -4346,11 +4450,11 @@ msgstr "您的账户未获准自动登录 。 管理员说:%(note)s"
 msgid "Automated posting on your own account is set up in its own section."
 msgstr "自动挂号在自己的专栏内."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatic"
 msgstr "自动"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "circle kind"
 msgid "Automatic"
 msgstr "自动"
@@ -4367,7 +4471,7 @@ msgstr "自动清除垃圾邮件 。 此事之所以发生,是因为该帖的创
 msgid "Automatic, not an official warning"
 msgstr "自动, 不是正式警告"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automatically Join Chats"
 msgstr "自动加入聊天"
 
@@ -4375,7 +4479,7 @@ msgstr "自动加入聊天"
 msgid "Automatically join Guild chat channels."
 msgstr "自动加入 Guild 聊天频道 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Automaton"
 msgstr "机器人"
 
@@ -4384,7 +4488,7 @@ msgctxt "guildmaster action"
 msgid "Automod settings"
 msgstr "自动调用设置"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Autoplay"
 msgstr "自动播放"
 
@@ -4400,7 +4504,7 @@ msgstr "授予8535个坚韧的用户,他们设法在服务器被压碎时报名�
 msgid "Awarded to users who provide major technical expertise. Current awardees: @mutageno, @AmoralAtBest, @p2hang"
 msgstr "授予提供重要技术专长的用户. 现任获奖者: @mutageno,@AmoralAtBest,@p2hang"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome T-Shirts"
 msgstr "超赞 T 恤"
 
@@ -4409,12 +4513,16 @@ msgstr "超赞 T 恤"
 msgid "BBC Top Stories"
 msgstr "BBC 顶级故事"
 
+#, machine, plain1
+msgid "Back"
+msgstr "回来"
+
 #, machine
 msgctxt "button"
 msgid "Back"
 msgstr "返回"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Back"
 msgstr "上一页"
@@ -4438,6 +4546,10 @@ msgstr "回到草案上来"
 #, machine
 msgid "Back to the history"
 msgstr "回到历史"
+
+#, machine, plain1
+msgid "Back to the log"
+msgstr "返回日志"
 
 #, machine
 msgid "Back to the post"
@@ -4513,7 +4625,7 @@ msgstr "班图走廊"
 msgid "Baseball"
 msgstr "棒球"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Based"
 msgstr "敢言"
@@ -4550,7 +4662,7 @@ msgstr "成为+成员%(guild)s,不需要电子邮件地址。 做户口."
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "成为社区的一部分,不需要电子邮件地址。 做户口."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
 msgstr "加入 Ruqqus 不到 30 天"
 
@@ -4570,7 +4682,7 @@ msgstr "前一晚开始"
 msgid "Behind the scenes"
 msgstr "幕后风声"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Beta"
 msgstr "测试版"
 
@@ -4582,7 +4694,7 @@ msgstr "Beta 用户"
 msgid "Bicycles"
 msgstr "自行车"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bio"
 msgstr "个人简介"
 
@@ -4602,7 +4714,7 @@ msgstr "观鸟"
 msgid "Block &amp; Mute"
 msgstr "块&amp; 静音"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s"
 msgstr "屏蔽 @%(name)s"
 
@@ -4614,11 +4726,11 @@ msgstr "区块账户"
 msgid "Block and Mute - %(site)s"
 msgstr "块和静音 -%(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block and mute"
 msgstr "屏蔽和隐藏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block user"
 msgstr "屏蔽用户"
 
@@ -4652,7 +4764,7 @@ msgstr "书籍讨论"
 msgid "Book Recommendations"
 msgstr "书籍建议"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Bookmark"
 msgstr "收藏"
@@ -4666,11 +4778,11 @@ msgid "Bookmark, %(num)s bookmark"
 msgid_plural "Bookmark, %(num)s bookmarks"
 msgstr[0] "书签,%(num)s书签"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarked"
 msgstr "已收藏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bookmarks"
 msgstr "收藏"
 
@@ -4706,7 +4818,7 @@ msgstr "Bot 用户名"
 msgid "Bot's name"
 msgstr "瓶子的名称"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Bots"
 msgstr "机器人"
 
@@ -4754,6 +4866,10 @@ msgstr "突发新闻"
 msgid "Briefly describe what the guild is about..."
 msgstr "简单描述一下盾是什么..."
 
+#, machine, plain1
+msgid "Briefly say what you changed (optional)"
+msgstr "简单说说你改变了什么(可选)"
+
 #, machine
 msgid "Bronze Patron"
 msgstr "铜质护卫"
@@ -4761,6 +4877,10 @@ msgstr "铜质护卫"
 #, machine
 msgid "Bronze Recruiter"
 msgstr "招募青铜器"
+
+#, machine, plain1
+msgid "Browser"
+msgstr "浏览器"
 
 #, machine
 msgid "Browser not recorded"
@@ -4794,7 +4914,7 @@ msgstr "购买没有Premium运行的硬币可以赎回第一个一周."
 msgid "By royal decree, we are unable to show this to you right now."
 msgstr "奉敕令 我们现在无法向你们展示."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "CSS"
 msgstr "CSS"
 
@@ -4811,7 +4931,7 @@ msgstr "调用"
 msgid "Call controls"
 msgstr "调用控制"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Calls"
 msgstr "通话"
 
@@ -4829,6 +4949,10 @@ msgid "Calls end after %(num)s hour."
 msgid_plural "Calls end after %(num)s hours."
 msgstr[0] "电话在%(num)s小时后结束."
 
+#, machine, plain2
+msgid "Calls only"
+msgstr "只打电话"
+
 #, machine
 msgid "Camera off"
 msgstr "关闭相机"
@@ -4841,7 +4965,7 @@ msgstr "摄像头打开"
 msgid "Camping"
 msgstr "露营"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "取消"
 
@@ -4883,7 +5007,7 @@ msgstr "已取消"
 msgid "Capitals, accents and repeated letters don't change anything: a word reads the same in capitals, with accents or with a letter written several times."
 msgstr "首都,口音和重复字母不会改变任何东西:一个单词在首都读作相同,有口音或者写作多次的字母."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Captions"
 msgstr "字幕"
 
@@ -4891,7 +5015,7 @@ msgstr "字幕"
 msgid "Car Repair"
 msgstr "汽车修理"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "Card"
 msgstr "卡片"
@@ -4920,7 +5044,7 @@ msgstr "投你一票 投你一票"
 msgid "Casual Discussion"
 msgstr "临时讨论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Categorical"
 msgstr "按分类"
 
@@ -4968,11 +5092,11 @@ msgstr "类别名称"
 msgid "Category: %(category)s"
 msgstr "类别 :%(category)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Category: %(category)s / %(subcategory)s"
 msgstr "分类：%(category)s / %(subcategory)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Category: Uncategorized"
 msgstr "分类：未分类"
 
@@ -4988,7 +5112,7 @@ msgstr "名词"
 msgid "Central Andes"
 msgstr "安第斯中部"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Change"
 msgstr "更改"
@@ -5001,7 +5125,7 @@ msgstr "更改密码"
 msgid "Change Username"
 msgstr "更改用户名"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change categories"
 msgstr "更改分类"
 
@@ -5010,7 +5134,7 @@ msgctxt "guildmaster action"
 msgid "Change invite"
 msgstr "更改邀请"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change languages"
 msgstr "更改语言"
 
@@ -5023,11 +5147,11 @@ msgctxt "guildmaster action"
 msgid "Change perms"
 msgstr "变化"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change post types"
 msgstr "更改帖子类型"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change regions"
 msgstr "更改地区"
 
@@ -5035,7 +5159,7 @@ msgstr "更改地区"
 msgid "Change the capitilization of your guild's name."
 msgstr "更改您盾名的缩写 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change the default sorting for posts."
 msgstr "更改帖子的默认排序方式。"
 
@@ -5067,7 +5191,7 @@ msgstr "更改密码"
 msgid "Change your password."
 msgstr "改变密码."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Change your word filter"
 msgstr "更改文字过滤器"
 
@@ -5083,12 +5207,20 @@ msgstr "变动"
 msgid "Changing these rules always needs every counted author."
 msgstr "改变这些规则总是需要每一个被统计的作者."
 
+#, machine, plain1
+msgid "Changing your password doesn't end the access of an app you allowed. Check your apps and your chat apps in Settings too."
+msgstr "更改密码不会结束您允许的应用程序的访问 。 在设置中检查您的应用程序和聊天应用程序 ."
+
+#, machine, plain2
+msgid "Changing your password signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "更改您的密码断开您在其他设备上和聊天应用程序中的聊天, 除了此浏览器自您在此签名以来所使用的聊天 ."
+
 #, machine
 msgctxt "chat kind"
 msgid "Channel"
 msgstr "频道"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Channel"
 msgstr "频道"
@@ -5141,7 +5273,7 @@ msgstr "频道撤消"
 msgid "Channel's own rules"
 msgstr "频道的规矩"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "频道"
 
@@ -5153,25 +5285,25 @@ msgstr "频道是 +%(guild)s会员们在谈, 在盾牌的聊天表和聊天。 �
 msgid "Charter Supporter"
 msgstr "宪章支持者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "聊天"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading"
 msgid "Chat"
 msgstr "聊天"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Chat"
 msgstr "聊天"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Chat - %(site)s"
 msgstr "聊天 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat apps"
 msgstr "聊天应用"
 
@@ -5183,9 +5315,45 @@ msgstr "聊天应用程序 - %(site)s"
 msgid "Chat apps aren't switched on for this site yet."
 msgstr "聊天的应用程序还没有打开."
 
+#, machine, plain1
+msgid "Chat can't start right now. Try again in a moment."
+msgstr "聊天现在不能开始 再试一下."
+
+#, machine, plain2
+msgid "Chat couldn't take those keys."
+msgstr "查特拿不了钥匙."
+
+#, machine, plain2
+msgid "Chat isn't answering right now. Try again in a minute."
+msgstr "聊天现在不接电话 再试一分钟."
+
 #, machine
 msgid "Chat isn't answering right now. Try again in a moment."
 msgstr "聊天现在不接电话 再试一下."
+
+#, machine, plain1
+msgid "Chat isn't available"
+msgstr "聊天没有用"
+
+#, machine, plain1
+msgid "Chat isn't available for your account right now. The site's admins have been told."
+msgstr "聊天现在不可用 该网站的管理员已经被告知了."
+
+#, machine, plain2
+msgid "Chat isn't set up for your account yet."
+msgstr "聊天还没安排好."
+
+#, machine, plain2
+msgid "Chat isn't set up on your account yet. Open Chat once to set it up and get your recovery code."
+msgstr "聊天还没安排在你账上 打开一次聊天来设定 并获得你的恢复代码."
+
+#, machine, plain2, python-format
+msgid "Chat was started over on your %(site)s account"
+msgstr "聊天是从您的 %(site)s 账户开始的"
+
+#, machine, plain1
+msgid "Chat with this account isn't available right now. The site's admins have been told."
+msgstr "和这个账户聊天现在不可用 该网站的管理员已经被告知了."
 
 #, machine, plain1
 msgid "Chat, group chats and calls"
@@ -5196,7 +5364,7 @@ msgctxt "guildmaster action"
 msgid "Chatban user"
 msgstr "Chatban 用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "聊天"
 
@@ -5294,6 +5462,10 @@ msgstr "选择决策方式和谁可以发表."
 msgid "Choose how long a proposal stays open."
 msgstr "选择一个提案保持开放的时间 ."
 
+#, machine, plain2
+msgid "Choose how long messages last."
+msgstr "选择信件的持续时间 ."
+
 #, machine
 msgid "Choose how long people wait between messages."
 msgstr "选择在消息之间等待多久 ."
@@ -5337,6 +5509,10 @@ msgstr "选择什么是反馈."
 #, machine
 msgid "Choose what to propose."
 msgstr "选择什么是求婚."
+
+#, machine, plain2
+msgid "Choose what you're told of."
+msgstr "选择你被告知什么."
 
 #, machine
 msgid "Choose when an author stops being counted."
@@ -5402,7 +5578,7 @@ msgstr "圣诞夜"
 msgid "Chronic Illness"
 msgstr "慢性疾病"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Circle"
 msgstr "圈子"
@@ -5423,11 +5599,11 @@ msgstr "圆盾,你付的加入"
 msgid "Circle member"
 msgstr "圆形成员"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "圈子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Circles"
 msgstr "圈子"
@@ -5448,7 +5624,7 @@ msgstr "经典"
 msgid "Cleaning & Organizing"
 msgstr "正在清理和组织( O)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: clear the advanced filter"
 msgid "Clear"
 msgstr "清除"
@@ -5469,7 +5645,7 @@ msgstr "客户身份"
 msgid "Client Secret"
 msgstr "客户端机密"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "关闭"
 
@@ -5477,7 +5653,7 @@ msgstr "关闭"
 msgid "Close Friends are never shown on any list."
 msgstr "密友从不出现在任何列表中 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close panel"
 msgstr "关闭面板"
 
@@ -5501,7 +5677,7 @@ msgstr "共同作者邀请 - %(site)s"
 msgid "Co-authored"
 msgstr "共同撰写"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Co-authors"
 msgstr "合著者"
 
@@ -5525,11 +5701,11 @@ msgstr "咖啡和茶叶"
 msgid "Coin balance:"
 msgstr "货币平衡 :"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Coins"
 msgstr "金币"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Coins"
 msgstr "金币"
@@ -5562,7 +5738,7 @@ msgstr "硬币,小费,Premium和付费圆圈"
 msgid "Collaborative"
 msgstr "协作"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Collapse"
 msgstr "收起"
 
@@ -5582,7 +5758,7 @@ msgstr "颜色"
 msgid "Coloured: a post with mostly upvotes shows its upvotes in <span class=\"font-weight-bold vote-ratio-10\">blue</span>, one with mostly downvotes in <span class=\"font-weight-bold vote-ratio-0\">red</span>, and anything between in a shade between. Hover a score to see both counts."
 msgstr "彩色: 以高票为主的帖子显示其高票 。 <span class=\"font-weight-bold vote-ratio-10\">蓝色</span>,其中多数是低选票 <span class=\"font-weight-bold vote-ratio-0\">红色</span>之间有间隙 一分钱就能看清这两点"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Combat Sports"
 msgstr "格斗运动"
 
@@ -5602,7 +5778,7 @@ msgstr "漫画和漫画"
 msgid "Coming up"
 msgstr "来了"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
 msgstr "评论"
@@ -5619,7 +5795,7 @@ msgstr "匿名评论: 其他用户不会看到您的名字"
 msgid "Comment bookmarked."
 msgstr "注释书记."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "评论已发布！"
 
@@ -5627,11 +5803,11 @@ msgstr "评论已发布！"
 msgid "Commenting"
 msgstr "评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments"
 msgstr "评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Comments"
 msgstr "评论"
@@ -5653,11 +5829,11 @@ msgstr "隐藏或删除的评论"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "匿名留言是匿名的"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Comments:"
 msgstr "评论："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Commercial promotion"
 msgstr "商业推广"
 
@@ -5693,6 +5869,10 @@ msgstr "与本修订本相比"
 msgid "Computers"
 msgstr "计算机"
 
+#, machine, plain1
+msgid "Confirm"
+msgstr "确认"
+
 #, machine
 msgid "Confirm New Password"
 msgstr "确认新密码"
@@ -5705,11 +5885,15 @@ msgstr "确认密码"
 msgid "Confirm my age"
 msgstr "确认我的年龄"
 
+#, machine, plain2
+msgid "Confirm with your password again."
+msgstr "再次用密码确认 ."
+
 #, machine, plain1
 msgid "Confirm your age"
 msgstr "确认你的年龄"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Connect"
 msgstr "关注我们"
 
@@ -5741,17 +5925,17 @@ msgstr "已连接 -%(site)s"
 msgid "Console"
 msgstr "控制台"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contact"
 msgstr "联系我们"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Contact"
 msgstr "联系我们"
 
 #. a group of post types in the Post type filter (text, links, pictures...)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content"
 msgstr "内容"
 
@@ -5763,7 +5947,7 @@ msgstr "内容过滤器"
 msgid "Content awarded:"
 msgstr "授予的内容 :"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Content disclosure"
 msgstr "内容声明"
 
@@ -5771,16 +5955,24 @@ msgstr "内容声明"
 msgid "Content immediately before this action:"
 msgstr "本行动前的内容:"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Content standards"
+msgstr "内容标准"
+
+#, glossary, machine, plain2
 msgid "Context"
 msgstr "上下文"
+
+#, machine, plain1
+msgid "Continue"
+msgstr "继续"
 
 #, machine
 msgctxt "button"
 msgid "Continue"
 msgstr "继续"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Continuous scroll"
 msgstr "连续滚动"
 
@@ -5789,11 +5981,11 @@ msgctxt "guildmaster action"
 msgid "Contrib user"
 msgstr "缩写用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute"
 msgstr "参与贡献"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Contribute Code"
 msgstr "贡献代码"
 
@@ -5839,15 +6031,15 @@ msgctxt "button"
 msgid "Copy"
 msgstr "复制"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy Link"
 msgstr "复制链接"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link"
 msgstr "复制链接"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Copy link to profile"
 msgstr "复制个人资料链接"
 
@@ -5884,6 +6076,10 @@ msgid "Counter-Culture"
 msgstr "反文化"
 
 #, machine, plain1
+msgid "Country"
+msgstr "国家"
+
+#, machine, plain1
 msgid "Country Music"
 msgstr "乡村音乐"
 
@@ -5895,7 +6091,7 @@ msgstr "覆盖您加入的盾"
 msgid "Crafts"
 msgstr "工艺"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bottom bar button that opens Create post"
 msgid "Create"
 msgstr "发布"
@@ -5908,7 +6104,7 @@ msgstr "创建 &amp; 移动"
 msgid "Create Curation"
 msgstr "创建解禁种子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create Guild"
 msgstr "创建公会"
 
@@ -5932,7 +6128,7 @@ msgstr "创建关节 - %(site)s"
 msgid "Create a community for something you love."
 msgstr "为你所爱的东西创建一个社区."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a curation"
 msgstr "创建精选集"
 
@@ -5944,7 +6140,7 @@ msgstr "创建盾牌"
 msgid "Create a key"
 msgstr "创建密钥"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create a post"
 msgstr "发帖"
 
@@ -5965,7 +6161,7 @@ msgctxt "guildmaster action"
 msgid "Create guild"
 msgstr "创建盾牌"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Create post"
 msgstr "发帖"
 
@@ -5981,7 +6177,7 @@ msgstr "创建您的账户 ."
 msgid "Creative Writing"
 msgstr "创意写作"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio"
 msgstr "Creator Studio"
 
@@ -5989,7 +6185,7 @@ msgstr "Creator Studio"
 msgid "Creator Studio - %(site)s"
 msgstr "创建工作室 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator Studio is part of Premium"
 msgstr "创作者工作室仅限 Premium 使用"
 
@@ -5997,7 +6193,7 @@ msgstr "创作者工作室仅限 Premium 使用"
 msgid "Creator Studio: your earnings and paid circles"
 msgstr "创建者工作室:您的收入和付费圈"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Creator fund"
 msgstr "创作者基金"
 
@@ -6017,7 +6213,11 @@ msgstr "犯罪和法院"
 msgid "Crime & Mystery"
 msgstr "犯罪神秘主义"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Criminal activity and prohibited conduct"
+msgstr "犯罪活动和被禁止的行为"
+
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "下头"
 
@@ -6029,15 +6229,15 @@ msgstr "密码货币"
 msgid "Cuisine"
 msgstr "厨艺"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Culture"
 msgstr "文化"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curation"
 msgstr "精选集"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Curations"
 msgstr "精选集"
 
@@ -6059,7 +6259,7 @@ msgstr[0] "当前余额: <span class=\"text-black font-weight-bold\">%(num)s 硬
 msgid "Custom Filters"
 msgstr "自定义过滤器"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom Stickers"
 msgstr "定制贴纸"
 
@@ -6067,7 +6267,7 @@ msgstr "定制贴纸"
 msgid "Custom URI scheme can be used. Separate multiple options with comma."
 msgstr "自定义URI 方案可以使用 。 用逗号分隔多个选项 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Custom User Feed"
 msgstr "自定义用户订阅源"
 
@@ -6115,7 +6315,7 @@ msgstr "危险区"
 msgid "Danubian Steppe"
 msgstr "达努比亚草原"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "深色模式"
 
@@ -6139,16 +6339,16 @@ msgstr "标定的日期取决于月球的视线,并可能因你所在的一天�
 msgid "Dating Advice"
 msgstr "约会咨询"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Day"
 msgstr "日期"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "table heading"
 msgid "Day"
 msgstr "日期"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Day"
 msgstr "今日"
@@ -6195,15 +6395,15 @@ msgctxt "button"
 msgid "Decline"
 msgstr "下降"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default"
 msgstr "默认"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Sorting"
 msgstr "默认排序"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Default Time Filter"
 msgstr "默认时间范围"
 
@@ -6220,7 +6420,7 @@ msgctxt "button"
 msgid "Delete"
 msgstr "删除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Delete"
 msgstr "删除"
@@ -6373,7 +6573,7 @@ msgstr "全部取消选择"
 msgid "Designate whether your guild discusses sensitive topics."
 msgstr "指定您的盾是否讨论敏感话题 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Details"
 msgstr "详细信息"
 
@@ -6467,13 +6667,13 @@ msgstr "断开Dailymotion? 已经在频道播放的视频."
 msgid "Disconnect Discord"
 msgstr "断开Discord"
 
-#, machine
-msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing."
-msgstr "断开Google? 在您的Google Drive 中存储的图片和音频将停止在您的文章中显示 。 YouTube上的视频继续播放."
+#, machine, plain2
+msgid "Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts, and files you sent in chats from it can no longer be opened. Videos on YouTube keep playing."
+msgstr "断开Google? 在您的Google Drive 中存储的图片和音频 将会停止在您的文章中显示, 您发送的聊天文件将无法再打开 。 YouTube上的视频继续播放."
 
-#, machine
-msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts."
-msgstr "断开OneDrive? 照片和音频将停止显示在您的文章中."
+#, machine, plain2
+msgid "Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts, and files you sent in chats from it can no longer be opened."
+msgstr "断开OneDrive? 在那里存储的图片和音频将停止在您的帖子中显示,而您从它发送的聊天文件将无法再打开."
 
 #, machine
 msgid "Disconnect? Images and audio from this storage will stop showing in your posts."
@@ -6487,7 +6687,7 @@ msgstr "断开."
 msgid "Disconnecting your Discord account will remove you from the %(site)s Discord server."
 msgstr "断开您的 Discord 账户将会从 %(site)s Discord 服务器中删除您 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discord Server"
 msgstr "Discord 服务器"
 
@@ -6495,7 +6695,7 @@ msgstr "Discord 服务器"
 msgid "Discord account already linked."
 msgstr "Discord 账户已链接 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover Curations"
 msgstr "发现精选集"
 
@@ -6503,7 +6703,7 @@ msgstr "发现精选集"
 msgid "Discover amazing communities across <span class=\"text-purple\">%(site)s</span>."
 msgstr "发现惊人的社区 <span class=\"text-purple\">%(site)s</span>。"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Discover guilds"
 msgstr "发现公会"
 
@@ -6533,12 +6733,12 @@ msgstr "显示名称"
 msgid "Display name"
 msgstr "显示名称"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Disputed"
 msgstr "争议"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Distinguish"
 msgstr "标为官方"
 
@@ -6562,26 +6762,38 @@ msgstr "没有账户吗? <a href=\"%(url)s\" class=\"font-weight-bold toggle-log
 msgid "Don't quote"
 msgstr "别引用"
 
+#, machine, plain2
+msgid "Don't say who it's from"
+msgstr "不要说是谁的"
+
 #, machine, python-format
 msgid "Don't show +%(guild)s content in All or Trending for users that aren't members of the guild."
 msgstr "不要显示 +%(guild)s 包含在All或Trending中,用于不属于盾的用户."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate"
 msgstr "捐赠"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Donate"
 msgstr "捐赠"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Donate Cash or Crypto"
 msgstr "捐赠现金或加密货币"
 
 #, machine
 msgid "Done"
 msgstr "完成"
+
+#, machine, plain1
+msgid "Done by"
+msgstr "完成日期"
+
+#, machine, plain1
+msgid "Done to"
+msgstr "结束"
 
 #, machine, plain1
 msgid "Download"
@@ -6612,7 +6824,7 @@ msgstr "下载您的数据"
 msgid "Downvote"
 msgstr "倒计时"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Downvote"
 msgstr "反对"
@@ -6625,7 +6837,7 @@ msgstr "倒计时"
 msgid "Doxxing is not allowed."
 msgstr "多克辛不允许."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Drafts"
 msgstr "草稿"
 
@@ -6707,12 +6919,12 @@ msgctxt "button"
 msgid "Edit"
 msgstr "编辑"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: edit the advanced filter"
 msgid "Edit"
 msgstr "编辑"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Edit"
 msgstr "编辑"
@@ -6749,7 +6961,7 @@ msgstr "编辑 %(site)s 上的其他人如何看到你 ."
 msgid "Edit permissions"
 msgstr "编辑权限"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Edit profile"
 msgstr "编辑个人资料"
 
@@ -6773,7 +6985,7 @@ msgstr "在其共享的草稿中编辑此帖子,然后发布更改."
 msgid "Edit your posts and comments"
 msgstr "编辑您的文章和评论"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Edited %(when)s"
 msgstr "编辑于 %(when)s"
 
@@ -6949,11 +7161,23 @@ msgstr "输入认证程序生成的六位数代码和您的%(site)s 账户密码
 msgid "Enter your account password to turn the Child filter down."
 msgstr "输入您的账户密码, 以关闭 Child 过滤器 ."
 
+#, machine, plain1
+msgid "Enter your password"
+msgstr "输入密码"
+
+#, machine, plain1, python-format
+msgid "Enter your password - %(site)s"
+msgstr "输入密码 -%(site)s"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "输入二因子代码 ."
+
 #, machine
 msgid "Entertainment"
 msgstr "娱乐"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Entertainment News"
 msgstr "娱乐新闻"
 
@@ -7005,6 +7229,10 @@ msgstr "道德操守"
 msgid "Evading a site-wide ban"
 msgstr "逃避整个网站的禁令"
 
+#, machine, plain1
+msgid "Evading and manipulating the site"
+msgstr "撤离和操纵场地"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Event cancel"
@@ -7024,7 +7252,7 @@ msgstr "事件编辑"
 msgid "Event hidden by your word filter"
 msgstr "您的文字过滤器隐藏的事件"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Events"
 msgstr "活动"
 
@@ -7062,9 +7290,9 @@ msgid "Every bot rule applies, %(num)s post a day included."
 msgid_plural "Every bot rule applies, %(num)s posts a day included."
 msgstr[0] "每个机器人规则都适用, %(num)s 包括一天的帖子."
 
-#, machine
+#, machine, plain2
 msgid "Every browser and app signed in to your chats. Sign out any you don't recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat."
-msgstr "每一个浏览器和应用程序都签到您的聊天。 签出任何您不识别或不再使用的密码; 浏览器在下次打开Chat时, 您会签出您的密码 ."
+msgstr "每一个浏览器和应用程序都签到您的聊天。 断开任何您无法识别或不再使用的连接; 断开的浏览器在下次打开聊天时会询问您的密码 ."
 
 #, machine
 msgid "Every character is credited to whoever typed or pasted it."
@@ -7078,8 +7306,12 @@ msgstr "每到 + 时%(guild)s 需要标签"
 msgid "Every guild's comments in one list. Open a guild to comment in it."
 msgstr "一份清单中每个盾的评论. 打开一个盾来评论其中."
 
+#, machine, plain2
+msgid "Every message"
+msgstr "每条消息"
+
 #. who may open one of a profile's lists (Following, Followers...).
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Everyone"
 msgstr "所有人"
 
@@ -7166,7 +7398,7 @@ msgstr "例子:猫狗. 既没有猫,也没有狗"
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "例:快乐时刻 ^ 有确切的短语\"快乐时刻\""
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
 msgstr "放逐 @%(name)s"
 
@@ -7199,7 +7431,7 @@ msgstr "从 + 中除名%(guild)s。"
 msgid "Exiled since"
 msgstr "已驱逐出境"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Exiles"
 msgstr "被放逐用户"
 
@@ -7216,7 +7448,7 @@ msgstr "退出和聊天禁令"
 msgid "Expected"
 msgstr "预期"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Explore"
 msgstr "探索"
 
@@ -7224,7 +7456,7 @@ msgstr "探索"
 msgid "Explore curations - %(site)s"
 msgstr "探索配置的种子 -%(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Explore guilds - %(site)s"
 msgstr "探索公会 - %(site)s"
 
@@ -7241,7 +7473,7 @@ msgstr "扩展"
 msgid "Extend for"
 msgstr "扩展范围"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Extra large"
 msgstr "特大"
 
@@ -7306,31 +7538,39 @@ msgstr "虚构"
 msgid "File"
 msgstr "文件"
 
+#, machine, plain2
+msgid "Files you send in chats are kept here too, encrypted: only the people in that chat can open them."
+msgstr "你发送的聊天文件也在这里保存,加密:只有聊天中的人才能打开."
+
 #, machine
 msgid "Film & TV"
 msgstr "电影和电视"
+
+#, machine, plain1
+msgid "Filter"
+msgstr "过滤器"
 
 #, machine, plain1, python-format
 msgid "Filter +%(guild)s by flair"
 msgstr "过滤器+%(guild)s 按标签"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filter by"
 msgstr "筛选"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filtered words"
 msgstr "被过滤的词语"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Filtered words - %(site)s"
 msgstr "被过滤的词语 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters"
 msgstr "筛选"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Filters in this search"
 msgstr "此搜索中的筛选条件"
 
@@ -7387,7 +7627,7 @@ msgstr "捕鱼"
 msgid "Fitness"
 msgstr "适应性"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Flag"
 msgstr "举报"
@@ -7396,11 +7636,11 @@ msgstr "举报"
 msgid "Flagged Posts"
 msgstr "标注员额"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Flair"
 msgstr "标签"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild settings tab"
 msgid "Flair"
 msgstr "标签"
@@ -7443,7 +7683,7 @@ msgstr "标签标记转发到 +%(guild)s,而读者过滤他们的盾。 任何�
 msgid "Flights & Airlines"
 msgstr "飞行和航空"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Fold the sidebar"
 msgstr "收起侧边栏"
 
@@ -7463,7 +7703,7 @@ msgstr "文件夹重命名 ."
 msgid "Folder:"
 msgstr "文件夹 :"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Follow"
 msgstr "关注"
@@ -7476,7 +7716,7 @@ msgstr "跟着@%(name)s"
 msgid "Follow accounts and join guilds, and their posts show here."
 msgstr "跟踪账户,加入荷兰盾, 他们的帖子在这里."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follow post"
 msgstr "关注帖子"
 
@@ -7494,11 +7734,11 @@ msgid "Followed by %(num)s person you follow"
 msgid_plural "Followed by %(num)s people you follow"
 msgstr[0] "随后 %(num)s 你跟着的人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Followers"
 msgstr "粉丝"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Followers"
 msgstr "粉丝"
@@ -7514,31 +7754,31 @@ msgstr "追随者. @%(name)s - 怎么样? %(site)s"
 #. the names of a profile's lists: the accounts it follows, its followers, who
 #. pays for its paid circles,
 #. and the paid circles it pays for.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Following"
 msgstr "关注"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you follow"
 msgid "Following"
 msgstr "已关注"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "feed"
 msgid "Following"
 msgstr "关注"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading: curations you follow"
 msgid "Following"
 msgstr "已关注"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Following"
 msgstr "关注"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Following"
 msgstr "已关注"
@@ -7551,7 +7791,7 @@ msgstr "追随@%(name)s"
 msgid "Following · @%(name)s - %(site)s"
 msgstr "追随. @%(name)s - 怎么样? %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Follows you"
 msgstr "关注了你"
 
@@ -7559,11 +7799,11 @@ msgstr "关注了你"
 msgid "Food"
 msgstr "粮食"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For You"
 msgstr "为你推荐"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "For a circle"
 msgstr "仅限圈子"
 
@@ -7614,12 +7854,12 @@ msgstr "为检校之管者."
 msgid "For the admins who review it: what the bot is for and where its posts come from."
 msgstr "对于检讨它的管理员:机器人的用途及其职位的来源."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: forget the saved default filters"
 msgid "Forget"
 msgstr "清除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forget my default"
 msgstr "清除我的默认设置"
 
@@ -7627,7 +7867,7 @@ msgstr "清除我的默认设置"
 msgid "Forgot password?"
 msgstr "忘了密码吗?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Fork"
 msgstr "派生"
@@ -7653,15 +7893,15 @@ msgstr "伪造的 <a href=\"%(url)s\">%(title)s</a>"
 msgid "Formatting"
 msgstr "格式化"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Formatting help"
 msgstr "格式帮助"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Former Admin"
 msgstr "前管理员"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Forward"
 msgstr "转发"
@@ -7695,7 +7935,7 @@ msgstr "转发至盾"
 msgid "Forward to guilds (optional)"
 msgstr "转发到盾( 可选)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile tab"
 msgid "Forwarded"
 msgstr "转发"
@@ -7721,11 +7961,11 @@ msgstr "转发至盾"
 msgid "Forwarded!"
 msgstr "前进!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwarding to"
 msgstr "转发到"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forwards"
 msgstr "转发"
 
@@ -7733,11 +7973,11 @@ msgstr "转发"
 msgid "Forwards then come from the post's Forward dialog, where a flair is picked."
 msgstr "前进从文章的前进对话框中产生, 选择一个标签 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Founded"
 msgstr "创建于"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Founder"
 msgstr "创始人"
@@ -7745,6 +7985,10 @@ msgstr "创始人"
 #, machine
 msgid "Free circles"
 msgstr "自由圆圈"
+
+#, machine, plain1
+msgid "Free expression and good faith"
+msgstr "言论自由和诚意"
 
 #, machine
 msgid "Fresh and rising"
@@ -7778,7 +8022,7 @@ msgstr "朋友是跟随你回来的人 与家人,团队或其他任何人分享,
 msgid "Friends is your automatic circle of mutual follows. Choose another name."
 msgstr "朋友是你的自动圈 相互跟踪。 选别名."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Friends liked"
 msgstr "好友赞过"
 
@@ -7786,7 +8030,7 @@ msgstr "好友赞过"
 msgid "Friendship"
 msgstr "友谊"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "From"
 msgstr "来自"
@@ -7831,7 +8075,7 @@ msgstr "从%(older)s(%(older_by)s)修订到%(newer)s(%(newer_by)s)."
 msgid "From these accounts"
 msgstr "从这些账户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "From:"
 msgstr "时间："
 
@@ -7843,7 +8087,7 @@ msgstr "果冻生活"
 msgid "Full Moon"
 msgstr "满月"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Full editor"
 msgstr "完整编辑器"
 
@@ -7867,7 +8111,7 @@ msgstr "游戏之夜参与者"
 msgid "Gaming"
 msgstr "赌博"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gaming News"
 msgstr "游戏新闻"
 
@@ -7883,11 +8127,11 @@ msgstr "双子座流星雨"
 msgid "General Information"
 msgstr "一般情况"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Memes"
 msgstr "综合梗图"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "General Science"
 msgstr "综合科学"
 
@@ -7911,13 +8155,17 @@ msgstr "拿硬币"
 msgid "Get coins to send a tip"
 msgstr "找钱送小费"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Get involved"
 msgstr "参与其中"
 
 #, machine
 msgid "Get more coins"
 msgstr "多拿点钱"
+
+#, machine, plain1
+msgid "Give a reason"
+msgstr "给个理由"
 
 #, machine
 msgid "Give the Space's post address or id."
@@ -7983,7 +8231,7 @@ msgstr "给这个角色"
 msgid "Give this ruqqie a tip!"
 msgstr "给这个Ruqqie小费!"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Glad to have you back. Make a %(site)s!"
 msgstr "很高兴再见到你。来发一条 %(site)s 吧！"
 
@@ -8106,11 +8354,11 @@ msgid "Group · %(num)s people"
 msgid_plural "Group · %(num)s people"
 msgstr[0] "组 ^ %(num)s 人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Groups"
 msgstr "群组"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild"
 msgstr "公会"
 
@@ -8138,7 +8386,7 @@ msgstr "关节描述"
 msgid "Guild Icon"
 msgstr "关节图标"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild Name"
 msgstr "公会名称"
 
@@ -8150,7 +8398,11 @@ msgstr "团体隐私"
 msgid "Guild Styling"
 msgstr "关节史蒂林"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Guild changes"
+msgstr "关联变化"
+
+#, glossary, machine, plain2
 msgid "Guild details"
 msgstr "公会详情"
 
@@ -8178,11 +8430,11 @@ msgstr "关节名称,没有+…"
 msgid "Guild names must be 3-25 letters or numbers."
 msgstr "社团名称必须是3-25个字母或数字."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guild settings"
 msgstr "公会设置"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild role"
 msgid "Guildmaster"
 msgstr "会长"
@@ -8191,23 +8443,23 @@ msgstr "会长"
 msgid "Guildmaster Since"
 msgstr "协会主持人"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster Tools"
 msgstr "会长工具"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster of"
 msgstr "担任会长"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Guildmaster of +%(guild)s"
 msgstr "+%(guild)s 的会长"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmaster tools"
 msgstr "会长工具"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guildmasters"
 msgstr "会长"
 
@@ -8232,7 +8484,7 @@ msgid "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgid_plural "Guildmasters<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "团体主持人<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "公会"
 
@@ -8282,15 +8534,15 @@ msgstr "现在发生"
 msgid "Hardware"
 msgstr "硬件"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Health"
 msgstr "健康"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Help"
 msgstr "帮助"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Help"
 msgstr "帮助"
@@ -8299,7 +8551,7 @@ msgstr "帮助"
 msgid "Helped test features in development"
 msgstr "开发中的辅助测试特征"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Herald"
 msgstr "加精"
@@ -8317,6 +8569,18 @@ msgstr "突出显示"
 #, machine, python-format
 msgid "Hey there, %(name)s"
 msgstr "嘿,这里,%(name)s"
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, QR sign-in was turned back on for your %(site)s account, with its password. It lets a phone that is signed in to your account approve a sign-in on another screen."
+msgstr "嗨%(name)s,QR 签注被打开了 %(site)s 账户,带有密码。 它允许一个在你的账户注册的电话 批准在另一个屏幕上签注."
+
+#, machine, plain2, python-format
+msgid "Hi %(name)s, chat encryption was started over on your %(site)s account, after its password was given. Messages from before can no longer be read on your devices unless a browser where you used chat brings them back."
+msgstr "嗨%(name)s,聊天加密是在您的%(site)s上重新开始的 账户,在给出密码后。 无法在您的设备上读取以前发来的信件, 除非您使用聊天的浏览器将它们带回来 ."
+
+#, machine, plain1, python-format
+msgid "Hi %(name)s, someone signed in to your %(site)s account with a QR code that was approved on your phone."
+msgstr "嗨%(name)s 有人用QR签了你的%(site)s帐户 你手机上批准的代码."
 
 #, machine, python-format
 msgid "Hi %(name)s, we noticed a sign-in to your %(site)s account from a browser we haven't seen on it recently."
@@ -8358,7 +8622,7 @@ msgstr "隐藏页面"
 msgid "Hidden until you confirm your age"
 msgstr "藏起来,直到你确认你的年龄"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Hide"
 msgstr "隐藏"
 
@@ -8367,7 +8631,7 @@ msgctxt "button"
 msgid "Hide"
 msgstr "隐藏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Hide"
 msgstr "隐藏"
@@ -8381,7 +8645,7 @@ msgctxt "guildmaster action"
 msgid "Hide comment from guild"
 msgstr "从盾中隐藏注释"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Hide from +%(guild)s"
 msgstr "在 +%(guild)s 隐藏"
 
@@ -8393,6 +8657,10 @@ msgstr "从盾中隐藏文章"
 #, machine
 msgid "Hide posts or collapse comments that are made by bots."
 msgstr "隐藏由 bots 撰写的帖子或崩溃注释 ."
+
+#, machine, plain1
+msgid "Hide this version"
+msgstr "隐藏此版本"
 
 #, machine
 msgid "Hides matching content from your feeds, and collapses matching comments."
@@ -8418,7 +8686,7 @@ msgstr "徒步旅行"
 msgid "Hip-Hop"
 msgstr "万岁"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "History"
 msgstr "历史记录"
 
@@ -8442,7 +8710,7 @@ msgstr "此帖的历史"
 msgid "Hobbies"
 msgstr "爱好"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Home"
 msgstr "首页"
 
@@ -8470,7 +8738,7 @@ msgstr "马"
 msgid "Hosted by %(name)s"
 msgstr "由%(name)s托管"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Hot"
 msgstr "热门"
@@ -8520,6 +8788,10 @@ msgstr "多长时间"
 msgid "How long it runs"
 msgstr "持续了多久"
 
+#, machine, plain1
+msgid "How old are you?"
+msgstr "你几岁了?"
+
 #, machine
 msgid "How scores read"
 msgstr "分数如何读取"
@@ -8548,7 +8820,7 @@ msgstr "如何使用密钥"
 msgid "How to write this post"
 msgstr "如何写这篇文章"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "How words are matched"
 msgstr "如何识别词语"
 
@@ -8589,6 +8861,10 @@ msgid "I'm %(min)s to 17"
 msgstr "我是%(min)s到17号"
 
 #, machine, plain1
+msgid "I'm 18 or over"
+msgstr "我18岁或18岁以上"
+
+#, machine, plain1
 msgid "Ice Hockey"
 msgstr "冰球"
 
@@ -8620,6 +8896,10 @@ msgstr "若您年满18岁, 请您说, 您的父母或监护人将被要求解开
 msgid "If you don't have your 2FA device, enter one of your backup codes instead. Each backup code works once. An account that never made backup codes can enter its Recovery Code, which also turns 2FA off."
 msgstr "如果你没有你的2FA 设备,请输入您的备份代码。 每个备份代码都有效过一次. 从未做备份代码的账户可以输入其恢复代码,该代码也会关闭2FA ."
 
+#, machine, plain2
+msgid "If you forget your password, your recovery code, or a browser where you've used chat, brings your old messages back. The code can't be shown again: this site never has it. A new one replaces it."
+msgstr "如果你忘了密码,你的恢复代码, 或者一个浏览器,你用过聊天, 把你的旧消息带回来。 代码无法再次显示: 这个网站从来没有过. 换个新的."
+
 #, machine, python-format
 msgid "If you have any questions, feel free to <a href=\"%(mail)s\">email the %(site)s team.</a>."
 msgstr "如果你有任何问题 请随意 <a href=\"%(mail)s\">电子邮件 %(site)s 团队。</a>。"
@@ -8649,7 +8929,7 @@ msgctxt "button"
 msgid "Ignore"
 msgstr "忽略"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Image"
 msgstr "图片"
@@ -8697,7 +8977,7 @@ msgstr "在%(language)s内"
 msgid "In %(place)s"
 msgstr "在%(place)s内"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "In guild"
 msgstr "所在公会"
 
@@ -8721,7 +9001,7 @@ msgstr "这些盾"
 msgid "Inadvertantly broke Ruqqus"
 msgstr "无耻地打破了Ruqqus"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Inbox"
 msgstr "私信"
 
@@ -8732,6 +9012,22 @@ msgstr "包含"
 #, machine
 msgid "Includes accounts you follow"
 msgstr "包括您所跟踪的账户"
+
+#, machine, plain2
+msgid "Incoming call"
+msgstr "来电了"
+
+#, machine, plain2, python-format
+msgid "Incoming call from %(name)s"
+msgstr "%(name)s的来电"
+
+#, machine, plain2
+msgid "Incoming video call"
+msgstr "来电视频"
+
+#, machine, plain2, python-format
+msgid "Incoming video call from %(name)s"
+msgstr "来自%(name)s的视频通话"
 
 #, machine
 msgid "Incorrect Password"
@@ -8766,7 +9062,7 @@ msgstr "印度河次大陆"
 msgid "Influencers"
 msgstr "影响因素"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Insights"
 msgstr "数据分析"
 
@@ -8799,7 +9095,7 @@ msgstr "有兴趣"
 msgid "Interior Design"
 msgstr "内部设计"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "International Affairs"
 msgstr "国际事务"
 
@@ -9030,6 +9326,10 @@ msgstr "它通过你的应用程序工作 <strong>%(app)s</strong> (客户编号
 msgid "It's called %(name)s now."
 msgstr "现在叫%(name)s."
 
+#, machine, plain2
+msgid "It's too late to refuse this code: it has run out or has been used. If you don't recognise a sign-in, log out everywhere, and check your apps too."
+msgstr "拒绝这个代码为时已晚:它已经耗尽或已被使用. 如果你不识别一个登录, 断开任何地方, 检查你的应用程序太."
+
 #, machine
 msgid "Its feed server has not named any posts you can see."
 msgstr "它的种子服务器没有为您指定任何您可以看到的帖子 ."
@@ -9058,7 +9358,7 @@ msgstr "JPG,PNG,GIF支持的文件。 最大文件大小 16MB. (建议比率为1
 msgid "Jazz & Blues"
 msgstr "爵士和蓝调"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Job"
 msgstr "职业"
 
@@ -9071,7 +9371,7 @@ msgstr[0] "任务最多可以为%(num)s字符."
 msgid "Job can't contain < or >."
 msgstr "任务不能包含 < 或 > ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Join"
 msgstr "加入"
@@ -9083,7 +9383,7 @@ msgid "Join %(circle)s &middot; %(num)s coin/month"
 msgid_plural "Join %(circle)s &middot; %(num)s coins/month"
 msgstr[0] "加入%(circle)s&middot;%(num)s硬币/月"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join +%(guild)s"
 msgstr "加入 +%(guild)s"
 
@@ -9096,11 +9396,11 @@ msgid "Join Circle &middot; %(num)s coin/month"
 msgid_plural "Join Circle &middot; %(num)s coins/month"
 msgstr[0] "加入圆&middot;%(num)s硬币/月"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join Guild"
 msgstr "加入公会"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join guild"
 msgstr "加入公会"
 
@@ -9126,7 +9426,7 @@ msgctxt "people who joined the guild, table heading"
 msgid "Joined"
 msgstr "已经加入"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "status"
 msgid "Joined"
 msgstr "已加入"
@@ -9147,7 +9447,7 @@ msgstr "打开阿尔法时加入Ruqqus"
 msgid "Joined Ruqqus during open beta"
 msgstr "打开β时加入Ruqqus"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Jump in the discussion."
 msgstr "加入讨论。"
 
@@ -9221,7 +9521,7 @@ msgstr "有点像机器人"
 msgid "Kind of story"
 msgstr "故事的类型"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Kinds of Space"
 msgstr "空间类型"
 
@@ -9237,7 +9537,7 @@ msgstr "员额类型 <span class=\"text-muted\">(没有滴答的意思是每一�
 msgid "Knitting & Sewing"
 msgstr "缝纫( S)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "badge"
 msgid "LIVE"
 msgstr "直播"
@@ -9254,7 +9554,7 @@ msgstr "标签"
 msgid "Landscaping"
 msgstr "景观设计"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Language"
 msgstr "语言"
 
@@ -9267,7 +9567,7 @@ msgstr "语言学习"
 msgid "Languages on this page"
 msgstr "本页面上的语文"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Large"
 msgstr "大"
 
@@ -9303,12 +9603,12 @@ msgstr "法律"
 msgid "Layout"
 msgstr "版式"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Leave"
 msgstr "退出"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: leave the guild"
 msgid "Leave"
 msgstr "退出公会"
@@ -9321,7 +9621,7 @@ msgstr "离开 +%(guild)s"
 msgid "Leave group"
 msgstr "离开组"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave guild desktop"
 msgstr "退出公会"
 
@@ -9337,7 +9637,7 @@ msgstr "空着现在开始吧."
 msgid "Leave out"
 msgstr "别管了"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave out forwarded copies"
 msgstr "排除转发副本"
 
@@ -9416,7 +9716,7 @@ msgstr "左边"
 msgid "Left +%(guild)s"
 msgstr "左边 +%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Legal"
 msgstr "法律"
 
@@ -9436,7 +9736,7 @@ msgstr "以圆点或其他标记分隔的字母读作一个单词."
 msgid "Letters, numbers and underscores, 3 to 25 characters."
 msgstr "字母,数字和下划线,3到25个字符."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Lifestyle"
 msgstr "生活"
 
@@ -9457,12 +9757,12 @@ msgstr "限制 1000 个字符"
 msgid "Limit of 256 characters"
 msgstr "256个字符的限制"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Link"
 msgstr "链接"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post field"
 msgid "Link"
 msgstr "链接"
@@ -9475,7 +9775,7 @@ msgstr "链接( 可选)"
 msgid "Link Discord"
 msgstr "链接Discord"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Link copied to clipboard"
 msgstr "链接已复制到剪贴板"
 
@@ -9524,7 +9824,7 @@ msgstr "网站的链接是不允许的."
 msgid "Linux & Open Source"
 msgstr "Linux 打开源码( O)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "view"
 msgid "List"
 msgstr "列表"
@@ -9546,7 +9846,7 @@ msgstr "文学"
 msgid "Live"
 msgstr "现场直播"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "Space state"
 msgid "Live"
 msgstr "直播中"
@@ -9555,7 +9855,7 @@ msgstr "直播中"
 msgid "Live Spaces"
 msgstr "现场空间"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Live and upcoming"
 msgstr "直播与预告"
 
@@ -9594,11 +9894,11 @@ msgstr "现场 ~ %(kind)s"
 msgid "Loading..."
 msgstr "正在装入..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "加载中…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Location"
 msgstr "所在地"
 
@@ -9624,15 +9924,23 @@ msgstr "已锁定"
 msgid "Locked: guildmasters edit it."
 msgstr "锁定:盾主持人编辑其内容."
 
-#, machine
+#, machine, plain1
+msgid "Log"
+msgstr "日志"
+
+#, machine, plain1, python-format
+msgid "Log - %(site)s"
+msgstr "日志 -%(site)s"
+
+#, glossary, machine, plain2
 msgid "Log Out Everywhere"
-msgstr "逐处注销"
+msgstr "在所有设备上退出登录"
 
 #, machine, python-format
 msgid "Log all other devices out of your %(site)s account."
 msgstr "从您的%(site)s 账户中记录所有其他设备 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Log in to bookmark"
 msgstr "登录后收藏"
 
@@ -9640,13 +9948,29 @@ msgstr "登录后收藏"
 msgid "Log in to vote"
 msgstr "登记投票"
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Log of @%(name)s"
+msgstr "日志@%(name)s"
+
+#, machine, plain1, python-format
+msgid "Log of post #%(id)s"
+msgstr "员额记录#%(id)s"
+
+#, machine, plain1
+msgid "Log of this comment"
+msgstr "本评论的日志"
+
+#, glossary, machine, plain2
 msgid "Log out"
 msgstr "退出登录"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Log out everywhere"
-msgstr "到处登出"
+msgstr "在所有设备上退出登录"
+
+#, machine, plain2
+msgid "Logging out everywhere ends that sign-in. It doesn't end an app's access, so check those too."
+msgstr "无处不在的断线 结束了注册。 它不会结束一个应用程序的访问, 所以检查这些也."
 
 #, machine, python-format
 msgid "Login - %(site)s"
@@ -9676,11 +10000,11 @@ msgstr "利里兹流星雨"
 msgid "Made on %(date)s."
 msgstr "在%(date)s上制造的."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Made with AI"
 msgstr "AI 生成"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "navigation landmark"
 msgid "Main"
 msgstr "主导航"
@@ -9738,7 +10062,7 @@ msgstr "制作新的备份代码"
 msgid "Make one with New event."
 msgstr "与新事件制作一个."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Make or change your circles"
 msgstr "创建或修改你的圈子"
 
@@ -9790,7 +10114,7 @@ msgstr "漫画"
 msgid "March equinox"
 msgstr "三月正数"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mark Sensitive Content"
 msgstr "标记为敏感内容"
 
@@ -9815,7 +10139,7 @@ msgstr "销售和销售"
 msgid "Marriage"
 msgstr "结婚"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Matches your interests"
 msgstr "符合你的兴趣"
 
@@ -9823,7 +10147,7 @@ msgstr "符合你的兴趣"
 msgid "Mathematics"
 msgstr "数学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media"
 msgstr "媒体"
 
@@ -9835,7 +10159,7 @@ msgstr "仅限媒体"
 msgid "Media settings"
 msgstr "媒体设置"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Media storage"
 msgstr "媒体存储"
 
@@ -9881,7 +10205,7 @@ msgid "Member<span class=\"text-primary\"> %(num)s</span>"
 msgid_plural "Members<span class=\"text-primary\"> %(num)s</span>"
 msgstr[0] "成员<span class=\"text-primary\"> %(num)s</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Members"
 msgstr "成员"
 
@@ -9903,7 +10227,7 @@ msgid "Members with at least %(num)s point in a month share that month's budget 
 msgid_plural "Members with at least %(num)s points in a month share that month's budget by their points."
 msgstr[0] "成员在一个月中至少有%(num)s点数,按其点数分摊该月的预算."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Memes"
 msgstr "梗图"
 
@@ -9919,7 +10243,7 @@ msgstr "提及@%(name)s"
 msgid "Mentioning these accounts"
 msgstr "提及这些账户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mentions"
 msgstr "提及"
 
@@ -9941,11 +10265,11 @@ msgid "Mentions any of: %(num)s word or phrase at most."
 msgid_plural "Mentions any of: %(num)s words or phrases at most."
 msgstr[0] "最多提及 %(num)s 的单词或短语 ."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Merch and more. Support %(site)s today!"
 msgstr "周边好物等你来挑。立即支持 %(site)s！"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Message"
 msgstr "私信"
@@ -10017,11 +10341,11 @@ msgstr "移动 & Apps"
 msgid "Mobile Games"
 msgstr "移动游戏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Log"
 msgstr "管理日志"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mod Queue"
 msgstr "审核队列"
 
@@ -10033,11 +10357,11 @@ msgstr "示范建筑"
 msgid "Moderation"
 msgstr "调和"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Moderation log"
 msgstr "管理日志"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Modern Culture"
 msgstr "当代文化"
 
@@ -10055,7 +10379,7 @@ msgctxt "table heading"
 msgid "Month"
 msgstr "月数"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Month"
 msgstr "近一个月"
@@ -10068,24 +10392,24 @@ msgstr "他们出生的月份"
 msgid "Monthly creator fund payouts"
 msgstr "每月创造者基金付款"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "更多"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "More"
 msgstr "更多"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More actions"
 msgstr "更多操作"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More comments"
 msgstr "更多评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More options"
 msgstr "更多选项"
 
@@ -10137,7 +10461,7 @@ msgstr "向下移动%(name)s"
 msgid "Move %(name)s up"
 msgstr "向上移动%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Move to folder"
 msgstr "移至文件夹"
 
@@ -10165,12 +10489,12 @@ msgstr "音乐制作"
 msgid "Must attempt to buy at least one coin"
 msgstr "一定要尝试至少买一个硬币"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Mute"
 msgstr "隐藏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "microphone"
 msgid "Mute"
 msgstr "静音"
@@ -10179,11 +10503,11 @@ msgstr "静音"
 msgid "Mute +%(guild)s"
 msgstr "静音 +%(guild)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Mute @%(name)s"
 msgstr "隐藏 @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute guild"
 msgstr "隐藏公会"
 
@@ -10203,7 +10527,7 @@ msgstr "在频道中静音"
 msgid "Muted since"
 msgstr "已静音"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My Curations"
 msgstr "我的精选集"
 
@@ -10211,7 +10535,7 @@ msgstr "我的精选集"
 msgid "My Friends"
 msgstr "我的朋友们"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My account"
 msgstr "我的账号"
 
@@ -10219,7 +10543,7 @@ msgstr "我的账号"
 msgid "My account is sensitive"
 msgstr "我的账户很敏感"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My guilds"
 msgstr "我的公会"
 
@@ -10227,7 +10551,7 @@ msgstr "我的公会"
 msgid "My languages"
 msgstr "我的语言"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "My profile"
 msgstr "我的个人资料"
 
@@ -10271,7 +10595,7 @@ msgstr "净票数"
 msgid "Neuroscience"
 msgstr "神经科学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Never counted"
 msgstr "不计入"
 
@@ -10310,7 +10634,7 @@ msgctxt "new highlight"
 msgid "New"
 msgstr "新设"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "New"
 msgstr "最新"
@@ -10355,6 +10679,10 @@ msgstr "新建聊天"
 msgid "New circle"
 msgstr "新圆形"
 
+#, machine, plain1
+msgid "New code"
+msgstr "新代码"
+
 #, machine
 msgid "New comments · Show them"
 msgstr "新评论 ・ 显示它们"
@@ -10371,7 +10699,7 @@ msgstr "新活动"
 msgid "New folder"
 msgstr "新建文件夹"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "New group"
 msgstr "新建群组"
 
@@ -10387,6 +10715,22 @@ msgstr "新项目首先发布最古老的, 最多为%(max)s 一次来自种子 .
 msgid "New members pay %(num)s coin every 30 days. Current members keep their price."
 msgid_plural "New members pay %(num)s coins every 30 days. Current members keep their price."
 msgstr[0] "新成员每30天支付%(num)s硬币. 现任会员保持其价格."
+
+#, machine, plain2
+msgid "New message"
+msgstr "新消息"
+
+#, machine, plain2, python-format
+msgid "New message from %(name)s"
+msgstr "%(name)s 的新消息"
+
+#, machine, plain2
+msgid "New message request"
+msgstr "新信件请求"
+
+#, machine, plain2, python-format
+msgid "New message request from %(name)s"
+msgstr "%(name)s 的新信件请求"
 
 #, machine
 msgid "New page address"
@@ -10445,20 +10789,20 @@ msgstr "最新的第一个"
 msgid "Newest first."
 msgstr "最新的第一个."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "News"
 msgstr "新闻"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Next"
 msgstr "下一页"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "next page"
 msgid "Next"
 msgstr "下一页"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "story"
 msgid "Next"
 msgstr "下一条快拍"
@@ -10484,7 +10828,7 @@ msgstr "没有"
 msgid "No Space is shown on this stage right now."
 msgstr "舞台上现在没有空间."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No Spaces are scheduled."
 msgstr "暂无已安排的空间。"
 
@@ -10532,7 +10876,7 @@ msgstr "无频道显示."
 msgid "No channels yet."
 msgstr "还没有频道."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No comments"
 msgstr "暂无评论"
 
@@ -10576,7 +10920,7 @@ msgstr "不允许外部链接 ."
 msgid "No feeds."
 msgstr "无供养."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "无标签"
 
@@ -10596,7 +10940,7 @@ msgstr "无名为 + 的盾%(guild)s。"
 msgid "No guild called +%(name)s."
 msgstr "无名为 + 的盾%(name)s。"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guildmasters"
 msgstr "暂无会长"
 
@@ -10609,7 +10953,7 @@ msgid "No guilds are in this topic yet."
 msgid_plural "No guilds are in these topics yet."
 msgstr[0] "这些话题还没有盾."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No guilds here yet."
 msgstr "这里还没有公会。"
 
@@ -10646,7 +10990,7 @@ msgstr "还没有提名建议 - 成为第一个!"
 msgid "No older than"
 msgstr "不长于"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No one"
 msgstr "无人"
 
@@ -10690,7 +11034,7 @@ msgstr "无公共配给饲料匹配%(query)s."
 msgid "No public curations yet. Be the first!"
 msgstr "还没有公开的饲料。 成为第一个!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No recordings yet."
 msgstr "暂无录音。"
 
@@ -10750,6 +11094,10 @@ msgstr "只有人民才能读到它:不是网站,也不是盾牌主持人。 因
 msgid "Nobody can pay to join now: the guild is by invitation only. Current members keep what they paid for."
 msgstr "现在没有人能付钱加入:荷兰盾只是受邀加入。 现任会员保留他们支付的费用."
 
+#, machine, plain1
+msgid "Nobody can sign in to your account with a code."
+msgstr "没人能用密码签入你的账户."
+
 #, machine, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "没有人得到超过%(share)s%%一个月的预算。 股份被四舍五入到整枚硬币."
@@ -10789,6 +11137,10 @@ msgstr "这里没人打字"
 #, machine, plain1, python-format
 msgid "Nobody under %(age)s may have an account where you are."
 msgstr "%(age)s下面的人可能没有你的账户."
+
+#, machine, plain1
+msgid "Nobody was signed in. If someone asked you to scan that code, they can't use it now."
+msgstr "没有人被签入。 如果有人要你扫描密码 他们现在不能用."
 
 #, machine
 msgid "Nobody yet."
@@ -10840,6 +11192,10 @@ msgstr "未连接 -%(site)s"
 msgid "Not flaired \"%(flair)s\""
 msgstr "未发光“ %(flair)s ”"
 
+#, machine, plain1
+msgid "Not found"
+msgstr "未找到"
+
 #, machine
 msgid "Not found."
 msgstr "没有发现."
@@ -10871,7 +11227,7 @@ msgstr "不在%(place)s中"
 msgid "Not in these guilds"
 msgstr "不在这些盾"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not known yet"
 msgstr "暂未知"
 
@@ -10882,6 +11238,10 @@ msgstr "不连接到 %(domain)s"
 #, machine
 msgid "Not made with AI"
 msgstr "不是用人工智能制作的"
+
+#, machine, plain1
+msgid "Not me"
+msgstr "不是我,不是我说的"
 
 #, machine
 msgid "Not now"
@@ -10915,9 +11275,13 @@ msgstr "不再有趋势"
 msgid "Not yet"
 msgstr "还没有"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Not your default:"
 msgstr "非默认设置："
+
+#, machine, plain2
+msgid "Nothing"
+msgstr "没什么"
 
 #, machine
 msgid "Nothing bookmarked yet"
@@ -10938,6 +11302,10 @@ msgstr "还没有投票(评论)"
 #, machine
 msgid "Nothing downvoted yet (posts)"
 msgstr "目前还没有人投票"
+
+#, machine, plain1
+msgid "Nothing has been logged yet."
+msgstr "还没有记录下来."
 
 #, machine
 msgid "Nothing has changed since the last publish."
@@ -10970,6 +11338,10 @@ msgstr "现在没有活的."
 #, machine, plain1
 msgid "Nothing marked for today."
 msgstr "今天没有标记."
+
+#, machine, plain1
+msgid "Nothing matches this filter."
+msgstr "没有比对这个过滤器."
 
 #, machine, python-format
 msgid "Nothing on %(site)s can translate into it right now, so the Translate button won't show."
@@ -11043,13 +11415,33 @@ msgstr "没有."
 msgid "Notification types"
 msgstr "通知类型"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "通知"
+
+#, machine, plain2
+msgid "Notifications aren't available on this site yet."
+msgstr "这个网站还没有通知."
+
+#, machine, plain2
+msgid "Notifications don't say who a message is from."
+msgstr "通知没有说是谁发的短信."
 
 #, machine, python-format
 msgid "Notifications for @%(name)s turned off."
 msgstr "通知@%(name)s 关机了"
+
+#, machine, plain2
+msgid "Notifications from this group"
+msgstr "该组的通知"
+
+#, machine, plain2
+msgid "Notifications need this page's script."
+msgstr "通知需要本页的脚本."
+
+#, machine, plain2
+msgid "Notifications say who a message is from."
+msgstr "通知上说是谁发来的讯息."
 
 #, machine, python-format
 msgid "Notifications, %(num)s new"
@@ -11108,7 +11500,7 @@ msgstr "攻击性"
 msgid "Offline on %(service)s"
 msgstr "离线于 %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Old"
 msgstr "最早"
@@ -11134,6 +11526,10 @@ msgstr "在%(date)s时"
 #, machine
 msgid "On Ruqqus for one year"
 msgstr "在鲁库斯岛待一年"
+
+#, machine, plain2
+msgid "On an iPhone or iPad, add this site to your Home Screen first (Share, then Add to Home Screen), and turn notifications on from there."
+msgstr "在 iPhone 或 iPad 上, 请先将此站点添加到您的家屏幕( 共享, 然后再添加到家屏幕) , 然后打开通知 ."
 
 #, machine, plain1
 msgid "On by default"
@@ -11239,6 +11635,10 @@ msgstr "只有Premium的账户可以对此帖子进行评论."
 msgid "Only a call has a stage."
 msgstr "只有电话才有舞台."
 
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "只有团体的主人和管理员才能改变这一点."
+
 #, machine, plain1
 msgid "Only a guild's copy of a post has a flair."
 msgstr "只有荷兰盾的贴文有标签."
@@ -11298,6 +11698,10 @@ msgstr "只有批准的成员在这个频道写作."
 #, machine
 msgid "Only continue if you started signing in to a chat app just now."
 msgstr "只有你刚刚开始在聊天程序上签字 才能继续."
+
+#, machine, plain1
+msgid "Only continue if you started this yourself on a screen in front of you. If a post, comment, message or website asked you to scan this, someone may be trying to take your account."
+msgstr "只有你自己在屏幕上开始 才能继续 如果一个帖子,评论,留言或网站要求你扫描这个,可能会有人试图考虑你."
 
 #, machine, python-format
 msgid "Only counts are shown, never who. Day-by-day figures appear once a guild has %(num)s member, so a small guild's numbers can't point at one person."
@@ -11393,7 +11797,7 @@ msgstr "只有频道的主人和助手在其中写作."
 msgid "Only the channel's owner chooses its helpers."
 msgstr "只有频道的拥有者选择它的助手."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Only the circles you pick"
 msgstr "仅你选择的圈子可见"
 
@@ -11562,7 +11966,7 @@ msgstr "在聊天中打开"
 msgid "Open in the guild"
 msgstr "在盾牌中打开"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open page"
 msgstr "打开页面"
 
@@ -11582,11 +11986,15 @@ msgstr "在 %(domain)s 上打开原件, 在新标签中"
 msgid "Open the post"
 msgstr "打开帖子"
 
+#, machine, plain1
+msgid "Open the preserved copy"
+msgstr "打开保存的副本"
+
 #, machine
 msgid "Open the quoted post"
 msgstr "打开引用的帖子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Open the shared draft"
 msgstr "打开共享草稿"
 
@@ -11618,11 +12026,11 @@ msgstr "意见和分析"
 msgid "Opt Out of All/Trending"
 msgstr "全部退出/调试"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Opted out of All"
 msgstr "已退出全站信息流"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Option %(number)s"
 msgstr "选项 %(number)s"
 
@@ -11715,11 +12123,11 @@ msgstr "由自己的组合排序: 选票和提示%(votes)s, 注释%(comments)s, 
 msgid "Ordered by its own mix: votes and tips %(votes)s, comments %(comments)s, fading over %(fade)s."
 msgstr "按自己的组合排序: 选票和提示%(votes)s, 注释%(comments)s, 淡出%(fade)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Original post"
 msgstr "原帖"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Original username: @%(name)s"
 msgstr "原用户名：@%(name)s"
 
@@ -11727,7 +12135,7 @@ msgstr "原用户名：@%(name)s"
 msgid "Orionids meteor shower"
 msgstr "猎户座流星雨"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other Sports"
 msgstr "其他运动"
 
@@ -11741,7 +12149,7 @@ msgstr "你读过的其他语言"
 msgid "Other or unknown"
 msgstr "其他或不详"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Other spellings:"
 msgstr "其他写法:"
 
@@ -11786,7 +12194,7 @@ msgstr "概览"
 msgid "Own account"
 msgstr "拥有账户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curations you made"
 msgid "Owned"
 msgstr "我创建的"
@@ -11799,7 +12207,7 @@ msgstr "个人电脑"
 msgid "PNG, JPEG, GIF or WebP, 8 MB at most."
 msgstr "PNG,JPEG,GIF或WebP,8MB最多."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Page navigation"
 msgstr "分页导航"
 
@@ -11835,7 +12243,7 @@ msgstr "付费圆圈"
 msgid "Paid circles are part of Premium."
 msgstr "付费圈是Premium的一部分."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Paid circles you are in"
 msgstr "你加入的付费圈子"
 
@@ -11930,15 +12338,15 @@ msgctxt "events"
 msgid "Past"
 msgstr "过去"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Day"
 msgstr "过去一天"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Month"
 msgstr "过去一个月"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Past Year"
 msgstr "过去一年"
 
@@ -11959,7 +12367,7 @@ msgstr "暂停"
 msgid "Paused"
 msgstr "暂停"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Paused"
 msgstr "已暂停"
@@ -12045,7 +12453,15 @@ msgid "People who follow you, or whom you follow, are in at once. Anyone else ge
 msgid_plural "People who follow you, or whom you follow, are in at once. Anyone else gets an invitation in their Requests. A group has up to %(num)s people and is end-to-end encrypted."
 msgstr[0] "追随你的人 或追随你的人 立刻就进来了 其他人在请求中都会收到邀请 一组最多有%(num)s人,并且是端到端加密的."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "People you chat with don't see when you've read their messages or are typing, and you don't see theirs."
+msgstr "和他们聊天的人 读过他们的消息或者打字的时候 看不到他们的留言."
+
+#, machine, plain2
+msgid "People you chat with see when you've read their messages and when you're typing."
+msgstr "与你交谈的人 当你读过他们的信息 当你打字."
+
+#, glossary, machine, plain2
 msgid "People you follow liked"
 msgstr "你关注的人赞过"
 
@@ -12117,7 +12533,7 @@ msgstr "照片或录像"
 msgid "Photography"
 msgstr "摄影"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "word filter entry"
 msgid "Phrase"
 msgstr "短语"
@@ -12130,7 +12546,7 @@ msgstr "物理学"
 msgid "Pick a date and time."
 msgstr "挑个日期和时间."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "选择标签"
 
@@ -12174,12 +12590,16 @@ msgstr "从慢模式长度中选择一个."
 msgid "Pick who it is for"
 msgstr "选谁用"
 
+#, machine, plain2
+msgid "Picture"
+msgstr "图片"
+
 #, machine
 msgctxt "kind of story"
 msgid "Picture"
 msgstr "图片"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Picture"
 msgstr "图片"
@@ -12225,11 +12645,11 @@ msgstr "图片到"
 msgid "Pictures, video and sound, nothing else."
 msgstr "图片,视频和声音,没有别的."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pin"
 msgstr "置顶"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Pin"
 msgstr "置顶"
@@ -12253,20 +12673,20 @@ msgctxt "colour"
 msgid "Pink"
 msgstr "粉红色"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "heading of pinned posts"
 msgid "Pinned"
 msgstr "置顶"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned comment"
 msgstr "置顶评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pinned posts"
 msgstr "置顶帖子"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Pinned to +%(guild)s"
 msgstr "已在 +%(guild)s 置顶"
 
@@ -12317,6 +12737,10 @@ msgstr "播放 %(domain)s 的视频"
 msgid "Play with sound"
 msgstr "用声音播放"
 
+#, machine, plain1
+msgid "Please choose one of the two answers."
+msgstr "请从两个答案中选择一个."
+
 #, machine
 msgid "Please enter a better title"
 msgstr "请输入更好的标题"
@@ -12332,6 +12756,10 @@ msgstr "请注意, %(site)s 永远不会通过电子邮件、 文本或电话向
 #, machine
 msgid "Please remove the following link(s) from your comment, and then you will be able to post it:"
 msgstr "请从您的注释中删除以下链接, 然后您就可以将其张贴 :"
+
+#, machine, plain1
+msgid "Please say how old you are."
+msgstr "请说年多少."
 
 #, machine
 msgid "Please select a reason for flagging below."
@@ -12349,6 +12777,10 @@ msgstr "播音员"
 msgid "Poetry"
 msgstr "诗歌"
 
+#, machine, plain1
+msgid "Point your phone's camera at this. It runs out after two minutes."
+msgstr "把手机的相机对准这个 两分钟后就用光了."
+
 #, machine
 msgctxt "table heading"
 msgid "Points"
@@ -12358,11 +12790,11 @@ msgstr "点"
 msgid "Political"
 msgstr "政治"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political Ideas & Debate"
 msgstr "政治思想与辩论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Political News"
 msgstr "政治新闻"
 
@@ -12370,24 +12802,24 @@ msgstr "政治新闻"
 msgid "Politics"
 msgstr "政治"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll"
 msgstr "投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Poll"
 msgstr "投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll (optional)"
 msgstr "投票（可选）"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Poll length"
 msgstr "投票时长"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Poll option %(number)s"
 msgstr "投票选项 %(number)s"
 
@@ -12419,12 +12851,12 @@ msgstr "现场大众"
 msgid "Popular this week"
 msgstr "这周很受欢迎"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "发布"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Post"
 msgstr "帖子"
@@ -12437,7 +12869,7 @@ msgstr "邮政信息"
 msgid "Post an update"
 msgstr "张贴更新"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "匿名发布"
 
@@ -12475,15 +12907,15 @@ msgstr "后透视 ・ 创建者工作室 - %(site)s"
 msgid "Post on %(service)s"
 msgstr "%(service)s的帖子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post text"
 msgstr "帖子正文"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post title"
 msgstr "帖子标题"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post type"
 msgstr "帖子类型"
 
@@ -12524,11 +12956,11 @@ msgstr "张贴"
 msgid "Posting cooldown"
 msgstr "张贴冷却"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Posting to +%(guild)s"
 msgstr "发布到 +%(guild)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "发布到你的个人资料"
 
@@ -12536,11 +12968,11 @@ msgstr "发布到你的个人资料"
 msgid "Postponed"
 msgstr "已推迟"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts"
 msgstr "帖子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Posts"
 msgstr "帖子"
@@ -12658,7 +13090,7 @@ msgstr "本周最繁忙的评论栏目."
 msgid "Posts you forward to a guild, and comments you forward into a new post, will show here."
 msgstr "将您张贴到一个盾, 并评论您在一个新的帖子, 在这里显示."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posts you save will show up here."
 msgstr "你收藏的帖子会显示在这里。"
 
@@ -12686,7 +13118,7 @@ msgstr "预测"
 msgid "Pregnancy & Babies"
 msgstr "怀孕和婴儿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium"
 msgstr "Premium"
 
@@ -12694,7 +13126,7 @@ msgstr "Premium"
 msgid "Premium Settings - %(site)s"
 msgstr "Premium 设置 - %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Premium accounts"
 msgstr "Premium 账号"
 
@@ -12711,16 +13143,24 @@ msgstr "Premium 直到%(date)sUTC ."
 msgid "Premium until: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 msgstr "Premium 直至: <span class=\"text-black font-weight-bold\">%(time)s UTC</span>"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Preserved copy"
+msgstr "保留副本"
+
+#, machine, plain1, python-format
+msgid "Preserved copy - %(site)s"
+msgstr "保留副本 - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Press"
 msgstr "媒体"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Press"
 msgstr "媒体"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "link to the page for journalists"
 msgid "Press"
 msgstr "媒体"
@@ -12729,11 +13169,15 @@ msgstr "媒体"
 msgid "Pressing play loads %(player)s, which can set cookies, see your address and record what you watch."
 msgstr "按下游戏负载%(player)s,它可以设置 cookie,查看您的地址并记录您观看的内容."
 
-#, glossary, machine, plain1
+#, machine, plain1, python-format
+msgid "Pressing play loads %(player)s."
+msgstr "按下游戏负载%(player)s."
+
+#, glossary, machine, plain2
 msgid "Prev"
 msgstr "上一页"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "previous page"
 msgid "Prev"
 msgstr "上一页"
@@ -12769,15 +13213,15 @@ msgctxt "button"
 msgid "Print"
 msgstr "打印"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy"
 msgstr "隐私"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy Policy"
 msgstr "隐私政策"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Privacy and cookie settings"
 msgstr "隐私和 Cookie 设置"
 
@@ -12785,7 +13229,7 @@ msgstr "隐私和 Cookie 设置"
 msgid "Privacy page"
 msgstr "隐私页面"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Private"
 msgstr "私密"
@@ -12818,7 +13262,7 @@ msgstr "私有内容, 可见于您是 + 的 guild 主持人%(guild)s。"
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "私有内容, 可见于您是 + 的核定贡献%(guild)s。"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Private mode."
 msgstr "私密模式。"
 
@@ -12910,7 +13354,7 @@ msgstr "产品"
 msgid "Productivity"
 msgstr "生产力"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Profile"
 msgstr "个人资料"
 
@@ -13015,12 +13459,12 @@ msgstr "由删除的账户提出."
 msgid "Psychology"
 msgstr "心理学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "audience"
 msgid "Public"
 msgstr "公开"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "curation"
 msgid "Public"
 msgstr "公开"
@@ -13099,7 +13543,7 @@ msgstr "采购历史"
 msgid "Purchase history"
 msgstr "采购历史"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Purge"
 msgstr "彻底清除"
@@ -13134,6 +13578,29 @@ msgstr "谜题"
 #, machine
 msgid "Q&A"
 msgstr "Q&A"
+
+#, machine, plain1
+msgid "QR code"
+msgstr "QR 代码"
+
+#, machine, plain1
+msgid "QR sign-in"
+msgstr "QR 登录"
+
+#, machine, plain1
+msgid "QR sign-in is off."
+msgstr "QR注册关闭."
+
+#, machine, plain1
+msgid "QR sign-in is on."
+msgstr "QR签到."
+
+#, machine, plain1, python-format
+msgid "QR sign-in was turned on for your %(site)s account"
+msgstr "QR 您的%(site)s 账户已打开登录"
+
+msgid "QR sign-in was turned on for your account. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr ""
 
 #, machine, plain1
 msgid "Quadrantids meteor shower"
@@ -13238,7 +13705,7 @@ msgstr "悬挂的原因吗?"
 msgid "Reason:"
 msgstr "原因:"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Reason: %(reason)s"
 msgstr "原因：%(reason)s"
 
@@ -13272,6 +13739,10 @@ msgstr "录音"
 msgid "Recordings"
 msgstr "记录"
 
+#, machine, plain2
+msgid "Recovery code"
+msgstr "回收代码"
+
 #, machine
 msgid "Recruited 1 friend to join Ruqqus"
 msgstr "招募了一个朋友加入鲁卡"
@@ -13301,19 +13772,19 @@ msgstr "重铸一枚硬币一周"
 msgid "Redirect URI"
 msgstr "重定向URI"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region"
 msgstr "地区"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Region not known yet"
 msgstr "地区未知"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regional"
 msgstr "地区"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Regions"
 msgstr "地区"
 
@@ -13343,7 +13814,7 @@ msgstr "拒绝自动发布@%(name)s他们的账户没有触动。"
 msgid "Rejected"
 msgstr "被拒绝"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "bot status"
 msgid "Rejected"
 msgstr "已拒绝"
@@ -13376,7 +13847,7 @@ msgstr "提醒我一点"
 msgid "Reminder set"
 msgstr "提醒设置"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "移除"
 
@@ -13401,7 +13872,7 @@ msgstr "删除@%(name)s"
 msgid "Remove an author"
 msgstr "删除作者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove bookmark"
 msgstr "取消收藏"
 
@@ -13410,7 +13881,7 @@ msgid "Remove bookmark, %(num)s bookmark"
 msgid_plural "Remove bookmark, %(num)s bookmarks"
 msgstr[0] "删除书签,%(num)s书签"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove from +%(guild)s"
 msgstr "从 +%(guild)s 移除"
 
@@ -13427,11 +13898,11 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "删除主持人"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "移除选项 %(number)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove poll"
 msgstr "移除投票"
 
@@ -13463,7 +13934,7 @@ msgstr "从您的帖子中删除 %(domain)s 链接, 再试一次 ."
 msgid "Remove the %(domain)s link from your post and try again. %(reason)s"
 msgstr "删除 %(domain)s 从您的文章中链接并再次尝试。 %(reason)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Remove the filter: %(filter)s"
 msgstr "移除筛选条件：%(filter)s"
 
@@ -13471,7 +13942,7 @@ msgstr "移除筛选条件：%(filter)s"
 msgid "Remove the following link and try again: `%(link)s`. Reason: %(reason)s"
 msgstr "删除以下链接并再次尝试 :`%(link)s`. 原因 :%(reason)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove the image"
 msgstr "移除图片"
 
@@ -13487,7 +13958,7 @@ msgstr "删除信件"
 msgid "Remove the server"
 msgstr "删除服务器"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove this topic"
 msgstr "移除此话题"
 
@@ -13496,7 +13967,7 @@ msgctxt "diff line"
 msgid "Removed"
 msgstr "删除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by administrators"
 msgstr "已被管理员移除"
 
@@ -13504,7 +13975,7 @@ msgstr "已被管理员移除"
 msgid "Removed by admins"
 msgstr "被管理员删除"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Removed by guildmasters"
 msgstr "已被会长移除"
 
@@ -13549,7 +14020,7 @@ msgstr "一周用完后自动从我的硬币上刷新"
 msgid "Renews every 30 days from your coins at this price until you cancel. Cancelling keeps your access until the day you paid to. No refunds."
 msgstr "每30天按此价将硬币延期一次,直至取消. 取消限制直到你付了钱 没有退款."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Rep"
 msgstr "声望"
 
@@ -13557,13 +14028,13 @@ msgstr "声望"
 msgid "Replay of this Space"
 msgstr "重放此空格"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Report"
 msgstr "举报"
 
 #. the account's @name, filled in by the page
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report %(name)s"
 msgstr "举报 %(name)s"
 
@@ -13577,19 +14048,19 @@ msgstr "报告%(name)s的评论"
 msgid "Report %(name)s's post"
 msgstr "报告%(name)s的帖子"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Report @%(name)s"
 msgstr "举报 @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report Bugs"
 msgstr "报告问题"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "举报评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "举报帖子"
 
@@ -13601,7 +14072,7 @@ msgstr "报告的职位 - %(site)s"
 msgid "Reported messages"
 msgstr "已报告消息"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Reports"
 msgstr "举报"
@@ -13614,12 +14085,12 @@ msgstr "关于他们的报告"
 msgid "Reports opened"
 msgstr "开放的报告"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Repost"
 msgstr "转帖"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Repost"
 msgstr "转帖"
@@ -13628,7 +14099,7 @@ msgstr "转帖"
 msgid "Repost removed."
 msgstr "撤职."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposted"
 msgstr "已转帖"
 
@@ -13636,7 +14107,7 @@ msgstr "已转帖"
 msgid "Reposted to your profile."
 msgstr "调回你的档案."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reposts"
 msgstr "转帖"
 
@@ -13652,7 +14123,7 @@ msgstr "爬行动物和两栖动物"
 msgid "Request API Key"
 msgstr "请求API 密钥"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Requests"
 msgstr "请求"
 
@@ -13664,7 +14135,7 @@ msgstr "需要标签"
 msgid "Reroll Secret"
 msgstr "翻转机密"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button: go back to the saved default filters"
 msgid "Reset"
 msgstr "重置"
@@ -13681,7 +14152,7 @@ msgstr "重置密码"
 msgid "Reset password"
 msgstr "重置密码"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reset to my default"
 msgstr "恢复为我的默认设置"
 
@@ -13701,11 +14172,15 @@ msgstr "重置您的种子吗 ?"
 msgid "Reset your password."
 msgstr "重置密码 ."
 
+#, machine, plain2
+msgid "Resetting your password signs chat out on all your devices, chat apps included. Your chat key stays locked with your old password, so to keep your chat history you'll need your chat recovery code, or a browser where you've used chat."
+msgstr "重置您所有设备的密码断开聊天, 包括聊天应用程序 。 你的聊天密钥仍用旧密码锁住,所以要保持聊天历史,你需要您的聊天恢复代码,或者一个您使用过聊天的浏览器."
+
 #, machine
 msgid "Resign"
 msgstr "辞职"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Resources"
 msgstr "资源"
 
@@ -13722,7 +14197,7 @@ msgstr "负责任地报告了一个安全问题"
 msgid "Restaurants"
 msgstr "餐厅"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restore"
 msgstr "恢复"
 
@@ -13755,7 +14230,7 @@ msgstr "限制在+中查看、转发和评论%(guild)s 仅限核定成员。"
 msgid "Restricted Forwarding"
 msgstr "限制转发"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Restricted forwarding mode."
 msgstr "受限转发模式。"
 
@@ -13802,7 +14277,7 @@ msgstr "修订版%(number)s"
 msgid "Revision %(number)s, published %(age)s."
 msgstr "修订版%(number)s,发布%(age)s."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Revisions"
 msgstr "修订记录"
 
@@ -13876,7 +14351,7 @@ msgstr "角色未指定"
 msgid "Role-Playing Games"
 msgstr "角色扮演游戏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Roles"
 msgstr "角色"
 
@@ -13896,7 +14371,11 @@ msgstr "罗什·哈沙纳"
 msgid "Rugby"
 msgstr "橄榄球"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Rule"
+msgstr "规则"
+
+#, glossary, machine, plain2
 msgid "Rules"
 msgstr "规则"
 
@@ -13941,12 +14420,16 @@ msgstr "Ruqqus拒绝了一个外国要求交出用户信息的命令"
 msgid "Saharan Belt"
 msgstr "撒哈拉带"
 
+#, machine, plain1
+msgid "Sanctions"
+msgstr "制裁"
+
 #, machine
 msgctxt "weekday"
 msgid "Sat"
 msgstr "座位"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "保存"
 
@@ -13977,7 +14460,7 @@ msgstr "保存更改"
 msgid "Save Display Name"
 msgstr "保存显示名称"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save Edit"
 msgstr "保存修改"
 
@@ -13989,7 +14472,7 @@ msgstr "保存算法"
 msgid "Save as a draft"
 msgstr "保存为草稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save as my default"
 msgstr "保存为默认"
 
@@ -14005,11 +14488,11 @@ msgstr "保存更改"
 msgid "Save description"
 msgstr "保存描述"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save draft"
 msgstr "保存草稿"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save for later"
 msgstr "稍后再发"
 
@@ -14041,11 +14524,11 @@ msgstr "省省这些吧 它们被显示 <strong>一次</strong>:网站没有副�
 msgid "Save word filter"
 msgstr "保存文字过滤器"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "已保存"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved as your default"
 msgstr "已保存为默认"
 
@@ -14061,7 +14544,7 @@ msgstr "获救. 人们在订阅前会看到它."
 msgid "Saved. Your lists are shown as you chose."
 msgstr "获救. 您的列表按您的选择显示 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "保存中"
 
@@ -14073,6 +14556,10 @@ msgstr "说这账户有什么问题."
 msgid "Say what the bot will post and where it comes from (at least 10 characters)."
 msgstr "说说机器人会寄出什么,从哪里来(至少十个字符)."
 
+#, machine, plain2
+msgid "Say who it's from"
+msgstr "说是谁送的"
+
 #, machine
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "使用 Google 这样的双要素认证应用程序扫描此条码( 或输入代码) 认证人或Authy."
@@ -14081,7 +14568,7 @@ msgstr "使用 Google 这样的双要素认证应用程序扫描此条码( 或�
 msgid "Scandinavia"
 msgstr "斯堪的纳维亚"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Schedule"
 msgstr "定时发布"
@@ -14115,7 +14602,7 @@ msgstr "科学- Fi"
 msgid "Science"
 msgstr "科学"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Science News"
 msgstr "科学新闻"
 
@@ -14127,11 +14614,11 @@ msgstr "分数"
 msgid "Sculpture"
 msgstr "雕塑"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "搜索"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Search"
 msgstr "搜索"
@@ -14144,11 +14631,11 @@ msgstr "搜索 +%(guild)s 用于 \"%(query)s\" - %(site)s"
 msgid "Search Tenor and press enter"
 msgstr "搜索Tenor并按下输入"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search categories…"
 msgstr "搜索分类…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search chats and channels"
 msgstr "搜索聊天和频道"
 
@@ -14168,7 +14655,7 @@ msgstr "搜索盾牌"
 msgid "Search guilds to post to"
 msgstr "搜索盾牌以发送到"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search languages…"
 msgstr "搜索语言…"
 
@@ -14184,19 +14671,19 @@ msgstr "搜索你跟踪的人"
 msgid "Search people, or type an @handle"
 msgstr "搜索人员,或键入@handle"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Search posts in +%(guild)s"
 msgstr "在 +%(guild)s 中搜索帖子"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search posts, +guilds, @users, #topics, &curations"
 msgstr "搜索帖子、+公会、@用户、#话题、&精选集"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search regions…"
 msgstr "搜索地区…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Search tips"
 msgstr "搜索技巧"
 
@@ -14204,7 +14691,7 @@ msgstr "搜索技巧"
 msgid "Secret Rerolled"
 msgstr "秘密重录"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Security"
 msgstr "安全"
 
@@ -14229,7 +14716,7 @@ msgstr "见Premium"
 msgid "See all"
 msgstr "见所有"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See everything in All"
 msgstr "查看全站所有帖子"
 
@@ -14241,7 +14728,7 @@ msgstr "看到一切活着"
 msgid "See the current page"
 msgstr "参见当前页面"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "See the filtered words"
 msgstr "查看被过滤的词语"
 
@@ -14269,6 +14756,10 @@ msgstr "查看您的用户名"
 msgid "See: %(choice)s"
 msgstr "见:%(choice)s"
 
+#, machine, plain2
+msgid "Seen and typing"
+msgstr "可见和打字"
+
 #, machine
 msgid "Select Category"
 msgstr "选择类别"
@@ -14281,7 +14772,7 @@ msgstr "选择软件包"
 msgid "Select a Category"
 msgstr "选择一个类别"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "选择一个对话"
 
@@ -14314,7 +14805,7 @@ msgstr "发送提示"
 msgid "Send feedback"
 msgstr "发送反馈"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Send in chat"
 msgstr "发送到聊天"
 
@@ -14326,12 +14817,12 @@ msgstr "发送恢复链接"
 msgid "Send report"
 msgstr "发送报告"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild with sensitive content"
 msgid "Sensitive"
 msgstr "敏感"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive Content"
 msgstr "敏感内容"
 
@@ -14339,7 +14830,7 @@ msgstr "敏感内容"
 msgid "Sensitive Content?"
 msgstr "敏感内容?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "敏感内容"
 
@@ -14405,11 +14896,11 @@ msgstr "设置敏感的注释"
 msgid "Setting not saved. Try again."
 msgstr "设置未保存 。 再试一次."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Settings"
 msgstr "设置"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Settings - %(site)s"
 msgstr "设置 - %(site)s"
 
@@ -14433,12 +14924,12 @@ msgstr "未成年人性行为"
 msgid "Sexualizing minors is strictly prohibited."
 msgstr "严禁未成年人性生活."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Share"
 msgstr "分享"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Share"
 msgstr "分享"
@@ -14456,7 +14947,11 @@ msgstr "和大家分享文章或故事 只有里面的人能看见 从来没有�
 msgid "Share of the text"
 msgstr "文本份额"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Share screen"
+msgstr "共享屏幕"
+
+#, glossary, machine, plain2
 msgid "Share something"
 msgstr "分享点什么"
 
@@ -14521,11 +15016,11 @@ msgstr[0] "显示全部 %(num)s"
 msgid "Show as a table"
 msgstr "显示为表格"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show every topic"
 msgstr "显示所有话题"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show fewer"
 msgstr "收起"
 
@@ -14541,11 +15036,11 @@ msgstr "展示给大家"
 msgid "Show its card in guilds"
 msgstr "用盾牌显示卡片"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "收起"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "显示更多"
 
@@ -14569,7 +15064,7 @@ msgid_plural "Showing %(shown)s of %(num)s results for"
 msgstr[0] "显示%(num)s结果的%(shown)s"
 
 #. the kinds of post the feed is narrowed to, e.g. "Showing Polls, Videos."
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing <strong>%(types)s</strong>."
 msgstr "正在显示<strong>%(types)s</strong>。"
 
@@ -14577,11 +15072,11 @@ msgstr "正在显示<strong>%(types)s</strong>。"
 msgid "Showing posts detected as <strong>%(languages)s</strong>."
 msgstr "显示已检测到的状态 <strong>%(languages)s</strong>。"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts from <strong>%(regions)s</strong>."
 msgstr "正在显示来自<strong>%(regions)s</strong>的帖子。"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Showing posts in <strong>%(categories)s</strong>."
 msgstr "正在显示<strong>%(categories)s</strong>中的帖子。"
 
@@ -14618,7 +15113,7 @@ msgstr "显示在你的生物。 您的区域 (%(region)s) 显示在它们旁边
 msgid "Shows posts of any type you tick."
 msgstr "显示您选中的任意类型 ."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Side panel"
 msgstr "侧边面板"
 
@@ -14626,17 +15121,34 @@ msgstr "侧边面板"
 msgid "Siege against +%(guild)s Failed"
 msgstr "对+的接管索赔%(guild)s 失败"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign In"
 msgstr "登录"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign Up"
 msgstr "注册"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in"
 msgstr "登录"
+
+#. %(name)s is the account's @handle. The script puts it in, as text
+#, machine, plain1, python-format
+msgid "Sign in as %(name)s?"
+msgstr "签名为%(name)s ?"
+
+#, machine, plain1
+msgid "Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in."
+msgstr "在计算机上签名 通过扫描一个代码 用一个已经签名的电话。 电话在让电脑进入之前,要你的两要素代码,或者密码,如果你不使用两要素的话."
+
+#, machine, plain1
+msgid "Sign in on another screen?"
+msgstr "在另一个屏幕上签名?"
+
+#, machine, plain1
+msgid "Sign in on this phone first, then scan a new code."
+msgstr "先在手机上签名 然后扫描一个新的代码."
 
 #, machine, python-format
 msgid "Sign in to %(site)s"
@@ -14670,7 +15182,7 @@ msgstr "签到申请机器人."
 msgid "Sign in to chat in +%(guild)s's channels."
 msgstr "签名到 + 聊天%(guild)s频道"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to downvote"
 msgstr "登录后反对"
 
@@ -14694,11 +15206,19 @@ msgstr "签名待读"
 msgid "Sign in to see them here."
 msgstr "签到这里看他们."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign in to upvote"
 msgstr "登录后赞同"
 
-#, glossary, machine, plain1
+#, machine, plain1
+msgid "Sign in with a QR code"
+msgstr "用 QR 签名 。 代码"
+
+#, machine, plain1, python-format
+msgid "Sign in with a QR code - %(site)s"
+msgstr "用 QR 代码签名 - %(site)s"
+
+#, glossary, machine, plain2
 msgid "Sign up"
 msgstr "注册"
 
@@ -14717,6 +15237,14 @@ msgstr "现在报名! %(site)s是在线社区的一个开源平台,不受审查,
 #, machine
 msgid "Sign-in emails are off."
 msgstr "签名邮件关闭."
+
+#, machine, plain1, python-format
+msgid "Signed in here as @%(name)s"
+msgstr "在这里签名为 @%(name)s"
+
+#, glossary, machine, plain2
+msgid "Signed out"
+msgstr "已退出登录"
 
 #, machine
 msgid "Signed-in viewers"
@@ -14742,7 +15270,7 @@ msgstr "类似盾"
 msgid "Simulation Games"
 msgstr "模拟游戏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Since"
 msgstr "起始日期"
@@ -14830,7 +15358,7 @@ msgstr "所以我们不会给你们看他们的档案."
 msgid "Soccer"
 msgstr "足球"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Issues"
 msgstr "社会议题"
 
@@ -14838,7 +15366,7 @@ msgstr "社会议题"
 msgid "Social Media"
 msgstr "社会媒体"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Social Sciences"
 msgstr "社会科学"
 
@@ -14859,7 +15387,7 @@ msgstr[0] "有些账户是保密的,所以%(num)s没有列出."
 msgid "Some of my circles (end-to-end encrypted)"
 msgstr "我的一些圈子( 端到端加密)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Some posts are automated"
 msgstr "部分帖子为自动发布"
 
@@ -14915,6 +15443,18 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "在您编辑时有人保存了此页面 。 您的文本还在这里: 复制它, 重新加载页面以查看其更改, 并再次添加您的文本 ."
 
+#, machine, plain2, python-format
+msgid ""
+"Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
+"\n"
+"\n"
+"If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
+msgstr ""
+"有人用你批准的QR代码登录到你的账户:%(browser)s,%(place)s,%(when)s。\n"
+"\n"
+"\n"
+"如果不是你,则[在任何地方断开连接](/settings/security#log-out-everywhere)并检查[你的应用程序}(/settings/apps)和[你的聊天应用程序}(/settings/chat_apps):断开不会结束这些."
+
 #, machine
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
 msgstr "跟踪你的人在信箱里收到你的信息 其他人也会作为请求收到 聊天是端对端加密的."
@@ -14940,6 +15480,10 @@ msgid "Something went wrong while publishing. Please try again."
 msgstr "出版时出事了 请再试一次."
 
 #, machine, plain1
+msgid "Something went wrong, so this code has stopped. Wait a moment and try a new one."
+msgstr "出事了,所以密码停止了 等一下,试试新的."
+
+#, machine, plain1
 msgid "Soon"
 msgstr "快点"
 
@@ -14947,19 +15491,19 @@ msgstr "快点"
 msgid "Sorry, I've been cursed and can't make you coffee right now."
 msgstr "抱歉,我被诅咒了 现在不能给你煮咖啡."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort By:"
 msgstr "排序方式："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort by"
 msgstr "排序方式"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort comments"
 msgstr "评论排序"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sort guilds"
 msgstr "公会排序"
 
@@ -14967,7 +15511,7 @@ msgstr "公会排序"
 msgid "Sound"
 msgstr "声音"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Sound"
 msgstr "音频"
@@ -14980,16 +15524,16 @@ msgstr "声音"
 msgid "Southern Cone"
 msgstr "南锥体"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Space"
 msgstr "空间"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "a live Space"
 msgid "Space"
 msgstr "空间"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Space"
 msgstr "空间"
@@ -15004,7 +15548,7 @@ msgstr "空间录音"
 
 #. a group of post types in the Post type filter (live, upcoming and recorded
 #. Spaces)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Spaces"
 msgstr "空间"
 
@@ -15062,7 +15606,7 @@ msgstr "站起来喜剧"
 msgid "Standard - hide extremely offensive language"
 msgstr "标准 - 隐藏极有攻击性的语言"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start a Space"
 msgstr "创建空间"
 
@@ -15082,7 +15626,7 @@ msgstr "从"
 msgid "Start now"
 msgstr "开始吧"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Start one"
 msgstr "发起一个"
 
@@ -15140,7 +15684,7 @@ msgstr "不再担任这篇文章的联合作者?"
 msgid "Stepping down"
 msgstr "向下移动"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sticky post"
 msgstr "置顶帖"
 
@@ -15168,7 +15712,7 @@ msgstr "停止自动发布? 你的账户和所有职位都照旧."
 msgid "Stopped after failing"
 msgstr "失败后停止"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Story"
 msgstr "快拍"
@@ -15193,16 +15737,16 @@ msgstr "流动服务"
 msgid "Study Tips"
 msgstr "学习提示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Submitter"
 msgstr "楼主"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Subscribe"
 msgstr "订阅"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "calendar feed"
 msgid "Subscribe"
 msgstr "订阅"
@@ -15229,7 +15773,7 @@ msgid "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coin/mo</span>"
 msgid_plural "Subscribe<span class=\"profile-x-price\">&nbsp;· %(num)s coins/mo</span>"
 msgstr[0] "订阅<span class=\"profile-x-price\">&nbsp;* 妇女 %(num)s 每月硬币</span>"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribed"
 msgstr "已订阅"
 
@@ -15237,15 +15781,15 @@ msgstr "已订阅"
 msgid "Subscribed · renews %(date)s"
 msgstr "已订阅 ^ 更新%(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscriber"
 msgstr "订阅者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Subscribers"
 msgstr "订阅者"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "list"
 msgid "Subscribers"
 msgstr "订阅者"
@@ -15300,6 +15844,10 @@ msgstr "从你的账户建议, 你加入的盾 以及你读和投票."
 msgid "Summary"
 msgstr "目 录"
 
+#, machine, plain1, python-format
+msgid "Summary: %(summary)s"
+msgstr "摘要 :%(summary)s"
+
 #, machine
 msgctxt "weekday"
 msgid "Sun"
@@ -15313,7 +15861,7 @@ msgstr "超级英雄"
 msgid "Support"
 msgstr "支助"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Support %(site)s"
 msgstr "支持 %(site)s"
 
@@ -15354,8 +15902,12 @@ msgstr "把维基关闭"
 msgid "Switch the wiki off? Its pages are kept; only guildmasters see them until it is on again."
 msgstr "关掉维基? 它的页面被保存;只有盾牌主持人看到,直到它再次打开."
 
+#, machine, plain2
+msgid "Switching two-factor on or off signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here."
+msgstr "打开或关闭您其他设备及聊天应用程序上的双因子聊天, 但此浏览器自您在此签名以来使用的聊天方式除外 ."
+
 #. the tab of notices from the site itself
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "notifications"
 msgid "System"
 msgstr "系统"
@@ -15386,7 +15938,7 @@ msgstr "从它的外部服务器上取下这个被整理过的饲料?"
 msgid "Taking part"
 msgstr "参加"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tap to play"
 msgstr "点按播放"
 
@@ -15399,11 +15951,11 @@ msgctxt "colour"
 msgid "Teal"
 msgstr "提尔"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech News"
 msgstr "科技新闻"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Tech Support"
 msgstr "技术支持"
 
@@ -15431,11 +15983,11 @@ msgstr "告诉我们你为什么离开%(site)s。 (可选)"
 msgid "Tennis"
 msgstr "网球"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Terms"
 msgstr "条款"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "footer link"
 msgid "Terms"
 msgstr "条款"
@@ -15462,7 +16014,7 @@ msgctxt "kind of story"
 msgid "Text"
 msgstr "文本"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "post body"
 msgid "Text"
 msgstr "正文"
@@ -15482,7 +16034,7 @@ msgstr "文本通道"
 msgid "Text posts"
 msgstr "文本员额"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Text size"
 msgstr "文字大小"
 
@@ -15611,6 +16163,10 @@ msgstr "那个机器人不会喂这个频道的."
 msgid "That category isn't in this guild."
 msgstr "这个类别不在这个盾."
 
+#, machine, plain2
+msgid "That chat was not found."
+msgstr "那个聊天没有找到."
+
 #, machine
 msgid "That circle isn't taking subscribers."
 msgstr "那圈子不收订户."
@@ -15618,6 +16174,10 @@ msgstr "那圈子不收订户."
 #, machine
 msgid "That circle isn't yours."
 msgstr "那个圈子不是你的."
+
+#, machine, plain1
+msgid "That code isn't right."
+msgstr "密码不对."
 
 #, machine
 msgid "That comment has been deleted."
@@ -15635,9 +16195,13 @@ msgstr "连接尝试已过期 。 再试一次."
 msgid "That description is too long once formatted."
 msgstr "这种描述在格式化后太长了."
 
-#, machine
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "那个装置现在不能签字."
+msgstr "那个装置现在不能断开."
+
+#, machine, plain1
+msgid "That didn't go through. Wait a moment and try again."
+msgstr "这事没发生 等一下,再试一次."
 
 #, machine
 msgid "That didn’t work."
@@ -15711,6 +16275,10 @@ msgstr "那个文件太大了."
 msgid "That file is too big. The limit for audio files is %(size)s MB."
 msgstr "那个文件太大了 音频文件的限制为%(size)sMB."
 
+#, machine, plain2, python-format
+msgid "That file is too big. The limit for files in chats is %(size)s MB."
+msgstr "那个文件太大了 聊天中的文件限制为%(size)sMB."
+
 #, machine, plain1, python-format
 msgid "That file is too big. The limit for image files is %(size)s MB."
 msgstr "那个文件太大了 图像文件的限制为%(size)sMB."
@@ -15769,6 +16337,10 @@ msgstr "这是另一个账户的用户名,所以不能是一个显示名称."
 msgid "That is another account's username, so it can't be your display name."
 msgstr "这是另一个账户的用户名,所以它不能是你的显示名称."
 
+#, machine, plain1
+msgid "That is how someone would try this on you. Press Not me unless you are sure."
+msgstr "有人会这样对你 新闻 除非你确定,否则我不行."
+
 #, machine
 msgid "That is not a usable address."
 msgstr "这不是一个可用的地址."
@@ -15806,8 +16378,16 @@ msgid "That isn't a valid username."
 msgstr "这不是一个有效的用户名."
 
 #, machine, plain1
+msgid "That isn't right. Try again."
+msgstr "这不对 再试一次."
+
+#, machine, plain1
 msgid "That isn't something you can switch."
 msgstr "这不是你能够转换的东西."
+
+#, machine, plain2
+msgid "That isn't your password."
+msgstr "这不是你的密码."
 
 #, machine
 msgid "That key couldn't be saved."
@@ -15841,6 +16421,10 @@ msgstr "不能引用这一信息."
 msgid "That message can't have a thread."
 msgstr "那条信息不能有线."
 
+#, machine, plain2
+msgid "That message isn't in this chat any more."
+msgstr "这条消息已经不在了."
+
 #, machine
 msgid "That name is kept for the site's staff."
 msgstr "这个名字是留给现场员工的."
@@ -15864,6 +16448,10 @@ msgstr "密码重置表已经过期 ."
 #, machine
 msgid "That password reset link has expired."
 msgstr "密码重置链接已过期 ."
+
+#, machine, plain2
+msgid "That picture can't be used here."
+msgstr "那张照片不能在这里使用."
 
 #, machine
 msgid "That picture is already used somewhere else. Upload it again."
@@ -15921,9 +16509,17 @@ msgstr "这个宣传码使得这个订单是免费的,不能支付. 选择另一
 msgid "That recording can no longer be used."
 msgstr "这种录音已经无法使用."
 
+#, machine, plain2
+msgid "That report couldn't be read. Try again."
+msgstr "那份报告是无法阅读的。 再试一次."
+
 #, machine
 msgid "That request was bad and you should feel bad."
 msgstr "那个请求是坏的,你应该感到不好."
+
+#, machine, plain1
+msgid "That request wasn't understood."
+msgstr "这一要求是无法理解的."
 
 #, machine
 msgid "That server is not on the public internet."
@@ -16025,7 +16621,7 @@ msgstr "BBC科技頭條要聞,来自其公众RSS的feed."
 msgid "The Child word filter hides sensitive content everywhere, so this is off."
 msgstr "Child word filter将敏感内容隐藏在任何地方,所以这个是关闭的."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "The Platform"
 msgstr "平台"
 
@@ -16186,9 +16782,17 @@ msgstr[0] "您转发到%(guilds)s 的复制件将被删除 ."
 msgid "The dates leave no days."
 msgstr "日期没有几天了."
 
+#, machine, plain1
+msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "有关决定是最新的,首先是:谁、何时、何地、哪个规则和为什么。 它从未显示隐藏或删除的内容的标题或文字."
+
 #, machine
 msgid "The draft has changes the post doesn't show yet."
 msgstr "草案有更改 帖子还没有显示."
+
+#, machine, plain1
+msgid "The earlier versions aren't shown while this is hidden."
+msgstr "早期的版本在隐藏时不显示."
 
 #, machine, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -16535,6 +17139,10 @@ msgstr "在空间直播时可以更改摘要."
 msgid "The text isn't shown: this was removed by the site's administrators."
 msgstr "文本没有显示:这是网站管理员删除的."
 
+#, machine, plain1
+msgid "The text of this version was hidden by a site administrator."
+msgstr "此版本的文本被一个站点管理员隐藏."
+
 #, machine, python-format
 msgid "The time before links must be a whole number of days, 0 to %(max)s."
 msgstr "链接前的时间必须是完整的天数, 0 到 %(max)s ."
@@ -16701,6 +17309,10 @@ msgstr "此名无记."
 msgid "There's no invitation to speak."
 msgstr "无请发言."
 
+#, machine, plain2
+msgid "There's no recovery code to keep yet."
+msgstr "还没有恢复代码."
+
 #, machine
 msgid "There's nothing here right now."
 msgstr "这里现在什么都没有."
@@ -16745,9 +17357,9 @@ msgstr "他们已经在这个圈子里了."
 msgid "They are not told. Anyone you block leaves your circles."
 msgstr "没有人告诉他们。 任何人你挡住你的圈子."
 
-#, machine, plain1
-msgid "They are signed out everywhere. If they use chat, they may be asked for their recovery code."
-msgstr "到处都签了 如果使用聊天方式,可以要求其恢复代码."
+#, machine, plain2
+msgid "They are signed out everywhere, chat apps included. If they use chat, they may need their recovery code, or a browser where they've used chat, to read their old messages."
+msgstr "他们无处不在 包括聊天程序 如果他们使用聊天,他们可能需要他们的恢复代码,或者他们使用聊天的浏览器,来读取他们的旧消息."
 
 #, machine, python-format
 msgid "They aren't in %(circle)s."
@@ -16922,6 +17534,10 @@ msgstr "这个访问将在一个小时后结束,或者在您取消时提前结�
 msgid "This account can't use chat apps."
 msgstr "这个账户不能使用聊天应用程序."
 
+#, machine, plain1, python-format
+msgid "This account has been marked 18 or over since %(date)s."
+msgstr "此账户自%(date)s 起已标为 18 或 18 个以上 ."
+
 #, machine, python-format
 msgid "This account has been permanently suspended from %(site)s."
 msgstr "此账户已从%(site)s 永久中止 ."
@@ -16946,6 +17562,10 @@ msgstr "这个账户欠了钱,所以还不能删除."
 msgid "This account posts about sensitive topics"
 msgstr "这个账户刊登了敏感话题"
 
+#, machine, plain2
+msgid "This also signs out chat everywhere else, chat apps included, except the chat this browser has used since you signed in here."
+msgstr "这也断开其它地方的聊天,包括聊天应用程序,除了这个浏览器自你在这里签名以来使用的聊天."
+
 #. %(time)s is a length of time, such as "6 months"
 #, machine, python-format
 msgid "This author hasn't been active for %(time)s, so isn't counted."
@@ -16966,6 +17586,14 @@ msgstr "这个机器人没有运行."
 #, machine
 msgid "This bot's owner can't run it right now."
 msgstr "这个机器人的主人现在不能运行它."
+
+#, machine, plain2
+msgid "This browser was signed out. Sign in again to carry on."
+msgstr "此浏览器已断开 。 再次签名继续."
+
+#, machine, plain2
+msgid "This browser's notifications couldn't be turned on. Try again."
+msgstr "这个浏览器的通知无法打开 。 再试一次."
 
 #, machine, python-format
 msgid "This call is full (%(num)s person)."
@@ -17008,6 +17636,14 @@ msgstr "这个频道不可用."
 msgid "This circle isn't taking subscribers."
 msgstr "这个圈子不收订户."
 
+#, machine, plain1
+msgid "This code can't be used. Get a new one on the computer, or sign in there with your password."
+msgstr "此代码不能使用. 在电脑上买个新的 或者用密码签进去."
+
+#, machine, plain1
+msgid "This code has run out."
+msgstr "密码用完了."
+
 #, machine
 msgid "This comment and the comments under it"
 msgstr "本评论及其下的评论"
@@ -17048,6 +17684,10 @@ msgstr "这个评论是鬼城..."
 msgid "This content has already been posted"
 msgstr "此内容已经发布"
 
+#, machine, plain1
+msgid "This copy is no longer kept."
+msgstr "此副本不再保存."
+
 #, machine
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "这在该盾中创造了一个新的独立职位,并附有自己的选票和评论。 标题来自注释的文本. 将在新帖子上显示与原评论的链接."
@@ -17079,6 +17719,10 @@ msgstr "饲料的规矩太长了 它的主人可以让他们更窄."
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
 msgstr "这可以删除他们的账户和所有信息。 无法解脱. 你可以先下载他们的数据."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "此设备很快就会断开 ."
 
 #, machine
 msgid "This draft hasn't been published."
@@ -17132,9 +17776,17 @@ msgstr "这是一个空间:它的讨论是在空间。 <a href=\"%(url)s\">打�
 msgid "This is a Space: its host and co-hosts post its updates from the Space."
 msgstr "这是一个空间:它的主机和共同主机从空间发布它的更新."
 
+#, machine, plain1, python-format
+msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
+msgstr "这是在 + 中执行的主持人动作日志%(guild)s。每个人可以读的 也在全网站 <a href=\"%(url)s\">日志</a>。成员删除的内容不公布。"
+
 #, machine
 msgid "This is already in your language."
 msgstr "这已经用你的语言了."
+
+#, machine, plain2
+msgid "This is for chat on this site. A chat app you use outside it follows its own setting."
+msgstr "这是在这个网站上聊天用的 您在外边使用的聊天应用程序遵循了自己的设置 ."
 
 #, machine
 msgid "This is for the members of a Circle guild."
@@ -17207,6 +17859,10 @@ msgid "This page may not be embedded in other webpages."
 msgstr "此页面可能无法嵌入到其他网页中 ."
 
 #, machine, plain1
+msgid "This page was opened from a link, not by your camera."
+msgstr "此页面是从链接打开的,而不是由您的相机打开的."
+
+#, machine, plain1
 msgid "This permanently erases the comment text. It cannot be undone, even by an admin."
 msgstr "这将永久删除注释文本 。 它不能被解除,即使由管理人员."
 
@@ -17217,6 +17873,10 @@ msgstr "这将永久删除邮箱的标题、文本和链接 。 它不能被解�
 #, machine
 msgid "This person is blocking you."
 msgstr "这个人挡住了你."
+
+#, machine, plain1
+msgid "This phone signed in with a QR code, so it can't approve another one. Enter your password here, then scan a new code."
+msgstr "这电话签了QR 代码,所以它不能批准另一个。 在此输入密码, 然后扫描新代码 ."
 
 #, machine
 msgid "This poll has ended."
@@ -17349,6 +18009,10 @@ msgstr "搜查时间太长了 增加字,或用:,在:或一个日期."
 msgid "This sign-in can't go on"
 msgstr "这招牌不能继续了"
 
+#, machine, plain1
+msgid "This sign-in lasts 12 hours, and chat, coins, apps, following, who can see what you share and account settings ask for your password first."
+msgstr "此登录持续12小时, 聊天, 硬币, apps, 之后, 谁可以看到您共享什么, 账户设置先要求您的密码 ."
+
 #, machine
 msgid "This sign-in request didn't come from a chat app this site knows."
 msgstr "这个登录请求并非来自网站所知的聊天应用程序."
@@ -17398,6 +18062,10 @@ msgstr "这些已经是规则了."
 msgid "Those dates leave no days to search."
 msgstr "这些日期没有几天可供搜索."
 
+#, machine, plain2
+msgid "Those keys couldn't be used."
+msgstr "那些钥匙不能用."
+
 #, machine
 msgid "Through the app"
 msgstr "通过应用程序"
@@ -17420,7 +18088,7 @@ msgstr "勾选框先同意规则."
 msgid "Ticks all its subcategories. Untick them to keep only the guilds filed under the category itself."
 msgstr "勾选其所有子类。 解开它们,只保留在类下提交的盾."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Time"
 msgstr "时间"
 
@@ -17441,7 +18109,7 @@ msgstr "时代在你的时区."
 msgid "Times the post's page was opened by someone other than you. A repeat from the same visitor within half an hour, robots and link previews are not counted. Views before this feature are not counted either."
 msgstr "时,帖子的页面是由你以外的人打开的. 半小时内同一访客的重复,机器人和链接预览不计算在内. 此特性之前的意见也不计算在内."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Tip"
 msgstr "打赏"
@@ -17460,16 +18128,16 @@ msgid "Tip, %(num)s coin tipped"
 msgid_plural "Tip, %(num)s coins tipped"
 msgstr[0] "提示, %(num)s 硬币提示"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "coins received"
 msgid "Tips"
 msgstr "打赏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Title"
 msgstr "标题"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "profile title"
 msgid "Title"
 msgstr "头衔"
@@ -17557,7 +18225,7 @@ msgstr "切换选择退出"
 msgid "Toggle Privacy"
 msgstr "切换隐私"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Toggle navigation"
 msgstr "切换导航"
 
@@ -17577,7 +18245,7 @@ msgstr "太多活的溪流是开放的。 关闭标签再试一次 ."
 msgid "Too much spam!"
 msgstr "垃圾邮件太多了!"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Top"
 msgstr "高赞"
@@ -17599,7 +18267,7 @@ msgstr "顶 %(share)s%% 员额数 %(site)s 打开 %(date)s"
 msgid "Topic"
 msgstr "专题"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Topics"
 msgstr "话题"
 
@@ -17638,6 +18306,10 @@ msgid "Translation isn't available right now. Try again in a little while."
 msgstr "翻译现在不可用. 再试一会."
 
 #, machine, plain1
+msgid "Transparency and disclosure"
+msgstr "透明度和披露"
+
+#, machine, plain1
 msgid "Travel"
 msgstr "旅费"
 
@@ -17645,11 +18317,11 @@ msgstr "旅费"
 msgid "Travel Advice"
 msgstr "旅行咨询"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Trending"
 msgstr "热门"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort"
 msgid "Trending"
 msgstr "热门"
@@ -17671,6 +18343,10 @@ msgstr "卡车和SUV"
 msgid "True Crime"
 msgstr "真正的罪行"
 
+#, machine, plain1
+msgid "Try again"
+msgstr "再试一次"
+
 #, machine
 msgctxt "weekday"
 msgid "Tue"
@@ -17684,6 +18360,22 @@ msgstr "杜兰尼亚草原"
 msgid "Turn it off"
 msgstr "关掉"
 
+#, machine, plain1
+msgid "Turn it off if you'll never use it: your password keeps working as it does now."
+msgstr "如果你永远不使用它,就关掉它:你的密码一直像现在一样工作."
+
+#, machine, plain2
+msgid "Turn it on in Security"
+msgstr "在保安处打开"
+
+#, machine, plain1
+msgid "Turn off"
+msgstr "关机"
+
+#, machine, plain2
+msgid "Turn off Seen and typing"
+msgstr "关闭目击和打字"
+
 #, machine, plain1, python-format
 msgid "Turn off notifications from +%(guild)s"
 msgstr "从 + 关闭通知%(guild)s"
@@ -17691,6 +18383,18 @@ msgstr "从 + 关闭通知%(guild)s"
 #, machine, plain1, python-format
 msgid "Turn off notifications from @%(name)s"
 msgstr "从 @ 关闭通知%(name)s"
+
+#, machine, plain2
+msgid "Turn off notifications in this browser"
+msgstr "在此浏览器中关闭通知"
+
+#, machine, plain1
+msgid "Turn on"
+msgstr "打开"
+
+#, machine, plain2
+msgid "Turn on Seen and typing"
+msgstr "打开目击和打字"
 
 #, machine, plain1
 msgid "Turn on if much of what you post would be rated 15, R or 16+. Your profile shows a Sensitive content badge, your new posts are blurred, and your posts are left out of All and For You for anyone who hasn't chosen to see sensitive content."
@@ -17708,9 +18412,17 @@ msgstr "从 + 打开通知%(guild)s"
 msgid "Turn on notifications from @%(name)s"
 msgstr "从 @ 打开通知%(name)s"
 
+#, machine, plain2
+msgid "Turn on notifications in this browser"
+msgstr "在此浏览器中打开通知"
+
 #, machine
 msgid "Turn on two-factor authentication first."
 msgstr "先开启双因子认证."
+
+#, machine, plain1
+msgid "Turning it back on needs your password, and we'll tell you it happened."
+msgstr "重新打开它需要你的密码, 我们会告诉你它发生了."
 
 #, machine, plain1
 msgid "Turns captions on in YouTube and Dailymotion videos, in your language when the video has them. Other sites keep their own setting."
@@ -17736,17 +18448,29 @@ msgstr "双向认证"
 msgid "Two-Factor Code"
 msgstr "双向密码"
 
-#, machine
+#, machine, plain2
 msgid "Two-factor authentication disabled. Your other devices have been signed out."
-msgstr "双因子认证已禁用 。 你的其他设备已经签字了."
+msgstr "双因子认证已禁用 。 您的其他设备已断开 ."
 
 #, machine
 msgid "Two-factor authentication is already on. Turn it off first to set up a new device."
 msgstr "二因子认证已经启动 。 关机先设新装置."
 
-#, machine
+#, machine, plain2
 msgid "Two-factor authentication is on. Your other devices have been signed out."
-msgstr "两要素认证开启. 你的其他设备已经签字了."
+msgstr "两要素认证开启. 您的其他设备已断开 ."
+
+#, machine, plain1
+msgid "Two-factor code or backup code"
+msgstr "二因子代码或备份代码"
+
+#, machine, plain2
+msgid "Two-factor sign-in"
+msgstr "二因子登录"
+
+#, machine, plain2
+msgid "Two-factor sign-in keeps someone who learns your password out of your account, and so out of your chats."
+msgstr "双因子签入让从你的账户里得知密码的人, 也从你的聊天中得知."
 
 #, machine
 msgid "Two-step login"
@@ -17772,7 +18496,7 @@ msgstr "由%(name)s键入"
 msgid "Unable to copy data"
 msgstr "无法复制数据"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unable to copy link"
 msgstr "无法复制链接"
 
@@ -17814,15 +18538,15 @@ msgctxt "guildmaster action"
 msgid "Unban post"
 msgstr "取消禁播邮件"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "取消屏蔽"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unblock @%(name)s"
 msgstr "取消屏蔽 @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock user"
 msgstr "取消屏蔽用户"
 
@@ -17846,11 +18570,11 @@ msgctxt "guildmaster action"
 msgid "Uncontrib user"
 msgstr "卸载用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undistinguish"
 msgstr "取消官方标记"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "撤销"
 
@@ -17859,7 +18583,7 @@ msgctxt "guildmaster action"
 msgid "Unexile user"
 msgstr "不放行用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Unfollow"
 msgstr "取消关注"
@@ -17868,7 +18592,7 @@ msgstr "取消关注"
 msgid "Unfollow @%(name)s"
 msgstr "不跟随@%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unfollow post"
 msgstr "取消关注帖子"
 
@@ -17886,11 +18610,11 @@ msgctxt "guildmaster action"
 msgid "Unherald post"
 msgstr "未经确认的员额"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unhide"
 msgstr "取消隐藏"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unhide"
 msgstr "取消隐藏"
@@ -17900,7 +18624,7 @@ msgctxt "guildmaster action"
 msgid "Unhide comment from guild"
 msgstr "来自盾的未读评论"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Unhide from +%(guild)s"
 msgstr "在 +%(guild)s 取消隐藏"
 
@@ -17954,11 +18678,11 @@ msgstr "解锁所有配音功能"
 msgid "Unlock animated emojis with %(site)s Premium."
 msgstr "解锁动画的emojis with %(site)sPremium."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmark Sensitive Content"
 msgstr "取消标记敏感内容"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "取消隐藏"
 
@@ -17975,19 +18699,19 @@ msgstr "解析 +%(guild)s"
 msgid "Unmute @%(name)s"
 msgstr "解密 @%(name)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute guild"
 msgstr "取消隐藏公会"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute user"
 msgstr "取消隐藏用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "取消置顶"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Unpin"
 msgstr "取消置顶"
@@ -18006,7 +18730,7 @@ msgstr "撤销员额"
 msgid "Unpopular Opinions"
 msgstr "非流行意见"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unread"
 msgstr "未读"
 
@@ -18042,7 +18766,7 @@ msgctxt "button"
 msgid "Unsubscribe"
 msgstr "未订阅"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "Until"
 msgstr "截止日期"
@@ -18144,7 +18868,7 @@ msgstr "上传图片"
 msgid "Upvote"
 msgstr "投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "verb"
 msgid "Upvote"
 msgstr "赞同"
@@ -18153,11 +18877,11 @@ msgstr "赞同"
 msgid "Upvoted"
 msgstr "已投票"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes"
 msgstr "赞同"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Upvotes"
 msgstr "赞同"
@@ -18174,7 +18898,7 @@ msgstr "升空, 颜色显示为多少"
 msgid "Upvotes, comments and bookmarks per day"
 msgstr "每天投票、评论和书签"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Upvotes:"
 msgstr "赞同数："
 
@@ -18207,6 +18931,10 @@ msgstr "使用不同的微软账户"
 msgid "Use a new line for each filter entry. Limit of 1000 characters."
 msgstr "每个过滤器条目使用新行。 限制1000个字符 ."
 
+#, machine, plain1
+msgid "Use your password"
+msgstr "使用密码"
+
 #, machine
 msgid "User"
 msgstr "用户"
@@ -18227,7 +18955,7 @@ msgstr "用户为此评论被流放."
 msgid "User was exiled from +%(guild)s for this post."
 msgstr "用户被流放出 +%(guild)s 这个职位。"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username"
 msgstr "用户名"
 
@@ -18252,7 +18980,7 @@ msgid "Username changes cost 20 Coins. You only have a balance of %(num)s Coin"
 msgid_plural "Username changes cost 20 Coins. You only have a balance of %(num)s Coins"
 msgstr[0] "用户名更改花费了20Coins. 您只有 %(num)s 的余额 。 硬币"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username or Email Address"
 msgstr "用户名或电子邮箱"
 
@@ -18375,7 +19103,7 @@ msgctxt "kind of story"
 msgid "Video"
 msgstr "视频"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "Video"
 msgstr "视频"
@@ -18388,7 +19116,7 @@ msgstr "视频和音频"
 msgid "Video call - %(site)s"
 msgstr "视频通话 - %(site)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Video from %(domain)s"
 msgstr "来自 %(domain)s 的视频"
 
@@ -18449,11 +19177,11 @@ msgstr "这个网站的视频来自YouTube和其他网站. 播放一个让网站
 msgid "View %(site)s as you, including private or restricted content"
 msgstr "将%(site)s 视图为您, 包括私有或受限制的内容"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View all"
 msgstr "查看全部"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View anyway"
 msgstr "仍然查看"
 
@@ -18461,7 +19189,7 @@ msgstr "仍然查看"
 msgid "View comment"
 msgstr "查看注释"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View entire discussion"
 msgstr "查看完整讨论"
 
@@ -18473,7 +19201,7 @@ msgstr "查看适度日志记录"
 msgid "View on %(service)s"
 msgstr "查看 %(service)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "查看原图"
 
@@ -18588,9 +19316,13 @@ msgid "Waiting for an admin. You will get a notification when they decide; until
 msgstr "等待一个管理员。 等他们决定了,你就会收到通知;在此之前,机器人的剖面可以被你和管理员看到."
 
 #. the state of a bot account, shown as a badge on its page.
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Waiting for approval"
 msgstr "等待审核"
+
+#, machine, plain1
+msgid "Wasn't you?"
+msgstr "是吗?"
 
 #, machine
 msgctxt "button"
@@ -18653,7 +19385,7 @@ msgstr "我们更改了我们的[术语](/help/terms)中的年龄部分. 在英�
 msgid "Web Development"
 msgstr "网络开发"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Website"
 msgstr "网站"
 
@@ -18666,7 +19398,7 @@ msgstr "结婚"
 msgid "Weddings"
 msgstr "婚礼"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Week"
 msgstr "近一周"
@@ -18675,7 +19407,7 @@ msgstr "近一周"
 msgid "Weekend plans"
 msgstr "周末计划"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Welcome back."
 msgstr "欢迎回来。"
 
@@ -18717,6 +19449,14 @@ msgstr "变了 <span class=\"text-muted font-weight-normal\">(可选)</span>"
 msgid "What do you want to say?"
 msgstr "你想说什么?"
 
+#, machine, plain1
+msgid "What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "是什么盾的主持人和网站决定了, 最新的第一:谁,何时,在哪里,谁统治和为什么。 它从未显示隐藏或删除的内容的标题或文字."
+
+#, machine, plain1
+msgid "What guildmasters and the site decided: hides, removals, exiles and bans, with the rule and the reason."
+msgstr "是什么盾主持人和网站决定:隐藏,清除,流放和禁止,有规则和理由."
+
 #, machine
 msgid "What is it about?"
 msgstr "这是什么?"
@@ -18728,6 +19468,10 @@ msgstr "这是干什么用的?"
 #, machine
 msgid "What is wrong with this account? For example spam, impersonation, harassment or ban evasion. To report one post or comment, use its own menu."
 msgstr "这账户怎么了? 例如垃圾邮件,冒充,骚扰或禁止逃避. 要报告一个帖子或评论,请使用自己的菜单."
+
+#, machine, plain1
+msgid "What it could already read comes back once it is unlocked."
+msgstr "它已经读到的东西一旦解锁就会回来."
 
 #, machine
 msgid "What it does now"
@@ -18746,6 +19490,10 @@ msgid "What kind of Space?"
 msgstr "什么样的太空?"
 
 #, machine, plain1
+msgid "What members delete themselves is not published here."
+msgstr "成员删除的内容不在此公布."
+
+#, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
 msgstr "人们在谈论什么,现在在谈论什么, 以及即将出现什么,在一个地方."
 
@@ -18760,7 +19508,7 @@ msgstr ""
 msgid "What to say"
 msgstr "怎么说"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "What to search"
 msgstr "搜索内容"
 
@@ -18830,7 +19578,7 @@ msgstr "员额来源"
 msgid "Where this account is based, from where it uses %(site)s"
 msgstr "该账户的所在地,使用地 %(site)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Where to post"
 msgstr "发布位置"
 
@@ -18870,11 +19618,11 @@ msgstr "哪个员额"
 msgid "White Hat"
 msgstr "白帽"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment"
 msgstr "谁可以评论"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can comment?"
 msgstr "谁可以评论？"
 
@@ -18894,7 +19642,7 @@ msgstr "谁可以加入"
 msgid "Who can read"
 msgstr "谁识字"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this"
 msgstr "谁可以看到"
 
@@ -18914,11 +19662,11 @@ msgstr "谁能看见这个帖子"
 msgid "Who can see this post?"
 msgstr "谁能看到这个帖子?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this:"
 msgstr "谁可以看到："
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who can see this?"
 msgstr "谁可以看到？"
 
@@ -18950,7 +19698,7 @@ msgstr "谁跟着你"
 msgid "Who reported them, and what they wrote, isn't shown to anyone but the admins."
 msgstr "谁报告他们, 和他们写的东西, 没有向任何人显示,只有管理者."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who subscribes to your Circle"
 msgstr "谁订阅了你的圈子"
 
@@ -18972,13 +19720,17 @@ msgstr "追随者 - %(site)s"
 msgid "Who wrote it"
 msgstr "是谁写的"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Who wrote what"
 msgstr "谁写了什么"
 
 #, machine
 msgid "Who you follow"
 msgstr "你跟着谁"
+
+#, machine, plain1
+msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
+msgstr "不管是谁先开始的 都报告浏览器 并放置自己, 所以他们证明什么."
 
 #, machine
 msgid "Wholesome"
@@ -18989,7 +19741,7 @@ msgid "Whoops!"
 msgstr "呜呼!"
 
 #. the reason an admin pauses a bot
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "为什么"
 
@@ -19007,7 +19759,7 @@ msgid "Why not (they are told)"
 msgstr "为什么不呢"
 
 #. the guild's wiki is switched off
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Wiki"
 msgstr "维基"
 
@@ -19049,7 +19801,7 @@ msgid "Wildlife"
 msgstr "野生动物"
 
 #. posts with a link, a picture, a video... (the ticks below)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "search field"
 msgid "With"
 msgstr "包含"
@@ -19086,7 +19838,7 @@ msgstr "用声音"
 msgid "With a video"
 msgstr "用视频"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "With textarea"
 msgstr "文本框"
 
@@ -19140,6 +19892,10 @@ msgstr "没有声音"
 msgid "Without a video"
 msgstr "没有录像"
 
+#, machine, plain1, python-format
+msgid "Without it, this sign-in ends on %(when)s."
+msgstr "没有它,这个登录结束于%(when)s ."
+
 #, machine, python-format
 msgid "Won't renew, access ends %(date)s"
 msgstr "不会续约, 访问结束%(date)s"
@@ -19152,7 +19908,7 @@ msgstr "木工"
 msgid "Word filter"
 msgstr "文字过滤器"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Words"
 msgstr "关键词"
 
@@ -19328,7 +20084,7 @@ msgstr "一起写“无标题草稿”吗?"
 msgid "Write: %(choice)s"
 msgstr "写 : %(choice)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Written together"
 msgstr "合著"
 
@@ -19341,7 +20097,7 @@ msgstr "扬克帖"
 msgid "Year"
 msgstr "年份"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "time range"
 msgid "Year"
 msgstr "近一年"
@@ -19359,6 +20115,10 @@ msgstr "黄色"
 msgctxt "vote"
 msgid "Yes"
 msgstr "对"
+
+#, machine, plain1
+msgid "Yes, sign in on that screen"
+msgstr "是的,在屏幕上签名"
 
 #, machine, plain1
 msgid "Yoga"
@@ -19455,7 +20215,7 @@ msgstr "您已经订阅 ."
 msgid "You are already the author."
 msgstr "你已经是作者了."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "你已屏蔽 @%(name)s"
 
@@ -19546,6 +20306,10 @@ msgstr "您可以在设置中随时更改 ."
 #, machine
 msgid "You can change this for each video when you add it. Videos are uploaded as not made for kids."
 msgstr "加入视频时,您可以为每段视频更改此内容 。 视频被上传为不是为孩子制作的."
+
+#, machine, plain2
+msgid "You can change this once they've accepted your message request."
+msgstr "一旦他们接受了你的留言请求 你可以改变这个."
 
 #, machine
 msgid "You can close this window."
@@ -19732,6 +20496,10 @@ msgstr "你不能在这聊天."
 #, machine, plain1
 msgid "You can't change perms on guildmasters above you."
 msgstr "你不能改变你上面的盾牌主持人的发条."
+
+#, machine, plain1, python-format
+msgid "You can't change this answer yourself. If it's wrong, <a href=\"%(url)s\">contact us</a>: only an admin can change it."
+msgstr "你不能改变这个答案自己。 如果错了 <a href=\"%(url)s\">联系我们</a>:只有管理员才能改变."
 
 #, machine
 msgid "You can't comment on content from users that are blocking you."
@@ -20103,6 +20871,14 @@ msgstr "你还没有做备份代码呢."
 msgid "You haven't posted anything in the last 28 days."
 msgstr "你最近28天没发过信息."
 
+#, machine, plain2
+msgid "You haven't said you kept your recovery code."
+msgstr "你没说过你留着你的复苏密码."
+
+#, machine, plain1
+msgid "You haven't told us yet."
+msgstr "你还没告诉我们."
+
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
 msgstr "你也许可以 <a href=\"%(url)s\">接管索赔</a> 并成为吉德的主持人。"
@@ -20123,7 +20899,7 @@ msgstr "您必须至少 %(min)s 才能有一个账户 ."
 msgid "You must have a verified email address to upload images via Tor."
 msgstr "您必须有经过验证的电子邮件地址才能通过 Tor 上传图像 ."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You muted @%(name)s"
 msgstr "你已隐藏 @%(name)s"
 
@@ -20177,6 +20953,30 @@ msgstr "你得等一会."
 msgid "You post timestamped updates as things happen; everyone comments under them."
 msgstr "你贴上时间戳的更新."
 
+#, machine, plain2, python-format
+msgid "You said you kept your recovery code on %(date)s."
+msgstr "你说你在%(date)s上保留了你的恢复密码."
+
+#, machine, plain1
+msgid "You signed in with a QR code, so chat, coins, apps, following, who can see what you share, your account's name and its security settings ask for your password first."
+msgstr "你签了一个QR 代码,所以聊天,硬币,应用程序,跟随,谁可以看到共享的内容,你的账户名称及其安全设置首先要求您的密码."
+
+#, machine, plain1
+msgid "You signed in with a QR code."
+msgstr "你签了QR代码."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to do this."
+msgstr "你签了QR代码 输入此操作的密码 ."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to join a call."
+msgstr "你签了QR代码 输入密码以加入呼叫 ."
+
+#, machine, plain1
+msgid "You signed in with a QR code. Enter your password to use this form."
+msgstr "你签了QR代码 输入使用此表单的密码."
+
 #, machine, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "您告诉我们您想要更改您的 %(site)s 账户电子邮件 。 要完成这一过程, 请确认您的新电子邮件地址 :"
@@ -20225,7 +21025,7 @@ msgstr "你屏蔽了这个用户,但你可以看到这个评论,因为它在你�
 msgid "You're blocking this user, but you can see this comment because you're an admin."
 msgstr "你屏蔽了这个用户,但你可以看到这个评论,因为你是一个管理员."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You're blocking this user."
 msgstr "你已屏蔽此用户。"
 
@@ -20247,6 +21047,10 @@ msgid "You're invited to write a shared draft with others. [See the invitation](
 msgstr "请您与他人共同写稿. [见邀请] (%(link)s)"
 
 #, machine, plain1
+msgid "You're no longer signed in here. Sign in again to use chat."
+msgstr "你不再在这里签字了 再次签名使用聊天 ."
+
+#, machine, plain1
 msgid "You're not following any curations yet."
 msgstr "你还没跟踪到任何经过加工的饲料."
 
@@ -20263,6 +21067,10 @@ msgid "You're subscribed. It renews in 30 days for %(num)s coins unless you canc
 msgid_plural "You're subscribed. It renews in 30 days for %(num)s coins unless you cancel."
 msgstr[0] "你签了 它在30天后续订%(num)s 硬币 除非你取消."
 
+#, machine, plain2
+msgid "You're told of new messages and calls in your chats, never what a message says. Each group can be set to every message, calls only or nothing, in the group's people sheet."
+msgstr "你聊天时被告知了新消息和电话 从来不是留言说的 每个组可以被设定为每条消息,只呼叫或一无所有,在组的人员表."
+
 #, machine
 msgid "You're writing very fast. Wait a moment."
 msgstr "你写得很快 单."
@@ -20270,6 +21078,10 @@ msgstr "你写得很快 单."
 #, machine
 msgid "You've added a lot of people to groups today. Try again tomorrow."
 msgstr "汝今增诸众生. 明天再试一次."
+
+#, machine, plain1
+msgid "You've already answered this. Only an admin can change your answer."
+msgstr "你已经回答过了 只有管理员才能改变你的答案."
 
 #, machine
 msgid "You've already reported this Space."
@@ -20300,9 +21112,17 @@ msgstr "你在最后一小时经常加入语音频道 以后再试."
 msgid "You've sent a lot of feedback today. Try again tomorrow."
 msgstr "汝今发许多回馈. 明天再试一次."
 
+#, machine, plain2
+msgid "You've sent a lot of files today. Try again tomorrow."
+msgstr "你今天发了很多文件 明天再试一次."
+
 #, machine
 msgid "You've sent a lot of reports today. Try again tomorrow."
 msgstr "你今天寄了很多报告 明天再试一次."
+
+#, machine, plain2
+msgid "You've sent a lot of reports. Try again later."
+msgstr "你寄了很多报告 以后再试."
 
 #, machine
 msgid "You've started a lot of calls in the last hour. Try again later."
@@ -20416,7 +21236,7 @@ msgstr "您的RSS 种子地址"
 msgid "Your Subscribed Users"
 msgstr "您的订阅用户"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your account"
 msgstr "你的账号"
 
@@ -20564,6 +21384,10 @@ msgstr "您的账户自动发送在 %(fails)s 失败后停止读取%(url)s 尝�
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
 msgstr "你的帐户的自动寄出被批准。 您的新消息在几分钟内出现在您的档案中, 标记为自动化。 在 [地址 > Bots] (/settings/bots) 中管理它."
 
+#, machine, plain1
+msgid "Your age"
+msgstr "你的年龄"
+
 #, machine, plain1, python-format
 msgid "Your age was confirmed on %(date)s."
 msgstr "您的年龄在 %(date)s 得到确认 ."
@@ -20571,6 +21395,10 @@ msgstr "您的年龄在 %(date)s 得到确认 ."
 #, machine
 msgid "Your answer"
 msgstr "回答你的问题"
+
+#, machine, plain1
+msgid "Your apps"
+msgstr "你的应用程序"
 
 #, machine
 msgid "Your backup codes"
@@ -20606,9 +21434,13 @@ msgstr ""
 msgid "Your bots"
 msgstr "你的宝贝"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your channels"
 msgstr "你的频道"
+
+#, machine, plain1
+msgid "Your chat apps"
+msgstr "您的聊天应用程序"
 
 #, machine
 msgid "Your chat devices"
@@ -20617,6 +21449,10 @@ msgstr "您的聊天设备"
 #, machine
 msgid "Your chat devices can't be listed right now."
 msgstr "您的聊天设备现在无法挂载 ."
+
+#, machine, plain2
+msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
+msgstr "您的聊天加密重新开始 。 无法在您的设备上读取以前发来的消息, 除非您使用浏览器将信件带回来 。 如果不是你,请在 [Settings > Security] (/settings/security) 中更改密码 ."
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -20634,13 +21470,17 @@ msgstr "您的聊天运行在 %(site)s 自己的聊天服务器上的 matrix, �
 msgid "Your child accounts will be deleted with yours."
 msgstr "你的孩子的账户将被删除."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Your circles"
 msgstr "你的圈子"
 
 #, machine, python-format
 msgid "Your circles - %(site)s"
 msgstr "您的圆圈 - %(site)s"
+
+#, machine, plain1
+msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "您的评论将被删除 在网站的页面。 该网站保存了90天的私人副本,只有您和网站管理员才能打开. 这事不能解决."
 
 #, machine
 msgid "Your commenting history will show here."
@@ -20707,10 +21547,10 @@ msgid "Your language"
 msgstr "您的语言"
 
 #. the English uses "sign-ins" for every number
-#, machine, python-format
+#, machine, plain2, python-format
 msgid "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
 msgid_plural "Your last %(num)s sign-ins. The place is only the country, worked out from the connection. Don't recognise one? Change your password: that signs out every other device."
-msgstr[0] "您最后的%(num)s 登录 。 地方只是国家 从连接中发展出来 不认得一个? 更改密码: 将其它设备都标出 ."
+msgstr[0] "您最后的%(num)s 登录 。 地方只是国家 从连接中发展出来 不认得一个? 更改密码: 连接其他设备 ."
 
 #, machine
 msgid "Your media storage is no longer connected."
@@ -20752,9 +21592,9 @@ msgstr "你的新钥匙 现在复制: 它不再显示 ."
 msgid "Your original username will always stay reserved for you: <code>%(name)s</code>"
 msgstr "您的原用户名将永远保留给您 : <code>%(name)s</code>"
 
-#, machine
+#, machine, plain2
 msgid "Your other devices have been signed out."
-msgstr "你的其他设备已经签字了."
+msgstr "您的其他设备已断开 ."
 
 #, machine
 msgid "Your own circles"
@@ -20801,9 +21641,9 @@ msgstr "你的家长或监护人 已经关闭了你的账户."
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
 msgstr ""
 
-#, machine, plain1
+#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "您的父母或监护人为您的账户设置了新的密码, 您被签出 。 在新密码上签名, 然后在 [Settings > Security] (/settings/security) 中更改, 只有您知道 ."
+msgstr "您的父母或监护人为您的账户设置了新的密码, 您被断开 。 在新密码上签名, 然后在 [Settings > Security] (/settings/security) 中更改, 只有您知道 ."
 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
@@ -20825,9 +21665,9 @@ msgstr "你的父母或监护人的账户被中止, 所以你的账户被中止 
 msgid "Your password"
 msgstr "您的密码"
 
-#, machine
+#, machine, plain2
 msgid "Your password has been changed. Your other devices have been signed out."
-msgstr "您的密码已经更改 。 你的其他设备已经签字了."
+msgstr "您的密码已经更改 。 您的其他设备已断开 ."
 
 #, machine
 msgid "Your password meets the requirements."
@@ -20837,9 +21677,21 @@ msgstr "您的密码符合要求 ."
 msgid "Your payouts"
 msgstr "你的钱"
 
+#, machine, plain1
+msgid "Your phone approved this. Only continue if this is your account."
+msgstr "你的手机批准了这个 如果这是你的账户,就继续."
+
+#, machine, plain1
+msgid "Your phone said no, so nobody was signed in."
+msgstr "你的电话说不行,所以没人登记."
+
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "你的文章被列在你的档案里 选择 我的简介也在这里发表评论."
+
+#, machine, plain1
+msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
+msgstr "您的岗位将被删除 您的简介,种子和盾。 该网站保存了90天的私人副本,只有您和网站管理员才能打开. 这事不能解决."
 
 #, machine
 msgid "Your posting history will show here."
@@ -21047,7 +21899,7 @@ msgstr "[新闻资源] (/help/press)"
 msgid "[Privacy Policy](/help/privacy)"
 msgstr "[隐私政策] (/help/privacy)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[Removed by admin]"
 msgstr "[已被管理员移除]"
 
@@ -21091,7 +21943,7 @@ msgstr "[标注] (/help/titles)"
 msgid "[banned]"
 msgstr "[禁止]"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "[deleted account]"
 msgstr "[已注销账号]"
 
@@ -21111,6 +21963,11 @@ msgstr "[删除]"
 msgid "[doc pending]"
 msgstr "[待"
 
+#. stands in a preserved copy's text where a picture was
+#, machine, plain1
+msgid "[picture]"
+msgstr "[图"
+
 #, machine
 msgid "[removed by admin]"
 msgstr "[被管理员删除]"
@@ -21122,6 +21979,11 @@ msgstr "[被管理员删除]"
 #, machine, plain1
 msgid "[removed by guildmasters]"
 msgstr "[被盾牌主持人删除]"
+
+#. stands in a preserved copy's text where a sound was
+#, machine, plain1
+msgid "[sound]"
+msgstr "[声音]"
 
 #, machine
 msgid "a day"
@@ -21156,7 +22018,7 @@ msgctxt "sort"
 msgid "activity"
 msgstr "活动"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "activity"
 msgstr "活跃"
@@ -21225,6 +22087,16 @@ msgstr "阿凡达"
 msgid "ban evasion"
 msgstr "禁止逃避"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "banned %(target)s"
+msgstr "已禁用 %(target)s"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "banned the guild +%(guild)s"
+msgstr "禁用盾牌 +%(guild)s"
+
 #, machine
 msgctxt "story background"
 msgid "berry"
@@ -21237,7 +22109,7 @@ msgid "bots"
 msgstr "点数"
 
 #. the author's name, with their badges
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by %(author)s"
 msgstr "%(author)s 发布"
 
@@ -21258,7 +22130,7 @@ msgid "by <a href=\"/@%(name)s\">@%(name)s</a>"
 msgstr "由 <a href=\"/@%(name)s\">页:1%(name)s</a>"
 
 #. a curation that ranks posts with its own algorithm
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "by @%(name)s"
 msgstr "@%(name)s 创建"
 
@@ -21347,6 +22219,10 @@ msgctxt "unit"
 msgid "coins"
 msgstr "硬币"
 
+#, glossary, machine, plain2
+msgid "comment"
+msgstr "评论"
+
 #, machine
 msgid "commercial promotion"
 msgstr "商业促销"
@@ -21376,6 +22252,11 @@ msgctxt "time filter"
 msgid "day"
 msgstr "日数"
 
+#. follows the author's name in the Log; %(target)s is a link to a comment
+#, machine, plain1, python-format
+msgid "deleted a %(target)s"
+msgstr "删除 %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "deleted a channel"
@@ -21401,12 +22282,17 @@ msgstr "删除一个角色"
 msgid "deleted a wiki page"
 msgstr "删除了维基页面"
 
+#. follows the author's name in the Log; %(target)s is a link to a post
+#, machine, plain1, python-format
+msgid "deleted post %(target)s"
+msgstr "删除 %(target)s"
+
 #, machine
 msgctxt "sort"
 msgid "disputed"
 msgstr "争议"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "disputed"
 msgstr "争议"
@@ -21496,7 +22382,7 @@ msgid "forest"
 msgstr "森林"
 
 #. the title of the post it was forked from, a link
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "forked from %(post)s"
 msgstr "派生自 %(post)s"
 
@@ -21547,13 +22433,19 @@ msgstr "突出显示他们的 %(target)s"
 msgid "hid a %(target)s from this guild"
 msgstr "从此盾中隐藏了 %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain1, python-format
+msgid "hid a revision of %(target)s"
+msgstr "隐藏%(target)s 的修订"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
 msgid "hid post %(target)s from this guild"
 msgstr "从此盾隐藏 %(target)s"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "hidden from +%(guild)s"
 msgstr "已在 +%(guild)s 隐藏"
 
@@ -21563,7 +22455,7 @@ msgid "hot"
 msgstr "热"
 
 #. the guild page's current sort order, written in lowercase on its bar
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "hot"
 msgstr "热门"
@@ -21635,7 +22527,22 @@ msgstr "保存在您自己的存储器中作为重播; 每个人在加入之前�
 msgid "kicked post %(target)s"
 msgstr "脚踢出%(target)s"
 
-#, glossary, machine, plain1
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the ban on %(target)s"
+msgstr "取消对%(target)s的禁令"
+
+#. follows the moderator's name in the Log; %(guild)s is a guild's name
+#, machine, plain1, python-format
+msgid "lifted the ban on the guild +%(guild)s"
+msgstr "取消对盾+的禁令%(guild)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "lifted the suspension of %(target)s"
+msgstr "取消暂停 %(target)s"
+
+#, glossary, machine, plain2
 msgid "link preview"
 msgstr "链接预览"
 
@@ -21679,7 +22586,7 @@ msgctxt "time filter"
 msgid "month"
 msgstr "月份"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "moved from <a href=\"%(url)s\">+%(guild)s</a>"
 msgstr "移自 <a href=\"%(url)s\">+%(guild)s</a>"
 
@@ -21703,7 +22610,7 @@ msgctxt "sort"
 msgid "new"
 msgstr "新设"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "new"
 msgstr "最新"
@@ -21732,7 +22639,7 @@ msgctxt "sort"
 msgid "old"
 msgstr "旧"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "old"
 msgstr "最早"
@@ -21741,11 +22648,11 @@ msgstr "最早"
 msgid "only guildmasters write here"
 msgstr "只有盾牌的主持人在此写入"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "outside server"
 msgstr "外部服务器"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "own algorithm"
 msgstr "自有算法"
 
@@ -21798,7 +22705,7 @@ msgstr "在频道中绑定消息"
 msgid "pinned post %(target)s"
 msgstr "绑定的哨所%(target)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post image"
 msgstr "帖子图片"
 
@@ -21820,7 +22727,7 @@ msgstr "张贴 %(age)s 由 @ 编辑%(name)s 单位+%(guild)s"
 msgid "posts made with AI"
 msgstr "在大赦国际任职"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "guild badge"
 msgid "private"
 msgstr "私密"
@@ -21870,6 +22777,11 @@ msgstr "删除%(target)s"
 msgid "removed a message by %(target)s from a channel"
 msgstr "从频道中删除%(target)s 的邮件"
 
+#. follows the moderator's name in the Log
+#, machine, plain1
+msgid "removed a revision of a guild's wiki"
+msgstr "移除了对 guild wiki 的修订"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -21897,7 +22809,7 @@ msgstr "重新命名频道类别"
 msgid "renews %(date)s"
 msgstr "更新%(date)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "noun"
 msgid "repost"
 msgstr "转帖"
@@ -21917,7 +22829,7 @@ msgstr "恢复维基页面修订"
 msgid "see it"
 msgstr "看见了"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "sensitive content"
 msgstr "敏感内容"
 
@@ -21976,6 +22888,11 @@ msgctxt "story background"
 msgid "sunset"
 msgstr "夕阳"
 
+#. follows the moderator's name in the Log; %(target)s is a link to an account
+#, machine, plain1, python-format
+msgid "suspended %(target)s"
+msgstr "暂停%(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "switched the wiki"
@@ -21986,7 +22903,7 @@ msgstr "切换维基"
 msgid "test storage"
 msgstr "测试存储"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "text post"
 msgstr "文字帖"
 
@@ -22049,7 +22966,7 @@ msgctxt "sort"
 msgid "top"
 msgstr "顶端"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgctxt "sort, lowercase"
 msgid "top"
 msgstr "高赞"
@@ -22160,7 +23077,7 @@ msgstr "v. %(version)s, © 2021 %(company)s"
 msgid "video"
 msgstr "视频"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "video preview"
 msgstr "视频预览"
 
@@ -22238,9 +23155,9 @@ msgstr "你投了赞成票"
 msgid "you were posting too fast, and it couldn't wait any longer."
 msgstr "你张贴得太快了 不能再等了."
 
-#, machine
+#, machine, plain2
 msgid "you were signed out."
-msgstr "你被签了."
+msgstr "你被切断."
 
 #, machine
 msgid "you're invited to write it"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: et\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s kirjutab…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s määrab kirjade kadumise pärast %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s lülitas kadunud sõnumid välja."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s liige"
 msgstr[1] "%(num)s liiget"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s teade leiti."
+msgstr[1] "%(num)s teadet leiti."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s teade lõimes"
 msgstr[1] "%(num)s sõnumit lõimes"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s teade loetud…"
+msgstr[1] "%(num)s sõnumit loetud…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s · %(num)s liiget"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Päästa ikkagi?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s kommentaar"
 msgstr[1] "+%(guild)s · %(num)s kommentaari"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 päev"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 nädal"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s lisas teid sellesse gruppi. Lepi sellega ja kirjuta sinna sisse."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s pole veel vestlust avanud. Teie sõnum saadetakse siis, kui nad seda teevad."
 msgstr[1] "@%(name)s pole veel vestlust avanud. Teie %(num)s-sõnumid saadetakse siis, kui nad seda teevad."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s kirjutab…"
 
 #, machine, plain1
 msgid "A Space"
@@ -329,6 +361,12 @@ msgid "A message that isn't there any more"
 msgstr "Sõnum, mida enam ei ole"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Siin kirjutatud sõnumit ei saadetud: vestlus peatus sellel vahekaardil enne, kui see sai minna."
+msgstr[1] "%(num)s sõnumit, mille sa siin kirjutasid, ei saadetud: vestlus peatus sellel vahekaardil enne, kui nad said minna."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Postitusel võib olla maksimaalselt %(num)s kaasautor."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Nõustuge"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Lisa"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Abistaja lisamine kasutajanime järgi"
 
 #, machine, plain1
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Lisan..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Admin"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Nõus"
 
@@ -413,6 +455,10 @@ msgstr "Joonda paremale"
 msgid "Alignment"
 msgstr "Joondamine"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Blokeeri ka @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Ka siin: %(names)s"
 msgid "An app"
 msgstr "Äpp"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Vihane"
 
@@ -432,7 +478,7 @@ msgstr "Vihane"
 msgid "Announcements"
 msgstr "Teadaanne"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonüümne"
 
@@ -440,6 +486,10 @@ msgstr "Anonüümne"
 #, machine, plain1
 msgid "Answer"
 msgstr "Vasta"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Igaüks vestluses saab ikka kopeerida sõnumi või pildistada ekraani enne seda läheb."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Lisa sellele postitusele link"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Aw shucks. Ei GIFs leitud..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Vinge"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Piinlik"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Tagasi üles"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Blokeeri"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Blokeeri @%(name)s?"
 
@@ -480,6 +530,10 @@ msgstr "Blokeeritud @%(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Julge (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Vestluse võtmete toomine peatus osaliselt. Sisesta lõpetamiseks parool."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Kaamera"
 msgid "Camera on"
 msgstr "Kaamera"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Tühista"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kanal · %(num)s liige"
 msgstr[1] "Kanal · %(num)s liiget"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanalid"
 
@@ -599,13 +653,45 @@ msgstr "Kanalid, kus sa oled"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Vestlused"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Vestlus ei suutnud võtmeid üle tuua. Laadi uuesti proovimiseks."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Vestlus ei saanud ühendust."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Vestlus ei suutnud uuesti alustada. Sisestage oma parool uuesti proovimiseks."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Vestlus ei suutnud uuesti alustada. Laadi uuesti proovimiseks."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Vestlus ei suutnud avada seda, mida see brauser salvestas, nii et see algab siin uuesti."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Vestlus ei saanud selles brauseris alata."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Vestlus ei vastanud. Proovi uuesti."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Vestlus ei olnud selles brauseris pikka aega kasutatud, nii et see algab siin uuesti."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Vestlus sulgub teises kaardis…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Vestlus alles algab."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Vestlus alles algab. Proovi hetke pärast uuesti."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Vestlus ei ole teie konto jaoks praegu saadaval."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Vestlus kaotas ühenduse. Proovin uuesti…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Vestlus vajab seda brauserit, et hoida saidi andmeid, ja see ei saa siin. Vestlus ei saa siit aknast alata."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Vestlus peatus sellel kaardil."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Vestlus katkestati selles brauseris teisest seadmest. Alustades uuesti siit…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Vestlus @ %(name)s"
@@ -627,7 +733,7 @@ msgstr "Vestlus @ %(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Vestluse võti pole hetkel saadaval."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Vestlused"
 
@@ -667,11 +773,11 @@ msgstr "Vali, kes seda näeb."
 msgid "Choose your profile or at least one guild."
 msgstr "Valige oma profiil või vähemalt üks gild."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Ringid"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Sulge"
 
@@ -707,7 +813,7 @@ msgstr "Võrdle neid nendega, mida teie rakendus näitab, samas järjekorras."
 msgid "Confirm in the app as well."
 msgstr "Kinnita ka rakenduses."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Segaduses"
 
@@ -859,6 +965,10 @@ msgstr "Pinnitud kirjade laadimine nurjus"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Eelvaatluse laadimine nurjus."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Vestluste laadimine nurjus"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Kopeerimine nurjus: vali koodid ja kopeeri need."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Varasemate kirjade laadimine nurjus. Proovi hetke pärast uuesti."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Ma ei suutnud su jutuajamisi laadida. Proovin uuesti…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Postituse loomine"
 
@@ -1028,7 +1142,7 @@ msgstr "Postituse loomine"
 msgid "Creating…"
 msgstr "Loomine…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Kringe"
 
@@ -1036,7 +1150,7 @@ msgstr "Kringe"
 msgid "Cross out"
 msgstr "Ristuge"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Tume režiim"
 
@@ -1101,13 +1215,21 @@ msgstr "Kustuta see lugu?"
 msgid "Delete this update?"
 msgstr "Kas kustutada see värskendus?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Kommentaari kustutamine"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Postituse kustutamine"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Teated kaovad"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Kadunud sõnumid on välja lülitatud."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Tehtud"
 #, machine, plain1
 msgid "Done."
 msgstr "Valmis."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Laadi alla"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "End-to-end krüpteeritud: ainult selle kanali inimesed saavad seda luged
 msgid "Ended"
 msgstr "Lõpp"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Sisesta URL"
 
@@ -1206,6 +1332,10 @@ msgstr "Sisesta veebiaadress, näiteks https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Sisesta üks kord parool. See lukustab teie sõnumite võtme selles brauseris, nii et sait ei saa neid kunagi lugeda."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Sisesta oma parool kinnitamiseks."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Sisesta oma parool."
 msgid "Enter your recovery code"
 msgstr "Sisesta taastamiskood"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Sisesta oma kaheastmeline kood"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Sisesta oma kaheastmeline kood."
+
+#, machine, plain2
+msgid "File"
+msgstr "Fail"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Faile saab saata, kui @%(name)s on avanud vestluse."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Faile saab saata, kui vestlus on selles seadmes lukustamata."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Faile ei saa siia saata."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Lõplik"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Lõpeta"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Lõpeta oma vestluse toomine"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Lõpeta alustamine uuesti"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Vestluse lõpetamine teisel kaardil…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Vormindamine"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Edasta"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Edasta see teade"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Edasi maksimaalselt %(num)s gildile."
 msgstr[1] "Edasi maksimaalselt %(num)s gildini."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Edasi…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Edastatud"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Edastatud."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Edastamine"
 
@@ -1292,11 +1478,11 @@ msgstr "Anna nupule tekst."
 msgid "Give the template a name."
 msgstr "Anna mallile nimi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Mine veebisaidile"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Vastik"
 
@@ -1304,7 +1490,7 @@ msgstr "Vastik"
 msgid "Group info"
 msgstr "Grupi info"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Gildid"
 
@@ -1316,13 +1502,25 @@ msgstr "Gildid jututoaga"
 msgid "Hand raised"
 msgstr "Käsi tõstetud"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Rõõmus"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Kas olete oma vestluse taastamise koodi säilitanud? Ilma selleta võib unustatud parool kaotada teie vanad sõnumid."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Pealkiri %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Abilised"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Abilised kirjutavad selles kanalis koos sinuga. Valige kuni kolm inimest, kes on selles."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Nõustun reeglitega"
 msgid "I don't have it: start over"
 msgstr "Mul pole seda: alusta uuesti"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Mul on see"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Ma päästsin selle"
@@ -1372,6 +1574,10 @@ msgstr "Ma päästsin selle"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Kui unustate kunagi oma parooli, on see kood ainus viis oma vanade sõnumite lugemiseks. Hoidke seda turvalises kohas, nagu paroolihaldur."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Kui teil on veel taastamiskood, kasutage seda selle asemel: mõned vanemad sõnumid on ainult varukoopias, mida see avab."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "Selle lood jäävad sinu arhiivi."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Liitu"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Liitu kanaliga %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Peamised faktid ja lingid, mida inimesed peaksid kõigepealt nägema."
 msgid "Last used %(date)s"
 msgstr "Viimati kasutatud %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Hiljem"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Naer"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Lahku"
 
@@ -1516,7 +1726,7 @@ msgstr "Lahkuge sellest grupist? Kellestki teisest saab selle omanik."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Lahkuge sellest grupist? Te ei näe uusi sõnumeid, kui keegi ei lisa teid uuesti."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Hele režiim"
 
@@ -1561,6 +1771,10 @@ msgstr "Ela nüüd"
 msgid "Load earlier messages"
 msgstr "Varasemate kirjade laadimine"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Kommentaari laadimine…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Posti laadimine…"
@@ -1585,17 +1799,25 @@ msgstr "Mallide laadimine..."
 msgid "Loading..."
 msgstr "Laadimine..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Laadimine…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Armastus"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Alumine käsi"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Tee uus kood"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Teeb uue taastamiskoodi?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Tee see postitus avalikuks? Kõik saavad seda näha."
 msgid "Making the channel…"
 msgstr "Kanali tegemine…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Nojah"
 
@@ -1630,6 +1852,14 @@ msgstr "Kiri kustutatud"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Sõnumipalve. Nad ei saa teada, et sa oled seda näinud, kuni sa pole sellega nõus."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Sõnumid kaovad pärast %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Sõnumid, mida see brauser võiks juba lugeda, tulevad siia tagasi."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Rohkem"
 
@@ -1649,11 +1879,11 @@ msgstr "Rohkem"
 msgid "Move to listeners"
 msgstr "Liigu kuulajateni"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Vaigista"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Vaigistatud"
 
@@ -1673,7 +1903,11 @@ msgstr "Nimeta kaust"
 msgid "New channel"
 msgstr "Uus kanal"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Uued sõnumid selles vestluses kaovad kõigile pärast valitud aega. Enne saadetud sõnumid hoiavad aega, millega nad saadeti."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Ei"
 
@@ -1693,17 +1927,29 @@ msgstr "Pole veel kõnesid. Alusta üks vestlus Voice kõne või Video kõne."
 msgid "No camera was found."
 msgstr "Kaamerat ei leitud."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Vestlusi ei leitud."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Kaasautoreid veel pole."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Kood puudub? Logige sisse oma uue parooliga brauseris, kus olete kasutanud vestlust: see võib teie vestluse tagasi tuua."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Seadmeid veel pole. Alustamiseks avatakse vestlus."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Silt puudub"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Abilisi veel pole."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Mikrofoni ei leitud."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Keegi ei klapi. Saate saata oma vestlustele ja inimestele, keda jälgite."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Pole veel kinnitatud sõnumeid."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Päästetud"
 msgid "Not used yet"
 msgstr "Kasutamata"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Midagi ei leitud sõnumitest, mida see brauser saab lugeda."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Midagi ei leitud."
@@ -1785,17 +2039,45 @@ msgstr "Pole veel midagi vaadata."
 msgid "Nothing was connected."
 msgstr "Midagi polnud seotud."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Teavitused"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Teatised on selle veebisaidi jaoks selles brauseris blokeeritud. Lase neil brauseri seadetes sisse lülitada."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Teated on selles brauseris välja lülitatud."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Teatised on selles brauseris."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Teateid ei saanud kontrollida. Laadi uuesti lehekülg proovimiseks."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Teateid ei saanud sisse lülitada. Proovi uuesti."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Teated ei olnud selle veebisaidi jaoks lubatud."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Nummerdatud nimekiri"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Välja"
 
 #, machine, plain1
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Offline"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Offline · uuesti proovimine"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Seda saavad muuta ainult ettevõtte omanik ja haldajad."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1839,6 +2125,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Avage vestlus üks kord sõnumite avamiseks, seejärel proovige uuesti."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Ava vestlus, et lõpetada oma sõnumite seadistamine selles seadmes."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Avameediumi seadistused"
 
@@ -1849,6 +2139,10 @@ msgstr "Avage ruum"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Avab +%(guild)s vestluse"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Faili avamine…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Inimesed, keda jälgid"
 msgid "Pick a date and time."
 msgstr "Vali kuupäev ja kellaaeg."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Vali silt"
 
@@ -1909,11 +2203,15 @@ msgstr "Pilte sellel veebilehel veel ei ole."
 msgid "Pin this message"
 msgstr "Lisa teade"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pinned"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Pinnitud teated"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Palun"
 
@@ -1921,12 +2219,18 @@ msgstr "Palun"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Palun sisesta kehtiv URL (sh http:// või https://).)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Palun logi uuesti sisse."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Levinud kanalid"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Postita"
 
@@ -1938,7 +2242,7 @@ msgstr "Postitatud. Laadige leht uuesti selle nägemiseks."
 msgid "Posting to %(guilds)s"
 msgstr "Postitamine %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Postitad oma profiilile"
 
@@ -1947,7 +2251,7 @@ msgstr "Postitad oma profiilile"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Postita oma profiili, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Postitamine…"
 
@@ -2047,6 +2351,14 @@ msgstr "Reageeri"
 msgid "React with %(emoji)s"
 msgstr "Reageerimine %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Salvesta häälkiri"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Salvestamine… vajuta mikrofoni uuesti, et seda saata."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Taaskasutamise kood"
@@ -2059,13 +2371,17 @@ msgstr "Redo"
 msgid "Refreshing…"
 msgstr "Värskendav…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Registreerimine"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Vabastamine värskendamiseks"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Laadi uuesti"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Meeldetuletuskomplekt"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Eemalda"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Eemalda %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Eemalda @%(name)s abistajana"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Nimeta see kataloog ümber"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Teata"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Teata kommentaarist"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Teata postitusest"
 
@@ -2155,11 +2475,11 @@ msgstr "Teata postitusest"
 msgid "Report this message"
 msgstr "Teatage sellest teatest"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Kommentaarist teatamine"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Postitusest teatamine"
 
@@ -2176,13 +2496,13 @@ msgstr "Helisemine…"
 msgid "Rules of this channel"
 msgstr "Selle kanali reeglid"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Kurb"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Salvesta"
 
@@ -2198,11 +2518,15 @@ msgstr "Salvesta mallina..."
 msgid "Save your recovery code"
 msgstr "Salvesta taastamiskood"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Salvestatud"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Päästsin."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Salvestamine"
 
@@ -2236,7 +2560,7 @@ msgstr "Säästa…"
 msgid "Say what is wrong with this account."
 msgstr "Ütle, mis sellel kontol viga on."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Hirmunud"
 
@@ -2255,7 +2579,8 @@ msgstr "Ajastatud %(time)s jaoks."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Otsi"
 
@@ -2266,6 +2591,14 @@ msgstr "Otsi kedagi, keda lisada."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Otsi seda kanalit"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Otsi seda vestlust"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Otsi oma vestlusi"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Nähtud %(num)s"
 msgstr[1] "Nähtuna %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Vali vestlus"
 
@@ -2298,6 +2631,10 @@ msgstr "Vali vestlus"
 #, machine, plain1
 msgid "Send"
 msgstr "Saada"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Saada fail"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Saada oma järgmised pildid aadressile:"
 msgid "Send your next videos to:"
 msgstr "Saada järgmised videod aadressile:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Saada %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Saada %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Saatmine, kui vestlus on valmis…"
+msgstr[1] "Saada %(num)s sõnumit, kui vestlus on valmis…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Saadan..."
@@ -2331,6 +2682,14 @@ msgstr "Saadeti"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Mitmed inimesed kirjutavad…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Ekraani jagamine"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Jagas kommentaari"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "Näita %(num)s uut postitust"
 msgid "Show formatting"
 msgstr "Vorminduse näitamine"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Näita kanalis"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Vestluses näitamine"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Näita vähem"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Näita rohkem"
 
@@ -2367,19 +2735,19 @@ msgstr "Originaali näitamine"
 msgid "Show translation"
 msgstr "Tõlke näitamine"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Kirjutage alla"
+msgstr "Logi välja"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Logi välja %(device)s"
+msgstr "Logi %(device)s välja"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Kirjutage alla %(device)sTa peab uuesti sisse logima, et su jutuajamisi lugeda."
+msgstr "Lahtiühendamine %(device)s? Ta peab uuesti sisse logima, et lugeda oma vestlusi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Sisselogimine"
 
@@ -2497,6 +2865,11 @@ msgstr "Vestluse alustamine…"
 msgid "Starting…"
 msgstr "Alustades…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Lõpeta jagamine"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Läbilöögi"
@@ -2547,7 +2920,7 @@ msgstr "Teksti vormindamine"
 msgid "Text style"
 msgstr "Teksti stiil"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Aitäh küsimast"
 
@@ -2571,27 +2944,39 @@ msgstr "Tänan. Administraator vaatab seda."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Tänud: gildi moderaatorid vaatavad."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Tänan: saidi administraatorid vaatavad ja olete blokeerinud @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Tänud: veebilehe administraatorid vaatavad seda."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Tänud: veebilehe administraatorid vaatavad seda. @ %(name)s ei saa siin blokeerida: blokeerige need nende profiilist."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "See vestlus pole veel seadmes valmis. Ava see üks kord ja proovi uuesti."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "See kood ei ava seda. Kontrolli kirjavigu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Seda ei õnnestunud salvestada."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Seda seadet ei saanud praegu välja kirjutada."
+msgstr "Seda seadet ei saa praegu lahti ühendada."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Seda seadet ei saanud kasutada."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Saatmine ebaõnnestus"
 
@@ -2630,6 +3015,14 @@ msgstr "See pole sinu parool."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Seda sõnumit ei saa saata."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Seda sõnumit ei leitud enam kanalist."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Seda sõnumit ei leitud enam selles vestluses."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "Vestlus on suletud: see ruum on lõppenud."
 msgid "The chat opens when the Space starts."
 msgstr "Vestlus algab siis, kui ruum algab."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Teie autentimisrakenduse kood või mõni teie varukoopia kood."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Teie viimase redigeerimise käigus muudeti eelnõu, nii et see laaditi uuesti. Kontrolli oma viimaseid sõnu."
@@ -2722,6 +3119,10 @@ msgstr "Teie viimase redigeerimise käigus muudeti eelnõu, nii et see laaditi u
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Võrdletav emotikon"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Faili ei saanud saata. Proovi uuesti."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "Linki ei saanud kopeerida."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofoni ei saanud käivitada."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofoni ei saanud kasutada. Kontrollige, kas see sait võib seda kasutada."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2777,6 +3182,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Kordust ei salvestatud: üleslaadimine nurjus. Selle asemel võid alla laadida."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Saidi võtmed muutusid, nii et vestlus algab jälle siin."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Kokkuvõte on peidetud sinu sõnafiltriga."
 
@@ -2812,6 +3221,10 @@ msgstr "Neid ei ole veel kuhugi mujale saata."
 msgid "These comments could not be loaded. Try again."
 msgstr "Nende kommentaaride laadimine nurjus. Proovi uuesti."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Neile ei öelda kunagi, kes neist teada andis."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Nad keeldusid kõnest."
@@ -2824,6 +3237,10 @@ msgstr "Nad ei klapi"
 msgid "They match"
 msgstr "Sobib"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Nad jäävad seal oma kontole, krüpteeritud, kasutades oma vaba ruumi. Ainult vestluses olevad inimesed saavad neid avada."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Nad ei saa teid jälgida, teile sõnumeid saata ega teie postitusi kommenteerida ja te ei näe nende postitusi. Sa võid nad igal ajal blokeerida."
@@ -2832,9 +3249,9 @@ msgstr "Nad ei saa teid jälgida, teile sõnumeid saata ega teie postitusi komme
 msgid "This Space has ended."
 msgstr "See ruum on lõppenud."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Brauser"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "See lõpetab ka igasuguse päästmise brauserist, kus kasutasite vestlust."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "See brauser ei saa helistada."
 msgid "This browser can't record the Space."
 msgstr "See brauser ei saa ruumi salvestada."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "See brauser ei saa oma ekraani jagada."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "See brauser ei saa näidata teateid sellelt saidilt."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "See brauser ei saa pilte üleslaadimiseks ette valmistada. Proovi teist brauserit."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "See brauser hoiab endiselt teie vestlusvõtmeid enne parooli muutmist. Kasutage neid oma vanade sõnumite lugemiseks siin ja teistes seadmetes?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "See brauser eraldati vestlusest teisest seadmest, nii et vestlus algab siin uuesti."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Selle brauseri salvestatud vestlusandmed kustutati, nii et vestlus algab siin uuesti."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Seda ei saa tagasi võtta."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "See kanal on teie jaoks vaigistatud: pole lugemata punkti ega mainimata teateid."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "See vestlus on otsast otsani krüpteeritud, nii et sait ei saa seda lugeda. Aruandlus saadab selle sõnumi ja kuni neli enne seda, nagu näete neid siin, saidi administraatoritele."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Seda kommentaari ei saa näidata."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "See seade eemaldatakse varsti."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Faili avamine nurjus. Proovi hiljem uuesti."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "See fail ei ole enam saadaval."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "See otselõng on lõppenud"
@@ -2863,6 +3320,10 @@ msgstr "See otselõng on lõppenud"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Seda sõnumit ei saa selles seadmes lugeda."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "See teade kustutati."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Seda postitust ei saa näidata."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "See postitus on teemaväline +%(guild)s jaoks"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Sisselogimine"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "See katkestab vestluse ka selles brauseris, kui see on selle brauseri oma. See algab uuesti kui uus seade."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "See kanal on täis (%(num)s inimene)."
 msgstr[1] "See kanal on täis (%(num)s inimest)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Need võtmed pole enam sinu konto omad. Kasutage oma taastumiskoodi või alustage uuesti."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Liiga pikk %(num)s (%(note)s)"
 msgstr[1] "Liiga pikk %(num)s-ga (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Täna liiga palju päringuid"
 
@@ -2945,13 +3418,21 @@ msgstr "Tõlkimine ei ole hetkel kättesaadav."
 msgid "Try again"
 msgstr "Proovi uuesti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Proovi homme uuesti."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Lülita teated uuesti sisse"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Kahefaktoriline kood"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Kahefaktoriline sisselogimine muutus, nii et vestlus algab siin uuesti."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Kommentaari eemaldamine hetkel nurjus. Palun proovi hiljem uuesti."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Praegu ei saa hääletada. Palun proovi hiljem uuesti."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Tühista blokeering"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Võta tagasi"
 
@@ -3010,17 +3491,13 @@ msgstr "Vabastage"
 msgid "Unlock your messages"
 msgstr "Ava kirjad"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Avage sõnumid kõigepealt: laadige leht uuesti parooli sisestamiseks."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Lõpeta vaigistus"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Vabasta"
 
@@ -3076,11 +3553,15 @@ msgstr "Kasuta seda siin"
 msgid "Use my recovery code instead"
 msgstr "Kasuta selle asemel minu taastamiskoodi"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Kasuta neid"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Kasutajanimi on juba võetud :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Kasutajanimi sobib!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Videokõne · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video on välja lülitatud selles kõnes: sa oled heli."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Vaata originaali"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Hääl läheb brauserisse läbi saidi relee, nii et keegi ei näe kellegi aadressi. Kuni %(num)s inimene."
 msgstr[1] "Hääl läheb brauserisse läbi saidi relee, nii et keegi ei näe kellegi aadressi. Kuni %(num)s inimest."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Häälkiri"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Oota korraks, sinu viimased muudatused on alles."
@@ -3213,6 +3698,10 @@ msgstr "Oota korraks, sinu viimased muudatused on alles."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Rakenduse ootamine"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Leidsime teie vestluse selles brauseris"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Mis sellel kosmosel viga on? (vabatahtlik)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Mis sellel sõnumil viga on? (vabatahtlik)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Kuhu peaksid vestluses saadetud failid minema?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Kes seda ütles"
 msgid "Who upvoted"
 msgstr "Kes hääletas üles"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Miks"
 
@@ -3274,6 +3767,10 @@ msgstr "Miks see rikub su gildi reegleid? Seda näidatakse kõigile, kes selle k
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Miks see rikub su gildi reegleid? Seda näidatakse kõigile, kes vaatavad selle postituse / kommentaari ajalugu."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Miks see kommentaar eemaldatakse? Teie põhjus on näidatud avalikus logis."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Kirjuta enne midagi."
 msgid "Write what you want to tell us."
 msgstr "Kirjuta, mida tahad meile öelda."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Jah"
 
@@ -3310,7 +3807,7 @@ msgstr "Jah, tühista"
 msgid "You"
 msgstr "Sina"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Oled seda juba teinud"
 
@@ -3326,7 +3823,7 @@ msgstr "Sa juba teatasid sellest postitusest."
 msgid "You already voted on this post."
 msgstr "Te juba hääletasite selle postituse üle."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Oled kasutaja @%(name)s blokeerinud"
 
@@ -3364,7 +3861,7 @@ msgstr "Sa võid seda kanalit lugeda, aga mitte sinna kirjutada."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Sa näed, kes siin on, aga sa ei saa selles kanalis rääkida."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Sa ei saa seda teha."
 
@@ -3408,6 +3905,14 @@ msgstr "Sa lahkusid kosmosest."
 msgid "You left the call."
 msgstr "Sa jätsid kõne."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Sa katkestasid igal pool teise seadme, nii et vestlus algab siin uuesti."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Sa sisse loginud oma kahe teguri taastamise kood, nii chat algab jälle siin."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Sa ei järginud @%(name)s."
@@ -3415,6 +3920,10 @@ msgstr "Sa ei järginud @%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Sind eemaldati sellest ruumist."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Sa saad uue taastamiskoodi ja vana lõpetab töö."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Teie brauser blokeeris akna ühendamiseks. Selle saidi hüpikakende luba
 msgid "Your chat devices can't be listed right now."
 msgstr "Teie vestlusseadmeid ei saa praegu loetleda."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Sinu jutu taastamise kood"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Su jutuajamised"
@@ -3451,6 +3964,10 @@ msgstr "Teie vestlused töötavad selles seadmes uuesti, kuid varasemaid sõnume
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Sinu kommentaari ei olnud võimalik avaldada. Proovi uuesti."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Teie praegune taastamiskood lõpetab töötamise."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Sinu võtit ei saa praegu näidata."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Sinu võti lukustati vana parooliga. Avage vestlus sellel saidil ja sisestage oma taastamise kood üks kord; siis see avaneb siin."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Teie sõnum saadetakse, kui vestlus on selles seadmes lukustamata."
+msgstr[1] "Teie %(num)s-sõnumid saadetakse, kui vestlus on selles seadmes lukustamata."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Teie vana taastamiskood ei tööta enam."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Sinu parool muutus, kuna see vestlusvõti oli sellega lukustatud. Taastamiskood, mille salvestasid vestluse seadistamisel, avab selle."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Teie parool muudeti teie jaoks, nii et vestlus algab uuesti siin."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Teie parool on muudetud, nii et vestlus algab uuesti siin."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Teie parool lähtestati, nii et vestlus algab uuesti siin."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Sinu taastumiskood"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Sinu salvestatud mallid ilmuvad siia."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Teie ekraani saab jagada ainult siis, kui olete selles kõnes videol."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Teie ekraani ei saanud jagada."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "sinine"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "kommentaar"
 
@@ -3606,7 +4153,7 @@ msgstr "oranž"
 msgid "pink"
 msgstr "roosa"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "postitus"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sl\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, plain1, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s tipka…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "sporočilo %(name)s naj izgine po %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s Izključil je izginjajoča sporočila."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, plain1, python-format
@@ -141,6 +149,14 @@ msgstr[1] "%(num)s člana"
 msgstr[2] "%(num)s člani"
 msgstr[3] "%(num)s članov"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s najdeno sporočilo."
+msgstr[1] "najdeni sta dve sporočili."
+msgstr[2] "%(num)s najdena sporočila."
+msgstr[3] "%(num)s najdenih sporočil."
+
 #, machine, plain1, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
@@ -148,6 +164,14 @@ msgstr[0] "%(num)s sporočilo na nitki"
 msgstr[1] "%(num)s sporočili v niti"
 msgstr[2] "%(num)s sporočila na niti"
 msgstr[3] "%(num)s sporočil v niti"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s sporočilo prebrano…"
+msgstr[1] "%(num)s sporočili se bereta…"
+msgstr[2] "%(num)s sporočila prebrana…"
+msgstr[3] "%(num)s sporočil se bere…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -283,6 +307,14 @@ msgstr[3] "%(owner)s · %(num)s članov"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Kakorkoli?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, plain1, python-format
@@ -318,6 +350,14 @@ msgstr[1] "+%(guild)s · %(num)s komentarja"
 msgstr[2] "+%(guild)s · %(num)s komentarji"
 msgstr[3] "+%(guild)s · %(num)s komentarjev"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 dan"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 teden"
+
 #, machine, plain1, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@ %(name)s vas je dodal v to skupino. Sprejmite jo in v njej zapišite."
@@ -329,10 +369,6 @@ msgstr[0] "@%(name)s Nisem še začel klepetati. Vaše sporočilo bo poslano, ko
 msgstr[1] "@%(name)s Nisem še začel klepetati. Vaši dve sporočili bosta poslani, ko bodo."
 msgstr[2] "@%(name)s Nisem še začel klepetati. Vaša tri sporočila bodo poslana, ko bodo."
 msgstr[3] "@%(name)s Nisem še začel klepetati. Vaših %(num)s sporočil bo poslanih, ko bodo."
-
-#, machine, plain1, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s Tipka…"
 
 #, machine, plain1
 msgid "A Space"
@@ -387,6 +423,14 @@ msgid "A message that isn't there any more"
 msgstr "Sporočilo, ki ga ni več"
 
 #, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Sporočilo, ki ste ga napisali tukaj ni bilo poslano: klepet se je ustavil na tem zavihku, preden je lahko šel."
+msgstr[1] "dve sporočili, ki ste ju napisali tukaj, nista bili poslani: klepet se je ustavil v tem zavihku, preden sta lahko odšli."
+msgstr[2] "%(num)s sporočila, ki ste jih napisali tukaj, niso bila poslana: klepet se je ustavil v tem zavihku, preden so lahko odšli."
+msgstr[3] "%(num)s sporočil, ki ste jih tukaj napisali, ni bilo poslanih: klepet se je ustavil v tem zavihku, preden so lahko odšli."
+
+#, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
 msgstr[0] "Postava ima lahko največ %(num)s soavtorja."
@@ -407,9 +451,13 @@ msgid "Accept"
 msgstr "Sprejmi"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Dodaj"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Dodaj pomočnika po uporabniškem imenu"
 
 #, machine, plain1
 msgid "Add image"
@@ -448,12 +496,12 @@ msgid "Adding..."
 msgstr "Dodajanje..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Skrbnik"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Strinjam se"
 
@@ -473,6 +521,10 @@ msgstr "Uravnaj desno"
 msgid "Alignment"
 msgstr "Uskladitev"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Blokirajte tudi @ %(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, plain1, python-format
 msgid "Also here: %(names)s"
@@ -482,7 +534,7 @@ msgstr "Tudi tukaj: %(names)s"
 msgid "An app"
 msgstr "Aplikacija"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Jeza"
 
@@ -492,7 +544,7 @@ msgstr "Jeza"
 msgid "Announcements"
 msgstr "Sporočila"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonimni uporabnik"
 
@@ -500,6 +552,10 @@ msgstr "Anonimni uporabnik"
 #, machine, plain1
 msgid "Answer"
 msgstr "Odgovor"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Vsakdo v klepetu lahko še vedno prepiše sporočilo ali posname sliko zaslona, preden gre."
 
 #, machine, plain1
 msgid "Ask to mute"
@@ -513,23 +569,23 @@ msgstr "Priloži povezavo na to delovno mesto"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Oh, sranje. Ni najdenega GIFs..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Super"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Nerodno"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Na vrh"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Blokiraj"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "Blokiraj @%(name)s?"
 
@@ -540,6 +596,10 @@ msgstr "Blokirana @ %(name)s."
 #, machine, plain1
 msgid "Bold (Ctrl+B)"
 msgstr "Polkrepko (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Prinašam ključe za klepet. Vnesite geslo za zaključek."
 
 #, machine, plain1
 msgid "Bulleted list"
@@ -615,7 +675,7 @@ msgstr "Kamera izključena"
 msgid "Camera on"
 msgstr "Kamera prižgana"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Prekliči"
 
@@ -655,7 +715,7 @@ msgstr[1] "Kanal · %(num)s člana"
 msgstr[2] "Kanal · %(num)s člani"
 msgstr[3] "Kanal · %(num)s članov"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanali"
 
@@ -665,13 +725,45 @@ msgstr "Kanali ste v"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Klepet"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat ni mogel prinesti ključev. Ponovno napolnite, da poskusite znova."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Klepet se ni mogel povezati."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Klepet ni mogel začeti znova. Vnesite geslo, da poskusite znova."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Klepet ni mogel začeti znova. Ponovno napolnite, da poskusite znova."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat ni mogel odpreti tistega, kar je ta brskalnik shranil, zato se ponovno začenja tukaj."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Klepet ni mogel začeti v tem brskalniku."
 
 #, machine, plain1
 msgid "Chat did not answer. Try again."
 msgstr "Klepet ni odgovoril. Poskusi še enkrat."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat že dolgo ni bil uporabljen v tem brskalniku, zato se spet začenja tukaj."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Klepet se zapira na drug račun…"
 
 #, machine, plain1
 msgid "Chat is open in another tab."
@@ -685,6 +777,26 @@ msgstr "Klepet se še vedno začenja."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Klepet se še vedno začenja. Poskusite znova v trenutku."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Klepet trenutno ni na voljo za vaš račun."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Klepet je izgubil povezavo. Ponovno preizkušanje…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Klepet potrebuje ta brskalnik, da hrani podatke o mestu, in ne more biti tukaj. Klepet se ne more začeti v tem oknu."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Klepet se je ustavil v tem zavihku."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Klepet je bil na tem brskalniku prekinjen iz druge naprave. Začenjam znova tukaj…"
+
 #, machine, plain1, python-format
 msgid "Chat with @%(name)s"
 msgstr "Klepet z @ %(name)s"
@@ -693,7 +805,7 @@ msgstr "Klepet z @ %(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "Chatov ključ trenutno ni na voljo."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Klepeti"
 
@@ -733,11 +845,11 @@ msgstr "Izberi, kdo lahko to vidi."
 msgid "Choose your profile or at least one guild."
 msgstr "Izberite svoj profil ali vsaj enega."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Krogi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Zapri"
 
@@ -773,7 +885,7 @@ msgstr "Primerjajte jih s tistimi, ki jih prikazuje vaša aplikacija, v enakem v
 msgid "Confirm in the app as well."
 msgstr "Potrdite tudi v aplikaciji."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Zmeda"
 
@@ -925,6 +1037,10 @@ msgstr "Ni moč naložiti pripetih sporočil"
 #, machine, plain1
 msgid "Could not load the preview."
 msgstr "Ni moč naložiti predogleda."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Ni moč naložiti vaših klepetov"
 
 #, machine, plain1
 msgid "Could not load your chats. Try again."
@@ -1086,7 +1202,11 @@ msgstr "Ni moč kopirati: izberite kode in jih kopirajte."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Nisem mogel naložiti prejšnjih sporočil. Poskusite znova v trenutku."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Nisem mogel naložiti pogovorov. Še enkrat poskušam…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Ustvarjanje objave"
 
@@ -1094,7 +1214,7 @@ msgstr "Ustvarjanje objave"
 msgid "Creating…"
 msgstr "Ustvarjanje…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1102,7 +1222,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Prečrtaj"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Temni način"
 
@@ -1167,13 +1287,21 @@ msgstr "Izbrisati to zgodbo?"
 msgid "Delete this update?"
 msgstr "Zbrišem to posodobitev?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Brisanje komentarja"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Brisanje objave"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Izginjajoča sporočila"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Izginotje sporočil je izključeno."
 
 #, machine, plain1
 msgid "Discard"
@@ -1207,6 +1335,10 @@ msgstr "Opravljeno"
 #, machine, plain1
 msgid "Done."
 msgstr "Končano."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Prenesi"
 
 #, machine, plain1
 msgid "Downloaded."
@@ -1261,7 +1393,7 @@ msgstr "Na koncu šifrirano: samo ljudje v tem kanalu ga lahko preberejo."
 msgid "Ended"
 msgstr "Končano"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Vnesi URL"
 
@@ -1272,6 +1404,10 @@ msgstr "Vnesite spletni naslov, kot je https://example.com"
 #, machine, plain1
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Enkrat vnesite geslo. Zaklene ključ do vaših sporočil v tem brskalniku, tako da jih stran nikoli ne more prebrati."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Vnesite geslo za potrditev."
 
 #, machine, plain1
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1285,9 +1421,49 @@ msgstr "Vnesite geslo."
 msgid "Enter your recovery code"
 msgstr "Vnesite kodo za obnovitev"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Vnesite svojo dvofaktorsko kodo"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Vnesite svojo dvofaktorsko kodo."
+
+#, machine, plain2
+msgid "File"
+msgstr "Datoteka"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Datoteke se lahko pošljejo, ko @ %(name)s odpre klepet."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Datoteke se lahko pošljejo, ko je klepet na tej napravi odklenjen."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Datoteke ni mogoče poslati sem."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Končni"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Končaj"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Končajte s pogovorom"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Končaj zaganjanje znova"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Dokončanje nastavitve klepeta v drugem zavihku…"
 
 #, machine, plain1
 msgid "Follow someone to add them to a group."
@@ -1310,9 +1486,13 @@ msgid "Formatting"
 msgstr "Oblikovanje"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Posreduj"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Pošlji to sporočilo"
 
 #, machine, plain1, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1322,7 +1502,19 @@ msgstr[1] "Naprej na največ %(num)s guldna."
 msgstr[2] "Na največ tri čete."
 msgstr[3] "Na največ %(num)s čet."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Naprej k…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Posredovano"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Posredovano."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Posredovanje"
 
@@ -1362,11 +1554,11 @@ msgstr "Daj gumbu sporočilo."
 msgid "Give the template a name."
 msgstr "Navedi ime predloge."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Pojdi na spletno stran"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Gnus"
 
@@ -1374,7 +1566,7 @@ msgstr "Gnus"
 msgid "Group info"
 msgstr "Podatki o skupini"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Cehi"
 
@@ -1386,13 +1578,25 @@ msgstr "Guilds s klepetom"
 msgid "Hand raised"
 msgstr "Ročno dvignjen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Veselje"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Si obdržal kodo za okrevanje? Brez tega lahko pozabljeno geslo izgubi stara sporočila."
 
 #, machine, plain1, python-format
 msgid "Heading %(level)s"
 msgstr "Naslov %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Pomočniki"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Pomočniki pišejo v tem kanalu z vami. Izberi do tri ljudi, ki so v njem."
 
 #, machine, plain1
 msgid "Hidden by your word filter"
@@ -1435,6 +1639,10 @@ msgstr "Strinjam se s pravili"
 msgid "I don't have it: start over"
 msgstr "Nimam ga. Začni znova"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Imam ga"
+
 #, machine, plain1
 msgid "I've saved it"
 msgstr "Rešil sem ga"
@@ -1442,6 +1650,10 @@ msgstr "Rešil sem ga"
 #, machine, plain1
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Če ste kdaj pozabili geslo, je ta koda edini način za branje vaših starih sporočil. Naj bo na varnem, kot upravljalec gesel."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Če imate še vedno svojo kodo za okrevanje, jo uporabite namesto: nekatera starejša sporočila so samo v backup se odpre."
 
 #, machine, plain1
 msgid "Image (coming soon)"
@@ -1533,11 +1745,11 @@ msgstr "Njegove zgodbe ostanejo v tvojem arhivu."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Pridruži se"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Pridruži se %(channel)s"
 
@@ -1565,12 +1777,16 @@ msgstr "Ključna dejstva in povezave, ki jih morajo ljudje najprej videti."
 msgid "Last used %(date)s"
 msgstr "Nazadnje uporabljeno %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Kasneje"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Smeh"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Zapusti"
 
@@ -1586,7 +1802,7 @@ msgstr "Zapustil to skupino? Nekdo drug v njem postane njegov lastnik."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Zapustil to skupino? Novih sporočil ne boste videli, če vas ne bo kdo spet dodal."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Svetli način"
 
@@ -1633,6 +1849,10 @@ msgstr "Živi zdaj"
 msgid "Load earlier messages"
 msgstr "Naloži prejšnja sporočila"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Nalaganje komentarja…"
+
 #, machine, plain1
 msgid "Loading post…"
 msgstr "Nalaganje pošte…"
@@ -1657,17 +1877,25 @@ msgstr "Nalaganje predlog..."
 msgid "Loading..."
 msgstr "Nalaganje..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Nalaganje…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Ljubezen"
 
 #, machine, plain1
 msgid "Lower hand"
 msgstr "Spodnja stran"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Ustvari novo kodo"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Narediti novo kodo za okrevanje?"
 
 #, machine, plain1
 msgid "Make admin"
@@ -1685,7 +1913,7 @@ msgstr "Naj to objavim? Vsi ga bodo lahko videli."
 msgid "Making the channel…"
 msgstr "Narediti kanal…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1702,6 +1930,14 @@ msgstr "Sporočilo izbrisano"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Zahteva za sporočilo. Ne bodo vedeli, da si to videl, dokler ne sprejmeš."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Sporočila izginejo po %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Sporočila, ki jih je ta brskalnik že lahko prebral, se bodo vrnila sem."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine, plain1
@@ -1713,7 +1949,7 @@ msgid "Microphone %(number)s"
 msgstr "Mikrofon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Več"
 
@@ -1721,11 +1957,11 @@ msgstr "Več"
 msgid "Move to listeners"
 msgstr "Premakni se k poslušalcem"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Utišaj"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Utišan"
 
@@ -1745,7 +1981,11 @@ msgstr "Ime mape"
 msgid "New channel"
 msgstr "Nov kanal"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Nova sporočila v tem klepetu izginejo za vse, ko izberete. Sporočila, ki so bila poslana preden so bila poslana."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Ne"
 
@@ -1765,17 +2005,29 @@ msgstr "Ni še klica. Začnite z glasovnim ali video klicem."
 msgid "No camera was found."
 msgstr "Kamere niso našli."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Ni moč najti nobenega pogovora."
+
 #, machine, plain1
 msgid "No co-authors yet."
 msgstr "Soavtorjev še ni."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Ni kode? Vpišite se z novim geslom v brskalnik, kjer ste uporabljali klepet: lahko vrne vaš klepet."
 
 #, machine, plain1
 msgid "No devices yet. Open Chat to start."
 msgstr "Ni še nobenih naprav. Odpri klepet za začetek."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Brez oznake"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Še vedno ni pomočnikov."
 
 #, machine, plain1
 msgid "No microphone was found."
@@ -1784,6 +2036,10 @@ msgstr "Mikrofona niso našli."
 #, machine, plain1
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Nihče se ne ujema. Lahko pošlješ na klepet in ljudem, ki jim slediš."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Ni še sporočil."
 
 #, machine, plain1
 msgid "No special characters or spaces allowed."
@@ -1829,6 +2085,10 @@ msgstr "Ni shranjeno"
 msgid "Not used yet"
 msgstr "Se še ne uporablja"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Nič v sporočilih, ki jih lahko prebere ta brskalnik."
+
 #, machine, plain1
 msgid "Nothing found."
 msgstr "Nič nismo našli."
@@ -1857,17 +2117,45 @@ msgstr "Ničesar še ni za videti."
 msgid "Nothing was connected."
 msgstr "Nič ni bilo povezano."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Obvestila"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Obvestila so blokirana za to spletno stran v tem brskalniku. Naj jih v nastavitvah brskalnika vklopijo."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Obvestila so izključena v tem brskalniku."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Obvestila so vključena v tem brskalniku."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Obvestila ni bilo mogoče preveriti. Znova naloži stran, da poskusite znova."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Obvestila se niso mogla vklopiti. Poskusi še enkrat."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Obvestila niso bila dovoljena za to stran."
 
 #, machine, plain1
 msgid "Numbered list"
 msgstr "Oštevilčen seznam"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Izklopljeno"
 
 #, machine, plain1
 msgid "Offline"
@@ -1876,6 +2164,10 @@ msgstr "Brez povezave"
 #, machine, plain1
 msgid "Offline · retrying"
 msgstr "Brez povezave · ponovni poskusi"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "To lahko spremeni le lastnik in skrbnik skupine."
 
 #, machine, plain1
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1911,6 +2203,10 @@ msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Odprite klepet, da odklenete sporočila in poskusite znova."
 
 #, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Odprite klepet, da končate nastavljanje sporočil na tej napravi."
+
+#, machine, plain1
 msgid "Open media settings"
 msgstr "Odprte večpredstavnostne nastavitve"
 
@@ -1921,6 +2217,10 @@ msgstr "Odpri prostor"
 #, machine, plain1, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Odpri klepet +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Odpiranje datoteke…"
 
 #, machine, plain1
 msgid "Options saved."
@@ -1947,7 +2247,7 @@ msgstr "Ljudje, ki jim slediš"
 msgid "Pick a date and time."
 msgstr "Izberi datum in čas."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Izberi oznako"
 
@@ -1981,11 +2281,15 @@ msgstr "Slike na tej strani še niso na voljo."
 msgid "Pin this message"
 msgstr "Pripni to sporočilo"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Okovi"
+
 #, machine, plain1
 msgid "Pinned messages"
 msgstr "Pritrjena sporočila"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Prosim"
 
@@ -1993,12 +2297,18 @@ msgstr "Prosim"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Vnesite veljavno URL (vključno s http:// ali https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Znova se prijavi."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Priljubljene poti"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Objavi"
 
@@ -2010,7 +2320,7 @@ msgstr "Objavljeno. Ponovno naloži stran, da jo vidiš."
 msgid "Posting to %(guilds)s"
 msgstr "Napotitev na %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Objava na tvojem profilu"
 
@@ -2019,7 +2329,7 @@ msgstr "Objava na tvojem profilu"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Pošiljanje na vaš profil, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Objavljanje…"
 
@@ -2121,6 +2431,14 @@ msgstr "React"
 msgid "React with %(emoji)s"
 msgstr "Ukrepajte z %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Posnemite glasovno noto"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Snemanje… še enkrat pritisnite mikrofon, da ga pošljete."
+
 #, machine, plain1
 msgid "Recovery code"
 msgstr "Oznaka izterjave"
@@ -2133,13 +2451,17 @@ msgstr "Obnovi"
 msgid "Refreshing…"
 msgstr "Osvežitev…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Registracija"
 
 #, machine, plain1
 msgid "Release to refresh"
 msgstr "Sprosti se za osvežitev"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Znova naloži"
 
 #, machine, plain1
 msgid "Remind me"
@@ -2154,13 +2476,17 @@ msgstr "Nabor opomnikov"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Odstrani"
 
 #, machine, plain1, python-format
 msgid "Remove %(name)s"
 msgstr "Odstrani %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Odstrani @ %(name)s kot pomočnik"
 
 #, machine, plain1, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2213,15 +2539,15 @@ msgstr "Preimenuj to mapo"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Prijavi"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Prijavi komentar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Prijavi objavo"
 
@@ -2229,11 +2555,11 @@ msgstr "Prijavi objavo"
 msgid "Report this message"
 msgstr "Poročilo o tem sporočilu"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Prijavljanje komentarja"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Prijavljanje objave"
 
@@ -2250,13 +2576,13 @@ msgstr "Zvonjenje…"
 msgid "Rules of this channel"
 msgstr "Pravila tega kanala"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Žalost"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Shrani"
 
@@ -2272,11 +2598,15 @@ msgstr "Shrani kot predlogo..."
 msgid "Save your recovery code"
 msgstr "Shranite kodo za okrevanje"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Shranjeno"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Rešen."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Shranjevanje"
 
@@ -2310,7 +2640,7 @@ msgstr "Shranjevanje…"
 msgid "Say what is wrong with this account."
 msgstr "Povej, kaj je narobe s tem računom."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Strah"
 
@@ -2329,7 +2659,8 @@ msgstr "Načrtovano za %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Išči"
 
@@ -2340,6 +2671,14 @@ msgstr "Poišči koga, ki bo dodal."
 #, machine, plain1
 msgid "Search this channel"
 msgstr "Iskanje po tem kanalu"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Preišči ta klepet"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Preišči svoje klepete"
 
 #, machine, plain1, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2367,7 +2706,7 @@ msgstr[1] "Glej za %(num)s"
 msgstr[2] "Vidno za %(num)s"
 msgstr[3] "Vidno za %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Izberi pogovor"
 
@@ -2376,6 +2715,10 @@ msgstr "Izberi pogovor"
 #, machine, plain1
 msgid "Send"
 msgstr "Pošlji"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Pošlji datoteko"
 
 #, machine, plain1
 msgid "Send it somewhere else:"
@@ -2393,6 +2736,22 @@ msgstr "Pošljite naslednje slike na:"
 msgid "Send your next videos to:"
 msgstr "Pošljite naslednje videoposnetke na:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Pošiljanje %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Pošiljanje %(name)s… %(percent)s %%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Pošiljanje, ko je pogovor pripravljen…"
+msgstr[1] "Pošiljanje %(num)s sporočil, ko je klepet pripravljen…"
+msgstr[2] "Pošiljanje %(num)s sporočil, ko je klepet pripravljen…"
+msgstr[3] "Pošiljanje %(num)s sporočil, ko je klepet pripravljen…"
+
 #, machine, plain1
 msgid "Sending..."
 msgstr "Pošiljanje..."
@@ -2409,6 +2768,14 @@ msgstr "Poslano"
 #, machine, plain1
 msgid "Several people are typing…"
 msgstr "Nekaj ljudi tipka…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Souporaba zaslona"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Delil komentar"
 
 #, machine, plain1
 msgid "Shared a post"
@@ -2430,11 +2797,20 @@ msgstr[3] "Prikaži %(num)s novih objav"
 msgid "Show formatting"
 msgstr "Prikaži oblikovanje"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Prikaži v programu"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Prikaži v klepetu"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Prikaži manj"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Prikaži več"
 
@@ -2447,19 +2823,19 @@ msgstr "Prikaži original"
 msgid "Show translation"
 msgstr "Prikaži prevod"
 
-#, machine, plain1
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Izpiši"
+msgstr "Odjavi"
 
-#, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Odjavi se %(device)s"
+msgstr "Odjavi %(device)s"
 
-#, machine, plain1, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Izpiši %(device)sŠe enkrat se bo moral vpisati, da prebere vaše klepete."
+msgstr "Odklopite %(device)s? Moral se bo ponovno vpisati, da bo prebral vaše klepete."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Prijavljanje"
 
@@ -2581,6 +2957,11 @@ msgstr "Začenjam pogovor…"
 msgid "Starting…"
 msgstr "Začenjam…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Ustavi souporabo"
+
 #, machine, plain1
 msgid "Strikethrough"
 msgstr "Preboj"
@@ -2631,7 +3012,7 @@ msgstr "Oblikovanje besedila"
 msgid "Text style"
 msgstr "Slog besedila"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Hvala za prošnjo"
 
@@ -2655,27 +3036,39 @@ msgstr "Hvala. Administrator bo pogledal."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Guldovi moderatorji bodo pogledali."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Hvala: upravniki spletne strani bodo pogledali, in blokirali ste @%(name)s."
+
 #, machine, plain1
 msgid "Thanks: the site's admins will take a look."
 msgstr "Hvala. Administratorji bodo pogledali."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Hvala. Administratorji bodo pogledali. @%(name)s Ne moremo jih blokirati od tukaj."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Ta pogovor še ni pripravljen. Enkrat odpri, potem pa poskusi še enkrat."
 
 #, machine, plain1
 msgid "That code doesn't open it. Check for typos."
 msgstr "Ta koda ga ne odpre. Preveri tipke."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Shranjevanje ni uspelo."
 
-#, machine, plain1
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Te naprave trenutno ni mogoče odpisati."
+msgstr "Ta naprava ni mogla biti odklopljena."
 
 #, machine, plain1
 msgid "That device couldn't be used."
 msgstr "Te naprave ni bilo mogoče uporabiti."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Ni uspelo"
 
@@ -2714,6 +3107,14 @@ msgstr "To ni tvoje geslo."
 #, machine, plain1
 msgid "That message can't be sent."
 msgstr "Tega sporočila ni mogoče poslati."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Tega sporočila ni bilo več v kanalu."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Tega sporočila ni bilo več v tem pogovoru."
 
 #, machine, plain1
 msgid "That password isn't right."
@@ -2799,6 +3200,10 @@ msgstr "Klepetanje je zaprto: ta prostor se je končal."
 msgid "The chat opens when the Space starts."
 msgstr "Klepet se odpre, ko se začne Vesolje."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Koda iz vaše overovitvene aplikacije ali ene od varnostnih kod."
+
 #, machine, plain1
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Osnutek se je spremenil pod vašo zadnjo montažo. Preveri zadnje besede."
@@ -2806,6 +3211,10 @@ msgstr "Osnutek se je spremenil pod vašo zadnjo montažo. Preveri zadnje besede
 #, machine, plain1
 msgid "The emoji to compare"
 msgstr "Emoji za primerjavo"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Dosjeja ni bilo mogoče poslati. Poskusi še enkrat."
 
 #, machine, plain1, python-format
 msgid "The guild, +%(name)s"
@@ -2822,6 +3231,10 @@ msgstr "Zveze ni bilo mogoče kopirati."
 #, machine, plain1
 msgid "The microphone couldn't be started."
 msgstr "Mikrofona ni bilo mogoče zagnati."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofona ni bilo mogoče uporabiti. Preverite, ali ga lahko ta stran uporablja."
 
 #, machine, plain1
 msgid "The microphone is in use by another app."
@@ -2861,6 +3274,10 @@ msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Ponovitev ni bila shranjena: nalaganje ni uspelo. Namesto tega ga lahko preneseš."
 
 #, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Ključi strani so se spremenili, zato se spet začenja pogovor."
+
+#, machine, plain1
 msgid "The summary is hidden by your word filter."
 msgstr "Povzetek skriva vaš besedni filter."
 
@@ -2896,6 +3313,10 @@ msgstr "Nikjer jih še ni."
 msgid "These comments could not be loaded. Try again."
 msgstr "Teh pripomb ni bilo mogoče naložiti. Poskusi še enkrat."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Nikoli jim ne povedo, kdo jih je prijavil."
+
 #, machine, plain1
 msgid "They declined the call."
 msgstr "Zavrnili so klic."
@@ -2908,6 +3329,10 @@ msgstr "Ne ujemajo se"
 msgid "They match"
 msgstr "Ujemajo se"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Tam ostanejo na tvojem računu, šifrirani, z uporabo prostega prostora. Samo ljudje v klepetu jih lahko odprejo."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Ne bodo vam mogli slediti, vam sporočila ali komentar na vaše objave, in ne boste videli njihove objave. Kadarkoli jih lahko odblokiraš."
@@ -2916,9 +3341,9 @@ msgstr "Ne bodo vam mogli slediti, vam sporočila ali komentar na vaše objave, 
 msgid "This Space has ended."
 msgstr "Vesolje se je končalo."
 
-#, machine, plain1
-msgid "This browser"
-msgstr "Ta brskalnik"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "S tem se konča tudi reševanje iz brskalnika, kjer ste uporabljali klepet."
 
 #, machine, plain1
 msgid "This browser can't make calls."
@@ -2928,9 +3353,29 @@ msgstr "Ta brskalnik ne more klicati."
 msgid "This browser can't record the Space."
 msgstr "Ta brskalnik ne more posneti Vesolja."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Ta brskalnik ne more deliti svojega zaslona."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Ta brskalnik ne more prikazati obvestil s te strani."
+
 #, machine, plain1
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Ta brskalnik ne more pripraviti slik za pošiljanje. Poskusite z drugim brskalnikom."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Ta brskalnik ima še vedno ključe za klepet pred spremembo gesla. Uporabite jih za branje vaših starih sporočil tukaj in na drugih napravah?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Ta brskalnik je bil odklopljen iz klepeta z drugo napravo, zato se klepet ponovno začenja tukaj."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Shranjeni podatki za klepet so bili izbrisani, zato se klepet spet začenja tukaj."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2940,6 +3385,26 @@ msgstr "Tega ni mogoče popraviti."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Ta kanal je zamolčal: brez neprebrane pike in obvestil o omembi."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Ta klepet je šifriran, zato ga stran ne more prebrati. Poročanje pošlje to sporočilo in do štiri pred njim, kot jih vidite tukaj, na upravo strani."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Tega komentarja ni mogoče prikazati."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Naprava bo kmalu izključena."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Te datoteke ni bilo mogoče odpreti. Poskusi kasneje."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Ta datoteka ni več na voljo."
+
 #, machine, plain1
 msgid "This live thread has ended"
 msgstr "Ta živa nit se je končala"
@@ -2947,6 +3412,10 @@ msgstr "Ta živa nit se je končala"
 #, machine, plain1
 msgid "This message can't be read on this device."
 msgstr "Tega sporočila ni mogoče prebrati na tej napravi."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "To sporočilo je bilo izbrisano."
 
 #, machine, plain1
 msgid "This picture is no longer available."
@@ -2961,6 +3430,14 @@ msgstr "Te objave ni mogoče prikazati."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Ta objava je zunaj teme za +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Ta vpis"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "To prekine klepet tudi v tem brskalniku, če je ta brskalnik. Začelo se bo kot nova naprava."
+
 #, machine, plain1, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
@@ -2968,6 +3445,10 @@ msgstr[0] "Ta glasovni kanal je poln (%(num)s oseba)."
 msgstr[1] "Ta glasovni kanal je poln (%(num)s osebi)."
 msgstr[2] "Ta glasovni kanal je poln (%(num)s osebe)."
 msgstr[3] "Ta glasovni kanal je poln (%(num)s oseb)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Ti ključi niso več od tvojega računa. Uporabite kodo za okrevanje ali pa začnite znova."
 
 #, machine, plain1
 msgid "Thou've reached the end of the list!"
@@ -3002,7 +3483,7 @@ msgstr[1] "Predolgo do %(num)s (%(note)s)"
 msgstr[2] "Predolgo za %(num)s (%(note)s)"
 msgstr[3] "Predolgo za %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Danes preveč zahtev"
 
@@ -3033,13 +3514,21 @@ msgstr "Prevod trenutno ni na voljo."
 msgid "Try again"
 msgstr "Poskusi znova"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Poskusi znova jutri."
 
 #, machine, plain1
 msgid "Turn notifications back on"
 msgstr "Vklopi obvestila"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Dvofaktorska koda"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Dvofaktorski vpis je bil spremenjen, zato se klepet spet začenja tukaj."
 
 #, machine, plain1
 msgid "Type words to look for."
@@ -3073,12 +3562,12 @@ msgstr "Trenutno ni moč odstraniti komentarja. Prosim, poskusite kasneje."
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Trenutno ni moč glasovati. Prosim, poskusite kasneje."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Odblokiraj"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Razveljavi"
 
@@ -3098,17 +3587,13 @@ msgstr "Odkleni"
 msgid "Unlock your messages"
 msgstr "Odkleni sporočila"
 
-#, machine, plain1
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Najprej odklenite sporočila: ponovno naložite stran za vnos gesla."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Ne utišaj več"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Odpni"
 
@@ -3164,11 +3649,15 @@ msgstr "Uporabi ga tukaj"
 msgid "Use my recovery code instead"
 msgstr "Namesto tega uporabi mojo kodo za okrevanje"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Uporabi jih"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Uporabniško ime je že zasedeno :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Uporabniško ime je v redu!"
 
@@ -3258,7 +3747,7 @@ msgstr[3] "Videoklic · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video je izključen v tem klicu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Prikaži izvirnik"
 
@@ -3308,6 +3797,10 @@ msgstr[1] "Voice gre brskalnik za brskanje po releju strani, tako da nihče ne v
 msgstr[2] "Voice gre brskalnik za brskanje po releju strani, tako da nihče ne vidi nobenega naslova. Do tri osebe."
 msgstr[3] "Voice gre brskalnik za brskanje po releju strani, tako da nihče ne vidi nobenega naslova. Do %(num)s ljudi."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Glasovna nota"
+
 #, machine, plain1
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Počakajte trenutek: vaše zadnje spremembe se še vedno rešujejo."
@@ -3315,6 +3808,10 @@ msgstr "Počakajte trenutek: vaše zadnje spremembe se še vedno rešujejo."
 #, machine, plain1
 msgid "Waiting for the app"
 msgstr "Čakanje na aplikacijo"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "V tem brskalniku smo našli vaš klepet"
 
 #, machine, plain1
 msgid "We'll show fewer posts like this."
@@ -3335,6 +3832,10 @@ msgstr "Kaj je narobe s tem prostorom? (neobvezno)"
 #, machine, plain1
 msgid "What's wrong with this message? (optional)"
 msgstr "Kaj je narobe s tem sporočilom? (neobvezno)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Kam naj gredo datoteke, ki jih pošiljaš v klepetih?"
 
 #, machine, plain1
 msgid "Where should your audio go?"
@@ -3361,7 +3862,7 @@ msgstr "Kdo je to rekel"
 msgid "Who upvoted"
 msgstr "Kdo je glasoval"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Zakaj"
 
@@ -3376,6 +3877,10 @@ msgstr "Zakaj to krši pravila tvojega ceha? To bo prikazano vsakomur, ki bo pog
 #, machine, plain1
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Zakaj to krši pravila tvojega ceha? To se bo pokazalo vsakomur, ki bo pogledal v zgodovino tega posta/kommenta."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Zakaj se ta komentar odstrani? Vaš razlog je prikazan v javnem dnevniku."
 
 #, machine, plain1
 msgid "Working it out…"
@@ -3394,7 +3899,7 @@ msgstr "Najprej nekaj napiši."
 msgid "Write what you want to tell us."
 msgstr "Napiši, kar nam hočeš povedati."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Da"
 
@@ -3412,7 +3917,7 @@ msgstr "Ja, odpovej"
 msgid "You"
 msgstr "Ti"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "To je že narejeno"
 
@@ -3428,7 +3933,7 @@ msgstr "To si že prijavil."
 msgid "You already voted on this post."
 msgstr "Na tem mestu ste že glasovali."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Blokiraš @%(name)s"
 
@@ -3468,7 +3973,7 @@ msgstr "Lahko preberete ta kanal, vendar ne pišete v njem."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Lahko vidite, kdo je tukaj, vendar ne morete govoriti v tem kanalu."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Tega ne moreš narediti."
 
@@ -3512,6 +4017,14 @@ msgstr "Zapustil si vesolje."
 msgid "You left the call."
 msgstr "Pustil si klic."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Odklopil si se z druge naprave, zato se klepet spet začenja."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Vpisal si se s kodo za okrevanje, zato se klepet spet začenja."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Niste sledili.%(name)s."
@@ -3519,6 +4032,10 @@ msgstr "Niste sledili.%(name)s."
 #, machine, plain1
 msgid "You were removed from this Space."
 msgstr "Odstranili so te iz tega prostora."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Dobil boš novo kodo in stari bo nehal delati."
 
 #, machine, plain1
 msgid "You're doing that too much. Try again later."
@@ -3544,6 +4061,10 @@ msgstr "Vaš brskalnik je blokiral okno za povezovanje. Dovoli pojavna okna za t
 msgid "Your chat devices can't be listed right now."
 msgstr "Vaših naprav za klepet trenutno ni mogoče navesti."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Koda za obnovitev klepeta"
+
 #, machine, plain1
 msgid "Your chats"
 msgstr "Vaši pogovori"
@@ -3555,6 +4076,10 @@ msgstr "Vaši klepeti bodo spet delovali na tej napravi, vendar sporočil od pre
 #, machine, plain1
 msgid "Your comment could not be posted. Try again."
 msgstr "Vaš komentar ni bil objavljen. Poskusi še enkrat."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Vaša trenutna koda bo prenehala delovati."
 
 #, machine, plain1
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3586,9 +4111,33 @@ msgstr "Vaš ključ se trenutno ne more pokazati."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Tvoj ključ je bil zaklenjen s starejšim geslom. Odprite klepet na tej strani in vnesite svojo kodo za okrevanje enkrat; nato se odpre tukaj."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Vaše sporočilo bo poslano, ko bo klepet odklenjen na tej napravi."
+msgstr[1] "Vaša %(num)s sporočila bodo poslana, ko bo klepet odklenjen na tej napravi."
+msgstr[2] "Vaša %(num)s sporočila bodo poslana, ko bo klepet na tej napravi odklenjen."
+msgstr[3] "Ko bo klepet na tej napravi odklenjen, bo poslanih vaših %(num)s sporočil."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Tvoja stara koda ne deluje več."
+
 #, machine, plain1
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Tvoje geslo se je spremenilo, ker je bil ključ za klepet zaklenjen z njim. Koda, ki si jo shranil, ko je bil pogovor nastavljen, jo odpre."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Tvoje geslo je bilo spremenjeno, zato se tukaj spet začenja klepet."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Vaše geslo je spremenjeno, zato se tukaj spet začenja klepet."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Tvoje geslo je bilo resetirano, zato se klepet spet začenja tukaj."
 
 #, machine, plain1
 msgid "Your recovery code"
@@ -3597,6 +4146,14 @@ msgstr "Koda za obnovitev"
 #, machine, plain1
 msgid "Your saved templates show up here."
 msgstr "Tukaj se prikažejo vaše shranjene predloge."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Vaš zaslon si lahko delite le, ko ste na posnetku v tem klicu."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Vašega zaslona ni bilo mogoče deliti."
 
 #, machine, plain1
 msgid "Your settings have been updated."
@@ -3636,7 +4193,7 @@ msgid "blue"
 msgstr "modra"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "komentar"
 
@@ -3720,7 +4277,7 @@ msgstr "oranžna"
 msgid "pink"
 msgstr "rožnata"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "objava"
 

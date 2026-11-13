@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s yazmak …"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s %(time)s. sonra kaybolmak için mesajlar."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s mesajları yok etmeye başladı."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, python-format
@@ -114,10 +122,20 @@ msgid "%(num)s member"
 msgid_plural "%(num)s members"
 msgstr[0] "%(num)s üyeler"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s mesajları bulundu."
+
 #, machine, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s threadteki mesajlar"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s mesajları oku…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -208,6 +226,14 @@ msgstr[0] "%(owner)s · %(num)s üyeler"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Yine de tasarruf edin?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, python-format
@@ -237,6 +263,14 @@ msgid "+%(guild)s · %(num)s comment"
 msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s yorumlar"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 gün"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 hafta"
+
 #, machine, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s sizi bu gruba ekledi. Bunu okumayı kabul edin ve yaz."
@@ -245,10 +279,6 @@ msgstr "@%(name)s sizi bu gruba ekledi. Bunu okumayı kabul edin ve yaz."
 msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do."
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s henüz sohbet açmadı. Sizin %(num)s mesajları yaptıklarında gönderilir."
-
-#, machine, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s tipleniyor…"
 
 #, machine
 msgid "A Space"
@@ -299,6 +329,11 @@ msgstr "Bloke ettiğin birinden bir mesaj"
 msgid "A message that isn't there any more"
 msgstr "Orada olmayan bir mesaj daha yok"
 
+#, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "%(num)sburada yazdığınız mesajlar gönderilmedi: gitmeden önce bu sekmede sohbet durdu."
+
 #, machine, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -317,9 +352,13 @@ msgid "Accept"
 msgstr "Kabul"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Ekle"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Add a helper by name"
 
 #, machine
 msgid "Add image"
@@ -358,12 +397,12 @@ msgid "Adding..."
 msgstr "Add..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Yönetici"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Katılıyorum"
 
@@ -383,6 +422,10 @@ msgstr "Align haklı"
 msgid "Alignment"
 msgstr "Koşu"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Ayrıca @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, python-format
 msgid "Also here: %(names)s"
@@ -392,7 +435,7 @@ msgstr "Ayrıca burada: %(names)s"
 msgid "An app"
 msgstr "Bir uygulama"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Kızgın"
 
@@ -402,7 +445,7 @@ msgstr "Kızgın"
 msgid "Announcements"
 msgstr "Duyurular"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anonim"
 
@@ -410,6 +453,10 @@ msgstr "Anonim"
 #, machine
 msgid "Answer"
 msgstr "Cevap"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Sohbetteki herkes hala bir mesaj kopyalayabilir veya gitmeden önce ekranın resmini alabilir."
 
 #, machine
 msgid "Ask to mute"
@@ -423,23 +470,23 @@ msgstr "Bu postaya bir bağlantı kurmak"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Aw shucks. No GIFs found..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Harika"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Tuhaf"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Başa dön"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Engelle"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "@%(name)s engellensin mi?"
 
@@ -450,6 +497,10 @@ msgstr "Blocked @%(name)s."
 #, machine
 msgid "Bold (Ctrl+B)"
 msgstr "Bold (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Sohbet anahtarlarınızı bir parça yolda getirin. Şifrenizi bitirmek için girin."
 
 #, machine
 msgid "Bulleted list"
@@ -522,7 +573,7 @@ msgstr "Kamera"
 msgid "Camera on"
 msgstr "Kamera"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "İptal"
 
@@ -555,7 +606,7 @@ msgid "Channel · %(num)s member"
 msgid_plural "Channel · %(num)s members"
 msgstr[0] "Channel · %(num)s üyeler"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanallar"
 
@@ -565,13 +616,45 @@ msgstr "Kanallar içindesiniz"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Sohbet"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Chat anahtarlarınızı getiremedi. Tekrar denemek için yeniden yük."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Chat bağlanamadı."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Chat baştan başlamadı. Tekrar denemek için parolanızı girin."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Chat baştan başlamadı. Tekrar denemek için yeniden yük."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat bu tarayıcının ne kaydettiğini açıklayamadı, bu yüzden buraya yeniden başlıyor."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat bu tarayıcıya başlamadı."
 
 #, machine
 msgid "Chat did not answer. Try again."
 msgstr "Chat cevap vermedi. Tekrar deneyin."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat uzun süredir bu tarayıcıda kullanılmamıştı, bu yüzden tekrar başlıyor."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Chat başka bir sekmede kapanıyor…"
 
 #, machine
 msgid "Chat is open in another tab."
@@ -585,6 +668,25 @@ msgstr "Chat hala başlıyor."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Chat hala başlıyor. Bir anda tekrar deneyin."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Chat şu anda hesabınız için mevcut değil."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat bağlantısını kaybetti. Yeniden deneme…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat, site verilerini tutmak için bu tarayıcıya ihtiyaç duyar ve burada olamaz. Chat bu pencerede başlayabilir."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "Chat bu sekmede durdu."
+
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Bu tarayıcıdaki sohbetin oturumu başka bir cihazdan kapatıldı. Burada yeniden başlıyor…"
+
 #, machine, python-format
 msgid "Chat with @%(name)s"
 msgstr "@%(name)s ile Sohbet"
@@ -593,7 +695,7 @@ msgstr "@%(name)s ile Sohbet"
 msgid "Chat's key isn't available right now."
 msgstr "Chat'un anahtarı şu anda mevcut değil."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Sohbetler"
 
@@ -633,11 +735,11 @@ msgstr "Bunu kim görebileceklerini seçin."
 msgid "Choose your profile or at least one guild."
 msgstr "Profilinizi veya en azından bir guild seçin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Çevreler"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Kapat"
 
@@ -673,7 +775,7 @@ msgstr "Onları uygulama şovlarınızla karşılaştırın, aynı sırayla."
 msgid "Confirm in the app as well."
 msgstr "Uygulamada da onaylayın."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Kafası karışık"
 
@@ -825,6 +927,10 @@ msgstr "Ayılı mesajları yükleyemez"
 #, machine
 msgid "Could not load the preview."
 msgstr "Önizlemeyi yükleyemez."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Sohbetlerinizi yükleyemez"
 
 #, machine
 msgid "Could not load your chats. Try again."
@@ -986,7 +1092,11 @@ msgstr "Kopyalayamaz: kodları seçip kopyalayın."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Daha önceki mesajları yükleyemez. Bir anda tekrar deneyin."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Sohbetlerinizi yükleyemez. Tekrar denemek…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Gönderi oluşturuluyor"
 
@@ -994,7 +1104,7 @@ msgstr "Gönderi oluşturuluyor"
 msgid "Creating…"
 msgstr "Oluşturma…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1002,7 +1112,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Cross out"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Karanlık mod"
 
@@ -1067,13 +1177,21 @@ msgstr "Bu hikayeyi dene?"
 msgid "Delete this update?"
 msgstr "Bu güncellemeyi dene?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Yorum siliniyor"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Gönderi siliniyor"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Kaybolma mesajları"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Kaybolan mesajlar kapalıdır."
 
 #, machine, plain1
 msgid "Discard"
@@ -1107,6 +1225,10 @@ msgstr "Done"
 #, machine, plain1
 msgid "Done."
 msgstr "Done."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Download"
 
 #, machine
 msgid "Downloaded."
@@ -1161,7 +1283,7 @@ msgstr "End-to-end şifresi: sadece bu kanaldaki insanlar bunu okuyabilirsiniz."
 msgid "Ended"
 msgstr "Ended"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Bir URL gir"
 
@@ -1172,6 +1294,10 @@ msgstr "Bir web adresi girin, https://example.com"
 #, machine
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Şifrenizi bir kez girin. Bu tarayıcıdaki mesajlarınızın anahtarı kilitliyor, bu yüzden site onları asla okumaz."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Onaylamak için parolanızı girin."
 
 #, machine
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1185,9 +1311,49 @@ msgstr "Parolanızı girin."
 msgid "Enter your recovery code"
 msgstr "Kurtarma kodunu girin"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "İki faktör kodunuzu girin"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "İki faktörlü kodunuzu girin."
+
+#, machine, plain2
+msgid "File"
+msgstr "Dosya"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Dosyalar bir kez @%(name)s açıldı sohbet."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Dosyalar bir kez sohbet bu cihazda açıklanabilir."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Dosyalar burada gönderilemez."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Final"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Sonunda bitirin"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Tartışmanızı Bit"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Bit baştan başlamak"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Başka bir sekmede sohbet seti bitirmek …"
 
 #, machine
 msgid "Follow someone to add them to a group."
@@ -1207,16 +1373,32 @@ msgid "Formatting"
 msgstr "Formatting"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "İlet"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Bu mesaj"
 
 #, machine, python-format
 msgid "Forward to at most %(num)s guild."
 msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "En fazla %(num)s guilds."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "İleriye…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Forwarded"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "İleride."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "İletiliyor"
 
@@ -1256,11 +1438,11 @@ msgstr "Düğmeye biraz metin verin."
 msgid "Give the template a name."
 msgstr "Şablona bir isim verin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Web sitesine git"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "İğrenç"
 
@@ -1268,7 +1450,7 @@ msgstr "İğrenç"
 msgid "Group info"
 msgstr "Grup Bilgileri"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Loncalar"
 
@@ -1280,13 +1462,25 @@ msgstr "Chat with chat"
 msgid "Hand raised"
 msgstr "El kaldırdı"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Mutlu"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Sohbet kurtarma kodunu tuttun mu? Bu olmadan, unutulmuş bir şifre eski mesajlarınızı kaybedebilir."
 
 #, machine, python-format
 msgid "Heading %(level)s"
 msgstr "Başlamak %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Yardımseverlere Yardım"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Yardımcılar sizinle bu kanalda yazar. İçinde olan üç kişiye kadar seçin."
 
 #, machine
 msgid "Hidden by your word filter"
@@ -1329,6 +1523,10 @@ msgstr "Kurallara katılıyorum"
 msgid "I don't have it: start over"
 msgstr "Ben buna sahip değilim: baştan başlayın"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "I have it"
+
 #, machine
 msgid "I've saved it"
 msgstr "Onu kurtardım"
@@ -1336,6 +1534,10 @@ msgstr "Onu kurtardım"
 #, machine
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Şifrenizi hiç unutursanız, bu kod eski mesajlarınızı okumak için tek yoldur. Güvenli bir yerde tutun, bir şifre yöneticisi gibi."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Hala kurtarma kodunuz varsa, bunun yerine kullanın: bazı eski mesajlar sadece açılırkendir."
 
 #, machine
 msgid "Image (coming soon)"
@@ -1427,11 +1629,11 @@ msgstr "Onun hikayeleri arşivlerinizde kalıyor."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Katıl"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "%(channel)s kanalına katıl"
 
@@ -1459,12 +1661,15 @@ msgstr "Anahtar gerçekler ve bağlantılar öncelikle görmelidir."
 msgid "Last used %(date)s"
 msgstr "Son olarak %(date)s"
 
-#, glossary, machine, plain1
+msgid "Later"
+msgstr ""
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Kahkaha"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Ayrıl"
 
@@ -1480,7 +1685,7 @@ msgstr "Bu grubu bırak? Başka biri sahibi olur."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Bu grubu bırak? Birisi sizi tekrar eklerken yeni mesajlar görmeyeceksiniz."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Aydınlık mod"
 
@@ -1524,6 +1729,10 @@ msgstr "Canlı şimdi"
 msgid "Load earlier messages"
 msgstr "Daha önceki mesajlar"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Yükleniyor…"
+
 #, machine
 msgid "Loading post…"
 msgstr "Yükleniyor post…"
@@ -1548,17 +1757,25 @@ msgstr "Şablonlarınızı yükleyin..."
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Yükleniyor…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Aşk"
 
 #, machine
 msgid "Lower hand"
 msgstr "Aşağı el"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Yeni bir kod oluşturun"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Yeni bir kurtarma kodu yapın?"
 
 #, machine
 msgid "Make admin"
@@ -1576,7 +1793,7 @@ msgstr "Bu posta kamuoyunu yapın? Herkes bunu görebilir."
 msgid "Making the channel…"
 msgstr "Kanal yapmak…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Eh işte"
 
@@ -1593,6 +1810,14 @@ msgstr "Mesaj silindi"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Mesaj isteği. Kabul olana kadar bunu gördüğünüzü bilmiyorlar."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Mesajlar %(time)s. sonrası kaybolur."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Mesajlar bu tarayıcı zaten burada geri gelecek."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine
@@ -1604,7 +1829,7 @@ msgid "Microphone %(number)s"
 msgstr "Microphone %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Daha fazla"
 
@@ -1612,11 +1837,11 @@ msgstr "Daha fazla"
 msgid "Move to listeners"
 msgstr "Dinleyicileri dinlemek için hareket edin"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Sesi kes"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Sessize alındı"
 
@@ -1636,7 +1861,11 @@ msgstr "İsim your klasör"
 msgid "New channel"
 msgstr "Yeni kanal"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Bu sohbetteki yeni mesajlar, seçtiğiniz zamandan sonra herkes için kaybolur. Gönderilmeden önce gönderilen mesajlar gönderildi."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Hayır"
 
@@ -1656,17 +1885,29 @@ msgstr "Henüz arama yok. Bir sohbetin ses çağrısı veya Video çağrısında
 msgid "No camera was found."
 msgstr "Kamera bulunamadı."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Hiçbir sohbet bulunamadı."
+
 #, machine
 msgid "No co-authors yet."
 msgstr "Henüz ortak yazar yok."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Kod yok mu? Yeni şifrenizle sohbet ettiğiniz bir tarayıcıda oturum açın: sohbetinizi geri getirebilir."
 
 #, machine
 msgid "No devices yet. Open Chat to start."
 msgstr "Henüz cihazlar yok. Başlangıç için açık Sohbet."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Etiket yok"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Henüz yardımcı yok."
 
 #, machine
 msgid "No microphone was found."
@@ -1675,6 +1916,10 @@ msgstr "Hiçbir mikrofon bulunamadı."
 #, machine
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Kimse maç yok. Sohbetlerinize ve takip ettiğiniz insanlara gönderebilirsiniz."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Henüz tamamlanmamış mesajlar yok."
 
 #, machine
 msgid "No special characters or spaces allowed."
@@ -1720,6 +1965,10 @@ msgstr "Kurtarılmadı"
 msgid "Not used yet"
 msgstr "Henüz kullanılmadı"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Bu tarayıcıdaki mesajlarda bulunan hiçbir şey okunabilir."
+
 #, machine
 msgid "Nothing found."
 msgstr "Hiçbir şey bulunamadı."
@@ -1748,17 +1997,45 @@ msgstr "Henüz önizlemeye gerek yok."
 msgid "Nothing was connected."
 msgstr "Hiçbir şey bağlantılı değildi."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Bildirimler"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Bildirimler bu tarayıcıdaki bu site için bloke edilir. Onları tarayıcının ayarlarında dönüştürmelerine izin verin."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Bildirimler bu tarayıcıda kapalıdır."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "Bildirimler bu tarayıcıda."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Bildirimler kontrol edilemezdi. Sayfayı tekrar denemek için yeniden yükleyin."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Bildirimler ortaya çıkamadı. Tekrar deneyin."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Bildirimler bu site için izin verilmedi."
 
 #, machine
 msgid "Numbered list"
 msgstr "Sayılan liste"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "Aman Tanrım"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Off"
 
 #, machine
 msgid "Offline"
@@ -1767,6 +2044,10 @@ msgstr "Offline"
 #, machine
 msgid "Offline · retrying"
 msgstr "Offline · yeniden deneme"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Sadece bir grubun sahibi ve yöneticileri bunu değiştirebilir."
 
 #, machine
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1800,6 +2081,10 @@ msgstr ""
 msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Açık Sohbet mesajlarınızı kilidini bir kez açın, sonra tekrar deneyin."
 
+#, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Bu cihazda mesajlarınızı kurmak için açık Sohbet."
+
 #, machine
 msgid "Open media settings"
 msgstr "Açık medya ayarları"
@@ -1811,6 +2096,10 @@ msgstr "Uzayı açın"
 #, machine, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "+%(guild)s sohbet açın"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Dosyayı açın…"
 
 #, machine
 msgid "Options saved."
@@ -1837,7 +2126,7 @@ msgstr "Takip ettiğiniz insanlar"
 msgid "Pick a date and time."
 msgstr "Bir tarih ve zaman ayırın."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Etiket seç"
 
@@ -1871,11 +2160,15 @@ msgstr "Resim hikayeleri henüz bu sitede mevcut değildir."
 msgid "Pin this message"
 msgstr "Pin this message"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Pinnedildi"
+
 #, machine
 msgid "Pinned messages"
 msgstr "Pinned mesajlar"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Lütfen"
 
@@ -1883,12 +2176,18 @@ msgstr "Lütfen"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Lütfen geçerli bir URL girin ( http:// veya https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Lütfen tekrar giriş yap."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Popüler kanallar"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Gönder"
 
@@ -1900,7 +2199,7 @@ msgstr "Posted. Bunu görmek için sayfayı yeniden yükleyin."
 msgid "Posting to %(guilds)s"
 msgstr ""
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Profiline gönderiliyor"
 
@@ -1909,7 +2208,7 @@ msgstr "Profiline gönderiliyor"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Profilinize posting, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Gönderiliyor…"
 
@@ -2008,6 +2307,14 @@ msgstr "Reaktör"
 msgid "React with %(emoji)s"
 msgstr "%(emoji)s ile reaksiyon"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Bir ses notu kayıt"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Kayıt… Tekrar mikrofona basın."
+
 #, machine
 msgid "Recovery code"
 msgstr "Kurtarma kodu"
@@ -2020,13 +2327,17 @@ msgstr "Redo"
 msgid "Refreshing…"
 msgstr "Yeniden…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Hesap oluşturuluyor"
 
 #, machine
 msgid "Release to refresh"
 msgstr "Yeniden yenilemek için"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Yeniden yükle"
 
 #, machine
 msgid "Remind me"
@@ -2041,13 +2352,17 @@ msgstr "Hatırlatıcı set"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Kaldır"
 
 #, machine, python-format
 msgid "Remove %(name)s"
 msgstr "Kaldırın %(name)s"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "@%(name)s bir yardımcı olarak"
 
 #, machine, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2100,15 +2415,15 @@ msgstr "Rename this klasör"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Bildir"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Yorumu bildir"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Gönderiyi bildir"
 
@@ -2116,11 +2431,11 @@ msgstr "Gönderiyi bildir"
 msgid "Report this message"
 msgstr "Bu mesajı rapor"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Yorum bildiriliyor"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Gönderi bildiriliyor"
 
@@ -2137,13 +2452,13 @@ msgstr "Ringing…"
 msgid "Rules of this channel"
 msgstr "Bu kanalın kuralları"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Üzgün"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Kaydet"
 
@@ -2159,11 +2474,15 @@ msgstr "Şablon olarak Kaydet..."
 msgid "Save your recovery code"
 msgstr "Kurtarma kodunuzu Kurtarın"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Kaydedildi"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Kurtarın."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Kaydediliyor"
 
@@ -2197,7 +2516,7 @@ msgstr "Tasarruf…"
 msgid "Say what is wrong with this account."
 msgstr "Bu hesapla neyin yanlış olduğunu söyle."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Korkmuş"
 
@@ -2216,7 +2535,8 @@ msgstr "%(time)s. için programlanmış."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Ara"
 
@@ -2227,6 +2547,14 @@ msgstr "Birini eklemek için arayın."
 #, machine
 msgid "Search this channel"
 msgstr "Bu kanalı arayın"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Bu sohbet"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Sohbetlerinizi arayın"
 
 #, machine, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2248,7 +2576,7 @@ msgid "Seen by %(num)s"
 msgid_plural "Seen by %(num)s"
 msgstr[0] "Seen by %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Bir sohbet seç"
 
@@ -2256,6 +2584,10 @@ msgstr "Bir sohbet seç"
 #. a button that sends a message
 msgid "Send"
 msgstr ""
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Bir dosya gönder"
 
 #, machine
 msgid "Send it somewhere else:"
@@ -2272,6 +2604,19 @@ msgstr "Bir sonraki fotoğraflarınızı gönderin:"
 #, machine
 msgid "Send your next videos to:"
 msgstr "Sonraki videoları gönderin:"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Gönderin %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Sending %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "%(num)s mesajları bir kez sohbet hazır …"
 
 #, machine
 msgid "Sending..."
@@ -2290,6 +2635,14 @@ msgstr "Sent"
 msgid "Several people are typing…"
 msgstr "Bazı insanlar tipleniyor…"
 
+#, machine, plain2
+msgid "Share screen"
+msgstr "Share screen"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Paylaşılan bir yorum"
+
 #, machine
 msgid "Shared a post"
 msgstr "Paylaşılan bir yazı"
@@ -2307,11 +2660,20 @@ msgstr[0] "Show %(num)s new posts"
 msgid "Show formatting"
 msgstr "Show formatting"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "Kanalda Göster"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Sohbette göster"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Daha az göster"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Daha fazla göster"
 
@@ -2324,19 +2686,19 @@ msgstr "Show original"
 msgid "Show translation"
 msgstr "Show Translation"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Sign out"
-msgstr "Sign out"
+msgstr "Oturumu kapat"
 
-#, machine, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Sign out %(device)s"
+msgstr "%(device)s oturumunu kapat"
 
-#, machine, python-format
+#, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "%(device)s? Sohbetlerinizi okumak için tekrar imzalamanız gerekecek."
+msgstr "%(device)s oturumu kapatılsın mı? Sohbetlerinizi okumak için tekrar giriş yapması gerekecek."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Giriş yapılıyor"
 
@@ -2451,6 +2813,11 @@ msgstr "Sohbete başlayın…"
 msgid "Starting…"
 msgstr "Başlangıç…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Paylaşmayı bırak"
+
 #, machine
 msgid "Strikethrough"
 msgstr "Grev"
@@ -2501,7 +2868,7 @@ msgstr "Text formatting"
 msgid "Text style"
 msgstr "Text Style"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Talebin için teşekkürler"
 
@@ -2525,27 +2892,38 @@ msgstr "Teşekkürler. Bir yönetici ona bakacaktır."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Teşekkürler: guild'in guild moderatörleri bir göz atacaktır."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Teşekkürler: site yöneticileri bir göz atacak ve @ you've blocked @%(name)s."
+
 #, machine
 msgid "Thanks: the site's admins will take a look."
 msgstr "Teşekkürler: site yöneticileri bir görünüm alacak."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Teşekkürler: site yöneticileri bir görünüm alacak. @%(name)s buradan engellenemez: onları profillerinden engelleyebilir."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Bu sohbet henüz bu cihazda hazır değil. Bir kez açın, sonra tekrar deneyin."
 
 #, machine
 msgid "That code doesn't open it. Check for typos."
 msgstr "Bu kod açılmaz. Tipos için kontrol edin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Kaydedilemedi."
 
-#, machine
 msgid "That device couldn't be signed out right now."
-msgstr "Bu cihaz şu anda imzalanamazdı."
+msgstr "Bu cihazın oturumu şu anda kapatılamadı."
 
 #, machine
 msgid "That device couldn't be used."
 msgstr "Bu cihaz kullanılmadı."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Gönderilemedi"
 
@@ -2584,6 +2962,14 @@ msgstr "Bu sizin şifreniz değil."
 #, machine
 msgid "That message can't be sent."
 msgstr "Bu mesaj gönderilemez."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Bu mesaj daha fazla kanalda bulunamadı."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Bu mesaj daha fazla bu sohbette bulunamadı."
 
 #, machine
 msgid "That password isn't right."
@@ -2669,6 +3055,10 @@ msgstr "Sohbet kapalı: Bu Uzay sona erdi."
 msgid "The chat opens when the Space starts."
 msgstr "Sohbet, Uzay başladığında açılır."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "Gerçekleyici uygulamanızdan veya yedekleme kodlarından biri."
+
 #, machine
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Draft son düzenlemeniz altında değişti, bu yüzden yeniden yüklendi. Son birkaç kelimeyi kontrol edin."
@@ -2676,6 +3066,10 @@ msgstr "Draft son düzenlemeniz altında değişti, bu yüzden yeniden yüklendi
 #, machine
 msgid "The emoji to compare"
 msgstr "Emojiyi karşılaştırmak için"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Dosya gönderilemezdi. Tekrar deneyin."
 
 #, machine, python-format
 msgid "The guild, +%(name)s"
@@ -2692,6 +3086,10 @@ msgstr "Bağlantı kopyalanamazdı."
 #, machine
 msgid "The microphone couldn't be started."
 msgstr "Mikrofon başlamadı."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "Mikrofon kullanılmış olamazdı. Bu sitenin bunu kullanabileceğini kontrol edin."
 
 #, machine
 msgid "The microphone is in use by another app."
@@ -2730,6 +3128,10 @@ msgstr "Replay kurtarılmadı: %(reason)s. Bunun yerine indirebilirsiniz."
 msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "Replay kurtarılmadı: Yükleme başarısız oldu. Bunun yerine indirebilirsiniz."
 
+#, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "Sitenin anahtarları değişti, bu yüzden sohbet tekrar başlıyor."
+
 #, machine
 msgid "The summary is hidden by your word filter."
 msgstr "Özet sizin kelime filtreniz tarafından gizlidir."
@@ -2766,6 +3168,10 @@ msgstr "Onları henüz bu sitede göndermek için başka bir şey yok."
 msgid "These comments could not be loaded. Try again."
 msgstr "Bu yorumlar yüklenemezdi. Tekrar deneyin."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Onları kimin rapor ettiğini asla söylemiyorlar."
+
 #, machine
 msgid "They declined the call."
 msgstr "Çağrıyı reddettiler."
@@ -2778,6 +3184,10 @@ msgstr "Onlar eşleşmezler"
 msgid "They match"
 msgstr "Onlar maç oynuyorlar"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Orada kendi hesabınızda kalıyorlar, şifreli, ücretsiz alanını kullanıyor. Sadece sohbetteki insanlar onları açabilir."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Seni takip edebilecekler, mesajlarınızda mesaj veya yorum yapamayacaklar ve mesajlarını görmeyeceksiniz. Onları herhangi bir zaman engelleyemezsiniz."
@@ -2786,9 +3196,9 @@ msgstr "Seni takip edebilecekler, mesajlarınızda mesaj veya yorum yapamayacakl
 msgid "This Space has ended."
 msgstr "Bu Uzay sona erdi."
 
-#, machine
-msgid "This browser"
-msgstr "Bu tarayıcı"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Bu aynı zamanda sohbet ettiğiniz bir tarayıcıdan herhangi bir kurtarma da sona eriyor."
 
 #, machine
 msgid "This browser can't make calls."
@@ -2798,9 +3208,28 @@ msgstr "Bu tarayıcı arama yapamaz."
 msgid "This browser can't record the Space."
 msgstr "Bu tarayıcı Uzayı kayıt edemez."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Bu tarayıcı ekranını paylaşamaz."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Bu tarayıcı bu siteden bildirimleri gösteremez."
+
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Bu tarayıcı yükleme için resimler hazırlayamaz. Başka bir tarayıcıya çalışın."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Bu tarayıcı hala parolanızın değiştiğinden önce sohbet anahtarlarınızı tutuyor. Eski mesajları burada ve diğer cihazlarınızda okumak için onları kullanın?"
+
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Bu tarayıcının sohbet oturumu başka bir cihazdan kapatıldı, bu yüzden sohbet burada yeniden başlıyor."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "Bu tarayıcının kurtarılmış sohbet verileri temizlendi, bu yüzden sohbet tekrar başlıyor."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2810,6 +3239,25 @@ msgstr "Bu geri alınabilir."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Bu kanal sizin için çamurludur: Yok etmeyin ve bildirimlerden bahsetmeyin."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Bu sohbet sonunda şifrelenir, bu yüzden site bunu okuyamaz. Rapor bu mesajı gönderir ve daha önce dört kişiye kadar, burada gördüğünüz gibi, site yöneticisine."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Bu yorum gösterilemez."
+
+msgid "This device will be signed out shortly."
+msgstr "Bu cihazın oturumu birazdan kapatılacak."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Bu dosya açılmadı. Daha sonra tekrar deneyin."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Bu dosya artık mevcut değildir."
+
 #, machine
 msgid "This live thread has ended"
 msgstr "Bu canlı iplik sona erdi"
@@ -2817,6 +3265,10 @@ msgstr "Bu canlı iplik sona erdi"
 #, machine
 msgid "This message can't be read on this device."
 msgstr "Bu mesaj bu cihazda okunamaz."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Bu mesaj silindi."
 
 #, machine
 msgid "This picture is no longer available."
@@ -2831,10 +3283,21 @@ msgstr "Bu yazı gösterilemez."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Bu yazı +%(guild)s için kapalıdır"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Bu işaret-in"
+
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Bu cihaz bu tarayıcıya aitse, bu tarayıcıdaki sohbetin de oturumunu kapatır. Yeni bir cihaz olarak yeniden başlar."
+
 #, machine, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Bu ses kanalı tam (%(num)s insanlar)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Bu anahtarlar artık hesabınız değildir. Kurtarma kodunu kullanın veya baştan başlayın."
 
 #, machine
 msgid "Thou've reached the end of the list!"
@@ -2866,7 +3329,7 @@ msgid "Too long by %(num)s (%(note)s)"
 msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Çok uzun %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Bugün çok fazla istek gönderildi"
 
@@ -2897,13 +3360,21 @@ msgstr "Çeviri şu anda mevcut değil."
 msgid "Try again"
 msgstr "Tekrar tekrar deneyin"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Yarın tekrar dene."
 
 #, machine
 msgid "Turn notifications back on"
 msgstr "Geri bildirimleri geri dön"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "İki faktör kodu"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "İki faktör işareti değiştirildi, bu yüzden sohbet tekrar başlıyor."
 
 #, machine
 msgid "Type words to look for."
@@ -2937,12 +3408,12 @@ msgstr "Bu anda yorum çıkarmak için güvenilmez. Lütfen daha sonra tekrar de
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Bu zamanda oy kullanmak mümkün değil. Lütfen daha sonra tekrar deneyin."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Engeli kaldır"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Geri al"
 
@@ -2962,17 +3433,13 @@ msgstr "Unlock"
 msgid "Unlock your messages"
 msgstr "Mesajlarınızı açma"
 
-#, machine
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "İlk önce mesajlarınızı açın: Şifrenize girmek için sayfayı yeniden yükleyin."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Sesini aç"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Sabitten çıkar"
 
@@ -3028,11 +3495,15 @@ msgstr "Onu burada kullanın"
 msgid "Use my recovery code instead"
 msgstr "Bunun yerine kurtarma kodunu kullanın"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Onları kullanın"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Kullanıcı adı zaten alınmış :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Kullanıcı adı uygun!"
 
@@ -3113,7 +3584,7 @@ msgstr[0] "Video çağrı · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video bu çağrıda kapalı: ses üzerindesiniz."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Orijinali gör"
 
@@ -3151,6 +3622,10 @@ msgid "Voice goes browser to browser through the site's relay, so nobody sees an
 msgid_plural "Voice goes browser to browser through the site's relay, so nobody sees anyone's address. Up to %(num)s people."
 msgstr[0] "Ses, tarayıcıyı sitenin rölesinden tarayıcıya gider, bu yüzden kimse kimsenin adresini görmez. %(num)s insanlar."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Ses notu"
+
 #, machine
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Bir an bekleyin: Son değişiklikler hala kurtarılıyor."
@@ -3158,6 +3633,10 @@ msgstr "Bir an bekleyin: Son değişiklikler hala kurtarılıyor."
 #, machine
 msgid "Waiting for the app"
 msgstr "Uygulama için bekleyin"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "Bu tarayıcıda sohbetinizi bulduk"
 
 #, machine
 msgid "We'll show fewer posts like this."
@@ -3178,6 +3657,10 @@ msgstr "Bu Uzay ile neyin yanlış? (isteğe)"
 #, machine
 msgid "What's wrong with this message? (optional)"
 msgstr "Bu mesajla neyin yanlış? (isteğe)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Sohbetlerde gönderdiğiniz dosyalar nereye gitmeli?"
 
 #, machine
 msgid "Where should your audio go?"
@@ -3204,7 +3687,7 @@ msgstr "Kim dedi ki"
 msgid "Who upvoted"
 msgstr "Kim ayağa kaldırdı"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Neden"
 
@@ -3219,6 +3702,10 @@ msgstr "Bu neden guild’in kurallarını kırıyor? Bu, bu yorumun tarihini gö
 #, machine
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Bu neden guild’in kurallarını kırıyor? Bu, bu post/comment'in tarihini gören herkese gösterilecek."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Bu yorum neden kaldırıldı? Sebepiniz halka açık olarak gösterilir."
 
 #, machine
 msgid "Working it out…"
@@ -3237,7 +3724,7 @@ msgstr "İlk önce bir şey yazın."
 msgid "Write what you want to tell us."
 msgstr "Bize anlatmak istediğiniz şeyi yazın."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Evet"
 
@@ -3255,7 +3742,7 @@ msgstr "Evet, iptal et"
 msgid "You"
 msgstr "You"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Bunu zaten yaptın"
 
@@ -3271,7 +3758,7 @@ msgstr "Zaten bu yazıyı bildirdin."
 msgid "You already voted on this post."
 msgstr "Zaten bu yazıya oy verdin."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "@%(name)s adlı kişiyi engelliyorsun"
 
@@ -3308,7 +3795,7 @@ msgstr "Bu kanalı okuyabilirsiniz ama bunu yazamazsınız."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Kim burada olduğunu görebilirsiniz, ancak bu kanalda konuşamazsınız."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Bunu yapamazsın."
 
@@ -3352,6 +3839,13 @@ msgstr "Uzaydan ayrıldınız."
 msgid "You left the call."
 msgstr "Çağrıyı bıraktın."
 
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Başka bir cihazdan her yerde oturumu kapattınız, bu yüzden sohbet burada yeniden başlıyor."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "İki faktörlü kurtarma kodu ile imza attınız, bu yüzden sohbet tekrar başlıyor."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "@You unfollowed @%(name)s."
@@ -3359,6 +3853,10 @@ msgstr "@You unfollowed @%(name)s."
 #, machine
 msgid "You were removed from this Space."
 msgstr "Bu Uzaydan kaldırıldınız."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Yeni bir kurtarma kodu alacaksınız ve yaşlı kişi çalışmayı durduracaktır."
 
 #, machine
 msgid "You're doing that too much. Try again later."
@@ -3384,6 +3882,10 @@ msgstr "Tarayıcınız pencereyi bağlantı için engelledi. Bu site için pop-u
 msgid "Your chat devices can't be listed right now."
 msgstr "Sohbet cihazlarınız şu anda listelenemez."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Your chat recovery code"
+
 #, machine
 msgid "Your chats"
 msgstr "Sohbetleriniz"
@@ -3395,6 +3897,10 @@ msgstr "Sohbetleriniz bu cihazda tekrar çalışacak, ancak daha önce gelen mes
 #, machine
 msgid "Your comment could not be posted. Try again."
 msgstr "Yorumunuz yayınlanmadı. Tekrar deneyin."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Mevcut kurtarma kodunuz çalışmayı durduracaktır."
 
 #, machine
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3426,9 +3932,30 @@ msgstr "Anahtarınız şu anda gösterilemez."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Anahtarınız eski bir şifre ile kilitliydi. Bu sitede açık Sohbet ve bir kez kurtarma kodunu girin; sonra burada açılıyor."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "%(num)s mesajlarınız bir kez sohbet gönderilir bu cihazda."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Eski kurtarma kodunız artık işe yaramıyor."
+
 #, machine
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Şifreniz değişti çünkü bu sohbet anahtarı onunla kilitliydi. Sohbet kurulduğunda kurtardığınız kurtarma kodu açılır."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Parolanız sizin için değiştirildi, bu yüzden sohbet tekrar başlıyor."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Parolanız değiştirildi, bu yüzden sohbet tekrar başlıyor."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Parolanız sıfırlandı, bu yüzden sohbet tekrar başlıyor."
 
 #, machine
 msgid "Your recovery code"
@@ -3437,6 +3964,14 @@ msgstr "Kurtarma kodunuzu"
 #, machine
 msgid "Your saved templates show up here."
 msgstr "Kurtarılan şablonlarınız burada ortaya çıkıyor."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Ekranınız sadece bu çağrıda videodayken paylaşılabilir."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Ekranınız paylaşılamazdı."
 
 #, machine
 msgid "Your settings have been updated."
@@ -3476,7 +4011,7 @@ msgid "blue"
 msgstr "mavi"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "yorum"
 
@@ -3544,7 +4079,7 @@ msgstr "portakal"
 msgid "pink"
 msgstr "pembe"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "gönderi"
 

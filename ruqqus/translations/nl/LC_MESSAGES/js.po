@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 13:13+0000\n"
+"POT-Creation-Date: 2026-11-13 19:56+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -52,6 +52,14 @@ msgstr "%(name)s +1"
 #, machine, python-format
 msgid "%(name)s is typing…"
 msgstr "%(name)s typt…"
+
+#, machine, plain2, python-format
+msgid "%(name)s set messages to disappear after %(time)s."
+msgstr "%(name)s heeft berichten laten verdwijnen na %(time)s."
+
+#, machine, plain2, python-format
+msgid "%(name)s turned off disappearing messages."
+msgstr "%(name)s verdwenen berichten uitgeschakeld."
 
 #. above a pinned or found message: who wrote it and when ("Ann · 14:05")
 #, machine, python-format
@@ -123,11 +131,23 @@ msgid_plural "%(num)s members"
 msgstr[0] "%(num)s lid"
 msgstr[1] "%(num)s leden"
 
+#, machine, plain2, python-format
+msgid "%(num)s message found."
+msgid_plural "%(num)s messages found."
+msgstr[0] "%(num)s bericht gevonden."
+msgstr[1] "%(num)s berichten gevonden."
+
 #, machine, python-format
 msgid "%(num)s message in thread"
 msgid_plural "%(num)s messages in thread"
 msgstr[0] "%(num)s bericht in draad"
 msgstr[1] "%(num)s berichten in conversatie"
+
+#, machine, plain2, python-format
+msgid "%(num)s message read…"
+msgid_plural "%(num)s messages read…"
+msgstr[0] "%(num)s bericht gelezen…"
+msgstr[1] "%(num)s berichten gelezen…"
 
 #, machine, plain1, python-format
 msgid "%(num)s min"
@@ -233,6 +253,14 @@ msgstr[1] "%(owner)s · %(num)s leden"
 msgid "%(problem)s Save anyway?"
 msgstr "%(problem)s Toch opslaan?"
 
+#, machine, plain2, python-format
+msgid "%(size)s KB"
+msgstr "%(size)s KB"
+
+#, machine, plain2, python-format
+msgid "%(size)s MB"
+msgstr "%(size)s MB"
+
 #. the browser tab's title while a call is ringing; %(title)s is the page's own
 #. title
 #, machine, python-format
@@ -264,6 +292,14 @@ msgid_plural "+%(guild)s · %(num)s comments"
 msgstr[0] "+%(guild)s · %(num)s commentaar"
 msgstr[1] "+%(guild)s · %(num)s opmerkingen"
 
+#, machine, plain2
+msgid "1 day"
+msgstr "1 dag"
+
+#, machine, plain2
+msgid "1 week"
+msgstr "1 week"
+
 #, machine, python-format
 msgid "@%(name)s added you to this group. Accept to read it and write in it."
 msgstr "@%(name)s u toegevoegd aan deze groep. Accepteer het te lezen en erin te schrijven."
@@ -273,10 +309,6 @@ msgid "@%(name)s hasn't opened chat yet. Your message will be sent when they do.
 msgid_plural "@%(name)s hasn't opened chat yet. Your %(num)s messages will be sent when they do."
 msgstr[0] "@%(name)s heeft de chat nog niet geopend. Je bericht wordt verzonden als ze dat doen."
 msgstr[1] "@%(name)s heeft de chat nog niet geopend. Uw %(num)s berichten zullen worden verzonden wanneer ze dat doen."
-
-#, machine, python-format
-msgid "@%(name)s is typing…"
-msgstr "@%(name)s typt…"
 
 #, machine
 msgid "A Space"
@@ -328,6 +360,12 @@ msgstr "Een bericht van iemand die je hebt geblokkeerd"
 msgid "A message that isn't there any more"
 msgstr "Een boodschap die er niet meer is"
 
+#, machine, plain1, python-format
+msgid "A message you wrote here wasn't sent: chat stopped in this tab before it could go."
+msgid_plural "%(num)s messages you wrote here weren't sent: chat stopped in this tab before they could go."
+msgstr[0] "Een bericht dat u hier schreef werd niet verzonden: chat gestopt in dit tabblad voordat het kon gaan."
+msgstr[1] "%(num)s berichten die je hier schreef werden niet verzonden: chat gestopt in dit tabblad voordat ze konden gaan."
+
 #, machine, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -347,9 +385,13 @@ msgid "Accept"
 msgstr "Accepteren"
 
 #. a button that adds a person to a group chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Add"
 msgstr "Toevoegen"
+
+#, machine, plain2
+msgid "Add a helper by username"
+msgstr "Een helper toevoegen op gebruikersnaam"
 
 #, machine
 msgid "Add image"
@@ -388,12 +430,12 @@ msgid "Adding..."
 msgstr "Optellen..."
 
 #. a person's role in a group chat, shown beside their name
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Admin"
 msgstr "Beheerder"
 
 #. the GIF picker's categories, each a feeling or reaction shown over a picture
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Agree"
 msgstr "Mee eens"
 
@@ -413,6 +455,10 @@ msgstr "Rechts uitlijnen"
 msgid "Alignment"
 msgstr "Uitlijning"
 
+#, machine, plain2, python-format
+msgid "Also block @%(name)s"
+msgstr "Blokkeer ook @%(name)s"
+
 #. %(names)s is a list of the other authors who have this draft open
 #, machine, python-format
 msgid "Also here: %(names)s"
@@ -422,7 +468,7 @@ msgstr "Ook hier: %(names)s"
 msgid "An app"
 msgstr "Een app"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Angry"
 msgstr "Boos"
 
@@ -432,7 +478,7 @@ msgstr "Boos"
 msgid "Announcements"
 msgstr "Mededelingen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Anonymous"
 msgstr "Anoniem"
 
@@ -440,6 +486,10 @@ msgstr "Anoniem"
 #, machine
 msgid "Answer"
 msgstr "Antwoord"
+
+#, machine, plain2
+msgid "Anyone in the chat can still copy a message or take a picture of the screen before it goes."
+msgstr "Iedereen in de chat kan nog steeds een bericht kopiëren of een foto van het scherm maken voordat het gaat."
 
 #, machine
 msgid "Ask to mute"
@@ -453,23 +503,23 @@ msgstr "Koppeling aan dit bericht toevoegen"
 msgid "Aw shucks. No GIFs found..."
 msgstr "Verdomme. Geen GIFs gevonden."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awesome"
 msgstr "Geweldig"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Awkward"
 msgstr "Ongemakkelijk"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Back to top"
 msgstr "Terug naar boven"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Block"
 msgstr "Blokkeren"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Block @%(name)s?"
 msgstr "@%(name)s blokkeren?"
 
@@ -480,6 +530,10 @@ msgstr "Geblokkeerd @%(name)s."
 #, machine
 msgid "Bold (Ctrl+B)"
 msgstr "Vet (Ctrl+B)"
+
+#, machine, plain2
+msgid "Bringing your chat keys over stopped part way. Enter your password to finish."
+msgstr "Je chatsleutels meenemen, deels gestopt. Voer uw wachtwoord in om af te ronden."
 
 #, machine
 msgid "Bulleted list"
@@ -553,7 +607,7 @@ msgstr "Camera uit"
 msgid "Camera on"
 msgstr "Camera aan"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -589,7 +643,7 @@ msgid_plural "Channel · %(num)s members"
 msgstr[0] "Kanaal · %(num)s lid"
 msgstr[1] "Kanaal · %(num)s leden"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Channels"
 msgstr "Kanalen"
 
@@ -599,13 +653,45 @@ msgstr "Kanalen waar je in zit"
 
 #. the name of a hidden frame holding the chat page (read by screen readers)
 #. a button that starts a chat with someone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chat"
 msgstr "Chat"
+
+#, machine, plain2
+msgid "Chat couldn't bring your keys over. Reload to try again."
+msgstr "Het gesprek kon je sleutels niet brengen. Herladen om het opnieuw te proberen."
+
+#, machine, plain1
+msgid "Chat couldn't connect."
+msgstr "Het gesprek kon geen verband leggen."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Enter your password to try again."
+msgstr "Het gesprek kon niet opnieuw beginnen. Voer uw wachtwoord in om het opnieuw te proberen."
+
+#, machine, plain2
+msgid "Chat couldn't finish starting over. Reload to try again."
+msgstr "Het gesprek kon niet opnieuw beginnen. Herladen om het opnieuw te proberen."
+
+#, machine, plain1
+msgid "Chat couldn't open what this browser saved, so it is starting again here."
+msgstr "Chat kon niet openen wat deze browser heeft opgeslagen, dus het begint hier opnieuw."
+
+#, machine, plain1
+msgid "Chat couldn't start in this browser."
+msgstr "Chat kon niet beginnen in deze browser."
 
 #, machine
 msgid "Chat did not answer. Try again."
 msgstr "Het gesprek antwoordde niet. Probeer het nog eens."
+
+#, machine, plain1
+msgid "Chat hadn't been used on this browser for a long time, so it is starting again here."
+msgstr "Chat was al lang niet meer gebruikt in deze browser, dus het begint hier weer."
+
+#, machine, plain1
+msgid "Chat is closing in another tab…"
+msgstr "Het gesprek sluit in een ander tabblad…"
 
 #, machine
 msgid "Chat is open in another tab."
@@ -619,6 +705,26 @@ msgstr "Het gesprek begint nog steeds."
 msgid "Chat is still starting. Try again in a moment."
 msgstr "Het gesprek begint nog steeds. Probeer het zo nog eens."
 
+#, machine, plain1
+msgid "Chat isn't available for your account right now."
+msgstr "Chat is nu niet beschikbaar voor je account."
+
+#, machine, plain1
+msgid "Chat lost its connection. Retrying…"
+msgstr "Chat verloor zijn verbinding. Opnieuw proberen…"
+
+#, machine, plain1
+msgid "Chat needs this browser to keep site data, and it can't here. Chat can't start in this window."
+msgstr "Chat heeft deze browser nodig om sitegegevens bij te houden, en het kan hier niet. Chat kan niet in dit raam beginnen."
+
+#, machine, plain1
+msgid "Chat stopped in this tab."
+msgstr "De chat stopte in deze tab."
+
+#, machine, plain2
+msgid "Chat was signed out on this browser from another device. Starting again here…"
+msgstr "Chat werd op deze browser afgesloten van een ander apparaat. Hier opnieuw beginnen…"
+
 #, machine, python-format
 msgid "Chat with @%(name)s"
 msgstr "Chat met @%(name)s"
@@ -627,7 +733,7 @@ msgstr "Chat met @%(name)s"
 msgid "Chat's key isn't available right now."
 msgstr "De sleutel van het gesprek is nu niet beschikbaar."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Chats"
 msgstr "Chats"
 
@@ -667,11 +773,11 @@ msgstr "Kies wie dit kan zien."
 msgid "Choose your profile or at least one guild."
 msgstr "Kies uw profiel of minstens één gilde."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Circles"
 msgstr "Kringen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Close"
 msgstr "Sluiten"
 
@@ -707,7 +813,7 @@ msgstr "Vergelijk ze met degene die uw app toont, in dezelfde volgorde."
 msgid "Confirm in the app as well."
 msgstr "Bevestig ook in de app."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Confused"
 msgstr "Verward"
 
@@ -859,6 +965,10 @@ msgstr "Kon de gepinde berichten niet laden"
 #, machine
 msgid "Could not load the preview."
 msgstr "Kon het voorbeeld niet laden."
+
+#, machine, plain2
+msgid "Could not load your chats"
+msgstr "Kon uw chats niet laden"
 
 #, machine
 msgid "Could not load your chats. Try again."
@@ -1020,7 +1130,11 @@ msgstr "Kon niet kopiëren: selecteer de codes en kopieer ze."
 msgid "Couldn't load earlier messages. Try again in a moment."
 msgstr "Kon eerdere berichten niet laden. Probeer het zo nog eens."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Couldn't load your chats. Trying again…"
+msgstr "Ik kon je chats niet laden. Nog eens proberen…"
+
+#, glossary, machine, plain2
 msgid "Creating post"
 msgstr "Post wordt gemaakt"
 
@@ -1028,7 +1142,7 @@ msgstr "Post wordt gemaakt"
 msgid "Creating…"
 msgstr "Aanmaken…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Cringe"
 msgstr "Cringe"
 
@@ -1036,7 +1150,7 @@ msgstr "Cringe"
 msgid "Cross out"
 msgstr "Doorkruisen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Dark mode"
 msgstr "Donkere modus"
 
@@ -1101,13 +1215,21 @@ msgstr "Dit verhaal verwijderen?"
 msgid "Delete this update?"
 msgstr "Deze update verwijderen?"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting comment"
 msgstr "Reactie wordt verwijderd"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Deleting post"
 msgstr "Post wordt verwijderd"
+
+#, machine, plain2
+msgid "Disappearing messages"
+msgstr "Verdwijnen van berichten"
+
+#, machine, plain2
+msgid "Disappearing messages are off."
+msgstr "Verdwijnende berichten zijn uit."
 
 #, machine, plain1
 msgid "Discard"
@@ -1141,6 +1263,10 @@ msgstr "Klaar"
 #, machine, plain1
 msgid "Done."
 msgstr "Klaar."
+
+#, machine, plain2
+msgid "Download"
+msgstr "Downloaden"
 
 #, machine
 msgid "Downloaded."
@@ -1195,7 +1321,7 @@ msgstr "End-to-end versleuteld: alleen de mensen in dit kanaal kunnen het lezen.
 msgid "Ended"
 msgstr "Einde"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Enter a URL"
 msgstr "Voer een URL in"
 
@@ -1206,6 +1332,10 @@ msgstr "Voer een webadres in, zoals https://example.com"
 #, machine
 msgid "Enter your password once. It locks the key to your messages in this browser, so the site can never read them."
 msgstr "Voer uw wachtwoord één keer in. Het vergrendelt de sleutel tot uw berichten in deze browser, zodat de site ze nooit kan lezen."
+
+#, machine, plain2
+msgid "Enter your password to confirm."
+msgstr "Voer uw wachtwoord in om te bevestigen."
 
 #, machine
 msgid "Enter your password to read your messages on this device. It stays in this browser: the site can't read your chats."
@@ -1219,9 +1349,49 @@ msgstr "Voer uw wachtwoord in."
 msgid "Enter your recovery code"
 msgstr "Voer uw herstelcode in"
 
+#, machine, plain2
+msgid "Enter your two-factor code"
+msgstr "Voer uw twee-factor code in"
+
+#, machine, plain2
+msgid "Enter your two-factor code."
+msgstr "Voer je code in."
+
+#, machine, plain2
+msgid "File"
+msgstr "Bestand"
+
+#, machine, plain2, python-format
+msgid "Files can be sent once @%(name)s has opened chat."
+msgstr "Bestanden kunnen verzonden worden zodra @%(name)s de chat geopend heeft."
+
+#, machine, plain2
+msgid "Files can be sent once chat is unlocked on this device."
+msgstr "Bestanden kunnen verzonden worden zodra de chat op dit apparaat ontgrendeld is."
+
+#, machine, plain2
+msgid "Files can't be sent here."
+msgstr "Bestanden kunnen hier niet worden verstuurd."
+
 #, machine, plain1
 msgid "Final"
 msgstr "Laatste"
+
+#, machine, plain2
+msgid "Finish"
+msgstr "Afmaken"
+
+#, machine, plain2
+msgid "Finish bringing your chat over"
+msgstr "Breng je gesprek verder"
+
+#, machine, plain2
+msgid "Finish starting over"
+msgstr "Opnieuw beginnen"
+
+#, machine, plain1
+msgid "Finishing chat set-up in another tab…"
+msgstr "Afmaken van chat-instellingen in een ander tabblad…"
 
 #, machine
 msgid "Follow someone to add them to a group."
@@ -1242,9 +1412,13 @@ msgid "Formatting"
 msgstr "Opmaak"
 
 #. a button: forward (share) the post or comment with a guild
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Forward"
 msgstr "Doorsturen"
+
+#, machine, plain2
+msgid "Forward this message"
+msgstr "Dit bericht doorsturen"
 
 #, machine, python-format
 msgid "Forward to at most %(num)s guild."
@@ -1252,7 +1426,19 @@ msgid_plural "Forward to at most %(num)s guilds."
 msgstr[0] "Vooruit naar maximaal %(num)s gilde."
 msgstr[1] "Vooruit naar maximaal %(num)s gilden."
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Forward to…"
+msgstr "Doorsturen naar…"
+
+#, machine, plain2
+msgid "Forwarded"
+msgstr "Doorgestuurd"
+
+#, machine, plain2
+msgid "Forwarded."
+msgstr "Vooruit."
+
+#, glossary, machine, plain2
 msgid "Forwarding"
 msgstr "Wordt doorgestuurd"
 
@@ -1292,11 +1478,11 @@ msgstr "Geef de knop wat tekst."
 msgid "Give the template a name."
 msgstr "Geef het sjabloon een naam."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Go to website"
 msgstr "Naar de website"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Gross"
 msgstr "Vies"
 
@@ -1304,7 +1490,7 @@ msgstr "Vies"
 msgid "Group info"
 msgstr "Groepsinfo"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Guilds"
 msgstr "Gildes"
 
@@ -1316,13 +1502,25 @@ msgstr "Guilds met chat"
 msgid "Hand raised"
 msgstr "Hand omhoog"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Happy"
 msgstr "Blij"
+
+#, machine, plain2
+msgid "Have you kept your chat recovery code? Without it, a forgotten password can lose your old messages."
+msgstr "Heb je je chat herstel code bewaard? Zonder dat, kan een vergeten wachtwoord uw oude berichten verliezen."
 
 #, machine, python-format
 msgid "Heading %(level)s"
 msgstr "Rubriek %(level)s"
+
+#, machine, plain2
+msgid "Helpers"
+msgstr "Helpers"
+
+#, machine, plain2
+msgid "Helpers write in this channel with you. Choose up to three people who are in it."
+msgstr "Helpers schrijven in dit kanaal met jou. Kies maximaal drie mensen die erin zitten."
 
 #, machine
 msgid "Hidden by your word filter"
@@ -1365,6 +1563,10 @@ msgstr "Ik ga akkoord met de regels"
 msgid "I don't have it: start over"
 msgstr "Ik heb het niet. Begin opnieuw"
 
+#, machine, plain2
+msgid "I have it"
+msgstr "Ik heb het"
+
 #, machine
 msgid "I've saved it"
 msgstr "Ik heb het bewaard"
@@ -1372,6 +1574,10 @@ msgstr "Ik heb het bewaard"
 #, machine
 msgid "If you ever forget your password, this code is the only way to read your old messages. Keep it somewhere safe, like a password manager."
 msgstr "Als je ooit je wachtwoord vergeet, is deze code de enige manier om je oude berichten te lezen. Bewaar het ergens veilig, zoals een wachtwoord manager."
+
+#, machine, plain2
+msgid "If you still have your recovery code, use it instead: some older messages are only in the backup it opens."
+msgstr "Als u nog steeds uw herstelcode, gebruik het in plaats daarvan: sommige oudere berichten zijn alleen in de back-up die het opent."
 
 #, machine
 msgid "Image (coming soon)"
@@ -1463,11 +1669,11 @@ msgstr "De verhalen blijven in je archief."
 
 #. a button that joins the group call that has just started
 #. a button that joins a call going on in a chat
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Join"
 msgstr "Lid worden"
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "Join %(channel)s"
 msgstr "Deelnemen aan %(channel)s"
 
@@ -1495,12 +1701,16 @@ msgstr "Belangrijke feiten en links mensen moeten eerst zien."
 msgid "Last used %(date)s"
 msgstr "Laatst gebruikt %(date)s"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Later"
+msgstr "Later"
+
+#, glossary, machine, plain2
 msgid "Laugh"
 msgstr "Lachen"
 
 #. a button that leaves a channel
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Leave"
 msgstr "Verlaten"
 
@@ -1516,7 +1726,7 @@ msgstr "Deze groep verlaten? Iemand anders wordt eigenaar."
 msgid "Leave this group? You won't see new messages unless someone adds you again."
 msgstr "Deze groep verlaten? Je zult geen nieuwe berichten zien tenzij iemand je opnieuw toevoegt."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Light mode"
 msgstr "Lichte modus"
 
@@ -1561,6 +1771,10 @@ msgstr "Leef nu"
 msgid "Load earlier messages"
 msgstr "Eerdere berichten laden"
 
+#, machine, plain2
+msgid "Loading comment…"
+msgstr "Commentaar laden…"
+
 #, machine
 msgid "Loading post…"
 msgstr "Post laden…"
@@ -1585,17 +1799,25 @@ msgstr "Uw sjablonen laden..."
 msgid "Loading..."
 msgstr "Laden..."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Loading…"
 msgstr "Laden…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Love"
 msgstr "Liefde"
 
 #, machine
 msgid "Lower hand"
 msgstr "Onderste hand"
+
+#, machine, plain2
+msgid "Make a new code"
+msgstr "Maak een nieuwe code"
+
+#, machine, plain2
+msgid "Make a new recovery code?"
+msgstr "Een nieuwe code maken?"
 
 #, machine
 msgid "Make admin"
@@ -1613,7 +1835,7 @@ msgstr "Deze post openbaar maken? Iedereen zal het kunnen zien."
 msgid "Making the channel…"
 msgstr "Het kanaal maken…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Meh"
 msgstr "Meh"
 
@@ -1630,6 +1852,14 @@ msgstr "Bericht verwijderd"
 msgid "Message request. They won't know you've seen this until you accept."
 msgstr "Bericht verzoek. Ze zullen niet weten dat je dit gezien hebt tot je het accepteert."
 
+#, machine, plain2, python-format
+msgid "Messages disappear after %(time)s."
+msgstr "Berichten verdwijnen na %(time)s."
+
+#, machine, plain2
+msgid "Messages this browser could already read will come back here."
+msgstr "Berichten die deze browser al kan lezen zullen hier terug komen."
+
 #. a device with no name of its own in the call's device list, e.g. "Microphone
 #. 2"
 #, machine
@@ -1641,7 +1871,7 @@ msgid "Microphone %(number)s"
 msgstr "Microfoon %(number)s"
 
 #. a toolbar menu with more formatting
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "More"
 msgstr "Meer"
 
@@ -1649,11 +1879,11 @@ msgstr "Meer"
 msgid "Move to listeners"
 msgstr "Naar luisteraars verplaatsen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Mute"
 msgstr "Dempen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Muted"
 msgstr "Gedempt"
 
@@ -1673,7 +1903,11 @@ msgstr "Noem je map"
 msgid "New channel"
 msgstr "Nieuw kanaal"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "New messages in this chat disappear for everyone after the time you choose. Messages sent before keep the time they were sent with."
+msgstr "Nieuwe berichten in deze chat verdwijnen voor iedereen na de tijd die u kiest. Berichten verzonden voordat bewaar de tijd waarmee ze werden verzonden."
+
+#, glossary, machine, plain2
 msgid "No"
 msgstr "Nee"
 
@@ -1693,17 +1927,29 @@ msgstr "Nog geen telefoontjes. Begin met een gesprek Voice call of video call."
 msgid "No camera was found."
 msgstr "Er is geen camera gevonden."
 
+#, machine, plain2
+msgid "No chats found."
+msgstr "Geen gesprekken gevonden."
+
 #, machine
 msgid "No co-authors yet."
 msgstr "Nog geen co-auteurs."
+
+#, machine, plain2
+msgid "No code? Sign in with your new password on a browser where you've used chat: it can bring your chat back."
+msgstr "Geen code? Meld je aan met je nieuwe wachtwoord in een browser waar je hebt gechat: het kan je chat terughalen."
 
 #, machine
 msgid "No devices yet. Open Chat to start."
 msgstr "Nog geen apparaten. Open Chat om te beginnen."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "No flair"
 msgstr "Geen label"
+
+#, machine, plain2
+msgid "No helpers yet."
+msgstr "Nog geen helpers."
 
 #, machine
 msgid "No microphone was found."
@@ -1712,6 +1958,10 @@ msgstr "Er is geen microfoon gevonden."
 #, machine
 msgid "No one matches. You can send to your chats and to people you follow."
 msgstr "Niemand komt overeen. Je kunt naar je chats sturen en naar mensen die je volgt."
+
+#, machine, plain2
+msgid "No pinned messages yet."
+msgstr "Nog geen gepinde berichten."
 
 #, machine
 msgid "No special characters or spaces allowed."
@@ -1757,6 +2007,10 @@ msgstr "Niet opgeslagen"
 msgid "Not used yet"
 msgstr "Nog niet gebruikt"
 
+#, machine, plain2
+msgid "Nothing found in the messages this browser can read."
+msgstr "Niets gevonden in de berichten die deze browser kan lezen."
+
 #, machine
 msgid "Nothing found."
 msgstr "Niets gevonden."
@@ -1785,17 +2039,45 @@ msgstr "Er is nog niets om te bekijken."
 msgid "Nothing was connected."
 msgstr "Er was geen verband."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Notifications"
 msgstr "Meldingen"
+
+#, machine, plain2
+msgid "Notifications are blocked for this site in this browser. Allow them in the browser's settings to turn them on."
+msgstr "Meldingen worden geblokkeerd voor deze site in deze browser. Laat ze in de instellingen van de browser om ze aan te zetten."
+
+#, machine, plain2
+msgid "Notifications are off in this browser."
+msgstr "Meldingen zijn uitgeschakeld in deze browser."
+
+#, machine, plain2
+msgid "Notifications are on in this browser."
+msgstr "De meldingen staan in deze browser."
+
+#, machine, plain2
+msgid "Notifications couldn't be checked. Reload the page to try again."
+msgstr "Meldingen konden niet gecontroleerd worden. De pagina herladen om het opnieuw te proberen."
+
+#, machine, plain2
+msgid "Notifications couldn't be turned on. Try again."
+msgstr "Meldingen konden niet worden ingeschakeld. Probeer het nog eens."
+
+#, machine, plain2
+msgid "Notifications weren't allowed for this site."
+msgstr "Meldingen waren niet toegestaan voor deze site."
 
 #, machine
 msgid "Numbered list"
 msgstr "Genummerde lijst"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "OMG"
 msgstr "OMG"
+
+#, machine, plain2
+msgid "Off"
+msgstr "Uit"
 
 #, machine
 msgid "Offline"
@@ -1804,6 +2086,10 @@ msgstr "Offline"
 #, machine
 msgid "Offline · retrying"
 msgstr "Offline · opnieuw proberen"
+
+#, machine, plain2
+msgid "Only a group's owner and admins can change this."
+msgstr "Alleen de eigenaar en beheerders van een groep kunnen dit veranderen."
 
 #, machine
 msgid "Only go on if you are signing in to an app right now. If not, choose Not now and sign it out in Settings > Chat apps."
@@ -1838,6 +2124,10 @@ msgstr "Open Chat een keer op deze site eerst, zodat uw sleutel is ingesteld."
 msgid "Open Chat once to unlock your messages, then try again."
 msgstr "Open Chat om uw berichten te ontgrendelen en probeer het dan opnieuw."
 
+#, machine, plain1
+msgid "Open Chat to finish setting up your messages on this device."
+msgstr "Open Chat om uw berichten op dit apparaat in te stellen."
+
 #, machine
 msgid "Open media settings"
 msgstr "Media-instellingen openen"
@@ -1849,6 +2139,10 @@ msgstr "Open de ruimte"
 #, machine, python-format
 msgid "Open the chat of +%(guild)s"
 msgstr "Open de chat van +%(guild)s"
+
+#, machine, plain2
+msgid "Opening the file…"
+msgstr "Het bestand openen…"
 
 #, machine
 msgid "Options saved."
@@ -1875,7 +2169,7 @@ msgstr "Mensen die je volgt"
 msgid "Pick a date and time."
 msgstr "Kies een datum en tijd."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Pick a flair"
 msgstr "Kies een label"
 
@@ -1909,11 +2203,15 @@ msgstr "Fotoverhalen zijn nog niet beschikbaar op deze site."
 msgid "Pin this message"
 msgstr "Pin dit bericht"
 
+#, machine, plain2
+msgid "Pinned"
+msgstr "Gepind"
+
 #, machine
 msgid "Pinned messages"
 msgstr "Gepinde berichten"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please"
 msgstr "Alsjeblieft"
 
@@ -1921,12 +2219,18 @@ msgstr "Alsjeblieft"
 msgid "Please enter a valid URL (including http:// or https://)."
 msgstr "Voer een geldige URL in (inclusief http:// of https://)."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Please log in again."
 msgstr "Log opnieuw in."
 
+#. a heading in the chat page's Channels tab: public channels many people are
+#. in
+#, machine, plain2
+msgid "Popular channels"
+msgstr "Populaire kanalen"
+
 #. the button that publishes the post (a verb)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Post"
 msgstr "Plaatsen"
 
@@ -1938,7 +2242,7 @@ msgstr "Gepost. Herlaad de pagina om het te zien."
 msgid "Posting to %(guilds)s"
 msgstr "Posten naar %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting to your profile"
 msgstr "Posten op je profiel"
 
@@ -1947,7 +2251,7 @@ msgstr "Posten op je profiel"
 msgid "Posting to your profile, %(guilds)s"
 msgstr "Posten naar uw profiel, %(guilds)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Posting…"
 msgstr "Plaatsen…"
 
@@ -2047,6 +2351,14 @@ msgstr "Reageren"
 msgid "React with %(emoji)s"
 msgstr "Reageer met %(emoji)s"
 
+#, machine, plain2
+msgid "Record a voice note"
+msgstr "Neem een voicenote op"
+
+#, machine, plain2
+msgid "Recording… press the microphone again to send it."
+msgstr "Opname… druk opnieuw op de microfoon om het te versturen."
+
 #, machine
 msgid "Recovery code"
 msgstr "Terugvorderingscode"
@@ -2059,13 +2371,17 @@ msgstr "Opnieuw"
 msgid "Refreshing…"
 msgstr "Verversen…"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Registering"
 msgstr "Bezig met registreren"
 
 #, machine
 msgid "Release to refresh"
 msgstr "Vrijgeven om te vernieuwen"
+
+#, glossary, machine, plain2
+msgid "Reload"
+msgstr "Opnieuw laden"
 
 #, machine
 msgid "Remind me"
@@ -2080,13 +2396,17 @@ msgstr "Herinnering ingesteld"
 #. a button that takes the picture just added off the form
 #. a button that removes a person from a group chat
 #. a button that removes a message from a Space's board for everyone
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Remove"
 msgstr "Verwijderen"
 
 #, machine, python-format
 msgid "Remove %(name)s"
 msgstr "%(name)s verwijderen"
+
+#, machine, plain2, python-format
+msgid "Remove @%(name)s as a helper"
+msgstr "Verwijder @%(name)s als helper"
 
 #, machine, python-format
 msgid "Remove @%(name)s from the group?"
@@ -2139,15 +2459,15 @@ msgstr "Deze map hernoemen"
 
 #. a button that reports the story being watched
 #. a button that reports a message on a Space's board
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report"
 msgstr "Rapporteren"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report comment"
 msgstr "Reactie rapporteren"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Report post"
 msgstr "Post rapporteren"
 
@@ -2155,11 +2475,11 @@ msgstr "Post rapporteren"
 msgid "Report this message"
 msgstr "Rapporteer dit bericht"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting comment"
 msgstr "Reactie wordt gerapporteerd"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Reporting post"
 msgstr "Post wordt gerapporteerd"
 
@@ -2176,13 +2496,13 @@ msgstr "Ring…"
 msgid "Rules of this channel"
 msgstr "Regels van dit kanaal"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Sad"
 msgstr "Verdrietig"
 
 #. a button that saves a guild setting
 #. a button that saves a template
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Save"
 msgstr "Opslaan"
 
@@ -2198,11 +2518,15 @@ msgstr "Opslaan als template..."
 msgid "Save your recovery code"
 msgstr "Sla uw herstelcode op"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Saved"
 msgstr "Opgeslagen"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Saved."
+msgstr "Gered."
+
+#, glossary, machine, plain2
 msgid "Saving"
 msgstr "Wordt opgeslagen"
 
@@ -2236,7 +2560,7 @@ msgstr "Opslaan…"
 msgid "Say what is wrong with this account."
 msgstr "Zeg wat er mis is met deze rekening."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Scared"
 msgstr "Bang"
 
@@ -2255,7 +2579,8 @@ msgstr "Gepland voor %(time)s."
 
 #. a button that searches a channel's messages
 #. the title of the panel that searches a channel's messages
-#, glossary, machine, plain1
+#. the title of the panel that searches a chat's messages
+#, glossary, machine, plain2
 msgid "Search"
 msgstr "Zoeken"
 
@@ -2266,6 +2591,14 @@ msgstr "Zoek naar iemand om toe te voegen."
 #, machine
 msgid "Search this channel"
 msgstr "Dit kanaal doorzoeken"
+
+#, machine, plain2
+msgid "Search this chat"
+msgstr "Deze chat doorzoeken"
+
+#, machine, plain2
+msgid "Search your chats"
+msgstr "Uw chats doorzoeken"
 
 #, machine, python-format
 msgid "Searches the last %(num)s day of messages."
@@ -2289,7 +2622,7 @@ msgid_plural "Seen by %(num)s"
 msgstr[0] "Gezien door %(num)s"
 msgstr[1] "Gezien door %(num)s"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Select a conversation"
 msgstr "Kies een gesprek"
 
@@ -2298,6 +2631,10 @@ msgstr "Kies een gesprek"
 #, machine
 msgid "Send"
 msgstr "Verzenden"
+
+#, machine, plain2
+msgid "Send a file"
+msgstr "Een bestand versturen"
 
 #, machine
 msgid "Send it somewhere else:"
@@ -2315,6 +2652,20 @@ msgstr "Stuur je volgende foto's naar:"
 msgid "Send your next videos to:"
 msgstr "Stuur je volgende video's naar:"
 
+#, machine, plain2, python-format
+msgid "Sending %(name)s…"
+msgstr "Verzenden %(name)s…"
+
+#, machine, plain2, python-format
+msgid "Sending %(name)s… %(percent)s%%"
+msgstr "Verzenden van %(name)s… %(percent)s%%"
+
+#, machine, plain1, python-format
+msgid "Sending once chat is ready…"
+msgid_plural "Sending %(num)s messages once chat is ready…"
+msgstr[0] "Het versturen van een gesprek is klaar…"
+msgstr[1] "%(num)s berichten versturen zodra de chat klaar is…"
+
 #, machine
 msgid "Sending..."
 msgstr "Verzenden..."
@@ -2331,6 +2682,14 @@ msgstr "Verzonden"
 #, machine
 msgid "Several people are typing…"
 msgstr "Verschillende mensen typen…"
+
+#, machine, plain2
+msgid "Share screen"
+msgstr "Scherm delen"
+
+#, machine, plain2
+msgid "Shared a comment"
+msgstr "Commentaar gedeeld"
 
 #, machine
 msgid "Shared a post"
@@ -2350,11 +2709,20 @@ msgstr[1] "%(num)s nieuwe berichten tonen"
 msgid "Show formatting"
 msgstr "Opmaak tonen"
 
-#, glossary, machine, plain1
+#. a button under a found message: shows it where it is in the channel
+#, machine, plain2
+msgid "Show in the channel"
+msgstr "In het kanaal tonen"
+
+#, machine, plain2
+msgid "Show in the chat"
+msgstr "Toon in het gesprek"
+
+#, glossary, machine, plain2
 msgid "Show less"
 msgstr "Minder tonen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Show more"
 msgstr "Meer tonen"
 
@@ -2367,19 +2735,19 @@ msgstr "Origineel tonen"
 msgid "Show translation"
 msgstr "Vertaling tonen"
 
-#, machine
+#, glossary, machine, plain2
 msgid "Sign out"
 msgstr "Afmelden"
 
-#, machine, python-format
+#, glossary, machine, plain2, python-format
 msgid "Sign out %(device)s"
-msgstr "Uitloggen %(device)s"
+msgstr "%(device)s afmelden"
 
-#, machine, python-format
+#, machine, plain2, python-format
 msgid "Sign out %(device)s? It will need to sign in again to read your chats."
-msgstr "Uitloggen %(device)s? Het zal opnieuw moeten aanmelden om uw chats te lezen."
+msgstr "Verbinding verbreken %(device)s? Het zal opnieuw moeten aanmelden om uw chats te lezen."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Signing in"
 msgstr "Bezig met inloggen"
 
@@ -2497,6 +2865,11 @@ msgstr "Het gesprek starten…"
 msgid "Starting…"
 msgstr "Starten…"
 
+#. the label of the screen-sharing button in a call (what pressing it does)
+#, machine, plain2
+msgid "Stop sharing"
+msgstr "Stoppen met delen"
+
 #, machine
 msgid "Strikethrough"
 msgstr "Doorgehaald"
@@ -2547,7 +2920,7 @@ msgstr "Tekstopmaak"
 msgid "Text style"
 msgstr "Tekststijl"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Thank you for asking"
 msgstr "Bedankt voor je verzoek"
 
@@ -2571,27 +2944,39 @@ msgstr "Bedankt. Een admin zal ernaar kijken."
 msgid "Thanks: the guild's guildmasters will take a look."
 msgstr "Bedankt: de gildemoderatoren van het gilde zullen een kijkje nemen."
 
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look, and you've blocked @%(name)s."
+msgstr "Bedankt: de beheerders van de site zullen een kijkje nemen, en je hebt geblokkeerd @%(name)s."
+
 #, machine
 msgid "Thanks: the site's admins will take a look."
 msgstr "Bedankt: de beheerders van de site zullen een kijkje nemen."
+
+#, machine, plain2, python-format
+msgid "Thanks: the site's admins will take a look. @%(name)s couldn't be blocked from here: block them from their profile."
+msgstr "Bedankt: de beheerders van de site zullen een kijkje nemen. @%(name)s kon hier niet worden geblokkeerd: blokkeer ze van hun profiel."
+
+#, machine, plain2
+msgid "That chat isn't ready on this device yet. Open it once, then try again."
+msgstr "Dat gesprek is nog niet klaar op dit apparaat. Open het één keer, probeer het dan opnieuw."
 
 #, machine
 msgid "That code doesn't open it. Check for typos."
 msgstr "Die code opent het niet. Controleer op typefouten."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That couldn't be saved."
 msgstr "Dat kon niet worden opgeslagen."
 
-#, machine
+#, machine, plain2
 msgid "That device couldn't be signed out right now."
-msgstr "Dat apparaat kon nu niet uitgeschreven worden."
+msgstr "Dat apparaat kon nu niet losgekoppeld worden."
 
 #, machine
 msgid "That device couldn't be used."
 msgstr "Dat apparaat kon niet gebruikt worden."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "That didn't go through"
 msgstr "Dat is niet gelukt"
 
@@ -2630,6 +3015,14 @@ msgstr "Dat is niet je wachtwoord."
 #, machine
 msgid "That message can't be sent."
 msgstr "Dat bericht kan niet verstuurd worden."
+
+#, machine, plain2
+msgid "That message couldn't be found in the channel any more."
+msgstr "Dat bericht kon niet meer gevonden worden in het kanaal."
+
+#, machine, plain2
+msgid "That message couldn't be found in this chat any more."
+msgstr "Dat bericht kon niet meer gevonden worden in deze chat."
 
 #, machine
 msgid "That password isn't right."
@@ -2715,6 +3108,10 @@ msgstr "De chat is gesloten: deze Space is afgelopen."
 msgid "The chat opens when the Space starts."
 msgstr "De chat opent wanneer de ruimte begint."
 
+#, machine, plain2
+msgid "The code from your authenticator app, or one of your backup codes."
+msgstr "De code van uw authenticatie app, of een van uw back-upcodes."
+
 #, machine
 msgid "The draft changed under your last edit, so it was reloaded. Check your last few words."
 msgstr "Het ontwerp veranderde onder uw laatste bewerking, dus het werd herladen. Controleer je laatste woorden."
@@ -2722,6 +3119,10 @@ msgstr "Het ontwerp veranderde onder uw laatste bewerking, dus het werd herladen
 #, machine
 msgid "The emoji to compare"
 msgstr "De emoji om te vergelijken"
+
+#, machine, plain2
+msgid "The file couldn't be sent. Try again."
+msgstr "Het bestand kon niet verstuurd worden. Probeer het nog eens."
 
 #, machine, python-format
 msgid "The guild, +%(name)s"
@@ -2738,6 +3139,10 @@ msgstr "De link kon niet gekopieerd worden."
 #, machine
 msgid "The microphone couldn't be started."
 msgstr "De microfoon kon niet gestart worden."
+
+#, machine, plain2
+msgid "The microphone couldn't be used. Check that this site may use it."
+msgstr "De microfoon kon niet gebruikt worden. Controleer of deze site deze kan gebruiken."
 
 #, machine
 msgid "The microphone is in use by another app."
@@ -2776,6 +3181,10 @@ msgstr "De herhaling werd niet opgeslagen: %(reason)s. Je kunt het downloaden."
 msgid "The replay wasn't saved: the upload failed. You can download it instead."
 msgstr "De herhaling is niet opgeslagen: de upload is mislukt. Je kunt het downloaden."
 
+#, machine, plain1
+msgid "The site's keys changed, so chat is starting again here."
+msgstr "De sleutels van de site zijn veranderd, dus de chat begint hier weer."
+
 #, machine
 msgid "The summary is hidden by your word filter."
 msgstr "De samenvatting wordt verborgen door uw woordfilter."
@@ -2812,6 +3221,10 @@ msgstr "Er is nog nergens anders om ze op deze site te sturen."
 msgid "These comments could not be loaded. Try again."
 msgstr "Deze opmerkingen konden niet geladen worden. Probeer het nog eens."
 
+#, machine, plain2
+msgid "They are never told who reported them."
+msgstr "Ze weten nooit wie ze heeft gemeld."
+
 #, machine
 msgid "They declined the call."
 msgstr "Ze weigerden het telefoontje."
@@ -2824,6 +3237,10 @@ msgstr "Ze komen niet overeen"
 msgid "They match"
 msgstr "Ze komen overeen"
 
+#, machine, plain2
+msgid "They stay in your own account there, encrypted, using its free space. Only the people in the chat can open them."
+msgstr "Ze blijven daar op je eigen account, gecodeerd, met behulp van de vrije ruimte. Alleen de mensen in het gesprek kunnen ze openen."
+
 #, machine, plain1
 msgid "They won't be able to follow you, message you or comment on your posts, and you won't see their posts. You can unblock them any time."
 msgstr "Ze zullen niet in staat zijn om u te volgen, bericht u of commentaar op uw berichten, en je zult hun berichten niet zien. Je kunt ze altijd deblokkeren."
@@ -2832,9 +3249,9 @@ msgstr "Ze zullen niet in staat zijn om u te volgen, bericht u of commentaar op 
 msgid "This Space has ended."
 msgstr "Deze ruimte is voorbij."
 
-#, machine
-msgid "This browser"
-msgstr "Deze browser"
+#, machine, plain2
+msgid "This also ends any rescue from a browser where you used chat."
+msgstr "Dit eindigt ook elke redding van een browser waar u de chat gebruikt."
 
 #, machine
 msgid "This browser can't make calls."
@@ -2844,9 +3261,29 @@ msgstr "Deze browser kan niet bellen."
 msgid "This browser can't record the Space."
 msgstr "Deze browser kan de ruimte niet opnemen."
 
+#, machine, plain2
+msgid "This browser can't share its screen."
+msgstr "Deze browser kan zijn scherm niet delen."
+
+#, machine, plain2
+msgid "This browser can't show notifications from this site."
+msgstr "Deze browser kan geen meldingen van deze site tonen."
+
 #, machine
 msgid "This browser cannot prepare pictures for upload. Try another browser."
 msgstr "Deze browser kan geen foto's voorbereiden voor upload. Probeer een andere browser."
+
+#, machine, plain2
+msgid "This browser still holds your chat keys from before your password changed. Use them to read your old messages here and on your other devices?"
+msgstr "Deze browser bevat nog steeds uw chatsleutels van voordat uw wachtwoord werd gewijzigd. Gebruik ze om je oude berichten hier en op je andere apparaten te lezen?"
+
+#, machine, plain2
+msgid "This browser was signed out of chat from another device, so chat is starting again here."
+msgstr "Deze browser is losgekoppeld van de chat van een ander apparaat, dus de chat begint hier opnieuw."
+
+#, machine, plain1
+msgid "This browser's saved chat data was cleared, so chat is starting again here."
+msgstr "De opgeslagen chatgegevens van deze browser zijn gewist, dus de chat begint hier opnieuw."
 
 #, machine, plain1
 msgid "This can’t be undone."
@@ -2856,6 +3293,26 @@ msgstr "Dit kan niet ongedaan worden gemaakt."
 msgid "This channel is muted for you: no unread dot and no mention notifications."
 msgstr "Dit kanaal is voor u gedempt: geen ongelezen stip en geen melding."
 
+#, machine, plain2
+msgid "This chat is end-to-end encrypted, so the site can't read it. Reporting sends this message and up to four before it, as you see them here, to the site's admins."
+msgstr "Deze chat is end-to-end gecodeerd, dus de site kan het niet lezen. Rapportering stuurt dit bericht en tot vier voor het, zoals je ze hier ziet, naar de admins van de site."
+
+#, machine, plain2
+msgid "This comment can't be shown."
+msgstr "Dit commentaar kan niet getoond worden."
+
+#, machine, plain2
+msgid "This device will be signed out shortly."
+msgstr "Dit apparaat wordt binnenkort afgesloten."
+
+#, machine, plain2
+msgid "This file couldn't be opened. Try again later."
+msgstr "Dit bestand kon niet geopend worden. Probeer het later nog eens."
+
+#, machine, plain2
+msgid "This file is no longer available."
+msgstr "Dit bestand is niet meer beschikbaar."
+
 #, machine
 msgid "This live thread has ended"
 msgstr "Deze live thread is afgelopen"
@@ -2863,6 +3320,10 @@ msgstr "Deze live thread is afgelopen"
 #, machine
 msgid "This message can't be read on this device."
 msgstr "Dit bericht kan niet worden gelezen op dit apparaat."
+
+#, machine, plain2
+msgid "This message was deleted."
+msgstr "Dit bericht is verwijderd."
 
 #, machine
 msgid "This picture is no longer available."
@@ -2877,11 +3338,23 @@ msgstr "Dit bericht kan niet getoond worden."
 msgid "This post is off-topic for +%(guild)s"
 msgstr "Dit bericht is off-topic voor +%(guild)s"
 
+#, machine, plain1
+msgid "This sign-in"
+msgstr "Deze aanmelding"
+
+#, machine, plain2
+msgid "This signs out chat in this browser too, if it is this browser's. It will start again as a new device."
+msgstr "Dit maakt de chat in deze browser ook los, als het van deze browser is. Het zal opnieuw beginnen als een nieuw apparaat."
+
 #, machine, python-format
 msgid "This voice channel is full (%(num)s person)."
 msgid_plural "This voice channel is full (%(num)s people)."
 msgstr[0] "Dit spraakkanaal is vol (%(num)s persoon)."
 msgstr[1] "Dit spraakkanaal is vol (%(num)s personen)."
+
+#, machine, plain2
+msgid "Those keys are no longer your account's. Use your recovery code, or start over."
+msgstr "Die sleutels zijn niet langer van jou. Gebruik je herstelcode of begin opnieuw."
 
 #, machine
 msgid "Thou've reached the end of the list!"
@@ -2914,7 +3387,7 @@ msgid_plural "Too long by %(num)s (%(note)s)"
 msgstr[0] "Te lang door %(num)s (%(note)s)"
 msgstr[1] "Te lang door %(num)s (%(note)s)"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Too many requests today"
 msgstr "Te veel verzoeken vandaag"
 
@@ -2945,13 +3418,21 @@ msgstr "Vertaling is nu niet beschikbaar."
 msgid "Try again"
 msgstr "Probeer opnieuw"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Try again tomorrow."
 msgstr "Probeer het morgen opnieuw."
 
 #, machine
 msgid "Turn notifications back on"
 msgstr "Notificaties weer aanzetten"
+
+#, machine, plain2
+msgid "Two-factor code"
+msgstr "Code met twee factoren"
+
+#, machine, plain1
+msgid "Two-factor sign-in was changed, so chat is starting again here."
+msgstr "Twee factoren zijn veranderd, dus het gesprek begint hier weer."
 
 #, machine
 msgid "Type words to look for."
@@ -2985,12 +3466,12 @@ msgstr "Kan het commentaar op dit moment niet verwijderen. Probeer het later nog
 msgid "Unable to vote at this time. Please try again later."
 msgstr "Ik kan nu niet stemmen. Probeer het later nog eens."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unblock"
 msgstr "Deblokkeren"
 
 #. a button that takes back "Show fewer posts like this"
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Undo"
 msgstr "Ongedaan maken"
 
@@ -3010,17 +3491,13 @@ msgstr "Ontgrendelen"
 msgid "Unlock your messages"
 msgstr "Uw berichten ontgrendelen"
 
-#, machine
-msgid "Unlock your messages first: reload the page to enter your password."
-msgstr "Ontgrendel eerst uw berichten: herlaad de pagina om uw wachtwoord in te voeren."
-
 #. the label of the microphone button in a call
 #. the microphone button in a Space's call: what pressing it does
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unmute"
 msgstr "Niet meer dempen"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Unpin"
 msgstr "Losmaken"
 
@@ -3076,11 +3553,15 @@ msgstr "Gebruik het hier"
 msgid "Use my recovery code instead"
 msgstr "Gebruik mijn recovery code in plaats daarvan"
 
-#, glossary, machine, plain1
+#, machine, plain2
+msgid "Use them"
+msgstr "Gebruik ze"
+
+#, glossary, machine, plain2
 msgid "Username already taken :("
 msgstr "Gebruikersnaam al bezet :("
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Username is a-okay!"
 msgstr "Gebruikersnaam is prima!"
 
@@ -3164,7 +3645,7 @@ msgstr[1] "Videogesprek · %(num)s s"
 msgid "Video is off in this call: you're on audio."
 msgstr "Video staat uit in dit gesprek: je staat op audio."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "View original"
 msgstr "Origineel bekijken"
 
@@ -3206,6 +3687,10 @@ msgid_plural "Voice goes browser to browser through the site's relay, so nobody 
 msgstr[0] "Voice gaat browser naar browser door het relais van de site, zodat niemand ziet iemands adres. Tot %(num)s persoon."
 msgstr[1] "Voice gaat browser naar browser door het relais van de site, zodat niemand ziet iemands adres. Tot %(num)s personen."
 
+#, machine, plain2
+msgid "Voice note"
+msgstr "Stemnotitie"
+
 #, machine
 msgid "Wait a moment: your last changes are still being saved."
 msgstr "Wacht even: je laatste wijzigingen worden nog steeds opgeslagen."
@@ -3213,6 +3698,10 @@ msgstr "Wacht even: je laatste wijzigingen worden nog steeds opgeslagen."
 #, machine
 msgid "Waiting for the app"
 msgstr "Wachten op de app"
+
+#, machine, plain2
+msgid "We found your chat on this browser"
+msgstr "We vonden uw chat in deze browser"
 
 #, machine
 msgid "We'll show fewer posts like this."
@@ -3233,6 +3722,10 @@ msgstr "Wat is er mis met deze ruimte? (facultatief)"
 #, machine
 msgid "What's wrong with this message? (optional)"
 msgstr "Wat is er mis met dit bericht? (facultatief)"
+
+#, machine, plain2
+msgid "Where should the files you send in chats go?"
+msgstr "Waar moeten de bestanden die u in chats stuurt naartoe?"
 
 #, machine
 msgid "Where should your audio go?"
@@ -3259,7 +3752,7 @@ msgstr "Wie zei dat"
 msgid "Who upvoted"
 msgstr "Wie heeft er gestemd"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Why"
 msgstr "Waarom"
 
@@ -3274,6 +3767,10 @@ msgstr "Waarom breekt dit de regels van je gilde? Dit zal worden getoond aan ied
 #, machine
 msgid "Why does this break your guild's rules? This will be shown to anyone who looks up this post/comment's history."
 msgstr "Waarom breekt dit de regels van je gilde? Dit zal worden getoond aan iedereen die opzoekt naar de geschiedenis van deze post / commentaar."
+
+#, machine, plain1
+msgid "Why is this comment being removed? Your reason is shown in the public log."
+msgstr "Waarom wordt dit commentaar verwijderd? Uw reden staat in het publieke logboek."
 
 #, machine
 msgid "Working it out…"
@@ -3292,7 +3789,7 @@ msgstr "Schrijf eerst iets."
 msgid "Write what you want to tell us."
 msgstr "Schrijf wat je ons wilt vertellen."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "Yes"
 msgstr "Ja"
 
@@ -3310,7 +3807,7 @@ msgstr "Ja, zeg het af"
 msgid "You"
 msgstr "Jij"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You already did that"
 msgstr "Dat heb je al gedaan"
 
@@ -3326,7 +3823,7 @@ msgstr "Je hebt dit bericht al gemeld."
 msgid "You already voted on this post."
 msgstr "U hebt al over deze functie gestemd."
 
-#, glossary, machine, plain1, python-format
+#, glossary, machine, plain2, python-format
 msgid "You are blocking @%(name)s"
 msgstr "Je blokkeert @%(name)s"
 
@@ -3364,7 +3861,7 @@ msgstr "Je kunt dit kanaal lezen maar er niet in schrijven."
 msgid "You can see who is here, but you can't speak in this channel."
 msgstr "Je kunt zien wie hier is, maar je kunt niet in dit kanaal spreken."
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "You can't do that."
 msgstr "Dat kun je niet doen."
 
@@ -3408,6 +3905,14 @@ msgstr "Je verliet de ruimte."
 msgid "You left the call."
 msgstr "Je bent weggegaan."
 
+#, machine, plain2
+msgid "You logged out everywhere from another device, so chat is starting again here."
+msgstr "Je hebt overal van een ander apparaat afgesloten, dus de chat begint hier weer."
+
+#, machine, plain1
+msgid "You signed in with your two-factor recovery code, so chat is starting again here."
+msgstr "Je hebt je aangemeld met je twee-factor herstel code, dus het gesprek begint hier weer."
+
 #, machine, plain1, python-format
 msgid "You unfollowed @%(name)s."
 msgstr "Je volgde @%(name)s niet."
@@ -3415,6 +3920,10 @@ msgstr "Je volgde @%(name)s niet."
 #, machine
 msgid "You were removed from this Space."
 msgstr "Jullie werden uit deze ruimte verwijderd."
+
+#, machine, plain2
+msgid "You'll get a new recovery code, and the old one will stop working."
+msgstr "Je krijgt een nieuwe herstelcode, en de oude zal stoppen met werken."
 
 #, machine
 msgid "You're doing that too much. Try again later."
@@ -3440,6 +3949,10 @@ msgstr "Uw browser geblokkeerd het venster voor het verbinden. Laat pop-ups voor
 msgid "Your chat devices can't be listed right now."
 msgstr "Je chatapparaten kunnen nu niet vermeld worden."
 
+#, machine, plain2
+msgid "Your chat recovery code"
+msgstr "Uw chatherstelcode"
+
 #, machine
 msgid "Your chats"
 msgstr "Uw gesprekken"
@@ -3451,6 +3964,10 @@ msgstr "Uw chats zullen opnieuw werken op dit apparaat, maar berichten van eerde
 #, machine
 msgid "Your comment could not be posted. Try again."
 msgstr "Uw commentaar kon niet worden geplaatst. Probeer het nog eens."
+
+#, machine, plain2
+msgid "Your current recovery code will stop working."
+msgstr "Je huidige herstelcode werkt niet meer."
 
 #, machine
 msgid "Your edit couldn't be saved. Please check your connection and try again."
@@ -3482,9 +3999,31 @@ msgstr "Je sleutel kan nu niet getoond worden."
 msgid "Your key was locked with an older password. Open Chat on this site and enter your recovery code once; then it opens here."
 msgstr "Uw sleutel was vergrendeld met een ouder wachtwoord. Open Chat op deze site en voer uw herstel code eenmaal; dan opent hier."
 
+#, machine, plain1, python-format
+msgid "Your message will be sent once chat is unlocked on this device."
+msgid_plural "Your %(num)s messages will be sent once chat is unlocked on this device."
+msgstr[0] "Uw bericht wordt verzonden zodra de chat is ontgrendeld op dit apparaat."
+msgstr[1] "Uw %(num)s berichten worden verzonden zodra de chat is ontgrendeld op dit apparaat."
+
+#, machine, plain2
+msgid "Your old recovery code no longer works."
+msgstr "Je oude code werkt niet meer."
+
 #, machine
 msgid "Your password changed since this chat key was locked with it. The recovery code you saved when chat was set up opens it."
 msgstr "Uw wachtwoord is gewijzigd sinds deze chatsleutel is vergrendeld. De herstelcode die u hebt opgeslagen toen het gesprek werd ingesteld, opent het."
+
+#, machine, plain1
+msgid "Your password was changed for you, so chat is starting again here."
+msgstr "Uw wachtwoord is voor u veranderd, dus de chat begint hier weer."
+
+#, machine, plain1
+msgid "Your password was changed, so chat is starting again here."
+msgstr "Uw wachtwoord is gewijzigd, dus de chat begint hier weer."
+
+#, machine, plain1
+msgid "Your password was reset, so chat is starting again here."
+msgstr "Je wachtwoord is gereset, dus de chat begint hier weer."
 
 #, machine
 msgid "Your recovery code"
@@ -3493,6 +4032,14 @@ msgstr "Uw herstelcode"
 #, machine
 msgid "Your saved templates show up here."
 msgstr "Je opgeslagen sjablonen verschijnen hier."
+
+#, machine, plain2
+msgid "Your screen can be shared only while you're on video in this call."
+msgstr "Uw scherm kan alleen worden gedeeld terwijl u op video in dit gesprek."
+
+#, machine, plain2
+msgid "Your screen couldn't be shared."
+msgstr "Je scherm kon niet gedeeld worden."
 
 #, machine
 msgid "Your settings have been updated."
@@ -3532,7 +4079,7 @@ msgid "blue"
 msgstr "blauw"
 
 #. a noun, what is being tipped (a post or a comment)
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "comment"
 msgstr "reactie"
 
@@ -3606,7 +4153,7 @@ msgstr "oranje"
 msgid "pink"
 msgstr "roze"
 
-#, glossary, machine, plain1
+#, glossary, machine, plain2
 msgid "post"
 msgstr "post"
 
