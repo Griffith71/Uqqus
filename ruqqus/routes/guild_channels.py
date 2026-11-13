@@ -30,7 +30,7 @@ from ruqqus.helpers import guild_automod as automod
 from ruqqus.helpers import guild_roles as role_rules
 from ruqqus.helpers import guild_role_store as role_store
 from ruqqus.helpers.base36 import base36encode
-from ruqqus.helpers.alerts import notify
+from ruqqus.helpers.alerts import notify, notify_many
 from ruqqus.helpers.i18n_runtime import tr, tr_lazy, trn
 from ruqqus.helpers.visibility import board_hidden, text_hidden, user_hidden
 
@@ -400,10 +400,26 @@ def guild_channel_message(cid, v):
     post_id = store.record_post(g.db, cid, v.id, event_id, body, severity, now, thread)
     store.mark_read(g.db, cid, v.id, now)
     told = _mentioned(row, board, v, post_id, body, now)
+    everyone = _everyone(row, board, v, post_id, body, now, {target.id for target, _ in told})
     g.db.commit()
     for target, (message, values) in told:           # notify commits on its own
         notify(target, message, **values)
+    if everyone:
+        message, values = rules.everyone_notice(v.username, row.name, board.name, f"{board.permalink}/chat?c={row.id}")
+        notify_many(everyone, message, **values)
     return jsonify({"event_id": event_id})
+
+
+def _everyone(row, board, v, post_id, body, now, already):
+    """An @everyone from a guildmaster with the content permission: the people it tells (helpers/guild_channels.py), at
+    most once an hour a channel (Redis), each also counted as a mention. From anyone else it is just text."""
+    if not rules.mentions_everyone(body) or not board.has_mod(v, "content"):
+        return []
+    if r is not None and not r.set(f"gc:everyone:{row.id}", 1, nx=True, ex=rules.EVERYONE_EVERY):
+        return []
+    ids = [uid for uid in store.everyone_targets(g.db, row.id, v.id, now, rules.EVERYONE_MAX) if uid not in already]
+    store.record_mentions(g.db, row.id, post_id, ids, now)
+    return ids
 
 
 @app.route("/api/guilds/channels/<int:cid>/mark_read", methods=["POST"])
@@ -434,6 +450,8 @@ def _sender_map(user_ids, v, board_id=None):
             "id": u.id,
             "shown_name": tr("Deleted account") if u.is_deleted else (tr("A member") if user_hidden(u, v) else u.shown_name),
             "username": None if (gone or user_hidden(u, v)) else u.username,
+            # their picture beside the name over their messages: never for a name the viewer's filter hides, nor a gone account
+            "profile_url": None if (gone or user_hidden(u, v)) else u.profile_url,
             "blocked": u.id in blocked,
             "muted": u.id in muted,
         }

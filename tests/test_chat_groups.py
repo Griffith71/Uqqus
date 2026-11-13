@@ -106,9 +106,11 @@ def _tables():
     sql = (migrations / "2026-10-22_chat_groups.sql").read_text(encoding="utf-8")
     sql += ";\n" + ";\n".join(s for s in (migrations / "2026-11-02_audit_fixes.sql").read_text(encoding="utf-8").split(";")
                                  if "chat_group_adds" in s)
+    sql += ";\n" + ";\n".join(s for s in (migrations / "2026-12-24_group_unread_seq.sql").read_text(encoding="utf-8").split(";")
+                                 if "ALTER TABLE" in s)
     sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
     out = []
-    for s in (s.strip() for s in sql.split(";") if "CREATE" in s):
+    for s in (s.strip() for s in sql.split(";") if "CREATE" in s or "ALTER TABLE" in s):
         s = s.replace("public.", "").replace("IF NOT EXISTS ", "").replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
         out.append(s)
     return out
@@ -205,3 +207,37 @@ def test_the_database_refuses_unknown_roles_and_states(db):
     db.rollback()
     with pytest.raises(Exception):
         store.add_member(db, gid, DAN.id, rules.MEMBER, "lurking", ANN.id, 1)
+
+
+def test_a_message_is_one_update_whatever_the_size_and_a_member_reads_from_when_they_came_in(db):
+    """Unread is the group's count less a member's last-read number (2026-12-24_group_unread_seq.sql): a message moves the
+    group's count, never a row per member; someone who joins or accepts later starts with nothing unread, and writing
+    marks the writer as having read the group."""
+    gid = _group(db)
+    for when in (200, 201, 202):
+        assert store.note_message(db, "!room:ruqqus.local", BOB.id, when)
+    assert store.member(db, gid, ANN.id)[4] == 3 and store.member(db, gid, BOB.id)[4] == 0
+    assert store.accept(db, gid, CAT.id, 300)
+    assert store.member(db, gid, CAT.id)[4] == 0                            # what was said before isn't news to her
+    store.add_member(db, gid, DAN.id, rules.MEMBER, rules.JOINED, ANN.id, 301)
+    assert store.member(db, gid, DAN.id)[4] == 0
+    assert store.note_message(db, "!room:ruqqus.local", ANN.id, 400)      # Ann writes: she has read the group
+    assert store.member(db, gid, ANN.id)[4] == 0
+    assert [store.member(db, gid, u.id)[4] for u in (BOB, CAT, DAN)] == [1, 1, 1]
+    assert [r[9] for r in store.groups_for(db, CAT.id, "joined")] == [1]
+    assert store.unread_total(db, BOB.id) == 1 and store.unread_groups(db, BOB.id) == 1
+    store.mark_read(db, gid, BOB.id, 500)
+    assert store.unread_total(db, BOB.id) == 0 and store.unread_groups(db, BOB.id) == 0
+
+
+def test_the_list_reads_a_few_members_and_the_counts_never_every_member(db):
+    gid = _group(db)
+    rows = store.preview(db, gid, limit=2)
+    assert [r[0] for r in rows] == [ANN.id, BOB.id]                          # the members' order: the owner first
+    assert [(r[8], r[9]) for r in rows] == [(3, 2), (3, 2)]                 # everyone, and those who joined
+    assert sorted(store.member_ids(db, gid)) == sorted([ANN.id, BOB.id, CAT.id])
+    assert sorted(store.member_ids(db, gid, joined_only=True)) == sorted([ANN.id, BOB.id])
+
+
+def test_groups_hold_up_to_500_people():
+    assert rules.MAX_MEMBERS == 500

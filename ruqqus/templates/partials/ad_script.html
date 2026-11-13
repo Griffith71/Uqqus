@@ -5,8 +5,12 @@
    The tag is loaded from here, by script, so that three things happen first and no request goes to Google before them:
    - Non-personalised, unless helpers/ads.py personalised_allowed says otherwise, is set before any ad is asked for.
    - The key made from the member's password goes (CLAUDE.md "Chat encryption"). It lives in this tab's sessionStorage, so a tag running in
-     another tab can't read it, and it is gone before a tag runs in this one. A page kept by the back button brings its running tag back
-     (`pageshow`), so the key goes then too, and an older copy in localStorage goes with it.
+     another tab can't read it, and it is gone before a tag runs in this one. A page kept by the back button brings its running tag back,
+     so the key goes then too, and an older copy in localStorage goes with it. Not only on `pageshow`: Chromium gives a restored page
+     `resume` and `visibilitychange` before it (measured, scripts/ui/ads.spec.ts), and a tag's own listener for those would read a key a
+     sign-in in this tab wrote while the page was away. So the key goes on each of them too (and on `focus`), in listeners put on before the
+     tag is, with capture, which run first. On `pageshow` the hold below is asked again, and a page that would be held now is drawn afresh
+     (`location.reload`), which ends the tag that came back with it.
    - A browser holding chat data that isn't this page's account's gets no tag at all and its boxes fold (partials/ad_hold.html).
 
    All of this is asked when the tag loads. A tag already running in another tab stays until that page is left: it goes on running beside
@@ -20,6 +24,13 @@
     try { sessionStorage.removeItem("uqqus_chat_prekey"); } catch (e) { /* storage blocked: nothing was kept */ }
     try { localStorage.removeItem("uqqus_chat_prekey"); } catch (e) { /* storage blocked: nothing was kept */ }
   }
+  // before the tag is appended (see the top): every event a page restored by the back button gets before `pageshow`, and `focus`
+  function forgetIfRunning() {
+    if (window.adTagAsked) forgetPrekey();
+  }
+  document.addEventListener("resume", forgetIfRunning, true);
+  document.addEventListener("visibilitychange", forgetIfRunning, true);
+  window.addEventListener("focus", forgetIfRunning, true);
   window.loadAdTag = function () {
     if (window.adTagAsked) return true;
     forgetPrekey();
@@ -32,7 +43,14 @@
     document.head.appendChild(tag);
     return true;
   };
-  window.addEventListener("pageshow", function (event) { if (event.persisted && window.adTagAsked) forgetPrekey(); });
+  // A page the back button brings back has its tag running again: the key goes, and the hold is asked again, since chat opened by another
+  // account (or this tab signed in or out) while the page was away may now be here. Held, the page is drawn afresh, and the running tag
+  // goes with the old document.
+  window.addEventListener("pageshow", function (event) {
+    if (!event.persisted || !window.adTagAsked) return;
+    forgetPrekey();
+    if ({{ chat_held(owner) }}) { try { window.location.reload(); } catch (e) { /* nothing more can be done from here */ } }
+  });
   {% if not on_press %}if (!window.loadAdTag()) {
     window.adsHeld = true;
     document.querySelectorAll(".ad-slot").forEach(function (slot) { slot.classList.add("ad-slot-empty"); });

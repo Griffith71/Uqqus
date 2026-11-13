@@ -27,7 +27,7 @@
     {% endif %}
 
     {# writes the key chat unlocks itself with (assets/js/chat_key.js), which is why the route holds the ads back (helpers/ads.py) #}
-    <form action="/login/qr/upgrade" method="post" class="mt-md-3" id="qr-upgrade-form" data-chat-prekey>
+    <form action="/login/qr/upgrade" method="post" class="mt-md-3" id="qr-upgrade-form" data-chat-account="{{ v.username }}" data-chat-prekey>
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
         <input type="hidden" name="redirect" value="{{ back }}">
 

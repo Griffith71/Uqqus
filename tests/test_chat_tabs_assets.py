@@ -55,11 +55,11 @@ def test_channels_from_people_you_follow_are_public_and_never_across_a_block():
     store = read("ruqqus", "helpers", "broadcast_store.py").split("def public_of_owners(", 1)[1].split("\ndef ", 1)[0]
     assert "audience = 0 AND deleted_utc = 0" in store and "NOT IN (SELECT broadcast_id FROM broadcast_members" in store
     # a new channel from /chat goes through the one creating route and its rules
-    assert 'post("/api/broadcasts", boot.formkey, fields)' in EXTRAS
+    assert 'post("/api/broadcasts", boot, fields)' in EXTRAS
 
 
 def test_new_chat_uses_the_routes_that_decide_where_it_lands():
-    assert 'fetch("/api/chat/start?json=1"' in EXTRAS and "searchPeople(typed)" in EXTRAS
+    assert 'sitePost(boot, "/api/chat/start?json=1"' in EXTRAS and "searchPeople(typed)" in EXTRAS
 
 
 def test_the_scripts_write_text_only():

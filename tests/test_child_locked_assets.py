@@ -15,12 +15,17 @@ ROUTES = ROOT / "ruqqus" / "routes"
 # auto-renew OFF, leaving the creator fund, and making a free custom circle (a paid circle asks). (Anonymous and Sensitive posting are refused in the post and comment routes
 # themselves: they are inputs of a route that stays open.)
 GATED = {
-    "chat.py": "chat_page chat_token chat_key_get chat_key_set chat_recovery_key_legacy chat_check_password chat_ready chat_start "
-               "chat_conversations chat_share_targets chat_post_preview chat_accept chat_decline chat_mark_read chat_search",
+    "chat.py": "chat_page chat_token chat_store_keys_route chat_key_get chat_key_set chat_code_saved chat_recovery_key_legacy chat_check_password chat_ready chat_start "
+               "chat_conversations chat_share_targets chat_post_preview chat_comment_preview chat_accept chat_decline chat_mark_read chat_search",
     "chat_apps.py": "settings_chat_apps chat_devices chat_device_sign_out",
+    "chat_key_reset_pages.py": "chat_key_reset_grant chat_signing_keys",
+    "chat_settings_pages.py": "settings_chat",
+    "chat_reports_pages.py": "chat_report",
+    "chat_extras_pages.py": "chat_pin chat_disappear",
+    "push_pages.py": "push_subscribe chat_group_push",
     "chat_groups.py": "chat_group_create chat_group_add chat_group_accept chat_group_info chat_people",
     "calls.py": "call_window call_join",
-    "broadcasts.py": "broadcast_create broadcast_join broadcast_message broadcast_info broadcasts_following",
+    "broadcasts.py": "broadcast_create broadcast_join broadcast_message broadcast_info broadcasts_following broadcasts_popular",
     "guild_channels.py": "guild_channel_join guild_channel_message guild_channels_list guild_channel_mark_read guild_channel_senders guild_channel_report "
                          "guild_channel_pins guild_channel_mute_for_me guild_channel_accept_rules guild_channel_search",
     "spaces.py": "space_create space_start space_join space_invite space_cohost space_message_add space_update_add",

@@ -12,12 +12,12 @@ same transaction, so the token route stops serving them before Synapse has heard
 made take one lock per account (`pg_advisory_xact_lock(MINT_LOCK, user_id)`, Postgres only), so a device is either made before a
 sign-out (and revoked by it) or after it (`created_ms > spare_after_ms`, and never touched by it).
 
-THE INTERIM (build steps 2 and 3). Until the browser keeps its crypto stores (step 4), today's chat page deletes its store when its device
-is signed out, which would destroy room keys nothing else holds. So while `KEEP_SITE_BROWSERS` is on, an `all` sign-out for any reason
-but the ones that already signed the site's own browsers out before this queue existed (`SIGNS_OUT_SITE_BROWSERS_TODAY`: a child's chat
-switched off, a parent stopping managing, an account deleted) is written with the word `site` in `spared`: it signs out chat APPS only,
-exactly as `chat_devices.sign_out(apps_only=True)` did, and revokes no site row. Step 4 turns it off in the same deploy as the client
-that keeps its stores. `run_one` keeps understanding the word, so a row queued before still finishes as it was meant.
+THE INTERIM IS OVER (build step 4). In build steps 2 and 3, while the chat page still deleted its crypto store when its device was signed
+out, an `all` sign-out (but a child's chat switched off, a parent stopping managing and an account deleted, which always signed the
+site's own browsers out) was written with the word `site` in `spared`: chat APPS only, and no site row revoked. From step 4 the browser
+keeps its stores (a signed-out device's store stays, locked), so nothing writes the word any more and every `all` sign-out reaches
+the site's own devices too, but the ones `spared` names (decision 2: at most one chat and one call device of the sign-in making the
+change). `run_one` and `pending_covers` still understand the word, so a row queued before still finishes as it was meant.
 """
 import functools
 import hashlib
@@ -28,10 +28,7 @@ import time
 from sqlalchemy import bindparam, text
 from sqlalchemy.exc import DBAPIError
 
-# THE INTERIM SWITCH: build step 4 sets this False, in the same deploy as the browser that keeps its stores (see the docstring).
-KEEP_SITE_BROWSERS = True
-SIGNS_OUT_SITE_BROWSERS_TODAY = frozenset({"child_chat_off", "child_stopped", "deleted"})
-SITE = "site"                       # in `spared`: every site device is kept (today's apps-only rule)
+SITE = "site"                       # in `spared` of a row queued in build steps 2 and 3 only: every site device is kept (see the docstring)
 
 MINT_LOCK = 7003                    # pg_advisory_xact_lock(MINT_LOCK, user_id): a sign-out and a device being made, one at a time
 BACKOFF = (60, 120, 300, 900, 3600)  # after each failed try; the last repeats for ever
@@ -40,6 +37,16 @@ OIDC_WAIT_SECONDS = 86400            # /oidc/token waits for a pending row young
 WAIT_LOCK_SECONDS = 15               # ...and waits this long for a row another worker is on, then answers "try again"
 LATE_SECONDS = 3600                  # /admin/chat shows a row pending longer than this in red
 DEVICE = re.compile(r"^[A-Za-z0-9_\-]{1,64}$")
+# A device the token route gave up making (`mint_failed`: Synapse's /login timed out or failed) may still be made AFTER the route gave up:
+# Synapse doesn't cancel a /login whose client went. Its `listed` sign-out is not called done because the device isn't listed yet until
+# this long after it was queued (run_one): the row waits, and a later pass deletes the device once Synapse has made it.
+MINT_GRACE_SECONDS = 60
+WAITS_FOR_ITS_DEVICE = frozenset({"mint_failed"})
+# Stale site devices (build step 7, `prune_stale`, a step of scripts/recomputes.py): a site device not used for this long is signed out,
+# never the account's most recently used chat device, at most PRUNE_LIMIT a cycle.
+STALE = "stale"
+STALE_DAYS = 90
+PRUNE_LIMIT = 200
 
 _ready = []
 
@@ -96,11 +103,6 @@ def lock_account(db, user_id):
 def mxid_of(db, user_id):
     row = db.execute(text("SELECT matrix_user_id FROM chat_identities WHERE user_id = :u"), {"u": int(user_id)}).first()
     return row[0] if row else None
-
-
-def interim_spared(reason):
-    """('site',) while the interim keeps the site's own browsers, for every reason but the ones that signed them out before."""
-    return (SITE,) if KEEP_SITE_BROWSERS and reason not in SIGNS_OUT_SITE_BROWSERS_TODAY else ()
 
 
 def _ids(value):
@@ -183,7 +185,7 @@ def queue(db, user_id, reason, scope="all", device_ids=(), spared=(), mxid=None,
             if callable(spared):
                 spared = spared()                          # under the lock too: what it names is what `at` covers
             listed = [d for d in device_ids if DEVICE.match(d or "")] if scope == "listed" else []
-            spared = tuple(d for d in spared if d) + (interim_spared(reason) if scope == "all" else ())
+            spared = tuple(d for d in spared if d and d != SITE)       # never the word a step-2 row held (the docstring)
             row = db.execute(text("""INSERT INTO chat_device_signouts (user_id, mxid, scope, device_ids, spared, spare_after_ms, reason,
                                                                       created_utc, next_try_utc)
                                      VALUES (:u, :m, :s, :d, :sp, :at, :r, :now, :now) RETURNING id"""),
@@ -234,7 +236,9 @@ def run_one(db, matrix, row_id, now=None, wait=False, site_name=None):
     """Works one queued sign-out and commits: lists the account's devices on Synapse, deletes the ones it covers, then marks the row
     done, or backs it off (BACKOFF) and leaves it for later: it never gives up. Takes the row with `FOR UPDATE SKIP LOCKED` (a row
     another worker is on is left to it) or, with `wait`, plain `FOR UPDATE` under a `WAIT_LOCK_SECONDS` lock timeout (/oidc/token
-    waits for it). Returns "done", "no_user", "failed", or None for a row that was taken or finished. `matrix` is helpers/matrix_client or a fake."""
+    waits for it). Returns "done", "no_user", "failed", "waiting" (a `mint_failed` row whose device isn't on Synapse yet, within
+    MINT_GRACE_SECONDS of being queued: see WAITS_FOR_ITS_DEVICE), or None for a row that was taken or finished. `matrix` is
+    helpers/matrix_client or a fake."""
     now = int(now or time.time())
     lock = ""
     if _pg(db):
@@ -243,12 +247,12 @@ def run_one(db, matrix, row_id, now=None, wait=False, site_name=None):
             lock = " FOR UPDATE"
         else:
             lock = " FOR UPDATE SKIP LOCKED"
-    row = db.execute(text("SELECT id, user_id, mxid, scope, device_ids, spared, spare_after_ms, attempts FROM chat_device_signouts "
-                          "WHERE id = :i AND done_utc = 0" + lock), {"i": int(row_id)}).first()
+    row = db.execute(text("SELECT id, user_id, mxid, scope, device_ids, spared, spare_after_ms, attempts, reason, created_utc "
+                          "FROM chat_device_signouts WHERE id = :i AND done_utc = 0" + lock), {"i": int(row_id)}).first()
     if row is None:
         db.commit()
         return None
-    _id, user_id, mxid, scope, device_ids, spared, spare_after_ms, attempts = row
+    _id, user_id, mxid, scope, device_ids, spared, spare_after_ms, attempts, reason, created_utc = row
     unknown = getattr(matrix, "UserUnknown", None)
     errors = []
     try:
@@ -271,7 +275,7 @@ def run_one(db, matrix, row_id, now=None, wait=False, site_name=None):
             site_rows = db.execute(text("SELECT device_id, created_ms, revoked_utc FROM chat_site_devices WHERE user_id = :u"),
                                    {"u": user_id}).all()
             keep |= {d for d, created, revoked in site_rows if not revoked and created > spare_after_ms}
-            if SITE in keep:                                   # the interim: today's apps-only rule
+            if SITE in keep:                                   # a row queued in build steps 2 and 3: their apps-only rule
                 from ruqqus.helpers.chat_devices import is_site_device
                 name = site_name or _site_name()
                 keep |= {d for d, _c, _r in site_rows}
@@ -289,6 +293,13 @@ def run_one(db, matrix, row_id, now=None, wait=False, site_name=None):
         db.commit()
         print(f"chat sign-out {_id} for {user_id} not done yet: {errors[0]}", flush=True)
         return "failed"
+    grace_ends = int(created_utc or 0) + MINT_GRACE_SECONDS
+    if scope == "listed" and reason in WAITS_FOR_ITS_DEVICE and now < grace_ends and set(_ids(device_ids)) - set(present):
+        # the device the token route gave up on isn't on Synapse yet, and a /login it timed out on may still make it: look again later
+        db.execute(text("UPDATE chat_device_signouts SET last_error = 'waiting', next_try_utc = :next WHERE id = :i"),
+                   {"next": grace_ends, "i": _id})
+        db.commit()
+        return "waiting"
     db.execute(text("UPDATE chat_device_signouts SET done_utc = :now, last_error = NULL WHERE id = :i"), {"now": now, "i": _id})
     db.commit()
     return "done"
@@ -327,10 +338,89 @@ def run_due(db, matrix, limit=50, now=None):
     return done
 
 
+# The account's most recently used non-revoked chat row (ties: the later made, then the higher id): never pruned. Written for both
+# databases, as a condition on `d` (a row of chat_site_devices).
+_NEWER_CHAT_ROW = """EXISTS (SELECT 1 FROM chat_site_devices o WHERE o.user_id = d.user_id AND o.kind = 'chat' AND o.revoked_utc = 0
+                             AND (o.last_used_utc > d.last_used_utc
+                                  OR (o.last_used_utc = d.last_used_utc AND (o.created_ms > d.created_ms
+                                      OR (o.created_ms = d.created_ms AND o.device_id > d.device_id)))))"""
+
+
+def _protected(rows):
+    """Of an account's non-revoked rows (device_id, kind, last_used_utc, created_ms), the one chat row prune_stale never takes."""
+    chats = [r for r in rows if r[1] == "chat"]
+    if not chats:
+        return None
+    return max(chats, key=lambda r: (int(r[2] or 0), int(r[3] or 0), r[0]))[0]
+
+
+def prune_stale(db, now=None, limit=PRUNE_LIMIT):
+    """Signs out the site's chat devices nobody has used for STALE_DAYS (`last_used_utc`), whoever's account it is (a suspended or banned
+    one included: the owner's decision 3 adds no exception), oldest first, at most `limit`: each by `queue(..., STALE, "listed", [id])`,
+    so its site row is revoked at once (the token route stops serving it, and the browser that held it starts a new device and is told
+    why, `previous.reason` "stale") and Synapse deletes it when the queue runs (`run_due`, the next cycle). NEVER the account's most
+    recently used non-revoked chat row, so this step never leaves an account without a chat device (a call row has no such keeping).
+    An account with a sign-out still pending is left for a later cycle, and outside apps (no site row) are never touched. Each candidate
+    is read again under the account's mint lock with its rows held (a token request serving one of them is waited for, and a device it
+    used meanwhile is no longer stale), and each account is committed on its own. Returns how many were queued, or None without the
+    migration (logged)."""
+    now = int(now or time.time())
+    if not tables_ready(db):
+        logging.warning("stale chat devices not pruned: migration missing (apply scripts/migrations/2026-12-20_chat_sign_outs.sql)")
+        return None
+    cutoff = now - STALE_DAYS * 86400
+    candidates = db.execute(text(f"""SELECT d.user_id, d.device_id FROM chat_site_devices d
+                                     WHERE d.revoked_utc = 0 AND d.last_used_utc < :cutoff
+                                       AND (d.kind <> 'chat' OR {_NEWER_CHAT_ROW})
+                                       AND NOT EXISTS (SELECT 1 FROM chat_device_signouts s WHERE s.user_id = d.user_id AND s.done_utc = 0)
+                                     ORDER BY d.last_used_utc, d.user_id, d.device_id LIMIT :n"""),
+                            {"cutoff": cutoff, "n": int(limit)}).all()
+    db.commit()                                         # read with no lock (nothing written): each account is read again under its own
+    by_user = {}
+    for user_id, device_id in candidates:
+        by_user.setdefault(int(user_id), []).append(device_id)
+    queued = 0
+    for user_id, device_ids in by_user.items():
+        try:
+            queued += _prune_account(db, user_id, device_ids, cutoff)
+            db.commit()
+        except DBAPIError as e:
+            db.rollback()
+            if lock_timeout(e):
+                continue                                # a row held past the timeout: the next cycle looks again
+            logging.error(f"stale chat devices of {user_id} not pruned: {type(e).__name__}")
+    return queued
+
+
+def _prune_account(db, user_id, device_ids, cutoff):
+    mxid = mxid_of(db, user_id)
+    if not mxid:
+        return 0
+    lock = ""
+    if _pg(db):
+        db.execute(text(f"SET LOCAL lock_timeout = '{int(WAIT_LOCK_SECONDS)}s'"))    # the mint lock's wait too: never a stuck cycle
+        lock = " FOR UPDATE"
+    lock_account(db, user_id)                           # the lock, then the rows (the order every writer keeps)
+    rows = db.execute(text("SELECT device_id, kind, last_used_utc, created_ms FROM chat_site_devices WHERE user_id = :u "
+                           "AND revoked_utc = 0 ORDER BY device_id" + lock), {"u": user_id}).all()
+    pending = db.execute(text("SELECT 1 FROM chat_device_signouts WHERE user_id = :u AND done_utc = 0"), {"u": user_id}).first()
+    if pending:
+        return 0
+    keep = _protected(rows)
+    stale = {d for d, _kind, used, _made in rows if int(used or 0) < cutoff and d != keep}
+    count = 0
+    for device_id in device_ids:                        # oldest first, as chosen
+        if device_id in stale:
+            queue(db, user_id, STALE, "listed", device_ids=[device_id], mxid=mxid)
+            count += 1
+    return count
+
+
 def flush_for_oidc(db, matrix, user_id, now=None):
     """/oidc/token asks this before it lets an outside app sign in: an app signed in while a sign-out of the account is still out would
     be deleted by it (its device has no site row). Waits for the account's pending rows (a row another worker is on is waited for, not
-    skipped) and runs each. False while one younger than a day is still pending, or a lock wasn't had in WAIT_LOCK_SECONDS."""
+    skipped) and runs each. False while one younger than a day is still pending (a `mint_failed` row waiting for its device included,
+    up to MINT_GRACE_SECONDS after the token route gave up: the app asks again), or a lock wasn't had in WAIT_LOCK_SECONDS."""
     now = int(now or time.time())
     if not tables_ready(db):
         return True

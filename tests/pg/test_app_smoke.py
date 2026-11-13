@@ -25,6 +25,11 @@ def site(real_app):
                       subscribers_visibility=0, subscriptions_visibility=0)
         db.add(member)
         db.commit()
+    # a database used many times: the site's own spam guard suspends an account that posts the same thing again and again,
+    # so each run's post is its own and the member starts each run in good standing
+    if member.is_banned:
+        member.is_banned, member.unban_utc, member.ban_reason = 0, 0, None
+        db.commit()
     member_id, nonce = member.id, member.login_nonce
 
     def as_member():
@@ -40,7 +45,7 @@ def site(real_app):
     poster = as_member()
     answer = poster.post("/api/vue/submit", base_url="http://localhost", environ_base={"REMOTE_ADDR": "203.0.113.7"},
                          headers={"User-Agent": "ci-smoke"},
-                         data={"title": "A post made by the smoke test", "body": "Some text.", "formkey": poster.formkey,
+                         data={"title": secrets.token_hex(12), "body": secrets.token_hex(16), "formkey": poster.formkey,
                                "post_to_profile": "1"})
     assert answer.status_code == 200, (answer.status_code, answer.get_data(as_text=True)[:300])
     post_id = answer.get_json()["id"]
@@ -55,7 +60,9 @@ def site(real_app):
         assert said.status_code == 200, (said.status_code, said.get_data(as_text=True)[:300])   # the answer is drawn HTML
         return db_session().query(Comment).filter_by(parent_submission=base36decode(post_id)).order_by(Comment.id.desc()).first()
 
-    comment_id, gone = base36encode(comment("A comment made by the smoke test").id), comment("A comment about to be deleted")
+    # each run's words are its own: the site's spam guard suspends an account that comments the same thing again and again
+    comment_id = base36encode(comment("A comment made by the smoke test " + secrets.token_hex(16)).id)
+    gone = comment("A comment about to be deleted " + secrets.token_hex(16))
     gone.deleted_utc = now
     removed_id = base36encode(gone.id)
     db_session().commit()

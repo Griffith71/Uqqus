@@ -13,7 +13,7 @@ from flask import session as flask_session
 
 from ruqqus.classes import *
 from ruqqus.helpers import ads as ads_rules
-from ruqqus.helpers import mfa_backup_store, qr_colour, qr_login, same_origin, sign_in_ends, sign_in_history, signin_alerts, user_agents
+from ruqqus.helpers import mfa_backup_store, qr_colour, qr_login, same_origin, session_cookie, sign_in_ends, sign_in_history, signin_alerts, user_agents
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, msg
 from ruqqus.helpers.redirects import same_site
@@ -323,6 +323,7 @@ def login_qr_upgrade(v):
     sign_in_ends.end(g.db, flask_session.get("session_id"), v.id, "qr_upgrade", now)
     g.sign_in_ended_here = True
     flask_session["session_id"] = token_hex(16)
+    session_cookie.keep_prekey_ref(flask_session, request.form.get("chat_prekey_ref"))   # the pre-key its form kept (chat_key.js)
     g.db.commit()
     qr_login.end_limited(flask_session)
     ads_rules.hold_after_password(flask_session, now)

@@ -78,7 +78,25 @@ PLAIN = (
     (r"\bSiege\b", "Takeover claim"), (r"\bsieges\b", "takeover claims"), (r"\bsiege\b", "takeover claim"),
     (r"\bbarren\b", "empty"), (r"\bEMOJI\b", "emoji"),
 )
-_PLAIN = [(re.compile(pattern), plain) for pattern, plain in PLAIN]
+# Added later (2026-11-12): signing out. LibreTranslate read "signed out" as signed (a document: French "signé", Spanish
+# "firmado", Russian "подписано", Turkish "imzalanacaktır"), signed in (German "angemeldet") or subscribed, and "log out"
+# as logging in (Italian "Accedi", Russian "Войти") or registering ("registrado"), on security warnings, where the
+# opposite of what they do is worst. "Disconnect" came back right in every language tried, so a sentence reaches it so
+# written. An entry a machine made before these rules (flag `plain1`) that they change is made again (PLAIN_FLAG).
+PLAIN_SIGN_OUT = (
+    (r"\bsigns (\w+) out\b", r"disconnects \1"),          # "signs chat out on all your devices"
+    (r"\bSigned out of\b", "Disconnected from"), (r"\bsigned out of\b", "disconnected from"),
+    (r"\bSign out\b", "Disconnect"), (r"\bsign out\b", "disconnect"),
+    (r"\bSigns out\b", "Disconnects"), (r"\bsigns out\b", "disconnects"),
+    (r"\bSigned out\b", "Disconnected"), (r"\bsigned out\b", "disconnected"),
+    (r"\bSigning out\b", "Disconnecting"), (r"\bsigning out\b", "disconnecting"),
+    (r"\bLog out\b", "Disconnect"), (r"\blog out\b", "disconnect"), (r"\bLog Out\b", "Disconnect"),
+    (r"\bLogs out\b", "Disconnects"), (r"\blogs out\b", "disconnects"),
+    (r"\bLogged out\b", "Disconnected"), (r"\blogged out\b", "disconnected"),
+    (r"\bLogging out\b", "Disconnecting"), (r"\blogging out\b", "disconnecting"),
+)
+_PLAIN = [(re.compile(pattern), plain) for pattern, plain in PLAIN + PLAIN_SIGN_OUT]
+_PLAIN_BEFORE_SIGN_OUT = [(re.compile(pattern), plain) for pattern, plain in PLAIN]
 _UNTOUCHED = re.compile(r"(%\(\w+\)[sd]|%%|<[^>]+>|&[#\w]+;|`[^`\n]*`|https?://\S+|\]\([^)]*\)|[@+#&][\w-]+)")
 
 # A string that is one short word means little alone ("Space": outer space? "Forward": onwards?): it is sent with what
@@ -93,7 +111,8 @@ SHORT_HINTS = {
     "Repost": "post again on your profile", "Exile": "ban from the group", "Pin": "fix at the top",
     "Unpin": "remove from the top", "Mute guild": "hide a group's posts",
 }
-PLAIN_FLAG = "plain1"          # made with PLAIN and SHORT_HINTS: an older machine entry that needs them is made again
+PLAIN_FLAG = "plain2"          # made with PLAIN, PLAIN_SIGN_OUT and SHORT_HINTS: an older machine entry that needs them is made again
+PLAIN_FLAG_BEFORE_SIGN_OUT = "plain1"     # made with PLAIN and SHORT_HINTS only: made again only if PLAIN_SIGN_OUT changes it
 
 # The site's own words, which a machine gets wrong even written out (LibreTranslate made "Rep" Arabic for "amputation"
 # and "Forward" Spanish for "onward"): their translations, made once per language from scripts/i18n_glossary_terms.py
@@ -104,11 +123,12 @@ GLOSSARY = "glossary.json"
 GLOSSARY_FLAG = "glossary"
 
 
-def plain(text):
-    """The English as sent: the site's shorthand and odd words written out (PLAIN), outside values and markup."""
+def plain(text, rules=None):
+    """The English as sent: the site's shorthand and odd words written out (PLAIN, PLAIN_SIGN_OUT), outside values and
+    markup."""
     pieces = _UNTOUCHED.split(text)
     for i in range(0, len(pieces), 2):
-        for pattern, replacement in _PLAIN:
+        for pattern, replacement in (_PLAIN if rules is None else rules):
             pieces[i] = pattern.sub(replacement, pieces[i])
     return "".join(pieces)
 
@@ -122,6 +142,17 @@ def needs_plain(message):
         if any(re.search(r"(?<![\w])%s(?![\w])" % re.escape(b), text) for b in KEPT):
             return True
     return False
+
+
+def made_before_the_rules(message):
+    """A machine entry made before today's plain-English rules, which they would send differently: one with no plain
+    flag that any rule changes, or one made with the first rules (`plain1`) that PLAIN_SIGN_OUT changes. Made again."""
+    if PLAIN_FLAG in message.flags:
+        return False
+    if PLAIN_FLAG_BEFORE_SIGN_OUT not in message.flags:
+        return needs_plain(message)
+    texts = message.id if isinstance(message.id, (list, tuple)) else [message.id]
+    return any(plain(text) != plain(text, _PLAIN_BEFORE_SIGN_OUT) for text in texts)
 
 
 def glossary(key):
@@ -151,6 +182,7 @@ def apply_glossary(catalog, key):
         if message.string and MACHINE not in message.flags:
             continue                                                            # someone's own correction
         message.string = text
+        message.flags.discard(PLAIN_FLAG_BEFORE_SIGN_OUT)
         message.flags.update((MACHINE, PLAIN_FLAG, GLOSSARY_FLAG))
         message.flags.discard("fuzzy")
         applied.add(found)
@@ -411,7 +443,7 @@ def refuse_broken(catalog):
     for message in catalog:
         if message.id and message.string and MACHINE in message.flags and cat.entry_problems(message):
             message.string = tuple("" for _f in message.string) if isinstance(message.id, (list, tuple)) else ""
-            message.flags.difference_update((MACHINE, PLAIN_FLAG, GLOSSARY_FLAG))
+            message.flags.difference_update((MACHINE, PLAIN_FLAG, PLAIN_FLAG_BEFORE_SIGN_OUT, GLOSSARY_FLAG))
             refused += 1
     return refused
 
@@ -513,8 +545,7 @@ def translate_catalog(key, domain, target, limit=None, batch=20, workers=3, flus
             done = bool(message.string)
         # one it made that today's checks refuse is made again, and one made before the plain-English rules that
         # they would change (a human's own entry, without the flag, is never touched)
-        if done and MACHINE in message.flags and (cat.entry_problems(message) or
-                                                  (PLAIN_FLAG not in message.flags and needs_plain(message))):
+        if done and MACHINE in message.flags and (cat.entry_problems(message) or made_before_the_rules(message)):
             done = False
         if not done:
             todo.append(message)
@@ -555,6 +586,7 @@ def translate_catalog(key, domain, target, limit=None, batch=20, workers=3, flus
                 continue
             message.string = tuple(results) if isinstance(message.id, (list, tuple)) else results[0]
             message.flags.add(MACHINE)
+            message.flags.discard(PLAIN_FLAG_BEFORE_SIGN_OUT)
             message.flags.add(PLAIN_FLAG)
             message.flags.discard("fuzzy")
             translated += 1

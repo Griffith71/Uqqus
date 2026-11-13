@@ -84,13 +84,15 @@ def test_signals_count_only_from_listed_devices_whose_keys_check_out():
 
 
 def test_the_call_window_is_its_own_device_and_one_per_browser():
-    assert "ensureSession(boot, CALL_STORAGE_KEY)" in CALL_JS
-    assert 'openCryptoStore(client, CALL_STORAGE_KEY, { cryptoDatabasePrefix: "uqqus-call" })' in CALL_JS
+    assert 'ensureSession(boot, "call")' in CALL_JS
+    assert "openCryptoStore(client, session)" in CALL_JS                  # its own store: uqqus-call-<localpart>-<device>
     assert 'navigator.locks.request("uqqus-call", { ifAvailable: true }' in CALL_JS
-    assert 'export const CALL_STORAGE_KEY = "ruqqus_call_session";' in read("ruqqus", "assets", "chat_src", "src", "token.js")
+    assert 'export const INDEX_KEY = "uqqus_chat_devices";' in read("ruqqus", "assets", "chat_src", "src", "token.js")
     index = read("ruqqus", "assets", "chat_src", "src", "index.js")
-    assert 'navigator.locks\n      .request("uqqus-matrix", { steal: true }' in index      # one chat client per browser
-    assert "await holdChatLock();" in index
+    keeper = read("ruqqus", "assets", "chat_src", "src", "keeper.js")
+    assert 'export const CHAT_LOCK = "uqqus-matrix";' in keeper                   # one chat client per browser
+    assert "navigator.locks\n      .request(CHAT_LOCK, { steal: true }" in keeper
+    assert "return holdTheChatLock({" in index and "await holdChatLock();" in index
 
 
 def test_the_call_page():
@@ -133,5 +135,26 @@ def test_the_chat_thread_offers_calls_and_draws_the_call_line_as_a_note():
     assert 'data-call="audio"' in ui and 'data-call="video"' in ui and "setCall(status)" in ui
     assert "if (item.notice) {" in ui
     index = read("ruqqus", "assets", "chat_src", "src", "index.js")
-    assert 'notice: !deleted && event.getContent().msgtype === "m.notice"' in index
+    # (a change of the disappearing-message timer is drawn as a note too: room_extras.js)
+    assert 'notice: event.getType() === DISAPPEAR || (!deleted && event.getContent().msgtype === "m.notice")' in index
     assert "/api/calls/status?room=" in index
+
+
+def test_chat_stopping_without_a_reload_ends_the_call_this_window_is_in():
+    """keeper.js stops a page without reloading it (the site refused a renewal: the age lock, a QR password; over the reload budget):
+    the call window must then end its call (microphone, peers, heartbeat, the server told), not only hide the controls while it sends."""
+    ui = CALL_JS[CALL_JS.index("const callUi = {"):CALL_JS.index("class NotStarted")]
+    assert "stop: (text) => stopped(text)," in ui and "fatal(" not in ui
+    stop = CALL_JS[CALL_JS.index("function stopped(text) {"):CALL_JS.index("const callUi = {")]
+    assert "state.stopped = true;" in stop and "if (state.callId) end(text, { close: false });" in stop
+    end = CALL_JS[CALL_JS.index("async function end("):CALL_JS.index("// --- controls")]
+    for step in ("clearInterval(state.heartbeat);", "state.mesh.close()", "state.media.stop()", 'api("leave")'):
+        assert step in end, step
+    assert "if (close) setTimeout(() => window.close(), 2500);" in end           # a stopped window stays, with its reason
+    assert "!(state.keeper && state.keeper.stopped)" in end                       # a stopped client sends no summary
+    # a stop while the join or the microphone was on its way: out again, and nothing more is started
+    run = CALL_JS[CALL_JS.index("async function run()"):CALL_JS.index("async function main()")]
+    assert run.index("state.callId = joined.call_id;") < run.index('if (state.stopped) return api("leave")') < run.index("LocalMedia.open(")
+    opened = run.index("LocalMedia.open(")
+    assert opened < run.index("if (state.stopped) {\n    state.media.stop();", opened) < run.index("turnServer()")
+    assert run.index("turnServer()") < run.index("if (state.ended) return undefined;") < run.index("new Mesh(")

@@ -21,7 +21,7 @@ from .base import MediaGone, Provider, ProviderDown, Stream
 API = "https://www.googleapis.com/drive/v3"
 UPLOAD = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable"
 FOLDER = "application/vnd.google-apps.folder"
-SUBFOLDERS = {rules.IMAGE: "Images", rules.AUDIO: "Audio"}
+SUBFOLDERS = {rules.IMAGE: "Images", rules.AUDIO: "Audio", rules.CHAT: "Chat files"}
 META = "id,size,sha256Checksum,md5Checksum,trashed"
 CHUNK = 64 * 1024
 

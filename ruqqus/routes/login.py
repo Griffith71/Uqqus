@@ -149,7 +149,8 @@ def login_post():
                                    time=now,
                                    hash=hash,
                                    i=random_image(),
-                                   redirect=request.form.get("redirect", "/")
+                                   redirect=request.form.get("redirect", "/"),
+                                   prekey_ref=session_cookie.prekey_ref(request.form.get("chat_prekey_ref"))
                                    )
     elif request.form.get("2fa_token") and request.form.get("time", "").isdigit() and request.form.get("hash"):
         now = int(time.time())
@@ -181,7 +182,8 @@ def login_post():
                                    time=now,
                                    hash=hash,
                                    failed=True,
-                                   i=random_image()
+                                   i=random_image(),
+                                   prekey_ref=session_cookie.prekey_ref(request.form.get("chat_prekey_ref"))
                                    )
         elif is_recovery:
             account.mfa_secret=None
@@ -202,7 +204,7 @@ def login_post():
     # the form left a key for chat to take (assets/js/chat_key.js), so no ad for a while (helpers/ads.py): a password
     # sign-in's own, which is why it isn't in complete_sign_in
     ads_rules.hold_after_password(flask_session, int(time.time()))
-    complete_sign_in(account, sign_in_history.METHOD_PASSWORD)
+    complete_sign_in(account, sign_in_history.METHOD_PASSWORD, prekey_ref=request.form.get("chat_prekey_ref"))
 
     # check for previous page
 
@@ -213,10 +215,12 @@ def login_post():
         return redirect(account.url)
 
 
-def complete_sign_in(account, method):
+def complete_sign_in(account, method, prekey_ref=None):
     """Signs this browser in as `account`, whose right to it the caller has already checked: the session, the sign-in
     alert, the row in `login_events` with how it was made (`method`, helpers/sign_in_history.py), the alts check and the
-    badges (the alts check only once a password has been typed on this browser). Not the ad hold, which belongs to a sign-in that typed a password here (helpers/ads.py)."""
+    badges (the alts check only once a password has been typed on this browser). Not the ad hold, which belongs to a sign-in that typed a password here (helpers/ads.py).
+    `prekey_ref`: the id the form put beside the pre-key it kept (assets/js/chat_key.js), the only pre-key chat may use for this sign-in;
+    none for a QR sign-in, which typed no password here (helpers/session_cookie.py)."""
     # set session and user id. A sign-in this browser still held ends for good (helpers/sign_in_ends.py): a copy of its cookie can't
     # come back as it
     end_old_sign_in(flask_session, "replaced")
@@ -224,6 +228,7 @@ def complete_sign_in(account, method):
     flask_session["session_id"] = token_hex(16)
     flask_session["login_nonce"] = account.login_nonce
     flask_session.permanent = True
+    session_cookie.keep_prekey_ref(flask_session, prekey_ref)
     signed_in_utc = int(time.time())
     # a QR sign-in lasts 12 hours and is limited until its password is given (helpers/qr_login.py); any other sign-in on this
     # browser replaces it and is whole
@@ -595,6 +600,7 @@ You can look around and set up your profile in the meantime.
     session["user_id"] = new_user.id
     session["session_id"] = token_hex(16)
     session.permanent = True
+    session_cookie.keep_prekey_ref(session, request.form.get("chat_prekey_ref"))      # the pre-key the form kept (chat_key.js)
     ads_rules.hold_after_password(session, int(time.time()))
 
     redir = request.form.get("redirect", None)

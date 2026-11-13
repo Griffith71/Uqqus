@@ -36,6 +36,7 @@ class ChatIdentity(Base):
     key_blob_password = Column(Text, nullable=True)
     key_blob_recovery = Column(Text, nullable=True)
     ready_utc = Column(Integer, default=0)
+    code_saved_utc = Column(Integer, default=0)   # the member said they kept their recovery code (0: not since the last new one)
 
     user = relationship("User", primaryjoin="User.id==ChatIdentity.user_id")
 
@@ -72,6 +73,7 @@ class ChatConversation(Base, Stndrd, Age_times):
     status = Column(String(16), nullable=False, default="request")  # 'request' | 'inbox'
     created_utc = Column(Integer, default=0)
     last_activity_utc = Column(Integer, default=0)
+    disappear_seconds = Column(Integer, default=0)       # messages disappear after this long (0: off; helpers/chat_disappear.py)
 
     user_a = relationship("User", primaryjoin="User.id==ChatConversation.user_a_id")
     user_b = relationship("User", primaryjoin="User.id==ChatConversation.user_b_id")

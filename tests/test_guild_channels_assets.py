@@ -153,14 +153,15 @@ def test_the_pages_and_the_tab():
 def test_the_chat_client_writes_through_the_site_and_stays_quiet_in_a_big_room():
     index = read("ruqqus", "assets", "chat_src", "src", "index.js")
     send = index.split("function onSend(", 1)[1].split("\nasync function onAccept", 1)[0]
-    assert send.index("postToGuildChannel(") < send.index("state.locked")           # not encrypted: nothing to unlock
+    assert send.index("postToGuildChannel(") < send.index("sendGate.submit(")       # not encrypted: nothing to unlock
     assert "state.active.gchannel" in send
     assert "if (!gchannel) state.client.sendReadReceipt(" in index                  # no receipts to a whole guild
     assert "state.active.isRequest || state.active.gchannel) return;" in index      # and no typing
     assert "canEdit: mine && !deleted && (!gchannel || gchannel.encrypted)" in index        # an edit would be unsigned (an encrypted room's is its own)
-    assert "markGuildChannelRead(boot.formkey" in index and "joinGuildChannel(boot.formkey" in index
+    assert "markGuildChannelRead(boot," in index and "joinGuildChannel(boot," in index
     assert "GUILD_LIST_MS" in index                                                 # the dearest list is not asked for every message
-    assert "if (boot.single) return;" in index and "single: {{ 'true' if request.args.get('single') else 'false' }}" in \
+    single = index[index.index("  if (boot.single) {\n    sendGate.locked();\n"):]
+    assert single.index("    return;\n  }") < single.index("ensureEncryptionReady(") and "single: {{ 'true' if request.args.get('single') else 'false' }}" in \
         read("ruqqus", "templates", "chat.html")                                    # a frame for one channel has no keys to unlock
     assert "Direction.Backward" in index and "scrollback(room, 30)" in index and "onLoad: loadEarlier" in index
     assert "Load earlier messages" in read("ruqqus", "assets", "chat_src", "src", "ui.js")
@@ -229,7 +230,7 @@ def test_part_two_in_the_chat_client_and_pages():
     helper = read("ruqqus", "assets", "chat_src", "src", "guild_channels.js")
     assert 'rel_type === "m.thread"' in index and "!isThreadMessage(event)" in index                  # threads are not among the rest
     assert 'client.relations(active.room.roomId, rootId, "m.thread"' in index
-    assert 'postToGuildChannel(boot.formkey, active.conversation.channel_id, text, null, rootId)' in index
+    assert 'postToGuildChannel(boot, active.conversation.channel_id, text, null, rootId)' in index
     assert "state.active.itemOf = itemOf" in index and "threadable: false, threadCount: 0, pinnable: false" in index
     assert "onAcceptRules" in index and "I agree to the rules" in ui and "guildChannel.needs_rules" in ui
     assert "mentionPattern(boot.username)" in index and "chat-mention" in ui

@@ -20,6 +20,12 @@ MIB = 1024 * 1024
 
 IMAGE, AUDIO, VIDEO = "image", "audio", "video"
 KINDS = (IMAGE, AUDIO, VIDEO)
+# A file sent in an end-to-end encrypted chat (a 1:1 chat or a group): the browser encrypts it before it leaves, so it
+# is bytes nobody here can read. It is never typed, scanned or shown in a post, only served to the members of its chat
+# (`chat_room_id`), and goes to the account the member's pictures go to. Not one of KINDS: those are a post's.
+CHAT = "chat"
+CHAT_SIZE_MAX = 50 * MIB
+CHAT_UPLOADS_PER_DAY = 200
 
 # ext -> (kind, the Content-Type WE send). Never trust the provider's or the browser's
 # type: the file's first bytes decide (sniff). No SVG or HTML: they can run script.
@@ -35,6 +41,8 @@ TYPES = {
     "flac": (AUDIO, "audio/flac"),
     # a Space's replay, recorded in the host's browser (MediaRecorder writes WebM/Opus in Chrome and Edge)
     "webm": (AUDIO, "audio/webm"),
+    # an encrypted chat file: bytes, never shown as anything else
+    "bin": (CHAT, "application/octet-stream"),
 }
 
 # what Ruqqus serves itself. Video is the hosting site's to limit.
@@ -60,10 +68,10 @@ _NEXT = {
 
 # which provider module handles which kind, per kind of linked account
 PROVIDERS = {
-    "google": {IMAGE: "gdrive", AUDIO: "gdrive", VIDEO: "youtube"},
-    "microsoft": {IMAGE: "onedrive", AUDIO: "onedrive"},
+    "google": {IMAGE: "gdrive", AUDIO: "gdrive", VIDEO: "youtube", CHAT: "gdrive"},
+    "microsoft": {IMAGE: "onedrive", AUDIO: "onedrive", CHAT: "onedrive"},
     "dailymotion": {VIDEO: "dailymotion"},
-    "dev": {IMAGE: "dev", AUDIO: "dev"},
+    "dev": {IMAGE: "dev", AUDIO: "dev", CHAT: "dev"},
 }
 # providers whose files Ruqqus serves at /media/...; the others play on their own site
 SERVED = ("gdrive", "onedrive", "dev")
@@ -190,7 +198,7 @@ def _not_that_kind(kind):
 def check_request(kind, filename, size):
     """What a new upload must satisfy before the provider is asked for an address.
     Returns the ext to expect. Raises MediaError with a message for the member."""
-    if kind not in KINDS:
+    if kind not in KINDS and kind != CHAT:
         raise MediaError(tr("Choose an image, audio or video file."))
     try:
         size = int(size)
@@ -198,6 +206,11 @@ def check_request(kind, filename, size):
         raise MediaError(tr("The file's size is missing."))
     if size <= 0:
         raise MediaError(tr("That file is empty."))
+    if kind == CHAT:
+        # encrypted in the browser: any file, its own limit, always stored as bytes
+        if size > CHAT_SIZE_MAX:
+            raise MediaError(tr("That file is too big. The limit for files in chats is %(size)s MB.", size=CHAT_SIZE_MAX // MIB), 413)
+        return "bin"
 
     if kind == VIDEO:
         return ""        # the video site decides formats and length

@@ -31,7 +31,7 @@ def test_the_shared_sign_in_does_everything_a_sign_in_did_in_order():
 def test_the_ad_hold_belongs_to_the_password_sign_in_and_not_to_the_shared_function():
     """A QR sign-in writes no pre-key (assets/js/chat_key.js), so nothing about it holds the ads back."""
     assert "hold_after_password" not in SIGN_IN
-    assert LOGIN_POST.index("hold_after_password(flask_session,") < LOGIN_POST.index("complete_sign_in(account, sign_in_history.METHOD_PASSWORD)")
+    assert LOGIN_POST.index("hold_after_password(flask_session,") < LOGIN_POST.index("complete_sign_in(account, sign_in_history.METHOD_PASSWORD,")
     assert LOGIN_POST.count("flask_session[") == 0, "the session is only ever written by the shared function"
 
 

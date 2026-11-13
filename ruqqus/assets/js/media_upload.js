@@ -320,7 +320,7 @@
   }
 
   // Offer the services that take this kind of file. Resolves with the one picked, or null.
-  function chooser(node, kind, s, intro, exclude) {
+  function chooser(node, kind, s, intro, exclude, note) {
     return new Promise(function (resolve) {
       quiet(node);
       var box = make('div', 'media-chooser');
@@ -342,7 +342,7 @@
       no.addEventListener('click', function () { quiet(node); resolve(null); });
       box.appendChild(no);
       if (!offered.some(function (x) { return x.linked; })) {
-        box.appendChild(make('div', 'media-chooser-note',
+        box.appendChild(make('div', 'media-chooser-note', note ||
           tr('Your files stay in your own account there, using its free space. This site only shows them in your posts.')));
       }
       node.appendChild(box);
@@ -371,10 +371,10 @@
 
   // Make sure a linked account takes this kind of file. Resolves with the status, or null when
   // the member gave up. `exclude` (a service) asks for another one (that one is full).
-  function ensureAccount(kind, node, intro, exclude) {
+  function ensureAccount(kind, node, intro, exclude, note) {
     return status().then(function (s) {
       if (s.kinds.indexOf(kind) !== -1 && !exclude) return s;
-      return chooser(node, kind, s, intro, exclude).then(function (service) {
+      return chooser(node, kind, s, intro, exclude, note).then(function (service) {
         if (!service) return null;
         if (service.linked) return useService(kind, service);
         return linkWith(node, service, kind).then(function (fresh) {
@@ -660,5 +660,7 @@
     }
   }, true);
 
-  window.MediaUpload = { status: status, upload: upload, connect: connect, version: 2 };
+  // `ensure(kind, node)`: a linked account that takes this kind, linked from `node` (a status line) when there is none;
+  // resolves with the status, or null when the member gave up (the chat's files ask it for "image": they go where pictures go)
+  window.MediaUpload = { status: status, upload: upload, connect: connect, ensure: ensureAccount, version: 3 };
 })();

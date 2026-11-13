@@ -1308,3 +1308,24 @@ button.show-more-link, button.translate-btn, .btn-link.btn-sm {
     min-width: var(--control-sm);
     min-height: var(--control-sm);
 }
+
+
+// Bootstrap's warning box was a pale yellow fill whose text the dark sheet made light (1.5:1, the two-factor dialog's and the
+// chat's lines) and the light sheet a brown at 4.4:1. One warning box for both themes: the page's own text on a warm tint,
+// a warm bar at the start edge (the mirrored sheet moves it), links in the link colour.
+.alert-warning {
+    background-color: var(--warning-soft);
+    border-color: var(--border);
+    border-left: 4px solid var(--warning-edge);
+    color: var(--text);
+
+    a,
+    .alert-link,
+    .btn-link:not(.text-muted) {
+        color: var(--link);
+    }
+
+    hr {
+        border-top-color: var(--border);
+    }
+}

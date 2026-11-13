@@ -1700,6 +1700,54 @@ body.embedded .share-chat-item {
     overflow: hidden;
     word-break: break-word;
 }
+// a comment sent in a chat: its words, three lines at most (the post's title is the line under it)
+.chat-post-title.chat-comment-text {
+    -webkit-line-clamp: 3;
+    font-style: italic;
+}
+// a file sent in a chat (assets/chat_src/src/files.js): a picture, a player or a file, with its name and Download
+.chat-file {
+    min-width: 12rem;
+}
+.chat-file-picture,
+.chat-file-video {
+    display: block;
+    max-width: unquote("min(100%, 20rem)");
+    height: auto;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.25rem;
+}
+.chat-file-audio {
+    display: block;
+    max-width: 100%;
+    margin-bottom: 0.25rem;
+}
+.chat-file-name {
+    max-width: 14rem;
+}
+// in your own (blue, white-text) bubble the file's line is white too: the grey size and the blue Download link
+// would be unreadable on it
+.chat-bubble.text-white .chat-file .text-muted,
+.chat-bubble.text-white .chat-file a {
+    color: inherit !important;
+}
+.chat-bubble.text-white .chat-file a {
+    text-decoration: underline;
+}
+// a message a guild channel's search jumped to: marked for a moment (index.js jumpTo); still under reduced motion
+.chat-msg-found .chat-bubble {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+}
+// the line above the chat's box while a file is sent or a voice note recorded
+.chat-upload-status:empty {
+    display: none;
+}
+// a sender's picture beside their name over their messages (groups and channels)
+.chat-sender-avatar {
+    flex-shrink: 0;
+    object-fit: cover;
+}
 
 // Co-authored posts (templates/partials/coauthors.html, coauthors_modal.html, coauthor_invite.html)
 .coauthors .user-name {

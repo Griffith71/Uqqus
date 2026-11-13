@@ -23,10 +23,15 @@ through a route and these rules; members can only write, react, edit and delete 
 from ruqqus.helpers import age_declaration, display_names
 from ruqqus.helpers.i18n_runtime import tr, trn
 
-MAX_MEMBERS = 32
+# 500, as an end-to-end encrypted guild channel (guild_channels.MAX_ENCRYPTED_MEMBERS; the owner, 2026-11-05): bigger
+# communities are guild channels (10,000) and broadcast channels. Calls in a group stay at 8 people (calls.AUDIO_MAX).
+MAX_MEMBERS = 500
 MAX_NAME_LEN = 50
 GROUPS_PER_DAY = 10          # groups one account may start in a day
-ADDS_PER_DAY = 100           # people one account may add to groups in a day
+# people one account may add to groups in a day: kept at 100 when groups grew to 500, so one account can't fill a
+# group of strangers in a day (a group's other admins add too, under their own 100)
+ADDS_PER_DAY = 100
+ADD_AT_ONCE = 50             # people named in one add (each one a Matrix invitation made while the request waits)
 
 OWNER, ADMIN, MEMBER = "owner", "admin", "member"
 ROLES = (OWNER, ADMIN, MEMBER)

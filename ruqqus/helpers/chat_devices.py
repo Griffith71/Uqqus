@@ -34,6 +34,14 @@ def mxid_of(db, user_id):
     return _mxid(db, user_id) or matrix.mxid_for(user_id)
 
 
+def closing_with(db, user_id):
+    """The Matrix ids a closure ends, for its answer to clear from this browser (account_deleted.html, forgetChatDevices): the account's
+    own and those of the child accounts closed with it (routes/settings.close_own_account closes every child of a parent, and a family
+    shares a browser). Read before the accounts close."""
+    from ruqqus.helpers import child_store
+    return mxid_of(db, user_id), [mxid_of(db, child) for child in child_store.child_ids_safely(db, user_id)]
+
+
 def _log(what, user_id, e):
     print(f"chat {what} for {user_id} not done: {type(e).__name__}", flush=True)
 

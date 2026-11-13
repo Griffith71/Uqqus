@@ -71,7 +71,8 @@ def _channel(bid, v, member_only=True):
 def _writers(channel):
     ids = [channel[1]] + channel_store.helpers(g.db, channel[0])
     users = {u.id: u for u in g.db.query(User).filter(User.id.in_(ids)).all()}
-    return [{"mxid": matrix.mxid_for(uid), "shown_name": users[uid].shown_name, "username": users[uid].username}
+    return [{"mxid": matrix.mxid_for(uid), "shown_name": users[uid].shown_name, "username": users[uid].username,
+             "profile_url": "" if users[uid].is_deleted else users[uid].profile_url}
             for uid in ids if uid in users]
 
 
@@ -141,6 +142,27 @@ def broadcasts_following(v):
     keep = [uid for uid, u in owners.items()
             if not u.is_deleted and not user_hidden(u, v) and not v.any_block_exists(u)]
     return jsonify({"channels": [channel_json(row, None, v) for row in channel_store.public_of_owners(g.db, keep, v.id)]})
+
+
+@app.route("/api/broadcasts/popular", methods=["GET"])
+@auth_required
+@not_qr_limited
+@not_child_locked("chat")
+def broadcasts_popular(v):
+    """The Channels tab's directory: the public channels most people are in, that v is not in, never one whose owner is in
+    a block with v either way or deleted, or whose name (or owner's name) v's filter hides. Finding one by name is the
+    chat page's search."""
+    out = []
+    for row in channel_store.popular_public(g.db, v.id, limit=60):
+        if text_hidden(row[3], v) or _blocked(row, v):
+            continue
+        owner = g.db.query(User).filter_by(id=row[1]).first()
+        if owner is None or owner.is_deleted or user_hidden(owner, v):
+            continue
+        out.append(channel_json(row, None, v))
+        if len(out) >= 20:
+            break
+    return jsonify({"channels": out})
 
 
 @app.route("/api/broadcasts/<int:bid>", methods=["GET"])
@@ -235,8 +257,16 @@ def broadcast_message(bid, v):
     channel, me = _channel(bid, v)
     if channel[4] != channel_rules.PUBLIC:
         return _error(tr("This channel is written from the chat itself."), 409)
+    # a picture: the writer's own uploaded picture (checked and scanned as a post's is: helpers/media), shown publicly
+    picture = None
+    if request.values.get("media"):
+        from ruqqus.helpers.media import attach as media_attach, rules as media_rules
+        picture = media_attach.own_asset(g.db, v.id, request.values.get("media"), kinds=(media_rules.IMAGE,))
+        if picture is None or picture.chat_room_id or picture.submission_id or picture.comment_id or picture.story_id:
+            return _error(tr("That picture can't be used here."), 400)
     try:
-        body = channel_rules.clean_message(request.values.get("body"))
+        body = channel_rules.clean_message(request.values.get("body") if not picture or (request.values.get("body") or "").strip()
+                                           else tr("Picture"))
     except channel_rules.Refused as e:
         return _error(msg(str(e)))
     now = _now()
@@ -247,14 +277,26 @@ def broadcast_message(bid, v):
     from ruqqus.helpers.word_filter_store import get_filter
     severity = get_filter(g.db).severity(body)
     try:
-        event_id = matrix.send_as(channel[5], matrix.mxid_for(v.id),
-                                  {"msgtype": "m.text", "body": body, channel_rules.SEVERITY_KEY: severity,
-                                   channel_rules.SITE_KEY: channel_rules.site_mark(app.config["SECRET_KEY"], channel[5], body)},
-                                  secrets.token_hex(12))
+        content = {"msgtype": "m.text", "body": body, channel_rules.SEVERITY_KEY: severity,
+                   channel_rules.SITE_KEY: channel_rules.site_mark(app.config["SECRET_KEY"], channel[5], body,
+                                                                   picture.path if picture else None)}
+        if picture:
+            content["msgtype"] = "m.image"
+            content[channel_rules.PICTURE_KEY] = picture.path
+            content["info"] = {"w": picture.width or 0, "h": picture.height or 0}
+            if not (request.values.get("body") or "").strip():
+                content["org.uqqus.picture_only"] = True        # no words of its own: the reader's page shows the picture alone
+        event_id = matrix.send_as(channel[5], matrix.mxid_for(v.id), content, secrets.token_hex(12))
     except matrix.MatrixError:
         return _error(tr("Chat isn't answering right now. Try again in a moment."), 502)
-    channel_store.record_post(g.db, bid, v.id, event_id, body, severity, now)
+    if picture:
+        picture.chat_room_id = channel[5]
+        g.db.add(picture)
+    channel_store.record_post(g.db, bid, v.id, event_id, body, severity, now, picture.id if picture else None)
     g.db.commit()
+    if picture:
+        from ruqqus.helpers.media import safety as media_safety
+        media_safety.scan_later([picture])
     return jsonify({"event_id": event_id})
 
 
@@ -345,6 +387,15 @@ def admin_broadcast_report_act(pid, action, v):
             except matrix.MatrixError:
                 return _error("Chat isn't answering right now. Try again in a moment.", 502)     # an admin page: English
         channel_store.remove_post(g.db, pid, now)
+        # its picture goes with it: taken down here and from the CDN (helpers/media)
+        asset_id = channel_store.post_picture(g.db, pid)
+        if asset_id:
+            from ruqqus.helpers.media import cdn as media_cdn, rules as media_rules
+            asset = g.db.query(MediaAsset).filter_by(id=asset_id).first()
+            if asset is not None and media_rules.can_change(asset.status, media_rules.REMOVED):
+                asset.status = media_rules.REMOVED
+                g.db.add(asset)
+                media_cdn.purge([asset.path])
     channel_store.resolve_reports(g.db, pid, now)
     g.db.commit()
     return redirect("/admin/broadcast_reports")

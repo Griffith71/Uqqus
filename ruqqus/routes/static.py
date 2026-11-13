@@ -44,6 +44,20 @@ def web_manifest():
 	return resp
 
 
+# the service worker that shows push notifications (assets/js/sw.js, helpers/push_send.py): at the site's root so it may show
+# them for the whole site; it handles no fetches. Never cached for long, so a change reaches every browser soon.
+@app.route("/sw.js", methods=["GET"])
+@limiter.exempt
+def service_worker():
+	with open(f"{app.config['RUQQUSPATH']}/assets/js/sw.js", "rb") as f:
+		resp = make_response(f.read())
+	resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
+	resp.headers["Cache-Control"] = "no-cache"
+	resp.headers["Service-Worker-Allowed"] = "/"
+	resp.headers["X-Content-Type-Options"] = "nosniff"
+	return resp
+
+
 # the site's own stylesheets are never rate limited: a page that loses one renders unstyled
 @app.route("/assets/style/<file>.css", methods=["GET"])
 @limiter.exempt

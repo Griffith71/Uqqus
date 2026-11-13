@@ -33,7 +33,8 @@ def claimed_assets(db, author_id, texts):
     out = []
     for asset_id, token, ext in refs:
         asset = rows.get(asset_id)
-        if (asset is not None and asset.user_id in owners and asset.ext == ext
+        # a file sent in a chat is never part of a post, whoever pastes its address: that would show it to everyone
+        if (asset is not None and asset.user_id in owners and asset.ext == ext and asset.kind != rules.CHAT
                 and asset.status == rules.READY and hmac.compare_digest(asset.token, token)):
             out.append(asset)
     return out
@@ -146,6 +147,10 @@ def is_live(db, asset):
             return False
         return row.expires_utc > int(time.time()) or bool(
             db.execute(text("SELECT 1 FROM highlight_stories WHERE story_id = :i LIMIT 1"), {"i": asset.story_id}).fetchone())
+    if asset.chat_room_id and asset.kind == rules.IMAGE:
+        # a picture in a public broadcast channel (routes/broadcasts.py): up while its message and its channel are
+        from ruqqus.helpers import broadcast_store
+        return broadcast_store.live_picture_channel(db, asset.id) is not None
     if asset.submission_id:
         post = db.query(Submission.is_banned, Submission.deleted_utc).filter(Submission.id == asset.submission_id).first()
         return bool(post) and not post.is_banned and not post.deleted_utc

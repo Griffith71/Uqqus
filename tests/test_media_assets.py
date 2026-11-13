@@ -37,8 +37,11 @@ def test_the_models_schema_and_migration_have_the_same_columns():
         model = model_columns(class_name)
         assert "status" in model
         assert schema_columns(schema, f"CREATE TABLE public.{table}") == model, table
-        # story_id was added later, by the stories migration (2026-10-10_stories.sql), not by the media one
-        assert schema_columns(migration, f"CREATE TABLE IF NOT EXISTS {table}") == model - {"story_id"}, table
+        # story_id, chat_room_id and expires_utc were added later (2026-10-10_stories.sql, 2026-12-26_chat_files.sql,
+        # 2026-12-29_chat_extras.sql), not by the media one
+        assert schema_columns(migration, f"CREATE TABLE IF NOT EXISTS {table}") == model - {"story_id", "chat_room_id", "expires_utc"}, table
+    assert "ALTER TABLE public.media_assets ADD COLUMN IF NOT EXISTS chat_room_id" in read("scripts", "migrations", "2026-12-26_chat_files.sql")
+    assert "ALTER TABLE public.media_assets ADD COLUMN IF NOT EXISTS expires_utc" in read("scripts", "migrations", "2026-12-29_chat_extras.sql")
     assert "ALTER TABLE media_assets ADD COLUMN IF NOT EXISTS story_id integer;" in read("scripts", "migrations", "2026-10-10_stories.sql")
     assert "story_id" in model_columns("MediaAsset")
     for index in ("media_accounts_user_provider_index", "media_assets_submission_id_index", "media_assets_comment_id_index"):
@@ -94,10 +97,13 @@ def test_a_public_file_is_cached_for_good_and_a_private_one_never():
 def test_a_public_file_never_reads_the_session():
     # a cached answer is shared by everyone: who is asking is only looked at for a file nobody attached, or one that
     # is part of a post made for a Circle (and that answer is never cached: see the Circle tests)
-    serve = ROUTES[ROUTES.index("def media_file("):]
+    serve = ROUTES[ROUTES.index("def _post_file_access("):]
     assert "@auth_" not in ROUTES[ROUTES.index("# --- showing"):ROUTES.index("def media_file(")]
     assert serve.count("get_logged_in_user()") == 1
     assert serve.index("if not live or audience:") < serve.index("get_logged_in_user()")
+    # a chat file (helpers/media/rules.py CHAT) is never public: who asks is always looked at, before anything is served
+    chat = ROUTES[ROUTES.index("def media_file("):ROUTES.index("def _post_file_access(")]
+    assert chat.count("get_logged_in_user()") == 1 and chat.index("if asset.kind == rules.CHAT:") < chat.index("get_logged_in_user()")
 
 
 def test_a_public_file_carries_nobodys_session_cookie():

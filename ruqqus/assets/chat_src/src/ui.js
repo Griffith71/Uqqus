@@ -6,6 +6,7 @@
 // Message text only ever goes in through textContent, never innerHTML.
 
 import { composerNote } from "./guild_channels.js";
+import { drawAttachment } from "./files.js";
 import { createUnreadBumps } from "./fresh.js";
 
 function escapeHtml(s) {
@@ -29,31 +30,35 @@ function timeLabel(ms) {
   return d.toLocaleDateString(window.I18N.intl, { month: "short", day: "numeric" });
 }
 
-// A message that holds a link to one of this site's posts gets a small card under it (made for the
-// reader by /api/chat/post_preview: their own visibility rules, and never the author). The links are
-// recognised by the page's own host name (a copied link always says https), so a link to another site is
-// just text. A post's address is /@author/post/<id> (a guild copy /+guild/@forwarder/post/<id>, an anonymous post
-// has no name); older links with a title after the id still count.
-const POST_LINK = new RegExp(
-  "https?://" + window.location.host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
-    "(?:/\\+\\w+)?(?:/@\\w+)?/post/([0-9a-z]{1,10})(?![0-9a-z])(?:/[^\\s]*)?"
-);
-const previews = new Map();      // post id -> what the server said about it
-const asking = new Set();        // post ids being asked about
+// A message that holds a link to one of this site's posts or comments gets a small card under it (made for the reader
+// by /api/chat/post_preview or /api/chat/comment_preview: their own visibility rules, and never an author). The links
+// are recognised by the page's own host name (a copied link always says https), so a link to another site is just
+// text. A post's address is /@author/post/<id> (a guild copy /+guild/@forwarder/post/<id>, an anonymous post has no
+// name); older links with a title after the id still count. A comment's is /@author/comment/<id> (or /comment/<id>).
+const HOST = "https?://" + window.location.host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const POST_LINK = new RegExp(HOST + "(?:/\\+\\w+)?(?:/@\\w+)?/post/([0-9a-z]{1,10})(?![0-9a-z])(?:/[^\\s]*)?");
+const COMMENT_LINK = new RegExp(HOST + "(?:/@\\w+)?/comment/([0-9a-z]{1,10})(?![0-9a-z])");
+const previews = new Map();      // "post:<id>" or "comment:<id>" -> what the server said about it
+const asking = new Set();        // the same keys, being asked about
 
-function fillPostCard(card, data) {
+function cantShow(kind) {
+  return kind === "comment" ? window.tr("This comment can't be shown.") : window.tr("This post can't be shown.");
+}
+
+function fillPreviewCard(card, data) {
+  const kind = card.dataset.kind;
   card.textContent = "";
   if (!data || !data.ok) {
     const notice = document.createElement("div");
     notice.className = "small text-muted p-2";
-    notice.textContent = data && data.notice ? data.notice : window.tr("This post can't be shown.");
+    notice.textContent = data && data.notice ? data.notice : cantShow(kind);
     card.appendChild(notice);
     return;
   }
   const link = document.createElement("a");
   link.className = "d-flex align-items-center text-decoration-none text-body";
-  link.href = typeof data.url === "string" && data.url.startsWith("/") ? data.url : `/post/${card.dataset.postId}`;
-  if (typeof data.thumb === "string" && data.thumb.startsWith("https://")) {
+  link.href = typeof data.url === "string" && data.url.startsWith("/") ? data.url : `/${kind}/${card.dataset.id}`;
+  if (kind === "post" && typeof data.thumb === "string" && data.thumb.startsWith("https://")) {
     const img = document.createElement("img");
     img.src = data.thumb;
     img.alt = "";
@@ -64,51 +69,68 @@ function fillPostCard(card, data) {
   const text = document.createElement("div");
   text.className = "p-2 overflow-hidden";
   const title = document.createElement("div");
-  title.className = "font-weight-bold chat-post-title";
-  title.textContent = data.title || window.tr("(untitled post)");
   const meta = document.createElement("div");
   meta.className = "small text-muted text-truncate";
-  const count = Number(data.comments) || 0;
-  // Translators: under a shared post's title: the guild it is in and how many comments it has ("+pets · 3 comments")
-  meta.textContent = data.guild
-    ? window.trn("+%(guild)s · %(num)s comment", "+%(guild)s · %(num)s comments", count, { guild: data.guild })
-    : window.trn("%(num)s comment", "%(num)s comments", count);
+  if (kind === "comment") {
+    // the comment's words, then the post it is on (its title, and its guild)
+    title.className = "chat-post-title chat-comment-text";
+    title.textContent = data.text || "";
+    meta.textContent = data.guild ? `+${data.guild} · ${data.title || window.tr("(untitled post)")}` : (data.title || window.tr("(untitled post)"));
+  } else {
+    title.className = "font-weight-bold chat-post-title";
+    title.textContent = data.title || window.tr("(untitled post)");
+    const count = Number(data.comments) || 0;
+    // Translators: under a shared post's title: the guild it is in and how many comments it has ("+pets · 3 comments")
+    meta.textContent = data.guild
+      ? window.trn("+%(guild)s · %(num)s comment", "+%(guild)s · %(num)s comments", count, { guild: data.guild })
+      : window.trn("%(num)s comment", "%(num)s comments", count);
+  }
   text.appendChild(title);
   text.appendChild(meta);
   link.appendChild(text);
   card.appendChild(link);
 }
 
-function postCard(id) {
+function previewCard(kind, id) {
+  const key = `${kind}:${id}`;
   const card = document.createElement("div");
   card.className = "chat-post-card mt-1";
-  card.dataset.postId = id;
-  if (previews.has(id)) {
-    fillPostCard(card, previews.get(id));
+  card.dataset.kind = kind;
+  card.dataset.id = id;
+  if (previews.has(key)) {
+    fillPreviewCard(card, previews.get(key));
     return card;
   }
   const loading = document.createElement("div");
   loading.className = "small text-muted p-2";
-  loading.textContent = window.tr("Loading post…");
+  loading.textContent = kind === "comment" ? window.tr("Loading comment…") : window.tr("Loading post…");
   card.replaceChildren(loading);
-  if (!asking.has(id)) {
-    asking.add(id);
-    fetch(`/api/chat/post_preview/${id}`, { credentials: "same-origin" })
-      .then((r) => (r.ok ? r.json() : { ok: false, notice: window.tr("This post can't be shown.") }))
-      .catch(() => ({ ok: false, notice: window.tr("This post can't be shown.") }))
+  if (!asking.has(key)) {
+    asking.add(key);
+    fetch(`/api/chat/${kind}_preview/${id}`, { credentials: "same-origin" })
+      .then((r) => (r.ok ? r.json() : { ok: false, notice: cantShow(kind) }))
+      .catch(() => ({ ok: false, notice: cantShow(kind) }))
       .then((data) => {
-        previews.set(id, data);
-        asking.delete(id);
-        document.querySelectorAll(`.chat-post-card[data-post-id="${id}"]`).forEach((el) => {
+        previews.set(key, data);
+        asking.delete(key);
+        document.querySelectorAll(`.chat-post-card[data-kind="${kind}"][data-id="${id}"]`).forEach((el) => {
           // the card is taller than "Loading…": someone reading the newest message stays at the bottom
           const box = el.closest("#chat-messages");
           const atBottom = box && box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-          fillPostCard(el, data);
+          fillPreviewCard(el, data);
           if (atBottom) box.scrollTop = box.scrollHeight;
         });
       });
   }
   return card;
+}
+
+// the first link to a post or a comment of this site in a message: { kind, id, match }
+function sharedLink(body) {
+  const post = POST_LINK.exec(body);
+  const comment = COMMENT_LINK.exec(body);
+  if (post && (!comment || post.index <= comment.index)) return { kind: "post", id: post[1], match: post[0] };
+  return comment ? { kind: "comment", id: comment[1], match: comment[0] } : null;
 }
 
 // the emoji offered under "React"
@@ -137,6 +159,7 @@ export function renderConversationList(container, conversations, activeConversat
     const row = document.createElement("a");
     row.href = "#";
     row.className = "d-flex align-items-center px-3 py-2 border-bottom text-decoration-none text-body chat-list-row";
+    if (convo.room_id) row.dataset.room = convo.room_id;
     if (convo.key === activeConversationId) row.classList.add("bg-light");
     if (convo.unread_count > 0) row.classList.add("is-unread");
     // one glint when the unread count went up (fresh.js saw it when the lists were fetched); a redraw part-way carries on
@@ -199,7 +222,7 @@ export function renderConversationList(container, conversations, activeConversat
       row.innerHTML = `
         <img src="${escapeHtml(convo.other_user.profile_url)}" class="rounded-circle mr-2" width="40" height="40">
         <div class="flex-grow-1 overflow-hidden">
-          <div class="font-weight-bold text-truncate">@${escapeHtml(convo.other_user.username)}${unreadDot}</div>
+          <div class="font-weight-bold text-truncate">${personNameHtml(convo.other_user)}${unreadDot}</div>
         </div>
         <div class="text-muted small ml-2">${timeLabel(convo.last_activity_utc * 1000)}</div>
       `;
@@ -210,6 +233,32 @@ export function renderConversationList(container, conversations, activeConversat
     });
     container.appendChild(row);
   }
+}
+
+// a person's name as the rest of the site draws it (CLAUDE.md "Display names"): the name, then the muted @handle when the
+// name is a display name of their own (the server leaves it out when the viewer's word filter hides it or the account is gone)
+function personNameHtml(user) {
+  const name = escapeHtml(user.shown_name || (user.username ? `@${user.username}` : ""));
+  const handle = user.display_name && user.username ? ` <span class="text-muted font-weight-normal small">@${escapeHtml(user.username)}</span>` : "";
+  return name + handle;
+}
+
+export function personName(user) {
+  return user ? (user.shown_name || (user.username ? `@${user.username}` : "")) : "";
+}
+
+// a small picture beside a sender's name over their messages: an address of this site, or an http(s) one as the other
+// chat pictures take (guild_channels.js); never a scheme-relative //host one
+function senderAvatar(url) {
+  if (typeof url !== "string" || !/^(https?:\/\/|\/(?!\/))/.test(url)) return null;
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "";
+  img.width = 18;
+  img.height = 18;
+  img.loading = "lazy";
+  img.className = "rounded-circle mr-1 chat-sender-avatar";
+  return img;
 }
 
 function groupAvatar(size) {
@@ -242,7 +291,12 @@ function callSummaryText(data) {
 // callbacks: onAccept, onDecline, onSend(text), onTyping(isTyping), onCancelContext(), onInfo() (a group's sheet),
 // onCall(kind) (a voice or video call: routes/calls.py). A 1:1 chat passes otherUser; a group passes group
 // ({ label, size }) and requestText for an invitation.
-export function renderThreadShell(pane, { otherUser, group, channel, guildChannel, onSearch, onPins, onMute, onAcceptRules, requestText, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext, onInfo, onCall, onLeave }) {
+export function renderThreadShell(pane, { otherUser, group, channel, guildChannel, onSearch, onPins, onMute, onTimer, onAcceptRules, requestText, isRequest, onAccept, onDecline, onSend, onTyping, onCancelContext, onInfo, onCall, onLeave, onAttach, onVoice, onHelpers }) {
+  // a 1:1 chat's or a group's files and voice notes (files.js): encrypted here, kept in the sender's own storage
+  const attachLabel = escapeAttr(window.tr("Send a file"));
+  const voiceLabel = escapeAttr(window.tr("Record a voice note"));
+  const fileButtons = (onAttach && !isRequest ? `<button type="button" class="btn btn-link text-muted px-2 align-self-end" id="chat-attach" title="${attachLabel}" aria-label="${attachLabel}"><i class="fas fa-paperclip" aria-hidden="true"></i></button>` : "")
+    + (onVoice && !isRequest ? `<button type="button" class="btn btn-link text-muted px-2 align-self-end" id="chat-voice" title="${voiceLabel}" aria-label="${voiceLabel}" aria-pressed="false"><i class="fas fa-microphone" aria-hidden="true"></i></button>` : "");
   const voiceCall = escapeAttr(window.tr("Voice call"));
   const videoCall = escapeAttr(window.tr("Video call"));
   const callButtons = !isRequest && onCall ? `
@@ -253,6 +307,13 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
   const pinned = escapeAttr(window.tr("Pinned messages"));
   const notifications = escapeAttr(window.tr("Notifications"));
   const groupInfo = escapeAttr(window.tr("Group info"));
+  const searchChat = escapeAttr(window.tr("Search this chat"));
+  const disappearing = escapeAttr(window.tr("Disappearing messages"));
+  // a 1:1 chat's and a group's own tools (room_extras.js): search what this browser can read, the pinned messages, the timer
+  const roomTools = !guildChannel && !channel && !isRequest && (onSearch || onPins || onTimer) ? `
+      ${onSearch ? `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-room-search" title="${searchChat}" aria-label="${searchChat}"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>` : ""}
+      ${onPins ? `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-room-pins" title="${pinned}" aria-label="${pinned}"><i class="fas fa-thumbtack" aria-hidden="true"></i></button>` : ""}
+      ${onTimer ? `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-room-timer" title="${disappearing}" aria-label="${disappearing}"><i class="fas fa-stopwatch" aria-hidden="true"></i></button>` : ""}` : "";
   const channelLine = channel ? escapeHtml(channel.public
     ? window.trn("Public channel · %(num)s member", "Public channel · %(num)s members", Number(channel.size) || 0)
     : window.trn("Channel for circles · end-to-end encrypted · %(num)s member",
@@ -285,15 +346,17 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
         <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(channel.label)}</div>
         <div class="small text-muted">${channelLine}</div>
       </div>
-      ${channel.role === "owner" ? "" : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-channel-leave">${leaveLabel}</button>`}` : group ? `
+      ${channel.role === "owner"
+        ? (onHelpers ? `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-channel-helpers">${escapeHtml(window.tr("Helpers"))}</button>` : "")
+        : `<button type="button" class="btn btn-link btn-sm text-muted" id="chat-channel-leave">${leaveLabel}</button>`}` : group ? `
       ${groupAvatar(36)}
       <div class="flex-grow-1 overflow-hidden">
         <div class="font-weight-bold text-truncate" id="chat-thread-title">${escapeHtml(group.label)}</div>
         <div class="small text-muted" id="chat-thread-subtitle">${escapeHtml(peopleLabel(group.size))}</div>
-      </div>${callButtons}
+      </div>${callButtons}${roomTools}
       <button type="button" class="btn btn-link btn-sm text-muted" id="chat-group-info-btn" title="${groupInfo}" aria-label="${groupInfo}"><i class="fas fa-users"></i></button>` : `
-      <img src="${escapeHtml(otherUser.profile_url)}" class="rounded-circle mr-2" width="36" height="36">
-      <div class="font-weight-bold flex-grow-1">@${escapeHtml(otherUser.username)}</div>${callButtons}`;
+      <img src="${escapeHtml(otherUser.profile_url)}" class="rounded-circle mr-2" width="36" height="36" alt="">
+      <div class="font-weight-bold flex-grow-1 text-truncate">${personNameHtml(otherUser)}</div>${callButtons}${roomTools}`;
   const notice = requestText || window.tr("Message request. They won't know you've seen this until you accept.");
   pane.innerHTML = `
     <div class="d-flex align-items-center border-bottom px-3 py-2" id="chat-thread-header">${header}
@@ -326,7 +389,9 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
       <button type="button" class="btn btn-link btn-sm text-muted" id="chat-context-cancel" aria-label="${cancelLabel}">&times;</button>
     </div>
     <div class="border-top p-2">
+      <div id="chat-upload-status" class="small text-muted px-1 pb-1 chat-upload-status" role="status"></div>
       <form id="chat-composer" class="d-flex">
+        ${fileButtons}
         <textarea class="form-control mr-2 chat-composer-input" id="chat-composer-input" rows="1" placeholder="${placeholder}" aria-label="${messageLabel}" autocomplete="off"></textarea>
         <button type="submit" class="btn btn-primary align-self-end">${sendLabel}</button>
       </form>
@@ -339,6 +404,12 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
     pane.querySelector("#chat-decline-btn").addEventListener("click", onDecline);
   }
   if (group && onInfo) pane.querySelector("#chat-group-info-btn").addEventListener("click", onInfo);
+  for (const [id, handler] of [["chat-room-search", onSearch], ["chat-room-pins", onPins], ["chat-room-timer", onTimer]]) {
+    const button = pane.querySelector("#" + id);
+    if (button && handler) button.addEventListener("click", handler);
+  }
+  const helpersBtn = pane.querySelector("#chat-channel-helpers");
+  if (helpersBtn && onHelpers) helpersBtn.addEventListener("click", onHelpers);
   const leave = pane.querySelector("#chat-channel-leave");
   if (leave && onLeave) leave.addEventListener("click", onLeave);
   for (const b of pane.querySelectorAll("[data-call]")) b.addEventListener("click", () => onCall(b.dataset.call));
@@ -435,9 +506,16 @@ export function renderThreadShell(pane, { otherUser, group, channel, guildChanne
     form.parentElement.appendChild(note);
   }
 
+  const attach = pane.querySelector("#chat-attach");
+  if (attach) attach.addEventListener("click", () => onAttach());
+  const voice = pane.querySelector("#chat-voice");
+  if (voice) voice.addEventListener("click", () => onVoice(voice));
+
   return {
     messagesEl: pane.querySelector("#chat-messages"),
     inputEl: input,
+    // the line above the box while a file is sent or a voice note recorded (the uploader draws its account chooser here)
+    uploadEl: pane.querySelector("#chat-upload-status"),
     fit,
     // a line above the box: "Quoting ..." / "Editing message", or none
     setContext(label) {
@@ -541,18 +619,20 @@ function buildMessage(item, handlers) {
     const note = document.createElement("div");
     note.className = "small text-muted chat-notice-text";
     const icon = document.createElement("i");
-    icon.className = "fas fa-phone mr-1";
+    icon.className = item.timerNotice ? "fas fa-stopwatch mr-1" : "fas fa-phone mr-1";
     icon.setAttribute("aria-hidden", "true");
     note.appendChild(icon);
-    note.appendChild(document.createTextNode(callSummaryText(item.callSummary) || item.body));
+    note.appendChild(document.createTextNode(item.timerNotice || callSummaryText(item.callSummary) || item.body));
     row.appendChild(note);
     return row;
   }
 
   if (item.sender) {
     const who = document.createElement("div");
-    who.className = "small text-muted chat-sender";
-    who.textContent = item.sender;
+    who.className = "small text-muted chat-sender d-flex align-items-center";
+    const picture = item.blocked ? null : senderAvatar(item.senderAvatar);
+    if (picture) who.appendChild(picture);
+    who.appendChild(document.createTextNode(item.sender));
     // a guild role, as a chip in the flair palette (the server only sends a palette colour; the pattern is a second lock)
     if (item.senderRole && /^[a-z]{1,12}$/.test(item.senderRole.colour || "")) {
       const chip = document.createElement("span");
@@ -589,6 +669,28 @@ function buildMessage(item, handlers) {
     column.appendChild(quote);
   }
 
+  if (item.forwarded) {
+    // Translators: above a message someone forwarded from another chat (never who first wrote it)
+    const mark = document.createElement("div");
+    mark.className = "small text-muted chat-forwarded";
+    const arrow = document.createElement("i");
+    arrow.className = "fas fa-share mr-1";
+    arrow.setAttribute("aria-hidden", "true");
+    mark.appendChild(arrow);
+    mark.appendChild(document.createTextNode(window.tr("Forwarded")));
+    column.appendChild(mark);
+  }
+  if (item.roomPinned) {
+    const mark = document.createElement("div");
+    mark.className = "small text-muted chat-pinned-mark";
+    const pin = document.createElement("i");
+    pin.className = "fas fa-thumbtack mr-1";
+    pin.setAttribute("aria-hidden", "true");
+    mark.appendChild(pin);
+    mark.appendChild(document.createTextNode(window.tr("Pinned")));
+    column.appendChild(mark);
+  }
+
   const line = document.createElement("div");
   line.className = "d-flex align-items-center";
 
@@ -608,13 +710,29 @@ function buildMessage(item, handlers) {
     };
     bubble.addEventListener("animationend", glintEnded);
   }
-  const shared = !item.deleted && item.body ? POST_LINK.exec(item.body) : null;
+  const shared = !item.deleted && item.body && !item.attachment ? sharedLink(item.body) : null;
   if (item.deleted) {
     bubble.classList.add("font-italic");
     bubble.textContent = window.tr("Message deleted");
+  } else if (item.attachment) {
+    // a file sent in the chat: fetched, checked and decrypted here, then shown or offered to download (files.js)
+    drawAttachment(bubble, item.attachment);
+  } else if (item.picture) {
+    // a picture in a public channel, served by this site (index.js channelPictureOf keeps only its own addresses)
+    bubble.textContent = "";
+    const img = document.createElement("img");
+    img.src = item.picture.path;
+    img.alt = item.picture.only ? window.tr("Picture") : item.body;
+    img.className = "chat-file-picture";
+    img.loading = "lazy";
+    if (item.picture.w && item.picture.h) { img.width = item.picture.w; img.height = item.picture.h; }
+    bubble.appendChild(img);
+    if (!item.picture.only) bubble.appendChild(document.createTextNode(item.body));
   } else {
     // a shared post: the words around the link (if any), and the card under the message
-    bubble.textContent = shared ? item.body.replace(shared[0], "").trim() || window.tr("Shared a post") : item.body;
+    bubble.textContent = shared
+      ? item.body.replace(shared.match, "").trim() || (shared.kind === "comment" ? window.tr("Shared a comment") : window.tr("Shared a post"))
+      : item.body;
     if (item.edited) {
       const mark = document.createElement("span");
       mark.className = "small ml-2 chat-edited";
@@ -652,8 +770,12 @@ function buildMessage(item, handlers) {
     if (item.reportable && handlers.onReport) {
       actions.appendChild(iconButton(window.tr("Report this message"), "fas fa-flag", () => handlers.onReport(item)));
     }
-    if (item.pinnable && handlers.onPin) {
-      actions.appendChild(iconButton(item.pinned ? window.tr("Unpin this message") : window.tr("Pin this message"), "fas fa-thumbtack", () => handlers.onPin(item)));
+    if ((item.pinnable || item.roomPinnable) && handlers.onPin) {
+      const isPinned = item.pinned || item.roomPinned;
+      actions.appendChild(iconButton(isPinned ? window.tr("Unpin this message") : window.tr("Pin this message"), "fas fa-thumbtack", () => handlers.onPin(item)));
+    }
+    if (item.forwardable && handlers.onForward) {
+      actions.appendChild(iconButton(window.tr("Forward this message"), "fas fa-share", () => handlers.onForward(item)));
     }
     if (item.removable && handlers.onRemove) {
       actions.appendChild(iconButton(window.tr("Remove this message (guildmaster)"), "fas fa-comment-slash", () => handlers.onRemove(item)));
@@ -672,7 +794,7 @@ function buildMessage(item, handlers) {
   }
   column.appendChild(line);
 
-  if (shared) column.appendChild(postCard(shared[1]));
+  if (shared) column.appendChild(previewCard(shared.kind, shared.id));
 
   if (item.threadCount && handlers.onThread) {
     const link = document.createElement("button");

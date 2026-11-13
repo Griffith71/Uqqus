@@ -357,7 +357,9 @@ CREATE TABLE public.users (
     age_lock smallint,
     age_assured_utc bigint DEFAULT 0 NOT NULL,
     age_under_utc bigint DEFAULT 0 NOT NULL,
-    private_posting boolean DEFAULT false NOT NULL
+    private_posting boolean DEFAULT false NOT NULL,
+    push_names boolean DEFAULT true NOT NULL,
+    chat_receipts boolean DEFAULT true NOT NULL
 );
 
 
@@ -5665,7 +5667,8 @@ CREATE TABLE public.chat_identities (
     key_salt character varying(64),
     key_blob_password text,
     key_blob_recovery text,
-    ready_utc integer DEFAULT 0 NOT NULL
+    ready_utc integer DEFAULT 0 NOT NULL,
+    code_saved_utc integer DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE ONLY public.chat_identities
@@ -5686,6 +5689,7 @@ CREATE TABLE public.chat_conversations (
     status character varying(16) DEFAULT 'request'::character varying NOT NULL,
     created_utc integer DEFAULT 0,
     last_activity_utc integer DEFAULT 0,
+    disappear_seconds integer DEFAULT 0 NOT NULL,
     CONSTRAINT chat_conversations_pair_order CHECK (user_a_id < user_b_id)
 );
 
@@ -5820,8 +5824,26 @@ CREATE TABLE public.media_assets (
     comment_id integer,
     created_utc integer DEFAULT 0 NOT NULL,
     updated_utc integer DEFAULT 0 NOT NULL,
-    story_id integer
+    story_id integer,
+    chat_room_id character varying(255),
+    expires_utc integer DEFAULT 0 NOT NULL
 );
+
+CREATE INDEX media_assets_chat_room_idx ON public.media_assets (chat_room_id) WHERE chat_room_id IS NOT NULL;
+
+CREATE INDEX media_assets_expires_idx ON public.media_assets (expires_utc) WHERE expires_utc > 0;
+
+-- Messages waiting to disappear (2026-12-29_chat_extras.sql): an event id and when, never what it says.
+CREATE TABLE public.chat_expiring (
+    id SERIAL PRIMARY KEY,
+    room_id character varying(255) NOT NULL,
+    event_id character varying(255) NOT NULL,
+    expires_utc integer NOT NULL,
+    tries integer DEFAULT 0 NOT NULL,
+    CONSTRAINT chat_expiring_event_key UNIQUE (room_id, event_id)
+);
+
+CREATE INDEX chat_expiring_due_idx ON public.chat_expiring (expires_utc);
 
 CREATE UNIQUE INDEX media_accounts_user_provider_index ON public.media_accounts USING btree (user_id, provider);
 
@@ -6315,6 +6337,9 @@ CREATE TABLE public.chat_groups (
     created_utc integer NOT NULL,
     last_activity_utc integer DEFAULT 0 NOT NULL,
     deleted_utc integer DEFAULT 0 NOT NULL,
+    -- messages said in the group; a member's unread is this less their last_read_seq (2026-12-24_group_unread_seq.sql)
+    message_seq bigint DEFAULT 0 NOT NULL,
+    disappear_seconds integer DEFAULT 0 NOT NULL,
     CONSTRAINT chat_groups_room_key UNIQUE (matrix_room_id)
 );
 
@@ -6334,10 +6359,12 @@ CREATE TABLE public.chat_group_members (
     role character varying(8) DEFAULT 'member' NOT NULL,
     status character varying(8) DEFAULT 'invited' NOT NULL,
     invited_by_id integer,
-    unread_count integer DEFAULT 0 NOT NULL,
+    unread_count integer DEFAULT 0 NOT NULL,       -- no longer written or read (last_read_seq)
     last_read_utc integer DEFAULT 0 NOT NULL,
     joined_utc integer DEFAULT 0 NOT NULL,
     invited_utc integer DEFAULT 0 NOT NULL,
+    last_read_seq bigint DEFAULT 0 NOT NULL,
+    push_mode smallint DEFAULT 0 NOT NULL,                 -- 0 every message, 1 calls only, 2 nothing (push notifications)
     PRIMARY KEY (group_id, user_id),
     CONSTRAINT chat_group_members_role_check CHECK (role IN ('owner', 'admin', 'member')),
     CONSTRAINT chat_group_members_status_check CHECK (status IN ('invited', 'joined'))
@@ -6516,7 +6543,8 @@ CREATE TABLE public.broadcast_posts (
     body text NOT NULL,
     word_severity smallint DEFAULT 0 NOT NULL,
     created_utc integer NOT NULL,
-    removed_utc integer DEFAULT 0 NOT NULL
+    removed_utc integer DEFAULT 0 NOT NULL,
+    media_asset_id integer                       -- the picture it showed (2026-12-28_channel_pictures.sql)
 );
 
 CREATE INDEX broadcast_posts_channel_idx ON public.broadcast_posts (broadcast_id, created_utc);
@@ -6531,6 +6559,55 @@ CREATE TABLE public.broadcast_reports (
     created_utc integer NOT NULL,
     resolved_utc integer DEFAULT 0 NOT NULL,
     CONSTRAINT broadcast_reports_once UNIQUE (post_id, reporter_id)
+);
+
+--
+-- Push notifications (migration 2026-12-27_push.sql; helpers/web_push.py, helpers/push_store.py)
+--
+CREATE TABLE public.push_subscriptions (
+    id SERIAL PRIMARY KEY,
+    user_id integer NOT NULL,
+    endpoint character varying(1024) NOT NULL,
+    p256dh character varying(128) NOT NULL,
+    auth character varying(64) NOT NULL,
+    created_utc integer NOT NULL,
+    last_ok_utc integer DEFAULT 0 NOT NULL,
+    failures integer DEFAULT 0 NOT NULL,
+    CONSTRAINT push_subscriptions_endpoint_key UNIQUE (endpoint)
+);
+CREATE INDEX push_subscriptions_user_idx ON public.push_subscriptions (user_id);
+
+--
+-- Reports of messages in private chats (migration 2026-12-25_chat_reports.sql; helpers/chat_reports.py)
+--
+CREATE TABLE public.chat_reports (
+    id SERIAL PRIMARY KEY,
+    reporter_id integer NOT NULL,
+    room_id character varying(255) NOT NULL,
+    room_kind character varying(8) NOT NULL,
+    event_id character varying(255) NOT NULL,
+    reported_id integer,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc integer NOT NULL,
+    status character varying(10) DEFAULT 'open' NOT NULL,
+    resolved_utc integer DEFAULT 0 NOT NULL,
+    resolved_by_id integer,
+    CONSTRAINT chat_reports_once UNIQUE (reporter_id, event_id),
+    CONSTRAINT chat_reports_kind_check CHECK (room_kind IN ('pair', 'group')),
+    CONSTRAINT chat_reports_status_check CHECK (status IN ('open', 'dismissed', 'actioned'))
+);
+CREATE INDEX chat_reports_open_idx ON public.chat_reports (status, created_utc);
+CREATE INDEX chat_reports_reporter_idx ON public.chat_reports (reporter_id, created_utc);
+
+CREATE TABLE public.chat_report_messages (
+    report_id integer NOT NULL REFERENCES public.chat_reports(id) ON DELETE CASCADE,
+    position smallint NOT NULL,
+    event_id character varying(255) NOT NULL,
+    sender_id integer,
+    sender_mxid character varying(255) NOT NULL,
+    sent_ms bigint NOT NULL,
+    body text DEFAULT '' NOT NULL,
+    PRIMARY KEY (report_id, position)
 );
 
 
@@ -7350,4 +7427,11 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-19_ended_sign_ins.sql'),
     ('2026-12-20_chat_sign_outs.sql'),
     ('2026-12-21_log_snapshot_kinds.sql'),
-    ('2026-12-22_edit_groups.sql');
+    ('2026-12-22_edit_groups.sql'),
+    ('2026-12-23_chat_recovery_code.sql'),
+    ('2026-12-24_group_unread_seq.sql'),
+    ('2026-12-25_chat_reports.sql'),
+    ('2026-12-26_chat_files.sql'),
+    ('2026-12-27_push.sql'),
+    ('2026-12-28_channel_pictures.sql'),
+    ('2026-12-29_chat_extras.sql');

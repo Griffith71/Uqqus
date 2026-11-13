@@ -311,6 +311,7 @@
               <a href="javascript:void(0)" role="button" id="shareDropdownLink-{{ c.base36id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-share-alt"></i><span class="d-none d-md-inline-block">{{ pgettext("verb", "Share") }}</span></a>
               <div class="dropdown-menu border-0 shadow" aria-labelledby="shareDropdownLink-{{ c.base36id }}">
                 <a class="dropdown-item copy-link" href="javascript:void(0);" role="button" data-clipboard-text="{{ c.permalink | full_link }}"><i class="fas fa-copy fa-fw"></i>{{ _("Copy link") }}</a>
+                {% if v and not feature_locked(v, 'chat') %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" role="button" data-share-url="{{ c.permalink | full_link }}"><i class="fas fa-paper-plane fa-fw"></i>{{ _("Send in chat") }}</a>{% endif %}
                 {% if can_forward %}
                 <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#forwardCommentModal" onclick="forward_commentModal('{{ c.base36id }}')"><i class="fas fa-share fa-fw"></i>{{ pgettext("verb", "Forward") }}</a>
                 {% endif %}
@@ -538,6 +539,7 @@
 
           {% if can_share %}
           <li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block copy-link" data-dismiss="modal" data-clipboard-text="{{ c.permalink | full_link}}"><i class="fas fa-copy"></i><span>{{ _("Copy Link") }}</span></a></li>
+          {% if v and not feature_locked(v, 'chat') %}<li class="list-group-item"><a href="javascript:void(0);" role="button" class="d-block share-chat-item" data-dismiss="modal" data-share-url="{{ c.permalink | full_link }}"><i class="fas fa-paper-plane"></i><span>{{ _("Send in chat") }}</span></a></li>{% endif %}
           {% endif %}
 
           <li class="list-group-item"><a class="d-block" href="/comment/{{ c.base36id }}/history"><i class="fas fa-history"></i><span>{{ _("History") }}</span></a></li>

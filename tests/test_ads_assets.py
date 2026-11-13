@@ -171,15 +171,19 @@ def test_the_tag_is_never_a_plain_script_element():
 def test_the_order_in_the_partial_is_the_promise():
     partial = read("ruqqus", "templates", "partials", "ad_script.html")
     order = ["requestNonPersonalizedAds = 1", 'sessionStorage.removeItem("uqqus_chat_prekey")', 'localStorage.removeItem("uqqus_chat_prekey")',
+             'document.addEventListener("resume", forgetIfRunning, true)', 'document.addEventListener("visibilitychange", forgetIfRunning, true)',
+             'window.addEventListener("focus", forgetIfRunning, true)',
              "window.loadAdTag = function", "forgetPrekey();", "{{ chat_held(owner) }}", 'document.createElement("script")', TAG, "{% if not on_press %}"]
-    at = [partial.index(part) for part in order]
-    assert at == sorted(at), order
+    at = 0
+    for part in order:                      # each after the one before it
+        at = partial.index(part, at)
     assert "visitor" not in partial.split("<script>")[1]     # the check is for every page: `owner` says whose chat may be here
 
 
 def test_the_hold_is_one_check_for_the_tag_and_for_a_box_that_folds_before_it_paints():
     hold = read("ruqqus", "templates", "partials", "ad_hold.html")
-    for key in ("ruqqus_chat_session", "ruqqus_call_session"):
+    # the index (token.js) and what the client before it kept, which chat still clears when it next starts
+    for key in ("uqqus_chat_devices", "ruqqus_chat_session", "ruqqus_call_session"):
         assert f'localStorage.getItem("{key}")' in hold, key
     slot = read("ruqqus", "templates", "partials", "ad_slot.html")
     assert '{% if page != "feed" %}' in slot and "{{ chat_held(owner) }}" in slot and 'classList.add("ad-slot-empty")' in slot
@@ -189,16 +193,23 @@ def test_the_hold_is_one_check_for_the_tag_and_for_a_box_that_folds_before_it_pa
     assert '"partials/ad_script.html", cfg=cfg, owner=_chat_owner(v),' in route
     assert "chat_devices.mxid_of(g.db, v.id) if v else None" in route
     tokens = read("ruqqus", "assets", "chat_src", "src", "token.js")
-    assert 'STORAGE_KEY = "ruqqus_chat_session"' in tokens and 'CALL_STORAGE_KEY = "ruqqus_call_session"' in tokens
-    assert "existing.user_id === boot.mxid" in tokens        # what the hold compares is what chat compares
+    # the hold reads what chat writes: the same key, and an entry is the owner's by the same field chat picks its own entries by
+    assert 'export const INDEX_KEY = "uqqus_chat_devices";' in tokens
+    assert 'LEGACY_KEYS = ["ruqqus_chat_session", "ruqqus_call_session"]' in tokens
+    assert "if (e.u !== u || e.k !== k || !LIVE.has(e.s)) continue;" in tokens and "currentEntry(idx, boot.mxid, kind)" in tokens
+    assert "return !e || !owner || e.u !== owner;" in hold
 
 
 def test_the_pre_key_is_kept_where_a_tag_in_another_tab_cant_read_it():
     """localStorage is shared by every tab: a tag running in one reads the key the moment a sign-in in another writes it."""
     js = read("ruqqus", "assets", "js", "chat_key.js")
-    assert "sessionStorage.setItem(STORE, text)" in js and "localStorage.setItem" not in js
+    assert "sessionStorage.setItem(STORE, JSON.stringify({ v: 1, name: accountName(account), k: text, at: at, ref: ref || '' }));" in js
+    # the one thing chat_key.js keeps in shared storage is a time (when a password change was sent), never the key
+    assert re.findall(r"localStorage\.setItem\(([^,]+),", js) == ["CHANGED"] and "var CHANGED = 'uqqus_chat_prekey_before';" in js
     keylock = read("ruqqus", "assets", "chat_src", "src", "keylock.js")
-    assert "sessionStorage.getItem(PREKEY_STORE)" in keylock and "localStorage.getItem" not in keylock
+    assert "sessionStorage.getItem(PREKEY_STORE)" in keylock
+    assert re.findall(r"localStorage\.getItem\(([^)]+)\)", keylock) == ["PASSWORD_CHANGED_KEY"]
+    assert 'export const PASSWORD_CHANGED_KEY = "uqqus_chat_prekey_before";' in keylock
     # wherever it goes, an older copy goes too, or it would sit in shared storage for good
     for text in (keylock, read("ruqqus", "templates", "partials", "ad_script.html"), read("ruqqus", "templates", "partials", "forget_prekey.html"),
                  read("ruqqus", "assets", "js", "all_js.js")):
@@ -236,10 +247,22 @@ def test_no_ads_until_is_only_read_for_a_page_drawn_for_a_member():
 
 ME = "@ruqqus_5:site"
 OTHER = "@ruqqus_6:site"
+INDEX = "uqqus_chat_devices"
 
 
 def _session(owner):
+    """What the client before the index kept (a legacy key), until chat next starts here and clears it."""
     return json.dumps({"user_id": owner, "device_id": "D"})
+
+
+def _entry(owner, device="UQD000000000", kind="chat", state="out"):
+    local = owner[1:].split(":")[0]
+    return {"u": owner, "d": device, "k": kind, "p": f"uqqus-{kind}-{local}-{device}", "kid": "k", "s": state, "x": 0, "gen": 1}
+
+
+def _index(*entries, owner=None):
+    """The index chat keeps (assets/chat_src/src/token.js), with these entries."""
+    return json.dumps({"v": 2, "owner": owner, "epoch": 1, "entries": list(entries)})
 
 
 def _script(owner=None, personalised=False, on_press=False):
@@ -265,7 +288,8 @@ def _run(script, stored, throws=False, tab=None, after=""):
       var stored = %s, tab = %s, throws = %s, events = [], listeners = {}, slots = [{ classes: [], classList: { add: function (name) { this.owner.classes.push(name); } } }];
       slots[0].classList.owner = slots[0];
       global.window = global;
-      global.addEventListener = function (name, listener) { listeners[name] = listener; };
+      global.addEventListener = function (name, listener, capture) { events.push("listen window " + name + (capture ? " capture" : "")); listeners[name] = listener; };
+      global.location = { reload: function () { events.push("reload"); } };
       global.localStorage = {
         getItem: function (key) { if (throws) throw new Error("blocked"); return key in stored ? stored[key] : null; },
         removeItem: function (key) { if (throws) throw new Error("blocked"); events.push("remove " + key); delete stored[key]; }
@@ -277,7 +301,10 @@ def _run(script, stored, throws=False, tab=None, after=""):
         currentScript: { previousElementSibling: slots[0] },
         createElement: function () { events.push("create"); return {}; },
         head: { appendChild: function (tag) { events.push("load " + tag.src + " nonpersonal=" + !!window.adsbygoogle.requestNonPersonalizedAds); } },
-        querySelectorAll: function () { return slots; }
+        querySelectorAll: function () { return slots; },
+        addEventListener: function (name, listener, capture) {
+          events.push("listen document " + name + (capture ? " capture" : "")); listeners["document " + name] = listener;
+        }
       };
       %s
       %s
@@ -300,53 +327,85 @@ def test_a_visitors_browser_with_nothing_of_chats_loads_the_tag_non_personalised
 
 
 @node
-@pytest.mark.parametrize("key", ["ruqqus_chat_session", "ruqqus_call_session"])
-def test_a_visitors_browser_holding_a_chat_session_asks_google_for_nothing_and_folds(key):
-    got = _run(_script()[0], {key: "{}", "uqqus_chat_prekey": "x"}, tab={"uqqus_chat_prekey": "x"})
+@pytest.mark.parametrize("stored", [
+    {INDEX: _index(_entry(OTHER))},
+    {INDEX: _index(_entry(ME, state="removed"))},
+    {INDEX: "not json"},
+    {"ruqqus_chat_session": "{}"},
+    {"ruqqus_call_session": _session(ME)},
+])
+def test_a_visitors_browser_holding_any_chat_device_asks_google_for_nothing_and_folds(stored):
+    got = _run(_script()[0], {**stored, "uqqus_chat_prekey": "x"}, tab={"uqqus_chat_prekey": "x"})
     assert got["held"] and got["slots"] == ["ad-slot-empty"]
     assert not any(event.startswith(("create", "load")) for event in got["events"])
-    assert "uqqus_chat_prekey" not in got["stored"] and "uqqus_chat_prekey" not in got["tab"] and key in got["stored"]     # what is kept is chat's to keep
+    assert "uqqus_chat_prekey" not in got["stored"] and "uqqus_chat_prekey" not in got["tab"]
+    assert all(key in got["stored"] for key in stored)                 # what is kept is chat's to keep
+
+
+@node
+def test_an_index_with_no_entries_holds_nothing():
+    """Log out on a browser that never used chat leaves only a counter (all_js.js leaveChatSessions)."""
+    got = _run(_script()[0], {INDEX: _index()})
+    assert not got["held"] and got["events"][-1].startswith("load ")
 
 
 @node
 def test_storage_that_throws_counts_as_nothing_held():
-    got = _run(_script()[0], {"ruqqus_chat_session": "{}"}, throws=True)
+    got = _run(_script()[0], {INDEX: _index(_entry(OTHER))}, throws=True)
     assert not got["held"] and got["events"][-1].startswith("load ")
+    assert _run(_script(ME)[0], {INDEX: _index(_entry(OTHER))}, throws=True)["events"][-1].startswith("load ")
     assert _run(_script(ME)[0], {"ruqqus_chat_session": _session(OTHER)}, throws=True)["events"][-1].startswith("load ")
 
 
 @node
-@pytest.mark.parametrize("key", ["ruqqus_chat_session", "ruqqus_call_session"])
-def test_a_members_own_chat_is_the_accepted_risk_and_the_prekey_goes_before_the_tag(key):
-    got = _run(_script(ME, personalised=True)[0], {key: _session(ME), "uqqus_chat_prekey": "x"}, tab={"uqqus_chat_prekey": "x"})
-    assert not got["held"] and got["events"][:3] == ["tab remove uqqus_chat_prekey", "remove uqqus_chat_prekey", "create"]
+@pytest.mark.parametrize("stored", [
+    {INDEX: _index(_entry(ME), _entry(ME, "UQC000000000", "call", "in"), _entry(ME, "UQR000000000", state="removed"), owner=ME)},
+    {INDEX: _index(_entry(ME, state="forget"))},
+    {"ruqqus_chat_session": _session(ME), "ruqqus_call_session": _session(ME)},
+])
+def test_a_members_own_chat_is_the_accepted_risk_and_the_prekey_goes_before_the_tag(stored):
+    got = _run(_script(ME, personalised=True)[0], {**stored, "uqqus_chat_prekey": "x"}, tab={"uqqus_chat_prekey": "x"})
+    acted = [event for event in got["events"] if not event.startswith("listen ")]
+    assert not got["held"] and acted[:3] == ["tab remove uqqus_chat_prekey", "remove uqqus_chat_prekey", "create"]
     assert got["events"][-1].endswith("nonpersonal=false")
 
 
 @node
-@pytest.mark.parametrize("key", ["ruqqus_chat_session", "ruqqus_call_session"])
-@pytest.mark.parametrize("stored", [_session(OTHER), json.dumps({"device_id": "D"}), "{}", "null", "not json"])
-def test_chat_left_by_another_account_holds_the_tag_on_a_members_page_too(key, stored):
-    """Account A logged out: its keys are still here. B's acceptance of Google's script is about B's own chat."""
-    got = _run(_script(ME)[0], {key: stored})
+@pytest.mark.parametrize("stored", [
+    {INDEX: _index(_entry(OTHER))},
+    {INDEX: _index(_entry(ME), _entry(OTHER, state="removed"), owner=ME)},       # one device of one's own doesn't excuse another's
+    {INDEX: _index({"d": "UQD000000000"})},                                       # an entry that doesn't say whose it is
+    {INDEX: _index(None)},
+    {INDEX: "not json"},
+    {INDEX: json.dumps({"v": 1, "entries": []})},                                 # another version: can't be read
+    # what replaced an unreadable index (a Log out, a deletion): its stores are still here, named by no entry, until a chat start lists them
+    {INDEX: json.dumps({"v": 2, "owner": None, "epoch": 1, "entries": [], "unlisted": True})},
+    {INDEX: json.dumps({"v": 2, "owner": ME, "epoch": 1, "entries": [_entry(ME)], "unlisted": True})},
+    {INDEX: "null"},
+    {INDEX: _index(_entry(ME)), "ruqqus_chat_session": _session(OTHER)},          # a legacy key of another account
+    {"ruqqus_chat_session": _session(ME), "ruqqus_call_session": _session(OTHER)},
+    {"ruqqus_call_session": json.dumps({"device_id": "D"})},
+    {"ruqqus_chat_session": "{}"},
+    {"ruqqus_chat_session": "null"},
+    {"ruqqus_call_session": "not json"},
+])
+def test_chat_left_by_another_account_holds_the_tag_on_a_members_page_too(stored):
+    """Account A logged out: its locked devices are still here. B's acceptance of Google's script is about B's own chat."""
+    got = _run(_script(ME)[0], stored)
     assert got["held"] and got["slots"] == ["ad-slot-empty"]
     assert not any(event.startswith(("create", "load")) for event in got["events"])
-    assert key in got["stored"]
+    assert all(key in got["stored"] for key in stored)
 
 
 @node
-def test_one_session_of_ones_own_doesnt_excuse_anothers():
-    got = _run(_script(ME)[0], {"ruqqus_chat_session": _session(ME), "ruqqus_call_session": _session(OTHER)})
-    assert got["held"] and not any(event.startswith("load") for event in got["events"])
-
-
-@node
-@pytest.mark.parametrize("owner,stored,folds", [(None, "{}", True), (None, _session(ME), True), (None, None, False),
-                                                (ME, _session(ME), False), (ME, _session(OTHER), True), (ME, "{}", True), (ME, None, False)])
+@pytest.mark.parametrize("owner,stored,folds", [
+    (None, {INDEX: _index(_entry(ME))}, True), (None, {INDEX: _index()}, False), (None, {}, False),
+    (ME, {INDEX: _index(_entry(ME), owner=ME)}, False), (ME, {INDEX: _index(_entry(OTHER))}, True), (ME, {INDEX: "{"}, True),
+    (ME, {"ruqqus_chat_session": _session(OTHER)}, True), (ME, {"ruqqus_chat_session": _session(ME)}, False), (ME, {}, False)])
 def test_a_box_folds_before_it_paints_by_the_same_rule(owner, stored, folds):
-    got = _run(_slot_fold(owner), {"ruqqus_chat_session": stored} if stored else {})
+    got = _run(_slot_fold(owner), stored)
     assert (got["slots"] == ["ad-slot-empty"]) is folds
-    assert _run(_slot_fold(owner), {"ruqqus_chat_session": "x"}, throws=True)["slots"] == []
+    assert _run(_slot_fold(owner), {INDEX: "x"}, throws=True)["slots"] == []
 
 
 @node
@@ -356,15 +415,50 @@ def test_a_page_the_back_button_brings_back_takes_a_key_written_since():
     assert _run(_script()[0], {}, after=written_since % "true")["tab"] == {}
     # an ordinary load isn't that, and a page that never loaded the tag has nothing running to keep it from
     assert _run(_script()[0], {}, after=written_since % "false")["tab"] == {"uqqus_chat_prekey": "x"}
-    assert _run(_script(ME)[0], {"ruqqus_chat_session": _session(OTHER)}, after=written_since % "true")["tab"] == {"uqqus_chat_prekey": "x"}
+    assert _run(_script(ME)[0], {INDEX: _index(_entry(OTHER))}, after=written_since % "true")["tab"] == {"uqqus_chat_prekey": "x"}
+
+
+@node
+@pytest.mark.parametrize("event", ["document resume", "document visibilitychange", "focus"])
+def test_a_restored_page_takes_the_key_before_anything_of_the_tag_hears_it(event):
+    """Chromium gives a page out of the back-forward cache `resume` and `visibilitychange` before `pageshow` (measured in ads.spec.ts):
+    the key a sign-in in this tab wrote while the page was away goes on each, in a listener with capture put on before the tag was."""
+    got = _run(_script()[0], {}, after='tab.uqqus_chat_prekey = "x"; listeners[%s]({});' % json.dumps(event))
+    assert got["tab"] == {} and "reload" not in got["events"]
+    load = next(i for i, e in enumerate(got["events"]) if e.startswith("load "))
+    where = "listen " + (event if event.startswith("document ") else "window " + event) + " capture"
+    assert got["events"].index(where) < load
+    # a page that never loaded the tag has nothing running to keep the key from: chat in this tab may still take it
+    held = _run(_script(ME)[0], {INDEX: _index(_entry(OTHER))}, after='tab.uqqus_chat_prekey = "x"; listeners[%s]({});' % json.dumps(event))
+    assert held["tab"] == {"uqqus_chat_prekey": "x"}
+
+
+@node
+@pytest.mark.parametrize("owner,since,reloads", [
+    (None, _index(_entry(OTHER)), True),           # a visitor's page with the tag; this tab then signed in and opened chat
+    (ME, _index(_entry(OTHER)), True),             # A's page; A's sign-in ended, B signed in and opened chat
+    (ME, _index(_entry(ME), owner=ME), False),     # only the page's own account's chat: the accepted risk
+    (None, None, False),                           # nothing of chat came while it was away
+])
+def test_a_page_the_back_button_brings_back_asks_the_hold_again(owner, since, reloads):
+    """The tag came back running: chat data another account left while the page was away holds it, and the page is drawn afresh."""
+    put = "" if since is None else "stored[%s] = %s; " % (json.dumps(INDEX), json.dumps(since))
+    got = _run(_script(owner)[0], {}, after=put + "listeners.pageshow({ persisted: true });")
+    assert any(event.startswith("load ") for event in got["events"])          # the tag was running when the page went
+    assert ("reload" in got["events"]) is reloads
+    if reloads:
+        assert got["events"][-1] == "reload"
+    # an ordinary load isn't a restore
+    assert "reload" not in _run(_script(owner)[0], {}, after=put + "listeners.pageshow({ persisted: false });")["events"]
 
 
 @node
 def test_on_the_privacy_page_a_viewer_with_no_ads_loads_nothing_until_they_press():
     script = _script(ME, on_press=True)[0]
-    assert _run(script, {"uqqus_chat_prekey": "x"})["events"] == []
+    assert [e for e in _run(script, {"uqqus_chat_prekey": "x"})["events"] if not e.startswith("listen ")] == []
     assert _run(script, {})["press"] == "function"
     pressed = _run(script + "\nwindow.loadAdTag();", {"uqqus_chat_prekey": "x"}, tab={"uqqus_chat_prekey": "x"})
+    pressed["events"] = [e for e in pressed["events"] if not e.startswith("listen ")]
     assert pressed["events"][:2] == ["tab remove uqqus_chat_prekey", "remove uqqus_chat_prekey"] and pressed["events"][-1].startswith("load ")
 
 

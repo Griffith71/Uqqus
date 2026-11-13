@@ -1,6 +1,6 @@
 // The call window (templates/call.html, routes/calls.py): a voice or video call in one chat, in a window of its own
-// so the rest of the site can be browsed meanwhile. It is a second Matrix device of the account (token.js
-// CALL_STORAGE_KEY, its own crypto store), and only one call window runs per browser (a Web Lock).
+// so the rest of the site can be browsed meanwhile. It is a second Matrix device of the account (token.js, the `call`
+// kind in the index, its own crypto store), and only one call window runs per browser (a Web Lock).
 //
 // The server says who is in the call (join / heartbeat, live updates on the call's topic); the browsers connect to
 // each other through the relay (rtc/mesh.js) and never to anyone the server does not list. Every name goes in as text.
@@ -9,8 +9,11 @@ import * as sdk from "matrix-js-sdk";
 import { ClientEvent } from "matrix-js-sdk";
 import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm";
 
-import { ensureSession, openCryptoStore, CALL_STORAGE_KEY, PasswordNeeded } from "./token.js";
-import { startAgainWhenSignedOut } from "./signed_out.js";
+import { ensureSession, openCryptoStore } from "./token.js";
+import { sitePost } from "./site.js";
+import { firstSync, makeClient, startSession } from "./keeper.js";
+import { sweepEmpty } from "./harvest.js";
+import { watchSignedOut } from "./signed_out.js";
 import { LocalMedia, MediaRefused, levelMeter, resumeAudio } from "./rtc/media.js";
 import { Mesh } from "./rtc/mesh.js";
 
@@ -18,15 +21,16 @@ const boot = window.UQQUS_CALL_BOOT;
 const byId = (id) => document.getElementById(id);
 
 const state = {
-  client: null, media: null, mesh: null, callId: null, me: null,
+  client: null, keeper: null, media: null, mesh: null, callId: null, me: null,
   roster: [], tiles: new Map(), meters: new Map(), connected: new Set(),
-  joinedAt: 0, ended: false, events: null, heartbeat: null, ringTimer: null, clock: null,
+  joinedAt: 0, ended: false, stopped: false, events: null, heartbeat: null, ringTimer: null, clock: null,
 };
 
 // --- talking to the server -------------------------------------------------------------------------------------
+// A credential event in another tab that spared this sign-in leaves this window's form key stale: the heartbeat that finds out refreshes
+// it in place and is sent again (site.js sitePost), so the call goes on; the leave beacon reads the key as it is then.
 async function api(action, fields = {}) {
-  const body = new URLSearchParams({ formkey: boot.formkey, room: boot.roomId, device_id: state.me ? state.me.deviceId : "", ...fields });
-  const resp = await fetch(`/api/calls/${action}`, { method: "POST", credentials: "same-origin", body, headers: { Accept: "application/json" } });
+  const resp = await sitePost(boot, `/api/calls/${action}`, { room: boot.roomId, device_id: state.me ? state.me.deviceId : "", ...fields });
   let data = {};
   try {
     data = await resp.json();
@@ -153,7 +157,7 @@ async function beat() {
 }
 
 // --- ending ---------------------------------------------------------------------------------------------------
-async function end(reason, { leave = true } = {}) {
+async function end(reason, { leave = true, close = true } = {}) {
   if (state.ended) return;
   state.ended = true;
   clearInterval(state.heartbeat);
@@ -176,7 +180,7 @@ async function end(reason, { leave = true } = {}) {
   // the last one out writes the call into the chat ("Voice call · 12 min"), encrypted like any message. The body stays
   // English (everyone in the room reads the same event); the kind and length go with it so each reader's chat draws
   // the line in their own language (ui.js)
-  if (summary && state.client) {
+  if (summary && state.client && !(state.keeper && state.keeper.stopped)) {    // a stopped client sends nothing
     const content = { msgtype: "m.notice", body: summary };
     if (summaryData && (summaryData.kind === "audio" || summaryData.kind === "video") && Number.isFinite(summaryData.seconds)) {
       content["org.uqqus.call_summary"] = { kind: summaryData.kind, seconds: Math.max(0, Math.floor(summaryData.seconds)) };
@@ -189,7 +193,7 @@ async function end(reason, { leave = true } = {}) {
   }
   fatal(reason || window.tr("Call ended."));
   byId("call-fatal-close").focus();
-  setTimeout(() => window.close(), 2500);
+  if (close) setTimeout(() => window.close(), 2500);
 }
 
 // --- controls --------------------------------------------------------------------------------------------------
@@ -214,6 +218,31 @@ function wireControls() {
       // Translators: the label of the camera button in a call (what pressing it does)
       camera.querySelector(".call-label").textContent = state.media.cameraOff ? window.tr("Camera on") : window.tr("Camera off");
       showStream("me", state.media.stream, true);
+    });
+  }
+  // sharing the screen in place of the camera (media.js shareScreen): only for someone on video, and where the browser can
+  const screen = byId("call-screen");
+  const showScreen = (on) => {
+    screen.setAttribute("aria-pressed", String(on));
+    // Translators: the label of the screen-sharing button in a call (what pressing it does)
+    screen.querySelector(".call-label").textContent = on ? window.tr("Stop sharing") : window.tr("Share screen");
+    camera.disabled = on;
+    showStream("me", state.media.stream, true);
+  };
+  if (!state.media.videoTrack || !navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    screen.hidden = true;
+  } else {
+    screen.addEventListener("click", async () => {
+      if (state.media.screenTrack) {
+        state.media.stopScreen();
+        showScreen(false);
+        return;
+      }
+      try {
+        if (await state.media.shareScreen(() => showScreen(false))) showScreen(true);
+      } catch (e) {
+        setStatus(e.message);
+      }
     });
   }
   byId("call-leave").addEventListener("click", () => end(window.tr("You left the call.")));
@@ -266,24 +295,43 @@ function wireControls() {
 }
 
 // --- starting --------------------------------------------------------------------------------------------------
+// What the window shows when chat can't start or stops (keeper.js): the status line, or the closing message. Chat stopping without a
+// reload (the site refused a renewal: the age lock, a QR password; over the reload budget) ends the call this window is in: the
+// microphone and camera stop, the peers are let go, the heartbeat stops and the server is told it left. The window stays open with the
+// reason (closing it and opening the call again is this window's "try again").
+function stopped(text) {
+  state.stopped = true;
+  if (state.callId) end(text, { close: false });
+  else fatal(text);                                 // not in the call yet: run() goes no further (`stopped`)
+}
+
+const callUi = {
+  status: (text) => setStatus(text),
+  stop: (text) => stopped(text),
+  banner: (text) => setStatus(text || ""),
+  notice: (text) => setStatus(text || ""),
+};
+
+class NotStarted extends Error {}
+
 async function startMatrix() {
-  const session = await ensureSession(boot, CALL_STORAGE_KEY);
-  const client = sdk.createClient({
-    baseUrl: session.homeserver_url, accessToken: session.access_token, userId: session.user_id, deviceId: session.device_id,
+  // a refusal, no storage or a site that couldn't answer is said by startSession; this window then goes no further
+  const session = await startSession(() => ensureSession(boot, "call"), callUi, { onPassword: (e) => fatal(e.message), retry: false });
+  if (!session) throw new NotStarted();
+  const { client, keeper } = makeClient(sdk, session, {}, { ui: callUi });
+  state.keeper = keeper;
+  watchSignedOut(client, keeper);
+  // the store's own lock, the wasm, then the store (keeper.js openStore, 6.4), inside this window's uqqus-call lock. A failure
+  // (StoreFailed: the lock never came, the store wouldn't open) reaches main(), which shuts the keeper down and says so
+  const opened = await keeper.openStore(() => openCryptoStore(client, session), {
+    prepare: () => initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm"),
   });
-  startAgainWhenSignedOut(client, CALL_STORAGE_KEY, "uqqus-call");
-  await initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm");
-  await openCryptoStore(client, CALL_STORAGE_KEY, { cryptoDatabasePrefix: "uqqus-call" });
-  await new Promise((resolve) => {
-    const onSync = (s) => {
-      if (s === "PREPARED" || s === "SYNCING") {
-        client.off(ClientEvent.Sync, onSync);
-        resolve();
-      }
-    };
-    client.on(ClientEvent.Sync, onSync);
-    client.startClient({ initialSyncLimit: 1, lazyLoadMembers: true }).catch(() => {});
-  });
+  if (!opened) throw new NotStarted();
+  // the stores this browser kept of the account's older devices: one found empty goes, in the background (harvest.js, 2.4 case 3). Only
+  // the chat page takes their keys (the harvest): this window has no unlocked chat device to put them in
+  sweepEmpty(session, { stopped: () => keeper.stopped }).catch(() => {});
+  // the first sync, or this window stopping first (a refused renewal, over the reload budget): it has said why, and goes no further
+  if (!(await firstSync(client, keeper, ClientEvent.Sync, { initialSyncLimit: 1, lazyLoadMembers: true }))) throw new NotStarted();
   return client;
 }
 
@@ -300,12 +348,18 @@ async function run() {
     return fatal(e.message);
   }
   state.callId = joined.call_id;
+  // chat stopped while the join was on its way: out again, before any microphone is opened
+  if (state.stopped) return api("leave").catch(() => {});
 
   try {
     state.media = await LocalMedia.open(!!joined.video);
   } catch (e) {
     await api("leave").catch(() => {});
     return fatal(e instanceof MediaRefused ? e.message : window.tr("The microphone couldn't be started."));
+  }
+  if (state.stopped) {
+    state.media.stop();
+    return api("leave").catch(() => {});
   }
   if (boot.kind === "video" && !joined.video) setStatus(window.tr("Video is off in this call: you're on audio."));
   else if (state.media.cameraProblem) setStatus(window.tr("The camera couldn't be started: you're on audio."));
@@ -316,6 +370,7 @@ async function run() {
   } catch (e) {
     turn = null;
   }
+  if (state.ended) return undefined;                 // chat stopped meanwhile (stopped -> end): the call is over already
   if (!turn || !turn.uris || !turn.uris.length) {
     await api("leave").catch(() => {});
     state.media.stop();
@@ -398,7 +453,8 @@ async function main() {
   try {
     await run();
   } catch (e) {
-    fatal(e instanceof PasswordNeeded ? e.message : window.tr("The call couldn't start. Close this window and try again."));
+    if (state.keeper) state.keeper.shutdown();
+    if (!(e instanceof NotStarted)) fatal(window.tr("The call couldn't start. Close this window and try again."));
     if (state.callId) api("leave").catch(() => {});
   }
 }

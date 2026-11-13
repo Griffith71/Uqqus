@@ -23,10 +23,15 @@ def test_only_call_and_space_pages_may_use_the_microphone_and_camera():
         assert "microphone=(self)" in device_access.permissions_policy(path)
         assert "camera=(self)" in device_access.permissions_policy(path)
     # the chat page and its side panel never hold a call: it runs in a window of its own
-    for path in ("/", "/chat", "/api/chat/token", "/call/", "/space/", "/calls/x", "/settings/media", "", None):
+    for path in ("/", "/api/chat/token", "/call/", "/space/", "/calls/x", "/settings/media", "", None):
         assert not device_access.is_call_page(path)
         assert "microphone=()" in device_access.permissions_policy(path)
         assert "camera=()" in device_access.permissions_policy(path)
+    # the chat page itself may use the microphone alone, for voice notes (its frames sit in pages that say no)
+    assert not device_access.is_call_page("/chat")
+    assert "microphone=(self)" in device_access.permissions_policy("/chat")
+    assert "camera=()" in device_access.permissions_policy("/chat")
+    assert "microphone=()" in device_access.permissions_policy("/chat/x")
 
 
 def test_every_other_feature_stays_off_on_every_page():

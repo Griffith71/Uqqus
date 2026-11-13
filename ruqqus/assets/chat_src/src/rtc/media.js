@@ -74,7 +74,61 @@ export class LocalMedia {
 
   setCameraOff(off) {
     this.cameraOff = off;
+    if (this.screenTrack) {
+      if (this.camera) this.camera.enabled = false;      // the camera waits, off, while the screen is shared
+      return;
+    }
     if (this.videoTrack) this.videoTrack.enabled = !off;
+  }
+
+  // Sharing the screen in place of the camera: the same one video stream per other person, so a call's video limits and
+  // the relay's allowance count it as they count a camera (helpers/calls.py, helpers/turn_usage.py). Only someone already
+  // sending video shares. The browser's own "Stop sharing" ends it too, and the camera comes back.
+  async shareScreen(onEnded) {
+    if (!this.videoTrack) throw new MediaRefused(window.tr("Your screen can be shared only while you're on video in this call."));
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      throw new MediaRefused(window.tr("This browser can't share its screen."));
+    }
+    if (this.screenTrack) return this.screenTrack;
+    let display;
+    try {
+      display = await navigator.mediaDevices.getDisplayMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 15, max: 15 } }, audio: false,
+      });
+    } catch (error) {
+      if (error && error.name === "NotAllowedError") return null;          // the member chose not to share: nothing to say
+      throw new MediaRefused(window.tr("Your screen couldn't be shared."));
+    }
+    const track = display.getVideoTracks()[0];
+    if (!track) return null;
+    if ("contentHint" in track) track.contentHint = "detail";            // sharp text over smooth motion
+    this.camera = this.videoTrack;
+    this.stream.removeTrack(this.camera);
+    this.camera.enabled = false;
+    this.stream.addTrack(track);
+    this.screenTrack = track;
+    track.addEventListener("ended", () => {
+      if (this.screenTrack === track) {
+        this.stopScreen();
+        if (onEnded) onEnded();
+      }
+    });
+    this.changed("video", track);
+    return track;
+  }
+
+  stopScreen() {
+    const track = this.screenTrack;
+    if (!track) return;
+    this.screenTrack = null;
+    this.stream.removeTrack(track);
+    track.stop();
+    if (this.camera) {
+      this.stream.addTrack(this.camera);
+      this.camera.enabled = !this.cameraOff;
+      this.changed("video", this.camera);
+    }
+    this.camera = null;
   }
 
   async devices() {
@@ -140,6 +194,7 @@ export class LocalMedia {
 
   stop() {
     for (const track of this.stream.getTracks()) track.stop();
+    if (this.camera) this.camera.stop();
   }
 }
 

@@ -6,6 +6,8 @@
 //   password key  PBKDF2-SHA256(pre-key, account salt, 100,000) -> AES-GCM
 //   code key      PBKDF2-SHA256(recovery code, "code:" + account salt, 210,000) -> AES-GCM
 
+import { sitePost } from "./site.js";
+
 const PREKEY_LABEL = "uqqus-chat-prekey-v1";
 const PREKEY_ROUNDS = 210000;
 const KEK_ROUNDS = 100000;
@@ -72,9 +74,44 @@ export function newRecoveryCode() {
   return chars.match(/.{5}/g).join("-");
 }
 
-// In this tab's sessionStorage (chat_key.js): shared with a frame in this tab, the side panel's chat, never with another tab.
-export function takePrekey() {
-  try { return sessionStorage.getItem(PREKEY_STORE); } catch (e) { return null; }
+// How a pre-key names its account (chat_key.js accountName): what was typed in the sign-in form's username box, or the account a signed-in
+// form is for, lowercased and without a leading "@".
+export function accountName(name) {
+  return String(name || "").trim().replace(/^@+/, "").toLowerCase();
+}
+
+// In this tab's sessionStorage (chat_key.js): shared with a frame in this tab, the side panel's chat, never with another tab. Kept as
+// {v: 1, name, k, at, ref}: the pre-key `k`, the account it was typed for and the id of the sign-in that typed it. Answered only to a page
+// of that account (`account`, the chat boot's username) and of that sign-in (`ref`, the chat boot's prekeyRef: the id the form sent with
+// the password, which the sign-in kept, helpers/session_cookie.py PREKEY_REF_KEY). One left in this tab by an account that logged out in
+// another tab, before someone else signed in there, is another account's password, and locking this account's recovery key with it
+// would let that password open this account's chats. One left by an earlier sign-in of this same account may be from a password changed
+// since anywhere (another browser's Settings, a reset by email, a parent's new password for a child), which ended that sign-in: this
+// browser signed in again with a new id, so that pre-key is never used, and the old password can't open the account's chats. Anything
+// else (another account's, another sign-in's, one without an id, the older bare form, one that can't be read, a sign-in typed with an
+// email address) is removed and chat asks.
+// So is one made before the last password change this browser sent (`at`, chat_key.js `uqqus_chat_prekey_before`, which every tab
+// sees): a change made here keeps the sign-in (and so its id), so the id alone wouldn't tell.
+export function takePrekey(account, ref) {
+  let raw = null;
+  try { raw = sessionStorage.getItem(PREKEY_STORE); } catch (e) { return null; }
+  if (!raw) return null;
+  let held = null;
+  try { held = JSON.parse(raw); } catch (e) { held = null; }
+  const wanted = accountName(account);
+  const sameSignIn = typeof ref === "string" && !!ref && held && held.ref === ref;
+  if (held && held.v === 1 && typeof held.k === "string" && held.k && wanted && held.name === wanted && sameSignIn
+      && madeSinceChange(held)) return held.k;
+  forgetPrekey();
+  return null;
+}
+
+export const PASSWORD_CHANGED_KEY = "uqqus_chat_prekey_before";
+
+function madeSinceChange(held) {
+  let changed = 0;
+  try { changed = Number(localStorage.getItem(PASSWORD_CHANGED_KEY)) || 0; } catch (e) { changed = 0; }
+  return !changed || (Number(held.at) || 0) > changed;
 }
 
 export function forgetPrekey() {
@@ -90,25 +127,45 @@ export async function fetchKeyInfo() {
   return resp.json();
 }
 
-async function post(url, formkey, fields) {
-  const body = new URLSearchParams({ formkey, ...fields });
-  const resp = await fetch(url, { method: "POST", credentials: "same-origin", body,
-                                  headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+// `site`: the page's boot object (a stale form key is refreshed in place and the POST sent again: site.js), or a plain form key on a page
+// with nothing to refresh (Settings > Chat apps).
+async function post(url, site, fields) {
+  const resp = await sitePost(site, url, fields);
   if (!resp.ok && resp.status !== 204) throw new Error(window.tr("That couldn't be saved."));
   return resp.status === 204 ? {} : resp.json();
 }
 
-export function saveBlobs(formkey, blobs) {
-  return post("/api/chat/key", formkey, blobs);
+export function saveBlobs(site, blobs) {
+  return post("/api/chat/key", site, blobs);
 }
 
-export async function passwordIsRight(formkey, password) {
-  const data = await post("/api/chat/check_password", formkey, { password });
+export async function passwordIsRight(site, password) {
+  const data = await post("/api/chat/check_password", site, { password });
   return !!data.ok;
 }
 
-export function markReady(formkey) {
-  return post("/api/chat/ready", formkey, {}).catch(() => {});
+// Start over's proof (routes/chat_key_reset_pages.py): the password, and the two-factor or backup code when the account has two-factor,
+// for a one-time grant. Answers {grant} or {error, field} ("password" or "otp"): a refusal the box shows beside its field.
+export async function askGrant(site, password, otp) {
+  let resp;
+  try {
+    resp = await sitePost(site, "/api/chat/key_reset/grant", otp ? { password, otp } : { password });
+  } catch (e) {
+    return { error: window.tr("That didn't work.") };
+  }
+  let body = {};
+  try { body = await resp.json(); } catch (e) { body = {}; }
+  if (resp.ok && body && typeof body.grant === "string" && body.grant) return { grant: body.grant };
+  return { error: (body && body.error) || window.tr("That didn't work."), field: body && body.field };
+}
+
+// The member says they kept their recovery code (only the time is kept: routes/chat.py chat_code_saved).
+export function markCodeSaved(site) {
+  return post("/api/chat/code_saved", site, {}).catch(() => {});
+}
+
+export function markReady(site) {
+  return post("/api/chat/ready", site, {}).catch(() => {});
 }
 
 export async function fetchLegacyKey() {
@@ -119,10 +176,30 @@ export async function fetchLegacyKey() {
 
 // --- the dialog (text only: nothing here writes HTML) --------------------------------------------------------
 
-export function dialog({ title, text, field, fieldLabel, confirm, secondary, code, check }) {
+// The dialogs open now, each with what closes it unanswered.
+const openDialogs = new Set();
+
+// The page stopped (another tab took chat over, its keeper stopped): every open dialog goes, answered {closed: true}, so no button in it
+// can act for a page whose client has stopped (crypto.js reads that as the page having stopped).
+export function closeDialogs() {
+  for (const close of [...openDialogs]) close();
+}
+
+export function dialog({ title, text, field, fieldLabel, confirm, secondary, code, check, keep = false }) {
   // `check(value)` answers an error message (the dialog stays open) or nothing (it closes and resolves {value});
-  // the secondary button resolves {secondary: true}
-  return new Promise((resolve) => {
+  // the secondary button resolves {secondary: true}; closeDialogs() resolves {closed: true}, except a dialog opened with `keep`, which
+  // only its own buttons close (crypto.js: what must be finished once new keys are on the server)
+  return new Promise((done) => {
+    let answered = false;
+    const resolve = (answer) => {
+      if (answered) return;
+      answered = true;
+      openDialogs.delete(close);
+      shade.remove();
+      done(answer);
+    };
+    const close = () => resolve({ closed: true });
+    if (!keep) openDialogs.add(close);
     const shade = document.createElement("div");
     shade.className = "chat-key-dialog";
     shade.setAttribute("role", "dialog");
@@ -150,6 +227,40 @@ export function dialog({ title, text, field, fieldLabel, confirm, secondary, cod
       out.setAttribute("aria-label", window.tr("Your recovery code"));
       out.addEventListener("focus", () => out.select());
       box.append(out);
+      // Copy and Download, made here in the browser: the code never goes to the site
+      const keepRow = document.createElement("div");
+      keepRow.className = "d-flex flex-wrap mb-2";
+      keepRow.style.gap = "0.5rem";
+      const copy = document.createElement("button");
+      copy.type = "button";
+      copy.className = "btn btn-secondary btn-sm";
+      copy.textContent = window.tr("Copy");
+      copy.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(code);
+          copy.textContent = window.tr("Copied");
+        } catch (e) {
+          out.focus();
+        }
+      });
+      const save = document.createElement("button");
+      save.type = "button";
+      save.className = "btn btn-secondary btn-sm";
+      save.textContent = window.tr("Download");
+      save.addEventListener("click", () => {
+        try {
+          const file = new Blob([window.tr("Your chat recovery code") + "\n" + code + "\n"], { type: "text/plain" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = "chat-recovery-code.txt";
+          document.body.append(link);
+          link.click();
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        } catch (e) { /* the code is still on screen to copy by hand */ }
+      });
+      keepRow.append(copy, save);
+      box.append(keepRow);
     }
     let input = null;
     if (field) {
@@ -181,7 +292,7 @@ export function dialog({ title, text, field, fieldLabel, confirm, secondary, cod
       other.type = "button";
       other.className = "btn btn-link text-muted";
       other.textContent = secondary;
-      other.addEventListener("click", () => { shade.remove(); resolve({ secondary: true }); });
+      other.addEventListener("click", () => resolve({ secondary: true }));
       row.append(other);
     }
     box.append(row);
@@ -201,7 +312,6 @@ export function dialog({ title, text, field, fieldLabel, confirm, secondary, cod
         ok.disabled = false;
         return;
       }
-      shade.remove();
       resolve({ value });
     });
     if (input) input.addEventListener("keydown", (e) => { if (e.key === "Enter") ok.click(); });

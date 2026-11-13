@@ -90,6 +90,8 @@
 
                         <input type="hidden" name="time" value="{{ time }}">
                         <input type="hidden" name="hash" value="{{ hash }}">
+                        {# the id of the pre-key the password form kept (assets/js/chat_key.js), carried to the sign-in #}
+                        <input type="hidden" name="chat_prekey_ref" value="{{ prekey_ref or '' }}">
 
                         <label for="2fa_token" class="mt-3">{{ _('Your verification code') }}</label>
 

@@ -55,10 +55,11 @@
             {% endif %}
             <a href="/settings/media/google/connect" class="btn btn-secondary mr-2 mb-2">{{ _("Use a different Google account") }}</a>
             <form action="/settings/media/google/disconnect" method="post" class="d-inline"
-                  onsubmit="return confirm({{ _('Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts. Videos on YouTube keep playing.') | tojson | forceescape }});">
+                  onsubmit="return confirm({{ _('Disconnect Google? Pictures and audio stored in your Google Drive will stop showing in your posts, and files you sent in chats from it can no longer be opened. Videos on YouTube keep playing.') | tojson | forceescape }});">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
               <button type="submit" class="btn btn-secondary mb-2">{{ _("Disconnect") }}</button>
             </form>
+            <p class="text-small text-muted mt-2 mb-0">{{ _("Files you send in chats are kept here too, encrypted: only the people in that chat can open them.") }}</p>
             <p class="text-small text-muted mt-2 mb-0">{{ _("Deleting a file in your Drive, or disconnecting, removes it from your posts.") }}
               {{ _("You can also remove this site's access any time in your Google account, under Security, Third-party access.") }}
               {{ _('Videos are subject to the <a href="%(terms)s" target="_blank" rel="noopener">YouTube Terms of Service</a>; Google\'s use of your data is described in the <a href="%(privacy)s" target="_blank" rel="noopener">Google Privacy Policy</a>.', terms="https://www.youtube.com/t/terms", privacy="https://policies.google.com/privacy") }}</p>
@@ -93,10 +94,11 @@
             {% if space.get("microsoft") is not none %}<p class="text-small text-muted" id="media-microsoft-space">{{ _("%(size)s GB free in your OneDrive.", size="%.1f" | format(space["microsoft"] / 1073741824)) }}</p>{% endif %}
             <a href="/settings/media/microsoft/connect" class="btn btn-secondary mr-2 mb-2">{{ _("Use a different Microsoft account") }}</a>
             <form action="/settings/media/microsoft/disconnect" method="post" class="d-inline"
-                  onsubmit="return confirm({{ _('Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts.') | tojson | forceescape }});">
+                  onsubmit="return confirm({{ _('Disconnect OneDrive? Pictures and audio stored there will stop showing in your posts, and files you sent in chats from it can no longer be opened.') | tojson | forceescape }});">
               <input type="hidden" name="formkey" value="{{ v.formkey }}">
               <button type="submit" class="btn btn-secondary mb-2">{{ _("Disconnect") }}</button>
             </form>
+            <p class="text-small text-muted mt-2 mb-0">{{ _("Files you send in chats are kept here too, encrypted: only the people in that chat can open them.") }}</p>
             <p class="text-small text-muted mt-2 mb-0">{{ _("Deleting a file there, or disconnecting, removes it from your posts.") }}
               {{ _("To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions.") }}</p>
             {% else %}

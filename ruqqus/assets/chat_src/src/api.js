@@ -1,15 +1,11 @@
 // Thin wrapper around Ruqqus's own /api/chat/* routes. These hold ONLY
 // integration metadata (who a conversation is with, which tab it's in,
 // unread counts) - never message content, which lives solely in Matrix.
+//
+// Every POST takes the page's boot object (`site`), not a copy of its form key: a stale key (a credential event in another tab that
+// spared this sign-in) is refreshed in place and the POST sent again (site.js sitePost).
 
-function formBody(formkey, extra) {
-  const body = new URLSearchParams();
-  body.set("formkey", formkey);
-  if (extra) {
-    for (const k in extra) body.set(k, extra[k]);
-  }
-  return body;
-}
+import { sitePost } from "./site.js";
 
 export async function listConversations(status) {
   const resp = await fetch(`/api/chat/conversations?status=${status}`, {
@@ -20,45 +16,25 @@ export async function listConversations(status) {
   return data.conversations;
 }
 
-export async function acceptConversation(formkey, conversationId) {
-  const resp = await fetch(`/api/chat/conversations/${conversationId}/accept`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: formBody(formkey),
-  });
+export async function acceptConversation(site, conversationId) {
+  const resp = await sitePost(site, `/api/chat/conversations/${conversationId}/accept`);
   if (!resp.ok) throw new Error(window.tr("Could not accept conversation"));
 }
 
-export async function declineConversation(formkey, conversationId) {
-  const resp = await fetch(`/api/chat/conversations/${conversationId}/decline`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: formBody(formkey),
-  });
+export async function declineConversation(site, conversationId) {
+  const resp = await sitePost(site, `/api/chat/conversations/${conversationId}/decline`);
   if (!resp.ok) throw new Error(window.tr("Could not decline conversation"));
 }
 
-export async function markRead(formkey, conversationId) {
-  const resp = await fetch(`/api/chat/conversations/${conversationId}/mark_read`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: formBody(formkey),
-  });
+export async function markRead(site, conversationId) {
+  const resp = await sitePost(site, `/api/chat/conversations/${conversationId}/mark_read`);
   if (!resp.ok) throw new Error(window.tr("Could not mark conversation read"));
 }
 
 // --- groups (routes/chat_groups.py) ---------------------------------------------------------------
 // A refused change answers {"error": "..."}: it is thrown as the message to show.
-async function postJSON(url, formkey, extra) {
-  const resp = await fetch(url, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" },
-    body: formBody(formkey, extra),
-  });
+async function postJSON(url, site, extra) {
+  const resp = await sitePost(site, url, extra || {});
   if (resp.status === 204) return null;
   let data = null;
   try {
@@ -82,42 +58,62 @@ export async function searchPeople(q) {
   return (await resp.json()).people || [];
 }
 
-export const createGroup = (formkey, name, usernames) =>
-  postJSON("/api/chat/groups", formkey, { name, usernames: usernames.join(",") });
-export const addToGroup = (formkey, groupId, usernames) =>
-  postJSON(`/api/chat/groups/${groupId}/add`, formkey, { usernames: usernames.join(",") });
-export const removeFromGroup = (formkey, groupId, username) =>
-  postJSON(`/api/chat/groups/${groupId}/remove`, formkey, { username });
-export const setGroupRole = (formkey, groupId, username, role) =>
-  postJSON(`/api/chat/groups/${groupId}/role`, formkey, { username, role });
-export const renameGroup = (formkey, groupId, name) =>
-  postJSON(`/api/chat/groups/${groupId}/rename`, formkey, { name });
-export const leaveGroup = (formkey, groupId) => postJSON(`/api/chat/groups/${groupId}/leave`, formkey);
-export const acceptGroup = (formkey, groupId) => postJSON(`/api/chat/groups/${groupId}/accept`, formkey);
-export const declineGroup = (formkey, groupId) => postJSON(`/api/chat/groups/${groupId}/decline`, formkey);
-export const markGroupRead = (formkey, groupId) => postJSON(`/api/chat/groups/${groupId}/mark_read`, formkey);
+export const createGroup = (site, name, usernames) =>
+  postJSON("/api/chat/groups", site, { name, usernames: usernames.join(",") });
+export const addToGroup = (site, groupId, usernames) =>
+  postJSON(`/api/chat/groups/${groupId}/add`, site, { usernames: usernames.join(",") });
+export const removeFromGroup = (site, groupId, username) =>
+  postJSON(`/api/chat/groups/${groupId}/remove`, site, { username });
+export const setGroupRole = (site, groupId, username, role) =>
+  postJSON(`/api/chat/groups/${groupId}/role`, site, { username, role });
+export const renameGroup = (site, groupId, name) =>
+  postJSON(`/api/chat/groups/${groupId}/rename`, site, { name });
+export const leaveGroup = (site, groupId) => postJSON(`/api/chat/groups/${groupId}/leave`, site);
+export const acceptGroup = (site, groupId) => postJSON(`/api/chat/groups/${groupId}/accept`, site);
+export const declineGroup = (site, groupId) => postJSON(`/api/chat/groups/${groupId}/decline`, site);
+export const markGroupRead = (site, groupId) => postJSON(`/api/chat/groups/${groupId}/mark_read`, site);
 
 // --- broadcast channels (routes/broadcasts.py) ----------------------------------------------------------------------
-export const postToChannel = (formkey, channelId, body) =>
-  postJSON(`/api/broadcasts/${channelId}/messages`, formkey, { body });
-export const leaveChannel = (formkey, channelId) => postJSON(`/api/broadcasts/${channelId}/leave`, formkey);
-export const markChannelRead = (formkey, channelId) => postJSON(`/api/broadcasts/${channelId}/mark_read`, formkey);
-export const reportChannelMessage = (formkey, channelId, eventId, reason) =>
-  postJSON(`/api/broadcasts/${channelId}/report`, formkey, { event_id: eventId, reason });
+export const postToChannel = (site, channelId, body, media = null) =>
+  postJSON(`/api/broadcasts/${channelId}/messages`, site, media ? { body, media } : { body });
+export const leaveChannel = (site, channelId) => postJSON(`/api/broadcasts/${channelId}/leave`, site);
+export const markChannelRead = (site, channelId) => postJSON(`/api/broadcasts/${channelId}/mark_read`, site);
+export const reportChannelMessage = (site, channelId, eventId, reason) =>
+  postJSON(`/api/broadcasts/${channelId}/report`, site, { event_id: eventId, reason });
 
 // --- guild channels (routes/guild_channels.py) -------------------------------------------------------------------------
-export const joinGuildChannel = (formkey, channelId) => postJSON(`/api/guilds/channels/${channelId}/join`, formkey);
-export const postToGuildChannel = (formkey, channelId, body, quote, thread) => {
+export const joinGuildChannel = (site, channelId) => postJSON(`/api/guilds/channels/${channelId}/join`, site);
+export const postToGuildChannel = (site, channelId, body, quote, thread) => {
   const extra = { body };
   if (quote) extra.quote = quote;
   if (thread) extra.thread = thread;
-  return postJSON(`/api/guilds/channels/${channelId}/messages`, formkey, extra);
+  return postJSON(`/api/guilds/channels/${channelId}/messages`, site, extra);
 };
-export const markGuildChannelRead = (formkey, channelId) => postJSON(`/api/guilds/channels/${channelId}/mark_read`, formkey);
-export const reportGuildChannelMessage = (formkey, channelId, eventId, reason) =>
-  postJSON(`/api/guilds/channels/${channelId}/report`, formkey, { event_id: eventId, reason });
-export const removeGuildChannelMessage = (formkey, channelId, eventId) =>
-  postJSON(`/api/guilds/channels/${channelId}/remove`, formkey, { event_id: eventId });
+export const markGuildChannelRead = (site, channelId) => postJSON(`/api/guilds/channels/${channelId}/mark_read`, site);
+// a message in a private chat: the page sends it and the few before it, as it shows them (report.js, routes/chat_reports_pages.py)
+// a channel's owner adds or removes a helper (routes/broadcasts.py): answers the channel as it is now
+export const setChannelHelper = (site, channelId, username, on) =>
+  postJSON(`/api/broadcasts/${channelId}/helpers`, site, { username, on: on ? "1" : "0" });
+// what this member is told of in a group (routes/push_pages.py): 0 every message, 1 calls only, 2 nothing
+export const setGroupPush = (site, groupId, mode) => postJSON(`/api/chat/groups/${groupId}/push`, site, { mode });
+export const reportPrivateMessage = (site, roomId, eventId, messages, reason) =>
+  postJSON("/api/chat/report", site, { room: roomId, event_id: eventId, messages: JSON.stringify(messages), reason });
+export const blockAccount = (site, username) => sitePost(site, "/settings/block", { username });
+// pins and disappearing messages in a 1:1 chat or a group (routes/chat_extras_pages.py): room state the site's bot writes
+export const pinRoomMessage = (site, roomId, eventId, pin) =>
+  postJSON("/api/chat/pin", site, { room: roomId, event_id: eventId, pin: pin ? "1" : "0" });
+export const setDisappearing = (site, roomId, seconds) => postJSON("/api/chat/disappear", site, { room: roomId, seconds: String(seconds) });
+
+// the chats a message can be forwarded to: your Inbox chats and joined groups (routes/chat.py share_targets), never someone new
+export async function forwardTargets(q) {
+  const resp = await fetch(`/api/chat/share_targets?q=${encodeURIComponent(q || "")}`, { credentials: "same-origin" });
+  if (!resp.ok) throw new Error(window.tr("Could not load your chats"));
+  return ((await resp.json()).targets || []).filter((t) => t.room_id);
+}
+export const reportGuildChannelMessage = (site, channelId, eventId, reason) =>
+  postJSON(`/api/guilds/channels/${channelId}/report`, site, { event_id: eventId, reason });
+export const removeGuildChannelMessage = (site, channelId, eventId) =>
+  postJSON(`/api/guilds/channels/${channelId}/remove`, site, { event_id: eventId });
 
 // names for the people who wrote in a channel: only people who did are ever answered
 export async function guildChannelSenders(channelId, userIds) {
@@ -125,11 +121,11 @@ export async function guildChannelSenders(channelId, userIds) {
   if (!resp.ok) throw new Error(window.tr("Could not load names"));
   return (await resp.json()).senders || {};
 }
-export const pinGuildChannelMessage = (formkey, channelId, eventId, on) =>
-  postJSON(`/api/guilds/channels/${channelId}/pin`, formkey, { event_id: eventId, on: on ? "1" : "0" });
-export const muteGuildChannel = (formkey, channelId, hours) =>
-  postJSON(`/api/guilds/channels/${channelId}/mute`, formkey, { hours: String(hours) });
-export const acceptGuildChannelRules = (formkey, channelId) => postJSON(`/api/guilds/channels/${channelId}/accept_rules`, formkey);
+export const pinGuildChannelMessage = (site, channelId, eventId, on) =>
+  postJSON(`/api/guilds/channels/${channelId}/pin`, site, { event_id: eventId, on: on ? "1" : "0" });
+export const muteGuildChannel = (site, channelId, hours) =>
+  postJSON(`/api/guilds/channels/${channelId}/mute`, site, { hours: String(hours) });
+export const acceptGuildChannelRules = (site, channelId) => postJSON(`/api/guilds/channels/${channelId}/accept_rules`, site);
 
 export async function guildChannelPins(channelId) {
   const resp = await fetch(`/api/guilds/channels/${channelId}/pins`, { credentials: "same-origin" });

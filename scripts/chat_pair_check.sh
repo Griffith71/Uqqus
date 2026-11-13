@@ -28,6 +28,22 @@ if [ "$missing" -gt 0 ]; then
   echo "FAIL: the chat server lacks $missing chat accounts the site knows: these two databases are not a pair (RESTORE.md)."
   exit 1
 fi
+# The chat devices the site made and still serves (chat_site_devices, from 2026-12-20_chat_sign_outs.sql on) should be on the chat
+# server. A few may not be in a good pair (one signed out between the two dumps); many mean the site's dump is older than Synapse's
+# or a device was deleted on Synapse by hand. Said, never a failure (RESTORE.md "After restoring an older pair").
+if [ "$(q "$site" "SELECT to_regclass('chat_site_devices') IS NOT NULL")" = "t" ]; then
+  live=$(q "$site" "SELECT count(*) FROM chat_site_devices WHERE revoked_utc = 0")
+  gone=0
+  if [ "$live" -gt 0 ]; then
+    gone=$(q "$site" "SELECT i.matrix_user_id || E'\\t' || d.device_id FROM chat_site_devices d JOIN chat_identities i ON i.user_id = d.user_id WHERE d.revoked_utc = 0" |
+      psql "$syn" -v ON_ERROR_STOP=1 -At -c "CREATE TEMP TABLE s (m text, d text)" -c "\\copy s FROM pstdin" \
+        -c "SELECT count(*) FROM s WHERE NOT EXISTS (SELECT 1 FROM devices v WHERE v.user_id = s.m AND v.device_id = s.d)" | tail -n 1)
+  fi
+  echo "chat devices: $live the site still serves, $gone of them not on the chat server"
+  if [ "$gone" -gt 0 ]; then
+    echo "NOTE: $gone chat devices the site still serves aren't on the chat server: after restoring an older pair, sign every chat device out (RESTORE.md)."
+  fi
+fi
 if [ "$high_known" -gt "$mark" ]; then
   echo "NOTE: the chat server's mark ($mark) is below the site's chat accounts ($high_known): written by a site from before the mark; the app records it when it starts."
 fi

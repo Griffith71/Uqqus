@@ -1,6 +1,6 @@
 """The tripwires of the one credential event (helpers/account_sessions.py `revoke`) and the durable chat sign-outs
 (helpers/chat_signouts.py): nothing else raises an account's nonce, nothing else deletes a chat device, every credential event goes
-through it with the right sparing, the interim keeps the site's own browsers until build step 4, and a suspension changes nothing
+through it with the right sparing, the interim of build steps 2 and 3 is over, and a suspension changes nothing
 (the owner's decision 3). The behaviour is tests/test_chat_signouts.py (SQLite) and tests/pg/test_chat_signout_routes.py (the app)."""
 import ast
 import re
@@ -129,13 +129,19 @@ def test_deleting_an_account_queues_before_its_rows_go_and_never_ends_another_ac
     ended = close.index("sign_in_ends.end(")
     assert close.rindex("if sign_out_browser:", 0, ended) > close.index("account_cleanup.close_account(")
     # both pages that say the account is gone name its chat account, read before it closed
-    assert 'render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid,' in body_of(settings, "delete_account")
+    assert 'render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children,' in body_of(settings, "delete_account")
     delete = body_of(settings, "delete_account")
-    assert delete.index("deleted_mxid = chat_devices.mxid_of(g.db, v.id)") < delete.index("close_own_account(")
+    assert delete.index("deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)") < delete.index("close_own_account(")
     callback = body_of(read("ruqqus", "routes", "age_declaration_pages.py"), "settings_age_assurance_callback")
-    assert callback.index("deleted_mxid = chat_devices.mxid_of(g.db, v.id)") < callback.index("close_own_account(")
-    assert "deleted_mxid=deleted_mxid" in callback
-    assert "forgetChatDevices({{ deleted_mxid | tojson }})" in read("ruqqus", "templates", "account_deleted.html")
+    assert callback.index("deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)") < callback.index("close_own_account(")
+    assert "deleted_mxid=deleted_mxid, deleted_children=deleted_children" in callback
+    assert "forgetChatDevices({{ deleted_mxid | tojson }}, {{ (deleted_children or []) | tojson }})" in read("ruqqus", "templates", "account_deleted.html")
+    # a child its parent deletes: the parent's page forgets the child's chat, read before it closed (a family shares a browser)
+    children = body_of(read("ruqqus", "routes", "children_pages.py"), "children_delete")
+    assert children.index("mxid = chat_devices.mxid_of(g.db, row.id)") < children.index("rules.close_account(row") < children.index("forget_chat=mxid")
+    assert "forgetChildChatDevices([{{ forget_chat | tojson }}])" in read("ruqqus", "templates", "settings_children.html")
+    closing = body_of(read("ruqqus", "helpers", "chat_devices.py"), "closing_with")
+    assert "child_store.child_ids_safely(db, user_id)" in closing
 
 
 def test_plain_log_out_deletes_no_device():
@@ -144,17 +150,21 @@ def test_plain_log_out_deletes_no_device():
     assert "chat_signouts" not in logout and "account_sessions" not in logout and "delete_device" not in logout
 
 
-# --- THE INTERIM -------------------------------------------------------------------------------------------------------------
+# --- THE INTERIM IS OVER (build step 4) -------------------------------------------------------------------------------------
 
-def test_the_interim_switch_is_one_named_constant_and_only_queue_reads_it():
+def test_the_interim_is_gone_and_nothing_writes_its_word():
+    """Build step 4 shipped the client that keeps its stores, and with it every `all` sign-out reaches the site's own browsers
+    (decision 2's sparing applies). run_one still reads the word, for a row queued before."""
+    for path in python_files():
+        src = path.read_text(encoding="utf-8")
+        assert "KEEP_SITE_BROWSERS" not in src and "interim_spared" not in src, path.name
     signouts = read("ruqqus", "helpers", "chat_signouts.py")
-    assert "\nKEEP_SITE_BROWSERS = True\n" in signouts, "build step 4 sets it False, in the same deploy as the client that keeps stores"
-    assert 'SIGNS_OUT_SITE_BROWSERS_TODAY = frozenset({"child_chat_off", "child_stopped", "deleted"})' in signouts
-    assert 'return (SITE,) if KEEP_SITE_BROWSERS and reason not in SIGNS_OUT_SITE_BROWSERS_TODAY else ()' in signouts
-    assert 'interim_spared(reason) if scope == "all"' in body_of(signouts, "queue")
-    users = [path.relative_to(ROOT).as_posix() for path in python_files() if "KEEP_SITE_BROWSERS" in path.read_text(encoding="utf-8")]
-    assert sorted(users) == ["ruqqus/helpers/account_sessions.py", "ruqqus/helpers/chat_signouts.py", "scripts/queue_chat_signouts.py"]
-    assert "KEEP_SITE_BROWSERS" not in body_of(read("ruqqus", "helpers", "account_sessions.py"), "revoke"), "named in its docstring only"
+    queue = body_of(signouts, "queue")
+    assert "spared = tuple(d for d in spared if d and d != SITE)" in queue, "the word is never written, even when asked"
+    assert "if SITE in keep:" in body_of(signouts, "run_one")
+    revoke = body_of(read("ruqqus", "helpers", "account_sessions.py"), "revoke")
+    assert "SITE" not in revoke and '"site"' not in revoke
+    assert "chat_signouts.this_sign_in(" in revoke, "decision 2: at most one chat and one call row of this sign-in, found on the server"
 
 
 # --- decision 3: a suspension changes nothing ---------------------------------------------------------------------------------
@@ -175,24 +185,60 @@ def test_a_suspension_or_ban_signs_no_device_out():
 
 def test_the_token_route_keeps_its_wrappers_with_no_suspension_check_and_never_logs_an_answer():
     chat = read("ruqqus", "routes", "chat.py")
-    assert decorators_of(chat, "chat_token") == ['@app.route("/api/chat/token", methods=["POST"])', "@auth_required", "@not_qr_limited",
-                                                 '@not_child_locked("messaging")', "@validate_formkey"]
+    for route, path, limit in (("chat_token", "/api/chat/token", '"60/minute;600/hour"'), ("chat_store_keys_route", "/api/chat/store_keys", '"20/minute"')):
+        assert decorators_of(chat, route) == [f'@app.route("{path}", methods=["POST"])', "@auth_required", "@not_qr_limited",
+                                              '@not_child_locked("messaging")', "@validate_formkey",
+                                              f"@limiter.limit({limit}, key_func=member_limit_key)"], route
+        body = body_of(chat, route)
+        assert body.index("chat_signouts.tables_ready(g.db)") < body.index("chat_tokens."), "no Matrix call or key before the tables are known"
+        assert "suspend" not in body and "is_banned" not in body, "decision 3: a suspension changes nothing"
+        assert "chat_store_keys.secret_of(app.config)" in body
     body = body_of(chat, "chat_token")
     assert body.index("chat_signouts.tables_ready(g.db)") < body.index("_ensure_provisioned(v)"), "no Matrix call before the tables are known"
+    assert "_ensure_provisioned" not in body_of(chat, "chat_store_keys_route"), "asking for keys makes no chat account"
+    assert "CHAT_EXPIRING_TOKENS" not in chat and 'report_seconds=app.config["CHAT_TOKEN_REPORT_SECONDS"]' in body
     tokens = read("ruqqus", "helpers", "chat_tokens.py")
     assert "print(" not in tokens and "logging" not in tokens and "logger" not in tokens
-    assert "refresh_token" not in body_of(tokens, "_answer")
-    mint = body_of(tokens, "_mint")
-    assert mint.index("chat_signouts.lock_account(db, user_id)") < mint.index("INSERT INTO chat_site_devices") < mint.index("db.commit()\n            device_id = candidate") < mint.index("matrix.login_as(mxid, device_id)")
-    assert "AND revoked_utc = 0" in mint.split("matrix.login_as(mxid, device_id)", 1)[1]
+    answer = body_of(tokens, "answer")
+    assert "refresh_token" not in answer and '"refresh' not in answer, "a refresh token is never in an answer"
+    mint = body_of(tokens, "mint")
+    assert mint.index("chat_signouts.lock_account(db, user_id)") < mint.index("INSERT INTO chat_site_devices") < mint.index("db.commit()\n                device_id = candidate") < mint.index("self.matrix.login_as(self.mxid, device_id)")
+    assert "AND revoked_utc = 0" in mint.split("self.matrix.login_as(", 1)[1]
     # the account read again under the lock, before the row (a deletion or chat switched off the request waited for), and a failed mint
     # leaves the row to queue, which takes the lock first: never a row lock before the lock
-    assert mint.index("chat_signouts.lock_account(db, user_id)") < mint.index("_refusal(db, user_id, nonce)") < mint.index("INSERT INTO chat_site_devices")
+    assert mint.index("chat_signouts.lock_account(db, user_id)") < mint.index("_refusal(db, user_id, self.nonce)") < mint.index("INSERT INTO chat_site_devices")
     assert "revoke_rows" not in mint
+    # every renewal tries /refresh first, and every login goes through the list check: never login_as on a device Synapse no longer lists
+    token_for = body_of(tokens, "token_for")
+    assert token_for.index("self.matrix.refresh(") < token_for.index("self.matrix.list_devices(self.mxid)") < token_for.index("self.matrix.login_as(self.mxid, device_id)")
+    # a key-only start only for a row that holds a refresh token: a device made before tokens expired is re-tokened at its next start
+    assert 'req.mode == "boot" and req.want == "key" and row[3]:' in body_of(tokens, "run")
+    assert "expiring" not in tokens
+    assert tokens.count("matrix.login_as(") == 2 and tokens.count("matrix.refresh(") == 1
     assert 'nonce=flask_session.get("login_nonce", 0)' in body
     client = read("ruqqus", "helpers", "matrix_client.py")
-    for name in ("login_as", "list_devices", "delete_device"):
+    for name in ("login_as", "list_devices", "delete_device", "refresh"):
         assert f'with _answering("{name}"):' in body_of(client, name), "a Synapse that doesn't answer is a MatrixError too"
+    login = body_of(client, "login_as")
+    assert 'body["refresh_token"] = True' in login and "if refresh" not in login and "refresh:" not in login.split('"""')[0], \
+        "every site login asks for a refresh token: every site token expires"
+    assert "print(" not in body_of(client, "refresh") and "headers=" not in body_of(client, "refresh"), "no answer logged, no appservice token sent"
+
+
+def test_the_chat_token_settings_are_plumbed_and_the_report_setting_is_never_set():
+    main = read("ruqqus", "__main__.py")
+    for name in ("CHAT_STORE_SECRET", "CHAT_TOKEN_REPORT_SECONDS"):
+        assert f'app.config["{name}"]' in main and f'environ.get("{name}"' in main
+        assert f"- {name}=${{{name}:-" in read("docker-compose.yml")
+    assert '- CHAT_TOKEN_REPORT_SECONDS=${CHAT_TOKEN_REPORT_SECONDS:-}' in read("docker-compose.yml")
+    example = read(".env.example")
+    assert "CHAT_TOKEN_REPORT_SECONDS" not in example, "dev and specs only: never in a file a live site copies"
+    # build step 5: every site token expires, so there is no switch for it anywhere (login_as always asks for a refresh token)
+    for where in (main, read("docker-compose.yml"), example, read("ruqqus", "routes", "chat.py"), read("ruqqus", "helpers", "chat_tokens.py"),
+                  read("scripts", "gen_dev_env.py")):
+        assert "CHAT_EXPIRING_TOKENS" not in where
+    assert "\n#CHAT_STORE_SECRET=" in example and "\nCHAT_STORE_SECRET=" not in example
+    assert '"CHAT_STORE_SECRET": lambda: secrets.token_hex(32)' in read("scripts", "gen_dev_env.py")
 
 
 def test_the_form_key_route_is_signed_in_and_never_stored():
@@ -200,7 +246,7 @@ def test_the_form_key_route_is_signed_in_and_never_stored():
     stack = decorators_of(chat, "chat_formkey")
     assert stack[0] == '@app.route("/api/chat/formkey", methods=["GET"])' and "@auth_required" in stack
     body = body_of(chat, "chat_formkey")
-    assert 'resp.headers["Cache-Control"] = "no-store"' in body and '{"formkey": v.formkey}' in body
+    assert 'resp.headers["Cache-Control"] = "no-store"' in body and '{"formkey": v.formkey, "mxid": chat_devices.mxid_of(g.db, v.id)}' in body
 
 
 def test_the_admin_page_shows_the_queue_and_the_missing_migration():
@@ -222,3 +268,39 @@ def test_the_migration_is_mirrored_and_its_rows_kept_and_forgotten_as_planned():
     export = read("ruqqus", "helpers", "data_export.py")
     assert '("chat_devices", "SELECT count(*) AS chat_devices' in export and "device_id" not in export.split('("chat_devices"', 1)[1].split("),", 1)[0]
     assert "DELETE FROM chat_device_signouts WHERE done_utc > 0 AND done_utc < :chat_signouts" in read("ruqqus", "helpers", "retention.py")
+
+
+# --- the browser's side (build step 4b) ---------------------------------------------------------------------------------------
+
+CHAT_SRC = RUQQUS / "assets" / "chat_src" / "src"
+
+
+def chat_sources():
+    return {path.name: path.read_text(encoding="utf-8") for path in CHAT_SRC.rglob("*.js")}
+
+
+def test_every_chat_client_is_made_by_make_client_and_every_store_opened_with_its_key():
+    for name, text in chat_sources().items():
+        if name == "keeper.js":
+            continue
+        assert "sdk.createClient(" not in text and "createClient(" not in text.replace("makeClient(", ""), name
+        assert ".initRustCrypto(" not in text or name == "token.js", name
+    keeper = read("ruqqus", "assets", "chat_src", "src", "keeper.js")
+    make = keeper[keeper.index("export function makeClient("):]
+    assert "fetchFn: keeper.fetchFn," in make and "store: new sdk.MemoryStore()," in make
+    assert make.index("store: new sdk.MemoryStore(),") < make.index("...extra,")            # a page can't swap the fetch or the store
+    assert make.index("fetchFn: keeper.fetchFn,") < make.index("...extra,")
+    token = read("ruqqus", "assets", "chat_src", "src", "token.js")
+    assert token.count(".initRustCrypto(") == 1
+    assert "client.initRustCrypto({ storageKey: session.storeKey, cryptoDatabasePrefix: session.prefix })" in token
+
+
+def test_nothing_in_the_client_wipes_a_store_but_the_listed_cases():
+    for name, text in chat_sources().items():
+        assert "clearStores" not in text and "forgetDevice" not in text, name
+        if name != "token.js":
+            assert "deleteDatabase" not in text, f"{name}: stores are deleted only by token.js, in the plan's 2.4 cases"
+    signed_out = read("ruqqus", "assets", "chat_src", "src", "signed_out.js")
+    assert "removeItem" not in signed_out and "localStorage" not in signed_out and "from \"matrix-js-sdk\"" not in signed_out
+    keeper = read("ruqqus", "assets", "chat_src", "src", "keeper.js")
+    assert "removeItem(" not in keeper and "deleteStore" not in keeper and "from \"matrix-js-sdk\"" not in keeper

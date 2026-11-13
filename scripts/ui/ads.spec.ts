@@ -1,4 +1,4 @@
-import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
+import { test, expect, chromium, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 
@@ -61,6 +61,12 @@ async function go(context: BrowserContext, path: string): Promise<Page> {
   await page.waitForTimeout(250);
   return page;
 }
+
+// The chat index a signed-out browser keeps (CLAUDE.md "Chat encryption"): seed_ads.py writes one per account, as its own browser would hold it.
+const INDEX = "uqqus_chat_devices";
+const indexOf = (name: string): string => fixtures.indexes[name];
+// what the client before the index kept, still read by the hold (partials/ad_hold.html) until chat removes it
+const LEGACY = ["ruqqus_chat_session", "ruqqus_call_session"];
 
 const visibleBoxes = (page: Page) => page.locator(".ad-slot:visible").count();
 const pushes = (page: Page) => page.evaluate(() => ((window as any).adsbygoogle || []).length);
@@ -194,10 +200,10 @@ for (const colorScheme of ["light", "dark"] as const) {
 }
 
 test.describe("a signed-out browser that still holds chat", () => {
-  for (const key of ["ruqqus_chat_session", "ruqqus_call_session"]) {
+  for (const [key, value] of [[INDEX, "INDEX"], ...LEGACY.map((k) => [k, '{"user_id":"@x:y"}'])]) {
     test(`${key}: nothing goes to Google and the boxes fold, on a feed and a post page, at both widths`, async ({ browser, baseURL }) => {
       for (const width of [1280, 390]) {
-        const { context, asked } = await open(browser, baseURL!, { width, stored: { [key]: '{"user_id":"@x:y"}' } });
+        const { context, asked } = await open(browser, baseURL!, { width, stored: { [key]: value === "INDEX" ? indexOf("ui_ads_adult") : value } });
         for (const path of [CLEAN, POST]) {
           const page = await go(context, path);
           expect(await visibleBoxes(page)).toBe(0);
@@ -214,7 +220,7 @@ test.describe("a signed-out browser that still holds chat", () => {
   }
 
   test("the boxes never paint: a post page's first paint already has them folded", async ({ browser, baseURL }) => {
-    const { context } = await open(browser, baseURL!, { stored: { ruqqus_chat_session: "{}" } });
+    const { context } = await open(browser, baseURL!, { stored: { [INDEX]: indexOf("ui_ads_adult") } });
     const page = await context.newPage();
     // when the parser has gone past the box and the small script after it, and long before anything at the end of <body> has run
     await page.addInitScript(() => {
@@ -242,24 +248,38 @@ test.describe("a signed-out browser that still holds chat", () => {
   });
 
   test("a member's own chat is the accepted risk, and the pre-key goes before the tag runs, this tab's and an older copy", async ({ browser, baseURL }) => {
-    const own = JSON.stringify({ user_id: fixtures.mxids.ui_ads_adult, device_id: "MINE" });
+    const own = indexOf("ui_ads_adult");
     const { context, asked } = await open(browser, baseURL!, {
       member: "ui_ads_adult",
-      stored: { ruqqus_chat_session: own, ruqqus_call_session: own, uqqus_chat_prekey: "an older copy" },
+      stored: { [INDEX]: own, uqqus_chat_prekey: "an older copy" },
       tab: { uqqus_chat_prekey: "a key" },
       tag: "window.prekeyAtTag = [sessionStorage.getItem('uqqus_chat_prekey'), localStorage.getItem('uqqus_chat_prekey')];",
     });
     const page = await go(context, POST);
     expect(asked).toHaveLength(1);
     await expect.poll(() => page.evaluate(() => (window as any).prekeyAtTag)).toEqual([null, null]);
-    expect(await page.evaluate(() => localStorage.getItem("ruqqus_chat_session"))).toBe(own);
+    expect(await page.evaluate((key) => localStorage.getItem(key), INDEX)).toBe(own);
     expect(await page.locator(".ad-slot-post:visible").count()).toBe(1);
     await context.close();
   });
 
-  // Account A logged out and its keys stayed here. B signing in doesn't make them B's: nothing goes to Google until B opens chat, which clears them.
-  for (const key of ["ruqqus_chat_session", "ruqqus_call_session"]) {
-    for (const [name, value] of [["another account's", '{"user_id":"@ruqqus_1:ruqqus.local","device_id":"ACCOUNT_A"}'], ["one that names nobody", "{}"]]) {
+  // Account A logged out and its locked stores stayed here, on purpose: signing back in brings A's chats back. B signing in doesn't make them B's, so
+  // nothing goes to Google on B's pages while A's entries are in the index (they go when A is deleted here, or with the caps).
+  const cases: [string, string, string][] = [
+    [INDEX, "another account's", "PREMIUM"],
+    [INDEX, "one beside the member's own", "BOTH"],
+    [INDEX, "one that can't be read", "{not json"],
+    ...LEGACY.flatMap((key) => [[key, "another account's", '{"user_id":"@ruqqus_1:ruqqus.local","device_id":"ACCOUNT_A"}'],
+                                [key, "one that names nobody", "{}"]] as [string, string, string][]),
+  ];
+  const both = () => {
+    const mine = JSON.parse(indexOf("ui_ads_adult"));
+    mine.entries.push(...JSON.parse(indexOf("ui_ads_premium")).entries);
+    return JSON.stringify(mine);
+  };
+  for (const [key, name, raw] of cases) {
+    {
+      const value = raw === "PREMIUM" ? indexOf("ui_ads_premium") : raw === "BOTH" ? both() : raw;
       test(`${key}, ${name}: a member's page asks Google for nothing and folds its boxes, at both widths`, async ({ browser, baseURL }) => {
         for (const width of [1280, 390]) {
           const { context, asked } = await open(browser, baseURL!, { member: "ui_ads_adult", width, stored: { [key]: value }, tag: "window.tagRan = true;" });
@@ -280,7 +300,7 @@ test.describe("a signed-out browser that still holds chat", () => {
   }
 
   test("a member's privacy page: the settings link is only a link when another account's chat is here", async ({ browser, baseURL }) => {
-    const { context, asked } = await open(browser, baseURL!, { member: "ui_ads_premium", stored: { ruqqus_chat_session: '{"user_id":"@ruqqus_1:ruqqus.local"}' } });
+    const { context, asked } = await open(browser, baseURL!, { member: "ui_ads_premium", stored: { [INDEX]: indexOf("ui_ads_adult") } });
     const page = await go(context, "/help/privacy");
     await page.locator("#ads ~ p [data-ad-consent]").first().click();
     await page.waitForTimeout(200);
@@ -306,7 +326,9 @@ test("a tag running in another tab can't read the key a sign-in writes in this o
   await signing.fill("#username", "ui_ads_fresh");
   await signing.fill("#password", "ui-Password-1");
   await Promise.all([signing.waitForURL((url) => !url.pathname.startsWith("/login")), signing.click("#login_button")]);
-  expect(await signing.evaluate(() => sessionStorage.getItem("uqqus_chat_prekey"))).toMatch(/^[\w-]{40,}$/);
+  // kept with the account it was typed for (chat_key.js remember)
+  expect(JSON.parse((await signing.evaluate(() => sessionStorage.getItem("uqqus_chat_prekey"))) || "null"))
+    .toEqual({ v: 1, name: "ui_ads_fresh", k: expect.stringMatching(/^[\w-]{40,}$/), at: expect.any(Number), ref: expect.stringMatching(/^[0-9a-f]{32}$/) });
   await reader.waitForTimeout(500);
   expect(await reader.evaluate(() => (window as any).seen.length)).toBe(0);
   // the stand-in really was reading: it finds what is put where it can look
@@ -365,7 +387,7 @@ test.describe("who gets what", () => {
     await go(plain.context, "/help/privacy");
     expect(plain.asked).toHaveLength(1);
     await plain.context.close();
-    const held = await open(browser, baseURL!, { stored: { ruqqus_chat_session: "{}" } });
+    const held = await open(browser, baseURL!, { stored: { [INDEX]: indexOf("ui_ads_adult") } });
     const page = await go(held.context, "/help/privacy");
     await page.locator("#ads ~ p [data-ad-consent]").first().click();
     await page.waitForTimeout(200);
@@ -397,7 +419,7 @@ test.describe("the consent banner and the tag", () => {
 
   for (const [name, options, path] of [
     ["a page with no tag", {}, "/+ui_ads_unsafe?sort=new"],
-    ["a held browser", { stored: { ruqqus_chat_session: "{}" } }, CLEAN],
+    ["a held browser", { stored: { [INDEX]: indexOf("ui_ads_adult") } }, CLEAN],
   ] as [string, Options, string][]) {
     test(`${name} doesn't wait`, async ({ browser, baseURL }) => {
       const { context, asked } = await open(browser, baseURL!, options);
@@ -422,4 +444,44 @@ test("a password sign-in holds the ads, and the pre-key stays for chat", async (
   expect(asked).toHaveLength(0);
   expect(await page.evaluate(() => sessionStorage.getItem("uqqus_chat_prekey"))).not.toBeNull();
   await context.close();
+});
+
+// A visitor's page with the tag, kept by the back button while this tab signed in (which writes the pre-key to the tab's sessionStorage),
+// comes back with its tag running. Chromium gives it `resume` and `visibilitychange` before `pageshow`, and timers after: the stand-in tag
+// listens to all of them and looks for the key each time. partials/ad_script.html takes it in listeners put on before the tag, with capture.
+// The full Chromium (not Playwright's `--disable-back-forward-cache`), driven by history.go: goBack() waits for a load a kept page never fires.
+test("a page the back button brings back after a sign-in in this tab: nothing the tag runs sees the key", async ({ baseURL }) => {
+  const browser = await chromium.launch({ channel: "chromium", ignoreDefaultArgs: ["--disable-back-forward-cache"] });
+  try {
+    const { context, asked } = await open(browser, baseURL!, {
+      tag: `window.seen = [];
+            function look(name) { return function () { if (sessionStorage.getItem("uqqus_chat_prekey")) window.seen.push(name); }; }
+            ["resume", "visibilitychange", "freeze"].forEach(function (name) { document.addEventListener(name, look(name)); document.addEventListener(name, look(name), true); });
+            ["focus", "pageshow", "pagereveal", "popstate"].forEach(function (name) { window.addEventListener(name, look(name)); window.addEventListener(name, look(name), true); });
+            setInterval(look("timer"), 5);
+            requestAnimationFrame(function frame() { look("frame")(); requestAnimationFrame(frame); });`,
+    });
+    await context.addInitScript(() => {
+      window.addEventListener("pageshow", (event) => { (window as any).__kept = event.persisted; });
+    });
+    const page = await go(context, CLEAN);
+    expect(asked).toHaveLength(1);
+    await page.goto("/login");
+    await page.fill("#username", "ui_ads_fresh");
+    await page.fill("#password", "ui-Password-1");
+    await Promise.all([page.waitForURL((url) => !url.pathname.startsWith("/login")), page.click("#login_button")]);
+    expect(await page.evaluate(() => sessionStorage.getItem("uqqus_chat_prekey"))).not.toBeNull();
+    await page.evaluate(() => { setTimeout(() => history.go(-2), 0); });
+    await expect.poll(() => page.evaluate(() => (window as any).__kept).catch(() => undefined),
+      { message: "the page really came from the back-forward cache", timeout: 20_000 }).toBe(true);
+    await page.waitForTimeout(500);
+    expect(await page.evaluate(() => (window as any).seen)).toEqual([]);
+    expect(await page.evaluate(() => sessionStorage.getItem("uqqus_chat_prekey"))).toBeNull();
+    // the stand-in really was looking: it finds what is put where it looks
+    await page.evaluate(() => sessionStorage.setItem("uqqus_chat_prekey", "put there by this spec"));
+    await expect.poll(() => page.evaluate(() => (window as any).seen.length)).toBeGreaterThan(0);
+    await context.close();
+  } finally {
+    await browser.close();
+  }
 });

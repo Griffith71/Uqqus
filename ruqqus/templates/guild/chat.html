@@ -73,6 +73,24 @@
     {% else %}
     <iframe class="guild-chat-frame" title="{{ selected.label }}" loading="lazy"
             src="/chat?embed=1&amp;single=1&amp;room={{ selected.room_id | urlencode }}"></iframe>
+    <script>
+      // The frame's chat stopped and it is over its reload budget (assets/chat_src/src/keeper.js), or another tab took chat over
+      // (index.js holdChatLock): it says so itself, with a Reload or a Use it here button. When the member comes back to this tab, the
+      // frame is made again once, under this page's control.
+      (function () {
+        var frame = document.querySelector('.guild-chat-frame');
+        var stopped = false;
+        window.addEventListener('message', function (event) {
+          if (event.origin !== window.location.origin || !frame || event.source !== frame.contentWindow) return;
+          if (event.data && event.data.type === 'uqqus-chat:stopped') stopped = true;
+        });
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState !== 'visible' || !stopped) return;
+          stopped = false;
+          frame.src = frame.src;
+        });
+      })();
+    </script>
     {% endif %}
   </section>
 </div>

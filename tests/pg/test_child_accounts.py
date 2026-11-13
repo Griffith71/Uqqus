@@ -524,7 +524,11 @@ def test_deleting_a_child_needs_the_parents_password_and_keeps_the_parent_signed
     wrong = post(mine, f"/settings/children/{kid.username}/delete", formkey=mum.formkey(mine), parent_password="wrong")
     assert "error=" in wrong.headers["Location"] and row(kid.id, "is_deleted", db=mum.db_session()).is_deleted is False
     done = post(mine, f"/settings/children/{kid.username}/delete", formkey=mum.formkey(mine), parent_password=mum.password)
-    assert done.status_code == 303 and "msg=" in done.headers["Location"]
+    # the answer is the page itself, which forgets the child's chat here (a family shares a browser); the parent's own is untouched
+    page = done.get_data(as_text=True)
+    assert done.status_code == 200 and f"The account @{kid.username} is deleted." in page
+    assert f'forgetChildChatDevices(["@ruqqus_{kid.id}:' in page and "forgetChatDevices(" not in page
+    assert "forgetChildChatDevices" not in get(mine, "/settings/children?msg=x").get_data(as_text=True), "an address never forgets anything"
     assert row(kid.id, "is_deleted", db=mum.db_session()).is_deleted is True and controls(mum, kid.id) is None
     assert get(mine, "/settings/children").status_code == 200, "this browser is still the parent's"
 
@@ -607,6 +611,9 @@ def test_a_parent_deleting_their_account_deletes_the_children_and_is_warned_firs
     client = mum.browser()
     done = post(client, "/settings/delete_account", formkey=mum.formkey(client), password=mum.password, delete_reason="test")
     assert done.status_code == 200
+    # the page clears the parent's chat from this browser, and the children's closed with it (a family shares a browser)
+    forget = done.get_data(as_text=True).split("forgetChatDevices(", 1)[1].split(");", 1)[0]
+    assert forget.startswith(f'"@ruqqus_{mum.id}:') and f'"@ruqqus_{kid.id}:' in forget and f'"@ruqqus_{kid2}:' in forget
     for uid in (kid.id, kid2):
         assert row(uid, "is_deleted", db=mum.db_session()).is_deleted is True
     db = mum.db_session()

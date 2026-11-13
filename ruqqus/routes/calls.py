@@ -22,6 +22,7 @@ from ruqqus.helpers import calls as call_rules
 from ruqqus.helpers import call_store
 from ruqqus.helpers import chat_devices
 from ruqqus.helpers import chat_groups as group_rules
+from ruqqus.helpers import push_rules, push_send
 from ruqqus.helpers import chat_group_store as group_store
 from ruqqus.helpers import live_bus, turn_usage, turn_usage_store
 from ruqqus.helpers.chat_permissions import is_blocked
@@ -66,8 +67,10 @@ def chat_room(v, room_id):
             return None, None
         from ruqqus.routes.chat_groups import group_json
         info = group_json(group, me, v)
-        joined = [m[0] for m in group_store.members(g.db, group[0]) if m[2] == group_rules.JOINED]
-        return {"kind": "group", "room_id": room_id, "label": info["label"], "member_ids": joined, "other": None}, None
+        # who is told a call started is read only when one starts (`member_ids` None), never at every heartbeat: a group
+        # holds up to 500 people
+        return {"kind": "group", "room_id": room_id, "label": info["label"], "member_ids": None, "group_id": group[0],
+                "other": None}, None
     from ruqqus.routes.guild_channels import voice_room
     return voice_room(v, room_id)
 
@@ -216,10 +219,15 @@ def call_join(v):
     elif started and room["kind"] == "pair":
         call_store.ring(r, room_id, room["other"].id)
         live_bus.publish_to_user(r, room["other"].id, "call.ring", caller)
+        # and a closed browser rings through its push notification (helpers/push_send.py)
+        push_send.send_later(push_send.prepare(g.db, [room["other"].id], push_rules.CALL, v, room_id, video=kind == call_rules.VIDEO),
+                             urgency="high")
     elif started:
-        for uid in room["member_ids"]:
-            if uid != v.id:
-                live_bus.publish_to_user(r, uid, "call.started", {**caller, "group": True})
+        members = room["member_ids"] if room["member_ids"] is not None else group_store.member_ids(g.db, room["group_id"], joined_only=True)
+        live_bus.publish_to_users(r, [uid for uid in members if uid != v.id], "call.started", {**caller, "group": True})
+        told = group_store.push_targets(g.db, room_id, v.id, (push_rules.EVERY, push_rules.CALLS))
+        push_send.send_later(push_send.prepare(g.db, told, push_rules.GROUP_CALL, v, room_id, video=kind == call_rules.VIDEO),
+                             urgency="high")
     elif call_store.ringing(r, room_id) == v.id:
         # answered: the other tabs of this account stop ringing
         call_store.stop_ringing(r, room_id)

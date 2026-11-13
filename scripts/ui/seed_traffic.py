@@ -22,7 +22,7 @@ HOSTS = {"direct": 40, "internal": 35, "other": 3, "news.ycombinator.com": 6, "r
 
 
 def refuse_unless_scratch():
-    name = os.environ.get("DATABASE_URL", "").rsplit("/", 1)[-1].split("?", 1)[0]
+    name = os.environ.get("DATABASE_CONNECTION_POOL_URL", os.environ.get("DATABASE_URL", "")).rsplit("/", 1)[-1].split("?", 1)[0]
     if not DB_NAME.match(name):
         sys.exit(f"Refusing to seed database {name!r}: only ui_preview, ci_* or test*.")
 

@@ -15,7 +15,7 @@ from flask import Response, g, jsonify, redirect, render_template, request, sess
 
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import Board, MediaAccount, MediaAsset, User
-from ruqqus.helpers import circle_guard, circles
+from ruqqus.helpers import age_declaration, chat_rooms, circle_guard, circles
 from ruqqus.helpers.i18n_runtime import tr, tr_lazy
 from ruqqus.helpers.media import attach, cdn, dev, google_oauth, oauth, registry, rules, safety
 from ruqqus.helpers.media.base import AccountLost, MediaGone, ProviderDown
@@ -59,7 +59,9 @@ def _account_for(v, kind, wanted=None):
     by_kind = {a.provider: a for a in _accounts(v) if a.is_active}
     if wanted:
         by_kind = {name: a for name, a in by_kind.items() if name == wanted}
-    for account in (by_kind[name] for name in rules.in_order(by_kind, _preferred(by_kind, kind))):
+    # a file sent in a chat goes where the member's pictures go
+    chosen = _preferred(by_kind, rules.IMAGE if kind == rules.CHAT else kind)
+    for account in (by_kind[name] for name in rules.in_order(by_kind, chosen)):
         name = rules.provider_for(account.provider, kind)
         provider = registry.get(name) if name else None
         if provider is not None:
@@ -480,7 +482,8 @@ def media_upload_begin(v):
     """Start an upload into the member's linked account.
 
 Form data: `kind` (image, audio or video), `filename`, `size` (bytes); for a video also
-`title` and `visibility` (unlisted or public; left out: the member's setting).
+`title` and `visibility` (unlisted or public; left out: the member's setting). `kind=chat` is a file the browser
+encrypted for a chat the member is in (`room`, its Matrix room id): any file up to its own limit, counted apart.
 Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
 `upload.headers`) and the asset's `id`. Then call `/api/media/uploads/<id>/complete`.
 """
@@ -492,6 +495,17 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
     # whatever happens to the sign-in (helpers/qr_login.py). A picture or a sound stays private in their storage until it is shown here.
     if kind == "video" and v.qr_limited:
         return qr_limited_answer(v)
+    room_id = None
+    if kind == rules.CHAT:
+        # a chat file is chat: never for a limited QR sign-in or a child whose chat is off, only into a chat they are in
+        if v.qr_limited:
+            return qr_limited_answer(v)
+        refusal = age_declaration.feature_refusal(v, "chat")
+        if refusal:
+            return _error(refusal, 403)
+        room_id = (request.form.get("room") or "").strip()
+        if not chat_rooms.kind_for(g.db, room_id, v.id):
+            return _error(tr("That chat was not found."), 404)
     try:
         ext = rules.check_request(kind, request.form.get("filename"), request.form.get("size"))
     except rules.MediaError as e:
@@ -502,13 +516,25 @@ Answers with where the browser sends the bytes (`upload.url`, `upload.method`,
         return _error(tr("Turn on media storage to upload."), 409, need="storage", settings="/settings/media")
 
     now = int(time.time())
-    recent = g.db.query(MediaAsset).filter(MediaAsset.user_id == v.id, MediaAsset.created_utc > now - 3600).count()
-    if recent >= rules.UPLOADS_PER_HOUR:
-        return _error(tr("You have uploaded a lot in the last hour. Try again a little later."), 429)
+    if kind == rules.CHAT:
+        # chat files are counted by the day and apart from posts' uploads
+        recent = g.db.query(MediaAsset).filter(MediaAsset.user_id == v.id, MediaAsset.kind == rules.CHAT,
+                                               MediaAsset.created_utc > now - 86400).count()
+        if recent >= rules.CHAT_UPLOADS_PER_DAY:
+            return _error(tr("You've sent a lot of files today. Try again tomorrow."), 429)
+    else:
+        recent = g.db.query(MediaAsset).filter(MediaAsset.user_id == v.id, MediaAsset.kind != rules.CHAT,
+                                               MediaAsset.created_utc > now - 3600).count()
+        if recent >= rules.UPLOADS_PER_HOUR:
+            return _error(tr("You have uploaded a lot in the last hour. Try again a little later."), 429)
 
     asset = MediaAsset(user_id=v.id, account_id=account.id, provider=provider.name, kind=kind,
                        token=secrets.token_urlsafe(18), ext=ext, size=int(request.form.get("size")),
-                       status=rules.PENDING, created_utc=now, updated_utc=now)
+                       status=rules.PENDING, created_utc=now, updated_utc=now, chat_room_id=room_id)
+    if room_id:
+        # sent in a chat whose messages disappear: the file stops being served when its message goes (helpers/chat_disappear.py)
+        from ruqqus.helpers import chat_disappear, chat_extras
+        asset.expires_utc = chat_disappear.file_expiry(now, chat_extras.timer_of(g.db, room_id) or 0)
     g.db.add(asset)
     g.db.flush()
     details = {"title": request.form.get("title") or request.form.get("filename"),
@@ -563,7 +589,12 @@ def media_upload_complete(aid, v):
         asset.size = int(info["size"])
         asset.checksum = info["checksum"]
         restricted = bool(info.get("restricted"))
-        if provider.served:
+        if provider.served and asset.kind == rules.CHAT:
+            # encrypted in the browser: its size is all there is to check (the bytes can't be read)
+            if asset.size > rules.CHAT_SIZE_MAX:
+                raise rules.MediaError(tr("That file is too big. The limit for files in chats is %(size)s MB.",
+                                          size=rules.CHAT_SIZE_MAX // rules.MIB), 413)
+        elif provider.served:
             head = b"".join(provider.open(account, asset, (0, min(asset.size, 64) - 1)).chunks)
             asset.ext = rules.check_uploaded(asset.kind, head, asset.size)
             if asset.kind == rules.IMAGE:
@@ -654,7 +685,7 @@ def media_dev_upload(aid, token, v):
     asset = _my_asset(v, aid)
     if not asset or asset.provider != "dev" or asset.status != rules.PENDING or not hmac.compare_digest(asset.token, token):
         return _error(tr("That upload was not found."), 404)
-    limit = rules.SIZE_MAX.get(asset.kind, 0)
+    limit = rules.CHAT_SIZE_MAX if asset.kind == rules.CHAT else rules.SIZE_MAX.get(asset.kind, 0)
     written = 0
     with open(dev.file_path(asset), "wb") as out:
         while True:
@@ -694,9 +725,26 @@ never cached. Anything else is refused, so this is not a file host for other sit
     asset = g.db.query(MediaAsset).filter_by(id=asset_id).first()
     if not asset or asset.ext != ext or not hmac.compare_digest(asset.token, token):
         return _refuse(404)
-    if asset.status != rules.READY:
-        return _refuse(410)
+    if asset.status != rules.READY or (asset.expires_utc and asset.expires_utc <= int(time.time())):
+        return _refuse(410)                 # (a disappearing chat's file whose time is up, before the job marks it)
 
+    if asset.kind == rules.CHAT:
+        # a file sent in an end-to-end encrypted chat: only the chat's members (and its sender), never cached, never
+        # shown in a page; what it holds only their browsers can read
+        v, _ = get_logged_in_user()
+        if not v or v.qr_limited or age_declaration.feature_refusal(v, "chat") \
+                or not (v.id == asset.user_id or chat_rooms.kind_for(g.db, asset.chat_room_id, v.id)):
+            return _refuse(404)
+        mode = rules.PRIVATE
+    else:
+        mode = _post_file_access(asset)
+    if mode is None:
+        return _refuse(404)
+    return _serve(asset, mode)
+
+
+def _post_file_access(asset):
+    """How a post's, a comment's or a story's file may be fetched now (rules.access), for whoever is asking."""
     live = attach.is_live(g.db, asset)
     # a file in a post or story made for an audience is only for the people who may see it
     audience, circle_owner, board_id, circle_ids = attach.audience_context(g.db, asset) if live else (0, None, None, ())
@@ -718,10 +766,10 @@ never cached. Anything else is refused, so this is not a file host for other sit
             from ruqqus.routes.stories import _profile_closed as story_profile_closed
             owner = g.db.query(User).filter_by(id=circle_owner).first()
             allowed = owner is not None and not story_profile_closed(owner, v)
-    mode = rules.access(asset.status, live, is_owner, audience, allowed)
-    if mode is None:
-        return _refuse(404)
+    return rules.access(asset.status, live, is_owner, audience, allowed)
 
+
+def _serve(asset, mode):
     account = g.db.query(MediaAccount).filter_by(id=asset.account_id).first()
     provider = registry.get(asset.provider)
     if provider is None or not provider.served or not account or not account.is_active:
@@ -754,7 +802,7 @@ never cached. Anything else is refused, so this is not a file host for other sit
     # whatever the bytes are, the browser treats them as this type and runs nothing in them
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Content-Security-Policy"] = "default-src 'none'; sandbox"
-    response.headers["Content-Disposition"] = "inline"
+    response.headers["Content-Disposition"] = "attachment" if asset.kind == rules.CHAT else "inline"
     response.headers["Cache-Control"] = FOREVER if mode == rules.PUBLIC else NO_STORE
     if mode == rules.PUBLIC:
         g.skip_session_cookie = True      # one answer for everyone: nobody's cookie rides on it

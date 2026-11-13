@@ -116,7 +116,7 @@ def test_the_page_and_its_script():
     assert "sends: () => onStage()," in SPACE_JS and "hears: (p) => STAGE.has(p.role)," in SPACE_JS
     assert "audio.muted = !(p && STAGE.has(p.role));" in SPACE_JS
     assert 'navigator.locks.request("uqqus-call", { ifAvailable: true }' in SPACE_JS
-    assert "if (state.data.room_id) await inRoom(state.data.room_id);" in SPACE_JS
+    assert "if (!state.stopped && state.data.room_id) await inRoom(state.data.room_id);" in SPACE_JS
     # the only HTML the page draws is an update's and the summary's stored, sanitized HTML; board messages are text
     assert SPACE_JS.count("innerHTML") == 2
     assert 'body.innerHTML = u.body_html || "";' in SPACE_JS and "summary.innerHTML = thread.summary_html;" in SPACE_JS
@@ -301,3 +301,75 @@ def test_a_not_recorded_space_takes_its_board_and_updates_with_it():
     queue = read("ruqqus", "templates", "admin", "space_reports.html")
     assert "/admin/space_messages/{{ m.id }}/remove" in queue and "/admin/space_messages/{{ m.id }}/dismiss" in queue
     assert "reporter" not in queue
+
+
+def test_a_join_that_fails_before_the_call_client_runs_lets_the_call_lock_go():
+    # the Join button comes back; pressing it again must not find this page's own uqqus-call lock and say another window holds a call
+    join = SPACE_JS[SPACE_JS.index("async function joinSpace() {"):SPACE_JS.index("// in the Space's room before anyone connects")]
+    assert "if (!(await holdCallLock())) {" in join
+    failed = join[join.index("} catch (e) {"):]
+    assert failed.index("if (!state.client) letCallLockGo();") < failed.index('byId("space-join").disabled = false;')
+    hold = SPACE_JS[SPACE_JS.index("async function holdCallLock() {"):SPACE_JS.index("async function join() {")]
+    assert "if (!navigator.locks || state.callLock) return true;" in hold          # held already: not asked again
+    assert "state.callLock = null;" in hold and "release();" in hold
+    finish = SPACE_JS[SPACE_JS.index("async function finish(reason) {"):SPACE_JS.index("// --- starting the page")]
+    assert finish.index("await recordFinish();") < finish.index("await state.keeper.shutdown()") < finish.index("letCallLockGo();")
+    start = SPACE_JS[SPACE_JS.index("async function startMatrix() {"):SPACE_JS.index("function inRoom(roomId) {")]
+    assert "await keeper.shutdown();" in start                       # the store key zeroed and its lock let go before the call lock
+
+
+def test_chat_stopping_without_a_reload_takes_the_page_out_of_its_space():
+    """keeper.js stops a page without reloading it (a refused renewal, over the reload budget): a joined Space is left as Leave leaves it
+    (finish: the microphone, the peers, the heartbeat, the call client, then the uqqus-call lock), a join on its way stops before it connects."""
+    ui = SPACE_JS[SPACE_JS.index("const spaceUi = {"):SPACE_JS.index("class NotStarted")]
+    assert "stop: (text) => stopped(text)," in ui and "say(text, true)" not in ui
+    stop = SPACE_JS[SPACE_JS.index("function stopped(text) {"):SPACE_JS.index("async function letGo()")]
+    assert "state.stopped = true;" in stop and "if (state.joined) return leave(text);" in stop and "return letGo();" in stop
+    drop = SPACE_JS[SPACE_JS.index("async function dropClient()"):SPACE_JS.index("async function letGo()")]
+    assert drop.index("state.keeper.shutdown()") < drop.index("state.client = null;") and "letCallLockGo" not in drop
+    let_go = SPACE_JS[SPACE_JS.index("async function letGo()"):SPACE_JS.index("const spaceUi = {")]
+    assert let_go.index("await dropClient();") < let_go.index("letCallLockGo();")
+    finish = SPACE_JS[SPACE_JS.index("async function finish("):SPACE_JS.index("// --- starting the page")]
+    for step in ("clearInterval(state.heartbeat);", "state.mesh.close()", "state.media.stop()", "state.keeper.shutdown()", "letCallLockGo();"):
+        assert step in finish, step
+    join = SPACE_JS[SPACE_JS.index("async function joinSpace()"):SPACE_JS.index("state.mesh = new Mesh(")]
+    assert join.index("state.stopped = false;") < join.index('state.data = await api("join");')
+    assert join.index('state.data = await api("join");') < join.index("if (state.stopped) {") < join.index("state.joined = true;")
+    assert "return letGo();" in join[join.index("if (state.stopped) {"):]
+
+
+def test_a_join_refused_after_chat_stopped_lets_the_stopped_client_and_the_call_lock_go():
+    """Chat stopped while the join request was on its way (stopped() only says so while joining) and the request then failed (a parent
+    who switched chat off refuses both): the stopped client, its keeper and uqqus-call all go, and a later Join never reuses a stopped
+    client."""
+    join = SPACE_JS[SPACE_JS.index("async function joinSpace() {"):SPACE_JS.index("let turn = null;")]
+    failed = join[join.index("} catch (e) {"):]
+    assert "if (state.stopped || (state.keeper && state.keeper.stopped)) await letGo();\n    else if (!state.client) letCallLockGo();" in failed
+    before = join[:join.index("  try {")]
+    assert before.index("if (!(await holdCallLock())) {") < before.index(
+        "if (state.client && (!state.keeper || state.keeper.stopped)) await dropClient();") < before.index("state.stopped = false;")
+    assert "state.client = state.client || (await startMatrix());" in join
+
+
+def test_a_microphone_that_opens_after_the_space_was_left_is_put_down_at_once():
+    """Leave (or chat stopping) pressed while the browser's microphone prompt is up: finish() ran with no microphone to stop, so the
+    one that opens afterwards is stopped there and then, and the join goes no further (no recording, no watch, no heartbeat)."""
+    mic = SPACE_JS[SPACE_JS.index("async function micOn() {"):SPACE_JS.index("function micOff() {")]
+    assert mic.index("if (state.media || state.ended || state.stopped) return;") < mic.index("media = await LocalMedia.open(false);")
+    after = mic[mic.index("media = await LocalMedia.open(false);"):]
+    assert after.index("if (state.ended || state.stopped || state.media) {") < after.index("media.stop();") \
+        < after.index("state.media = media;") < after.index("state.mesh.setMedia(state.media);")
+    join = SPACE_JS[SPACE_JS.index("async function joinSpace() {"):SPACE_JS.index("// A busy Space sends many roster changes")]
+    rest = join[join.index("if (onStage()) await micOn();"):]
+    assert rest.index("if (state.ended || state.stopped) return;") < rest.index("recordStart();") \
+        < rest.index("window.UqqusLive.watch(") < rest.index("state.heartbeat = setInterval(beat, 10000);")
+
+
+def test_a_join_with_no_relay_lets_the_call_client_and_lock_go_and_gives_join_back():
+    join = SPACE_JS[SPACE_JS.index("async function joinSpace() {"):SPACE_JS.index("state.mesh = new Mesh(")]
+    relay = join[join.index("if (!state.stopped && (!turn || !turn.uris || !turn.uris.length)) {"):]
+    relay = relay[:relay.index("\n  }\n")]
+    assert relay.index('await api("leave").catch(() => {});') < relay.index("await letGo();") \
+        < relay.index('say(window.tr("Spaces are unavailable right now. Try again later."), true)')
+    let_go = SPACE_JS[SPACE_JS.index("async function letGo()"):SPACE_JS.index("const spaceUi = {")]
+    assert 'byId("space-join").disabled = false;' in let_go

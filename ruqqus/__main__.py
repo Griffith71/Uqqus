@@ -155,6 +155,14 @@ app.config["MATRIX_AS_TOKEN"] = environ.get("MATRIX_AS_TOKEN")
 app.config["MATRIX_HS_TOKEN"] = environ.get("MATRIX_HS_TOKEN")
 app.config["MATRIX_BOT_LOCALPART"] = environ.get("MATRIX_BOT_LOCALPART", "ruqqus_bot")   # sender_localpart in synapse/ruqqus-appservice.yaml
 app.config["MATRIX_USER_PREFIX"] = environ.get("MATRIX_USER_PREFIX", "ruqqus_")
+# The keys that lock each browser's chat crypto store (helpers/chat_store_keys.py): made from CHAT_STORE_SECRET, else SECRET_KEY.
+# Set it once, before launch (RESTORE.md "Rotating the chat store secret"): changing it, or SECRET_KEY while it is unset, makes every
+# browser start a new chat device.
+app.config["CHAT_STORE_SECRET"] = environ.get("CHAT_STORE_SECRET", "").strip()
+# Site browsers' chat tokens expire after an hour (synapse/homeserver.yaml) and are renewed through the site (helpers/chat_tokens.py).
+# Dev and specs only: report them as lasting at most this many seconds, so renewal can be watched (never set on a live site)
+_report = environ.get("CHAT_TOKEN_REPORT_SECONDS", "").strip()
+app.config["CHAT_TOKEN_REPORT_SECONDS"] = int(_report) if _report.isascii() and _report.isdigit() and int(_report) > 0 else None
 
 #environ.get(
 #    "domain", environ.get(

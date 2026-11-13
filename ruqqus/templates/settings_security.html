@@ -15,12 +15,12 @@
           <h2 class="h5">{{ _("Password") }}</h2>
 
           <p class="text-small text-muted">{{ _("Change your account password.") }}</p>
-          {# helpers/chat_signouts.py: until the browser keeps its chat stores, these events sign out chat apps only #}
-          <p class="text-small text-muted" id="password-chat-note">{{ _("Changing your password also signs out every chat app signed in to your account.") }}</p>
+          {# helpers/chat_signouts.py: a credential event (account_sessions.revoke) spares this sign-in's chat devices only (decision 2) #}
+          <p class="text-small text-muted" id="password-chat-note">{{ _("Changing your password signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here.") }}</p>
 
           <div class="settings-section rounded">
 
-            <form action="/settings/security" method="post" data-chat-rekey>
+            <form action="/settings/security" method="post" data-chat-account="{{ v.username }}" data-chat-prekey-ref="{{ session.get('chat_prekey_ref') or '' }}" data-chat-rekey>
 
               <div class="body">
 
@@ -157,7 +157,7 @@
 
     <p class="text-small text-muted">{{ _("Change the two-factor settings for your account.") }}</p>
     {# helpers/chat_signouts.py: switching two-factor on or off is a credential event (account_sessions.revoke) #}
-    <p class="text-small text-muted" id="mfa-chat-note">{{ _("Switching two-factor on or off also signs out every chat app signed in to your account.") }}</p>
+    <p class="text-small text-muted" id="mfa-chat-note">{{ _("Switching two-factor on or off signs out chat on your other devices and in chat apps, except the chat this browser has used since you signed in here.") }}</p>
 
     <div class="settings-section rounded">
 
@@ -298,7 +298,7 @@
   <h2 class="h5">{{ _("Log Out Everywhere") }}</h2>
 
   <p class="text-small text-muted" id="log-out-everywhere">{{ _("Log all other devices out of your %(site)s account.") }}
-    {{ _("This also signs out every chat app signed in to your account.") }}</p>
+    {{ _("This also signs out chat everywhere else, chat apps included, except the chat this browser has used since you signed in here.") }}</p>
 
   <div class="settings-section rounded">
 

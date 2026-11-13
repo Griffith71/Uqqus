@@ -23,7 +23,7 @@ def database_name(url):
 
 
 def refuse_unless_scratch():
-    name = database_name(os.environ.get("DATABASE_URL", ""))
+    name = database_name(os.environ.get("DATABASE_CONNECTION_POOL_URL", os.environ.get("DATABASE_URL", "")))
     if not DB_NAME.match(name):
         sys.exit(f"Refusing to seed database {name!r}: only ui_preview, ci_* or test* (it writes past every rule).")
 

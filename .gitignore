@@ -108,6 +108,8 @@ venv.bak/
 *.DS_Store
 #node_modules/
 package-lock.json
+# The chat bundle's lockfile is tracked: CI and the Dockerfile run `npm ci` against it (chat plan, phase 2, 9.5).
+!ruqqus/assets/chat_src/package-lock.json
 *.css.map
 *.map
 local.txt

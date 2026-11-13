@@ -10,6 +10,7 @@
 // Every name goes in as text.
 
 import { searchPeople } from "./api.js";
+import { sitePost } from "./site.js";
 
 const byId = (id) => document.getElementById(id);
 const HANDLE = /^@?[A-Za-z0-9_]{3,25}$/;
@@ -32,9 +33,9 @@ function debounce(fn, ms) {
   };
 }
 
-async function post(url, formkey, fields = {}) {
-  const body = new URLSearchParams({ formkey, ...fields });
-  const resp = await fetch(url, { method: "POST", credentials: "same-origin", headers: { Accept: "application/json" }, body });
+// `site`: the page's boot object; a stale form key is refreshed in place and the POST sent again (site.js sitePost)
+async function post(url, site, fields = {}) {
+  const resp = await sitePost(site, url, fields);
   let data = null;
   try { data = await resp.json(); } catch (e) { data = null; }
   if (!resp.ok) throw new Error((data && data.error) || window.tr("That didn't work. Try again."));
@@ -136,10 +137,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
   async function begin(username) {
     say(status, window.tr("Starting the chat…"));
     try {
-      const resp = await fetch("/api/chat/start?json=1", {
-        method: "POST", credentials: "same-origin", headers: { Accept: "application/json" },
-        body: new URLSearchParams({ formkey: boot.formkey, username }),
-      });
+      const resp = await sitePost(boot, "/api/chat/start?json=1", { username });
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok || !data.room_id) throw new Error(data.error || window.tr("You can't start a chat with them."));
       sheet("chatNew", "hide");
@@ -226,7 +224,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
   async function joinChannel(channel, joinButton) {
     joinButton.disabled = true;
     try {
-      await post(`/api/broadcasts/${channel.channel_id}/join`, boot.formkey);
+      await post(`/api/broadcasts/${channel.channel_id}/join`, boot);
       await refreshLists();
       await openRoom(channel.room_id);
     } catch (e) {
@@ -256,21 +254,37 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
     } catch (e) {
       channels = [];
     }
-    if (!channels.length || !container.isConnected) return;
-    const heading = document.createElement("div");
-    heading.className = "text-small text-muted font-weight-bold px-3 pt-3 pb-1";
-    heading.textContent = window.tr("From people you follow");
-    container.appendChild(heading);
-    for (const channel of channels) {
-      const owner = channel.owner || {};
-      const join = button(window.tr("Join"), "btn-outline-primary", () => joinChannel(channel, join), window.tr("Join %(channel)s", { channel: channel.label }));
-      container.appendChild(row({
-        picture: owner.profile_url, title: channel.label,
-        // Translators: under a channel's name: its owner and how many are in it ("Ann · 12 members")
-        sub: window.trn("%(owner)s · %(num)s member", "%(owner)s · %(num)s members", channel.size, { owner: owner.shown_name || owner.username || "" }),
-        action: join,
-      }));
+    // the directory: the public channels most people are in (GET /api/broadcasts/popular), the ones above left out
+    let popular = [];
+    try {
+      const resp = await fetch("/api/broadcasts/popular", { credentials: "same-origin" });
+      popular = resp.ok ? (await resp.json()).channels || [] : [];
+    } catch (e) {
+      popular = [];
     }
+    if (!container.isConnected) return;
+    const shown = new Set(channels.map((c) => c.channel_id));
+    popular = popular.filter((c) => !shown.has(c.channel_id));
+    const draw = (title, list) => {
+      if (!list.length) return;
+      const heading = document.createElement("div");
+      heading.className = "text-small text-muted font-weight-bold px-3 pt-3 pb-1";
+      heading.textContent = title;
+      container.appendChild(heading);
+      for (const channel of list) {
+        const owner = channel.owner || {};
+        const join = button(window.tr("Join"), "btn-outline-primary", () => joinChannel(channel, join), window.tr("Join %(channel)s", { channel: channel.label }));
+        container.appendChild(row({
+          picture: owner.profile_url, title: channel.label,
+          // Translators: under a channel's name: its owner and how many are in it ("Ann · 12 members")
+          sub: window.trn("%(owner)s · %(num)s member", "%(owner)s · %(num)s members", channel.size, { owner: owner.shown_name || owner.username || "" }),
+          action: join,
+        }));
+      }
+    };
+    draw(window.tr("From people you follow"), channels);
+    // Translators: a heading in the chat page's Channels tab: public channels many people are in
+    draw(window.tr("Popular channels"), popular);
   }
 
   const create = byId("chat-channel-create");
@@ -285,7 +299,7 @@ export function initExtras({ boot, openRoom, openKey, startCall, refreshLists, s
         const friends = audience && audience.value === "friends";
         const fields = { name: channelName.value.trim(), audience: friends ? "4" : "0" };
         if (friends) fields.circles = "friends";
-        const made = await post("/api/broadcasts", boot.formkey, fields);
+        const made = await post("/api/broadcasts", boot, fields);
         sheet("chatChannelNew", "hide");
         await refreshLists();
         await openRoom(made.room_id);

@@ -61,8 +61,25 @@ def error_401(e):
 
     if request.path.startswith(("/api/v1/", "/api/v2/")):
         return jsonify({"error": tr("401 Not Authorized")}), 401
-    else:
-        return redirect(output)
+    if request.method == "GET" and request.args.get("embed") and request.path.startswith(("/chat", "/notifications")):
+        # a frame of the site (the guild Chat tab's, a side panel's) whose sign-in ended meanwhile (another browser logged out
+        # everywhere, a new password): the sign-in page may not be framed, so a redirect there left the frame blank. It says so
+        # itself, and its link signs in from the page around it (default.html gives a frame <base target="_top">)
+        back = quote(_frame_parent_path(), safe='')
+        return render_template("message.html", v=None, title=tr("Signed out"),
+                               error=tr("This browser was signed out. Sign in again to carry on."),
+                               link=f"/login?redirect={back}", link_text=tr("Sign in")), 401
+    return redirect(output)
+
+
+def _frame_parent_path():
+    """The page a frame sits in (its Referer, when it is this site), as a path to come back to after signing in; else the front page."""
+    from urllib.parse import urlsplit
+    from ruqqus.helpers.redirects import same_site
+    parts = urlsplit(request.referrer or "")
+    if parts.netloc != request.host:
+        return "/"
+    return same_site(parts.path + (f"?{parts.query}" if parts.query else ""))
 
 @app.errorhandler(PaymentRequired)
 @error_wrapper

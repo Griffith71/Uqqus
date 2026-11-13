@@ -14,8 +14,11 @@ import * as sdk from "matrix-js-sdk";
 import { ClientEvent } from "matrix-js-sdk";
 import { initAsync as initCryptoWasm } from "@matrix-org/matrix-sdk-crypto-wasm";
 
-import { ensureSession, openCryptoStore, CALL_STORAGE_KEY } from "./token.js";
-import { startAgainWhenSignedOut } from "./signed_out.js";
+import { ensureSession, openCryptoStore } from "./token.js";
+import { sitePost } from "./site.js";
+import { firstSync, makeClient, startSession } from "./keeper.js";
+import { sweepEmpty } from "./harvest.js";
+import { watchSignedOut } from "./signed_out.js";
 import { LocalMedia, MediaRefused, levelMeter, resumeAudio } from "./rtc/media.js";
 import { Mesh } from "./rtc/mesh.js";
 
@@ -37,19 +40,17 @@ function roleLabel(role) {
 }
 
 const state = {
-  client: null, me: null, mesh: null, media: null, joined: false, joining: false, ended: false,
-  data: null, heartbeat: null, streams: new Map(), meters: new Map(), audios: new Map(),
+  client: null, keeper: null, me: null, mesh: null, media: null, joined: false, joining: false, ended: false, stopped: false,
+  data: null, heartbeat: null, callLock: null, streams: new Map(), meters: new Map(), audios: new Map(),
   recorder: null, chunks: [], mix: null, videos: new Map(),
   board: { last: 0, quote: null, settings: null },
   updates: { last: 0, thread: null },
 };
 
 // --- the server -------------------------------------------------------------------------------------------------
+// every POST of this page refreshes a stale form key once (site.js sitePost), so a credential event in another tab doesn't end its Space
 async function api(action, fields = {}) {
-  const body = new URLSearchParams({ formkey: boot.formkey, device_id: state.me ? state.me.deviceId : "", ...fields });
-  const resp = await fetch(`/api/spaces/${boot.spaceId}/${action}`, {
-    method: "POST", credentials: "same-origin", body, headers: { Accept: "application/json" },
-  });
+  const resp = await sitePost(boot, `/api/spaces/${boot.spaceId}/${action}`, { device_id: state.me ? state.me.deviceId : "", ...fields });
   let data = {};
   try {
     data = await resp.json();
@@ -246,13 +247,21 @@ function speaking() {
 }
 
 async function micOn() {
-  if (state.media) return;
+  if (state.media || state.ended || state.stopped) return;
+  let media = null;
   try {
-    state.media = await LocalMedia.open(false);
+    media = await LocalMedia.open(false);
   } catch (e) {
     say(e instanceof MediaRefused ? e.message : window.tr("The microphone couldn't be started."), true);
     return;
   }
+  // the browser's permission prompt may have stayed up a while: left meanwhile (Leave, chat stopping, the Space ending), or a
+  // microphone already opened by another press, and this one is put down at once, never left recording on a page that has ended
+  if (state.ended || state.stopped || state.media) {
+    media.stop();
+    return;
+  }
+  state.media = media;
   state.meters.set("me", levelMeter(state.media.stream));
   state.mesh.setMedia(state.media);
   applyRoster();
@@ -495,10 +504,7 @@ function smallButton(label, fn) {
 }
 
 async function postForm(url, fields = {}) {
-  const resp = await fetch(url, {
-    method: "POST", credentials: "same-origin", headers: { Accept: "application/json" },
-    body: new URLSearchParams({ formkey: boot.formkey, ...fields }),
-  });
+  const resp = await sitePost(boot, url, fields);
   if (resp.status === 204) return {};
   let data = {};
   try {
@@ -930,24 +936,69 @@ function wireUpdates() {
 }
 
 // --- joining and leaving --------------------------------------------------------------------------------------------
+// What the page says when chat can't start or stops (keeper.js): its status line under the Join button. Chat stopping without a reload
+// (the site refused a renewal: the age lock, a QR password; over the reload budget) takes this page out of the Space it joined, as
+// Leave does (the microphone off, the peers let go, the heartbeat stopped, the call client and the uqqus-call lock let go); a page still
+// joining stops there (joinSpace reads `stopped`; one still waiting for its client's first sync is let out by keeper.js firstSync, and
+// joinSpace's catch lets the lock go), and one that hadn't joined lets its call client and lock go, the Join button back.
+function stopped(text) {
+  state.stopped = true;
+  if (state.joined) return leave(text);
+  say(text, true);
+  if (state.joining) return undefined;
+  return letGo();
+}
+
+// The call client and its keeper go (its store lock with them), the uqqus-call lock stays.
+async function dropClient() {
+  if (state.keeper) await state.keeper.shutdown().catch(() => {});
+  state.keeper = null;
+  state.client = null;
+}
+
+async function letGo() {
+  await dropClient();                                    // its store lock goes before the call lock
+  letCallLockGo();
+  byId("space-join").disabled = false;
+}
+
+const spaceUi = {
+  status: (text) => say(text || ""),
+  stop: (text) => stopped(text),
+  banner: (text) => say(text || "", !!text),
+  notice: (text) => say(text || ""),
+};
+
+class NotStarted extends Error {}
+
 async function startMatrix() {
-  const session = await ensureSession(boot, CALL_STORAGE_KEY);
-  const client = sdk.createClient({
-    baseUrl: session.homeserver_url, accessToken: session.access_token, userId: session.user_id, deviceId: session.device_id,
-  });
-  startAgainWhenSignedOut(client, CALL_STORAGE_KEY, "uqqus-call");
-  await initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm");
-  await openCryptoStore(client, CALL_STORAGE_KEY, { cryptoDatabasePrefix: "uqqus-call" });
-  await new Promise((resolve) => {
-    const onSync = (s) => {
-      if (s === "PREPARED" || s === "SYNCING") {
-        client.off(ClientEvent.Sync, onSync);
-        resolve();
-      }
-    };
-    client.on(ClientEvent.Sync, onSync);
-    client.startClient({ initialSyncLimit: 1, lazyLoadMembers: true }).catch(() => {});
-  });
+  // a refusal, no storage or a site that couldn't answer is said by startSession under the Join button, which comes back
+  const session = await startSession(() => ensureSession(boot, "call"), spaceUi, { onPassword: (e) => say(e.message, true), retry: false });
+  if (!session) throw new NotStarted();
+  const { client, keeper } = makeClient(sdk, session, {}, { ui: spaceUi });
+  state.keeper = keeper;
+  watchSignedOut(client, keeper);
+  // the store's own lock (keeper.js, 6.4), inside the uqqus-call lock this page took on Join
+  try {
+    const opened = await keeper.openStore(() => openCryptoStore(client, session), {
+      prepare: () => initCryptoWasm("/assets/js/matrix_sdk_crypto_wasm_bg.wasm"),
+    });
+    if (!opened) throw new NotStarted();
+  } catch (e) {
+    await keeper.shutdown();                      // the store key zeroed, its lock let go (keeper.js), before the call lock goes
+    state.keeper = null;
+    throw e;
+  }
+  // the stores this browser kept of the account's older devices: one found empty goes, in the background (harvest.js, 2.4 case 3). Only
+  // the chat page takes their keys (the harvest): a Space's call device can't hold them for the account
+  sweepEmpty(session, { stopped: () => keeper.stopped }).catch(() => {});
+  // the first sync, or this page stopping first (a refused renewal, over the reload budget): then Join comes back and the uqqus-call
+  // lock goes (joinSpace's catch), never a Join held disabled for good
+  if (!(await firstSync(client, keeper, ClientEvent.Sync, { initialSyncLimit: 1, lazyLoadMembers: true }))) {
+    await keeper.shutdown();
+    state.keeper = null;
+    throw new NotStarted();
+  }
   return client;
 }
 
@@ -961,6 +1012,31 @@ function inRoom(roomId) {
     };
     check();
   });
+}
+
+// One call window or Space joining a call per browser (`uqqus-call`). Held while this page's call client may run; let go when Join
+// fails before it started, and when the Space ends here (finish). A page that holds it already doesn't ask again.
+async function holdCallLock() {
+  if (!navigator.locks || state.callLock) return true;
+  return new Promise((resolve) => {
+    navigator.locks.request("uqqus-call", { ifAvailable: true }, (lock) => {
+      if (!lock) {
+        resolve(false);
+        return null;
+      }
+      return new Promise((release) => {
+        state.callLock = () => {
+          state.callLock = null;
+          release();
+        };
+        resolve(true);
+      });
+    }).catch(() => resolve(false));
+  });
+}
+
+function letCallLockGo() {
+  if (state.callLock) state.callLock();
 }
 
 async function join() {
@@ -977,38 +1053,48 @@ async function joinSpace() {
   byId("space-join").disabled = true;
   say(window.tr("Joining…"));
   resumeAudio();
-  if (navigator.locks) {
-    const got = await new Promise((resolve) => {
-      navigator.locks.request("uqqus-call", { ifAvailable: true }, (lock) => {
-        resolve(!!lock);
-        return lock ? new Promise(() => {}) : null;
-      });
-    });
-    if (!got) {
-      byId("space-join").disabled = false;
-      return say(window.tr("A call or a Space is already open in another window."), true);
-    }
+  if (!(await holdCallLock())) {
+    byId("space-join").disabled = false;
+    return say(window.tr("A call or a Space is already open in another window."), true);
   }
+  // a client whose keeper stopped (chat stopped while an earlier join's request was on its way) never syncs again: never used again
+  if (state.client && (!state.keeper || state.keeper.stopped)) await dropClient();
+  state.stopped = false;
   try {
     state.client = state.client || (await startMatrix());
     state.me = { userId: state.client.getUserId(), deviceId: state.client.getDeviceId() };
     state.data = await api("join");
   } catch (e) {
+    // the Join button comes back: with no call client running, the uqqus-call lock goes too, or pressing it again would find this
+    // page's own lock and say another window has a call open. Chat that stopped while the join was on its way (stopped() only said so
+    // then) takes its stopped client, its keeper and the lock with it, as letGo does for a page that hadn't joined.
+    if (state.stopped || (state.keeper && state.keeper.stopped)) await letGo();
+    else if (!state.client) letCallLockGo();
     byId("space-join").disabled = false;
+    if (e instanceof NotStarted) return undefined;      // said already
     return say(e.message, true);
   }
   let turn = null;
-  try {
-    turn = await state.client.turnServer();
-  } catch (e) {
-    turn = null;
+  if (!state.stopped) {
+    try {
+      turn = await state.client.turnServer();
+    } catch (e) {
+      turn = null;
+    }
   }
-  if (!turn || !turn.uris || !turn.uris.length) {
+  if (!state.stopped && (!turn || !turn.uris || !turn.uris.length)) {
     await api("leave").catch(() => {});
+    // no call here, so no call client: it, its keeper and the uqqus-call lock go, and the Join button comes back for "try again"
+    await letGo();
     return say(window.tr("Spaces are unavailable right now. Try again later."), true);
   }
   // in the Space's room before anyone connects: that is how this browser learns the others' devices
-  if (state.data.room_id) await inRoom(state.data.room_id);
+  if (!state.stopped && state.data.room_id) await inRoom(state.data.room_id);
+  if (state.stopped) {
+    // chat stopped while this page was joining (stopped): out again, before any connection or microphone
+    await api("leave").catch(() => {});
+    return letGo();
+  }
   state.joined = true;
   byId("space-live").hidden = false;
   byId("space-join-sheet").hidden = true;
@@ -1051,6 +1137,8 @@ async function joinSpace() {
     },
   });
   if (onStage()) await micOn();
+  // left while the microphone's permission prompt was up (Leave, chat stopping): finish() has run, so nothing starts again after it
+  if (state.ended || state.stopped) return;
   render();
   applyRoster();
   recordStart();
@@ -1115,6 +1203,9 @@ async function finish(reason) {
   drawRunnerControls();
   drawVideos();
   await recordFinish();
+  // nothing here uses the call client any more: it stops, then another window may hold a call
+  if (state.keeper) await state.keeper.shutdown().catch(() => {});
+  letCallLockGo();
 }
 
 // --- starting the page ----------------------------------------------------------------------------------------------
@@ -1253,10 +1344,7 @@ function wireVotes() {
     if (v.locked) return say(window.tr("Your vote is on another copy of this Space, or it can't change any more."), true);
     const next = v.mine === dir ? 0 : dir;
     try {
-      const resp = await fetch(`/api/vote/post/${boot.postId}/${next}`, {
-        method: "POST", credentials: "same-origin", headers: { Accept: "application/json" },
-        body: new URLSearchParams({ formkey: boot.formkey }),
-      });
+      const resp = await sitePost(boot, `/api/vote/post/${boot.postId}/${next}`);
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok) throw new Error(data.error || window.tr("The vote didn't go through."));
       v.score += next - v.mine;

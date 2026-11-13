@@ -3,6 +3,7 @@
 back, plurals, the catalogue kept up to date and never overwriting a human fix, and the committed catalogues and
 script tables themselves."""
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -229,7 +230,53 @@ def test_an_older_machine_entry_the_plain_rules_change_is_made_again(tree, monke
     tx.translate_catalog("es", "messages", "es", workers=1)
     assert "Save (keep for later)" in sent and not any(t.startswith("Hello") for t in sent)
     catalog = read_po(po.open("rb"))
-    assert {"machine", "plain1"} <= set(catalog.get("Save").flags)
+    assert {"machine", tx.PLAIN_FLAG} <= set(catalog.get("Save").flags)
+
+
+def test_signing_out_reaches_libretranslate_as_disconnecting():
+    # 2026-11-12: "signed out" came back as signed (a document), signed in or subscribed; "log out" as logging in
+    assert tx.plain("This device will be signed out shortly.") == "This device will be disconnected shortly."
+    assert tx.plain("Sign out %(device)s") == "Disconnect %(device)s"
+    assert tx.plain("Changing your password signs out chat on your other devices.") == \
+        "Changing your password disconnects chat on your other devices."
+    assert tx.plain("Resetting your password signs chat out on all your devices") == \
+        "Resetting your password disconnects chat on all your devices"
+    assert tx.plain("This browser was signed out of chat from another device") == \
+        "This browser was disconnected from chat from another device"
+    assert tx.plain("You logged out everywhere from another device") == "You disconnected everywhere from another device"
+    assert tx.plain("Logging out everywhere ends that sign-in.") == "Disconnecting everywhere ends that sign-in."
+    # signing in is left as it is, and an address keeps its words
+    assert tx.plain("Sign in again to carry on.") == "Sign in again to carry on."
+    assert tx.plain("[log out everywhere](/settings/security#log-out-everywhere)") == \
+        "[disconnect everywhere](/settings/security#log-out-everywhere)"
+
+
+def test_an_entry_made_with_the_first_plain_rules_is_made_again_only_where_signing_out_changes_it(tree, monkeypatch):
+    template = Catalog(domain="messages")
+    for msgid in ("Save", "This device will be signed out shortly.", "Your account was logged out", "This one was signed out"):
+        template.add(msgid)
+    with (tree / "messages.pot").open("wb") as f:
+        write_po(f, template)
+    po = tree / "es" / "LC_MESSAGES" / "messages.po"
+    po.parent.mkdir(parents=True)
+    old = Catalog(locale="es", domain="messages")
+    old.add("This device will be signed out shortly.", "Este dispositivo será firmado en breve.", flags=["machine", "plain1"])
+    old.add("Save", "Guardar", flags=["machine", "plain1"])                 # the first rules already sent it right: kept
+    old.add("Your account was logged out", "Tu cuenta fue registrada", flags=["machine"])   # no plain flag at all: made again
+    old.add("This one was signed out", "Esta fue cerrada a mano", flags=[])  # someone's own correction: never touched
+    with po.open("wb") as f:
+        write_po(f, old)
+    sent = []
+    monkeypatch.setattr(tx, "call", lambda texts, target, fmt: sent.extend(texts) or fake_spanish(texts, target, fmt))
+    tx.translate_catalog("es", "messages", "es", workers=1)
+    assert "This device will be disconnected shortly." in sent and "Your account was disconnected" in sent
+    assert not any(t.startswith(("Save", "This one")) for t in sent)
+    catalog = read_po(po.open("rb"))
+    remade = catalog.get("This device will be signed out shortly.")
+    assert remade.string != "Este dispositivo será firmado en breve."
+    assert {"machine", "plain2"} <= set(remade.flags) and "plain1" not in remade.flags
+    assert catalog.get("Save").string == "Guardar" and "plain1" in catalog.get("Save").flags
+    assert catalog.get("This one was signed out").string == "Esta fue cerrada a mano"
 
 
 # --- the glossary ---------------------------------------------------------------------------------------------------------
@@ -296,6 +343,39 @@ def test_the_committed_glossary_covers_the_sites_words_in_every_language_safely(
                 assert text.strip() and not cat.problems(msgid, text), (key, msgid, context, text)
                 # the owner, 2026-10-25: a translation fits the design ("Rep" stays short)
                 assert width(text) <= budget(msgid, context), (key, msgid, context, text, budget(msgid, context))
+
+
+SIGN_OUT_LABELS = ("Sign out", "Sign out %(device)s", "Signed out", "Reload", "Log out everywhere", "Log Out Everywhere")
+# what LibreTranslate made of signing out before PLAIN_SIGN_OUT and the glossary: signed (a document), signed up, subscribed,
+# logged in, registered, "FAQ"
+WRONG_SIGN_OUT = re.compile(r"(?i)\bsigné|firmad|firmat|\bfirma\b|подпис|imzalan|assinad|サインアップ|署名|签字|angemeldet|"
+                            r"registrad|registrat|войти|accedi|자주 묻는|suscr|subscri")
+
+
+def test_signing_out_is_said_as_signing_out_in_every_language():
+    """2026-11-12: the security warnings about signing out said the opposite in many languages (French "sera signé", Russian
+    "Войти везде" for "Log out everywhere", Japanese "サインアップ" for "Sign out"). The short labels are the glossary's in every
+    language (or someone's own correction), every machine entry those rules change was made again with them (flag plain2, never
+    plain1 alone), and the sentences that are only about signing out carry none of the old wrong senses."""
+    glossary = json.loads((cat.OUT / tx.GLOSSARY).read_text(encoding="utf-8"))
+    sentences = ("This device will be signed out shortly.", "Your other devices have been signed out.",
+                 "That device couldn't be signed out right now.", "All other devices have been logged out",
+                 "Two-factor authentication is on. Your other devices have been signed out.")
+    for key in sorted(glossary):
+        for domain in ("messages", "js"):
+            catalog = cat.read(cat.OUT / key / "LC_MESSAGES" / f"{domain}.po")
+            for message in catalog:
+                if not message.id or not message.string:
+                    continue
+                msgid = message.id if isinstance(message.id, str) else message.id[0]
+                texts = message.string if isinstance(message.string, (list, tuple)) else [message.string]
+                if msgid in SIGN_OUT_LABELS and "machine" in message.flags:
+                    assert texts[0] == glossary[key][msgid][""], (key, domain, msgid, texts[0])
+                if "machine" in message.flags and any(tx.plain(t) != tx.plain(t, tx._PLAIN_BEFORE_SIGN_OUT)
+                                                      for t in ([message.id] if isinstance(message.id, str) else message.id)):
+                    assert tx.PLAIN_FLAG in message.flags, (key, domain, msgid, sorted(message.flags))
+                if msgid in sentences:
+                    assert not any(WRONG_SIGN_OUT.search(t) for t in texts), (key, domain, msgid, texts)
 
 
 # --- a machine's loops and padding ---------------------------------------------------------------------------------------

@@ -136,3 +136,22 @@ def test_a_browser_that_holds_the_accounts_signed_in_on_it_keeps_its_year_after_
     # check_for_alts and the signup guard's ban_evade read `history`: a session cookie would end that at the first closed browser
     out = settled({"user_id": None, "session_id": None, "login_nonce": 3, "_permanent": True, "history": [5, 6]})
     assert out == {"_permanent": True, "history": [5, 6]}
+
+
+def test_the_pre_key_id_a_sign_in_keeps_is_only_ever_one_and_goes_with_it():
+    """assets/js/chat_key.js puts a random id beside the pre-key and sends it with the form; the sign-in keeps it, and chat uses only a
+    pre-key with this id (keylock.js takePrekey). A new sign-in without one (a QR sign-in, a form sent without script) keeps none, never
+    an earlier sign-in's."""
+    ref = "0123456789abcdef0123456789abcdef"
+    assert session_cookie.prekey_ref(ref) == ref
+    for bad in (None, "", ref.upper(), ref[:-1], ref + "0", ref + "\n", 12, "g" * 32, "<script>" + ref[:24]):
+        assert session_cookie.prekey_ref(bad) == "", bad
+    held = {"chat_prekey_ref": "f" * 32}
+    session_cookie.keep_prekey_ref(held, ref)
+    assert held == {"chat_prekey_ref": ref}
+    session_cookie.keep_prekey_ref(held, None)
+    assert held == {}
+    session_cookie.keep_prekey_ref(held, "not one")
+    assert held == {}
+    assert session_cookie.PREKEY_REF_KEY in session_cookie.SIGN_IN_KEYS
+    assert settled({"user_id": None, "chat_prekey_ref": ref}) == {}

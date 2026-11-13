@@ -5,9 +5,9 @@ is routes/oidc_pages.py.
 
 Which devices are the site's own and which are this sign-in's is read from `chat_site_devices` (helpers/chat_signouts.py): `site` when the
 device has a row (or, for one made before rows were kept, when its name says so), `here` when the row's `sign_in` is this cookie's. `here`
-is a label, never a reason to hide: a copy of the cookie carries the same sign-in, so every device is listed with its Sign out. The one
-exception is the browser's own, until build step 4c: chat_apps.js offers no Sign out on the chat and call devices this browser's storage
-names (today's client deletes its store when its device is signed out)."""
+is a label, never a reason to hide: a copy of the cookie carries the same sign-in, so every device is listed with its Sign out, this
+sign-in's included. chat_apps.js reads nothing from this browser's storage, and asks first (the confirm sheet) before signing out a `here`
+device: that browser's chat then starts again as a new device, its store kept (assets/chat_src/src/token.js)."""
 import re
 from os import environ
 

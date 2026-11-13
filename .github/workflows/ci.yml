@@ -26,6 +26,12 @@ jobs:
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
+      # The chat client's tests run its modules under node, some against the installed matrix-js-sdk (the SDK contract):
+      # with CI set they fail rather than skip when node or these packages are missing (tests/chat_node_harness.py).
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: ruqqus/assets/chat_src/package-lock.json }
+      - run: npm ci
+        working-directory: ruqqus/assets/chat_src
       - run: pytest -q
       # Blocking: a pinned runtime dependency with a published advisory fails the build (2026-10-21: clean after
       # Pillow 13 and certifi). Bump the pin, test, and keep this green.

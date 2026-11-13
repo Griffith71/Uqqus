@@ -52,8 +52,8 @@
             <p class="mb-1">{% trans %}<strong>On this site only:</strong> starting a chat, accepting a message request,
               making a group or adding people, calls and Spaces. An app can't find people, make rooms or start a
               call on this server: the site keeps who can reach you as it does here.{% endtrans %}</p>
-            <p class="mb-0">{% trans %}<strong>Not yet:</strong> pictures and files. The chat server keeps no files, so an app
-              can't send one.{% endtrans %}</p>
+            <p class="mb-0">{% trans %}<strong>Not in apps:</strong> files, pictures and voice notes. Those sent on this site are
+              kept, encrypted, in the sender's own storage, which an app can't reach, and an app can't send one.{% endtrans %}</p>
           </div>
         </div>
       </div>
@@ -85,7 +85,8 @@
           <div class="title w-lg-25"><label>{{ _("Your chat devices") }}</label></div>
           <div class="body w-lg-100">
             <p class="text-small text-muted">{% trans %}Every browser and app signed in to your chats. Sign out any you don't
-              recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat.{% endtrans %}</p>
+              recognise or no longer use; a browser you sign out asks for your password the next time it opens Chat.{% endtrans %}
+              {{ _("What it could already read comes back once it is unlocked.") }}</p>
             <ul class="list-unstyled mb-0" id="chat-devices" aria-live="polite">
               <li class="text-muted text-small">{{ _("Loading…") }}</li>
             </ul>
@@ -96,5 +97,8 @@
     </div>
   </div>
 </div>
+{# the site's own "are you sure?" sheet for Sign out (the settings shell doesn't carry it; chat_apps.js asks through confirmSheet) #}
+{% include "partials/confirm_sheet.html" %}
+<script src="{{ asset_url('js/confirm_sheet.js') }}"></script>
 <script type="module" src="{{ asset_url('js/chat_apps_bundle.js') }}"></script>
 {% endblock %}

@@ -2,7 +2,6 @@
 // here with their password exactly as the chat page unlocks it (keylock.js: the site never sees the password, the
 // pre-key or the key), and their chat devices with Sign out. Text only: nothing here writes HTML.
 import { fetchKeyInfo, passwordIsRight, prekeyFromPassword, passwordKey, unlock } from "./keylock.js";
-import { CALL_STORAGE_KEY, loadSession } from "./token.js";
 
 const root = document.getElementById("chat-apps");
 const formkey = root.dataset.formkey;
@@ -57,12 +56,10 @@ if (keyForm) {
 // ---- devices ----
 
 const list = byId("chat-devices");
-// THE INTERIM (build steps 2 and 3, helpers/chat_signouts.py KEEP_SITE_BROWSERS): this browser's own devices, read from its own storage
-// as before. Today's chat page and call window delete their crypto store when their device is signed out, which would destroy room keys
-// nothing else holds, so they are labelled "This browser" and offered no Sign out here. The server's `here` can't stand in for it yet:
-// today's client asks the token route only when it has no token, so the row's sign-in is often an older one. Build step 4c removes
-// this (the client that keeps its stores writes `here` on every start).
-const ownDevices = new Set([(loadSession() || {}).device_id, (loadSession(CALL_STORAGE_KEY) || {}).device_id].filter(Boolean));
+// Which device is whose comes from the server (routes/chat_apps.py device_rows; the chat plan's 3.6), never from this browser's storage:
+// `site` (the site made it) and `here` (this cookie's sign-in last started it). `here` is a label, never a reason to hide a device: a
+// copy of the cookie is the same sign-in, so every device is listed with its Sign out, and signing out one of this sign-in's asks first.
+// A browser's chat keeps its store when its device is signed out (token.js), so nothing it holds is lost: it starts again as a new device.
 
 function when(ts) {
   if (!ts) return window.tr("Not used yet");
@@ -77,15 +74,15 @@ function line(text, cls) {
   return li;
 }
 
-// asks first; the site's own sheet where the page has it (default.html), the browser's otherwise (this page's shell has none)
+// asks first, in the site's own sheet (settings_chat_apps.html includes it); the browser's confirm() only if the sheet didn't load
 function ask(text) {
-  if (window.confirmSheet) return window.confirmSheet({ title: window.tr("Sign out"), text, ok: window.tr("Sign out") });
+  if (window.confirmSheet) return window.confirmSheet({ title: window.tr("Sign out"), text, ok: window.tr("Sign out"), icon: "fa-sign-out-alt" });
   return Promise.resolve(window.confirm(text));
 }
 
 async function signOut(device, button) {
   // "This sign-in" is what the server says (the device was last started by this cookie's sign-in): a copy of the cookie is the same
-  // sign-in, so it is listed and can be signed out like any other. This browser's own devices have no button in the interim (above)
+  // sign-in, so it is listed and can be signed out like any other
   const question = device.here
     ? window.tr("This signs out chat in this browser too, if it is this browser's. It will start again as a new device.")
     : window.tr("Sign out %(device)s? It will need to sign in again to read your chats.", { device: device.name });
@@ -130,14 +127,11 @@ async function load() {
     name.textContent = device.name;
     const sub = document.createElement("div");
     sub.className = "text-small text-muted";
-    const own = ownDevices.has(device.device_id);
-    const kind = own ? window.tr("This browser") : device.here ? window.tr("This sign-in")
-      : device.site ? window.tr("A browser on this site") : window.tr("An app");
+    const kind = device.here ? window.tr("This sign-in") : device.site ? window.tr("A browser on this site") : window.tr("An app");
     // Translators: a chat device's line, e.g. "An app · Last used 3 Oct 2026"
     sub.textContent = window.tr("%(kind)s · %(used)s", { kind, used: when(device.last_seen) });
     text.append(name, sub);
     li.append(text);
-    if (own) return li;                  // the interim: never this browser's own device (its store would go with it)
     const button = document.createElement("button");
     button.type = "button";
     button.className = "btn btn-secondary btn-sm";

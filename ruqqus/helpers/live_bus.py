@@ -97,6 +97,24 @@ def publish_to_user(redis, user_id, kind, data=None):
     return publish(redis, user_channel(user_id), kind, data)
 
 
+def publish_to_users(redis, user_ids, kind, data=None, batch=100):
+    """The same event to many members (a group of up to 500 told a call started): sent in pipelines of `batch`, one
+    round trip each instead of one per member. Best effort, as `publish`."""
+    if redis is None:
+        return False
+    text = message(kind, data)
+    ids = list(user_ids)
+    try:
+        for start in range(0, len(ids), batch):
+            pipe = redis.pipeline(transaction=False)
+            for uid in ids[start:start + batch]:
+                pipe.publish(user_channel(uid), text)
+            pipe.execute()
+        return True
+    except Exception:
+        return False
+
+
 REVOKE = "live.revoke"
 
 

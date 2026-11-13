@@ -31,7 +31,7 @@ def test_the_room_lets_only_writers_write():
 
 def test_routes_need_an_account_and_the_form_key():
     routes = re.findall(r'@app\.route\("([^"]+)", methods=\["(\w+)"\]\)\n((?:@[^\n]+\n)+)def (\w+)', ROUTES)
-    assert len(routes) == 13                          # with /api/broadcasts/following (the Channels tab)
+    assert len(routes) == 14                          # with /api/broadcasts/following and /popular (the Channels tab)
     for path, method, decorators, name in routes:
         assert "@auth_required" in decorators or "@is_not_banned" in decorators or "@admin_level_required(3)" in decorators, name
         if method == "POST":
@@ -58,7 +58,7 @@ def test_a_public_channels_messages_go_through_the_site():
     assert "matrix.send_as(" in message and "channel_store.record_post(" in message
     assert 'SEVERITY_KEY = "org.uqqus.severity"' in read("ruqqus", "helpers", "broadcasts.py")
     assert 'event.getContent()["org.uqqus.severity"]' in INDEX and "filtered: !!(channel && channel.public" in INDEX
-    assert "postToChannel(boot.formkey, state.active.channel.channel_id, text)" in INDEX
+    assert "postToChannel(boot, state.active.channel.channel_id, text)" in INDEX
 
 
 def test_unread_and_the_chat_list():

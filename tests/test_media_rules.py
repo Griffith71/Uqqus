@@ -53,6 +53,10 @@ def test_the_real_type_wins_over_the_name():
 
 def test_no_type_that_can_carry_script_is_ever_served():
     for ext, (kind, mime) in mr.TYPES.items():
+        if kind == mr.CHAT:
+            # a file encrypted in a chat: bytes, served as a download (routes/media.py), never as a page or a picture
+            assert (ext, mime) == ("bin", "application/octet-stream")
+            continue
         assert kind in (mr.IMAGE, mr.AUDIO)
         assert mime.startswith(("image/", "audio/"))
         assert "svg" not in mime and "html" not in mime and "xml" not in mime
@@ -213,7 +217,8 @@ def test_a_real_account_is_used_before_the_test_storage():
     assert mr.in_order(["dev"]) == ["dev"] and mr.in_order([]) == []
     from pathlib import Path
     routes = (Path(__file__).resolve().parent.parent / "ruqqus" / "routes" / "media.py").read_text(encoding="utf-8")
-    assert "rules.in_order(by_kind, _preferred(by_kind, kind))" in routes[routes.index("def _account_for("):routes.index("def _my_asset(")]
+    found = routes[routes.index("def _account_for("):routes.index("def _my_asset(")]
+    assert "chosen = _preferred(by_kind, rules.IMAGE if kind == rules.CHAT else kind)" in found and "rules.in_order(by_kind, chosen)" in found
 
 
 def test_the_member_s_choice_for_a_kind_of_file_comes_first():

@@ -86,7 +86,16 @@ services:
       # Sign in with the site in outside Matrix apps (routes/oidc_pages.py); empty switches it off
       - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
       - OIDC_PRIVATE_KEY=${OIDC_PRIVATE_KEY:-}
+      # push notifications (ruqqus/helpers/web_push.py): the site's key pair; empty switches them off
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY:-}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-}
+      - VAPID_SUBJECT=${VAPID_SUBJECT:-}
       - MATRIX_USER_PREFIX=${MATRIX_USER_PREFIX:-ruqqus_}
+      # the chat store keys' secret (ruqqus/helpers/chat_store_keys.py): empty = MASTER_KEY. Set once, before launch
+      - CHAT_STORE_SECRET=${CHAT_STORE_SECRET:-}
+      # site browsers' chat tokens last an hour (synapse/homeserver.yaml) and are renewed through the site (helpers/chat_tokens.py).
+      # Dev and specs only: report them as lasting at most this many seconds. Never set on a live site
+      - CHAT_TOKEN_REPORT_SECONDS=${CHAT_TOKEN_REPORT_SECONDS:-}
       # the call relay's own counters (scripts/turn_usage.py) and its monthly allowance (helpers/turn_usage.py)
       - TURN_METRICS_URL=${TURN_METRICS_URL:-http://coturn:9641/metrics}
       - TURN_MONTHLY_GB=${TURN_MONTHLY_GB:-50}
@@ -186,7 +195,8 @@ services:
       retries: 5
 
   redis:
-    image: redis
+    # 6.2 or later: chat's Start over takes its grant with GETDEL (routes/chat_key_reset_pages.py)
+    image: redis:8.2
     volumes:
       - ./redis.conf:/ruqqus/redis.conf
     ports:

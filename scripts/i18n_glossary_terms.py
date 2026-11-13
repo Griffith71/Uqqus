@@ -1286,4 +1286,19 @@ CHROME = (
      "Progress text with a spinner shown on the post composer's submit button while the new post is being created."),
     ("Saving", "",
      "Progress text with a spinner shown on a settings form's save button (for example guild appearance) while changes are being saved."),
+    # Signing out (2026-11-12): LibreTranslate turned "Sign out" into "sign up" (Japanese), "subscribe" (Spanish, Russian) or a
+    # signature (Italian "Firma"), and "Log out everywhere" into "log in everywhere" (Russian, Italian) or "FAQ" (Korean): on
+    # security buttons and warnings, the opposite of what they do.
+    ("Sign out", "",
+     "Button on a row of Settings > Chat apps, and the title of the sheet that asks first: end the session of that chat device (a browser or a chat app), as 'Log out' ends one; never 'sign up', 'subscribe' or 'sign a document'."),
+    ("Sign out %(device)s", "",
+     "Screen-reader label of that button, naming the device whose session it ends (%(device)s is its name)."),
+    ("Signed out", "",
+     "Title of the page shown in a chat panel when the sign-in has ended: you are logged out (not 'signed', not 'subscribed')."),
+    ("Reload", "",
+     "Button that loads the web page again (the browser's reload), shown when chat stopped in a tab; not reloading cargo or a weapon."),
+    ("Log out everywhere", "",
+     "Button and link in Settings > Security: end every other sign-in of your account, on all your devices (log out of all devices)."),
+    ("Log Out Everywhere", "",
+     "Heading of that section of Settings > Security: end every other sign-in of your account, on all your devices."),
 )

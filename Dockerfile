@@ -3,8 +3,9 @@
 FROM node:22-slim AS chat-bundle
 
 WORKDIR /opt/build/ruqqus/assets/chat_src
-COPY ruqqus/assets/chat_src/package.json ./
-RUN npm install
+# The exact versions in the tracked lockfile (the same ones CI tests against): never a fresh resolution.
+COPY ruqqus/assets/chat_src/package.json ruqqus/assets/chat_src/package-lock.json ./
+RUN npm ci
 COPY ruqqus/assets/chat_src/src ./src
 RUN npm run build
 

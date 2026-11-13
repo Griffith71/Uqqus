@@ -53,11 +53,10 @@ def test_the_bundle_is_built_shipped_and_untracked():
 
 
 def test_a_signed_out_page_starts_again_on_every_matrix_page():
-    index = (SRC / "index.js").read_text(encoding="utf-8")
-    assert "startAgainWhenSignedOut(client, STORAGE_KEY);" in index
-    for name in ("call.js", "space.js"):
-        assert 'startAgainWhenSignedOut(client, CALL_STORAGE_KEY, "uqqus-call");' in (SRC / name).read_text(encoding="utf-8"), name
-    assert "export const STORAGE_KEY" in (SRC / "token.js").read_text(encoding="utf-8")
+    for name in ("index.js", "call.js", "space.js"):
+        text = (SRC / name).read_text(encoding="utf-8")
+        assert "watchSignedOut(client, keeper);" in text and "startAgainWhenSignedOut" not in text, name
+    assert "export async function ensureSession(boot, kind" in (SRC / "token.js").read_text(encoding="utf-8")
 
 
 def test_the_chat_page_verifies_only_its_own_devices_by_emoji():
@@ -199,15 +198,46 @@ def test_this_sign_in_is_what_the_server_says_and_every_other_device_can_be_sign
     assert 'if chat_signouts.queue(g.db, v.id, "signed_out_here", "listed", device_ids=[device_id], mxid=mxid) is None:' in later
 
 
-def test_in_the_interim_this_browsers_own_devices_are_labelled_from_its_storage_and_never_offered_sign_out():
-    """Build steps 2 and 3 (helpers/chat_signouts.py KEEP_SITE_BROWSERS): today's chat page and call window delete their crypto store when
-    their device is signed out, and today's client asks the token route only when it has no token, so the server's `here` is often an
-    older sign-in's. This browser's own chat and call devices are read from its storage, as before, and get no Sign out; step 4c drops it."""
+def test_this_browsers_devices_are_the_servers_word_and_nothing_is_read_from_storage():
+    """Build step 4c dropped the interim of steps 2 and 3: the page no longer reads this browser's devices from its storage and hides
+    their Sign out. A browser's chat keeps its store when its device is signed out (token.js), so every device, this sign-in's
+    included, is listed with its Sign out, labelled from the server's `here` and `site` (chat plan 3.6)."""
     source = (SRC / "chat_apps.js").read_text(encoding="utf-8")
     devices = source.split("// ---- devices ----")[1]
-    assert 'import { CALL_STORAGE_KEY, loadSession } from "./token.js";' in source
-    assert "new Set([(loadSession() || {}).device_id, (loadSession(CALL_STORAGE_KEY) || {}).device_id].filter(Boolean))" in devices
-    assert 'const own = ownDevices.has(device.device_id);' in devices
-    assert 'own ? window.tr("This browser") : device.here ? window.tr("This sign-in")' in devices
-    assert devices.index("if (own) return li;") < devices.index('document.createElement("button")') < devices.index("li.append(button);")
-    assert "THE INTERIM" in devices and "Build step 4c removes" in devices
+    assert "from \"./token.js\"" not in source and "readIndex" not in source and "localStorage" not in source
+    assert "ownDevices" not in source and "THE INTERIM" not in source and 'window.tr("This browser")' not in source
+    assert 'const kind = device.here ? window.tr("This sign-in") : device.site ? window.tr("A browser on this site") : window.tr("An app");' \
+        in devices
+    loop = devices[devices.index("data.devices.map("):]
+    assert "return li;" in loop and loop.index('document.createElement("button")') < loop.index("li.append(button);") < loop.index("return li;")
+    assert loop.count("return li;") == 1                          # no early return: every device gets its button
+
+
+def test_signing_out_this_sign_in_asks_in_the_sites_own_sheet():
+    """3.6: pressing Sign out asks first in the site's confirm sheet. The settings shell doesn't carry the sheet (default.html does),
+    so the page includes it itself; without it confirmSheet() isn't there and the browser's own confirm() was always what asked."""
+    page = (ROOT / "ruqqus" / "templates" / "settings_chat_apps.html").read_text(encoding="utf-8")
+    assert '{% include "partials/confirm_sheet.html" %}' in page
+    assert page.index("js/confirm_sheet.js") < page.index("js/chat_apps_bundle.js")
+    source = (SRC / "chat_apps.js").read_text(encoding="utf-8")
+    assert "window.confirmSheet({" in source and "if (!(await ask(question))) return;" in source
+
+
+def test_what_the_route_and_the_settings_say_about_the_browser_are_true_at_build_step_4():
+    """The route's own description, the token flag's comments and the specs' README say what the code does now."""
+    route = read("ruqqus", "routes", "chat_apps.py")
+    doc = route[:route.index('"""', 3)]
+    assert "until build step 4c" not in doc and "deletes its store when its device is signed out" not in doc
+    assert "this\nsign-in's included" in doc and "its store kept" in doc and "reads nothing from this browser's storage" in doc
+    # build step 5 made every token expire: the switch that kept them from it is gone from all three places
+    for where in (read(".env.example"), read("docker-compose.yml"), read("ruqqus", "__main__.py")):
+        assert "CHAT_EXPIRING_TOKENS" not in where
+    readme = read("scripts", "ui", "README.md")
+    assert "two tabs opening together make one device" not in readme
+    assert ("two tabs opening together end with one current device (a second may be made: either kept `removed`, or, when its page lost "
+            "chat to the other while it asked, signed out with the site and never written to the index, `token.js` dropMinted)") in readme
+    # a dropped device's replace is answered {replaced: true}, which names no device: counted, it made three devices of two
+    spec = read("scripts", "ui", "chat_session.spec.ts")
+    assert "new Set(tokens.map((t) => t.device_id))" not in spec
+    assert "new Set(tokens.filter((t) => t.device_id).map((t) => t.device_id)).size" in spec
+    assert 'expect(gone.why, `run ${run}: only a device a page dropped is replaced`).toBe("taken_over");' in spec

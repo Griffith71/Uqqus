@@ -238,7 +238,13 @@ test("the whole flow: the picture, the phone, Confirm, the limit, the password",
   }
 
   // the chat page: the password form instead of the client, and another account's data on this browser stays as it is until then
-  await desk.evaluate(() => localStorage.setItem("ruqqus_chat_session", JSON.stringify({ user_id: "@ruqqus_someone_else:ruqqus.local", device_id: "OTHER", access_token: "other" })));
+  // another account's chat device in this browser's index (assets/chat_src/src/token.js), signed in there with a sealed sign-in
+  const OTHER = "@ruqqus_someone_else:ruqqus.local";
+  const otherIndex = JSON.stringify({ v: 2, owner: OTHER, epoch: 3, entries: [{
+    u: OTHER, d: "UQOTHER00000", k: "chat", p: "uqqus-chat-ruqqus_someone_else-UQOTHER00000", kid: "k1", hs: "http://localhost:8008", s: "in", x: 1,
+    ed: null, made: 1, used: 1, gen: 2, exp: null, life: null, why: null, fails: 0, bad: 0, empty: 0, sealed: "c2VhbGVk.c2VhbGVk",
+  }] });
+  await desk.evaluate((value) => localStorage.setItem("uqqus_chat_devices", value), otherIndex);
   const bundles: string[] = [];
   const tokens: string[] = [];
   desk.on("request", (request) => {
@@ -250,7 +256,7 @@ test("the whole flow: the picture, the phone, Confirm, the limit, the password",
   await desk.waitForTimeout(500);
   expect(bundles).toEqual([]);
   expect(tokens).toEqual([]);
-  expect(JSON.parse((await desk.evaluate(() => localStorage.getItem("ruqqus_chat_session")))!).device_id).toBe("OTHER");
+  expect(await desk.evaluate(() => localStorage.getItem("uqqus_chat_devices")), "untouched before the password").toBe(otherIndex);
   await noSerious(desk, "the password form");
   await desk.screenshot({ path: `${SHOTS}desk-chat-password.png` });
 
@@ -269,11 +275,21 @@ test("the whole flow: the picture, the phone, Confirm, the limit, the password",
   await expect(desk.locator(".alert-danger")).toBeVisible();
   await expect(desk.locator("form[data-chat-prekey]")).toBeVisible();
 
-  // the password, and the chat client starts: this browser's stale session is another account's, so it goes now and not before
+  // the password, and the chat client starts: the other account's device is KEPT (its store is that account's, for when it signs back in here),
+  // but it isn't signed in here any more, so its sealed sign-in goes; this account's own device is added beside it
   await desk.fill("#qr-upgrade-password", PASSWORD);
   await Promise.all([desk.waitForURL(/\/chat/), desk.click("#qr-upgrade-button")]);
   await expect(desk.locator("#chat-app")).toBeVisible();
-  await desk.waitForFunction(() => JSON.parse(localStorage.getItem("ruqqus_chat_session") || "{}").device_id !== "OTHER", undefined, { timeout: 30_000 });
+  await desk.waitForFunction((other) => {
+    const idx = JSON.parse(localStorage.getItem("uqqus_chat_devices") || "{}");
+    return idx.owner && idx.owner !== other && (idx.entries || []).some((e: { u: string; s: string }) => e.u === idx.owner && e.s === "in");
+  }, OTHER, { timeout: 30_000 });
+  const after = JSON.parse((await desk.evaluate(() => localStorage.getItem("uqqus_chat_devices")))!);
+  const kept = after.entries.find((e: { u: string }) => e.u === OTHER);
+  expect(kept, "the other account's device is kept").toBeTruthy();
+  expect(kept.d).toBe("UQOTHER00000");
+  expect(kept.s).toBe("out");
+  expect(kept.sealed).toBeUndefined();
   expect(await desk.locator("#qr-limited-notice").count()).toBe(0);
 
   await phoneContext.close();

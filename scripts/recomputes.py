@@ -348,6 +348,29 @@ def recompute():
             db.rollback()
             print_(f"chat sign-outs failed: {e}")
 
+        # the site's chat devices nobody has used for 90 days are signed out (never an account's most recently used chat device), at most
+        # 200 a cycle: each is queued (its row revoked at once) and Synapse deletes it when the queue runs, at the next cycle
+        try:
+            from ruqqus.helpers import chat_signouts
+            pruned = chat_signouts.prune_stale(db, int(time.time()))
+            print_("stale chat devices: " + ("migration 2026-12-20_chat_sign_outs.sql not applied" if pruned is None else f"{pruned} queued"))
+        except Exception as e:
+            db.rollback()
+            print_(f"stale chat devices failed: {e}")
+
+        # disappearing messages that are due (helpers/chat_disappear.py): the bot deletes each (a redaction), and their chat files
+        # stop being served
+        try:
+            import secrets as _secrets
+            from ruqqus.helpers import chat_disappear
+            import ruqqus.helpers.matrix_client as disappear_matrix
+            done, failed = chat_disappear.run_due(db, int(time.time()), lambda room, event: disappear_matrix.redact_as_bot(
+                room, event, _secrets.token_hex(12), "Disappearing message"))
+            print_(f"disappearing messages: {done} deleted, {failed} to try again")
+        except Exception as e:
+            db.rollback()
+            print_(f"disappearing messages failed: {e}")
+
         # a cycle rescans every live post of the last 180 days: once every few minutes is plenty
         time.sleep(CYCLE_PAUSE_SECONDS)
 

@@ -77,6 +77,9 @@ class MediaAsset(Base):
     comment_id = Column(Integer, default=None)
     # the story it is part of (helpers/stories.py): a story's picture is only shown to the people who may see the story
     story_id = Column(Integer, default=None)
+    # the chat an encrypted chat file was sent in (helpers/media/rules.py CHAT): only its members may fetch it
+    chat_room_id = Column(String(255), default=None)
+    expires_utc = Column(Integer, default=0)            # a chat file in a disappearing chat: no longer served after this (0: never)
     created_utc = Column(Integer, nullable=False, default=0)
     updated_utc = Column(Integer, nullable=False, default=0)
 

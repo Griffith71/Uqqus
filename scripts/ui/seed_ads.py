@@ -7,7 +7,8 @@ Accounts (password ui-Password-1; high, fixed ids, see seed_chat_session.py): `u
 `ui_ads_undeclared` hasn't answered, `ui_ads_child` is a child account, `ui_ads_premium` has Premium, `ui_ads_fresh` is signed in by the spec itself.
 Guilds: +ui_ads_clean (60 safe posts, for the in-feed ads and their cap), +ui_ads_mixed (30, of which the 28th newest is sensitive, so the
 continuous feed brings it in on page 2) and +ui_ads_unsafe (10, one sensitive, on page 1). Profile posts: text with a comment, a rated comment, a
-picture in a comment, nothing to read. It writes `.fixtures_ads.json` beside this file: the post ids and, for each signed-in account, a session
+picture in a comment, nothing to read. It writes `.fixtures_ads.json` beside this file: the post ids, each account's chat index as its signed-out browser would
+hold it (`indexes`), and, for each signed-in account, a session
 cookie made here with the site's own key, so the spec needs no sign-ins (they are limited, and one made on a site with ads on holds the ads for 15
 minutes, which is its own test). It refuses any database but a scratch one (`ui_preview`, `ci_*` or `test*`). Run twice it adds nothing new.
 """
@@ -29,7 +30,7 @@ OLD_ENOUGH = 1500000000
 
 
 def refuse_unless_scratch():
-    name = os.environ.get("DATABASE_URL", "").rsplit("/", 1)[-1].split("?", 1)[0]
+    name = os.environ.get("DATABASE_CONNECTION_POOL_URL", os.environ.get("DATABASE_URL", "")).rsplit("/", 1)[-1].split("?", 1)[0]
     if not DB_NAME.match(name):
         sys.exit(f"Refusing to seed database {name!r}: only ui_preview, ci_* or test*.")
 
@@ -122,9 +123,20 @@ def seed(app):
         fixtures["mxids"][name] = matrix_client.mxid_for(user_id)
         nonce = db.query(User.login_nonce).filter_by(id=user_id).scalar()
         fixtures["cookies"][name] = serializer.dumps({"user_id": user_id, "session_id": secrets.token_hex(16), "login_nonce": nonce, "_permanent": True})
+    # the chat index a browser keeps (assets/chat_src/src/token.js, `uqqus_chat_devices`), as each account's own signed-out browser would hold it:
+    # one chat device, `out`, no sealed token. What partials/ad_hold.html reads.
+    fixtures["indexes"] = {name: json.dumps(chat_index(mxid)) for name, mxid in fixtures["mxids"].items()}
     Path(__file__).with_name(".fixtures_ads.json").write_text(json.dumps(fixtures))
-    print("Seeded:", {k: v for k, v in fixtures.items() if k not in ("cookies", "mxids")})
+    print("Seeded:", {k: v for k, v in fixtures.items() if k not in ("cookies", "mxids", "indexes")})
     assert db.query(Submission.id).first()
+
+
+def chat_index(mxid, device="UQSEEDADS000"):
+    local = mxid[1:].split(":", 1)[0]
+    entry = {"u": mxid, "d": device, "k": "chat", "p": f"uqqus-chat-{local}-{device}", "kid": "k1", "hs": "http://localhost:8008",
+             "s": "out", "x": 1, "ed": None, "made": 1, "used": 1, "gen": 0, "exp": None, "life": None, "why": None, "fails": 0, "bad": 0,
+             "empty": 0}
+    return {"v": 2, "owner": None, "epoch": 1, "entries": [entry]}
 
 
 def remove():

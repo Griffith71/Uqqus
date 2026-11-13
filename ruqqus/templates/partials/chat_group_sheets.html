@@ -113,6 +113,15 @@
           <input type="search" id="chat-group-add-search" class="form-control" maxlength="40" autocomplete="off" placeholder="{{ _('Search people you follow') }}">
           <div id="chat-group-add-results" class="chat-people-list mt-2"></div>
         </div>
+        {# what this member's notifications say about this group (routes/push_pages.py, helpers/push_rules.py) #}
+        <div class="mb-3">
+          <label class="text-small font-weight-bold mb-1" for="chat-group-push">{{ _("Notifications from this group") }}</label>
+          <select id="chat-group-push" class="form-control form-control-sm">
+            <option value="0">{{ _("Every message") }}</option>
+            <option value="1">{{ _("Calls only") }}</option>
+            <option value="2">{{ _("Nothing") }}</option>
+          </select>
+        </div>
         <div id="chat-group-info-status" class="text-small mb-2" role="status"></div>
         <button type="button" id="chat-group-leave" class="btn btn-outline-danger btn-sm"><i class="fas fa-right-from-bracket mr-1" aria-hidden="true"></i>{{ _("Leave group") }}</button>
       </div>

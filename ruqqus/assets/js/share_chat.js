@@ -23,7 +23,7 @@
 
   var READY_WAIT = 25000;
   var SEND_WAIT = 15000;
-  var current = null;          // { url } the post being sent
+  var current = null;          // { url } the post or comment being sent
   var chat = null;             // { frame, ready: Promise } - made once, on first use
   var waiting = {};            // message id -> { resolve, reject, timer }
   var seq = 0;
@@ -39,7 +39,7 @@
   function chatFrame() {
     if (window.RuqqusPanels && window.RuqqusPanels.chatFrame) return window.RuqqusPanels.chatFrame();
     var frame = document.createElement('iframe');
-    frame.src = '/chat?embed=1';
+    frame.src = '/chat?embed=1&share=1';      // the hidden Send-in-chat frame: it tells this page when it stops (keeper.js)
     frame.hidden = true;
     // Translators: the name of a hidden frame holding the chat page (read by screen readers)
     frame.title = tr('Chat');
@@ -59,7 +59,10 @@
         }
         if (frame.contentWindow) frame.contentWindow.postMessage({ type: 'ruqqus-chat-ping' }, window.location.origin);
       }, 400);
-      waiting.ready = { resolve: function () { clearInterval(timer); resolve(); } };
+      waiting.ready = {
+        resolve: function () { clearInterval(timer); resolve(); },
+        reject: function (error) { clearInterval(timer); reject(error); }
+      };
     });
     chat = { frame: frame, ready: ready };
     // a failed start is tried again next time
@@ -71,7 +74,20 @@
     if (event.origin !== window.location.origin || !chat || event.source !== chat.frame.contentWindow) return;
     var data = event.data;
     if (!data || typeof data.type !== 'string') return;
-    if (data.type === 'ruqqus-chat-ready' && waiting.ready) {
+    if (data.type === 'uqqus-chat:stopped') {
+      // the frame's chat stopped or couldn't start (assets/chat_src/src/keeper.js): what waits on it fails with its words, and the
+      // next send makes a new frame (or the side panel makes its own again)
+      var error = new Error(typeof data.text === 'string' && data.text ? data.text : tr('Chat did not answer. Try again.'));
+      var stopped = chat;
+      chat = null;
+      if (!(window.RuqqusPanels && window.RuqqusPanels.chatFrame) && stopped.frame.parentNode) stopped.frame.remove();
+      Object.keys(waiting).forEach(function (key) {
+        var entry = waiting[key];
+        delete waiting[key];
+        if (entry.timer) clearTimeout(entry.timer);
+        entry.reject(error);
+      });
+    } else if (data.type === 'ruqqus-chat-ready' && waiting.ready) {
       waiting.ready.resolve();
       delete waiting.ready;
     } else if (data.type === 'ruqqus-chat-sent' && waiting[data.id]) {
@@ -230,7 +246,11 @@
     note.value = '';
     say('');
     list.textContent = '';
-    $('#shareChatModal').modal('show');
+    // from inside another sheet (a comment's actions on a phone, which its item closes): Bootstrap opens one dialog at a time,
+    // so this one waits for that one to have closed
+    var open = $('.modal.show').not('#shareChatModal');
+    if (open.length) open.one('hidden.bs.modal', function () { $('#shareChatModal').modal('show'); });
+    else $('#shareChatModal').modal('show');
     load();
     if (!chat) startChat().ready.catch(function () { /* said when someone presses Send */ });
   });

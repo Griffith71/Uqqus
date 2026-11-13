@@ -21,7 +21,7 @@ from .base import MediaGone, Provider, ProviderDown, Stream
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 APPROOT = f"{GRAPH}/me/drive/special/approot"
-SUBFOLDERS = {rules.IMAGE: "Images", rules.AUDIO: "Audio"}
+SUBFOLDERS = {rules.IMAGE: "Images", rules.AUDIO: "Audio", rules.CHAT: "Chat files"}
 META = "id,size,file,deleted"
 CHUNK = 32 * 320 * 1024          # 10 MiB: a multiple of 320 KiB, well under Graph's 60 MiB a piece
 READ_CHUNK = 64 * 1024

@@ -30,6 +30,8 @@ cycle; plain `text()` SQL, each rule in its own savepoint (tests/test_retention.
   can still be carrying one.
 - `chat_device_signouts`: a chat sign-out (helpers/chat_signouts.py) goes `CHAT_SIGNOUT_DAYS` after it was done; one still pending
   stays, however old (it is retried for ever).
+- `chat_report_messages`: the words a reporter's browser copied from a private chat (helpers/chat_reports.py) are emptied
+  `CHAT_REPORT_TEXT_DAYS` after the report was closed; the report, who sent each message and when stay. An open one keeps them.
 """
 import time
 
@@ -52,6 +54,7 @@ TRAFFIC_DAYS = 400              # helpers/traffic.py KEEP_DAYS
 TRAFFIC_BATCH_DAYS = 14         # more than helpers/traffic_store.py LIVE_DAYS: a batch can wait in Redis that long
 ENDED_SIGN_IN_DAYS = 400        # helpers/sign_in_ends.py KEEP_DAYS: longer than a cookie written back can last (365 days)
 CHAT_SIGNOUT_DAYS = 30          # helpers/chat_signouts.py KEEP_DAYS: after it was done
+CHAT_REPORT_TEXT_DAYS = 90      # helpers/chat_reports.py KEEP_TEXT_DAYS: after the report was closed
 DAY = 86400
 
 RULES = (
@@ -84,6 +87,8 @@ RULES = (
     ("old traffic batches", "DELETE FROM site_traffic_flushes WHERE flushed_utc < :traffic_batches"),
     ("old ended sign-ins", "DELETE FROM ended_sign_ins WHERE ended_utc < :ended_sign_ins"),
     ("finished chat sign-outs", "DELETE FROM chat_device_signouts WHERE done_utc > 0 AND done_utc < :chat_signouts"),
+    ("words of closed chat reports", "UPDATE chat_report_messages SET body = '' WHERE body <> '' AND report_id IN "
+     "(SELECT id FROM chat_reports WHERE status <> 'open' AND resolved_utc > 0 AND resolved_utc < :chat_reports)"),
 )
 
 
@@ -98,7 +103,7 @@ def prune(db, now):
               "signup_reviews": now - SIGNUP_REVIEW_DAYS * DAY,
               "traffic_day": now // DAY - TRAFFIC_DAYS, "traffic_batches": now - TRAFFIC_BATCH_DAYS * DAY,
               "ended_sign_ins": now - ENDED_SIGN_IN_DAYS * DAY,
-              "chat_signouts": now - CHAT_SIGNOUT_DAYS * DAY,
+              "chat_signouts": now - CHAT_SIGNOUT_DAYS * DAY, "chat_reports": now - CHAT_REPORT_TEXT_DAYS * DAY,
               "events": now - EVENT_DAYS * DAY, "events_day": time.strftime("%Y-%m-%d", time.gmtime(now - EVENT_DAYS * DAY))}
     done = {}
     for name, sql in RULES:

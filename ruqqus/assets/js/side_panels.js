@@ -64,7 +64,56 @@
     if (window.innerWidth < room) fold(); else unfold();
   }
 
+  // A chat frame whose client stopped (assets/chat_src/src/keeper.js: signed out, replaced, or it couldn't start) tells this page and
+  // shows nothing itself. It is made again the next time the panel opens, so the frame is reloaded once, under this page's control;
+  // while the panel shows it, a note says so with a button that makes it again now.
+  var stale = {};
+  var note = null;
+
+  function dropNote() {
+    if (note) note.remove();
+    note = null;
+  }
+
+  function showStopped(text) {
+    dropNote();
+    note = document.createElement('div');
+    note.className = 'text-center text-muted p-4 side-panel-note';
+    var line = document.createElement('p');
+    line.textContent = text || tr('Chat stopped in this tab.');
+    var again = document.createElement('button');
+    again.type = 'button';
+    again.className = 'btn btn-primary btn-sm';
+    again.textContent = tr('Reload');
+    again.addEventListener('click', function () { open('chat'); });
+    note.appendChild(line);
+    note.appendChild(again);
+    body.appendChild(note);
+    if (frames.chat) frames.chat.hidden = true;
+  }
+
+  // a line from the chat frame above it (why it is a new device here, a lost connection); an empty one takes it away
+  var notice = null;
+
+  function showNotice(text) {
+    if (notice) notice.remove();
+    notice = null;
+    if (!text) return;
+    notice = document.createElement('p');
+    notice.className = 'small text-muted px-3 py-2 mb-0 border-bottom side-panel-notice';
+    notice.setAttribute('role', 'status');
+    notice.textContent = text;
+    notice.hidden = current !== 'chat';                                // the chat frame's line, never above another panel
+    body.insertBefore(notice, body.firstChild);
+  }
+
   function frameFor(name) {
+    if (stale[name] && frames[name]) {
+      frames[name].remove();                                            // made again, once
+      delete frames[name];
+      delete stale[name];
+      if (name === 'chat') { dropNote(); showNotice(''); }
+    }
     if (!frames[name]) {
       var frame = document.createElement('iframe');
       frame.className = 'side-panel-frame';
@@ -90,6 +139,8 @@
     }
     var frame = frameFor(name);
     Object.keys(frames).forEach(function (k) { frames[k].hidden = frames[k] !== frame; });
+    if (note) note.hidden = name !== 'chat';
+    if (notice) notice.hidden = name !== 'chat';
     current = name;
     titleNode.textContent = PANELS[name].title;
     fullLink.href = PANELS[name].page;
@@ -138,6 +189,18 @@
       Object.keys(frames).forEach(function (name) { frames[name].contentWindow.location.reload(); });
     }, 600);
   }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+  // the chat frame stopped, or has a line to show (a new device, a lost connection)
+  window.addEventListener('message', function (event) {
+    if (event.origin !== window.location.origin || !event.data || !frames.chat || event.source !== frames.chat.contentWindow) return;
+    var text = typeof event.data.text === 'string' ? event.data.text : '';
+    if (event.data.type === 'uqqus-chat:stopped') {
+      stale.chat = true;
+      if (current === 'chat') showStopped(text);
+    } else if (event.data.type === 'uqqus-chat:notice') {
+      showNotice(text);
+    }
+  });
 
   // the notifications page, once it has marked things read, says how many are left
   window.addEventListener('message', function (event) {

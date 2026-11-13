@@ -642,6 +642,14 @@ class Board(Base, Stndrd, Age_times):
         upcoming = next_event_for(self, viewer)
         data['next_event'] = None if upcoming is None else {
             k: upcoming[k] for k in ('id', 'title', 'starts_utc', 'ends_utc', 'status', 'going', 'interested')}
+        # the guild's chat channels this reader may read (the Chat tab's own rule: a visitor, or a reader the guild's
+        # channels are closed to, gets none): name, kind and the link into the Chat tab. Read through the Jinja global
+        # routes/guild_channels.py registers, never imported here: that module brings every route with it, and the
+        # creator fund imports this class (tests/test_ad_income_stays_out_assets.py)
+        from flask import current_app
+        channels_for = current_app.jinja_env.globals.get("guild_channels_for")
+        data['channels'] = [{k: c[k] for k in ('id', 'label', 'kind', 'url')} for c in channels_for(self, viewer)] \
+            if viewer and channels_for else []
 
         return data
     

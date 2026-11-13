@@ -23,12 +23,18 @@ Flask deletes a cookie left empty.
 cookie: a visitor's must never be set, only removed. tests/test_session_cookie.py, tests/pg/test_visitor_cookie.py.
 """
 
+import re
 import time
 
 from ruqqus.helpers import qr_login
 
 PERMANENT_KEY = "_permanent"
-SIGN_IN_KEYS = ("user_id", "session_id", "login_nonce", "no_ads_until", "feed_defaults_for", "media_connect", qr_login.EXPIRES_KEY, qr_login.LIMITED_KEY)
+# Which pre-key this sign-in typed (assets/js/chat_key.js): the form that typed the password put a random id beside the pre-key it kept in
+# the tab and sent the same id with the form, and the sign-in keeps it here. The chat page is told it (chat.html `prekey_ref`) and uses
+# only a pre-key with this id (keylock.js takePrekey): one an earlier sign-in of the same account left in another tab, from a password
+# changed since in another browser, by a reset or by a parent, names another id and is never used to lock the chat key.
+PREKEY_REF_KEY = "chat_prekey_ref"
+SIGN_IN_KEYS = ("user_id", "session_id", "login_nonce", "no_ads_until", "feed_defaults_for", "media_connect", qr_login.EXPIRES_KEY, qr_login.LIMITED_KEY, PREKEY_REF_KEY)
 # what routes/front.py writes for a feed's filters. A visitor's stay with the visitor; a sign-in's go with it (`forget_sign_in`)
 FILTER_KEYS = ("selected_regions", "langcodes", "catids", "groupids", "feed_post_types", "feed_filter")
 
@@ -48,6 +54,24 @@ def settle(session, new_id, now=None):
     forget_sign_in(session)
     if PERMANENT_KEY in session and not session.get("history"):
         del session[PERMANENT_KEY]
+
+
+_PREKEY_REF = re.compile(r"\A[0-9a-f]{32}\Z")
+
+
+def prekey_ref(value):
+    """The pre-key id a form sent (`chat_prekey_ref`), or "" for anything that isn't one: 32 lower-case hex characters."""
+    return value if isinstance(value, str) and _PREKEY_REF.match(value) else ""
+
+
+def keep_prekey_ref(session, value):
+    """This sign-in's pre-key id: the one its form sent, or none (a QR sign-in, a form sent without script), so that no earlier
+    sign-in's id outlives it."""
+    ref = prekey_ref(value)
+    if ref:
+        session[PREKEY_REF_KEY] = ref
+    else:
+        session.pop(PREKEY_REF_KEY, None)
 
 
 def forget_sign_in(session):

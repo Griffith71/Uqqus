@@ -19,7 +19,7 @@ OLD_ENOUGH = 1500000000
 
 
 def refuse_unless_scratch():
-    name = os.environ.get("DATABASE_URL", "").rsplit("/", 1)[-1].split("?", 1)[0]
+    name = os.environ.get("DATABASE_CONNECTION_POOL_URL", os.environ.get("DATABASE_URL", "")).rsplit("/", 1)[-1].split("?", 1)[0]
     if not DB_NAME.match(name):
         sys.exit(f"Refusing to seed database {name!r}: only ui_preview, ci_* or test*.")
 

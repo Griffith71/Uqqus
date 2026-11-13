@@ -99,7 +99,7 @@ def test_the_profile_and_the_lists_lead_with_the_display_name():
 def test_the_panels_that_draw_names_from_json_get_it_too():
     assert '"display_name": owner.display_name or ""' in read("ruqqus", "routes", "stories.py")
     chat = read("ruqqus", "routes", "chat.py")
-    assert chat.count('"display_name": ') == 2
+    assert chat.count('"display_name": ') == 3                       # the share sheet's chats and people, and a 1:1 chat's other person
     assert "display_name" in read("ruqqus", "assets", "js", "stories.js")
 
 

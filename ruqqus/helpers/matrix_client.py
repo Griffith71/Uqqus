@@ -8,7 +8,10 @@ masquerading query param on every call below, per the AS spec.
 Never log request/response bodies here - they can contain access
 tokens. Never persist an access token returned by login_as(); the
 browser is the sole owner/persistence point for its own token+device_id
-(localStorage) - see ruqqus/templates/chat.html's bundle boot.
+(sealed in its index, assets/chat_src/src/token.js). A REFRESH token
+(every login_as() and refresh() answer has one) is the one exception: it never
+reaches a browser and is kept only sealed with secret_box, in
+chat_site_devices.refresh_sealed (helpers/chat_tokens.py).
 """
 
 import time
@@ -37,6 +40,20 @@ def _answering(what):
         yield
     except RequestException as e:
         raise Unreachable(f"{what}: {type(e).__name__}") from None
+
+
+def _answer(resp, what, *needed):
+    """A 200's body as a dict holding each of `needed` as a non-empty string, or a MatrixError. A body that isn't JSON (a proxy's
+    page, a cut-off answer) or lacks a field is a failure of the call like any other, so the caller's `except MatrixError` cleans up
+    (the token route queues the sign-out of a device Synapse may have made) instead of a 500 after its row was committed. The body
+    is never put in the error: it may hold a token."""
+    try:
+        body = resp.json()
+    except ValueError:                     # requests' JSONDecodeError is a ValueError (and a RequestException: not Unreachable)
+        raise MatrixError(f"{what}: the answer isn't JSON") from None
+    if not isinstance(body, dict) or any(not isinstance(body.get(name), str) or not body.get(name) for name in needed):
+        raise MatrixError(f"{what}: unexpected answer")
+    return body
 
 
 def _as_headers():
@@ -143,7 +160,13 @@ def login_as(mxid: str, device_id: str = None) -> dict:
     for that user, Synapse reassociates a new token with that SAME
     device rather than creating a new one - this is what keeps
     per-browser device count stable across repeated calls from the same
-    browser. Returns {"access_token", "device_id", "user_id"}."""
+    browser. A device_id that doesn't exist yet is made under that id.
+    Synapse is always asked for a refresh token too, so the access token
+    expires (`expires_in_ms`: refreshable_access_token_lifetime in
+    synapse/homeserver.yaml, an hour) and is renewed through refresh()
+    (helpers/chat_tokens.py); the refresh token never leaves the server.
+    Returns {"access_token", "refresh_token", "expires_in_ms",
+    "device_id", "user_id"}."""
     body = {
         "type": "m.login.application_service",
         "identifier": {"type": "m.id.user", "user": mxid},
@@ -152,6 +175,7 @@ def login_as(mxid: str, device_id: str = None) -> dict:
     }
     if device_id:
         body["device_id"] = device_id
+    body["refresh_token"] = True        # site tokens expire and are renewed (helpers/chat_tokens.py)
     with _answering("login_as"):
         resp = requests.post(
             f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/login",
@@ -159,7 +183,27 @@ def login_as(mxid: str, device_id: str = None) -> dict:
         )
     if resp.status_code != 200:
         raise MatrixError(f"login_as failed: {resp.status_code}")
-    return resp.json()
+    return _answer(resp, "login_as", "access_token", "device_id")
+
+
+class RefreshGone(MatrixError):
+    """Synapse won't renew with this refresh token any more: unknown (401), already replaced by a successor that was used, or its
+    session expired (403), or malformed (400). The token route then asks whether the device still exists (helpers/chat_tokens.py)."""
+
+
+def refresh(refresh_token: str) -> dict:
+    """Renews a site device's access token through Synapse's /refresh (no auth header: the refresh token is the credential).
+    Returns {"access_token", "refresh_token", "expires_in_ms"}. Raises RefreshGone on 400, 401 or 403, MatrixError otherwise
+    (Unreachable when Synapse doesn't answer, and a 200 that isn't JSON or has no access token). Nothing here is ever logged:
+    both tokens are in the answer."""
+    with _answering("refresh"):
+        resp = requests.post(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/refresh",
+                             json={"refresh_token": refresh_token}, timeout=10)
+    if resp.status_code in (400, 401, 403):
+        raise RefreshGone(f"refresh refused: {resp.status_code}")
+    if resp.status_code != 200:
+        raise MatrixError(f"refresh failed: {resp.status_code}")
+    return _answer(resp, "refresh", "access_token")
 
 
 def site_device_name() -> str:
@@ -189,8 +233,11 @@ def list_devices(mxid: str):
         raise UserUnknown("list_devices: no such account")
     if resp.status_code != 200:
         raise MatrixError(f"list_devices failed: {resp.status_code}")
+    devices = _answer(resp, "list_devices").get("devices", [])
+    if not isinstance(devices, list) or not all(isinstance(d, dict) for d in devices):
+        raise MatrixError("list_devices: unexpected answer")
     return [{"device_id": d.get("device_id"), "name": d.get("display_name") or "", "last_seen": d.get("last_seen_ts")}
-            for d in resp.json().get("devices", [])]
+            for d in devices]
 
 
 def delete_device(mxid: str, device_id: str):
@@ -507,6 +554,45 @@ def send_as(room_id: str, mxid: str, content: dict, txn_id: str) -> str:
     if resp.status_code != 200:
         raise MatrixError(f"send_as failed: {resp.status_code}")
     return resp.json()["event_id"]
+
+
+def upload_signing_keys(mxid: str, keys: dict):
+    """A member's new cross-signing keys, uploaded AS the member with the appservice's token, so Synapse asks for no sign-in
+    step (helpers/chat_key_reset.py). Only routes/chat_key_reset_pages.py calls it, with a body check_upload passed for that
+    member. Answers (status, body) as Synapse gave them; Unreachable when it didn't answer."""
+    with _answering("upload_signing_keys"):
+        resp = requests.post(
+            f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/keys/device_signing/upload",
+            params={"user_id": mxid}, json=keys, headers=_as_headers(), timeout=15,
+        )
+    try:
+        body = resp.json()
+    except ValueError:
+        body = {}
+    return resp.status_code, body if isinstance(body, dict) else {}
+
+
+def room_state(room_id: str, event_type: str, state_key: str = "") -> dict:
+    """A room's state event's content as the bot reads it ({} when there is none)."""
+    with _answering("room_state"):
+        resp = requests.get(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/state/{event_type}/{state_key}",
+                            headers=_as_headers(), timeout=10)
+    if resp.status_code == 404:
+        return {}
+    if resp.status_code != 200:
+        raise MatrixError(f"room_state failed: {resp.status_code}")
+    found = resp.json()
+    return found if isinstance(found, dict) else {}
+
+
+def set_room_state(room_id: str, event_type: str, content: dict, state_key: str = ""):
+    """Writes room state as the bot: only the bot sends room state (synapse/modules/uqqus_rules.py)."""
+    with _answering("set_room_state"):
+        resp = requests.put(f"{app.config['MATRIX_INTERNAL_URL']}/_matrix/client/v3/rooms/{room_id}/state/{event_type}/{state_key}",
+                            json=content, headers=_as_headers(), timeout=10)
+    if resp.status_code != 200:
+        raise MatrixError(f"set_room_state failed: {resp.status_code}")
+    return _answer(resp, "set_room_state", "event_id")["event_id"]
 
 
 def redact_as_bot(room_id: str, event_id: str, txn_id: str, reason: str = ""):

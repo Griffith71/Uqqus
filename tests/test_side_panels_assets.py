@@ -87,3 +87,11 @@ def test_chat_shows_the_list_or_the_conversation_on_a_narrow_screen():
     assert "chat-has-room" in CHAT
     for css in STYLES:
         assert "#chat #chat-app.chat-has-room #chat-thread-pane" in css
+
+
+def test_a_chat_frames_line_shows_only_while_the_chat_panel_does():
+    # a line the chat frame posts while another panel is open (Send in chat started it, or it lost its connection) waits hidden
+    notice = PANELS_JS[PANELS_JS.index("function showNotice(text) {"):PANELS_JS.index("function frameFor(name) {")]
+    assert "notice.hidden = current !== 'chat';" in notice
+    assert notice.index("notice.hidden = current !== 'chat';") < notice.index("body.insertBefore(notice, body.firstChild);")
+    assert "if (notice) notice.hidden = name !== 'chat';" in PANELS_JS                 # and shows when the chat panel opens

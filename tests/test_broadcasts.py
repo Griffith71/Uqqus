@@ -69,7 +69,10 @@ def _tables():
     from pathlib import Path
     sql = (Path(__file__).resolve().parent.parent / "scripts" / "migrations" / "2026-10-25_broadcasts.sql").read_text(encoding="utf-8")
     sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
-    for s in (s.strip() for s in sql.split(";") if "CREATE" in s):
+    sql += ";\n" + "\n".join(line for line in (Path(__file__).resolve().parent.parent / "scripts" / "migrations" /
+                                                 "2026-12-28_channel_pictures.sql").read_text(encoding="utf-8").splitlines()
+                                 if not line.strip().startswith("--"))
+    for s in (s.strip() for s in sql.split(";") if "CREATE" in s or "ALTER TABLE" in s):
         yield s.replace("public.", "").replace("IF NOT EXISTS ", "").replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
 
 
@@ -166,3 +169,38 @@ def test_the_chat_search_finds_public_channels_you_are_not_in_by_name(db):
     assert store.search_public(db, "_", BOB) == []                   # a wildcard is only itself: no name holds "_"
     assert store.search_public(db, "NEWS", BOB) == []                 # the one left is joined or for circles
     assert store.like_pattern("a_b%") == "%a\_b\%%"
+
+
+
+# --- the directory and pictures (2026-11-13) -------------------------------------------------------------------------
+
+def test_the_directory_lists_public_channels_by_how_many_are_in_them_never_one_youre_in(db):
+    small = store.create(db, OWNER, "Small", 0, rules.PUBLIC, "!small", [], NOW)
+    big = store.create(db, OWNER, "Big", 0, rules.PUBLIC, "!big", [], NOW)
+    mine = store.create(db, OWNER, "Mine", 0, rules.PUBLIC, "!mine", [], NOW)
+    store.create(db, OWNER, "Circles", 0, rules.CIRCLES, "!circles", [], NOW)
+    for uid in (101, 102, 103):
+        store.add_member(db, big, uid, rules.MEMBER, NOW)
+    store.add_member(db, small, 101, rules.MEMBER, NOW)
+    store.add_member(db, mine, 7, rules.MEMBER, NOW)
+    assert [row[0] for row in store.popular_public(db, 7)] == [big, small]
+
+
+def test_a_picture_is_signed_with_its_words_and_can_t_be_swapped():
+    content = {"body": "Look", rules.PICTURE_KEY: "/media/1a/AAAAAAAAAAAAAAAAAAAAAAAA.jpg"}
+    content[rules.SITE_KEY] = rules.site_mark("s3cret", "!r", "Look", content[rules.PICTURE_KEY])
+    assert rules.mark_ok("s3cret", "!r", content)
+    swapped = {**content, rules.PICTURE_KEY: "/media/1b/BBBBBBBBBBBBBBBBBBBBBBBB.jpg"}
+    assert not rules.mark_ok("s3cret", "!r", swapped)
+    added = {"body": "Look", rules.SITE_KEY: rules.site_mark("s3cret", "!r", "Look"), rules.PICTURE_KEY: "/media/1a/AAAAAAAAAAAAAAAAAAAAAAAA.jpg"}
+    assert not rules.mark_ok("s3cret", "!r", added)                     # a picture added to a signed message
+    assert rules.mark_ok("s3cret", "!r", {"body": "Look", rules.SITE_KEY: rules.site_mark("s3cret", "!r", "Look")})
+
+
+def test_a_pictures_message_keeps_it_and_it_is_live_while_the_message_and_channel_are(db):
+    bid = _channel(db)
+    store.record_post(db, bid, OWNER, "$e1", "Look", 0, NOW, media_asset_id=55)
+    pid = db.execute(text("SELECT id FROM broadcast_posts WHERE event_id = '$e1'")).scalar()
+    assert store.post_picture(db, pid) == 55 and store.live_picture_channel(db, 55) == bid
+    store.remove_post(db, pid, NOW + 1)
+    assert store.live_picture_channel(db, 55) is None

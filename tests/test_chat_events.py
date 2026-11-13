@@ -60,7 +60,8 @@ def test_message_text_is_never_put_in_through_innerhtml():
     build = UI[UI.index("function buildMessage"):UI.index("export function setTabBadge")]
     assert "innerHTML" not in build.replace('b.innerHTML = `<i class="${iconClass}"></i>`;', "")
     # still text: the words around a shared post's link, or the message as it is
-    assert 'bubble.textContent = shared ? item.body.replace(shared[0], "").trim() || window.tr("Shared a post") : item.body' in build
+    assert ('item.body.replace(shared.match, "").trim() || (shared.kind === "comment" ? window.tr("Shared a comment") : window.tr("Shared a post"))\n'
+            '      : item.body;') in build and "bubble.textContent = shared\n" in build
     assert "quote.textContent = item.quote" in build
 
 
@@ -76,7 +77,7 @@ def test_a_receipt_is_sent_once_per_newest_message_not_once_per_draw():
     # our own receipt comes back as a Receipt event that redraws the thread: sending one on every
     # draw is a request loop that floods the server (and trips its rate limit)
     assert "state.active.readUpTo !== last.getId()" in INDEX
-    assert INDEX.count("sendReadReceipt(") == 1 and INDEX.count("markRead(boot.formkey") == 1
+    assert INDEX.count("sendReadReceipt(") == 1 and INDEX.count("markRead(boot,") == 1
     assert "!last.status" in INDEX      # never for a message that is still being sent
 
 

@@ -143,4 +143,4 @@ def test_the_space_left_is_what_onedrive_says(graph):
 def test_it_is_a_served_provider_named_for_the_member():
     p = onedrive.OneDriveProvider()
     assert p.served and p.name == "onedrive" and p.label == "OneDrive"
-    assert "onedrive" in rules.SERVED and rules.PROVIDERS["microsoft"] == {"image": "onedrive", "audio": "onedrive"}
+    assert "onedrive" in rules.SERVED and rules.PROVIDERS["microsoft"] == {"image": "onedrive", "audio": "onedrive", "chat": "onedrive"}

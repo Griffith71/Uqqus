@@ -78,7 +78,8 @@ _SUPPRESSION = {"suppress_content", "legal_removal"}
 
 # What can't be a guild's or the public's business: always these audiences, whatever the guild.
 ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}      # public: no guild, post or comment in them
-STAFF_ACTIONS = {"clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent", "remove_story", "age_declaration"}
+STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
+                 "remove_story", "age_declaration"}
 LEGAL_ACTIONS = {"suppress_content", "legal_removal"}
 
 # Actions that must say why (Wikipedia's reason). A caller with a reason box passes `require_reason=True`.

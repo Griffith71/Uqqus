@@ -52,6 +52,11 @@ SECTIONS = (
     ("chat_devices", "SELECT count(*) AS chat_devices, COALESCE(SUM(CASE WHEN revoked_utc = 0 THEN 1 ELSE 0 END), 0) AS signed_in "
                      "FROM chat_site_devices WHERE user_id = :u"),
     ("linked_storage", "SELECT provider, status, created_utc FROM media_accounts WHERE user_id = :u"),
+    # the browsers notifications go to (their push service, never the address or keys), and whether they name who wrote
+    ("push_notifications", "SELECT created_utc, last_ok_utc, CASE WHEN endpoint LIKE 'https://fcm.googleapis.com/%' THEN 'Google' "
+                           "WHEN endpoint LIKE '%.mozilla.com/%' THEN 'Mozilla' WHEN endpoint LIKE '%apple.com/%' THEN 'Apple' "
+                           "WHEN endpoint LIKE '%.windows.com/%' THEN 'Microsoft' ELSE 'other' END AS push_service "
+                           "FROM push_subscriptions WHERE user_id = :u"),
     # what the member sent the admins, with the facts the page sent along; a screenshot is not exported
     ("feedback", "SELECT kind, message, page, context, status, response, created_utc FROM site_feedback "
                  "WHERE user_id = :u ORDER BY id"),

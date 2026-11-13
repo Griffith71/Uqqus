@@ -89,10 +89,14 @@
     userId: {{ v.id }},
     mxid: {{ chat_mxid | tojson }},
     username: "{{ v.username }}",
+    // the pre-key this sign-in's form kept (helpers/session_cookie.py PREKEY_REF_KEY): no other is used (keylock.js takePrekey)
+    prekeyRef: {{ (session.get("chat_prekey_ref") or "") | tojson }},
     initialRoom: {{ (request.args.get('room') | tojson) if request.args.get('room') else 'null' }},
     single: {{ 'true' if request.args.get('single') else 'false' }},
     maxGroupMembers: {{ chat_group_max }},
-    filterLevel: {{ effective_level(v) }}
+    filterLevel: {{ effective_level(v) }},
+    // "Seen" and typing (Settings > Chat): off, this page sends a private read receipt and no typing, and shows neither
+    receipts: {{ 'false' if v.chat_receipts is false else 'true' }}
   };
 </script>
 <script>

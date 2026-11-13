@@ -87,6 +87,11 @@ def subject(site_name):
     return tr("New sign-in to your %(site)s account", site=site_name)
 
 
+def chat_reset_subject(site_name):
+    """The email's subject when a member's chat encryption was started over (routes/chat_key_reset_pages.py), as `subject`."""
+    return tr("Chat was started over on your %(site)s account", site=site_name)
+
+
 def qr_on_subject(site_name):
     """The email's subject when QR sign-in is turned back on, in the language it is rendered in (as `subject`)."""
     return tr("QR sign-in was turned on for your %(site)s account", site=site_name)

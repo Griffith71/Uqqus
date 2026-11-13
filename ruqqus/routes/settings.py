@@ -729,13 +729,14 @@ def delete_account(v):
         # an account that owes money isn't deleted to escape it, and deleting its parent would delete it
         return render_template("settings_security.html", v=v, error=tr("One of your child accounts owes money, so your account can't be deleted yet."))
 
-    deleted_mxid = chat_devices.mxid_of(g.db, v.id)        # read before the account closes: the page clears this account's chat here
+    # read before the accounts close: the page clears this account's chat here, and that of the children closed with it
+    deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)
     close_own_account(v, request.form.get("delete_reason", ""))
     g.db.commit()
 
     # not a redirect: this answer, which only a deletion that went through ever gets, is what clears the account's chat device
     # out of this browser. A visitor's home page can be cached, and an address that said so could be linked to.
-    return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid,
+    return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children,
                            title=tr("Your account has been deleted"),
                            message=tr("Your chats and their keys have been removed from this browser."))
 

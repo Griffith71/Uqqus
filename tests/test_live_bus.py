@@ -182,3 +182,22 @@ def test_a_stream_keeps_alive_and_ends_on_its_own():
     assert frames[4] == ": ka\n\n"                              # the garbage payload is not framed
     assert clock[0] >= 100 and len(frames) == 5
     assert live_bus.MAX_STREAM_SECONDS <= 600
+
+
+def test_one_event_to_many_members_goes_in_batches():
+    """A group of up to 500 told a call started: one pipeline per hundred members, every member's own channel, the same event."""
+    from fake_redis import FakeRedis
+
+    class Counting(FakeRedis):
+        pipelines = 0
+
+        def pipeline(self, transaction=True):
+            Counting.pipelines += 1
+            return super().pipeline(transaction)
+
+    r = Counting()
+    assert live_bus.publish_to_users(r, range(1, 251), "call.started", {"room_id": "!r"})
+    assert Counting.pipelines == 3
+    assert [c for c, _ in r.published] == [live_bus.user_channel(i) for i in range(1, 251)]
+    assert {m for _, m in r.published} == {live_bus.message("call.started", {"room_id": "!r"})}
+    assert live_bus.publish_to_users(None, [1], "call.started") is False

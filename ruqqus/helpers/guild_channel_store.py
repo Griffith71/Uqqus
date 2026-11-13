@@ -236,8 +236,11 @@ def leave_board(db, board_id, user_id):
 
 
 def mark_read(db, cid, user_id, now):
+    # never backwards: a read that waited on the webhook's update of the same row (the member's own message, counted
+    # meanwhile) would otherwise write the count from before it, and the member's own message would read as news
     db.execute(text("""UPDATE guild_channel_reads SET last_read_utc = :now,
-                              last_read_seq = (SELECT activity_seq FROM guild_channels WHERE id = :c)
+                              last_read_seq = CASE WHEN (SELECT activity_seq FROM guild_channels WHERE id = :c) > last_read_seq
+                                                   THEN (SELECT activity_seq FROM guild_channels WHERE id = :c) ELSE last_read_seq END
                        WHERE channel_id = :c AND user_id = :u"""), {"c": cid, "u": user_id, "now": now})
 
 
@@ -762,3 +765,17 @@ def bot_posts_after(db, bot_id, after, limit):
                               WHERE s.author_id = :b AND s.id > :after AND s.deleted_utc = 0 AND s.is_banned IS NOT TRUE
                                 AND s.post_public AND COALESCE(s.repost_id, 0) = 0 ORDER BY s.id LIMIT :n"""),
                       {"b": bot_id, "after": after, "n": limit}).fetchall()
+
+
+def everyone_targets(db, cid, writer_id, now, limit):
+    """Who an @everyone tells: the people in the channel's room (they opened it), the most recently reading first, but the
+    writer, anyone in a block with them either way or who muted them, and anyone who muted the channel."""
+    return [row[0] for row in db.execute(text("""
+        SELECT r.user_id FROM guild_channel_reads r
+        WHERE r.channel_id = :c AND r.user_id <> :w
+          AND NOT EXISTS (SELECT 1 FROM userblocks b WHERE (b.user_id = r.user_id AND b.target_id = :w)
+                                                       OR (b.user_id = :w AND b.target_id = r.user_id))
+          AND NOT EXISTS (SELECT 1 FROM usermutes m WHERE m.user_id = r.user_id AND m.target_id = :w)
+          AND NOT EXISTS (SELECT 1 FROM guild_channel_prefs p WHERE p.channel_id = r.channel_id AND p.user_id = r.user_id
+                                                                AND p.muted_until > :now)
+        ORDER BY r.last_read_utc DESC LIMIT :n"""), {"c": cid, "w": writer_id, "now": now, "n": int(limit)}).fetchall()]

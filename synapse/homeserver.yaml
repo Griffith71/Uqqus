@@ -100,6 +100,16 @@ oidc_providers:
         subject_claim: sub
         localpart_template: "ruqqus_{{ user.sub }}"
 
+# Site browsers ask for refresh tokens (matrix_client.login_as) so their tokens expire; the site renews them through
+# /refresh and never hands the refresh token to a browser. Apps that ask for refresh tokens now refresh hourly (default 5m).
+refreshable_access_token_lifetime: 1h
+# Deliberately NOT set: session_lifetime, nonrefreshable_access_token_lifetime, refresh_token_lifetime. Each would also
+# cut outside apps' OIDC sessions short.
+
+# A deleted message's content is purged a day after its deletion (Synapse keeps it 7 days by default, for admins): what
+# disappears in a chat (helpers/chat_disappear.py) and anything a member deletes is gone from the server within a day.
+redaction_retention_period: 1d
+
 signing_key_path: /data/keys/homeserver.signing.key
 
 trusted_key_servers: []

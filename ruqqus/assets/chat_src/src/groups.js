@@ -3,7 +3,7 @@
 // answer. Every name goes in through textContent.
 
 import {
-  searchPeople, createGroup, addToGroup, removeFromGroup, setGroupRole, renameGroup, leaveGroup,
+  searchPeople, createGroup, addToGroup, removeFromGroup, setGroupRole, renameGroup, leaveGroup, setGroupPush,
 } from "./api.js";
 
 const byId = (id) => document.getElementById(id);
@@ -168,7 +168,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     createButton.disabled = true;
     say(newStatus, window.tr("Creating…"));
     try {
-      const made = await createGroup(boot.formkey, nameInput.value.trim(), [...chosen.keys()]);
+      const made = await createGroup(boot, nameInput.value.trim(), [...chosen.keys()]);
       sheet("chatGroupNew", "hide");
       onCreated(made);
     } catch (e) {
@@ -188,6 +188,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
   const addSearch = byId("chat-group-add-search");
   const addResults = byId("chat-group-add-results");
   const infoStatus = byId("chat-group-info-status");
+  const pushChoice = byId("chat-group-push");
   let addToken = 0;
 
   function changed(updated) {
@@ -216,6 +217,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     renameForm.classList.toggle("d-none", !group.can_manage);
     if (document.activeElement !== renameInput) renameInput.value = group.name || "";
     addBox.classList.toggle("d-none", !group.can_manage || group.size >= max);
+    if (pushChoice && document.activeElement !== pushChoice) pushChoice.value = String(group.push_mode ?? 0);
 
     members.textContent = "";
     for (const person of group.members) {
@@ -232,13 +234,13 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
         if (myRole === "owner" && person.role !== "owner" && person.joined) {
           const admin = person.role === "admin";
           buttons.push(button(admin ? window.tr("Remove admin") : window.tr("Make admin"), "btn-outline-primary", () =>
-            act(setGroupRole(boot.formkey, group.group_id, person.username, admin ? "member" : "admin"))));
+            act(setGroupRole(boot, group.group_id, person.username, admin ? "member" : "admin"))));
         }
         if (myRole === "owner" ? person.role !== "owner" : myRole === "admin" && person.role === "member") {
           // Translators: a button that removes a person from a group chat
           buttons.push(button(window.tr("Remove"), "btn-outline-danger", () => {
             if (!window.confirm(window.tr("Remove @%(name)s from the group?", { name: person.username }))) return;
-            act(removeFromGroup(boot.formkey, group.group_id, person.username));
+            act(removeFromGroup(boot, group.group_id, person.username));
           }));
         }
       }
@@ -261,7 +263,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
       addResults.appendChild(personRow(person, {
         // Translators: a button that adds a person to a group chat
         buttons: [button(window.tr("Add"), "btn-primary", () =>
-          act(addToGroup(boot.formkey, current.group_id, [person.username]), () => {
+          act(addToGroup(boot, current.group_id, [person.username]), () => {
             addSearch.value = "";
             addResults.textContent = "";
           }))],
@@ -279,7 +281,20 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
     searchPeople(q).then((people) => { if (mine === addToken) drawAddResults(people); }).catch(() => {});
   }, 250));
 
-  renameForm.addEventListener("submit", () => act(renameGroup(boot.formkey, current.group_id, renameInput.value.trim())));
+  renameForm.addEventListener("submit", () => act(renameGroup(boot, current.group_id, renameInput.value.trim())));
+
+  if (pushChoice) {
+    pushChoice.addEventListener("change", async () => {
+      say(infoStatus, "");
+      try {
+        await setGroupPush(boot, current.group_id, pushChoice.value);
+        current.push_mode = Number(pushChoice.value);
+        say(infoStatus, window.tr("Saved."));
+      } catch (e) {
+        say(infoStatus, e.message, true);
+      }
+    });
+  }
 
   byId("chat-group-leave").addEventListener("click", async () => {
     const group = current;
@@ -289,7 +304,7 @@ export function initGroups({ boot, onCreated, onChanged, onLeft }) {
       : window.tr("Leave this group? You won't see new messages unless someone adds you again.");
     if (!window.confirm(message)) return;
     try {
-      await leaveGroup(boot.formkey, group.group_id);
+      await leaveGroup(boot, group.group_id);
       sheet("chatGroupInfo", "hide");
       onLeft(group);
     } catch (e) {

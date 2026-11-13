@@ -265,6 +265,8 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --text-subtle: #6b6b6b;          // decorative only: never the only carrier of meaning
         --link: #{strong-on-dark($primary, 18%)};
         --brand-soft: #{rgba($primary, 0.18)};
+        --warning-soft: rgba(214, 158, 46, 0.18);   // a warning's tint (.alert-warning): the page's own text stays on it
+        --warning-edge: #d69e2e;                    // its bar at the start edge (a graphic, beside the text)
         --upvote-text: #{strong-on-dark($upvote, 18%)};
         --downvote-text: #{strong-on-dark($downvote, 18%)};
         --danger: #f87171;
@@ -312,6 +314,8 @@ $font-sans: join(join(("Noto Sans",), $noto-scripts, comma), join(("Noto Sans Fa
         --text-subtle: #a3a3a3;          // decorative only: never the only carrier of meaning
         --link: #{strong-on-light($primary, 20%)};
         --brand-soft: #{rgba($primary, 0.12)};
+        --warning-soft: rgba(214, 158, 46, 0.16);   // a warning's tint (.alert-warning): the page's own text stays on it
+        --warning-edge: #d69e2e;                    // its bar at the start edge (a graphic, beside the text)
         --upvote-text: #{strong-on-light($upvote, 20%)};
         --downvote-text: #{strong-on-light($downvote, 20%)};
         --danger: #{strong-on-light(#c53030)};

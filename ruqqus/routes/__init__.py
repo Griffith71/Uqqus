@@ -7,7 +7,12 @@ from .chat import *
 from .live_events import *
 from .chat_groups import *
 from .chat_apps import *
+from .chat_settings_pages import *
+from .chat_reports_pages import *
+from .push_pages import *
+from .chat_extras_pages import *
 from .chat_health_pages import *
+from .chat_key_reset_pages import *
 from .oidc_pages import *
 from .calls import *
 from .live_comments import *

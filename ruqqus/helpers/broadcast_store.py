@@ -53,6 +53,15 @@ def public_of_owners(db, owner_ids, viewer_id, limit=30):
     return db.execute(query, {"ids": ids, "me": viewer_id, "n": int(limit)}).fetchall()
 
 
+def popular_public(db, viewer_id, limit=30):
+    """The public channels most people are in that the viewer is not in yet (the Channels tab's directory). The caller
+    leaves out an owner in a block with the viewer, a deleted one, and a name their filter hides."""
+    return db.execute(text(f"""SELECT {_CHANNEL} FROM broadcasts b WHERE audience = 0 AND deleted_utc = 0
+                               AND id NOT IN (SELECT broadcast_id FROM broadcast_members WHERE user_id = :me)
+                               ORDER BY (SELECT COUNT(*) FROM broadcast_members m WHERE m.broadcast_id = b.id) DESC, created_utc DESC
+                               LIMIT :n"""), {"me": viewer_id, "n": int(limit)}).fetchall()
+
+
 def like_pattern(q):
     """`q` as a LIKE pattern (on LOWER of both sides) that matches it anywhere, its own wildcards taken literally."""
     escaped = str(q or "").replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
@@ -149,10 +158,11 @@ def unread_total(db, user_id):
 
 # --- a public channel's messages ---------------------------------------------------------------------------------
 
-def record_post(db, bid, author_id, event_id, body, severity, now):
-    db.execute(text("""INSERT INTO broadcast_posts (broadcast_id, author_id, event_id, body, word_severity, created_utc, removed_utc)
-                       VALUES (:b, :a, :e, :body, :sev, :now, 0)"""),
-               {"b": bid, "a": author_id, "e": event_id, "body": body, "sev": severity, "now": now})
+def record_post(db, bid, author_id, event_id, body, severity, now, media_asset_id=None):
+    db.execute(text("""INSERT INTO broadcast_posts (broadcast_id, author_id, event_id, body, word_severity, created_utc, removed_utc,
+                                                    media_asset_id)
+                       VALUES (:b, :a, :e, :body, :sev, :now, 0, :m)"""),
+               {"b": bid, "a": author_id, "e": event_id, "body": body, "sev": severity, "now": now, "m": media_asset_id})
 
 
 def posts_since(db, bid, since):
@@ -199,3 +209,16 @@ def open_reports(db, limit=50):
 def resolve_reports(db, post_id, now):
     db.execute(text("UPDATE broadcast_reports SET resolved_utc = :now WHERE post_id = :p AND resolved_utc = 0"),
                {"p": post_id, "now": now})
+
+
+def post_picture(db, post_id):
+    """The uploaded picture a channel message showed, or None."""
+    return db.execute(text("SELECT media_asset_id FROM broadcast_posts WHERE id = :p"), {"p": post_id}).scalar()
+
+
+def live_picture_channel(db, asset_id):
+    """The public channel a picture is shown in while its message is up, or None: a channel's picture is public (anyone
+    signed in may join a public channel), and gone with its message or its channel."""
+    return db.execute(text("""SELECT b.id FROM broadcast_posts p JOIN broadcasts b ON b.id = p.broadcast_id
+                              WHERE p.media_asset_id = :a AND p.removed_utc = 0 AND b.deleted_utc = 0 AND b.audience = 0
+                              LIMIT 1"""), {"a": asset_id}).scalar()

@@ -13,8 +13,8 @@ closing an account. The browser that made the change keeps its own sign-in by ta
 
 Each also queues a chat sign-out (helpers/chat_signouts.py), worked after the commit and retried for ever. With
 `spare_this_sign_in` (Log out everywhere, a password change, two-factor on or off: the owner's decision 2) the site chat devices
-this cookie's sign-in started are kept, at most one chat and one call device, found here on the server. Until the browser keeps its
-crypto stores (build step 4) every one of these but closing an account signs out chat APPS only (chat_signouts.KEEP_SITE_BROWSERS).
+this cookie's sign-in started are kept, at most one chat and one call device, found here on the server; everything else goes, the
+site's own browsers included (a browser keeps its locked crypto store when its device is signed out, so nothing is lost there).
 """
 from ruqqus.helpers import chat_signouts
 from ruqqus.helpers.i18n_runtime import tr_lazy

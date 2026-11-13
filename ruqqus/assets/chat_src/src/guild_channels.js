@@ -132,13 +132,23 @@ export function renderSearch(body, foot, onSearch) {
   input.focus();
 }
 
-export function renderResults(body, data) {
+export function renderResults(body, data, onJump) {
   body.textContent = "";
   const results = data.results || [];
   if (!results.length) {
     body.appendChild(el("div", "text-muted text-center p-3", window.tr("Nothing found.")));
   }
-  for (const found of results) body.appendChild(messageRow(found.author, found.written_utc, found.body, ""));
+  for (const found of results) {
+    const row = messageRow(found.author, found.written_utc, found.body, "");
+    if (onJump && typeof found.event_id === "string") {
+      // Translators: a button under a found message: shows it where it is in the channel
+      const jump = el("button", "btn btn-link btn-sm p-0 mt-1", window.tr("Show in the channel"));
+      jump.type = "button";
+      jump.addEventListener("click", () => onJump(found.event_id));
+      row.appendChild(jump);
+    }
+    body.appendChild(row);
+  }
   body.appendChild(el("div", "small text-muted text-center py-2", window.trn(
     "Searches the last %(num)s day of messages.", "Searches the last %(num)s days of messages.", Number(data.days) || 90)));
 }

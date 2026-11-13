@@ -83,7 +83,7 @@ def test_only_a_provider_that_needs_the_browser_s_answer_gets_it_and_it_is_cappe
 
 
 def test_a_refresh_token_handed_out_again_is_kept():
-    assert "_keep_rotated(account)" in func(ROUTES, "media_file")
+    assert "_keep_rotated(account)" in func(ROUTES, "_serve")
     assert "account._rotated = False" in func(ROUTES, "media_upload_begin")
 
 

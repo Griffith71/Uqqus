@@ -127,10 +127,10 @@ def test_live_tells_the_reader_and_the_visitors_page_carries_the_tag_by_script_o
     page = html(answer)
     assert page.count('class="ad-slot ad-slot-post"') == 1 and "<script async" not in page.split("googlesyndication")[0][-200:]
     assert 'tag.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000"' in page
-    assert NON_PERSONAL in page and 'localStorage.getItem("ruqqus_chat_session")' in page and 'localStorage.getItem("ruqqus_call_session")' in page
+    assert NON_PERSONAL in page and 'localStorage.getItem("uqqus_chat_devices")' in page and 'localStorage.getItem("ruqqus_call_session")' in page
     assert answer.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
     privacy = html(get(app.test_client(), "/help/privacy"))
-    assert 'id="ads"' in privacy and "ruqqus_chat_session" in privacy and "data-ad-consent" in privacy
+    assert 'id="ads"' in privacy and "uqqus_chat_devices" in privacy and "data-ad-consent" in privacy
     assert "does show ads from Google AdSense" in html(get(app.test_client(), "/help/faq"))
 
 
@@ -500,18 +500,19 @@ def test_a_password_change_holds_the_tag_as_a_sign_in_does(real_app, writer, mak
 
 
 def test_the_page_says_whose_chat_may_be_in_the_browser(real_app, writer, make_member, ads_on):
-    """Another account's session holds the tag on a member's page too (tests/test_ads_assets.py runs the check). A visitor's page, which a cache may keep, names nobody."""
+    """Another account's chat devices in the index hold the tag on a member's page too (tests/test_ads_assets.py runs the check). A visitor's page, which a cache may keep, names nobody."""
     from ruqqus.helpers import matrix_client
     app, _ = real_app
     member = make_member()
     pid = add_post(writer)
     add_comment(writer, pid)
     page = html(get(member.browser(), f"/post/{pid}"))
-    held = 'localStorage.getItem("ruqqus_call_session")); } catch (e) { return false; } })(%s)'
+    held = 'return index(localStorage.getItem("uqqus_chat_devices")) || other(localStorage.getItem("ruqqus_chat_session")) || other(localStorage.getItem("ruqqus_call_session")); } catch (e) { return false; } })(%s)'
     mxid = matrix_client.mxid_for(member.id)
-    assert page.count(held % f'"{mxid}"') == 2         # the post's box, and the tag
+    # the post's box, the tag, and the tag's check again when the back button brings the page back (ad_script.html pageshow)
+    assert page.count(held % f'"{mxid}"') == 3
     page = html(get(app.test_client(), f"/post/{pid}"))
-    assert page.count(held % "null") == 2 and mxid not in page
+    assert page.count(held % "null") == 3 and mxid not in page
 
 
 def post_row(member, pid):

@@ -29,6 +29,7 @@ MESSAGE_MAX = 2000
 REPORT_MAX = 200
 SEVERITY_KEY = "org.uqqus.severity"       # a public channel message's word-filter rating, in the event's content
 SITE_KEY = "org.uqqus.site"               # the site's signature on a public channel message it sent (audit M-06)
+PICTURE_KEY = "org.uqqus.picture"         # a picture's address on this site (/media/...), signed with the message
 REACTION_MAX = 8                          # a reaction is an emoji, never free text
 
 OWNER, HELPER, MEMBER = "owner", "helper", "member"
@@ -109,21 +110,26 @@ def post_refusal(role, suspended, posts_today):
     return None
 
 
-def site_mark(secret, room_id, body):
+def site_mark(secret, room_id, body, picture=None):
     """The signature the site puts on a public channel's message when it sends it. A writer's own Matrix client can't
     make one (it needs the site's secret), so the appservice webhook removes a message without it: everything in a
-    public channel is rated, counted and reportable (audit M-06)."""
+    public channel is rated, counted and reportable (audit M-06). A picture's address is signed with the words, so it
+    can't be swapped for another file."""
     import hashlib
     import hmac
-    return hmac.new((secret or "").encode(), f"broadcast:{room_id}:{body}".encode(), hashlib.sha256).hexdigest()[:32]
+    signed = f"broadcast:{room_id}:{body}" + (f"\npicture:{picture}" if picture else "")
+    return hmac.new((secret or "").encode(), signed.encode(), hashlib.sha256).hexdigest()[:32]
 
 
 def mark_ok(secret, room_id, content):
     import hmac
     body = content.get("body") if isinstance(content, dict) else None
     given = content.get(SITE_KEY) if isinstance(content, dict) else None
+    picture = content.get(PICTURE_KEY) if isinstance(content, dict) else None
+    if picture is not None and not isinstance(picture, str):
+        return False
     return isinstance(body, str) and isinstance(given, str) and bool(secret) and \
-        hmac.compare_digest(given, site_mark(secret, room_id, body))
+        hmac.compare_digest(given, site_mark(secret, room_id, body, picture))
 
 
 def reaction_ok(key):

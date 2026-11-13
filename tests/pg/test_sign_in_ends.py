@@ -15,8 +15,8 @@ def address():
     return f"10.{secrets.randbelow(250)}.{secrets.randbelow(250)}.{secrets.randbelow(250) + 1}"
 
 
-def call(client, method, path, **kw):
-    return getattr(client, method)(path, base_url=BASE, headers=AGENT, environ_base={"REMOTE_ADDR": address()}, **kw)
+def call(client, method, path, headers=None, **kw):
+    return getattr(client, method)(path, base_url=BASE, headers={**AGENT, **(headers or {})}, environ_base={"REMOTE_ADDR": address()}, **kw)
 
 
 def cookie(client):
@@ -237,3 +237,27 @@ def test_a_minute_after_the_end_the_refused_cookie_is_replaced_by_a_visitors(rea
     answer = call(copy, "get", "/")
     assert answer.status_code == 200 and session_cookie_set(answer)
     assert who(copy) is None
+
+
+def test_a_frame_whose_sign_in_ended_says_so_and_is_never_blank(real_app, make_member):
+    """The guild Chat tab's frame and the side panels' (`?embed=1` on /chat and /notifications) of a browser whose sign-in ended (here a
+    Log out; another browser's Log out everywhere is the same 401): the sign-in page may not be framed (X-Frame-Options deny), so the
+    redirect there that a page gets left the frame blank. A frame gets its own "Signed out" page, framable by the site only, whose
+    link signs in from the page around it (default.html gives a frame <base target="_top">) and comes back to it."""
+    app, _ = real_app
+    member = make_member()
+    browser = member.browser()
+    copy = copy_of(app, browser)
+    assert call(browser, "post", "/logout", data={"formkey": member.formkey(browser)}).status_code == 302
+    for path in ("/chat?embed=1&single=1&room=!x:s", "/notifications?embed=1"):
+        answer = call(copy, "get", path, headers={"Referer": BASE + "/+pets/chat?c=3"})
+        assert answer.status_code == 401, path
+        page = answer.get_data(as_text=True)
+        assert "Signed out" in page and "Sign in again to carry on." in page and '<base target="_top">' in page
+        assert 'href="/login?redirect=%2F%2Bpets%2Fchat%3Fc%3D3"' in page
+        assert answer.headers.get("X-Frame-Options") == "sameorigin" and "frame-ancestors 'self'" in answer.headers["Content-Security-Policy"]
+    # another site's page as the referrer comes back to the front page; a page that isn't a frame still goes to the sign-in page
+    away = call(copy, "get", "/chat?embed=1&single=1", headers={"Referer": "https://elsewhere.example/x"})
+    assert 'href="/login?redirect=%2F"' in away.get_data(as_text=True)
+    page = call(copy, "get", "/chat")
+    assert page.status_code == 302 and "/login?redirect=" in page.headers["Location"]

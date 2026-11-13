@@ -389,6 +389,15 @@ def gate_refusal(gate, channel_rules):
 
 
 _MENTION = re.compile(r"(?<![\w@])@([A-Za-z0-9_]{3,25})(?![\w@])")
+# "@everyone": a guildmaster with the content permission telling everyone who reads the channel (at most once an hour a
+# channel, and to at most EVERYONE_MAX people: the ones who opened it most recently). From anyone else it is just text.
+_EVERYONE = re.compile(r"(?<![\w@])@everyone(?![\w@])", re.I)
+EVERYONE_MAX = 2000
+EVERYONE_EVERY = 3600
+
+
+def mentions_everyone(body):
+    return bool(_EVERYONE.search(body or ""))
 
 
 def parse_mentions(body):
@@ -406,6 +415,14 @@ def parse_mentions(body):
 # Translators: a notification. %(name)s is a username, %(channel)s a channel's name (after #), %(guild)s a guild's name
 # (after +).
 _MENTION_NOTICE = N_("@%(name)s mentioned you in #%(channel)s of +%(guild)s.\n\n[Open the channel](%(link)s)")
+_EVERYONE_NOTICE = N_("@%(name)s told everyone in #%(channel)s of +%(guild)s.\n\n[Open the channel](%(link)s)")
+
+
+def everyone_notice(writer, channel_name, guild_name, url):
+    """(message, values) of an @everyone's notification, as mention_notice."""
+    from ruqqus.helpers import circles
+    return _EVERYONE_NOTICE, {"name": circles.plain_name(writer), "channel": circles.plain_name(channel_name),
+                              "guild": circles.plain_name(guild_name), "link": url}
 
 
 def mention_notice(writer, channel_name, guild_name, url):

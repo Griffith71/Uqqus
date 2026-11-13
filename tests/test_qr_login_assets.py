@@ -36,13 +36,18 @@ HELD = {
     "age_declaration_pages.py": "settings_age_declaration settings_age_assurance_start settings_age_assurance_callback",
     "children_pages.py": "settings_children children_new children_controls children_answer children_stop children_password children_delete children_export "
                          "children_activity settings_parent_ask",
-    "chat.py": "chat_page chat_token chat_key_get chat_key_set chat_recovery_key_legacy chat_check_password chat_ready chat_start "
+    "chat.py": "chat_page chat_token chat_store_keys_route chat_key_get chat_key_set chat_code_saved chat_recovery_key_legacy chat_check_password chat_ready chat_start "
                "chat_conversations chat_share_targets chat_accept chat_decline chat_mark_read chat_search",
     "chat_apps.py": "settings_chat_apps chat_devices chat_device_sign_out",
+    "chat_key_reset_pages.py": "chat_key_reset_grant chat_signing_keys",
+    "chat_reports_pages.py": "chat_report",
+    "chat_extras_pages.py": "chat_pin chat_disappear",
+    "push_pages.py": "push_subscribe chat_group_push",
+    "chat_settings_pages.py": "settings_chat",
     "chat_groups.py": "chat_group_create chat_group_info chat_group_add chat_group_remove chat_group_leave chat_group_accept chat_group_decline "
                       "chat_group_rename chat_group_role chat_group_mark_read chat_people",
     "calls.py": "call_window call_join call_heartbeat call_leave call_decline call_status calls_history",
-    "broadcasts.py": "broadcasts_following broadcast_info broadcast_create broadcast_join broadcast_leave broadcast_helpers broadcast_message "
+    "broadcasts.py": "broadcasts_following broadcasts_popular broadcast_info broadcast_create broadcast_join broadcast_leave broadcast_helpers broadcast_message "
                      "broadcast_mark_read broadcast_report broadcast_delete",
     "guild_channels.py": "guild_channels_list guild_channel_join guild_channel_message guild_channel_mark_read guild_channel_senders "
                          "guild_channel_report guild_channel_remove guild_channel_pin guild_channel_pins guild_channel_mute_for_me "
@@ -71,6 +76,7 @@ AREAS = ("/api/chat/", "/settings/chat_apps", "/api/calls/", "/call/", "/api/bro
 AREA_EXCEPTIONS = {
     "chat_unread_count": "the navbar's number, on every page: a count, nothing it counts",
     "chat_post_preview": "a post, by the reader's own rules; only the chat client asks",
+    "chat_comment_preview": "a comment, by the reader's own rules; only the chat client asks",
     "shop_get_price": "no sign-in at all",
     "paypal_webhook_handler": "PayPal's, checked by its signature; no session",
     "settings_bot": "the page of forms, each of them refused; a key is only ever shown as it is made",
@@ -381,9 +387,16 @@ def test_scripts_are_loaded_through_asset_url():
 
 def test_the_three_bundles_handle_the_refusal():
     token = read("ruqqus", "assets", "chat_src", "src", "token.js")
-    assert token.index("refused.need_password") < token.index("forgetDevice(storageKey);\n  if (otherIsSomeoneElses)"), "nothing is cleared before the site says yes"
-    assert "e instanceof PasswordNeeded" in read("ruqqus", "assets", "chat_src", "src", "index.js")
-    assert "e instanceof PasswordNeeded" in read("ruqqus", "assets", "chat_src", "src", "call.js")
+    # nothing is read for a change, cleared or written before the site says yes (tests/test_chat_index.py runs it)
+    start = token[token.index("export async function ensureSession("):]
+    answered = start.index('answerOf(await postSite(boot, "/api/chat/token", fields))')
+    assert answered < start.index("underSessionLock(() => settle(") and answered < start.index("deleteLegacyStores()")
+    assert token.index("body.need_password") < token.index("function settle(") < token.index("forgetLegacyKeys();\n  if (deleting")
+    # one place for it (keeper.js startSession): the chat page reloads into the password form, the call window says it
+    keeper = read("ruqqus", "assets", "chat_src", "src", "keeper.js")
+    assert "if (e instanceof PasswordNeeded) {" in keeper and "else window.location.reload();" in keeper
+    assert 'startSession(() => ensureSession(boot, "chat", { stillMine: () => !chatLockLost }), chatUi,' in read("ruqqus", "assets", "chat_src", "src", "index.js")
+    assert "onPassword: (e) => fatal(e.message)" in read("ruqqus", "assets", "chat_src", "src", "call.js")
     assert "boot.qrLimited" in read("ruqqus", "assets", "chat_src", "src", "space.js")
     assert '"qrLimited": v.qr_limited' in read("ruqqus", "routes", "spaces.py")
     assert "space-password-first" in read("ruqqus", "templates", "space.html")

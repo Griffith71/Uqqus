@@ -132,11 +132,11 @@ def test_the_thread_draws_a_card_only_for_this_sites_own_post_links_and_only_as_
     # a post's address under its author or forwarder (helpers/permalinks.py), and the older forms
     assert '"https?://" + window.location.host.replace(' in UI
     assert '"(?:/\\\\+\\\\w+)?(?:/@\\\\w+)?/post/([0-9a-z]{1,10})(?![0-9a-z])' in UI
-    card = UI.split("function fillPostCard(")[1].split("function postCard(")[0]
-    assert "innerHTML" not in card and card.count("textContent") >= 4
+    card = UI.split("function fillPreviewCard(")[1].split("function previewCard(")[0]
+    assert "innerHTML" not in card and card.count("textContent") >= 6
     assert 'data.url.startsWith("/")' in card and 'data.thumb.startsWith("https://")' in card
-    assert "if (shared) column.appendChild(postCard(shared[1]));" in UI
-    assert "shared ? item.body.replace(shared[0], \"\").trim() || window.tr(\"Shared a post\") : item.body" in UI
+    assert "if (shared) column.appendChild(previewCard(shared.kind, shared.id));" in UI
+    assert 'item.body.replace(shared.match, "").trim() || (shared.kind === "comment" ? window.tr("Shared a comment") : window.tr("Shared a post"))' in UI
 
 
 def test_both_stylesheets_style_the_sheet_and_the_card():
@@ -158,3 +158,45 @@ def test_get_post_with_a_viewer_honours_graceful_for_a_missing_post():
     # it used to raise TypeError (items[0] on None), which a card for a deleted link tripped over
     source = read("ruqqus", "helpers", "get.py").split("def get_post(")[1].split("\ndef ")[0]
     assert "        if not items:\n            return None" in source
+
+
+# --- a comment sent in a chat ------------------------------------------------------------------
+
+def test_a_comments_share_menus_offer_send_in_chat_only_where_it_may_be_shared():
+    """Both of a comment's share menus (desktop and the phone sheet) offer it, inside `can_share` (helpers/sharing.py
+    may_share_comment) and only with chat on for the member; the card is the comment's own address."""
+    html = read("ruqqus", "templates", "comments.html")
+    desktop = ('{% if v and not feature_locked(v, \'chat\') %}<a class="dropdown-item share-chat-item" href="javascript:void(0);" '
+               'role="button" data-share-url="{{ c.permalink | full_link }}">')
+    phone = ('{% if v and not feature_locked(v, \'chat\') %}<li class="list-group-item"><a href="javascript:void(0);" role="button" '
+             'class="d-block share-chat-item" data-dismiss="modal" data-share-url="{{ c.permalink | full_link }}">')
+    for item in (desktop, phone):
+        assert html.count(item) == 1
+        before = html.split(item)[0]
+        assert before.rindex("{% if can_share %}") > before.rindex("{% endif %}"), "inside can_share"
+    # from the phone sheet, which its item closes, the share sheet waits for it (one Bootstrap dialog at a time)
+    assert "open.one('hidden.bs.modal', function () { $('#shareChatModal').modal('show'); });" in SCRIPT
+
+
+def test_a_comment_card_is_made_for_its_reader_by_the_rules_of_opening_it_and_never_names_an_author():
+    body = route("chat_comment_preview")
+    assert "get_comment(cid, v=v, graceful=True)" in body                      # a Circle post's comments, a block by its author
+    for rule in ("comment_hidden(comment, v) or post_hidden(post, v)", "post.in_private_guild_for(v)",
+                 "if not item.is_anonymous and item.author_id != v.id and item.author and v.any_block_exists(item.author):"):
+        assert rule in body
+    returned = body.split("return jsonify({\n", 1)[1]
+    assert "author" not in returned and "username" not in returned
+    assert "@not_child_locked(\"chat\")" in ROUTES.split("def chat_comment_preview(")[0].rsplit("@app.route", 1)[1]
+    # the chat draws it as text (textContent), from this site's own links only
+    assert 'const COMMENT_LINK = new RegExp(HOST + "(?:/@\\\\w+)?/comment/([0-9a-z]{1,10})(?![0-9a-z])");' in UI
+    assert "fetch(`/api/chat/${kind}_preview/${id}`" in UI
+    fill = UI.split("function fillPreviewCard(card, data) {", 1)[1].split("\n}\n", 1)[0]
+    assert "innerHTML" not in fill
+
+
+def test_chat_names_people_as_the_site_does_and_shows_pictures_only_from_safe_addresses():
+    assert '"shown_name": tr("Deleted account") if other.is_deleted else (other.username if user_hidden(other, v) else other.shown_name)' in ROUTES
+    assert "personNameHtml(convo.other_user)" in UI and "personNameHtml(otherUser)" in UI
+    assert 'window.tr("%(name)s is typing…", { name: personName(conversation.other_user) })' in INDEX
+    assert '!/^(https?:\\/\\/|\\/(?!\\/))/.test(url)' in UI                       # http(s) or this site, never a //host one
+    assert "const picture = item.blocked ? null : senderAvatar(item.senderAvatar);" in UI

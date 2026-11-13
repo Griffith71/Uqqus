@@ -2,12 +2,16 @@
 """Generate local-dev secrets without committing them.
 
 Writes MASTER_KEY, MATRIX_AS_TOKEN, MATRIX_HS_TOKEN, TURN_SHARED_SECRET,
-OIDC_CLIENT_SECRET and OIDC_PRIVATE_KEY to the untracked .env (docker compose
+OIDC_CLIENT_SECRET, OIDC_PRIVATE_KEY, VAPID_PRIVATE_KEY and VAPID_PUBLIC_KEY to the untracked .env (docker compose
 reads it automatically) and renders, all untracked: the Synapse appservice
 registration, the call relay's config (coturn/turnserver.conf), the relay
 secret Synapse reads (synapse/turn_shared_secret) and the client secret
 Synapse signs in to the site with (synapse/oidc_client_secret). Existing .env
-values are never overwritten.
+values are never overwritten. A new .env (one with no MASTER_KEY yet) also gets
+CHAT_STORE_SECRET, the secret the chat store keys are made from
+(helpers/chat_store_keys.py); an existing one is left without it, so the store
+keys of a dev site already in use don't change under it (they fall back to
+MASTER_KEY).
 
 Usage: python scripts/gen_dev_env.py
 Production: set these from your secret store; never reuse the dev values.
@@ -33,7 +37,34 @@ GENERATORS = {
     "TURN_SHARED_SECRET": lambda: secrets.token_hex(32),
     "OIDC_CLIENT_SECRET": lambda: secrets.token_hex(32),
     "OIDC_PRIVATE_KEY": lambda: oidc_private_key(),
+    # push notifications' key pair (ruqqus/helpers/web_push.py): made together, so the two always match
+    "VAPID_PRIVATE_KEY": lambda: vapid_pair()[0],
+    "VAPID_PUBLIC_KEY": lambda: vapid_pair()[1],
 }
+# made only with a new set of secrets (no MASTER_KEY in .env yet): see the docstring
+NEW_ENV_ONLY = {
+    "CHAT_STORE_SECRET": lambda: secrets.token_hex(32),
+}
+
+
+_vapid = []
+
+
+def vapid_pair():
+    """A P-256 key pair for push notifications, as base64url (the private number, the uncompressed public point)."""
+    if not _vapid:
+        try:
+            from cryptography.hazmat.primitives import serialization
+            from cryptography.hazmat.primitives.asymmetric import ec
+        except ImportError:
+            print("No cryptography package: VAPID keys left empty, so push notifications stay off")
+            _vapid.extend(["", ""])
+            return _vapid
+        key = ec.generate_private_key(ec.SECP256R1())
+        number = key.private_numbers().private_value.to_bytes(32, "big")
+        public = key.public_key().public_bytes(serialization.Encoding.X962, serialization.PublicFormat.UncompressedPoint)
+        _vapid.extend([base64.urlsafe_b64encode(x).rstrip(b"=").decode() for x in (number, public)])
+    return _vapid
 
 
 def oidc_private_key():
@@ -76,7 +107,8 @@ def read_env():
 def main():
     values = read_env()
     new_lines = []
-    for key, make in GENERATORS.items():
+    generators = dict(GENERATORS, **(NEW_ENV_ONLY if not values.get("MASTER_KEY") else {}))
+    for key, make in generators.items():
         if not values.get(key):
             values[key] = make()
             new_lines.append(f"{key}={values[key]}")

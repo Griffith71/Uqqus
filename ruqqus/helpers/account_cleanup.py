@@ -65,6 +65,8 @@ STEPS = (
     ("revoke app grants", "DELETE FROM client_auths WHERE user_id = :u"),
     # two-factor backup codes
     ("remove backup codes", "DELETE FROM mfa_backup_codes WHERE user_id = :u"),
+    # the browsers notifications went to (helpers/push_store.py)
+    ("remove push subscriptions", "DELETE FROM push_subscriptions WHERE user_id = :u"),
     # their own account's automated posting (helpers/bots.py SELF): its feeds stop, what it saw goes. A bot ACCOUNT's
     # row is not theirs to end here (a bot is never signed in to, so never deleted this way)
     ("forget what automated posting saw", "DELETE FROM bot_seen WHERE source_id IN (SELECT s.id FROM bot_sources s "

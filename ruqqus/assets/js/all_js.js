@@ -1607,23 +1607,109 @@ function post(url, callback, errortext, extra, failed) {
   xhr.send(form);
 };
 
-// The Log out links (default.html, header.html, partials/account_menu.html). A browser's chat sessions go with the sign-in: the
-// token leaves this browser, and so do the pre-key and any message still waiting to be sent (it is plain text). What is left is
-// which device this was and whose (`user_id`, `device_id`), with its crypto store: the same account takes them up again with nothing
-// lost, and any other account has them cleared first (assets/chat_src/src/token.js ensureSession). CLAUDE.md "Chat encryption" says what that store holds.
-var CHAT_SESSION_KEYS = ["ruqqus_chat_session", "ruqqus_call_session"];
-var CHAT_CRYPTO_STORES = ["matrix-js-sdk::matrix-sdk-crypto", "matrix-js-sdk::matrix-sdk-crypto-meta", "uqqus-call::matrix-sdk-crypto", "uqqus-call::matrix-sdk-crypto-meta"];
+// The Log out links (default.html, header.html, partials/account_menu.html) and the page an account deletion answers with
+// (account_deleted.html). What this browser keeps of chat is the index `uqqus_chat_devices` (assets/chat_src/src/token.js, the chat
+// plan's phase 2, sections 2 and 5.4): per account and device, a crypto store locked with a key the site gives only to a signed-in page,
+// and that device's chat sign-in, kept only sealed. Log out takes every sealed sign-in out of the index and keeps the stores, so the
+// same account signing back in here takes its devices up again with nothing typed and nothing lost, and nobody else can open them.
+// The index is written only under the Web Lock `uqqus-chat-session` (held for a few milliseconds by any page), and every write here moves
+// its `epoch`: a chat page whose answer from the site was still on its way compares it and drops that answer (token.js settle,
+// keeper.js), so a late answer can't put a sign-in back. CLAUDE.md "Chat encryption" says what the stores hold.
+var CHAT_INDEX_KEY = "uqqus_chat_devices";                          // token.js INDEX_KEY
+var CHAT_WAITING_KEY = "uqqus_chat_waiting";                        // token.js WAITING_KEY
+var CHAT_SESSION_LOCK = "uqqus-chat-session";
+var CHAT_STORE_LOCK = "uqqus-store:";                               // token.js STORE_LOCK: held by every page with that store open
+// what the chat client kept before the index (the dev site only), which token.js clears too
+var CHAT_LEGACY_KEYS = ["ruqqus_chat_session", "ruqqus_call_session"];
+var CHAT_LEGACY_STORES = ["matrix-js-sdk", "uqqus-call"];
+var CHAT_FILTER_KEYS = "mxjssdk_memory_filter_";
+var CHAT_STORE_NAMES = ["::matrix-sdk-crypto", "::matrix-sdk-crypto-meta"];
 
+// AbortSignal.timeout where the browser has it; an AbortController and a timer where it doesn't.
+function chatTimeoutSignal(ms) {
+  if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") return AbortSignal.timeout(ms);
+  if (typeof AbortController === "undefined") return undefined;
+  var controller = new AbortController();
+  setTimeout(function () { controller.abort(); }, ms);
+  return controller.signal;
+}
+
+function chatHasLocks() {
+  return !!(typeof navigator !== "undefined" && navigator.locks && typeof navigator.locks.request === "function");
+}
+
+// `work` (synchronous, never throws) under the session lock. A lock that isn't free in `ms` (only a stuck page could hold it that long)
+// doesn't stop a Log out: the work runs without it, and every write a chat page prepared before it drops itself, because token.js writes the
+// index compare-and-set (`writeIfChanged`: only while what is stored is what that page read) and then reads the moved `epoch`.
+function underChatSessionLock(work, ms) {
+  var ran = false;
+  function once() { if (!ran) { ran = true; work(); } }
+  if (!chatHasLocks()) { once(); return Promise.resolve(); }
+  var signal = chatTimeoutSignal(ms);
+  return navigator.locks.request(CHAT_SESSION_LOCK, signal ? { signal: signal } : {}, function () { once(); })
+    .catch(function () { once(); });
+}
+
+// The index as stored, or null when there is none or it can't be read (`bad`). An unreadable one is written over here only by a Log out or
+// a deletion, which replace it with an empty one marked `unlisted` (stores may be here that it named and no entry names now: the ad hold
+// counts that as someone else's, and the next chat start lists the databases and gives each its entry back, token.js `settle`).
+function readChatIndex() {
+  var raw = localStorage.getItem(CHAT_INDEX_KEY);
+  if (raw === null) return { idx: null, raw: raw };
+  var idx = null;
+  try { idx = JSON.parse(raw); } catch (e) { idx = null; }
+  if (!idx || idx.v !== 2 || !Array.isArray(idx.entries)) return { idx: null, raw: raw, bad: true };
+  return { idx: idx, raw: raw };
+}
+
+// Every section here reads the index and writes it in one synchronous run, so nothing can come between the two in this tab; the chat
+// pages' sections await (an unseal) and so write compare-and-set (token.js `writeIfChanged`), which is what keeps a write prepared before
+// a Log out or a deletion from undoing it.
+function writeChatIndex(idx) {
+  var out = { v: 2, owner: idx.owner, epoch: idx.epoch, entries: idx.entries };
+  if (idx.unlisted === true) out.unlisted = true;
+  localStorage.setItem(CHAT_INDEX_KEY, JSON.stringify(out));
+}
+
+// What an unreadable index is replaced with: empty, and `unlisted`, since the stores it named are still here.
+function unlistedChatIndex() {
+  return { v: 2, owner: null, epoch: 0, entries: [], unlisted: true };
+}
+
+function chatLocalpart(mxid) {
+  var local = /^@([^:]+):/.exec(mxid || "");
+  return local ? local[1] : null;
+}
+
+// Log out, in this browser: every sealed chat sign-in goes and every device in use is `out` (its store is kept), nobody is the index's
+// owner any more, and `epoch` moves. Waiting first messages and the pre-key go too. Nothing is deleted from IndexedDB, and none of it
+// needs to know whose the devices were. A browser with no index yet gets one holding only the counter, so that a chat page starting in
+// another tab at this moment can't write its sign-in after the Log out; so does a browser whose index can't be read (bad JSON, or another
+// version after a roll-back), which a starting page reads as empty at epoch 0: replaced by an empty one at epoch 1, that page's answer is
+// dropped (token.js settle) and its running tabs hear the Log out. Nothing in it could still be opened: Log out takes every sign-in anyway.
+// It is marked `unlisted`, because the stores it named are still here: the ad hold stays until a chat start gives each its entry back.
 function leaveChatSessions() {
   forgetChatPrekey();
   try {
-    localStorage.removeItem('uqqus_chat_waiting');
-    CHAT_SESSION_KEYS.forEach(function (key) {
-      var session = JSON.parse(localStorage.getItem(key));
-      if (session) {
-        localStorage.setItem(key, JSON.stringify({"user_id": session.user_id, "device_id": session.device_id}));
-      }
+    var read = readChatIndex();
+    var idx = read.idx || (read.bad ? unlistedChatIndex() : { v: 2, owner: null, epoch: 0, entries: [] });
+    idx.entries.forEach(function (e) {
+      if (!e || typeof e !== "object") return;
+      delete e.sealed;
+      e.exp = null;
+      if (e.s === "in") e.s = "out";
+      e.gen = (e.gen || 0) + 1;
     });
+    idx.owner = null;
+    idx.epoch = (Number.isInteger(idx.epoch) ? idx.epoch : 0) + 1;
+    writeChatIndex(idx);
+    localStorage.removeItem(CHAT_WAITING_KEY);
+    CHAT_LEGACY_KEYS.forEach(function (key) { localStorage.removeItem(key); });
+    // the sync filter ids the chat library kept before build step 4 name the account: every account's sign-in goes here, so all of them
+    for (var i = localStorage.length - 1; i >= 0; i -= 1) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf(CHAT_FILTER_KEYS) === 0) localStorage.removeItem(key);
+    }
   } catch (e) { /* storage blocked: there is nothing stored to take */ }
 }
 
@@ -1637,6 +1723,13 @@ function forgetChatPrekey() {
 // whether it led home or (the cookie had already stopped counting: another browser changed the password, or logged out everywhere) to
 // /login, and whether or not the page it led to could be drawn. Only an answer from /logout itself, or none, leaves it in doubt: the
 // member is told, and the page drawn again shows which it was. Nothing is lost if they are still signed in (the device is taken up again).
+// The chat sessions are left three times. First at once, before the request is made, with no lock (a lock is asked for and given later,
+// and a tab closed or left right after the press, while /logout is still answering, would never get it): the sign-in ends on the server
+// whether or not this tab is still here to hear it, and other chat tabs must stop with it. Without the lock is safe, as when a stuck page
+// holds it: every chat write is compare-and-set and reads the moved `epoch` (token.js), so a start already on its way drops its answer.
+// Then, if this tab is closed or left before the answer comes, at `pagehide` (a chat start made in another tab during the request,
+// while the sign-in still counted, wrote its sealed token after the first run). Then when the request ends, under the session lock, waiting
+// at most 3 s for it, for the same reason; only then is the page drawn again.
 function logOut() {
   forgetChatPrekey();
   var xhr = new XMLHttpRequest();
@@ -1644,30 +1737,208 @@ function logOut() {
   xhr.withCredentials = true;
   var form = new FormData();
   form.append("formkey", formkey());
+  leaveChatSessions();
+  var answered = false;
+  function leftBeforeTheAnswer() {
+    if (!answered) leaveChatSessions();
+  }
+  if (window.addEventListener) window.addEventListener("pagehide", leftBeforeTheAnswer);
   xhr.onloadend = function () {
-    leaveChatSessions();
-    var landed = xhr.responseURL ? new URL(xhr.responseURL).pathname : "";
-    if (!landed || landed == "/logout") {
-      alert(xhrError(xhr, xhrData(xhr)));
-    }
-    window.location.reload(true);
+    answered = true;
+    if (window.removeEventListener) window.removeEventListener("pagehide", leftBeforeTheAnswer);
+    underChatSessionLock(leaveChatSessions, 3000).then(function () {
+      var landed = xhr.responseURL ? new URL(xhr.responseURL).pathname : "";
+      if (!landed || landed == "/logout") {
+        alert(xhrError(xhr, xhrData(xhr)));
+      }
+      window.location.reload(true);
+    });
   };
   xhr.send(form);
 }
 
-// Deleting an account signs it out through a form, not a Log out link, and its device is gone from the chat server, so nothing here can
-// ever be taken up again: all of it goes. Called only by the page a deletion that went through answers with (account_deleted.html). A tab
-// still holding a store open hears its session go and reloads (signed_out.js), which lets the delete through.
-function forgetChatDevices() {
-  forgetChatPrekey();
-  try {
-    CHAT_SESSION_KEYS.concat(['uqqus_chat_waiting']).forEach(function (key) {
-      localStorage.removeItem(key);
-    });
-  } catch (e) { /* storage blocked */ }
-  CHAT_CRYPTO_STORES.forEach(function (name) {
-    try { indexedDB.deleteDatabase(name); } catch (e) { /* no IndexedDB here: nothing stored */ }
+// --- an account deleted on this browser (account_deleted.html, with the account's Matrix id read before it closed) ---------------------
+
+function deleteChatDatabase(name) {
+  return new Promise(function (resolve, reject) {
+    var request;
+    try { request = indexedDB.deleteDatabase(name); } catch (e) { reject(e); return; }
+    request.onsuccess = function () { resolve(); };
+    request.onerror = function () { reject(request.error || new Error("not deleted")); };
+    // another tab still has it open: the delete stays queued, and whatever opens it next waits behind it
+    request.onblocked = function () { resolve(); };
   });
+}
+
+function deleteChatStore(prefix) {
+  return Promise.all(CHAT_STORE_NAMES.map(function (name) { return deleteChatDatabase(prefix + name); }));
+}
+
+function chatWait(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+// One `forget` entry's store, under its own lock (waiting up to 5 s for a page of that account to stop and let go), then its entry. A lock
+// that didn't come, or a delete that failed, leaves the entry as `forget`: the next chat start on this browser, of any account, deletes it
+// when its lock is free (token.js), so it is never lost. Without Web Locks the store is deleted directly: only this page may.
+function forgetChatStore(prefix) {
+  var deleted = false;
+  var gone = chatHasLocks()
+    ? navigator.locks.request(CHAT_STORE_LOCK + prefix, { signal: chatTimeoutSignal(5000) }, function () {
+        return deleteChatStore(prefix).then(function () { deleted = true; });
+      })
+    : deleteChatStore(prefix).then(function () { deleted = true; });
+  return gone.catch(function () { /* not now: the entry stays `forget` */ }).then(function () {
+    if (!deleted) return;
+    return underChatSessionLock(function () {
+      try {
+        var read = readChatIndex();
+        if (!read.idx) return;
+        read.idx.entries = read.idx.entries.filter(function (e) { return !(e && e.p === prefix && e.s === "forget"); });
+        writeChatIndex(read.idx);
+      } catch (e) { /* storage blocked */ }
+    }, 3000);
+  });
+}
+
+// Deleting an account signs it out through a form, not a Log out link, and every device of it is gone from the chat server, so nothing of
+// it here can ever be opened again: it all goes, and other accounts' devices and stores stay. In this order (the plan's 5.4):
+//   1. mark: every entry of the account becomes `forget`, without its sealed sign-in, and `epoch` moves, so every other tab of that account
+//      stops its client and lets go of its store (keeper.js watchIndex);
+//   2. delete: each `forget` entry's store under its own lock, then the entry;
+//   3. sweep: any database of the account this browser has that the index no longer names;
+//   4. tidy: waiting messages, the pre-key, the chat library's own leftovers, and what the client before the index kept.
+// `children`: the Matrix ids of the child accounts closed with it (a parent's own deletion closes every child), forgotten the same way.
+function forgetChatDevices(mxid, children) {
+  forgetChatPrekey();
+  return forgetChatAccounts(mxid ? [mxid] : [], children);
+}
+
+// A child its parent deleted from Settings > Children: a family shares a browser, so the child's devices and stores go from it as its own
+// deletion would take them. The parent stays signed in here: their pre-key is kept and `epoch` doesn't move (a chat page of the parent's
+// carries on); the child's entries become `forget`, which stops any tab of the child's (watchIndex).
+function forgetChildChatDevices(children) {
+  return forgetChatAccounts([], children);
+}
+
+// `ended`: the account this browser was signed in as (its sign-in is over: `owner` and `epoch`); `others`: accounts closed with it or by it.
+function forgetChatAccounts(ended, others) {
+  var gone = ended.concat(others || []).filter(function (m, i, all) { return typeof m === "string" && m && all.indexOf(m) === i; });
+  var mark = underChatSessionLock(function () {
+    try {
+      var read = readChatIndex();
+      // an index that can't be read is replaced, `unlisted`: the sweep below then deletes the account's databases whatever it named
+      var idx = read.idx || (read.bad ? unlistedChatIndex() : null);
+      if (!idx || !gone.length) return;
+      idx.entries.forEach(function (e) {
+        if (!e || gone.indexOf(e.u) < 0) return;
+        e.s = "forget";
+        delete e.sealed;
+        e.exp = null;
+        e.gen = (e.gen || 0) + 1;
+      });
+      if (gone.indexOf(idx.owner) >= 0) idx.owner = null;
+      if (ended.length) idx.epoch = (Number.isInteger(idx.epoch) ? idx.epoch : 0) + 1;
+      writeChatIndex(idx);
+    } catch (e) { /* storage blocked: there is no index to mark */ }
+  }, 3000);
+  return mark.then(function () {
+    // without Web Locks no tab can be asked to let go first: give the account's other tabs a moment to hear the index and stop
+    return chatHasLocks() ? null : chatWait(1000);
+  }).then(function () {
+    var prefixes = [];
+    try {
+      var read = readChatIndex();
+      if (read.idx) {
+        read.idx.entries.forEach(function (e) {
+          if (e && e.s === "forget" && typeof e.p === "string" && prefixes.indexOf(e.p) < 0) prefixes.push(e.p);
+        });
+      }
+    } catch (e) { /* storage blocked */ }
+    return prefixes.reduce(function (done, prefix) {
+      return done.then(function () { return forgetChatStore(prefix); });
+    }, Promise.resolve());
+  }).then(function () {
+    return gone.reduce(function (done, m) {
+      return done.then(function () { return sweepChatStores(m); });
+    }, Promise.resolve());
+  }).then(function () {
+    gone.forEach(tidyChatLeftovers);
+    if (!gone.length) tidyChatLeftovers(null);
+    return Promise.all(CHAT_LEGACY_STORES.map(function (prefix) { return deleteChatStore(prefix).catch(function () {}); }));
+  }).catch(function () { /* whatever is left is `forget` in the index, for the next chat start */ });
+}
+
+// Databases of the account (`uqqus-<kind>-<localpart>-<device>`) that the index doesn't name: a store whose entry was lost, or every one
+// of the account's when the index couldn't be read (a database carrying the account's own name is the account's, whatever an index says:
+// localparts hold no hyphen). Each under its own lock when the browser has locks, and only when it is free; one that isn't free (a page of
+// the account still has it open) or won't delete is written into the index as `forget` (`keepForgetting`), never lost track of.
+function sweepChatStores(mxid) {
+  var local = chatLocalpart(mxid);
+  if (!local || typeof indexedDB === "undefined" || typeof indexedDB.databases !== "function") return Promise.resolve();
+  var escaped = local.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  var mine = new RegExp("^(uqqus-(?:chat|call)-" + escaped + "-[A-Za-z0-9_-]{1,64})::matrix-sdk-crypto(?:-meta)?$");
+  return Promise.resolve(indexedDB.databases()).then(function (list) {
+    var named = [];
+    try {
+      var read = readChatIndex();
+      if (read.idx) read.idx.entries.forEach(function (e) { if (e && typeof e.p === "string") named.push(e.p); });
+    } catch (e) { return; }
+    var prefixes = [];
+    (list || []).forEach(function (db) {
+      var found = db && typeof db.name === "string" && mine.exec(db.name);
+      if (found && named.indexOf(found[1]) < 0 && prefixes.indexOf(found[1]) < 0) prefixes.push(found[1]);
+    });
+    var kept = [];
+    return prefixes.reduce(function (done, prefix) {
+      return done.then(function () {
+        var deleted = !chatHasLocks()
+          ? deleteChatStore(prefix).then(function () { return true; })
+          : navigator.locks.request(CHAT_STORE_LOCK + prefix, { ifAvailable: true }, function (lock) {
+              return lock ? deleteChatStore(prefix).then(function () { return true; }) : false;
+            });
+        return deleted.catch(function () { return false; }).then(function (ok) { if (!ok) kept.push(prefix); });
+      });
+    }, Promise.resolve()).then(function () {
+      if (kept.length) return keepForgetting(mxid, kept);
+    });
+  }).catch(function () { /* the browser couldn't list its databases */ });
+}
+
+// Stores of a deleted account that the sweep couldn't delete now: entries marked `forget`, which the next chat start on this browser, of
+// any account, deletes once they are free (token.js), and which the ad hold sees meanwhile.
+function keepForgetting(mxid, prefixes) {
+  return underChatSessionLock(function () {
+    try {
+      var read = readChatIndex();
+      var idx = read.idx || (read.bad ? unlistedChatIndex() : { v: 2, owner: null, epoch: 0, entries: [] });
+      prefixes.forEach(function (p) {
+        var found = /^uqqus-(chat|call)-[^-]+-(.+)$/.exec(p);
+        if (!found || idx.entries.some(function (e) { return e && e.p === p; })) return;
+        idx.entries.push({ u: mxid, d: found[2], k: found[1], p: p, kid: null, hs: null, s: "forget", x: 0, ed: null, made: 0, used: 0,
+                           gen: 1, exp: null, life: null, why: null, fails: 0, bad: 0, empty: 0 });
+      });
+      writeChatIndex(idx);
+    } catch (e) { /* storage blocked */ }
+  }, 3000);
+}
+
+function tidyChatLeftovers(mxid) {
+  try {
+    // waiting messages are sealed for one account: another account's stay theirs
+    var waiting = localStorage.getItem(CHAT_WAITING_KEY);
+    if (waiting !== null) {
+      var box = null;
+      try { box = JSON.parse(waiting); } catch (e) { box = null; }
+      if (!(box && box.v === 2 && typeof box.u === "string" && box.u !== mxid)) localStorage.removeItem(CHAT_WAITING_KEY);
+    }
+    CHAT_LEGACY_KEYS.forEach(function (key) { localStorage.removeItem(key); });
+    var filters = mxid ? "mxjssdk_memory_filter_FILTER_SYNC_" + mxid : null;
+    for (var i = localStorage.length - 1; i >= 0; i -= 1) {
+      var key = localStorage.key(i);
+      if (filters && key && key.indexOf(filters) === 0) localStorage.removeItem(key);
+    }
+  } catch (e) { /* storage blocked */ }
 }
 
 function post_with_reason(url, callback, errortext) {

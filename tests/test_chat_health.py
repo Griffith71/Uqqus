@@ -185,6 +185,11 @@ def test_every_place_runs_the_check():
         assert "chat_pair_check.sh" in read(script)
     pair = read("scripts/chat_pair_check.sh")
     assert "org.uqqus.chat_ids" in pair and "NOT IN (SELECT name FROM users)" in pair
+    # the site's live chat devices that the chat server lacks are counted (RESTORE.md "After restoring an older pair"), only where the
+    # table exists (an older dump has none), and never fail the check
+    devices = pair.split("to_regclass('chat_site_devices')", 1)[1].split('if [ "$high_known"', 1)[0]
+    assert "WHERE d.revoked_utc = 0" in devices and "FROM devices v WHERE v.user_id = s.m AND v.device_id = s.d" in devices
+    assert "exit 1" not in devices and "NOTE:" in devices
 
 
 def test_giving_an_account_back_is_for_owners_and_logged():

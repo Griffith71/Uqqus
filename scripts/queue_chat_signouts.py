@@ -10,9 +10,8 @@ lock), works the queue once (what the chat server can't take now is retried by s
 It refuses a database that isn't a scratch one (named `ci_*`, `test*` or `ui_*`) unless `--confirm` says this is meant: on a live
 site it signs every member's chat out.
 
-While the interim of build steps 2 and 3 keeps the site's own browsers (chat_signouts.KEEP_SITE_BROWSERS), the sign-outs it queues reach
-chat APPS only and the site's rows are kept: today's chat page deletes its store when its device is signed out. From build step 4 it
-reaches every device.
+Every device means the site's own browsers too: each keeps its locked crypto store and starts again as a new device the next time it
+opens chat.
 """
 import argparse
 import re
@@ -41,6 +40,9 @@ def run(reason, confirm=False, dry_run=False, out=print, db=None, matrix=None):
         import ruqqus.helpers.matrix_client as matrix
     try:
         name = db.get_bind().url.database
+        # said first: the app opens DATABASE_CONNECTION_POOL_URL before DATABASE_URL, so naming another database in DATABASE_URL alone
+        # still opens the first one (RESTORE.md)
+        out(f"Database: {name!r}.")
         if not scratch(name) and not confirm:
             out(f"Refusing: {name!r} isn't a scratch database, and this signs every member's chat out. Add --confirm if that is meant.")
             return 2
@@ -57,11 +59,9 @@ def run(reason, confirm=False, dry_run=False, out=print, db=None, matrix=None):
             # one transaction for every account would hold thousands at once (Postgres's shared lock table runs out, about 64 per
             # connection, and the whole run rolls back) and keep every account's chat from making a device until the end
             db.commit()
-        if not chat_signouts.KEEP_SITE_BROWSERS:
-            db.execute(text("DELETE FROM chat_site_devices"))
-            db.commit()
-        out(f"Queued a sign-out of every chat device for {len(accounts)} account(s)."
-            + (" The interim keeps the site's own browsers: chat apps only." if chat_signouts.KEEP_SITE_BROWSERS else ""))
+        db.execute(text("DELETE FROM chat_site_devices"))
+        db.commit()
+        out(f"Queued a sign-out of every chat device for {len(accounts)} account(s).")
         done = {}
         while True:
             batch = chat_signouts.run_due(db, matrix, limit=200)

@@ -81,6 +81,9 @@ class FakeMatrix:
     class UserUnknown(MatrixError):
         pass
 
+    class RefreshGone(MatrixError):
+        pass
+
     def __init__(self, devices=(), db=None):
         self.devices = {d: name for d, name in devices}
         self.calls, self.down, self.unknown, self.fail_delete, self.on_login, self.on_list = [], False, False, set(), None, None
@@ -108,16 +111,11 @@ class FakeMatrix:
         if self.down:
             raise self.MatrixError("down")
         self.devices.setdefault(device_id, "Laba chat")
-        return {"user_id": mxid, "device_id": device_id, "access_token": "syt_x", "refresh_token": "never"}
+        token = {"user_id": mxid, "device_id": device_id, "access_token": "syt_x"}
+        return dict(token, refresh_token="never", expires_in_ms=3_600_000)      # always one (build step 5)
 
     def deleted(self):
         return [c[1] for c in self.calls if c[0] == "delete"]
-
-
-@pytest.fixture
-def interim_off(monkeypatch):
-    """Decision 2 as it will be from build step 4, when the site's own browsers keep their stores."""
-    monkeypatch.setattr(chat_signouts, "KEEP_SITE_BROWSERS", False)
 
 
 @pytest.fixture(autouse=True)
@@ -140,7 +138,7 @@ class Recorder(types.ModuleType):
         return lambda *a, **k: self._seen.append(f"{self.__name__}.{attr}()")
 
 
-def test_queue_revokes_the_site_rows_it_covers_in_the_same_transaction_never_the_spared(interim_off, monkeypatch):
+def test_queue_revokes_the_site_rows_it_covers_in_the_same_transaction_never_the_spared(monkeypatch):
     db = make()
     device(db, "UQAAAAAAAAAA")
     device(db, "UQBBBBBBBBBB")
@@ -165,7 +163,7 @@ def test_an_account_with_no_chat_gets_no_row():
     assert chat_signouts.queue(db, 7, "reset") is None and rows(db) == []
 
 
-def test_listed_revokes_those_ids_only(interim_off):
+def test_listed_revokes_those_ids_only():
     db = make()
     device(db, "UQAAAAAAAAAA")
     device(db, "UQBBBBBBBBBB")
@@ -174,7 +172,7 @@ def test_listed_revokes_those_ids_only(interim_off):
     assert rows(db)[0][:3] == ("listed", "UQAAAAAAAAAA", None), "an id that can't be a device id is never written"
 
 
-def test_revoke_spares_at_most_one_chat_and_one_call_row_of_this_sign_in(interim_off):
+def test_revoke_spares_at_most_one_chat_and_one_call_row_of_this_sign_in():
     db = make()
     here = chat_signouts.sign_in_hash("cookie-a")
     device(db, "UQCHATOLD000", sign_in=here, used=NOW - 50)
@@ -190,7 +188,7 @@ def test_revoke_spares_at_most_one_chat_and_one_call_row_of_this_sign_in(interim
     assert set(rows(db)[0][2].split(",")) == {"UQCHATNEW000", "UQCALL000000"}
 
 
-def test_this_sign_ins_devices_are_found_under_the_mint_lock(interim_off, monkeypatch):
+def test_this_sign_ins_devices_are_found_under_the_mint_lock(monkeypatch):
     """A device this sign-in made while the credential change waited for the lock is committed before the lock is had: read before the
     lock, the spared set would miss it, and as a device made before the sign-out it would be revoked."""
     db = make()
@@ -208,7 +206,7 @@ def test_this_sign_ins_devices_are_found_under_the_mint_lock(interim_off, monkey
     assert revoked(db) == {"UQCHATOLD000": "password"} and rows(db)[0][2] == "UQCHATNEW000"
 
 
-def test_events_that_spare_nothing_spare_nothing(interim_off):
+def test_events_that_spare_nothing_spare_nothing():
     db = make()
     device(db, "UQCHAT000000", sign_in=chat_signouts.sign_in_hash("cookie-a"))
     db.commit()
@@ -231,58 +229,74 @@ def test_the_tables_absent_revoke_still_raises_the_nonce_and_says_so(caplog):
     assert chat_signouts.tables_ready(db) is False
 
 
-# --- the interim (build steps 2 and 3) ----------------------------------------------------------------------------------------
+# --- the interim is over (build step 4) ------------------------------------------------------------------------------------
 
-def test_the_interim_keeps_every_site_browser_for_all_but_todays_three():
-    assert chat_signouts.KEEP_SITE_BROWSERS is True, "build step 4 turns this off, in the same deploy as the client that keeps stores"
-    assert chat_signouts.SIGNS_OUT_SITE_BROWSERS_TODAY == {"child_chat_off", "child_stopped", "deleted"}
-    for reason in ("password", "others", "mfa", "reset", "mfa_recovery", "child_password", "child_locked"):
-        assert chat_signouts.interim_spared(reason) == ("site",), reason
-    for reason in ("child_chat_off", "child_stopped", "deleted"):
-        assert chat_signouts.interim_spared(reason) == (), reason
+def step2_row(db, reason="reset"):
+    """A row as build steps 2 and 3 queued it: an `all` sign-out with the word `site` in `spared` (chat apps only)."""
+    db.execute(text("""INSERT INTO chat_device_signouts (user_id, mxid, scope, spared, spare_after_ms, reason, created_utc, next_try_utc)
+                       VALUES (7, '@ruqqus_7:s', 'all', 'site', 5000, :r, :now, :now)"""), {"r": reason, "now": NOW})
+    db.commit()
 
 
-def test_an_interim_sign_out_revokes_no_site_row_and_deletes_only_apps():
+def test_no_event_writes_the_interims_word_any_more():
+    assert not hasattr(chat_signouts, "KEEP_SITE_BROWSERS") and not hasattr(chat_signouts, "interim_spared")
+    for reason in ("password", "others", "mfa", "reset", "mfa_recovery", "child_password", "child_locked", "child_chat_off",
+                   "child_stopped", "deleted"):
+        db = make()
+        device(db, "UQSITE000000")
+        db.commit()
+        chat_signouts.queue(db, 7, reason, spared=("site",))          # even asked for, the word never goes in
+        assert rows(db)[0][2] is None, reason
+        assert revoked(db) == {"UQSITE000000": reason}, reason
+
+
+def test_every_credential_event_now_reaches_the_site_browsers_but_spares_this_sign_ins_two():
+    """Decision 2 as built: of this sign-in's rows, the most recently used chat and call devices stay; every other site device goes."""
     db = make()
-    device(db, "UQSITE000000")
+    me = chat_signouts.sign_in_hash("sess-1")
+    device(db, "UQMYCHAT0000", sign_in=me, used=NOW - 1)
+    device(db, "UQMYOLDCHAT0", sign_in=me, used=NOW - 50)
+    device(db, "UQMYCALL0000", kind="call", sign_in=me, used=NOW - 1)
+    device(db, "UQELSEWHERE0", sign_in=chat_signouts.sign_in_hash("sess-2"))
     db.commit()
-    fake = FakeMatrix([("UQSITE000000", "Laba chat"), ("OLDSITEDEV0", ""), ("OLDNAMED000", "Laba chat"), ("ELEMENT0000", "Element Web")])
-    account_sessions.revoke(db, SimpleNamespace(id=7, login_nonce=0), "reset")
-    assert revoked(db) == {} and rows(db)[0][2] == "site"
+    account_sessions.revoke(db, SimpleNamespace(id=7, login_nonce=0), "password", session={"session_id": "sess-1"},
+                            spare_this_sign_in=True)
+    assert set(rows(db)[0][2].split(",")) == {"UQMYCHAT0000", "UQMYCALL0000"}
+    assert revoked(db) == {"UQMYOLDCHAT0": "password", "UQELSEWHERE0": "password"}
     db.commit()
+    fake = FakeMatrix([(d, "Laba chat") for d in ("UQMYCHAT0000", "UQMYOLDCHAT0", "UQMYCALL0000", "UQELSEWHERE0")] + [("APP0000000", "Element")])
     assert chat_signouts.run_one(db, fake, 1, now=NOW, site_name="Laba") == "done"
-    assert fake.deleted() == ["ELEMENT0000"], "today's apps-only rule: a row, or the site's name, keeps a device"
+    assert sorted(fake.deleted()) == ["APP0000000", "UQELSEWHERE0", "UQMYOLDCHAT0"]
 
 
-def test_in_the_interim_a_site_row_keeps_its_device_whatever_synapse_calls_it():
-    """The row is what says a device is the site's (its name on Synapse can be changed from an outside app), and a revoked row too: its
-    own `listed` sign-out deletes it, never the interim's `all`."""
+def test_a_reset_reaches_every_site_browser():
+    db = make()
+    device(db, "UQSITE000000", sign_in=chat_signouts.sign_in_hash("sess-1"))
+    db.commit()
+    account_sessions.revoke(db, SimpleNamespace(id=7, login_nonce=0), "reset", session={"session_id": "sess-1"})
+    assert revoked(db) == {"UQSITE000000": "reset"} and rows(db)[0][2] is None
+    db.commit()
+    fake = FakeMatrix([("UQSITE000000", "Laba chat"), ("OLDNAMED000", "Laba chat"), ("ELEMENT0000", "Element Web")])
+    chat_signouts.run_one(db, fake, 1, now=NOW, site_name="Laba")
+    assert sorted(fake.deleted()) == ["ELEMENT0000", "OLDNAMED000", "UQSITE000000"]
+
+
+def test_a_row_queued_in_the_interim_still_finishes_apps_only():
+    """A row build steps 2 and 3 wrote keeps its meaning: a site row, revoked or not, or the site's name keeps a device."""
     db = make()
     device(db, "UQRENAMED000")
     device(db, "UQREVOKED000", revoked=NOW - 5)
     db.commit()
-    fake = FakeMatrix([("UQRENAMED000", "Element Web"), ("UQREVOKED000", "Firefox"), ("ELEMENT0000", "Element Web")])
-    account_sessions.revoke(db, SimpleNamespace(id=7, login_nonce=0), "reset")
-    db.commit()
+    step2_row(db)
+    fake = FakeMatrix([("UQRENAMED000", "Element Web"), ("UQREVOKED000", "Firefox"), ("OLDNAMED000", "Laba chat"),
+                       ("ELEMENT0000", "Element Web")])
     assert chat_signouts.run_one(db, fake, 1, now=NOW, site_name="Laba") == "done"
     assert fake.deleted() == ["ELEMENT0000"]
 
 
-def test_todays_three_sign_out_the_site_browsers_too():
-    db = make()
-    device(db, "UQSITE000000")
-    db.commit()
-    fake = FakeMatrix([("UQSITE000000", "Laba chat"), ("ELEMENT0000", "Element Web")])
-    chat_signouts.queue(db, 7, "child_chat_off")
-    assert revoked(db) == {"UQSITE000000": "child_chat_off"}
-    db.commit()
-    chat_signouts.run_one(db, fake, 1, now=NOW, site_name="Laba")
-    assert sorted(fake.deleted()) == ["ELEMENT0000", "UQSITE000000"]
-
-
 # --- run_one ------------------------------------------------------------------------------------------------------------------
 
-def test_all_deletes_everything_but_spared_and_devices_made_after_it(interim_off):
+def test_all_deletes_everything_but_spared_and_devices_made_after_it():
     db = make()
     device(db, "UQOLD0000000", created_ms=1000)
     device(db, "UQSPARED0000", created_ms=1000)
@@ -296,7 +310,7 @@ def test_all_deletes_everything_but_spared_and_devices_made_after_it(interim_off
     assert rows(db)[0][4] == NOW
 
 
-def test_a_device_revoked_after_the_sign_out_but_made_later_is_still_kept_only_while_not_revoked(interim_off):
+def test_a_device_revoked_after_the_sign_out_but_made_later_is_still_kept_only_while_not_revoked():
     db = make()
     chat_signouts.queue(db, 7, "others", now_ms=5000)
     device(db, "UQNEW0000000", created_ms=10**15, revoked=NOW)
@@ -436,7 +450,9 @@ def test_a_newly_locked_account_is_told_apart():
 # --- the token route's records (helpers/chat_tokens.py) -----------------------------------------------------------------------
 
 def issue(db, fake, form, session="cookie-a", nonce=0):
-    return chat_tokens.issue(db, fake, 7, MX, form, session, "https://chat.example", now=NOW, site_name="Laba", nonce=nonce)
+    # the refresh token every login answers with is sealed by a stand-in: secret_box needs `cryptography`, which these tests go without
+    return chat_tokens.issue(db, fake, 7, MX, form, session, "https://chat.example", now=NOW, site_name="Laba", nonce=nonce, secret="s",
+                             sealer=(lambda t: "sealed:" + t, lambda s: s[len("sealed:"):]))
 
 
 def test_a_new_device_has_a_site_chosen_id_and_its_row_is_committed_before_synapse_is_asked(tmp_path):
@@ -452,7 +468,8 @@ def test_a_new_device_has_a_site_chosen_id_and_its_row_is_committed_before_synap
     status, body = issue(db, fake, {})
     assert status == 200 and chat_tokens.SITE_DEVICE.match(body["device_id"])
     assert seen[0][0] == "chat" and seen[0][1] == chat_signouts.sign_in_hash("cookie-a") and seen[0][2] > 0
-    assert set(body) == {"homeserver_url", "user_id", "access_token", "device_id"}, "today's shape, never a refresh token"
+    assert {"homeserver_url", "user_id", "access_token", "device_id"} <= set(body), "today's shape"
+    assert not {k for k in body if "refresh" in k}, "never a refresh token"
     assert not chat_tokens.SITE_DEVICE.match("ABCDEFGHIJ"), "never one of Synapse's own ids"
     assert len({chat_tokens.new_device_id() for _ in range(50)}) == 50
 
@@ -546,8 +563,7 @@ def test_a_device_from_before_the_rows_that_a_pending_sign_out_covers_is_never_t
 
 def test_a_device_from_before_the_rows_spared_by_a_pending_interim_sign_out_is_still_taken_up():
     db = make()
-    chat_signouts.queue(db, 7, "password")              # the interim: chat apps only
-    db.commit()
+    step2_row(db, "password")                           # queued in the interim: chat apps only
     assert issue(db, FakeMatrix([("OLDDEVICE0", "Laba chat")]), {"device_id": "OLDDEVICE0"})[1]["device_id"] == "OLDDEVICE0"
 
 
@@ -590,7 +606,7 @@ def test_a_device_signed_out_on_synapse_is_revoked_and_replaced():
     assert revoked(db) == {"UQAAAAAAAAAA": "deleted_elsewhere"}
 
 
-def test_a_mint_revoked_while_synapse_made_it_answers_retry_and_queues_its_sign_out(interim_off):
+def test_a_mint_revoked_while_synapse_made_it_answers_retry_and_queues_its_sign_out():
     db = make()
     fake = FakeMatrix()
     fake.on_login = lambda d: (chat_signouts.queue(db, 7, "others"), db.commit())
@@ -607,6 +623,55 @@ def test_a_mint_synapse_refused_is_revoked_and_queued():
     assert status == 503 and body == {"retry": True}
     made = db.execute(text("SELECT device_id, revoked_reason FROM chat_site_devices")).first()
     assert made[1] == "mint_failed" and rows(db)[0][:2] == ("listed", made[0])
+
+
+def test_a_failed_mints_sign_out_waits_for_a_device_synapse_makes_after_the_route_gave_up():
+    """Synapse doesn't cancel a /login whose client timed out: the device can appear after the token route queued its sign-out. The
+    sign-out is not called done because the device isn't listed yet until MINT_GRACE_SECONDS after it was queued; a later pass then
+    deletes the device. Without the wait the row was done at once and the device stayed for good (a '<site> chat' row nothing removes)."""
+    db = make()
+    fake = FakeMatrix()
+    fake.down = True
+    assert issue(db, fake, {}) == (503, chat_tokens.RETRY)
+    made = db.execute(text("SELECT device_id FROM chat_site_devices")).scalar()
+    fake.down = False
+    created = db.execute(text("SELECT created_utc FROM chat_device_signouts")).scalar()
+    assert chat_signouts.run_one(db, fake, 1, now=created + 1) == "waiting", "not on Synapse yet: not done"
+    assert rows(db)[0][4] == 0 and rows(db)[0][6] == "waiting"
+    assert db.execute(text("SELECT next_try_utc FROM chat_device_signouts")).scalar() == created + chat_signouts.MINT_GRACE_SECONDS
+    assert chat_signouts.pending_covers(db, 7, made)
+    fake.devices[made] = "Laba chat"                       # Synapse finished the login nobody waited for
+    assert chat_signouts.run_due(db, fake, now=created + 2) == {}, "not due before the wait is over"
+    assert chat_signouts.run_due(db, fake, now=created + chat_signouts.MINT_GRACE_SECONDS) == {"done": 1}
+    assert fake.deleted() == [made] and made not in fake.devices
+
+
+def test_a_failed_mints_sign_out_is_done_once_its_device_was_found_or_the_wait_is_over():
+    db = make()
+    fake = FakeMatrix()
+    fake.down = True
+    issue(db, fake, {})
+    made = db.execute(text("SELECT device_id FROM chat_site_devices")).scalar()
+    fake.down = False
+    created = db.execute(text("SELECT created_utc FROM chat_device_signouts")).scalar()
+    fake.devices[made] = "Laba chat"
+    assert chat_signouts.run_one(db, fake, 1, now=created) == "done", "made already: deleted and done at once"
+    assert fake.deleted() == [made]
+    chat_signouts.queue(db, 7, "mint_failed", "listed", device_ids=["UQNEVER00000"])
+    db.commit()
+    late = db.execute(text("SELECT created_utc FROM chat_device_signouts WHERE id = 2")).scalar()
+    assert chat_signouts.run_one(db, fake, 2, now=late + chat_signouts.MINT_GRACE_SECONDS) == "done", "never made: done after the wait"
+
+
+def test_only_a_failed_mints_sign_out_waits_for_its_device():
+    """A device signed out from Settings > Chat apps, replaced, or found revoked while Synapse made it (its login answered) is either on
+    Synapse now or gone: done at once, as before."""
+    db = make()
+    for reason in ("signed_out_here", "store_unopenable", "revoked_while_made"):
+        chat_signouts.queue(db, 7, reason, "listed", device_ids=["UQGONE000000"])
+    db.commit()
+    created = db.execute(text("SELECT max(created_utc) FROM chat_device_signouts")).scalar()
+    assert [chat_signouts.run_one(db, FakeMatrix(), i, now=created) for i in (1, 2, 3)] == ["done"] * 3
 
 
 def test_a_failed_mint_takes_the_mint_lock_before_it_touches_the_row(monkeypatch):
@@ -648,6 +713,31 @@ def test_a_request_that_waited_for_a_sign_out_mints_nothing(change, status, monk
     assert db.execute(text("SELECT count(*) FROM chat_site_devices")).scalar() == 0 and fake.calls == []
 
 
+@pytest.mark.parametrize("change, status", [
+    ("UPDATE users SET login_nonce = 1", 401),
+    ("UPDATE users SET is_deleted = 1", 401),
+    ("UPDATE users SET age_declared = 2, age_lock = 2", 403),
+])
+def test_a_device_from_before_the_rows_is_given_no_row_once_the_account_may_no_longer_chat(change, status, monkeypatch):
+    """The device was listed, then the account was deleted (its sign-out may even have finished, so no pending one covers the device),
+    a sign-in ended, or a parent switched chat off, all committed before the take-up had the lock. The row is never written: the account
+    is read again under the lock before it, as for a new device. It used to be committed first and refused after, leaving a deleted
+    account a live row."""
+    db = make()
+    fake = FakeMatrix([("OLDDEVICE0", "Laba chat")])
+    real_lock = chat_signouts.lock_account
+
+    def committed_meanwhile(*args):
+        db.execute(text(change))
+        db.commit()
+        return real_lock(*args)
+    monkeypatch.setattr(chat_signouts, "lock_account", committed_meanwhile)
+    answer = issue(db, fake, {"device_id": "OLDDEVICE0"})
+    assert answer[0] == status
+    assert db.execute(text("SELECT count(*) FROM chat_site_devices")).scalar() == 0
+    assert ("login", "OLDDEVICE0") not in fake.calls
+
+
 def test_a_sub_account_with_chat_switched_on_still_gets_its_device():
     db = make()
     db.execute(text("UPDATE users SET age_declared = 2, age_lock = 2"))
@@ -687,6 +777,186 @@ def test_revoke_device_revokes_a_row_and_gives_one_to_a_device_without():
     assert chat_signouts.revoke_device(db, 7, "UQAAAAAAAAAA", "signed_out_here", NOW) == 1
     assert chat_signouts.revoke_device(db, 7, "OLDDEVICE0", "signed_out_here", NOW) == 0
     assert revoked(db) == {"UQAAAAAAAAAA": "signed_out_here", "OLDDEVICE0": "signed_out_here"}
+
+
+# --- stale site devices (build step 7: prune_stale, a step of scripts/recomputes.py) ---------------------------------------------
+
+OLD = NOW - 91 * 86400                       # past STALE_DAYS
+RECENT = NOW - 10 * 86400
+
+
+def account(db, user_id):
+    db.execute(text("INSERT INTO chat_identities VALUES (:u, :m)"), {"u": user_id, "m": f"@ruqqus_{user_id}:x"})
+    db.execute(text("INSERT INTO users (id) VALUES (:u)"), {"u": user_id})
+
+
+def live(db):
+    return {d for (d,) in db.execute(text("SELECT device_id FROM chat_site_devices WHERE revoked_utc = 0"))}
+
+
+def test_the_stale_rule_is_ninety_days_and_two_hundred_a_cycle():
+    assert chat_signouts.STALE_DAYS == 90 and chat_signouts.PRUNE_LIMIT == 200 and chat_signouts.STALE == "stale"
+
+
+def test_a_device_unused_for_ninety_days_goes_by_a_listed_stale_sign_out_and_synapse_deletes_it_when_the_queue_runs():
+    db = make()
+    device(db, "UQOLDCHAT000", used=OLD, created_ms=1)
+    device(db, "UQOLDCALL000", kind="call", used=OLD, created_ms=2)
+    device(db, "UQNEWCHAT000", used=RECENT, created_ms=3)
+    device(db, "UQ89DAYS0000", used=NOW - 89 * 86400, created_ms=4)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 2
+    assert revoked(db) == {"UQOLDCHAT000": "stale", "UQOLDCALL000": "stale"}
+    assert live(db) == {"UQNEWCHAT000", "UQ89DAYS0000"}, "used within 90 days: kept"
+    assert [(r[0], r[1], r[3]) for r in rows(db)] == [("listed", "UQOLDCALL000", "stale"), ("listed", "UQOLDCHAT000", "stale")], "one row each, oldest (then by id) first"
+    fake = FakeMatrix([(d, "Laba chat") for d in ("UQOLDCHAT000", "UQOLDCALL000", "UQNEWCHAT000", "UQ89DAYS0000")] + [("ELEMENTAPP1", "Element")])
+    assert chat_signouts.run_due(db, fake, now=NOW) == {"done": 2}
+    assert set(fake.devices) == {"UQNEWCHAT000", "UQ89DAYS0000", "ELEMENTAPP1"}, "an outside app is never touched"
+    assert chat_signouts.prune_stale(db, NOW) == 0, "nothing more, and nothing twice"
+
+
+def test_the_most_recently_used_chat_row_is_never_pruned_however_old():
+    db = make()
+    device(db, "UQONLYCHAT00", used=OLD - 500 * 86400)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 0 and live(db) == {"UQONLYCHAT00"}, "the account's only chat device stays"
+    device(db, "UQOLDER00000", used=OLD - 600 * 86400)
+    device(db, "UQOLDCALL000", kind="call", used=OLD - 400 * 86400)          # a newer call row protects no chat row, and isn't kept
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 2
+    assert live(db) == {"UQONLYCHAT00"} and set(revoked(db)) == {"UQOLDER00000", "UQOLDCALL000"}
+
+
+def test_a_revoked_chat_row_never_counts_as_the_most_recent_and_ties_keep_one():
+    db = make()
+    device(db, "UQREVOKED000", used=NOW - 1, revoked=NOW - 1)                   # signed out already: protects nothing
+    device(db, "UQTIEA000000", used=OLD, created_ms=5)
+    device(db, "UQTIEB000000", used=OLD, created_ms=5)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 1
+    assert live(db) == {"UQTIEB000000"}, "two rows used at the same moment: exactly one is kept (the later id)"
+    device(db, "UQMADELATER0", used=OLD - 1, created_ms=9)
+    device(db, "UQMADEFIRST0", used=OLD - 1, created_ms=8)
+    db.execute(text("UPDATE chat_site_devices SET revoked_utc = 1 WHERE device_id = 'UQTIEB000000'"))
+    db.execute(text("UPDATE chat_device_signouts SET done_utc = 1"))                # TIEA's sign-out has run
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 1
+    assert live(db) == {"UQMADELATER0"}, "used at the same moment: the one made later is kept"
+
+
+def test_only_call_rows_left_all_go():
+    db = make()
+    device(db, "UQCALLONLY00", kind="call", used=OLD)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 1 and revoked(db) == {"UQCALLONLY00": "stale"}
+
+
+def test_an_account_with_a_sign_out_still_pending_is_left_for_a_later_cycle():
+    db = make()
+    device(db, "UQOLDCHAT000", used=OLD)
+    device(db, "UQNEWCHAT000", used=RECENT)
+    db.commit()
+    chat_signouts.queue(db, 7, "password", "listed", device_ids=["UQSOMETHING0"], mxid=MX, now_ms=NOW * 1000)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 0 and "UQOLDCHAT000" in live(db)
+    db.execute(text("UPDATE chat_device_signouts SET done_utc = :n"), {"n": NOW})
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW) == 1 and revoked(db) == {"UQOLDCHAT000": "stale"}
+
+
+def test_each_account_is_read_again_under_its_lock(monkeypatch):
+    """A candidate chosen without a lock is pruned only if it still is one once the account's mint lock is held: a sign-out queued
+    meanwhile leaves the account, a device used meanwhile is no longer stale, and a newer chat row signed out meanwhile makes this one the
+    most recent (kept)."""
+    for change, kept in [("pending", {"UQOLDCHAT000", "UQNEWCHAT000"}),
+                         ("used", {"UQOLDCHAT000", "UQNEWCHAT000"}),
+                         ("newer_gone", {"UQOLDCHAT000"})]:
+        db = make()
+        device(db, "UQOLDCHAT000", used=OLD)
+        device(db, "UQNEWCHAT000", used=RECENT)
+        db.commit()
+        real_lock = chat_signouts.lock_account
+
+        def meanwhile(*args, change=change, db=db, real_lock=real_lock):
+            if change == "pending":
+                db.execute(text("INSERT INTO chat_device_signouts (user_id, mxid, scope, spare_after_ms, reason, created_utc, next_try_utc) "
+                                "VALUES (7, :m, 'all', 0, 'others', :n, :n)"), {"m": MX, "n": NOW})
+            elif change == "used":
+                db.execute(text("UPDATE chat_site_devices SET last_used_utc = :n WHERE device_id = 'UQOLDCHAT000'"), {"n": RECENT - 1})
+            else:
+                db.execute(text("UPDATE chat_site_devices SET revoked_utc = :n, revoked_reason = 'password' "
+                                "WHERE device_id = 'UQNEWCHAT000'"), {"n": NOW})
+            db.commit()
+            monkeypatch.setattr(chat_signouts, "lock_account", real_lock)
+            return real_lock(*args)
+        monkeypatch.setattr(chat_signouts, "lock_account", meanwhile)
+        assert chat_signouts.prune_stale(db, NOW) == 0, change
+        assert live(db) == kept, change
+        monkeypatch.setattr(chat_signouts, "lock_account", real_lock)
+
+
+def test_oldest_first_across_accounts_and_at_most_the_limit_a_cycle():
+    db = make()
+    for uid in (8, 9):
+        account(db, uid)
+    for uid, did, used in [(7, "UQSEVEN00000", OLD - 30), (8, "UQEIGHT00000", OLD - 50), (9, "UQNINE000000", OLD - 10),
+                           (8, "UQEIGHTB0000", OLD - 20)]:
+        device(db, did, kind="call", used=used, user_id=uid)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW, limit=2) == 2
+    assert set(revoked(db)) == {"UQEIGHT00000", "UQSEVEN00000"}, "the two oldest"
+    assert chat_signouts.prune_stale(db, NOW, limit=2) == 1, "account 8 has a sign-out pending now: only 9's goes"
+    assert chat_signouts.run_due(db, FakeMatrix(), now=NOW) == {"done": 3}
+    assert chat_signouts.prune_stale(db, NOW, limit=2) == 1
+    assert set(revoked(db)) == {"UQEIGHT00000", "UQSEVEN00000", "UQEIGHTB0000", "UQNINE000000"}
+    order = [r[0] for r in db.execute(text("SELECT device_ids FROM chat_device_signouts ORDER BY id"))]
+    assert order == ["UQEIGHT00000", "UQSEVEN00000", "UQNINE000000", "UQEIGHTB0000"]
+
+
+@pytest.mark.parametrize("blocker", ["only_chat_row", "pending", "not_stale_yet"])
+def test_what_may_never_go_is_never_chosen_so_it_never_uses_up_the_cycles_limit(blocker):
+    """The choice itself leaves out the most recent chat row, accounts with a pending sign-out and devices used within 90 days (the
+    recheck under the lock would keep them anyway): one of them, older than everything else, never takes a cycle's only place."""
+    db = make()
+    account(db, 8)
+    used = {"only_chat_row": OLD - 900, "pending": OLD - 900, "not_stale_yet": NOW - 89 * 86400}[blocker]
+    device(db, "UQSEVEN00000", used=used, kind="call" if blocker == "pending" else "chat")
+    if blocker == "not_stale_yet":
+        device(db, "UQSEVENNEW00", used=NOW)
+    if blocker == "pending":
+        chat_signouts.queue(db, 7, "password", "listed", device_ids=["UQGONE000000"], mxid=MX, now_ms=NOW * 1000)
+    device(db, "UQEIGHT00000", kind="call", used=OLD, user_id=8)
+    db.commit()
+    assert chat_signouts.prune_stale(db, NOW, limit=1) == 1
+    assert revoked(db).get("UQEIGHT00000") == "stale" and "UQSEVEN00000" in live(db)
+
+
+def test_a_pruned_device_is_told_to_its_browser_as_stale():
+    """The browser that held it names it at its next chat page: a new device, `previous.reason` "stale" (lines.js has the sentence); a
+    running page's renewal answers 409 with the same reason."""
+    db = make()
+    device(db, "UQOLDCHAT000", used=OLD)
+    device(db, "UQNEWCHAT000", used=RECENT)
+    db.commit()
+    chat_signouts.prune_stale(db, NOW)
+    assert issue(db, FakeMatrix(), {"mode": "renew", "device_id": "UQOLDCHAT000"}) == (409, {"device_gone": True, "reason": "stale"})
+    status, body = issue(db, FakeMatrix(), {"mode": "boot", "device_id": "UQOLDCHAT000"})
+    assert status == 200 and body["previous"] == {"device_id": "UQOLDCHAT000", "reason": "stale"} and body["new_device"] is True
+
+
+def test_without_the_tables_pruning_is_a_logged_no_op(caplog):
+    db = make(with_tables=False)
+    with caplog.at_level(logging.WARNING):
+        assert chat_signouts.prune_stale(db, NOW) is None
+    assert "stale chat devices not pruned: migration missing" in caplog.text
+
+
+def test_the_cycle_prunes_after_the_sign_outs_in_its_own_step():
+    source = (ROOT / "scripts" / "recomputes.py").read_text()
+    due, prune = source.index("chat_signouts.run_due(db, signout_matrix)"), source.index("chat_signouts.prune_stale(db")
+    assert due < prune and source.index("chat health") < due
+    step = source[source.rindex("try:", 0, prune):source.index("except Exception", prune)]
+    assert "chat_signouts.run_due" not in step, "in its own try"
 
 
 def test_bad_fields_are_refused_and_absent_ones_take_todays_meaning():
@@ -746,3 +1016,43 @@ def test_the_reset_script_commits_each_account_so_it_never_holds_more_than_one_m
     assert script.run("legacy", confirm=True, db=db, matrix=FakeMatrix(), out=said.append) == 0
     assert db.execute(text("SELECT count(*) FROM chat_device_signouts")).scalar() == 6
     assert most[0] == 1, f"{most[0]} mint locks held at once"
+    # it says first which database it opened, before it refuses or acts
+    assert said[0].startswith("Database: ")
+
+
+def test_the_reset_is_documented_with_the_variable_the_app_really_connects_by():
+    """The app opens DATABASE_CONNECTION_POOL_URL before DATABASE_URL (ruqqus/__main__.py) and docker-compose.yml sets both: a second run
+    with only DATABASE_URL naming ui_preview still opened postgres, so ui_preview was never reset."""
+    runbook = (ROOT / "RESTORE.md").read_text(encoding="utf-8")
+    reset = runbook[runbook.index("queue_chat_signouts.py --all --reason=legacy --once"):runbook.index("## Before the site goes live")]
+    assert "DATABASE_CONNECTION_POOL_URL=postgresql://postgres@postgres:5432/ui_preview" in reset
+    assert "with `DATABASE_URL` pointing at it" not in reset
+    # and a MASTER_KEY rotation keeps the store keys only while CHAT_STORE_SECRET is set
+    rotation = runbook[runbook.index("A new `MASTER_KEY` also makes the sealed refresh tokens"):]
+    flat = " ".join(rotation.split())
+    assert "keeps its store key if `CHAT_STORE_SECRET` didn't change" not in flat
+    assert "only if `CHAT_STORE_SECRET` is set and didn't change" in flat
+    # build step 5: the sealed refresh tokens are in use, and there is no flag to turn off
+    assert "CHAT_EXPIRING_TOKENS" not in runbook
+    assert "refreshable_access_token_lifetime: 1h" in rotation
+    # a re-token leaves the old chains working on Synapse for ever (a login on a device never ends its earlier refresh tokens, and
+    # refresh_token_lifetime is unset), so after a leak the rotation must be followed by signing every device out: the runbook
+    # once said it needed nothing
+    master = " ".join(rotation[:rotation.index("### Chat token lifetime")].split())
+    assert "Nothing is lost and no member does anything" not in master
+    assert "queue_chat_signouts.py --all --reason=master_key_rotated --once --confirm" in master
+    assert "does not end the old ones" in master
+    # an older pair restored has forgotten later sign-outs and ended sign-ins: the runbook says to sign every chat device out and
+    # raise every nonce (chat plan 9.4, gap 27)
+    older = " ".join(runbook[runbook.index("### After restoring an older pair"):runbook.index("## What this does NOT cover")].split())
+    assert "queue_chat_signouts.py --all --reason=restore --once --confirm" in older
+    assert "UPDATE users SET login_nonce = login_nonce + 1" in older and "chat_pair_check.sh" in older
+    spec =importlib.util.spec_from_file_location("queue_chat_signouts", ROOT / "scripts" / "queue_chat_signouts.py")
+    script = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(script)
+    assert script.REASON.match("master_key_rotated")
+    # without refreshable_access_token_lifetime Synapse falls back to its 5-minute default and still gives refresh tokens
+    # (synapse/config/registration.py reads it with a "5m" default): it never ignores the request
+    lifetime = " ".join(rotation[rotation.index("### Chat token lifetime"):].split())
+    assert "ignores the request for a refresh token" not in lifetime
+    assert "Synapse uses its default of 5 minutes" in lifetime

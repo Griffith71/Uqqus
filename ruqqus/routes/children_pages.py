@@ -14,7 +14,7 @@ from flask import abort, g, jsonify, make_response, redirect, render_template, r
 from sqlalchemy import text
 
 from ruqqus.classes import User
-from ruqqus.helpers import account_sessions, age_declaration, child_accounts as rules, child_activity, child_store, chat_signouts, circle_store, creator_fund_store, data_export, mfa_backup_store, sign_in_history
+from ruqqus.helpers import account_sessions, age_declaration, child_accounts as rules, child_activity, child_store, chat_devices, chat_signouts, circle_store, creator_fund_store, data_export, mfa_backup_store, sign_in_history
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
@@ -121,12 +121,18 @@ def parent_view(v):
 @auth_required
 @not_qr_limited
 def settings_children(v):
+    return _children_page(v, request.args.get("msg"), request.args.get("error"))
+
+
+def _children_page(v, message, error, forget_chat=None):
+    """Settings > Children. `forget_chat`: the Matrix id of a child just deleted, whose chat this browser forgets (forgetChildChatDevices):
+    only the answer to the deletion itself carries it, never an address, which could be linked to."""
     children, refusal, eligible = parent_view(v)
     year = time.gmtime().tm_year
     return render_template("settings_children.html", v=v, children=children, refusal=_say(refusal, request.headers.get("cf-ipcountry")) if refusal and not eligible else None,
                            full_message=_say(refusal) if refusal and eligible else None, eligible=eligible, controls=rules.CONTROLS,
                            text_of=rules.CONTROL_TEXT, max_children=rules.MAX_CHILDREN, months=MONTHS, this_year=year,
-                           msg=request.args.get("msg"), error=request.args.get("error"))
+                           msg=message, error=error, forget_chat=forget_chat)
 
 
 @app.post("/settings/children/new")
@@ -300,16 +306,18 @@ def children_password(username, v):
 @validate_formkey
 def children_delete(username, v):
     """Delete a child's account (the parent's own password first). The same steps as when a member deletes theirs, run for the child: it isn't this
-    browser's account, so this browser stays signed in."""
+    browser's account, so this browser stays signed in. Not a redirect: the answer is the page itself, which clears the child's chat devices and stores
+    from this browser (a family shares one), as the child's own deletion page would."""
     child = _child_or_404(v, username)
     if _wrong_proof(v):
         return _back(error=msg(rules.WRONG_PASSWORD))
     row = _child_row(child)
     if (row.negative_balance_cents or 0) > 0:             # an account that owes money isn't deleted to escape it, by anyone (delete_account asks the same)
         return _back(error=msg(rules.OWES))
+    mxid = chat_devices.mxid_of(g.db, row.id)                 # read before it closes
     rules.close_account(row, "deleted by its parent")          # the one set of steps that closes an account (routes/settings.py)
     g.db.commit()
-    return _back(message=tr("The account @%(name)s is deleted.", name=child["username"]))
+    return _children_page(v, tr("The account @%(name)s is deleted.", name=child["username"]), None, forget_chat=mxid)
 
 
 @app.post("/settings/children/<username>/export")

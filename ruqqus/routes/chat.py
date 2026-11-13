@@ -1,3 +1,4 @@
+import hashlib
 import hmac
 import html
 import re
@@ -12,9 +13,10 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
 from ruqqus.helpers.chat_permissions import can_message_directly, is_blocked
 from ruqqus.helpers.chat_events import is_new_message
-from ruqqus.helpers import age_declaration, broadcast_store, chat_group_store, chat_devices, chat_signouts, chat_tokens, guild_channel_store
+from ruqqus.helpers import push_rules, push_send
+from ruqqus.helpers import age_declaration, broadcast_store, chat_group_store, chat_devices, chat_signouts, chat_store_keys, chat_tokens, guild_channel_store
 from ruqqus.helpers import guild_channels as guild_channel_rules
-from ruqqus.helpers.visibility import filter_users, post_hidden, user_hidden
+from ruqqus.helpers.visibility import comment_hidden, filter_users, post_hidden, user_hidden
 from ruqqus.helpers.i18n_runtime import msg, tr, trn, trp
 from ruqqus.helpers.secret_box import encrypt_secret, decrypt_secret
 from ruqqus.classes import *
@@ -106,6 +108,7 @@ def chat_page(v):
 @not_qr_limited
 @not_child_locked("messaging")
 @validate_formkey
+@limiter.limit("60/minute;600/hour", key_func=member_limit_key)
 def chat_token(v):
     # no device is made without its row (helpers/chat_signouts.py): before the migration, chat waits instead (the page retries)
     if not chat_signouts.tables_ready(g.db):
@@ -119,12 +122,32 @@ def chat_token(v):
         return _token_answer(503, {"retry": True})
     # the browser's own device, coming back after a log out, is taken up again only while it is this account's, not signed out,
     # and still on the chat server; anything else is a new device, whose new id tells the browser to start afresh (token.js).
-    # Every device handed out is recorded (helpers/chat_tokens.py)
+    # Every device handed out is recorded, with its store key (helpers/chat_tokens.py, helpers/chat_store_keys.py),
     # and the account is read again before a device is handed out (a deletion or chat switched off while this waited)
     status, body = chat_tokens.issue(g.db, matrix, v.id, mxid, request.values, flask_session.get("session_id"),
                                      app.config["MATRIX_PUBLIC_URL"], site_name=app.config["SITE_NAME"],
-                                     nonce=flask_session.get("login_nonce", 0))
+                                     nonce=flask_session.get("login_nonce", 0), secret=chat_store_keys.secret_of(app.config),
+                                     report_seconds=app.config["CHAT_TOKEN_REPORT_SECONDS"])
     return _token_answer(status, body)
+
+
+@app.route("/api/chat/store_keys", methods=["POST"])
+@auth_required
+@not_qr_limited
+@not_child_locked("messaging")
+@validate_formkey
+@limiter.limit("20/minute", key_func=member_limit_key)
+def chat_store_keys_route(v):
+    """The store keys of this account's own site devices, revoked or not (`device_ids`, up to 4): what a browser needs to open a store it
+    kept from an older device of the account (the harvest, from build step 6). Any other id is left out and never told apart. No Matrix
+    call, and nothing is made: an account with no chat yet has no devices."""
+    if not chat_signouts.tables_ready(g.db):
+        return _token_answer(503, {"retry": True})
+    device_ids = chat_tokens.parse_store_key_ids(request.values.get("device_ids"))
+    if device_ids is None:
+        return _token_answer(400, {"bad_request": True})
+    return _token_answer(200, chat_tokens.store_keys(g.db, v.id, chat_signouts.mxid_of(g.db, v.id), device_ids,
+                                                     chat_store_keys.secret_of(app.config)))
 
 
 def _token_answer(status, body):
@@ -150,8 +173,10 @@ def chat_formkey(v):
     """The form key of this cookie as it is now. A credential event that spares this sign-in (Log out everywhere, a password change,
     two-factor on or off) raises the account's nonce, which form keys are made from, so a chat page, frame, call window or Space page
     opened before it holds a key the form-key check now refuses: it asks here and tries again. A sign-in that ended is refused by
-    @auth_required itself. Changes nothing; another site can't read the answer (same-origin JSON)."""
-    resp = jsonify({"formkey": v.formkey})
+    @auth_required itself. Changes nothing; another site can't read the answer (same-origin JSON). The answer names the account's
+    Matrix id, the same one the page was drawn with (chat_devices.mxid_of): a page drawn for another account that signed in here since
+    keeps no key of this one's (assets/chat_src/src/site.js refreshFormkey), so it never posts as someone else."""
+    resp = jsonify({"formkey": v.formkey, "mxid": chat_devices.mxid_of(g.db, v.id)})
     resp.headers["Cache-Control"] = "no-store"
     return resp
 
@@ -183,7 +208,11 @@ def chat_key_get(v):
         g.db.commit()
     return jsonify({"salt": identity.key_salt, "password_blob": identity.key_blob_password,
                     "recovery_blob": identity.key_blob_recovery, "legacy": bool(identity.recovery_key_encrypted),
-                    "ready": bool(identity.ready_utc)})
+                    "ready": bool(identity.ready_utc),
+                    # Start over asks for the two-factor code too (routes/chat_key_reset_pages.py)
+                    "mfa": bool(v.mfa_secret),
+                    # whether the member said they kept the recovery code (the chat page's reminder: chat_extras.js)
+                    "code_saved": bool(identity.code_saved_utc)})
 
 
 @app.route("/api/chat/key", methods=["POST"])
@@ -208,6 +237,25 @@ def chat_key_set(v):
         return jsonify({"error": tr("Nothing to save.")}), 400
     if identity.key_blob_password:
         identity.recovery_key_encrypted = None          # the server can no longer read the key
+    if request.values.get("recovery_blob") is not None:
+        identity.code_saved_utc = 0                     # a new code: kept only once the member says so (/api/chat/code_saved)
+    g.db.add(identity)
+    g.db.commit()
+    return "", 204
+
+
+@app.route("/api/chat/code_saved", methods=["POST"])
+@auth_required
+@not_qr_limited
+@not_child_locked("messaging")
+@validate_formkey
+def chat_code_saved(v):
+    """The member says they kept their recovery code ("I've saved it" under a new code, or "I have it" on the chat page's reminder). Only
+    a time is kept; the code itself never reaches the site."""
+    identity = _identity(v)
+    if not identity.key_blob_recovery:
+        return jsonify({"error": tr("There's no recovery code to keep yet.")}), 409
+    identity.code_saved_utc = int(time.time())
     g.db.add(identity)
     g.db.commit()
     return "", 204
@@ -350,6 +398,10 @@ def chat_conversations(v):
             "other_user": {
                 "id": other.id,
                 "username": other.username,
+                # the name as the rest of the site shows it (CLAUDE.md "Display names"), never the chat server's profile
+                # name: the @handle alone when the viewer's word filter hides the name, "Deleted account" for a deleted one
+                "display_name": "" if other.is_deleted or user_hidden(other, v) else (other.display_name or ""),
+                "shown_name": tr("Deleted account") if other.is_deleted else (other.username if user_hidden(other, v) else other.shown_name),
                 "profile_url": other.profile_url,
                 # messages to someone whose chat isn't set up yet wait in the sender's browser (M-04)
                 "ready": _chat_ready(other.id),
@@ -473,6 +525,44 @@ def chat_post_preview(pid, v):
         "url": post.permalink,
         "thumb": post.thumb_url if (post.has_thumb and not post.is_sensitive) else None,
         "comments": post.comment_count,
+    })
+
+
+@app.route("/api/chat/comment_preview/<cid>", methods=["GET"])
+@auth_required
+@not_child_locked("chat")
+def chat_comment_preview(cid, v):
+    """The card under a message that links to a comment, made for the person reading it, by the rules of opening the
+    comment (get_comment: a Circle post's comments, a block by its author) and its post (the post card's rules), with
+    neither author ever named (an anonymous comment or post stays anonymous). The comment's words, and the title of
+    the post it is on."""
+    unavailable = jsonify({"ok": False, "notice": tr("Not available to you.")})
+    if not POST_ID.match(cid):
+        return unavailable
+    comment = get_comment(cid, v=v, graceful=True)
+    if comment is None:
+        return unavailable
+    post = comment.post
+    admin = v.admin_level >= 3
+    if (comment.is_banned or post.is_banned or post.board.is_banned) and not admin:
+        return jsonify({"ok": False, "notice": tr("This post was removed.")})
+    if (comment.deleted_utc or post.deleted_utc) and not admin:
+        return jsonify({"ok": False, "notice": tr("This post was deleted.")})
+    if comment_hidden(comment, v) or post_hidden(post, v):
+        return jsonify({"ok": False, "notice": tr("Hidden by your word filter.")})
+    if post.in_private_guild_for(v):
+        return unavailable
+    # a block either way, with either author, as the post card says it; never for an anonymous item (it would say whose it is)
+    for item in (comment, post):
+        if not item.is_anonymous and item.author_id != v.id and item.author and v.any_block_exists(item.author):
+            return unavailable
+
+    return jsonify({
+        "ok": True,
+        "text": " ".join((comment.body or "").split())[:280],
+        "title": html.unescape(post.title or "")[:200],
+        "guild": None if post.is_profile_post else post.board.name,
+        "url": comment.permalink,
     })
 
 
@@ -656,6 +746,21 @@ def _guard_guild_channel(channel, event):
     guild_channel_store.touch(g.db, room_id, now, _user_id_for_mxid(sender))
 
 
+def _note_disappearing(event):
+    """A message, reaction or edit sent in a 1:1 chat or group whose timer is on is noted with when it is due (its id and a
+    time only: helpers/chat_disappear.py); the bot deletes it then. State events (the timer itself, pins) never disappear."""
+    from ruqqus.helpers import chat_disappear, chat_extras
+    if event.get("type") not in ("m.room.message", "m.room.encrypted", "m.reaction") or "state_key" in event:
+        return
+    room_id, event_id = event.get("room_id"), event.get("event_id")
+    if not room_id or not event_id:
+        return
+    seconds = chat_extras.timer_of(g.db, room_id)
+    if seconds:
+        sent = int(event.get("origin_server_ts") or time.time() * 1000) // 1000
+        chat_disappear.note(g.db, room_id, event_id, sent, seconds)
+
+
 @app.route("/matrix/appservice/_matrix/app/v1/transactions/<txn_id>", methods=["PUT"])
 def matrix_appservice_transaction(txn_id):
     token = app.config.get("MATRIX_HS_TOKEN") or ""
@@ -664,10 +769,18 @@ def matrix_appservice_transaction(txn_id):
     if not token or not hmac.compare_digest(auth.encode(), f"Bearer {token}".encode()):
         abort(403)
 
+    # the chat server sends a transaction again until it is answered: one already handled is answered at once (it used to
+    # count its messages twice, and would send its push notifications twice)
+    seen_key = f"as:txn:{hashlib.sha256(txn_id.encode()).hexdigest()}"
+    if r is not None and r.get(seen_key):
+        return jsonify({})
+
     body = request.get_json(silent=True, force=True) or {}
+    pushes = []                     # (recipient ids, kind, sender id, room id): sent after the commit (helpers/push_send.py)
     for event in body.get("events", []):
         if _guard_room_event(event):
             continue                    # removed as it arrived (bug hunt: it still raised every member's unread count)
+        _note_disappearing(event)
         if event.get("type") not in ("m.room.message", "m.room.encrypted"):
             continue
         if not is_new_message(event):     # a reaction to, or an edit of, an earlier message
@@ -684,7 +797,10 @@ def matrix_appservice_transaction(txn_id):
         convo = g.db.query(ChatConversation).filter_by(matrix_room_id=room_id).first()
         if not convo:
             # a group's room: one more unread for each of its other joined members (helpers/chat_group_store.py)
-            if not chat_group_store.note_message(g.db, room_id, sender_user_id, int(time.time())):
+            if chat_group_store.note_message(g.db, room_id, sender_user_id, int(time.time())):
+                pushes.append((chat_group_store.push_targets(g.db, room_id, sender_user_id, (push_rules.EVERY,)),
+                               push_rules.MESSAGE, sender_user_id, room_id))
+            else:
                 # a broadcast channel's (helpers/broadcast_store.py): everyone but the writer and whoever muted the owner
                 channel = broadcast_store.by_room(g.db, room_id)
                 if channel is not None:
@@ -692,6 +808,8 @@ def matrix_appservice_transaction(txn_id):
                     broadcast_store.note_message(g.db, channel[0], sender_user_id, muted)
             continue
         recipient_id = convo.other_id(sender_user_id)
+        pushes.append(([recipient_id], push_rules.MESSAGE if convo.tab_for(recipient_id) == "inbox" else push_rules.REQUEST,
+                       sender_user_id, room_id))
 
         if convo.tab_for(recipient_id) == "inbox":
             g.db.execute(
@@ -704,7 +822,15 @@ def matrix_appservice_transaction(txn_id):
         convo.last_activity_utc = int(time.time())
         g.db.add(convo)
 
+    jobs = []
+    for recipients, kind, sender_id, room_id in pushes:
+        sender = g.db.query(User).filter_by(id=sender_id).first()
+        if sender is not None and recipients:
+            jobs += push_send.prepare(g.db, recipients, kind, sender, room_id)
     g.db.commit()
+    if r is not None:
+        r.set(seen_key, 1, ex=2 * 86400)
+    push_send.send_later(jobs, urgency="high")
     return jsonify({})
 
 

@@ -130,10 +130,11 @@ def settings_age_assurance_callback(v):
         return redirect("/settings/content?age=under", code=303)
     if status == age_assurance.UNDER_MINIMUM:
         from ruqqus.routes.settings import close_own_account
-        deleted_mxid = chat_devices.mxid_of(g.db, v.id)    # read before the account closes: the page clears this account's chat here
+        # read before the accounts close: the page clears this account's chat here (and any child closed with it)
+        deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)
         close_own_account(v, "age check: under the youngest age where they are")
         g.db.commit()
-        return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE),
+        return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children, title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE),
                                message=msg(age_declaration.UNDER_AGE_CLOSED))
     return redirect("/settings/content?age=failed", code=303)
 

@@ -57,15 +57,26 @@ def _name_severity(name):
 
 
 def _usernames():
-    """Names from the form: `usernames` (commas or spaces) and repeated `username`, without @, at most 31."""
+    """Names from the form: `usernames` (commas or spaces) and repeated `username`, without @, each once. Reading stops
+    one past `ADD_AT_ONCE`, so a request naming more is refused (`_too_many`) without reading the rest."""
     raw = request.values.getlist("username") + [request.values.get("usernames", "")]
-    names = []
+    names, seen = [], set()
     for chunk in raw:
         for name in chunk.replace(",", " ").split():
             name = name.strip().lstrip("@")
-            if name and name.lower() not in (n.lower() for n in names):
+            if name and name.lower() not in seen:
+                seen.add(name.lower())
                 names.append(name)
-    return names[:group_rules.MAX_MEMBERS - 1]
+                if len(names) > group_rules.ADD_AT_ONCE:
+                    return names
+    return names
+
+
+def _too_many(names):
+    """Every name is one Matrix invitation made while the request waits: a group of 500 is filled a few dozen at a time."""
+    if len(names) > group_rules.ADD_AT_ONCE:
+        return _error(trn("Add at most %(num)s person at a time.", "Add at most %(num)s people at a time.", group_rules.ADD_AT_ONCE))
+    return None
 
 
 def _out_of_call(room_id, user_id):
@@ -161,6 +172,8 @@ def chat_group_create(v):
     names = _usernames()
     if not names:
         return _error(tr("Add at least one person."))
+    if _too_many(names):
+        return _too_many(names)
     if group_store.created_since(g.db, v.id, now - _DAY) >= group_rules.GROUPS_PER_DAY:
         return _error(trn("You can start at most %(num)s group a day.", "You can start at most %(num)s groups a day.",
                            group_rules.GROUPS_PER_DAY), 429)
@@ -215,9 +228,11 @@ def chat_group_add(gid, v):
     names = _usernames()
     if not names:
         return _error(tr("Type who to add."))
+    if _too_many(names):
+        return _too_many(names)
     if _daily_adds_left(v, now) < len(names):
         return _error(tr("You've added a lot of people to groups today. Try again tomorrow."), 429)
-    existing = {m[0] for m in group_store.members(g.db, gid)}
+    existing = set(group_store.member_ids(g.db, gid))
     users, refusal = _refusals(v, me[1], names, existing, len(existing))
     if refusal:
         return _error(refusal, 403 if not group_rules.may_manage(me[1]) else 400)
@@ -298,7 +313,7 @@ def chat_group_accept(gid, v):
         abort(404)
     # the add rule asked again (bug hunt: a block made after the invitation, with anyone who has joined since or
     # was already in, put the two together); the message never says who blocked whom
-    joined = [row[0] for row in group_store.members(g.db, gid) if row[2] == group_rules.JOINED and row[0] != v.id]
+    joined = [uid for uid in group_store.member_ids(g.db, gid, joined_only=True) if uid != v.id]
     if _blocked_ids(v) & set(joined):
         return _error(tr("You can't join this group."), 403)
     try:
@@ -401,11 +416,24 @@ def _person(u):
     return {"id": u.id, "username": u.username, "display_name": u.display_name or "", "profile_url": u.profile_url}
 
 
+# the members a group in the chat list is drawn with (its first four, and the names an unnamed group is called by)
+_PREVIEW = 8
+
+
 def group_json(group, me, v, full=False):
     """A group as the chat list and the group sheet see it, for this viewer. Its name stays out when the viewer's
-    word filter hides it; the people the viewer blocked are marked so their own client hides their messages."""
+    word filter hides it; the people the viewer blocked are marked so their own client hides their messages.
+    The sheet (`full`) lists everyone; the chat list, a call and search read only the first few members and the
+    group's counts (`group_store.preview`), so a list of groups of 500 never loads every member of each."""
     gid = group[0]
-    rows = group_store.members(g.db, gid)
+    if full:
+        rows = group_store.members(g.db, gid)
+        total = len(rows)
+        joined = sum(1 for m in rows if m[2] == group_rules.JOINED)
+    else:
+        rows = group_store.preview(g.db, gid, _PREVIEW)
+        total = int(rows[0][8]) if rows else 0
+        joined = int(rows[0][9] or 0) if rows else 0
     ids = [m[0] for m in rows]
     users = {u.id: u for u in g.db.query(User).filter(User.id.in_(ids)).all()} if ids else {}
     mine = _blocked_by_me(v)
@@ -429,22 +457,26 @@ def group_json(group, me, v, full=False):
         people.append(person)
     name_hidden = text_hidden(group[3], v)
     others = [p["shown_name"] for p in people if p["id"] != v.id and p["joined"]]
+    # everyone else who joined, counted in the database: the list reads only the first few members
+    others_count = joined - (1 if me and me[2] == group_rules.JOINED else 0)
     inviter = users.get(me[3]) if me and me[3] else None
     out = {
         "kind": "group",
         "key": f"g{gid}",
         "group_id": gid,
         "room_id": group[1],
-        "label": group_rules.label(group[2], name_hidden, others, len(others)),
+        "label": group_rules.label(group[2], name_hidden, others, others_count),
         "name": "" if name_hidden else group[2],
         "my_role": me[1] if me else None,
         "status": me[2] if me else None,
         "unread_count": me[4] if me else 0,
         "last_activity_utc": group[6],
-        "size": len(people),
+        "size": total,
         "invited_by": _person(inviter) if inviter and me[2] == group_rules.INVITED else None,
         "can_manage": bool(me) and group_rules.may_manage(me[1]),
         "max_members": group_rules.MAX_MEMBERS,
+        # what this member's notifications say about the group (helpers/push_rules.py), in the full sheet only
+        "push_mode": group_store.push_mode_of(g.db, gid, v.id) if full and me else None,
     }
     out["members"] = people if full else people[:4]
     return out

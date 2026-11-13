@@ -1023,3 +1023,26 @@ def test_bots_feed_an_announcement_channel(db):
     feeds.provision_bot(db, 7, NOW, lambda bot_id, adopt_existing: f"@ruqqus_{bot_id}:test")
     feeds.provision_bot(db, 7, NOW, lambda *a, **k: 1 / 0)                                          # already known: nothing is asked of Matrix
     assert db.execute(text("SELECT matrix_user_id FROM chat_identities WHERE user_id = 7")).scalar() == "@ruqqus_7:test"
+
+
+# --- @everyone (2026-11-13) ------------------------------------------------------------------------------------------
+
+def test_everyone_is_a_word_of_its_own():
+    assert rules.mentions_everyone("Meeting now @everyone!") and rules.mentions_everyone("@Everyone look")
+    for text_ in ("@everyones", "me@everyone.com", "@@everyone", "everyone", "", None):
+        assert not rules.mentions_everyone(text_), text_
+
+
+def test_everyone_tells_the_people_in_the_room_newest_reader_first_never_the_writer_blocked_muted_or_muting(db):
+    cid = make(db)
+    db.execute(text("CREATE TABLE userblocks (user_id integer, target_id integer)"))
+    db.execute(text("CREATE TABLE usermutes (user_id integer, target_id integer)"))
+    for uid, at in ((1, 50), (2, 10), (3, 30), (4, 40), (5, 20), (6, 60)):
+        store.join(db, cid, uid, at)
+    db.execute(text("INSERT INTO userblocks VALUES (1, 3), (4, 1)"))     # either way
+    db.execute(text("INSERT INTO usermutes VALUES (5, 1)"))              # 5 muted the writer
+    store.set_mute(db, cid, 6, NOW + 100)                               # 6 muted the channel
+    assert store.everyone_targets(db, cid, 1, NOW, 10) == [2]
+    store.set_mute(db, cid, 6, NOW - 1)                                 # a mute that has ended
+    assert store.everyone_targets(db, cid, 1, NOW, 10) == [6, 2]
+    assert store.everyone_targets(db, cid, 1, NOW, 1) == [6]

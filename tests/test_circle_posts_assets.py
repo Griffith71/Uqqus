@@ -244,7 +244,7 @@ def test_a_file_in_a_circle_post_is_served_only_to_the_people_who_may_see_the_po
     body = MEDIA_ROUTE.split("def media_file(")[1]
     assert "attach.audience_context(g.db, asset) if live else (0, None, None, ())" in body
     assert "circle_guard.may_see(g.db, audience, circle_owner, v, board_id=board_id, circle_ids=circle_ids)" in body
-    assert "mode = rules.access(asset.status, live, is_owner, audience, allowed)" in body
+    assert "return rules.access(asset.status, live, is_owner, audience, allowed)" in body
     # the private answer is the uncached one, and only a public one skips the session cookie
     assert 'response.headers["Cache-Control"] = FOREVER if mode == rules.PUBLIC else NO_STORE' in body
     assert re.search(r"if mode == rules\.PUBLIC:\s+g\.skip_session_cookie = True", body)

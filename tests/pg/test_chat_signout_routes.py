@@ -2,7 +2,8 @@
 (helpers/chat_signouts.py, helpers/account_sessions.py `revoke`, helpers/chat_tokens.py): each writes the right queue row and revokes the
 right site rows in its own transaction, the chat server is called only once that is committed, decision 2 spares exactly the devices of
 the sign-in making the change, the events that spare nothing spare nothing, a chat server that is down leaves the row to be retried,
-the interim of build steps 2 and 3 keeps the site's own browsers, and a suspension changes nothing (the owner's decision 3)."""
+the interim of build steps 2 and 3 is over (every event reaches the site's own browsers), and a suspension changes nothing (the
+owner's decision 3)."""
 import secrets
 import time
 
@@ -38,7 +39,7 @@ def server(monkeypatch, real_app, pg_engine):
     """A chat server: `devices` is {mxid: {device_id: name}}. Each delete notes whether a sign-out row of that account was already
     committed (read through another connection): the chat server must only ever hear once the request's changes are durable."""
     import ruqqus.helpers.matrix_client as matrix
-    state = {"devices": {}, "calls": [], "down": False, "committed": []}
+    state = {"devices": {}, "calls": [], "down": False, "committed": [], "refresh": {}}
 
     def committed(mxid):
         with pg_engine.connect() as conn:
@@ -57,25 +58,33 @@ def server(monkeypatch, real_app, pg_engine):
         state["committed"].append(committed(mxid))
         state["devices"].get(mxid, {}).pop(device_id, None)
 
-    def login_as(mxid, device_id=None):
+    def login_as(mxid, device_id=None):                  # always with a refresh token (build step 5)
         state["calls"].append(("login", mxid, device_id))
         if state["down"]:
             raise matrix.MatrixError("down")
         state["devices"].setdefault(mxid, {})[device_id] = "Laba chat"
-        return {"user_id": mxid, "device_id": device_id, "access_token": "syt_" + secrets.token_hex(8), "refresh_token": "kept-here"}
+        return dict({"user_id": mxid, "device_id": device_id}, **pair(mxid, device_id))
+
+    def pair(mxid, device_id):
+        rt = "rt-" + secrets.token_hex(8)
+        state["refresh"][rt] = (mxid, device_id)
+        return {"access_token": "syt_" + secrets.token_hex(8), "refresh_token": rt, "expires_in_ms": 3600000}
+
+    def refresh(refresh_token):                         # Synapse's /refresh: only while the device is there
+        state["calls"].append(("refresh", None, None))
+        if state["down"]:
+            raise matrix.MatrixError("down")
+        mxid, device_id = state["refresh"].pop(refresh_token, (None, None))
+        if device_id is None or device_id not in state["devices"].get(mxid, {}):
+            raise matrix.RefreshGone("gone")
+        return pair(mxid, device_id)
 
     monkeypatch.setattr(matrix, "list_devices", list_devices)
+    monkeypatch.setattr(matrix, "refresh", refresh)
     monkeypatch.setattr(matrix, "delete_device", delete_device)
     monkeypatch.setattr(matrix, "login_as", login_as)
     monkeypatch.setattr(matrix, "set_display_name", lambda *a, **k: None)
     return state
-
-
-@pytest.fixture
-def decision_two(monkeypatch):
-    """Build step 4's rule (the interim off): the site's own browsers are signed out too, but this sign-in's."""
-    from ruqqus.helpers import chat_signouts
-    monkeypatch.setattr(chat_signouts, "KEEP_SITE_BROWSERS", False)
 
 
 def with_chat(member_or_kid):
@@ -166,7 +175,7 @@ def _mfa_off(member, a):
 
 
 @pytest.mark.parametrize("event, reason", [(_password, "password"), (_others, "others"), (_mfa_on, "mfa"), (_mfa_off, "mfa")])
-def test_these_events_spare_exactly_this_sign_ins_devices(make_member, server, decision_two, event, reason):
+def test_these_events_spare_exactly_this_sign_ins_devices(make_member, server, event, reason):
     member, mxid, a, b, devices = setup(make_member, server)
     answer = event(member, a)
     assert answer.status_code in (200, 302), answer.status_code
@@ -182,7 +191,7 @@ def test_these_events_spare_exactly_this_sign_ins_devices(make_member, server, d
 
 # --- these spare nothing ------------------------------------------------------------------------------------------------------
 
-def test_a_reset_by_email_spares_nothing(make_member, server, decision_two):
+def test_a_reset_by_email_spares_nothing(make_member, server):
     from ruqqus.helpers.security import generate_hash
     member, mxid, a, b, devices = setup(make_member, server)
     now = int(time.time())
@@ -197,7 +206,7 @@ def test_a_reset_by_email_spares_nothing(make_member, server, decision_two):
     assert not signed_in(a) and not signed_in(b)
 
 
-def test_the_recovery_code_spares_nothing(make_member, server, decision_two):
+def test_the_recovery_code_spares_nothing(make_member, server):
     member, mxid, a, b, devices = setup(make_member, server)
     set_user(member, mfa_secret=pyotp.random_base32())
     code = member.user().mfa_removal_code.lower().replace(" ", "")
@@ -217,7 +226,7 @@ def test_the_recovery_code_spares_nothing(make_member, server, decision_two):
     assert signed_in(visitor) and not signed_in(a)
 
 
-def test_a_parents_new_password_spares_nothing_and_leaves_the_parent_signed_in(made, server, decision_two):
+def test_a_parents_new_password_spares_nothing_and_leaves_the_parent_signed_in(made, server):
     mum, kid = made()
     mxid = with_chat(kid)
     db = kid.db_session()
@@ -240,7 +249,7 @@ def test_a_parents_new_password_spares_nothing_and_leaves_the_parent_signed_in(m
 # --- the other sign-outs ------------------------------------------------------------------------------------------------------
 
 def test_a_childs_chat_switched_off_and_stopping_managing_sign_out_every_device(made, server):
-    """These two signed the site's own browsers out before the queue existed, so the interim keeps none of them."""
+    """Every device goes: a child account has no chat."""
     for action in ("chat_off", "stop"):
         mum, kid = made()
         mxid = with_chat(kid)
@@ -270,8 +279,8 @@ def test_an_account_newly_child_locked_is_signed_out_and_one_already_answered_is
     assert member.user().age_declared == 2, "18 or over from the UK is stored as the locked answer"
     settle(member)
     [(scope, spared, why, done, _ids, _tries)] = queue_rows(member)
-    assert (scope, why) == ("all", "child_locked") and spared == "site", "the interim: chat apps only"
-    assert revoked(member) == {} and set(server["devices"][mxid]) == set(devices.values())
+    assert (scope, spared, why) == ("all", None, "child_locked"), "every device: a child account has no chat"
+    assert revoked(member) == {d: "child_locked" for d in devices.values()} and server["devices"][mxid] == {}
 
     adult = make_member()
     with_chat(adult)
@@ -281,7 +290,7 @@ def test_an_account_newly_child_locked_is_signed_out_and_one_already_answered_is
     assert queue_rows(adult) == []
 
 
-def test_an_admin_marking_an_account_a_child_signs_it_out_once(make_member, server, decision_two):
+def test_an_admin_marking_an_account_a_child_signs_it_out_once(make_member, server):
     """admin_age_declaration: a newly locked account's every device goes (a child account has no chat); marking it again, or taking the
     lock off, signs nothing out."""
     member, mxid, a, b, devices = setup(make_member, server)
@@ -303,7 +312,7 @@ def test_an_admin_marking_an_account_a_child_signs_it_out_once(make_member, serv
     assert len(queue_rows(member)) == 1, "already locked, then unlocked: nothing more to sign out"
 
 
-def test_plain_log_out_signs_no_device_out(make_member, server, decision_two):
+def test_plain_log_out_signs_no_device_out(make_member, server):
     """Decision 1: Log out ends this browser's sign-in on the site and nothing of chat; the same account signing back in takes its device
     up again."""
     member, mxid, a, b, devices = setup(make_member, server)
@@ -380,7 +389,7 @@ def test_deleting_an_account_signs_out_every_device_and_forgets_the_rows_but_not
     member, mxid, a, b, devices = setup(make_member, server)
     page = post(a, "/settings/delete_account", {"password": member.password, "formkey": member.formkey(a)})
     assert page.status_code == 200
-    assert f'forgetChatDevices("{mxid}")' in page.get_data(as_text=True)
+    assert f'forgetChatDevices("{mxid}", [])' in page.get_data(as_text=True)
     settle(member)
     [(scope, spared, why, done, _ids, _tries)] = queue_rows(member)
     assert (scope, spared, why) == ("all", None, "deleted") and done > 0
@@ -419,7 +428,7 @@ def test_signing_one_device_out_is_at_once_and_queued_when_the_chat_server_is_do
     assert devices["a_call"] not in server["devices"][mxid]
 
 
-def test_a_chat_server_that_is_down_leaves_the_row_and_the_revoked_device_is_never_served(make_member, server, decision_two):
+def test_a_chat_server_that_is_down_leaves_the_row_and_the_revoked_device_is_never_served(make_member, server):
     member, mxid, a, b, devices = setup(make_member, server)
     server["down"] = True
     assert _password(member, a).status_code == 302
@@ -440,36 +449,36 @@ def test_a_chat_server_that_is_down_leaves_the_row_and_the_revoked_device_is_nev
     db = db_session()
     db.execute(text("UPDATE chat_device_signouts SET next_try_utc = 0 WHERE user_id = :u"), {"u": member.id})
     db.commit()
-    assert chat_signouts.run_due(db, matrix) == {"done": 1}
+    # the password's sign-out is done; the mint that failed while the server was down waits for its device (Synapse may finish a
+    # /login the site gave up on: chat_signouts.MINT_GRACE_SECONDS), then is done once the wait is over and the device never came
+    assert chat_signouts.run_due(db, matrix) == {"done": 1, "waiting": 1}
     assert devices["b_chat"] not in server["devices"][mxid] and fresh in server["devices"][mxid], "made after the sign-out: kept"
+    assert chat_signouts.run_due(db, matrix, now=time.time() + chat_signouts.MINT_GRACE_SECONDS) == {"done": 1}
+    assert fresh in server["devices"][mxid]
 
 
-# --- the interim (build steps 2 and 3) ----------------------------------------------------------------------------------------
+# --- the interim is over (build step 4) ------------------------------------------------------------------------------------
 
-def test_the_interim_signs_out_apps_only_and_revokes_no_site_row(make_member, server):
+def test_a_password_change_reaches_the_other_browsers_site_device_and_keeps_this_sign_ins(make_member, server):
+    """The interim of build steps 2 and 3 signed out apps only; now the other browser's site device goes too, and this sign-in keeps
+    its chat and call devices (decision 2). No row says `site`."""
     member, mxid, a, b, devices = setup(make_member, server)
-    server["devices"][mxid]["OLDSITEDEV"] = ""                         # a site device from before names
+    server["devices"][mxid]["OLDSITEDEV"] = ""                         # a site device from before rows were kept
     assert _password(member, a).status_code == 302
     settle(member)
     [(scope, spared, why, done, _ids, _tries)] = queue_rows(member)
-    assert "site" in spared.split(",") and why == "password" and done > 0
-    assert revoked(member) == {}
-    assert set(server["devices"][mxid]) == set(devices.values()) | {"OLDSITEDEV"}, "only the app went"
-    # today's client in browser B, signed in again, takes its device up again
+    assert "site" not in (spared or "").split(",") and why == "password" and done > 0
+    assert set(spared.split(",")) == {devices["a_chat"], devices["a_call"]}
+    assert revoked(member) == {devices["b_chat"]: "password"}
+    assert set(server["devices"][mxid]) == {devices["a_chat"], devices["a_call"]}, "B's device, the old one and the app went"
+    # B's next token request is a new site-chosen device, never its revoked one, even with the chat server failing first
     b2 = member.browser()
-    assert mint(member, b2, device_id=devices["b_chat"]) == devices["b_chat"]
-    # a revoked row is never re-tokened: a new site-chosen device, even with the chat server failing
-    from ruqqus.helpers import chat_signouts
-    from ruqqus.__main__ import db_session
-    db = db_session()
-    chat_signouts.revoke_rows(db, member.id, [devices["a_chat"]], "test")
-    db.commit()
     server["down"] = True
-    assert post(a, "/api/chat/token", {"formkey": member.formkey(a), "device_id": devices["a_chat"]}).status_code == 503
+    assert post(b2, "/api/chat/token", {"formkey": member.formkey(b2), "device_id": devices["b_chat"]}).status_code == 503
     server["down"] = False
-    again = mint(member, a, device_id=devices["a_chat"])
-    assert again != devices["a_chat"] and again.startswith("UQ")
-    assert not [c for c in server["calls"] if c[0] == "login" and c[2] == devices["a_chat"]][1:], "only the mint that made it"
+    again = mint(member, b2, device_id=devices["b_chat"])
+    assert again != devices["b_chat"] and again.startswith("UQ")
+    assert not [c for c in server["calls"] if c[0] == "login" and c[2] == devices["b_chat"]][1:], "only the mint that made it"
 
 
 # --- decision 3 ---------------------------------------------------------------------------------------------------------------
@@ -509,7 +518,7 @@ def test_a_permanent_ban_and_an_unban_queue_nothing_either(make_member, server):
 
 # --- the form key a page held before the change -------------------------------------------------------------------------------
 
-def test_a_spared_sign_in_gets_a_fresh_form_key_and_keeps_its_device(make_member, server, decision_two):
+def test_a_spared_sign_in_gets_a_fresh_form_key_and_keeps_its_device(make_member, server):
     member, mxid, a, b, devices = setup(make_member, server)
     stale = member.formkey(a)
     assert _others(member, a).status_code == 200
@@ -520,6 +529,7 @@ def test_a_spared_sign_in_gets_a_fresh_form_key_and_keeps_its_device(make_member
     assert fresh.status_code == 200 and fresh.headers["Cache-Control"] == "no-store"
     key = fresh.get_json()["formkey"]
     assert key == member.formkey(a) and key != stale
+    assert fresh.get_json()["mxid"] == mxid, "the page keeps a key only for the account it was drawn for (site.js refreshFormkey)"
     again = post(a, "/api/chat/token", {"formkey": key, "device_id": devices["a_chat"]})
     assert again.status_code == 200 and again.get_json()["device_id"] == devices["a_chat"], "spared: never a 503"
     assert get(member.app.test_client(), "/api/chat/formkey").status_code != 200
