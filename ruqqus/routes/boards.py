@@ -35,7 +35,7 @@ from ruqqus.helpers import guild_channel_access
 from ruqqus.helpers import guild_insights_store
 from ruqqus.routes import guild_insights_pages
 from ruqqus.helpers import log_view as log_rules
-from ruqqus.helpers import action_log
+from ruqqus.helpers import action_log, log_notices
 from ruqqus.helpers import guild_flair, guild_flair_store
 from ruqqus.helpers import category_filter
 from ruqqus.helpers import bell as bell_rules
@@ -620,8 +620,11 @@ Required form data:
     g.db.add(ma)
     g.db.flush()
     # the rule cited, and the post as it was: a private copy for the guild's guildmasters, the author and the admins (not in the entry)
-    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), snapshot=action_log.snapshot_of(post, board.id, kind=action_log.HIDE))
+    entry = action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), snapshot=action_log.snapshot_of(post, board.id, kind=action_log.HIDE))
     g.db.commit()
+    # the person the decision is about is told: the rule, the reason, the Log and the way to appeal (best effort, after the commit)
+    log_notices.tell_decision(g.db, entry, "hide_post_from_guild", post=post, guild=board.name, reason=reason, actor_id=v.id,
+                              rule_key=action_log.parse_rule(request.form.get("rule")))
 
     # the card a guild's feed draws (b: no guild name on it), so it can replace the old one in place
     return jsonify({
@@ -853,9 +856,13 @@ Optional form data:
     g.db.add(ma)
     g.db.flush()
     # the rule and the reason, when the guildmaster gave them (the one-tap exiles in the menus don't ask yet)
-    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    exile_entry = action_log.annotate(g.db, ma.id, rule=request.form.get("rule"), reason=request.form.get("reason"))
 
     g.db.commit()
+    if exile_entry:
+        log_notices.tell_appeal_way(g.db, exile_entry, user)       # beside the exile's own notice: the Log and the Appeal link
+        log_notices.mark_sent(g.db, exile_entry)
+        g.db.commit()
 
     # out of the guild's channel rooms at once (helpers/guild_channels.py)
     guild_channel_access.remove_from_rooms(g.db, board.id, user.id, drop_roles=True)
@@ -1075,6 +1082,10 @@ def mod_step_down(bid, board, v):
         board.restricted_forwarding = False
         board.all_opt_out = False
         g.db.add(board)
+        g.db.flush()
+        # the Log: a guild that had no one left to lead it is open to everyone now, which the public may want to know
+        action_log.record_automatic(g.db, "guild_made_public", board_id=board.id, rule="",
+                                    reason="It had no guildmaster left, so it was opened up.")
 
     return "", 204
 
@@ -1125,6 +1136,10 @@ def mod_remove_username(bid, username, board, v):
         board.restricted_forwarding = False
         board.all_opt_out = False
         g.db.add(board)
+        g.db.flush()
+        # the Log: a guild that had no one left to lead it is open to everyone now, which the public may want to know
+        action_log.record_automatic(g.db, "guild_made_public", board_id=board.id, rule="",
+                                    reason="It had no guildmaster left, so it was opened up.")
 
     return "", 204
 

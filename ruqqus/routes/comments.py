@@ -28,7 +28,7 @@ from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import age_declaration, anonymity, private_posting
-from ruqqus.helpers import action_log
+from ruqqus.helpers import action_log, log_notices
 from ruqqus.classes import *
 from flask import *
 from ruqqus.helpers import sharing
@@ -516,6 +516,9 @@ Optional file data:
                 if banned is not None:
                     banned.is_banned = True
                     db.add(banned)
+                    action_log.record_image_check_removal(db, comment_id=banned.id, legal=True,
+                                                          board_id=banned.post.board_id if banned.post else None,
+                                                          detail="a picture in this comment was taken down by the image check")
                     db.commit()
                 db.close()
 
@@ -747,6 +750,13 @@ Optional form data (left out: unchanged):
             comment.ban_reason = N_("Automatic spam removal. This happened because the post's creator submitted too much "
                                      "similar content too quickly.")
             g.db.add(comment)
+            g.db.add(ModAction(
+                user_id=1,
+                target_comment_id=comment.id,
+                kind="ban_comment",
+                board_id=comment.post.board_id,
+                note="spam"
+                ))
 
         g.db.commit()
         return jsonify({"error": tr("Too much spam!")}), 403
@@ -1279,9 +1289,12 @@ Required form data:
     g.db.add(ma)
     g.db.flush()
     # the rule cited, and the text as it was: a private copy for the guild's guildmasters, the author and the admins (not in the entry)
-    action_log.annotate(g.db, ma.id, rule=request.form.get("rule"),
-                        snapshot=action_log.snapshot_of(comment, board.id, comment=True, kind=action_log.HIDE))
+    entry = action_log.annotate(g.db, ma.id, rule=request.form.get("rule"),
+                                snapshot=action_log.snapshot_of(comment, board.id, comment=True, kind=action_log.HIDE))
     g.db.commit()
+    # the person the decision is about is told (best effort, after the commit): rule, reason, the Log, the way to appeal
+    log_notices.tell_decision(g.db, entry, "hide_comment_from_guild", comment=comment, guild=board.name, reason=reason, actor_id=v.id,
+                              rule_key=action_log.parse_rule(request.form.get("rule")))
 
     rendered=render_template(
                 "comments.html",
@@ -1390,9 +1403,16 @@ Required form data:
         reason=reason
     ))
     # a post's author hid it: the comment's author, the hider and the admins may open the copy, not the guild's guildmasters
-    action_log.keep_snapshot(g.db, action_log.snapshot_of(comment, comment.post.board_id, comment=True,
-                                                          kind=action_log.AUTHOR_HIDE, hider_id=v.id))
+    snapshot = action_log.snapshot_of(comment, comment.post.board_id, comment=True, kind=action_log.AUTHOR_HIDE, hider_id=v.id)
+    # the Log: a decision too (the paper trail of the audit: it had a history row and a private copy, no entry). It names the role, never
+    # the account: the post may be anonymous. The copy is tied to the entry, so who may open it is still `snapshot_visible`'s rule
+    entry = action_log.record_quietly(g.db, "author_hide_comment", v.id, role=action_log.AUTHOR, board_id=comment.post.board_id,
+                                      comment_id=comment.id, reason=reason, snapshot=snapshot)
+    if entry is None:
+        action_log.keep_snapshot(g.db, snapshot)                      # the entry failed: the private copy is still kept
     g.db.commit()
+    if entry:
+        log_notices.tell_decision(g.db, entry, "author_hide_comment", comment=comment, reason=reason, actor_id=v.id)
 
     html=render_template(
                 "comments.html",
@@ -1434,6 +1454,8 @@ URL path parameters:
         target_comment_id=comment.id,
         action="author_restore"
     ))
+    action_log.record_quietly(g.db, "author_unhide_comment", v.id, role=action_log.AUTHOR, board_id=comment.post.board_id,
+                              comment_id=comment.id)
     g.db.commit()
 
     html=render_template(

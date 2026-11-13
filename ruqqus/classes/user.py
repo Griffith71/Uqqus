@@ -1841,10 +1841,13 @@ class User(Base, Stndrd, Age_times):
         return not (self.is_suspended or self.is_deleted)
     
 
-    def ban(self, admin=None, reason=None,  days=0, rule=None, staff_note="", floor=0, notice_sent=False):
+    def ban(self, admin=None, reason=None,  days=0, rule=None, staff_note="", floor=0, notice_sent=False, cascade=True):
         """Suspend (`days` > 0) or ban this account. Every ban and suspension, by an admin or by the site's own rules,
         is written to the Log (helpers/action_log.py), which keeps each one: `ban_reason` below is only the latest.
-        `rule` is the rule cited, `staff_note` a private note, `floor` can narrow who may read the entry."""
+        `rule` is the rule cited, `staff_note` a private note, `floor` can narrow who may read the entry. Returns the entry's id
+        (None when the Log could not write it), which the image checks attach their level-4 detail to. `cascade=False` leaves a
+        parent's sub-accounts alone: the image checks are law-enforcement flows, and closing a child there would destroy what the staff
+        may need (helpers/scan_bans.py; `_children_follow_ban` says the rest)."""
         acting = admin
         admin=admin if admin else g.db.query(User).filter_by(id=1).first()
 
@@ -1876,6 +1879,9 @@ class User(Base, Stndrd, Age_times):
                     b.restricted_forwarding = False
                     #b.all_opt_out = False
                     g.db.add(b)
+                    g.db.flush()
+                    action_log.record_automatic(g.db, "guild_made_public", board_id=b.id, rule="",
+                                                reason="It had no guildmaster left, so it was opened up.")
 
         try:
             g.db.add(self)
@@ -1885,9 +1891,12 @@ class User(Base, Stndrd, Age_times):
         discord_ban_action = f"{days} Day Ban" if days else "Perm Ban"
         discord_log_event(discord_ban_action, self, admin, reason=reason)
 
-        action_log.record_ban(g.db, self.id, admin.id if admin else 1, days=days, reason=reason, rule=rule,
-                              staff_note=staff_note, floor=floor, automatic=acting is None, notice_sent=notice_sent)
-        self._children_follow_ban(days)
+        entry_id = action_log.record_ban(g.db, self.id, admin.id if admin else 1, days=days, reason=reason, rule=rule,
+                                         staff_note=staff_note, floor=floor, automatic=acting is None, notice_sent=notice_sent,
+                                         until_utc=self.unban_utc if days > 0 else None)
+        if cascade:
+            self._children_follow_ban(days)
+        return entry_id
 
     def _children_follow_ban(self, days):
         """A parent's sub-accounts follow it (helpers/child_accounts.py): when the parent is permanently banned they are deleted, and when it is suspended for a time
@@ -1947,8 +1956,8 @@ class User(Base, Stndrd, Age_times):
         discord_log_event("Unban", self, g.v, reason=self.ban_reason)
 
         actor = admin or getattr(g, "v", None)
-        action_log.record_unban(g.db, self.id, actor.id if actor else 1, reason=reason, automatic=actor is None,
-                                notice_sent=notice_sent, floor=floor)
+        entry_id = action_log.record_unban(g.db, self.id, actor.id if actor else 1, reason=reason, automatic=actor is None,
+                                           notice_sent=notice_sent, floor=floor)
 
         # the sub-accounts the site suspended with a parent come back with it (helpers/child_accounts.py): found by the ledger, which outlives a link that ended
         # meanwhile, and lifted only while the suspension is still the one the site gave (an admin's later ban is the child's own); a shorter ban of the child's
@@ -1964,6 +1973,7 @@ class User(Base, Stndrd, Age_times):
                 else:
                     child.unban(admin=admin, reason="its parent's account was reinstated", notice_sent=True, floor=action_log.STAFF)
             child_store.set_suspension(g.db, child_id, 0, 0)
+        return entry_id
 
 
     @property

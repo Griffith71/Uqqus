@@ -36,7 +36,8 @@ PUBLIC, GUILD, STAFF, LEGAL = 0, 1, 2, 3
 CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION = "content", "sanction", "guild", "suppression"
 TYPES = (CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION)
 
-GUILDMASTER, ADMIN, SYSTEM = "guildmaster", "admin", "system"
+GUILDMASTER, ADMIN, SYSTEM, AUTHOR = "guildmaster", "admin", "system", "author"
+ROLES = (GUILDMASTER, ADMIN, SYSTEM, AUTHOR)
 SITE_ACCOUNT_ID = 1                 # the site's own account: what an automatic action is done as
 SITE_BOARDS = (1, 2)                # +general and +systemprofile (where every profile post lives): the site's own, not guilds anyone can name
 
@@ -63,23 +64,40 @@ RULES = {
 }
 
 _CONTENT = {
+    "author_hide_comment", "author_unhide_comment", "remove_broadcast_message", "remove_space_message", "end_space",
+    "community_note_add", "community_note_replace", "community_note_remove",
     "hide_post_from_guild", "unhide_post_from_guild", "hide_comment_from_guild", "unhide_comment_from_guild",
     "approve_post", "kick_post", "yank_post", "ban_post", "unban_post", "ban_comment", "unban_comment",
     "purge_post", "purge_comment", "obliterate_post", "obliterate_comment", "set_sensitive", "unset_sensitive", "force_sensitive_post",
     "set_sensitive_comment", "unset_sensitive_comment", "channel_message_remove", "remove_wiki_revision",
     "remove_story", "hide_revision",
 }
+# staff-only entries about a person: sanctions in kind, never public
+_STAFF_SANCTIONS = {"admin_alt_link", "admin_ip_ban", "admin_signup", "automatic_hold", "age_lock"}
 _SANCTION = {
     "exile_user", "unexile_user", "chatban_user", "unchatban_user", "suspend_user", "unsuspend_user", "ban_user",
     "unban_user", "ban_guild", "unban_guild", "clear_display_name", "force_sensitive_user", "age_declaration",
     "child_removed_with_parent",
-}
+} | _STAFF_SANCTIONS
 _SUPPRESSION = {"suppress_content", "legal_removal"}
 
 # What can't be a guild's or the public's business: always these audiences, whatever the guild.
 ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}      # public: no guild, post or comment in them
+# Public by their nature, with or without a guild: a decision about what members read, which the site stands behind in the open
+# (the owner's default for the sweep of 2026-11-05, which he can open up or narrow): a community note is the site's own words
+# under a post, and an admin's removal of a message in a public channel or a Space's board is a removal like any other
+PUBLIC_ACTIONS = {"remove_broadcast_message", "remove_space_message", "end_space", "community_note_add", "community_note_replace",
+                  "community_note_remove"}
+# What the site's staff do to run it: its defences, the people it holds back, its lists and its bots. Never the public's business
+# (an entry about an IP ban, an alt link or a word-list edit would teach how they are caught); staff read them on /admin/log.
+# The specifics are in `staff_note`, never in a column the public reads.
+RUNNING_ACTIONS = {
+    "admin_badge", "admin_alt_link", "admin_ip_ban", "admin_image_ban", "admin_image_purge", "admin_word_filter", "admin_app",
+    "admin_trending", "admin_feed_server", "admin_bot", "admin_signup", "admin_throttle", "admin_chat_report", "admin_siege",
+    "admin_domain", "redact_entry", "correct_entry", "automatic_hold", "auto_space_takedown", "age_lock",
+}
 STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
-                 "remove_story", "age_declaration"}
+                 "remove_story", "age_declaration"} | RUNNING_ACTIONS
 LEGAL_ACTIONS = {"suppress_content", "legal_removal"}
 
 # Actions that must say why (Wikipedia's reason). A caller with a reason box passes `require_reason=True`.
@@ -95,8 +113,8 @@ _LEGAL_NOTES = ("csam", "banned image")
 _STAFF_NOTES = ("ban evasion",)
 
 PUBLIC_COLUMNS = ("id, created_utc, log_type, action, actor_id, actor_role, board_id, target_user_id, "
-                  "target_submission_id, target_comment_id, rule_key, reason, audience, redacted_utc")
-STAFF_COLUMNS = PUBLIC_COLUMNS + ", staff_note, snapshot_id, notice_sent, redacted_by, legacy_modaction_id"
+                  "target_submission_id, target_comment_id, rule_key, reason, audience, redacted_utc, until_utc")
+STAFF_COLUMNS = PUBLIC_COLUMNS + ", staff_note, snapshot_id, notice_sent, redacted_by, legacy_modaction_id, linked_entry_id"
 
 
 class ReasonRequired(ValueError):
@@ -117,7 +135,7 @@ def role_of(actor_id, admin_level, note="", role=None):
     """Who acted, as a role: the site's own account is the system, a note an admin route writes marks an admin, an
     account at admin level 3 doing an admin-only action is an admin (the caller says so with `role`), anyone else
     is a guildmaster."""
-    if role in (GUILDMASTER, ADMIN, SYSTEM):
+    if role in ROLES:
         return role
     if actor_id == SITE_ACCOUNT_ID:
         return SYSTEM
@@ -142,6 +160,8 @@ def audience_for(action, *, board_id=None, private=False, note="", floor=PUBLIC,
     elif action in STAFF_ACTIONS or any(mark in lowered for mark in _STAFF_NOTES):
         audience = STAFF
     elif action in ACCOUNT_ACTIONS:
+        audience = PUBLIC
+    elif action in PUBLIC_ACTIONS and not (board_id and private):
         audience = PUBLIC
     elif not board_id:
         audience = STAFF                # not tied to a guild we know: not the public's to read
@@ -235,9 +255,10 @@ def keep_snapshot(db, snapshot, now=None, entry_id=None):
 
 def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=None, comment_id=None, rule=None,
            reason="", staff_note="", snapshot=None, role=None, note="", floor=PUBLIC, require_reason=False, now=None,
-           legacy_id=None, created_utc=None, notice_sent=False):
+           legacy_id=None, created_utc=None, notice_sent=False, until_utc=0, linked_entry_id=None):
     """Write one entry and return its id. Raises ReasonRequired when the action needs a reason and has none (only when
-    the caller has a place to ask for one: `require_reason`)."""
+    the caller has a place to ask for one: `require_reason`). `until_utc` is when a timed suspension ends; `linked_entry_id` the
+    entry this one is about (its detail, its lapse, its reversal): the original is never edited."""
     reason = clean_reason(reason)
     if require_reason and action in REASON_REQUIRED and not reason:
         raise ReasonRequired("Give a reason.")
@@ -251,14 +272,16 @@ def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=
         post_id = comment_id = None
     row = db.execute(text(
         "INSERT INTO log_entries (created_utc, log_type, action, actor_id, actor_role, board_id, target_user_id, "
-        "target_submission_id, target_comment_id, rule_key, reason, staff_note, audience, notice_sent, legacy_modaction_id) "
+        "target_submission_id, target_comment_id, rule_key, reason, staff_note, audience, notice_sent, legacy_modaction_id, "
+        "until_utc, linked_entry_id) "
         "VALUES (:now, :type, :action, :actor, :role, :board, :tuser, :tpost, :tcomment, :rule, :reason, :staff, :audience, "
-        ":notice, :legacy) RETURNING id"),
+        ":notice, :legacy, :until, :linked) RETURNING id"),
         {"now": now, "type": type_of(action), "action": action, "actor": actor_id,
          "role": resolved, "board": board_id or None,
          "tuser": target_user_id or None, "tpost": post_id or None, "tcomment": comment_id or None,
          "rule": parse_rule(rule), "reason": reason, "staff": clean_reason(staff_note), "audience": audience,
-         "notice": bool(notice_sent), "legacy": legacy_id}).first()
+         "notice": bool(notice_sent), "legacy": legacy_id, "until": int(until_utc or 0),
+         "linked": linked_entry_id or None}).first()
     entry_id = row[0]
     if snapshot:
         db.execute(text("UPDATE log_entries SET snapshot_id = :s WHERE id = :e"),
@@ -267,6 +290,7 @@ def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=
 
 
 _BARE_MARKERS = {"admin action", "admin_action", "csam detected", "banned image", "ban evasion", "siege"}
+AUTOMATIC_NOTES = {"spam": ("evasion", "Automatic spam check")}      # a ModAction note the site's own code writes, as the Log says it
 
 
 def reason_in(note):
@@ -287,18 +311,50 @@ def mirror_modaction(db, modaction_id, user_id, board_id, kind, target_user_id, 
     if db.execute(text("SELECT 1 FROM log_entries WHERE legacy_modaction_id = :i"), {"i": modaction_id}).first():
         return None
     plain = html.unescape(note or "")
+    rule, reason = None, reason_in(plain)
+    if user_id == SITE_ACCOUNT_ID and plain.strip().lower() in AUTOMATIC_NOTES:
+        # the site's own removals write a bare word ("spam"): the Log says it in the generic words it uses everywhere
+        rule, reason = AUTOMATIC_NOTES[plain.strip().lower()]
     return record(db, kind, user_id, board_id=board_id, target_user_id=target_user_id, post_id=post_id,
-                  comment_id=comment_id, reason=reason_in(plain), note=plain, created_utc=created_utc or int(time.time()),
+                  comment_id=comment_id, rule=rule, reason=reason, note=plain, created_utc=created_utc or int(time.time()),
                   legacy_id=modaction_id)
 
 
-def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snapshot=None, floor=None):
-    """Add what a route knows to the entry its ModAction became: the cited rule, a written reason, a private note, the
-    item as it was. Returns the entry id, or None when there is no such entry (the mirror failed, so say so)."""
-    row = db.execute(text("SELECT id, action, board_id, audience, created_utc FROM log_entries WHERE legacy_modaction_id = :i"),
-                     {"i": modaction_id}).first()
+_ENTRY_OF = "SELECT id, action, board_id, audience, created_utc FROM log_entries WHERE legacy_modaction_id = :i"
+
+
+def mirror_from_table(db, modaction_id):
+    """Copy one `modactions` row into the Log from the table itself: for the row whose copy failed when it was made (the
+    after-insert hook is best effort, so a failed copy left the row with no entry, no rule, no reason and no preserved copy). Returns
+    the entry id, or None when there is no such row."""
+    row = db.execute(text("SELECT user_id, board_id, kind, target_user_id, target_submission_id, target_comment_id, _note, "
+                          "created_utc FROM modactions WHERE id = :i"), {"i": int(modaction_id)}).first()
     if row is None:
         return None
+    user_id, board_id, kind, target_user, post_id, comment_id, note, created = row
+    return mirror_modaction(db, modaction_id, user_id, board_id, kind, target_user or None, post_id or None, comment_id or None,
+                            note, created)
+
+
+def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snapshot=None, floor=None, linked_entry_id=None):
+    """Add what a route knows to the entry its ModAction became: the cited rule, a written reason, a private note, the
+    item as it was. When the copy of the ModAction failed when it was made, it is made now (`mirror_from_table`), so the rule, the
+    reason and the preserved copy are never the price of one failed write. `linked_entry_id` says which entry this one is about (an appeal's
+    reversal). Returns the entry id, or None when there is no such row (the failure is then counted: `note_failure`)."""
+    row = db.execute(text(_ENTRY_OF), {"i": modaction_id}).first()
+    if row is None:
+        try:
+            with db.begin_nested():
+                made = mirror_from_table(db, modaction_id)
+        except Exception as error:
+            _log.exception("the Log could not copy mod action %s", modaction_id)
+            note_failure(db, "modaction", error)
+            return None
+        if made is None:
+            return None
+        row = db.execute(text(_ENTRY_OF), {"i": modaction_id}).first()
+        if row is None:
+            return None
     entry_id, _, _, audience, created = row
     sets, values = [], {"e": entry_id}
     if rule is not None:
@@ -313,6 +369,9 @@ def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snaps
     if floor is not None and floor > audience:
         sets.append("audience = :audience")
         values["audience"] = floor
+    if linked_entry_id:
+        sets.append("linked_entry_id = :linked")
+        values["linked"] = int(linked_entry_id)
     if sets:
         db.execute(text(f"UPDATE log_entries SET {', '.join(sets)} WHERE id = :e"), values)
     if snapshot:
@@ -381,6 +440,8 @@ def actor_label(entry, level):
         return "admin"
     if role == SYSTEM:
         return "system"
+    if role == AUTHOR:
+        return "author"
     return "guildmaster" if role == GUILDMASTER else "admin"
 
 
@@ -425,8 +486,9 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
             clauses.append(f"{column} = :{name}")
             params[name] = value
     if actor_id not in (None, "") and level < 3:
-        # an admin is "Site admin" below staff: filtering by an admin's id would list exactly their entries
-        clauses.append("actor_role <> 'admin'")
+        # an admin is "Site admin" below staff, and a post's author hiding a comment is "the post's author" (their name is not drawn:
+        # the post may be anonymous): filtering by either's id would list exactly their entries
+        clauses.append("actor_role NOT IN ('admin', 'author')")
     if target_user_id not in (None, "") and level < 3:
         # an entry that names an account AND an item that is anonymous now would say who wrote it (H6)
         clauses.append(_NOT_PAIRED_WITH_ANONYMOUS)
@@ -443,7 +505,7 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
     rows = rows[:limit]
     if level < 3:
         for row in rows:
-            if row["actor_role"] == ADMIN:
+            if row["actor_role"] in (ADMIN, AUTHOR):
                 row["actor_id"] = None
             if row["redacted_utc"]:
                 row["reason"] = ""
@@ -662,35 +724,186 @@ AUTOMATIC_REASONS = {
     "spam": ("evasion", PUBLIC),
     "seo spam": ("evasion", PUBLIC),
     "Evading a site-wide ban": ("evasion", STAFF),
+    # what an image check says of itself: no category, since a match can be a false positive (the owner, decision 1)
+    "Automatic image check": ("illegal", PUBLIC),
     # a child account suspended with its parent (helpers/child_accounts.SUSPENDED_REASON): a public line would say it has a parent
     "This account is suspended.": ("", STAFF),
 }
 _log = logging.getLogger(__name__)
 
 
+def note_failure(db, action, error):
+    """Count an entry the Log could not write (the action itself stood): a row in `log_failures`, in a savepoint of its own so it
+    can't undo anything, which /admin and /admin/log show. A database too sick to take the row is only logged."""
+    try:
+        with db.begin_nested():
+            db.execute(text("INSERT INTO log_failures (created_utc, action, detail) VALUES (:now, :action, :detail)"),
+                       {"now": int(time.time()), "action": str(action or "")[:32], "detail": str(error)[:300]})
+    except Exception:
+        _log.exception("the Log could not even note that %s failed", action)
+
+
+FAILURE_DAYS = 7                # how far back /admin counts failures: a row older than that is no longer a worry
+
+
+def failure_count(db, now=None, days=FAILURE_DAYS):
+    """How many entries the Log failed to write in the last `days` (0 when the table is missing: a deploy before the migration)."""
+    try:
+        with db.begin_nested():
+            return int(db.execute(text("SELECT COUNT(*) FROM log_failures WHERE created_utc >= :since"),
+                                  {"since": int(now if now is not None else time.time()) - days * DAY}).scalar() or 0)
+    except Exception:
+        return 0
+
+
+def unmirrored_count(db, now=None, grace=120, days=FAILURE_DAYS):
+    """How many guild mod-log rows of the last `days` have no entry in the Log after `grace` seconds (what `reconcile` mends)."""
+    now = int(now if now is not None else time.time())
+    try:
+        with db.begin_nested():
+            return int(db.execute(text(
+                "SELECT COUNT(*) FROM modactions m WHERE m.created_utc >= :since AND m.created_utc < :cutoff AND NOT EXISTS "
+                "(SELECT 1 FROM log_entries e WHERE e.legacy_modaction_id = m.id)"),
+                {"since": now - days * DAY, "cutoff": now - grace}).scalar() or 0)
+    except Exception:
+        return 0
+
+
+def reconcile(db, now=None, limit=200, grace=120, days=FAILURE_DAYS):
+    """Mend the paper trail: copy every guild mod-log row of the last `days` that has no entry (its copy failed when it was made),
+    oldest first, each in a savepoint of its own so one bad row can't stop the rest. The `grace` seconds leave a row being made
+    right now to its own after-insert hook. Returns (copied, failed); a failure is counted (`note_failure`)."""
+    now = int(now if now is not None else time.time())
+    ids = [r[0] for r in db.execute(text(
+        "SELECT m.id FROM modactions m WHERE m.created_utc >= :since AND m.created_utc < :cutoff AND NOT EXISTS "
+        "(SELECT 1 FROM log_entries e WHERE e.legacy_modaction_id = m.id) ORDER BY m.id LIMIT :limit"),
+        {"since": now - days * DAY, "cutoff": now - grace, "limit": int(limit)})]
+    copied = failed = 0
+    for modaction_id in ids:
+        try:
+            with db.begin_nested():
+                if mirror_from_table(db, modaction_id) is not None:
+                    copied += 1
+        except Exception as error:
+            failed += 1
+            _log.exception("the Log could not copy mod action %s", modaction_id)
+            note_failure(db, "modaction", error)
+    return copied, failed
+
+
 def record_quietly(db, *args, **kwargs):
-    """`record` inside a savepoint: a failure to write the Log is logged loudly and never undoes the action itself.
-    Returns the entry id or None."""
+    """`record` inside a savepoint: a failure to write the Log is logged loudly, counted (`note_failure`: /admin says so) and never
+    undoes the action itself. Returns the entry id or None."""
     try:
         with db.begin_nested():
             return record(db, *args, **kwargs)
     except ReasonRequired:
         raise
-    except Exception:
+    except Exception as error:
         _log.exception("the Log could not record %s", args[:2])
+        note_failure(db, args[0] if args else "", error)
         return None
 
 
+# --- what the site's own code decides, and what the staff do to run it ---------------------------------------------------------
+
+AUTOMATIC_REASON = "Automatic check"                  # the one generic wording of a public entry the site wrote itself
+AUTOMATIC_IMAGE_REASON = "Automatic image check"      # an image check never says what it matched: it can be wrong (the owner, decision 1)
+AUTOMATIC_SPAM_REASON = "Automatic spam check"
+
+
+def record_automatic(db, action, *, target_user_id=None, post_id=None, comment_id=None, board_id=None, rule="evasion",
+                     reason=AUTOMATIC_REASON, staff_note="", snapshot=None, floor=PUBLIC, notice_sent=False, until_utc=0):
+    """An entry for something the site decided by itself (a removal by the spam guard, an image check, a ban its rules made): done by
+    the system (the site's own account), public unless `floor` or the action says otherwise, in generic words that name no
+    category (an image-check match can be a false positive, and an entry names the account). The detail goes in a separate
+    level-4 entry (`record_detail`). Returns the entry id or None."""
+    return record_quietly(db, action, SITE_ACCOUNT_ID, role=SYSTEM, target_user_id=target_user_id, post_id=post_id,
+                          comment_id=comment_id, board_id=board_id, rule=rule, reason=reason, staff_note=staff_note,
+                          snapshot=snapshot, floor=floor, notice_sent=notice_sent, until_utc=until_utc)
+
+
+def record_detail(db, entry_id, detail, *, target_user_id=None, post_id=None, comment_id=None, board_id=None, legal=True):
+    """The detail an automatic public entry never shows (a hash match, the CDN's 451): its own entry, linked to the public one, for
+    level-4 admins (`legal`) or for staff, never the public. Returns the entry id or None."""
+    if not entry_id:
+        return None
+    return record_quietly(db, "suppress_content" if legal else "admin_image_ban", SITE_ACCOUNT_ID, role=SYSTEM,
+                          target_user_id=target_user_id, post_id=post_id, comment_id=comment_id, board_id=board_id,
+                          staff_note=detail, floor=LEGAL if legal else STAFF, linked_entry_id=entry_id)
+
+
+def link(db, entry_id, to_entry_id):
+    """Say that an entry is about another (an appeal's reversal is about the decision it put right): the original is never touched."""
+    if entry_id and to_entry_id:
+        db.execute(text("UPDATE log_entries SET linked_entry_id = :to WHERE id = :e"), {"to": int(to_entry_id), "e": int(entry_id)})
+
+
+def record_image_check_removal(db, *, post_id=None, comment_id=None, board_id=None, detail="", legal=False):
+    """The entry for a post or comment the site's image check took down: public in generic words (rule: criminal activity), with
+    what it matched in a separate entry for level-4 admins (`legal`: the CDN's child-abuse list answered 451) or for staff (a picture
+    on the site's own banned list). Returns the public entry's id, or None. The removed item keeps its own text, as after an admin's
+    removal, so no private copy is made."""
+    public = record_automatic(db, "ban_post" if post_id else "ban_comment", post_id=post_id, comment_id=comment_id,
+                              board_id=board_id, rule="illegal", reason=AUTOMATIC_IMAGE_REASON)
+    record_detail(db, public, detail, post_id=post_id, comment_id=comment_id, board_id=board_id, legal=legal)
+    return public
+
+
+def record_staff(db, action, admin, what, *, target_user_id=None, post_id=None, comment_id=None, board_id=None, reason=""):
+    """A staff-only entry about how the site is run (`RUNNING_ACTIONS`): `what` says exactly what was done, for the staff page
+    only. `admin` is the admin who did it, or None for the site's own code (a signup held, a bot paused)."""
+    if action not in STAFF_ACTIONS:
+        raise ValueError(f"{action!r} is not a staff action")
+    return record_quietly(db, action, admin.id if admin is not None else SITE_ACCOUNT_ID,
+                          role=ADMIN if admin is not None else SYSTEM, target_user_id=target_user_id, post_id=post_id,
+                          comment_id=comment_id, board_id=board_id, staff_note=what, reason=reason, floor=STAFF)
+
+
+def lapse_due(db, now=None, limit=200):
+    """Write the entry for every timed suspension that has run out: a system `unsuspend_user`, linked to the suspension and as
+    private as it was (a staff-only suspension of an alt lapses in staff-only words too). One per suspension, so a second run writes
+    nothing; none when a later sanction on the same account stands in its place (an unban, a new suspension or a ban) or the
+    account is suspended still (a longer end was set meanwhile, as when a parent's suspension is extended). Returns how many."""
+    now = int(now if now is not None else time.time())
+    rows = db.execute(text(
+        "SELECT e.id, e.target_user_id, e.audience, e.until_utc FROM log_entries e WHERE e.action = 'suspend_user' "
+        "AND e.until_utc > 0 AND e.until_utc <= :now AND e.target_user_id IS NOT NULL "
+        "AND NOT EXISTS (SELECT 1 FROM log_entries l WHERE l.linked_entry_id = e.id AND l.action = 'unsuspend_user') "
+        "AND NOT EXISTS (SELECT 1 FROM log_entries o WHERE o.target_user_id = e.target_user_id AND o.id > e.id "
+        "AND o.action IN ('unban_user', 'suspend_user', 'ban_user', 'unsuspend_user')) "
+        "ORDER BY e.id LIMIT :limit"), {"now": now, "limit": int(limit)}).all()
+    written = 0
+    for entry_id, user_id, audience, until in rows:
+        state = db.execute(text("SELECT is_banned, unban_utc FROM users WHERE id = :u"), {"u": user_id}).first()
+        if state is not None and state[0] and (not state[1] or state[1] > now):
+            continue                                  # suspended still: a later end was set, or it was made permanent
+        made = record_quietly(db, "unsuspend_user", SITE_ACCOUNT_ID, role=SYSTEM, target_user_id=user_id,
+                              reason="The suspension ended.", floor=audience, linked_entry_id=entry_id, created_utc=until)
+        if made:
+            written += 1
+    return written
+
+
+def correct(db, entry_id, admin, what):
+    """Hide an entry's reason from everyone but staff (`redact`) and say so in a new, linked staff entry: the entry stays and is
+    never edited, and the correction has a name and a date (the owner's rule of 2026-11-05: a correction is a new entry)."""
+    redact(db, entry_id, admin.id)
+    return record_quietly(db, "redact_entry", admin.id, role=ADMIN, staff_note=what, floor=STAFF, linked_entry_id=entry_id)
+
+
 def record_ban(db, user_id, actor_id, *, days=0, reason="", rule=None, staff_note="", floor=PUBLIC, automatic=False,
-               notice_sent=False):
+               notice_sent=False, until_utc=None):
     """A suspension (`days` > 0) or a permanent ban. An automatic one (the site's own rules, `automatic`) is the system,
-    and takes its rule and audience from AUTOMATIC_REASONS; an admin's is the admin's, with the rule they chose."""
+    and takes its rule and audience from AUTOMATIC_REASONS; an admin's is the admin's, with the rule they chose. A suspension
+    keeps its end (`until_utc`: the account's own `unban_utc` when the caller has it) so the Log can say when it lapsed."""
     if automatic:
         known_rule, known_floor = AUTOMATIC_REASONS.get(reason or "", ("", PUBLIC))
         rule, floor = rule or known_rule, max(floor, known_floor)
+    end = int(until_utc if until_utc else (time.time() + days * DAY)) if days else 0
     return record_quietly(db, "suspend_user" if days else "ban_user", actor_id, target_user_id=user_id, rule=rule,
                           reason=reason or "", staff_note=staff_note or "", role=SYSTEM if automatic else ADMIN,
-                          floor=floor, notice_sent=notice_sent)
+                          floor=floor, notice_sent=notice_sent, until_utc=end)
 
 
 def record_unban(db, user_id, actor_id, *, reason="", automatic=False, notice_sent=False, floor=PUBLIC):

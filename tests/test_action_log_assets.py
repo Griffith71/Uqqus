@@ -81,7 +81,7 @@ def test_every_reason_the_site_gives_for_its_own_ban_is_classified():
 def test_the_spam_path_no_longer_passes_an_argument_user_ban_does_not_take():
     for name in ("comments.py", "posts.py"):
         assert not re.search(r"^\s+include_alts\s*=", read("ruqqus", "routes", name), re.M), name        # a call's argument, not a comment
-    assert "def ban(self, admin=None, reason=None,  days=0, rule=None, staff_note=\"\", floor=0, notice_sent=False)" in USER
+    assert "def ban(self, admin=None, reason=None,  days=0, rule=None, staff_note=\"\", floor=0, notice_sent=False, cascade=True)" in USER
 
 
 # --- what an admin decides is kept with the entry ------------------------------------------------------------------------------------

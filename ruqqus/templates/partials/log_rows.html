@@ -7,8 +7,9 @@
         <div class="min-width-0">
           <div>{{ e.sentence }}</div>
           <div class="text-small text-muted">
-            {{ date_text(e.created_utc, "%d %B %Y") }}
+            {% if e.id is number %}<a href="/log/{{ e.id }}" class="text-muted">{{ date_text(e.created_utc, "%d %B %Y") }}</a>{% else %}{{ date_text(e.created_utc, "%d %B %Y") }}{% endif %}
             {% if e.guild %}&middot; <a href="/log?type={{ e.type }}&guild={{ e.guild | urlencode }}">+{{ e.guild }}</a>{% endif %}
+            {% if e.until %}&middot; {{ _('until %(date)s', date=date_text(e.until, "%d %B %Y")) }}{% endif %}
             {% if e.rule in LOG_RULES %}&middot; {{ msg_text(LOG_RULES[e.rule]) }}{% endif %}
           </div>
           {% if e.reason %}<div class="text-small mt-1">{{ _('Reason: %(reason)s', reason=e.reason) }}</div>{% endif %}

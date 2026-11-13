@@ -11,6 +11,8 @@ from sqlalchemy.orm import Session
 
 from ruqqus.helpers import action_log as log
 
+import log_tables
+
 ROOT = Path(__file__).resolve().parent.parent
 MIGRATION = "2026-12-09_action_log.sql"
 NOW = 1_793_000_000
@@ -22,11 +24,7 @@ def read(*parts):
 
 
 def _statements():
-    sql = "\n".join(line for line in read("scripts", "migrations", MIGRATION).splitlines() if not line.strip().startswith("--"))
-    for s in (s.strip() for s in sql.split(";")):
-        if s.startswith("CREATE"):
-            yield (s.replace("public.", "").replace("IF NOT EXISTS ", "")
-                   .replace("BIGSERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT"))
+    yield from log_tables.migration_statements(read("scripts", "migrations", MIGRATION))
 
 
 @pytest.fixture
@@ -35,9 +33,8 @@ def db():
     with engine.begin() as conn:
         for statement in _statements():
             conn.execute(text(statement))
-        # migration 2026-12-21_log_snapshot_kinds.sql, in SQLite's words (the migration itself is Postgres)
-        conn.execute(text("ALTER TABLE log_snapshots ADD COLUMN kind VARCHAR(12) NOT NULL DEFAULT 'hide'"))
-        conn.execute(text("ALTER TABLE log_snapshots ADD COLUMN hider_id INTEGER"))
+        # the later migrations (2026-12-21 and 2026-12-30), in SQLite's words (the migrations themselves are Postgres)
+        log_tables.apply(conn)
         conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))

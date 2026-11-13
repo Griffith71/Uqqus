@@ -10,7 +10,7 @@ Plain SQL through the stores; nothing here commits.
 """
 from sqlalchemy import text
 
-from ruqqus.helpers import call_store, live_bus, space_store
+from ruqqus.helpers import action_log, call_store, live_bus, space_store
 from ruqqus.helpers import live_thread_store as live_store
 from ruqqus.helpers import spaces as rules
 
@@ -29,6 +29,9 @@ def take_down(db, space_id, post_id, now):
     space_store.clear_reminders(db, space_id)
     space_store.clear_board(db, space_id)
     live_store.erase(db, post_id, now)
+    # the Log, for the staff only: other people's comments went with it, and the host chose not to record it
+    action_log.record_staff(db, "auto_space_takedown", None, f"took down the Space that was not recorded (its post, copies and comments) at its end",
+                            post_id=post_id)
 
 
 def end(db, r, row, now, by_admin=False):

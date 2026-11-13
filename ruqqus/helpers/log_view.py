@@ -92,6 +92,11 @@ def site_account(site_name):
     return Markup('<a href="/@{0}" class="font-weight-bold text-black">@{0}</a>').format(site_name)
 
 
+def post_author():
+    """A post's author hiding a comment under it: who is not drawn by name (the post may be anonymous), only the role."""
+    return Markup(escape(tr("The post's author")))
+
+
 def item_link(kind, base36id):
     """A post or a comment as a sentence names it: a link by id, never by title."""
     if kind == "post":

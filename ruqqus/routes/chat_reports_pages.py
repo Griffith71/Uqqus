@@ -8,6 +8,7 @@ import time
 from flask import *
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers import action_log
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
@@ -111,5 +112,8 @@ def admin_chat_report_act(rid, action, v):
             return _error("Chat isn't answering right now. Try again in a moment.", 502)     # an admin page: English
     status = report_rules.DISMISSED if action == "dismiss" else report_rules.ACTIONED
     report_store.resolve(g.db, rid, status, v.id, int(time.time()))
+    if action == "remove":
+        # the Log, for the staff only: a private chat's message is nobody else's business, and its words were never the site's to read
+        action_log.record_staff(g.db, "admin_chat_report", v, f"removed the reported message of chat report #{rid}")
     g.db.commit()
     return redirect("/admin/chat_reports")

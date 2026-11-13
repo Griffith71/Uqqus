@@ -18,9 +18,6 @@ BUCKET = environ.get("S3_BUCKET_NAME", "").strip()      # no default: never anot
 CF_KEY = environ.get("CLOUDFLARE_KEY").lstrip().rstrip()
 CF_ZONE = environ.get("CLOUDFLARE_ZONE").lstrip().rstrip()
 
-# the ban reason a CSAM match writes: stored English, drawn with msg() in each reader's language
-SEXUALIZING_MINORS = N_("Sexualizing Minors")
-
 # setup AWS connection
 S3 = boto3.client("s3",
                   aws_access_key_id=environ.get(
@@ -177,6 +174,13 @@ def _load_post_and_author(db, post):
     return db.get(Submission, post.id), db.get(User, post.author_id)
 
 
+def _load_user(db, user):
+    """`user` belongs to the request's session, which may be over; the ban is written by the scan's own, so it loads the row again."""
+    from ruqqus.classes.user import User
+
+    return db.get(User, user.id)
+
+
 def check_csam(post):
 
     # Relies on Cloudflare's photodna implementation
@@ -205,19 +209,16 @@ def check_csam(post):
     if x.status_code == 451:
 
         post, author = _load_post_and_author(db, post)
+        from ruqqus.helpers import action_log, scan_bans
 
-        # ban user and alts
-        author.ban_reason=SEXUALIZING_MINORS
-        author.is_banned=1
-        db.add(author)
-        for alt in author.alts_threaded(db):
-            alt.ban_reason=SEXUALIZING_MINORS
-            alt.is_banned=1
-            db.add(alt)
+        # ban user and alts, through User.ban (helpers/scan_bans.py): the Log hears of it, in generic words
+        scan_bans.ban_uploader(db, author, detail="the CDN answered 451 for the picture linked by this post", legal=True)
 
         # remove content
         post.is_banned = True
         db.add(post)
+        action_log.record_image_check_removal(db, post_id=post.id, board_id=post.board_id, legal=True,
+                                              detail="the CDN answered 451 for the picture linked by this post")
 
         db.commit()
 
@@ -236,24 +237,17 @@ def check_csam(post):
     h=check_phash(db, tempname)
     if h:
 
-        now=int(time.time())
-        unban=now+60*60*24*h.ban_time if h.ban_time else 0
         post, author = _load_post_and_author(db, post)
+        from ruqqus.helpers import action_log, scan_bans
+        detail = f"matched a picture on the site's banned list: {h.ban_reason}"
 
-        # ban user and alts
-        author.ban_reason=h.ban_reason
-        author.is_banned=1
-        author.unban_utc = unban
-        db.add(author)
-        for alt in author.alts_threaded(db):
-            alt.ban_reason=h.ban_reason
-            alt.is_banned=1
-            alt.unban_utc = unban
-            db.add(alt)
+        # ban user and alts, through User.ban for `h.ban_time` days (0: for good)
+        scan_bans.ban_uploader(db, author, days=h.ban_time or 0, detail=detail)
 
         # remove content
         post.is_banned = True
         db.add(post)
+        action_log.record_image_check_removal(db, post_id=post.id, board_id=post.board_id, detail=detail)
 
         db.commit()
 
@@ -285,13 +279,8 @@ def check_csam_url(url, v, delete_content_function):
     db=db_session()
 
     if x.status_code == 451:
-        v.ban_reason=SEXUALIZING_MINORS
-        v.is_banned=1
-        db.add(v)
-        for alt in v.alts_threaded(db):
-            alt.ban_reason=SEXUALIZING_MINORS
-            alt.is_banned=1
-            db.add(alt)
+        from ruqqus.helpers import scan_bans
+        scan_bans.ban_uploader(db, _load_user(db, v), detail="the CDN answered 451 for an uploaded picture", legal=True)
 
         delete_content_function()
 
@@ -310,20 +299,12 @@ def check_csam_url(url, v, delete_content_function):
     h=check_phash(db, tempname)
     if h:
 
-        now=int(time.time())
-        unban=now+60*60*24*h.ban_time if h.ban_time else 0
-        # ban user and alts; the picture goes either way, and a limited QR sign-in bans nobody (helpers/qr_login.py). The match above,
-        # which is the child-abuse list's, does: CLAUDE.md "QR sign-in"
+        # ban user and alts, through User.ban; the picture goes either way, and a limited QR sign-in bans nobody (helpers/qr_login.py).
+        # The match above, which is the child-abuse list's, does: CLAUDE.md "QR sign-in"
         if not getattr(v, "qr_limited", False):
-            v.ban_reason=h.ban_reason
-            v.is_banned=1
-            v.unban_utc = unban
-            db.add(v)
-            for alt in v.alts_threaded(db):
-                alt.ban_reason=h.ban_reason
-                alt.is_banned=1
-                alt.unban_utc = unban
-                db.add(alt)
+            from ruqqus.helpers import scan_bans
+            scan_bans.ban_uploader(db, _load_user(db, v), days=h.ban_time or 0,
+                                   detail=f"matched a picture on the site's banned list: {h.ban_reason}")
 
         delete_content_function()
 

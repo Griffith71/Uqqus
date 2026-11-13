@@ -117,6 +117,8 @@ def settings_age_assurance_callback(v):
         was_sub = getattr(v, "age_lock", None) == age_declaration.PARENT_LOCK
         g.db.query(User).filter(User.id == v.id).update(age_declaration.assure_fields(v, now), synchronize_session=False)
         parent_id = child_store.release(g.db, v.id) if was_sub else None          # an age check releases a sub-account: its parent's access ends
+        # the Log, for the staff only: an age lock must never mark a person as a minor in public
+        action_log.record_staff(g.db, "age_lock", None, "age check: confirmed 18 or over, the lock is lifted", target_user_id=v.id)
         g.db.commit()
         g.db.refresh(v)
         muting.clear_cached_feeds(v)
@@ -126,6 +128,7 @@ def settings_age_assurance_callback(v):
         return redirect("/settings/content?age=confirmed", code=303)
     if status == age_assurance.MINOR:
         g.db.query(User).filter(User.id == v.id).update({"age_under_utc": now}, synchronize_session=False)
+        action_log.record_staff(g.db, "age_lock", None, "age check: under 18, it stays locked", target_user_id=v.id)
         g.db.commit()
         return redirect("/settings/content?age=under", code=303)
     if status == age_assurance.UNDER_MINIMUM:
@@ -133,6 +136,8 @@ def settings_age_assurance_callback(v):
         # read before the accounts close: the page clears this account's chat here (and any child closed with it)
         deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)
         close_own_account(v, "age check: under the youngest age where they are")
+        action_log.record_staff(g.db, "age_lock", None, "age check: under the youngest age allowed here, the account was closed",
+                                target_user_id=v.id)
         g.db.commit()
         return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children, title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE),
                                message=msg(age_declaration.UNDER_AGE_CLOSED))

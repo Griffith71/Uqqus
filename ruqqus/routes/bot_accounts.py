@@ -21,7 +21,7 @@ from flask import abort, g, make_response, redirect, render_template, request
 from urllib.parse import quote
 
 from ruqqus.classes import ClientAuth, OauthApp, User
-from ruqqus.helpers import bot_store, bots, feed_fetch, feed_items, profile_edit
+from ruqqus.helpers import action_log, bot_store, bots, feed_fetch, feed_items, profile_edit
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.helpers.get import get_user
@@ -486,6 +486,8 @@ def settings_bot_pause(name, v):
     reason = bots.plain_text(request.form.get("reason"), 300) or (PAUSED_BY_ADMINS if admin else PAUSED_BY_OWNER)
     if not bot_store.set_running(g.db, account.id, False, reason, by_admin=admin):
         return _back(_page(account), error=tr("Only a running bot can be paused."))
+    if admin and row.owner_id != v.id:
+        action_log.record_staff(g.db, "admin_bot", v, f"paused the bot @{account.username}: {reason}", target_user_id=account.id)
     g.db.commit()
     if admin and row.kind in (bots.MEMBER, bots.SELF) and row.owner_id != v.id:
         _tell_paused(row, reason)
@@ -500,6 +502,8 @@ def settings_bot_resume(name, v):
     account, row, admin = _manageable(name, v)
     if not bot_store.set_running(g.db, account.id, True, by_admin=admin):
         return _back(_page(account), error=tr("An admin paused this bot; only an admin can start it again."))
+    if admin and row.owner_id != v.id:
+        action_log.record_staff(g.db, "admin_bot", v, f"resumed the bot @{account.username}", target_user_id=account.id)
     g.db.commit()
     if admin and row.kind in (bots.MEMBER, bots.SELF) and row.owner_id != v.id:
         _tell_running(row)
@@ -515,6 +519,9 @@ def settings_bot_delete(name, v):
     its posts stay, under a deactivated account, like any account's, and its keys stop working. A person's own
     account only stops posting automatically: the account, its posts and its own apps' grants are untouched."""
     account, row, admin = _manageable(name, v)
+    if admin and row.owner_id != v.id:
+        action_log.record_staff(g.db, "admin_bot", v, f"switched off {'the automated posting of' if bots.is_self(row) else 'the bot'} "
+                                                       f"@{account.username}", target_user_id=account.id)
     if bots.is_self(row):
         bot_store.forget_bot(g.db, account.id)
         g.db.commit()
@@ -633,6 +640,7 @@ def admin_bot_approve(uid, v):
     row = bot_store.bot_of(g.db, uid)
     if row is None or not bot_store.review_bot(g.db, uid, bots.APPROVED, v.id, bots.plain_text(request.form.get("note"), bots.NOTE_MAX)):
         abort(404)
+    action_log.record_staff(g.db, "admin_bot", v, f"approved the bot @{row.username} ({row.kind})", target_user_id=uid)
     g.db.commit()
     if row.kind == bots.SITE:
         _tell(row.proposed_by_id, NOTICE_APPROVED_SITE, name=row.username)
@@ -657,6 +665,7 @@ def admin_bot_reject(uid, v):
         account = g.db.query(User).filter_by(id=uid, is_bot=True).first()
         if account is not None:
             g.db.delete(account)
+    action_log.record_staff(g.db, "admin_bot", v, f"rejected the bot @{row.username}" + (f": {note}" if note else ""), target_user_id=uid)
     g.db.commit()
     if bots.is_self(row):
         _tell(bots.responsible_id(row), NOTICE_REJECTED_SELF_NOTE if note else NOTICE_REJECTED_SELF, note=note)
@@ -680,11 +689,13 @@ def admin_bot_rename(uid, v):
         error = "That name is taken."
     if error:
         return _back(f"/settings/bots/{account.username}", error=error)
+    was = account.username
     account.username = name
     account.original_username = name
     apply_user_severity(account)
     g.db.add(account)
     bot_store.rename(g.db, uid, name)
+    action_log.record_staff(g.db, "admin_bot", v, f"renamed the proposed bot @{was} to @{name}", target_user_id=uid)
     g.db.commit()
     return _back(f"/settings/bots/{name}", msg=f"Renamed to @{name}.")
 
@@ -706,6 +717,7 @@ def admin_bot_kind(uid, v):
     bot_store.set_kind(g.db, uid, kind, owner_id)
     account.bot_owner_id = owner_id
     g.db.add(account)
+    action_log.record_staff(g.db, "admin_bot", v, f"made the proposed bot @{account.username} a {bots.KIND_LABELS[kind].lower()}", target_user_id=uid)
     g.db.commit()
     return _back(f"/settings/bots/{account.username}", msg=f"It is a {bots.KIND_LABELS[kind].lower()} now.")
 
@@ -721,6 +733,8 @@ def admin_bot_source(source_id, decision, v):
     if source is None or not bot_store.review_source(g.db, source_id, status, v.id):
         abort(404)
     row = bot_store.bot_of(g.db, source.bot_id)
+    action_log.record_staff(g.db, "admin_bot", v, f"{decision}d a feed of the bot @{row.username if row else source.bot_id}",
+                            target_user_id=source.bot_id)
     g.db.commit()
     if row is not None and row.kind in (bots.MEMBER, bots.SELF):
         approved = status == bots.APPROVED
@@ -740,6 +754,7 @@ def admin_bot_pause(uid, v):
     reason = bots.plain_text(request.form.get("reason"), 300) or PAUSED_BY_ADMINS
     if row is None or not bot_store.set_running(g.db, uid, False, reason, by_admin=True):
         abort(404)
+    action_log.record_staff(g.db, "admin_bot", v, f"paused the bot @{row.username}: {reason}", target_user_id=uid)
     g.db.commit()
     if row.kind in (bots.MEMBER, bots.SELF):
         _tell_paused(row, reason)
@@ -753,6 +768,7 @@ def admin_bot_resume(uid, v):
     row = bot_store.bot_of(g.db, uid)
     if row is None or not bot_store.set_running(g.db, uid, True, by_admin=True):
         abort(404)
+    action_log.record_staff(g.db, "admin_bot", v, f"resumed the bot @{row.username}", target_user_id=uid)
     g.db.commit()
     if row.kind in (bots.MEMBER, bots.SELF):
         _tell_running(row)

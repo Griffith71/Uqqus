@@ -23,6 +23,7 @@ from sqlalchemy import not_, or_
 from ruqqus.helpers.wordfilter import WordFilter
 from ruqqus.helpers import wordfilter_seed
 from ruqqus.helpers import guild_limits
+from ruqqus.helpers import action_log
 from ruqqus.helpers import category_filter
 from ruqqus.helpers.word_filter_store import get_filter, rescan
 from ruqqus.classes.domains import reasons as REASONS
@@ -185,6 +186,7 @@ def badge_grant_post(v):
         new_badge.url = url
 
     g.db.add(new_badge)
+    action_log.record_staff(g.db, "admin_badge", v, f"gave profile badge #{badge_id} to @{user.username}", target_user_id=user.id)
 
     g.db.commit()
 
@@ -494,6 +496,7 @@ def admin_link_accounts(v):
         )
 
     g.db.add(new_alt)
+    action_log.record_staff(g.db, "admin_alt_link", v, f"linked accounts #{u1} and #{u2} as alts by hand", target_user_id=u1)
     g.db.commit()
 
     return redirect(f"/admin/alt_votes?u1={g.db.query(User).get(u1).username}&u2={g.db.query(User).get(u2).username}")
@@ -813,6 +816,7 @@ def admin_image_purge(v):
 
 
     aws.delete_file(name)
+    action_log.record_staff(g.db, "admin_image_purge", v, f"deleted the stored file {name[:200]}")
 
     return redirect("/admin/image_purge")
 
@@ -945,6 +949,8 @@ def admin_purge_guild_images(boardname, v):
         g.db.add(post)
 
     gevent.joinall(threads)
+    action_log.record_staff(g.db, "admin_image_purge", v, f"deleted the pictures and uploads of {i} posts in the banned guild +{board.name}",
+                            board_id=board.id)
 
     g.db.commit()
 
@@ -983,6 +989,8 @@ def admin_image_ban(v):
         )
 
     g.db.add(new_bp)
+    action_log.record_staff(g.db, "admin_image_ban", v, f"added a picture to the banned list (suspends the uploader for "
+                                                        f"{new_bp.ban_time or 'ever'} days): {(new_bp.ban_reason or '')[:200]}")
     g.db.commit()
 
     return render_template("admin/image_ban.html", v=v, success=True)
@@ -1002,6 +1010,7 @@ def admin_ipban(v):
         addr=target_ip
         )
     g.db.add(new_ipban)
+    action_log.record_staff(g.db, "admin_ip_ban", v, "banned one address (it is in the banned-address list, not repeated here)")
 
     g.db.commit()
 
@@ -1087,6 +1096,9 @@ def _ban_addresses(v, target_user):
             )
         g.db.add(new_ipban)
 
+    action_log.record_staff(g.db, "admin_ip_ban", v, f"banned {len(ips)} addresses of @{target_user.username} and {len(targets) - 1} "
+                                                    f"of their alts (they are in the banned-address list, not repeated here)",
+                            target_user_id=target_user.id)
 
     g.db.commit()
 
@@ -1409,6 +1421,8 @@ def admin_throttle_settings_post(v):
         throttle.set_sensitivity(request.form.get("sensitivity"))
     if request.form.get("gear_base_seconds"):
         throttle.set_gear_base_seconds(request.form.get("gear_base_seconds"))
+    action_log.record_staff(g.db, "admin_throttle", v, f"posting throttle: sensitivity {request.form.get('sensitivity') or '-'}, "
+                                                       f"gear {request.form.get('gear_base_seconds') or '-'} s")
 
     return redirect("/admin/throttle_settings?msg=Saved.")
 
@@ -1516,6 +1530,7 @@ def admin_word_filter_add(v):
         created_utc=int(time.time()),
         language=language
     ))
+    action_log.record_staff(g.db, "admin_word_filter", v, f"added {word!r} at severity {severity} ({mode}, language {language or 'any'})")
     g.db.commit()
     get_filter(force=True)
 
@@ -1532,6 +1547,7 @@ def admin_word_filter_toggle(eid, v):
         abort(404)
     entry.enabled = not entry.enabled
     g.db.add(entry)
+    action_log.record_staff(g.db, "admin_word_filter", v, f"switched {entry.word!r} {'on' if entry.enabled else 'off'}")
     g.db.commit()
     get_filter(force=True)
 
@@ -1546,6 +1562,7 @@ def admin_word_filter_delete(eid, v):
     entry = g.db.query(WordFilterEntry).filter_by(id=eid).first()
     if not entry:
         abort(404)
+    action_log.record_staff(g.db, "admin_word_filter", v, f"deleted {entry.word!r} (severity {entry.severity})")
     g.db.delete(entry)
     g.db.commit()
     get_filter(force=True)
@@ -1564,6 +1581,7 @@ def admin_word_filter_starter(v):
 
     from ruqqus.helpers.word_filter_store import add_builtin
     add_builtin(g.db, "all")
+    action_log.record_staff(g.db, "admin_word_filter", v, "copied the built-in starter list into the table")
     g.db.commit()
     get_filter(force=True)
 
@@ -1582,6 +1600,7 @@ def admin_word_filter_builtin_intl(v):
 
     from ruqqus.helpers.word_filter_store import add_builtin
     added = add_builtin(g.db, "intl")
+    action_log.record_staff(g.db, "admin_word_filter", v, f"added {len(added)} built-in words for other languages")
     g.db.commit()
     get_filter(force=True)
 
@@ -1604,6 +1623,8 @@ def admin_word_filter_rescan(v):
         finally:
             db.close()
 
+    action_log.record_staff(g.db, "admin_word_filter", v, "started a re-scan of existing content")
+    g.db.commit()
     gevent.spawn(run)
 
     return _word_filter_redirect("Re-scan started. Refresh in a moment to see what is left.")

@@ -641,17 +641,28 @@ def close_own_account(v, reason, sign_out_browser=True):
     v.del_profile()
     g.db.add(v)
 
+    # what ends with the account is written down: a guildmaster's seat, an exile and a contributor's approval used to go silently, so the
+    # Log (and a guild's own) read as if they were still in force (the Log, slice D2)
     mods = g.db.query(ModRelationship).filter_by(user_id=v.id).all()
     for mod in mods:
+        if mod.accepted and not mod.invite_rescinded:
+            action_log.record_automatic(g.db, "remove_mod", target_user_id=v.id, board_id=mod.board_id, rule="",
+                                        reason="Its account was deleted.")
         g.db.delete(mod)
 
     bans = g.db.query(BanRelationship).filter_by(user_id=v.id).all()
     for ban in bans:
+        if ban.is_active:
+            action_log.record_automatic(g.db, "unexile_user", target_user_id=v.id, board_id=ban.board_id, rule="",
+                                        reason="Its account was deleted.")
         g.db.delete(ban)
 
     contribs = g.db.query(ContributorRelationship).filter_by(
         user_id=v.id).all()
     for contrib in contribs:
+        if contrib.is_active:
+            action_log.record_automatic(g.db, "uncontrib_user", target_user_id=v.id, board_id=contrib.board_id, rule="",
+                                        reason="Its account was deleted.")
         g.db.delete(contrib)
 
     # other people's blocks of this account stay: they are theirs (and matter if an admin restores the account)
@@ -671,6 +682,9 @@ def close_own_account(v, reason, sign_out_browser=True):
             b.restricted_forwarding = False
             b.all_opt_out = False
             g.db.add(b)
+            g.db.flush()
+            action_log.record_automatic(g.db, "guild_made_public", board_id=b.id, rule="",
+                                        reason="It had no guildmaster left, so it was opened up.")
 
     if sign_out_browser:
         # this browser's sign-in ends for good (helpers/sign_in_ends.py); never for another account closed with it (a parent's child)

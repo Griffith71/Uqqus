@@ -8,7 +8,7 @@ import os
 import tempfile
 
 from . import rules
-from ..i18n_runtime import N_, tr
+from ..i18n_runtime import tr
 
 
 def fetch_to_temp(provider, account, asset, limit):
@@ -64,17 +64,15 @@ def banned_match(db, path):
     return check_phash(db, path)
 
 
-def ban_uploader(db, user, reason, days=0):
-    """Suspend the uploader and their other accounts, as the site does for a banned image
-    uploaded the old way (helpers/aws.py check_csam_url). `days` 0 is permanent."""
-    import time
+def ban_uploader(db, user, reason, days=0, legal=False):
+    """Suspend the uploader and their other accounts, as the site does for a banned image uploaded the old way (helpers/aws.py
+    check_csam_url): through `User.ban`, so the Log hears of it (helpers/scan_bans.py). `days` 0 is permanent. `reason` is what the
+    site's banned-picture list says it matched; the account and the public Log are told only "Automatic image check", and the match goes
+    in a separate entry for the staff (`legal`, the CDN's child-abuse list: for level-4 admins, and `reason` is the whole detail)."""
+    from ruqqus.helpers import scan_bans
 
-    until = int(time.time()) + 60 * 60 * 24 * days if days else 0
-    for account in [user] + list(user.alts_threaded(db)):
-        account.ban_reason = reason
-        account.is_banned = 1
-        account.unban_utc = until
-        db.add(account)
+    return scan_bans.ban_uploader(db, user, days=days, legal=legal,
+                                  detail=reason if legal else f"matched a picture on the site's banned list: {reason}")
 
 
 def _scan_public(url, asset_id):
@@ -87,6 +85,7 @@ def _scan_public(url, asset_id):
 
     from ruqqus.__main__ import db_session
     from ruqqus.classes import Comment, MediaAsset, Submission, User
+    from ruqqus.helpers import action_log
 
     status = None
     for _ in range(5):
@@ -107,7 +106,7 @@ def _scan_public(url, asset_id):
             return
         user = db.get(User, asset.user_id)
         if user is not None:
-            ban_uploader(db, user, N_("Sexualizing Minors"))       # a ban reason: stored in English, drawn with msg
+            ban_uploader(db, user, "the CDN answered 451 for the picture", legal=True)
         asset.status = rules.REMOVED
         asset.updated_utc = int(time.time())
         db.add(asset)
@@ -116,11 +115,15 @@ def _scan_public(url, asset_id):
             if post is not None:
                 post.is_banned = True
                 db.add(post)
+                action_log.record_image_check_removal(db, post_id=post.id, board_id=post.board_id, legal=True,
+                                                      detail="the CDN answered 451 for a picture in this post")
         if asset.comment_id:
             comment = db.get(Comment, asset.comment_id)
             if comment is not None:
                 comment.is_banned = True
                 db.add(comment)
+                action_log.record_image_check_removal(db, comment_id=comment.id, board_id=comment.post.board_id if comment.post else None,
+                                                      legal=True, detail="the CDN answered 451 for a picture in this comment")
         db.commit()
         path = asset.path
     finally:

@@ -6,7 +6,7 @@ from ruqqus.helpers.wrappers import admin_level_required, auth_desired, validate
 from ruqqus.helpers.get import get_posts
 from ruqqus.helpers.visibility import viewer_level
 from ruqqus.helpers.languages import label as language_label
-from ruqqus.helpers import trending_store
+from ruqqus.helpers import action_log, trending_store
 from ruqqus.helpers.i18n import language_name
 from ruqqus.helpers.i18n_runtime import current_locale, tr
 from ruqqus.classes import Region, TrendingBlocked
@@ -124,6 +124,7 @@ def admin_trending_hide(v):
         return _admin_redirect(error="Enter a topic to hide.")
     if not trending_store.block(g.db, key, request.form.get("label", ""), admin_id=v.id):
         return _admin_redirect(error="That topic is already hidden.")
+    action_log.record_staff(g.db, "admin_trending", v, f"hid the trending topic {key[:80]!r}")
     return _admin_redirect("Hidden from every trending list.")
 
 
@@ -132,4 +133,5 @@ def admin_trending_hide(v):
 @validate_formkey
 def admin_trending_unhide(blocked_id, v):
     trending_store.unblock(g.db, blocked_id)
+    action_log.record_staff(g.db, "admin_trending", v, f"showed hidden trending topic #{blocked_id} again")
     return _admin_redirect("Shown again from the next run (within a few minutes).")

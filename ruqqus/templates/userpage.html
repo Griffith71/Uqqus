@@ -45,6 +45,13 @@
 {% endblock %}
 
 {% block desktopUserBanner %}
+{# a suspended member sees their own profile as it always was (the banned page is what others get): the way to appeal goes here #}
+{% if v and v.id == u.id and u.is_suspended %}{% set appeal_url = appeal_for_account(u, v) %}
+<div class="alert alert-danger mb-3" role="alert" id="own-suspension">
+  {{ _("Your account is suspended.") }}{% if u.ban_reason %} {{ _("Reason: %(reason)s", reason=msg_text(u.ban_reason)) }}{% endif %}
+  {% if appeal_url %}<a class="alert-link" href="{{ appeal_url }}">{{ _("Appeal this decision") }}</a>{% endif %}
+</div>
+{% endif %}
 {# one header for every width, laid out like an X profile (partials/profile_header.html) #}
 {% include "partials/profile_header.html" %}
 {% if v and v.id != u.id %}{% include "partials/report_account_modal.html" %}{% endif %}

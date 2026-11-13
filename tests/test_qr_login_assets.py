@@ -65,6 +65,9 @@ HELD = {
                 "settings_media_google_video",
     "boards.py": "create_board_post mod_accept_board siege_guild all_mod_queue",
     "qr_login_pages.py": "login_qr_info login_qr_approve",
+    # an appeal is once per decision and can't be taken back, so a relayed code can't use up the member's one (and deciding one acts as a
+    # guildmaster, whose powers a limited sign-in doesn't hold; the admins' queue asks for the password through `admin_level_required`)
+    "log_appeal_pages.py": "log_appeal_post guild_appeal_decide",
 }
 LISTED = {(module, name) for module, names in HELD.items() for name in names.split()}
 
@@ -460,7 +463,7 @@ def test_no_automatic_ban_can_be_reached_from_a_limited_sign_in():
             assert "qr_limited" in above, f"{name}:{n + 1}: {line.strip()}"
     media = read("ruqqus", "routes", "media.py")
     assert "if not v.qr_limited:\n                        safety.ban_uploader(" in media
-    assert 'if not getattr(v, "qr_limited", False):\n            v.ban_reason=h.ban_reason' in read("ruqqus", "helpers", "aws.py")
+    assert 'if not getattr(v, "qr_limited", False):\n            from ruqqus.helpers import scan_bans' in read("ruqqus", "helpers", "aws.py")
     # the child-abuse match bans whoever it is: CLAUDE.md "QR sign-in" names it, and this says when that changes
     assert "qr_limited" not in read("ruqqus", "helpers", "media", "safety.py")
 

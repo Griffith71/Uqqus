@@ -24,7 +24,7 @@ from ruqqus.helpers import action_log, log_view
 from ruqqus.helpers.base36 import base36decode, base36encode
 from ruqqus.helpers.get import get_comment, get_guild, get_post, get_user
 from ruqqus.helpers.visibility import board_hidden, comment_hidden, hidden_notice, post_hidden, user_hidden
-from ruqqus.helpers.wrappers import admin_level_required, auth_desired
+from ruqqus.helpers.wrappers import admin_level_required, auth_desired, validate_formkey
 from ruqqus.__main__ import app, limiter
 
 PAGE = 50
@@ -80,7 +80,25 @@ def admin_log(v):
     boards = _names(g.db, "boards", "name", [r["board_id"] for r in rows])
     return render_template("admin/log.html", v=v, entries=rows, more=more, users=users, boards=boards, level=level,
                            args={k: args.get(k, "") for k in ("type", "action", "rule", "guild", "actor", "target")},
-                           next_before=rows[-1]["id"] if rows else None)
+                           next_before=rows[-1]["id"] if rows else None,
+                           failures=action_log.failure_count(g.db), unmirrored=action_log.unmirrored_count(g.db),
+                           msg=args.get("msg"))
+
+
+@app.route("/admin/log/<int:entry_id>/redact", methods=["POST"])
+@admin_level_required(4)
+@validate_formkey
+def admin_log_redact(entry_id, v):
+    """Take an entry's reason out of the public's sight (level 4): the entry stays, its reason is read by staff only, and a new staff
+    entry linked to it says who did this and why (a correction is a new entry; nothing is ever edited)."""
+    why = action_log.clean_reason(request.form.get("why"), 300)
+    if not why:
+        return redirect("/admin/log?msg=Say+why+the+reason+is+being+hidden.", code=303)
+    if g.db.execute(text("SELECT 1 FROM log_entries WHERE id = :i AND redacted_utc = 0"), {"i": entry_id}).first() is None:
+        abort(404)
+    action_log.correct(g.db, entry_id, v, why)
+    g.db.commit()
+    return redirect(f"/admin/log?msg=Entry+{entry_id}+is+hidden+from+the+public.", code=303)
 
 
 # --- the public Log -------------------------------------------------------------------------------------------------------------
@@ -118,7 +136,9 @@ def _rows(entries, v):
             board = None                    # a profile post's board is the site's own, not a guild to name (L1)
         role = e["actor_role"]
         actor = people.get(e["actor_id"])
-        if role != action_log.GUILDMASTER or e["actor_id"] is None:
+        if role == action_log.AUTHOR:
+            who = log_view.post_author()
+        elif role != action_log.GUILDMASTER or e["actor_id"] is None:
             who = log_view.site_account(site)
         else:
             who = log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted,
@@ -142,7 +162,8 @@ def _rows(entries, v):
             "id": e["id"], "created_utc": e["created_utc"], "guild": board.name if board is not None else "",
             "sentence": log_view.sentence(e["action"], ACTIONTYPES, who, target, board.name if board is not None else ""),
             "icon": kind.get("icon", "fa-gavel"), "color": kind.get("color", "bg-info"),
-            "rule": e["rule_key"], "reason": e["reason"], "can_open": can_open, "type": e["log_type"]})      # not "copy": a dict has that method
+            "rule": e["rule_key"], "reason": e["reason"], "can_open": can_open, "type": e["log_type"],      # not "copy": a dict has that method
+            "until": e.get("until_utc") or 0})
     return rows
 
 

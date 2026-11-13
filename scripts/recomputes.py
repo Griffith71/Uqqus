@@ -358,6 +358,18 @@ def recompute():
             db.rollback()
             print_(f"stale chat devices failed: {e}")
 
+        # the Log's paper trail (helpers/action_log.py): a timed suspension that ran out writes its own entry, and a guild mod-log row whose copy
+        # failed when it was made is copied now, with a count of what could not be (shown on /admin and /admin/log)
+        try:
+            from ruqqus.helpers import action_log
+            lapsed = action_log.lapse_due(db, int(time.time()))
+            copied, not_copied = action_log.reconcile(db, int(time.time()))
+            db.commit()
+            print_(f"the Log: {lapsed} suspensions lapsed, {copied} mod-log rows copied, {not_copied} could not be")
+        except Exception as e:
+            db.rollback()
+            print_(f"the Log's upkeep failed: {e}")
+
         # disappearing messages that are due (helpers/chat_disappear.py): the bot deletes each (a redaction), and their chat files
         # stop being served
         try:

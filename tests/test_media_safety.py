@@ -61,22 +61,29 @@ def test_a_provider_failure_leaves_nothing_behind(tmp_path, monkeypatch):
     assert list(tmp_path.iterdir()) == []
 
 
-def test_a_banned_picture_suspends_the_uploader_and_their_other_accounts():
-    alt = user(2)
-    uploader = user(1, alts=[alt])
-    db = FakeDB()
-    before = int(time.time())
-    safety.ban_uploader(db, uploader, "Spam picture", days=3)
-    for account in (uploader, alt):
-        assert account.is_banned == 1 and account.ban_reason == "Spam picture"
-        assert before + 3 * 86400 <= account.unban_utc <= before + 3 * 86400 + 5
-    assert db.added == [uploader, alt]
+def test_a_banned_picture_bans_the_uploader_through_the_one_ban_routine_with_the_match_as_staff_detail(monkeypatch):
+    """The ban itself is `User.ban` (helpers/scan_bans.py, tested on the real app in tests/pg/test_scan_bans.py); this checks what
+    the check hands it: the days, that a site-list match is a staff detail and a child-abuse match a level-4 one."""
+    from ruqqus.helpers import scan_bans
+
+    calls = []
+    monkeypatch.setattr(scan_bans, "ban_uploader", lambda db, user, **kw: calls.append((db, user, kw)) or 77)
+    uploader, db = user(1), FakeDB()
+    assert safety.ban_uploader(db, uploader, "Spam picture", days=3) == 77
+    assert safety.ban_uploader(db, uploader, "the CDN answered 451 for the picture", legal=True) == 77
+    assert calls == [
+        (db, uploader, {"days": 3, "legal": False, "detail": "matched a picture on the site's banned list: Spam picture"}),
+        (db, uploader, {"days": 0, "legal": True, "detail": "the CDN answered 451 for the picture"}),
+    ]
 
 
-def test_no_days_means_a_permanent_ban():
-    uploader = user(1)
-    safety.ban_uploader(FakeDB(), uploader, "Sexualizing Minors")
-    assert uploader.is_banned == 1 and uploader.unban_utc == 0
+def test_no_days_means_a_permanent_ban(monkeypatch):
+    from ruqqus.helpers import scan_bans
+
+    seen = []
+    monkeypatch.setattr(scan_bans, "ban_uploader", lambda db, user, **kw: seen.append(kw["days"]))
+    safety.ban_uploader(FakeDB(), user(1), "Spam picture")
+    assert seen == [0]
 
 
 def test_only_served_pictures_are_scanned_at_their_public_address(monkeypatch):

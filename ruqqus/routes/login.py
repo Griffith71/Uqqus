@@ -9,6 +9,7 @@ import random
 from urllib.parse import urlencode
 
 from ruqqus.helpers.word_filter_store import apply_user_severity
+from ruqqus.helpers import action_log
 from ruqqus.classes import *
 from sqlalchemy import func
 from ruqqus.helpers.wrappers import *
@@ -552,6 +553,12 @@ def sign_up_post(v):
 
     g.db.add(new_user)
     g.db.commit()
+
+    if held:
+        # the Log, for the staff only (it would tell the public which sign-ups look like bots): the guard's own decision
+        action_log.record_staff(g.db, "automatic_hold", None, "held at sign-up by the signup guard (see /admin/signups)",
+                                target_user_id=new_user.id)
+        g.db.commit()
 
     # what the guard thought of it, for /admin/signups (best effort: the account is made either way)
     try:

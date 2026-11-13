@@ -93,6 +93,7 @@ STEPS = (
                               "WHERE n.comment_id = comments_aux.id AND n.user_id = :u)"),
     ("remove the age notices", "DELETE FROM notifications WHERE user_id = :u AND EXISTS (SELECT 1 FROM comments_aux a "
                                "WHERE a.id = notifications.comment_id AND a.notice_msgid = '')"),
+    ("empty their appeals", "UPDATE log_appeals SET reason = '', decision_note = '' WHERE user_id = :u"),
     ("clear the profile", "UPDATE users SET display_name = '', bio = '', bio_html = '', profile_job = '', "
                           "profile_location = '', profile_website = '', email = NULL, premium_auto_renew = :no, "
                           "creator_fund_opt_in_utc = 0 WHERE id = :u"),

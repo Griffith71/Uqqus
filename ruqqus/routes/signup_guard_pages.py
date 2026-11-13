@@ -10,7 +10,7 @@ from flask import abort, g, redirect, render_template, request
 from sqlalchemy import bindparam, text
 
 from ruqqus.classes import User
-from ruqqus.helpers import captcha, signup_review_store, signup_risk, signup_signals
+from ruqqus.helpers import action_log, captcha, signup_review_store, signup_risk, signup_signals
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.wrappers import admin_level_required, page_number, validate_formkey
@@ -106,13 +106,17 @@ def _act(v, ids, decision, with_alts=False):
             signup_signals.forget_attempts(r, uid)
             user = g.db.query(User).filter_by(id=uid).first()
             if user:
+                action_log.record_staff(g.db, "admin_signup", v, "approved a held sign-up", target_user_id=uid)
+                g.db.commit()
                 notify(user, APPROVED_TOLD)
         return len(done)
     if decision == "ban":
-        done = signup_review_store.decide(g.db, ids, "banned", v.id, now)
+        # only the accounts this admin outranks: the review was closed as "banned" for an account the ban then skipped (the audit, S6)
+        bannable = [uid for (uid,) in g.db.query(User.id).filter(User.id.in_(ids or [0]), User.admin_level < (v.admin_level or 0)).all()]
+        done = signup_review_store.decide(g.db, bannable, "banned", v.id, now)
         for uid in done:
             user = g.db.query(User).filter_by(id=uid).first()
-            if not user or (user.admin_level or 0) >= (v.admin_level or 0):
+            if not user:
                 continue
             user.ban(admin=v, reason=BAN_REASON)
             if with_alts:
@@ -156,6 +160,9 @@ def admin_signups_settings(v):
     except ValueError:
         abort(400)
     signup_signals.save_settings(r, quarantine_at, request.form.get("surge") == "1", surge_ceiling)
+    action_log.record_staff(g.db, "admin_signup", v, f"signup guard: hold at {quarantine_at}, surge {'on' if request.form.get('surge') == '1' else 'off'}, "
+                                                     f"ceiling {surge_ceiling}")
+    g.db.commit()
     return redirect("/admin/signups?msg=Settings+saved.")
 
 

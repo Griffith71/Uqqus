@@ -13,7 +13,7 @@ from ruqqus.helpers.aws import delete_file
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers import translation_store
 from ruqqus.helpers.i18n_runtime import N_, tr
-from ruqqus.helpers import action_log
+from ruqqus.helpers import action_log, log_notices
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -48,7 +48,7 @@ def _decided(ma, rule=None, reason=None):
     they cited and the reason they gave, read from the form. A value that is None is left as the Log made it."""
     g.db.add(ma)
     g.db.flush()
-    action_log.annotate(g.db, ma.id, rule=rule, reason=reason)
+    return action_log.annotate(g.db, ma.id, rule=rule, reason=reason)
 
 
 
@@ -119,7 +119,7 @@ def ban_user(user_id, v):
         else:
             notice = (N_("Your %(site)s account has been suspended for %(days)s days due to a Terms of Service "
                          "violation."), {"days": days})
-        user.ban(admin=v, reason=reason, days=days, rule=rule, staff_note=message, notice_sent=True)
+        entry = user.ban(admin=v, reason=reason, days=days, rule=rule, staff_note=message, notice_sent=True)
 
     else:
         if message:
@@ -129,7 +129,7 @@ def ban_user(user_id, v):
             notice = (N_("Your %(site)s account has been permanently suspended due to a Terms of Service violation."),
                       {})
 
-        user.ban(admin=v, reason=reason, rule=rule, staff_note=message, notice_sent=True)
+        entry = user.ban(admin=v, reason=reason, rule=rule, staff_note=message, notice_sent=True)
 
 
     for x in user.alts:
@@ -141,6 +141,8 @@ def ban_user(user_id, v):
 
 
     notify(user, notice[0], **notice[1])
+    if entry:
+        log_notices.tell_appeal_way(g.db, entry, user)      # beside the notice above: the Log and the Appeal link
 
     return (redirect(user.url), user)
 
@@ -206,7 +208,10 @@ def ban_post(post_id, v):
         board_id=post.board_id,
         note="admin action"
         )
-    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    entry = _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    # the person it is about is told: the rule, the reason, the Log and the way to appeal (best effort)
+    log_notices.tell_decision(g.db, entry, "ban_post", post=post, reason=request.form.get("reason"), actor_id=v.id,
+                              rule_key=action_log.parse_rule(request.form.get("rule")))
     return (redirect(post.permalink), post)
 
 
@@ -363,7 +368,9 @@ def api_ban_comment(c_id, v):
         board_id=comment.post.board_id,
         note="admin action"
         )
-    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    entry = _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    log_notices.tell_decision(g.db, entry, "ban_comment", comment=comment, reason=request.form.get("reason"), actor_id=v.id,
+                              rule_key=action_log.parse_rule(request.form.get("rule")))
     return "", 204
 
 
@@ -1017,6 +1024,8 @@ def admin_ban_domain(v):
             )
 
     g.db.add(d)
+    # the Log, for the staff only: which links are refused is part of how the site defends itself
+    action_log.record_staff(g.db, "admin_domain", v, f"banned the domain {domain[:120]} (reason code {reason})")
     g.db.commit()
     return redirect(d.permalink)
 

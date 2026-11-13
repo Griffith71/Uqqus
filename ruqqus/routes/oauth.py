@@ -4,6 +4,7 @@ import secrets
 import re
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers import action_log
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.sanitize import *
 from ruqqus.helpers.get import *
@@ -367,6 +368,7 @@ def admin_app_approve(v, aid):
     app.is_banned=False
 
     g.db.add(app)
+    action_log.record_staff(g.db, "admin_app", v, f"approved the API app #{app.id}")
 
     return "", 204
 
@@ -383,6 +385,7 @@ def admin_app_revoke(v, aid):
     app.is_banned=True
 
     g.db.add(app)
+    action_log.record_staff(g.db, "admin_app", v, f"revoked the API app #{app.id}")
 
     return "", 204
 

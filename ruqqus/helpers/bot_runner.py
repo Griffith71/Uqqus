@@ -14,7 +14,7 @@ rule, the throttle and bans apply as for a person; nothing here repeats submit_p
 """
 from collections import namedtuple
 
-from ruqqus.helpers import bot_store, bots, feed_items
+from ruqqus.helpers import action_log, bot_store, bots, feed_items
 from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.safe_fetch import FetchError
 
@@ -125,6 +125,7 @@ def run_source(db, source_id, now, fetch, submit, notify, owner_ok):
             break
         elif answer_of.kind == "stop":
             bot_store.set_running(db, bot.user_id, False, answer_of.message)
+            action_log.record_staff(db, "admin_bot", None, f"paused automatically: {answer_of.message}"[:500], target_user_id=bot.user_id)
             db.commit()
             if bot.owner_id:                           # a site bot's state is on the admins' page
                 message, values = bots.notice(bot, "paused", reason=answer_of.message)

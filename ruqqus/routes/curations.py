@@ -7,6 +7,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import lazyload
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers import action_log
 from ruqqus.helpers.visibility import filter_posts, viewer_level
 from ruqqus.helpers.muting import hide_muted
 from ruqqus.helpers.blocks import hide_blocked
@@ -863,6 +864,7 @@ def curation_remove_feed_server(slug, v):
             # the rules kept beside the server were never complete: the usual behaviour then
             curation.algorithm = feed_algorithm.dump({})
         g.db.add(curation)
+        action_log.record_staff(g.db, "admin_feed_server", v, f"took the curation &{curation.slug} off its outside feed server")
         g.db.commit()
         _invalidate_curation_feed(curation.id)
 

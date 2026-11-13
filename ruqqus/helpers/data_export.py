@@ -60,6 +60,9 @@ SECTIONS = (
     # what the member sent the admins, with the facts the page sent along; a screenshot is not exported
     ("feedback", "SELECT kind, message, page, context, status, response, created_utc FROM site_feedback "
                  "WHERE user_id = :u ORDER BY id"),
+    # the appeals they made against a decision in the Log, with how each ended (the Log's own entries about them are public or staff's)
+    ("appeals", "SELECT a.entry_id, a.reason, a.status, a.decision_note, a.created_utc, a.decided_utc FROM log_appeals a "
+                "WHERE a.user_id = :u ORDER BY a.id"),
     ("automated_posting", "SELECT b.status, b.purpose, b.created_utc, s.url, s.status AS feed_status FROM bots b "
                           "LEFT JOIN bot_sources s ON s.bot_id = b.user_id WHERE b.user_id = :u AND b.kind = 'self'"),
 )

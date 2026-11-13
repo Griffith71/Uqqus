@@ -548,12 +548,9 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
                         if banned:
                             banned.is_banned = True
                             db.add(banned)
-                    db.add(ModAction(
-                        kind="ban_post",
-                        user_id=1,
-                        note="banned image",
-                        target_submission_id=row_ids[0]
-                    ))
+                            # the Log: public in generic words, the match as a separate level-4 entry (helpers/action_log.py)
+                            action_log.record_image_check_removal(db, post_id=banned.id, board_id=banned.board_id, legal=True,
+                                                                  detail="the picture this post's link shows was taken down by the image check")
                     db.commit()
                     db.close()
 
@@ -1683,14 +1680,8 @@ Optional file data:
             delete_file(name)
             new_post.is_banned=True
             db.add(new_post)
-            db.commit()
-            ma=ModAction(
-                kind="ban_post",
-                user_id=1,
-                note="banned image",
-                target_submission_id=new_post.id
-                )
-            db.add(ma)
+            action_log.record_image_check_removal(db, post_id=new_post.id, board_id=new_post.board_id, legal=True,
+                                                  detail="the picture this post shows was taken down by the image check")
             db.commit()
             db.close()
 
@@ -1725,6 +1716,8 @@ Optional file data:
                 delete_file(bname)
                 new_post.is_banned = True
                 db.add(new_post)
+                action_log.record_image_check_removal(db, post_id=new_post.id, board_id=new_post.board_id, legal=True,
+                                                      detail="a picture in this post's text was taken down by the image check")
                 db.commit()
                 db.close()
 

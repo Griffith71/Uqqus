@@ -1,0 +1,50 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Appeals - {{ 'SITE_NAME' | app_config }} Admin</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Admin">
+{% endblock %}
+
+{% block content %}
+<h1>Appeals</h1>
+<p>Appeals of decisions the site's admins or its own checks made (a removal, a suspension or a ban) and of a post author's hide of a comment.
+A guild's own decisions are decided by that guild's guildmasters. An
+appeal is private: its text is read only here. <strong>Reversed</strong> runs the undo and writes a new entry in the Log linked to the original
+(the original is never edited); <strong>Upheld</strong> means it stands; <strong>Dismissed</strong> means it was not taken further. Say why in a
+line: the person is sent it. You can't decide an appeal of your own decision while another admin could.</p>
+{% if msg %}<div class="alert alert-info" role="status">{{ msg }}</div>{% endif %}
+
+{% for r in rows %}
+<div class="card p-3 mb-3" id="appeal-{{ r.id }}">
+  <div class="d-flex align-items-start">
+    <div class="d-flex align-items-center justify-content-center {{ r.color }} mr-3 rounded-lg flex-shrink-0" style="width: 32px;height: 32px;"><i class="far text-center {{ r.icon }} text-white fa-fw" aria-hidden="true"></i></div>
+    <div class="min-width-0">
+      <div>{{ r.sentence }} <a href="/log/{{ r.entry_id }}">(entry {{ r.entry_id }})</a></div>
+      <div class="text-small text-muted">{{ datetime_text(r.created_utc, "%d %b %Y %H:%M") }} (UTC){% if r.who %} &middot; appealed by <a href="/@{{ r.who }}">@{{ r.who }}</a>{% endif %}{% if r.rule in LOG_RULES %} &middot; {{ LOG_RULES[r.rule] }}{% endif %}</div>
+      {% if r.entry_reason %}<div class="text-small mt-1">Reason given: {{ r.entry_reason }}</div>{% endif %}
+      <blockquote class="mt-2 mb-2 pl-3 border-left" style="white-space: pre-wrap;">{{ r.reason }}</blockquote>
+    </div>
+  </div>
+  {% if r.conflicted %}
+  <p class="text-muted mb-0">You made this decision, so another admin decides its appeal.</p>
+  {% else %}
+  <form method="post" action="/admin/appeals/{{ r.id }}" class="form-inline">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <select name="outcome" class="form-control form-control-sm mr-2 mb-2" aria-label="Outcome" required>
+      <option value="">Outcome</option>
+      <option value="upheld">Upheld: the decision stands</option>
+      <option value="reversed">Reversed: undo it</option>
+      <option value="dismissed">Dismissed: not taken further</option>
+    </select>
+    <input name="note" class="form-control form-control-sm mr-2 mb-2" style="min-width: 22rem;" maxlength="500" placeholder="Tell them why, in a line" aria-label="Note to the person" required>
+    <button class="btn btn-primary btn-sm mb-2" type="submit">Decide</button>
+  </form>
+  {% endif %}
+</div>
+{% else %}
+<p class="text-muted">No appeals are waiting.</p>
+{% endfor %}
+{% endblock %}

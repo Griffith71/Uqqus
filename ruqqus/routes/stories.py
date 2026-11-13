@@ -8,7 +8,7 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import MediaAsset
-from ruqqus.helpers import age_declaration, bell as bell_rules, circle_guard, circle_store, circles, private_posting, stories as rules, story_store
+from ruqqus.helpers import action_log, age_declaration, bell as bell_rules, circle_guard, circle_store, circles, private_posting, stories as rules, story_store
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import msg, tr, trn
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
@@ -304,10 +304,14 @@ def admin_story_reports(v):
 @admin_level_required(3)
 @validate_formkey
 def admin_story_remove(sid, v):
-    if story_store.get(g.db, sid) is None:
+    story = story_store.get(g.db, sid)
+    if story is None:
         abort(404)
     story_store.remove(g.db, sid)
     story_store.resolve_reports(g.db, sid)
+    # the Log, for the staff only: a story may be for a circle, and who made it is not the public's to read
+    action_log.record(g.db, "remove_story", v.id, role=action_log.ADMIN, target_user_id=story.user_id, floor=action_log.STAFF,
+                      staff_note=f"removed story #{sid} after a report")
     g.db.commit()
     return redirect("/admin/story_reports")
 

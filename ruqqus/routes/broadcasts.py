@@ -12,6 +12,7 @@ from flask import *
 from sqlalchemy import text
 
 from ruqqus.helpers.wrappers import *
+from ruqqus.helpers import action_log
 from ruqqus.helpers.get import *
 from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
@@ -396,6 +397,9 @@ def admin_broadcast_report_act(pid, action, v):
                 asset.status = media_rules.REMOVED
                 g.db.add(asset)
                 media_cdn.purge([asset.path])
+        # the Log: a message in a public channel is something members read, so an admin's removal is a public entry (no words, no
+        # sender, no channel: the message is the channel's own)
+        action_log.record_quietly(g.db, "remove_broadcast_message", v.id, role=action_log.ADMIN)
     channel_store.resolve_reports(g.db, pid, now)
     g.db.commit()
     return redirect("/admin/broadcast_reports")

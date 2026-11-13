@@ -813,6 +813,43 @@ ACTIONTYPES.update({
         # Translators: follows the moderator's name in the Log; %(target)s is a link to a post or a comment
         "str": N_('hid a revision of %(target)s'), "icon": "fa-eye-slash", "color": "bg-danger",
         "title": N_('%(who)s hid a revision of %(title)s')},
+    # a post's author hiding a comment under it: the Log names the role, never the account (the post may be anonymous)
+    "author_hide_comment": {
+        # Translators: follows "The post's author" in the Log; %(target)s is a link to a comment
+        "str": N_('hid %(target)s under their own post'), "icon": "fa-eye-slash", "color": "bg-danger",
+        "title": N_("%(who)s hid a comment under their own post")},
+    "author_unhide_comment": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a comment
+        "str": N_('showed %(target)s again under its post'), "icon": "fa-eye", "color": "bg-muted",
+        "title": N_("%(who)s showed a comment again")},
+    "remove_broadcast_message": {
+        # Translators: follows the moderator's name in the Log
+        "str": N_("removed a message from a public channel"), "icon": "fa-comment-slash", "color": "bg-danger",
+        "title": N_("%(who)s removed a message from a public channel")},
+    "remove_space_message": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a post
+        "str": N_("removed a message from the board of the Space %(target)s"), "icon": "fa-comment-slash", "color": "bg-danger",
+        "title": N_("%(who)s removed a message from a Space's board")},
+    "end_space": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a post
+        "str": N_("ended the Space %(target)s"), "icon": "fa-microphone-slash", "color": "bg-danger",
+        "title": N_("%(who)s ended a Space")},
+    "community_note_add": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a post or a comment
+        "str": N_("added a community note to %(target)s"), "icon": "fa-note-sticky", "color": "bg-info",
+        "title": N_("%(who)s added a community note")},
+    "community_note_replace": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a post or a comment
+        "str": N_("replaced the community note on %(target)s"), "icon": "fa-note-sticky", "color": "bg-info",
+        "title": N_("%(who)s replaced a community note")},
+    "community_note_remove": {
+        # Translators: follows the moderator's name in the Log; %(target)s is a link to a post or a comment
+        "str": N_("removed the community note on %(target)s"), "icon": "fa-note-sticky", "color": "bg-muted",
+        "title": N_("%(who)s removed a community note")},
+    "guild_made_public": {
+        # Translators: follows the site's name in the Log; %(guild)s is a guild's name
+        "str": N_("opened +%(guild)s to everyone"), "icon": "fa-lock-open", "color": "bg-info",
+        "title": N_("%(who)s opened +%(guild)s to everyone")},
 })
 
 

@@ -83,6 +83,7 @@
 
             <div id="comment-banned-warning" class="comment-text text-danger text-small">
                 {% if c.is_banned and c.ban_reason %}{{ _("Reason: %(reason)s", reason=msg_text(c.ban_reason)) }}{% elif c.hidden_by_guild and c.hidden_reason %}{{ _("Reason: %(reason)s", reason=c.hidden_reason) }}{% elif c.author_hidden and c.author_hidden_reason %}{{ _("Reason: %(reason)s", reason=c.author_hidden_reason) }}{% endif %}
+                {% if v and v.id == c.author_id and (c.is_banned or c.hidden_by_guild or c.author_hidden) %}{% set appeal_url = appeal_for_item(c, v) %}{% if appeal_url %} <a href="{{ appeal_url }}">{{ _("Appeal this decision") }}</a>{% endif %}{% endif %}
             </div>
          </div>
 

@@ -11,7 +11,7 @@ from jinja2 import Undefined
 from sqlalchemy import func
 
 from ruqqus.classes import Comment, CommunityNote, NoteRequest, Submission, User
-from ruqqus.helpers import community_notes
+from ruqqus.helpers import action_log, community_notes
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.wrappers import admin_level_required, validate_formkey
@@ -110,12 +110,15 @@ def admin_note_write(kind, target_id, v):
 
     now = int(time.time())
     where = _filter(kind, key)
-    g.db.query(CommunityNote).filter(where(CommunityNote), CommunityNote.removed_utc == 0).update({"removed_utc": now})
+    replaced = g.db.query(CommunityNote).filter(where(CommunityNote), CommunityNote.removed_utc == 0).update({"removed_utc": now})
     g.db.add(CommunityNote(
         post_id=key if kind == "post" else None, comment_id=key if kind == "comment" else None,
         body=body, admin_id=v.id, created_utc=now))
     requesters = [r for (r,) in g.db.query(NoteRequest.user_id).filter(where(NoteRequest)).limit(NOTIFY_LIMIT).all()]
     g.db.query(NoteRequest).filter(where(NoteRequest)).delete(synchronize_session=False)
+    # the Log: a note is the site's own words under a post, so it is a public entry (the item by id, never its words)
+    action_log.record_quietly(g.db, "community_note_replace" if replaced else "community_note_add", v.id, role=action_log.ADMIN,
+                              **_item_ids(kind, key))
     g.db.commit()
     community_notes.forget()
 
@@ -148,9 +151,20 @@ def admin_note_remove(note_id, v):
         abort(404)
     note.removed_utc = int(time.time())
     g.db.add(note)
+    action_log.record_quietly(g.db, "community_note_remove", v.id, role=action_log.ADMIN,
+                              **_item_ids("post" if note.post_id else "comment", note.post_id or note.comment_id))
     g.db.commit()
     community_notes.forget()
     return _back("Note removed.")
+
+
+def _item_ids(kind, key):
+    """The Log's pointers for what a note is under: the post or comment by id, and the guild of the post for who may read the entry."""
+    if kind == "post":
+        post = g.db.query(Submission).filter_by(id=key).first()
+        return {"post_id": key, "board_id": post.board_id if post else None}
+    comment = g.db.query(Comment).filter_by(id=key).first()
+    return {"comment_id": key, "board_id": comment.post.board_id if comment is not None and comment.post else None}
 
 
 def _note_of(item):

@@ -14,6 +14,16 @@
 public, that guild's members, staff{% if level >= 4 %}, or level-4 admins only{% endif %}. Reasons are plain text. A private copy of
 what was hidden or removed is kept for 90 days (a year for illegal content) and is never in the entry.</p>
 
+{% if msg %}<div class="alert alert-info" role="status">{{ msg }}</div>{% endif %}
+{% if failures or unmirrored %}
+<div class="alert alert-danger" role="alert">
+  <strong>The paper trail has gaps.</strong>
+  {% if failures %}{{ failures }} entr{{ 'y' if failures == 1 else 'ies' }} could not be written in the last 7 days (the action itself went ahead).{% endif %}
+  {% if unmirrored %}{{ unmirrored }} guild mod-log row{{ '' if unmirrored == 1 else 's' }} still ha{{ 's' if unmirrored == 1 else 've' }} no entry (they are copied again every few minutes).{% endif %}
+  The server's log says which.
+</div>
+{% endif %}
+
 <form method="get" class="form-inline mb-3">
   <select name="type" class="form-control form-control-sm mr-2 mb-2" aria-label="Type">
     <option value="">Any type</option>
@@ -32,7 +42,7 @@ what was hidden or removed is kept for 90 days (a year for illegal content) and 
 
 <div class="table-responsive mb-4"><table class="table table-striped table-sm mb-0">
   <thead class="bg-primary text-white">
-    <tr><th>When (UTC)</th><th>Type</th><th>Action</th><th>By</th><th>To</th><th>Guild</th><th>Rule</th><th>Reason</th><th>Staff note</th><th>Audience</th></tr>
+    <tr><th>When (UTC)</th><th>Type</th><th>Action</th><th>By</th><th>To</th><th>Guild</th><th>Rule</th><th>Reason</th><th>Staff note</th><th>Audience</th>{% if level >= 4 %}<th>Hide reason</th>{% endif %}</tr>
   </thead>
   {% for e in entries %}
   <tr>
@@ -49,10 +59,16 @@ what was hidden or removed is kept for 90 days (a year for illegal content) and 
     <td>{{ LOG_RULES.get(e.rule_key, '') }}</td>
     <td>{{ e.reason }}{% if e.redacted_utc %} <em>(hidden from the public)</em>{% endif %}</td>
     <td>{{ e.staff_note }}</td>
-    <td>{{ ['public', 'guild', 'staff', 'legal'][e.audience] }}</td>
+    <td>{{ ['public', 'guild', 'staff', 'legal'][e.audience] }}{% if e.until_utc %}<br>until {{ datetime_text(e.until_utc, "%d %b %Y %H:%M") }}{% endif %}{% if e.linked_entry_id %}<br>about entry {{ e.linked_entry_id }}{% endif %}</td>
+    {% if level >= 4 %}<td>{% if e.redacted_utc %}<em>hidden</em>{% elif e.reason %}
+      <form method="post" action="/admin/log/{{ e.id }}/redact" class="form-inline">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <input name="why" class="form-control form-control-sm mr-1" maxlength="300" placeholder="why" aria-label="Why hide it" required>
+        <button class="btn btn-outline-danger btn-sm" type="submit">Hide</button>
+      </form>{% endif %}</td>{% endif %}
   </tr>
   {% else %}
-  <tr><td colspan="10" class="text-muted">Nothing matches.</td></tr>
+  <tr><td colspan="11" class="text-muted">Nothing matches.</td></tr>
   {% endfor %}
 </table></div>
 

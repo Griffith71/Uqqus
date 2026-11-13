@@ -81,6 +81,7 @@
 			{% elif p.hidden_by_guild and p.hidden_reason %}
 			<div class="text-danger mt-4 mb-2">{{ _("Reason: %(reason)s", reason=p.hidden_reason) }}</div>
 			{% endif %}
+			{% if v and (p.is_banned or p.hidden_by_guild) %}{% set appeal_url = appeal_for_item(p, v) %}{% if appeal_url %}<div class="mb-2"><a href="{{ appeal_url }}">{{ _("Appeal this decision") }}</a></div>{% endif %}{% endif %}
 			
 			{% if v and v.admin_level >=3 and p.body_html %}
                         <div class="post-body mt-4 mb-2"> 

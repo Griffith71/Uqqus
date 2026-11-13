@@ -1,0 +1,50 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>{{ _("Appeal a decision - %(site)s") }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="col px-md-4 py-4" id="log-appeal-page">
+
+  <h1 class="h4 mb-1">{{ _('Appeal a decision') }}</h1>
+  <p class="text-muted text-small mb-3">
+    {{ _("Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended.") }}
+  </p>
+
+  {% include "partials/log_rows.html" %}
+
+  {% if mine %}
+  <div class="card p-3 mb-4">
+    {% if sent %}<p class="font-weight-bold mb-2" role="status">{{ _("Your appeal was sent.") }}</p>{% endif %}
+    {% if mine.status == 'open' %}
+    <p class="mb-0">{{ _("Your appeal is waiting to be read.") }}</p>
+    {% elif mine.status == 'reversed' %}
+    <p class="mb-1">{{ _("Your appeal was accepted, and the decision was reversed.") }}</p>
+    {% elif mine.status == 'upheld' %}
+    <p class="mb-1">{{ _("Your appeal was looked at, and the decision stands.") }}</p>
+    {% else %}
+    <p class="mb-1">{{ _("Your appeal was not taken further.") }}</p>
+    {% endif %}
+    {% if mine.decision_note %}<p class="text-small mb-0">{{ _('They wrote: %(note)s', note=mine.decision_note) }}</p>{% endif %}
+  </div>
+  {% elif problem %}
+  <div class="alert alert-warning" role="alert">{{ msg_text(problem) }}</div>
+  {% else %}
+  <form method="post" action="/log/{{ entry_id }}/appeal" class="card p-3 mb-4">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    <label for="appeal-reason" class="font-weight-bold">{{ _('Why was it wrong?') }}</label>
+    <textarea id="appeal-reason" name="reason" class="form-control mb-1" rows="5" maxlength="{{ max_reason }}" required></textarea>
+    <p class="text-small text-muted">{{ _("Up to %(num)s characters. You can appeal a decision once, and make three appeals a day.", num=max_reason) }}</p>
+    <div><button class="btn btn-primary" type="submit">{{ _('Send appeal') }}</button></div>
+  </form>
+  {% endif %}
+
+</div>
+{% endblock %}

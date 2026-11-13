@@ -7230,8 +7230,10 @@ CREATE TABLE public.log_entries (
     redacted_utc bigint DEFAULT 0 NOT NULL,
     redacted_by integer,
     legacy_modaction_id bigint,
+    until_utc bigint DEFAULT 0 NOT NULL,
+    linked_entry_id bigint,
     CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression')),
-    CONSTRAINT log_entries_role CHECK (actor_role IN ('guildmaster', 'admin', 'system')),
+    CONSTRAINT log_entries_role CHECK (actor_role IN ('guildmaster', 'admin', 'system', 'author')),
     CONSTRAINT log_entries_audience CHECK (audience BETWEEN 0 AND 3)
 );
 
@@ -7241,6 +7243,38 @@ CREATE INDEX log_entries_target_user_idx ON public.log_entries (target_user_id);
 CREATE INDEX log_entries_actor_idx ON public.log_entries (actor_id);
 CREATE INDEX log_entries_created_idx ON public.log_entries (created_utc);
 CREATE UNIQUE INDEX log_entries_legacy_idx ON public.log_entries (legacy_modaction_id) WHERE legacy_modaction_id IS NOT NULL;
+CREATE INDEX log_entries_linked_idx ON public.log_entries (linked_entry_id) WHERE linked_entry_id IS NOT NULL;
+CREATE INDEX log_entries_suspended_idx ON public.log_entries (until_utc) WHERE until_utc > 0;
+
+-- An entry the Log could not write (2026-12-30_log_paper_trail.sql): the action stood, the paper trail did not
+CREATE TABLE public.log_failures (
+    id bigserial PRIMARY KEY,
+    created_utc bigint DEFAULT 0 NOT NULL,
+    action character varying(32) DEFAULT '' NOT NULL,
+    detail character varying(300) DEFAULT '' NOT NULL
+);
+
+CREATE INDEX log_failures_created_idx ON public.log_failures (created_utc);
+
+-- A person's appeal against a decision in the Log (helpers/log_appeals.py): one per person per entry, private
+CREATE TABLE public.log_appeals (
+    id bigserial PRIMARY KEY,
+    entry_id bigint NOT NULL,
+    user_id integer NOT NULL,
+    board_id integer,
+    reason character varying(500) DEFAULT '' NOT NULL,
+    created_utc bigint DEFAULT 0 NOT NULL,
+    status character varying(10) DEFAULT 'open' NOT NULL,
+    decided_by integer,
+    decided_utc bigint DEFAULT 0 NOT NULL,
+    decision_note character varying(500) DEFAULT '' NOT NULL,
+    reversal_entry_id bigint,
+    CONSTRAINT log_appeals_status CHECK (status IN ('open', 'upheld', 'reversed', 'dismissed'))
+);
+
+CREATE UNIQUE INDEX log_appeals_once_idx ON public.log_appeals (entry_id, user_id);
+CREATE INDEX log_appeals_open_idx ON public.log_appeals (board_id, id) WHERE status = 'open';
+CREATE INDEX log_appeals_user_idx ON public.log_appeals (user_id, created_utc);
 
 -- parent and child accounts (helpers/child_store.py; 2026-12-18_parent_accounts.sql)
 CREATE TABLE public.account_links (
@@ -7434,4 +7468,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-26_chat_files.sql'),
     ('2026-12-27_push.sql'),
     ('2026-12-28_channel_pictures.sql'),
-    ('2026-12-29_chat_extras.sql');
+    ('2026-12-29_chat_extras.sql'),
+    ('2026-12-30_log_paper_trail.sql');
