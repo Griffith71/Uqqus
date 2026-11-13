@@ -87,9 +87,9 @@ def test_the_birth_month_and_year_are_checked_and_never_kept():
     assert "isn't kept" in read("ruqqus", "templates", "settings_children.html")
 
 
-def test_the_controls_route_takes_only_the_fixed_names_and_the_one_special():
+def test_the_controls_route_takes_only_the_fixed_names():
     body = ROUTES["children_controls"][1]
-    assert 'name == "private_posting"' in body and "child_store.set_control(" in body and "child_store.clear_ask(" in body
+    assert "child_store.set_control(" in body and "private_posting" not in body and "clear_ask" not in body
     assert "request.args" not in body
 
 
@@ -115,14 +115,19 @@ def test_the_tables_the_migration_and_the_ledger_agree():
     assert "REFERENCES" not in migration, "no foreign key to users: closing an account deletes the rows (helpers/account_cleanup.py)"
     ledger = re.findall(r"\('(\d{4}-\d{2}-\d{2}_[\w-]+\.sql)'\)", schema.split("INSERT INTO public.schema_migrations", 1)[1])
     assert ledger == sorted(ledger) and "2026-12-18_parent_accounts.sql" in ledger
-    for name in ("chat", "spaces", "money", "anonymous_guilds", "posting", "commenting", "ask_private_utc", "ask_release_utc", "ask_release_country", "suspended_until_utc",
-                 "parent_id", "made_utc"):
+    for name in ("chat", "spaces", "money", "anonymous_guilds", "ask_release_utc", "ask_release_country", "suspended_until_utc", "parent_id", "made_utc"):
         assert f"    {name} " in migration or f"    {name} integer" in migration, name
+    # a child account is read-only (the Log's slice D5): no switch for posting or commenting, no Private posting to ask about
+    controls = schema.split("CREATE TABLE public.child_controls (", 1)[1].split(");", 1)[0]
+    for gone in ("posting", "commenting", "ask_private_utc"):
+        assert gone not in controls and f"DROP COLUMN IF EXISTS {gone}" in migration, gone
+    assert "    private_posting " not in schema and "DROP COLUMN IF EXISTS private_posting" in read("scripts", "migrations", "2026-12-17_private_posting.sql")
 
 
-def test_posting_and_commenting_obey_the_parents_switch_and_the_wrapper_asks_for_the_feature():
-    assert 'age_declaration.activity_refusal(v, "posting")' in read("ruqqus", "routes", "posts.py").split("def submit_post(v):", 1)[1].split("\n@app.", 1)[0]
-    assert 'age_declaration.activity_refusal(v, "commenting")' in read("ruqqus", "routes", "comments.py")
+def test_posting_and_commenting_ask_the_one_rule_and_the_wrapper_asks_for_the_feature():
+    assert "age_declaration.content_refusal(v)" in read("ruqqus", "routes", "posts.py").split("def submit_post(v):", 1)[1].split("\n@app.", 1)[0]
+    assert "age_declaration.content_refusal(v)" in read("ruqqus", "routes", "comments.py")
+    assert "activity_refusal" not in "".join(path.read_text(encoding="utf-8") for path in (ROOT / "ruqqus").rglob("*.py")), "the parent's switches are gone"
     assert "age_declaration.feature_refusal(v, feature)" in read("ruqqus", "helpers", "wrappers.py")
 
 
@@ -186,7 +191,7 @@ def test_the_pages_are_reachable_and_say_so():
     assert "delete-children-warning" in security and security.count("children_count(v)") >= 2
     assert ".children_pages import" in read("ruqqus", "routes", "__init__.py") or "from .children_pages import *" in read("ruqqus", "routes", "__init__.py")
     content = read("ruqqus", "templates", "settings_filters.html")
-    assert "child_view(v)" in content and "/settings/parent/ask" in content and 'id="parent-controls"' in content
+    assert "child_view(v)" in content and 'id="parent-controls"' in content and "private" not in content.lower().replace("private mode", "")
 
 
 def test_the_child_is_told_what_a_parent_can_see_and_that_chats_are_not_among_it():
@@ -198,12 +203,12 @@ def test_the_child_is_told_what_a_parent_can_see_and_that_chats_are_not_among_it
         assert what in welcome.replace("\n", " ") + read("ruqqus", "templates", "settings_filters.html"), what
 
 
-def test_a_parents_switch_covers_every_way_of_posting_not_only_the_composer():
-    """Posting off means no new post by any road: the composer, a story, a forward, a repost of a post or a comment, and publishing a shared draft."""
+def test_every_way_of_posting_asks_the_one_rule_not_only_the_composer():
+    """A child account only reads, by any road: the composer, a story, a forward, a repost of a post or a comment, publishing a shared draft."""
     for module, function in (("posts.py", "forward_post"), ("posts.py", "repost_post"), ("comments.py", "forward_comment"), ("comments.py", "repost_comment"),
                              ("stories.py", "story_create"), ("collab.py", "collab_publish")):
         body = read("ruqqus", "routes", module).split(f"def {function}(", 1)[1].split("\n@app.", 1)[0]
-        assert 'age_declaration.activity_refusal(v, "posting")' in body, function
+        assert "age_declaration.content_refusal(v)" in body, function
 
 
 def test_a_locked_account_is_not_paid_in_coins_by_the_routes_that_pay_someone():
@@ -245,15 +250,15 @@ def test_the_messaging_session_is_chat_and_a_call_space_needs_chat():
     for function in ("space_start", "space_join", "space_create"):
         body = spaces.split(f"def {function}(", 1)[1].split("\n@app.", 1)[0]
         assert 'age_declaration.feature_refusal(v, "chat")' in body, function
-    assert 'activity_refusal(v, "commenting")' in spaces.split("def space_message_add(", 1)[1].split("\n@app.", 1)[0], "a board and a call's chat are the Space's comments"
+    assert "content_refusal(v)" in spaces.split("def space_message_add(", 1)[1].split("\n@app.", 1)[0], "a board and a call's chat are the Space's comments"
 
 
-def test_editing_is_posting_and_commenting():
-    assert 'age_declaration.activity_refusal(v, "posting")' in read("ruqqus", "routes", "posts.py").split("def edit_post(", 1)[1].split("\n@app.", 1)[0]
-    assert 'age_declaration.activity_refusal(v, "commenting")' in read("ruqqus", "routes", "comments.py").split("def edit_comment(", 1)[1].split("\n@app.", 1)[0]
+def test_editing_is_posting_and_commenting_and_deleting_stays_open():
+    assert "age_declaration.content_refusal(v)" in read("ruqqus", "routes", "posts.py").split("def edit_post(", 1)[1].split("\n@app.", 1)[0]
+    assert "age_declaration.content_refusal(v)" in read("ruqqus", "routes", "comments.py").split("def edit_comment(", 1)[1].split("\n@app.", 1)[0]
     for deleting in (read("ruqqus", "routes", "posts.py").split("def delete_post_pid(", 1)[1].split("\n@app.", 1)[0],
                      read("ruqqus", "routes", "comments.py").split("def delete_comment(", 1)[1].split("\n@app.", 1)[0]):
-        assert "activity_refusal" not in deleting, "a child can always take its own words down"
+        assert "content_refusal" not in deleting, "a child can always take its own words down"
 
 
 def test_a_locked_account_is_not_put_in_a_circle_a_shared_draft_or_a_byline_and_runs_no_bot():
@@ -262,11 +267,11 @@ def test_a_locked_account_is_not_put_in_a_circle_a_shared_draft_or_a_byline_and_
     assert 'age_declaration.target_refusal(candidate, "chat")' in read("ruqqus", "helpers", "collab_rules.py").split("def add_refusal(", 1)[1].split("\ndef ", 1)[0]
     assert 'age_declaration.target_refusal(candidate, "chat")' in read("ruqqus", "helpers", "coauthors.py").split("def refusal(", 1)[1].split("\ndef ", 1)[0]
     collab = read("ruqqus", "routes", "collab.py")
-    assert 'age_declaration.activity_refusal(v, "posting")' in collab.split("def _may_type(", 1)[1].split("\n\n\n", 1)[0]
+    assert "age_declaration.content_refusal(v)" in collab.split("def _may_type(", 1)[1].split("\n\n\n", 1)[0]
     assert "_may_type(v)" in collab.split("def collab_invite_answer(", 1)[1].split("\n@app.", 1)[0]
     assert "_may_type(v)" in collab.split("def collab_send_op(", 1)[1].split("\n@app.", 1)[0]
     accept = read("ruqqus", "routes", "coauthors.py").split("def coauthor_accept(", 1)[1].split("\n@app.", 1)[0]
-    assert 'age_declaration.activity_refusal(v, "posting")' in accept and "private_posting.refusal(v)" in accept
+    assert "age_declaration.content_refusal(v)" in accept and "private_posting" not in accept
     bots = read("ruqqus", "helpers", "bots.py")
     for function in ("owner_refusal", "self_refusal", "post_refusal"):
         assert "_age_locked(owner)" in bots.split(f"def {function}(", 1)[1].split("\ndef ", 1)[0], function
@@ -293,7 +298,7 @@ def test_loosening_or_ending_the_parents_authority_asks_for_their_proof_and_the_
     stop = ROUTES["children_stop"][1]
     assert stop.index("if _wrong_proof(v):") < stop.index("User.age_lock == age_declaration.PARENT_LOCK")
     template = read("ruqqus", "templates", "settings_children.html")
-    assert template.count("{{ proof() }}") == 6      # password, download, delete, stop, and the two answers
+    assert template.count("{{ proof() }}") == 5      # password, download, delete, stop, and the answer to a release
     export = read("ruqqus", "helpers", "data_export.py").split("def build_for_parent(", 1)[1].split("\ndef ", 1)[0]
     for piece in ("child_activity.posts(", "child_activity.comments(", "child_activity.votes(", "child_activity.bookmarks(", "child_activity.guilds("):
         assert piece in export, piece

@@ -83,7 +83,7 @@ STEPS = (
     ("forget the family ledger of a closing child", "UPDATE child_family SET child_id = NULL WHERE child_id = :u"),
     ("forget the family ledger of a closing parent", "DELETE FROM child_family WHERE parent_id = :u"),
     ("forget the age answer", "UPDATE users SET age_declared = NULL, age_declared_utc = 0, age_lock = NULL, age_assured_utc = 0, "
-                              "age_under_utc = 0, private_posting = FALSE WHERE id = :u"),
+                              "age_under_utc = 0 WHERE id = :u"),
     # two more copies of it, where an admin changed it: the Log's row stays (an entry is never deleted, helpers/action_log.py)
     # and says only that a change was made, and the notice's own words go (each one is that member's own message, notify)
     ("forget an admin's age note", "UPDATE log_entries SET reason = '', staff_note = 'removed when the account closed' "

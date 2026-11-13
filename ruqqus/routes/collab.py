@@ -34,7 +34,7 @@ from ruqqus.helpers import collab_authorship as authorship
 from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
 from ruqqus.helpers import collab_store as store
-from ruqqus.helpers import age_declaration, collab_view, coauthors, live_bus, private_posting
+from ruqqus.helpers import age_declaration, collab_view, coauthors, live_bus
 from ruqqus.helpers.visibility import user_hidden
 from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, msg, tr, trn, trp
 
@@ -66,9 +66,9 @@ def _may_write(v):
 
 
 def _may_type(v):
-    """May this account be an author who types into a shared draft or joins one? A draft ends as a public post with its authors on the byline, so an age-restricted
-    account whose parent switched posting off, or that has Private posting on (a shared draft is public by nature: helpers/private_posting.py), is no author."""
-    return _may_write(v) and not (age_declaration.activity_refusal(v, "posting") or private_posting.refusal(v))
+    """May this account be an author who types into a shared draft or joins one? A draft ends as a public post with its authors on the byline, so a child-locked
+    account (which makes no posts or comments at all: helpers/age_declaration.py `content_refusal`) is no author."""
+    return _may_write(v) and not age_declaration.content_refusal(v)
 
 
 def _users(ids):
@@ -129,8 +129,9 @@ def collab_new(v):
     """A new shared draft with its creator as the one author (a plain form: it works without script)."""
     if not _may_write(v):
         abort(403)
-    if private_posting.refusal(v):             # a shared draft is published in public (helpers/private_posting.py)
-        return _error(msg(private_posting.REFUSAL), 403)
+    child_error = age_declaration.content_refusal(v)       # a shared draft is posting: a child-locked account makes none
+    if child_error:
+        return _error(msg(child_error), 403)
     now = _now()
     if store.made_since(g.db, v.id, now - DAY) >= rules.DOCS_PER_DAY:
         return _error(trn("You can start %(num)s shared draft a day.", "You can start %(num)s shared drafts a day.",
@@ -737,7 +738,7 @@ def _publish(doc, publisher, snap, now):
 @validate_formkey
 def collab_publish(doc_id, v):
     """Publish the working copy: at once when any author may, or as a proposal when the rules put it to a vote."""
-    posting_error = age_declaration.activity_refusal(v, "posting")      # publishing a shared draft is posting
+    posting_error = age_declaration.content_refusal(v)      # publishing a shared draft is posting
     if posting_error:
         return _error(msg(posting_error), 403)
     _doc_or_404(doc_id, v)
@@ -746,8 +747,6 @@ def collab_publish(doc_id, v):
     doc = store.doc(g.db, doc_id, lock=True)
     if not _may_write(v):
         abort(403)
-    if private_posting.refusal(v):             # a shared draft is published in public (helpers/private_posting.py)
-        return _error(msg(private_posting.REFUSAL), 403)
     now = _now()
     if doc[7] and doc[4] == doc[8]:
         post = g.db.query(Submission).filter_by(id=doc[7]).first()
@@ -807,11 +806,12 @@ def collab_fork_page(pid, v):
 @validate_formkey
 def collab_fork(pid, v):
     """A new shared draft from a public collaborative post's latest published revision, with who typed what kept."""
+    child_error = age_declaration.content_refusal(v)       # a fork is a new shared draft: a child account only reads, whatever post it names
+    if child_error:
+        return _error(msg(child_error), 403)
     post, doc = _readable_collab_post(pid, v)
     if not _may_write(v):
         abort(403)
-    if private_posting.refusal(v):             # a shared draft is published in public (helpers/private_posting.py)
-        return _error(msg(private_posting.REFUSAL), 403)
     if not post.is_public:
         return _error(tr("Only a public post can be forked."), 403)
     now = _now()

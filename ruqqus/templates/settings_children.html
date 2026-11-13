@@ -80,20 +80,6 @@
           </div>
         </div>
 
-        {% if c.ask_private_utc %}
-        <div class="d-lg-flex border-bottom bg-light">
-          <div class="title w-lg-25"><span>{{ _("Asked you") }}</span></div>
-          <div class="body w-lg-100">
-            <span class="d-block mb-2">{{ _("They asked you to turn Private posting off.") }}</span>
-            <form action="/settings/children/{{ c.username }}/answer" method="post">
-              <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="request" value="private">
-              {{ proof() }}
-              <button type="submit" name="answer" value="allow" class="btn btn-primary btn-sm">{{ _("Turn it off") }}</button>
-              <button type="submit" name="answer" value="deny" formnovalidate class="btn btn-secondary btn-sm">{{ _("Keep it on") }}</button>
-            </form>
-          </div>
-        </div>
-        {% endif %}
         {% if c.ask_release_utc %}
         <div class="d-lg-flex border-bottom bg-light">
           <div class="title w-lg-25"><span>{{ _("Asked you") }}</span></div>
@@ -121,17 +107,6 @@
           </div>
         </div>
         {% endfor %}
-
-        <div class="d-lg-flex border-bottom">
-          <div class="title w-lg-25"><label for="child-{{ c.username }}-private">{{ _("Private posting") }}</label></div>
-          <div class="body w-lg-100">
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="child-{{ c.username }}-private" aria-describedby="child-{{ c.username }}-private-help"{% if c.private_posting %} checked{% endif %} onchange="post_toast('/settings/children/{{ c.username }}/controls?control=private_posting&on=' + this.checked)">
-              <label class="custom-control-label" for="child-{{ c.username }}-private"></label>
-            </div>
-            <span class="d-block mt-2 text-small-extra text-muted" id="child-{{ c.username }}-private-help">{{ _("Everything they post goes only to their Friends circle. Turn it off to let them post in public.") }}</span>
-          </div>
-        </div>
 
         <div class="d-lg-flex">
           <div class="title w-lg-25"><span>{{ _("Account") }}</span></div>

@@ -25,7 +25,7 @@ from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy
 from ruqqus.helpers.text import split_title_body
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import clean_title, check_body, normalize_url, flag, PostFieldError
-from ruqqus.helpers import age_declaration, private_posting
+from ruqqus.helpers import age_declaration
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import post_drafts
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn, safety as media_safety
@@ -186,6 +186,11 @@ Optional query parameters:
 @no_negative_balance("html")
 def submit_get(v):
 
+    child_error = age_declaration.content_refusal(v)      # a child account only reads: no page to write a post on
+    if child_error:
+        return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(child_error),
+                               link="/settings/content", link_text=tr("Confirm your age")), 403
+
     board = request.args.get("guild")
     b = get_guild(board, graceful=True) if board else None
 
@@ -284,7 +289,7 @@ Optional file data:
         abort(403)
 
     # an edit puts new words in front of readers as a post does: a parent's switch for posting covers it (deleting stays open, so a child can take its own words down)
-    posting_error = age_declaration.activity_refusal(v, "posting")
+    posting_error = age_declaration.content_refusal(v)
     if posting_error:
         return _edit_error(msg(posting_error), 403)
 
@@ -935,7 +940,7 @@ Optional file data:
 
     # a child-locked account can't mark a post Sensitive or post anonymously, and a parent can switch posting off for a sub-account
     # (helpers/age_declaration.py)
-    locked_error = (age_declaration.activity_refusal(v, "posting")
+    locked_error = (age_declaration.content_refusal(v)
                     or age_declaration.post_refusal(v, flag(request.form, "sensitive"), flag(request.form, "anonymous")))
     if locked_error:
         locked_error = msg(locked_error)
@@ -1539,12 +1544,6 @@ Optional file data:
         audience, audience_error = circle_rules.GUILD, None
     else:
         audience, audience_tokens, audience_error = circle_rules.parse_audience(request.form.get("audience"), request.form.getlist("circles"))
-        # Private posting (helpers/private_posting.py): Public becomes the Friends circle, and nothing may take the post further
-        if audience_error is None and private_posting.on(v):
-            if forward_guild_names:
-                audience_error = msg(private_posting.REFUSAL)
-            else:
-                audience, audience_tokens = private_posting.circles_chosen(v, audience, audience_tokens, circle_rules.CIRCLES)
         if audience_error is None and audience == circle_rules.CIRCLES:
             circle_ids, audience_error = circle_store.resolve(g.db, v.id, audience_tokens)
     if audience_error is None:
@@ -1902,7 +1901,7 @@ Required form data:
 * `board` - Name of the guild to forward into
 """
 
-    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    posting_error = age_declaration.content_refusal(v)      # a parent can switch posting off for a sub-account: that covers sharing too
     if posting_error:
         return {"error": msg(posting_error)}, 403
     post = get_post(pid, v=v)
@@ -1914,8 +1913,6 @@ Required form data:
     refusal = sharing.post_refusal(post, v)              # not public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
-    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
-        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
         return {"error": tr("This post can't be forwarded.")}, 400
@@ -2192,7 +2189,7 @@ def repost_post(base36id, v):
     the option isn't effectively hidden on every forward-copy (which is
     most of what shows up in guild feeds)."""
 
-    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    posting_error = age_declaration.content_refusal(v)      # a parent can switch posting off for a sub-account: that covers sharing too
     if posting_error:
         return {"error": msg(posting_error)}, 403
     post = get_post(base36id, v=v)
@@ -2204,8 +2201,6 @@ def repost_post(base36id, v):
     refusal = sharing.post_refusal(post, v)              # not public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
-    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
-        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if primary.is_banned or primary.deleted_utc or primary.purged_utc:
         return {"error": tr("This post can't be reposted.")}, 400

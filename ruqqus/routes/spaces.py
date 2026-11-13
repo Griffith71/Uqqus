@@ -861,9 +861,9 @@ def space_messages(sid, v):
 def space_message_add(sid, v):
     """A message on the board: only from someone in the Space while it is live, rated by the word filter, slowed by slow
     mode (never the host and co-hosts) and capped per minute and per day. Pushed to readers by id only."""
-    parent_off = age_declaration.activity_refusal(v, "commenting")      # a board and a call's chat are the Space's comments: a parent's switch covers them
-    if parent_off:
-        return _error(msg(parent_off), 403)
+    child_error = age_declaration.content_refusal(v)      # a board and a call's chat are the Space's comments: a child account only reads
+    if child_error:
+        return _error(msg(child_error), 403)
     space = load_space(sid, v)
     try:
         body = space_rules.clean_message(request.values.get("body"))
@@ -989,6 +989,8 @@ def space_update_add(sid, v):
     for the post as anyone opening it would."""
     from ruqqus.helpers import live_threads as live_rules
     from ruqqus.routes import live_threads as live_routes
+    if age_declaration.content_refusal(v):                  # an update is posting: a child account only reads
+        return _error(msg(age_declaration.content_refusal(v)), 403)
     space = load_space(sid, v)
     if not _runs_updates(space, v):
         return _error(tr("Only the host and co-hosts can post updates."), 403)
@@ -1090,6 +1092,10 @@ def spaces_home(v):
 def spaces_new(v):
     """Setting up a Space: its kind, title, when, length, recording, audience and where its card shows. The form is
     sent to POST /api/spaces (`space_create`)."""
+    child_error = age_declaration.content_refusal(v)       # a Space is posting: a child account only reads
+    if child_error:
+        return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(child_error),
+                               link="/settings/content", link_text=tr("Confirm your age")), 403
     return render_template("space_new.html", v=v, space_max_stage=space_rules.MAX_STAGE,
                            space_max_listeners=space_rules.MAX_LISTENERS, space_video_stage=space_rules.VIDEO_STAGE_MAX,
                            space_video_people=space_rules.VIDEO_PEOPLE_MAX, space_kinds=space_rules.KINDS,
@@ -1114,6 +1120,8 @@ def space_create(v):
     space_rules.ENVIRON_KEY, which no browser can set, so a Space is never made anywhere else. A board or a live thread
     asked to start now starts at once; a call waits for its host to open it."""
     from ruqqus.routes.collab import _post_as
+    if age_declaration.content_refusal(v):                  # a Space is posting: a child account is read-only (the Spaces switch is for joining one)
+        return _error(msg(age_declaration.content_refusal(v)), 403)
     if space_rules.parse_kind(request.form.get("space_kind")) == space_rules.CALL and age_declaration.feature_refusal(v, "chat"):
         return _error(msg(age_declaration.feature_refusal(v, "chat")), 403)        # a call is a chat feature
     data = {name: request.form.get(name, "") for name in _CREATE_FIELDS}

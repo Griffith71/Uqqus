@@ -24,7 +24,7 @@ HELD = {
     "oauth.py": "oauth_authorize_prompt oauth_authorize_post request_api_keys delete_oauth_app edit_oauth_app reroll_oauth_tokens oauth_rescind_app",
     "oidc_pages.py": "oidc_authorize oidc_authorize_post",
     "settings.py": "settings_apps settings_security_post settings_log_out_others settings_profile_post settings_new_feedkey delete_account "
-                   "settings_name_change settings_export settings_remove_discord settings_unblock_user settings_blocks_import settings_private_posting",
+                   "settings_name_change settings_export settings_remove_discord settings_unblock_user settings_blocks_import",
     "static.py": "settings_security press_inquiry",
     "users.py": "follow_user",
     "profile_lists.py": "settings_list_visibility",

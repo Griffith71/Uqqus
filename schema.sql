@@ -357,7 +357,6 @@ CREATE TABLE public.users (
     age_lock smallint,
     age_assured_utc bigint DEFAULT 0 NOT NULL,
     age_under_utc bigint DEFAULT 0 NOT NULL,
-    private_posting boolean DEFAULT false NOT NULL,
     push_names boolean DEFAULT true NOT NULL,
     chat_receipts boolean DEFAULT true NOT NULL
 );
@@ -7291,9 +7290,6 @@ CREATE TABLE public.child_controls (
     spaces boolean DEFAULT false NOT NULL,
     money boolean DEFAULT false NOT NULL,
     anonymous_guilds boolean DEFAULT false NOT NULL,
-    posting boolean DEFAULT true NOT NULL,
-    commenting boolean DEFAULT true NOT NULL,
-    ask_private_utc integer DEFAULT 0 NOT NULL,
     ask_release_utc integer DEFAULT 0 NOT NULL,
     ask_release_country character varying(2),
     updated_utc integer DEFAULT 0 NOT NULL

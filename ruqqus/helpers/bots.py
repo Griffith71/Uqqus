@@ -105,8 +105,8 @@ def is_admin(member):
 
 
 def _age_locked(owner):
-    """Is the member who would run (or runs) a bot under the child lock (helpers/age_declaration.py)? A bot posts publicly under its own name, outside what a
-    parent switched off for a sub-account and outside Private posting, so an age-restricted member neither proposes one, nor gets a key, nor has one post."""
+    """Is the member who would run (or runs) a bot under the child lock (helpers/age_declaration.py)? A bot posts publicly under its own name, outside the rule that a child-locked account makes no
+    post or comment (`age_declaration.content_refusal`), so an age-restricted member neither proposes one, nor gets a key, nor has one post."""
     from ruqqus.helpers import age_declaration
     return age_declaration.is_locked(owner)
 

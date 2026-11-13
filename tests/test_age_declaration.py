@@ -35,7 +35,7 @@ def test_only_the_two_exact_answers_count(value, expected):
 def test_a_child_account_is_put_on_the_child_filter_with_sensitive_content_off():
     fields = age.fields_for(age.CHILD, 1000)
     assert fields == {"age_declared": age.CHILD, "age_declared_utc": 1000, "filter_level": CHILD_FILTER,
-                      "hide_offensive": True, "all_shows_sensitive": False, "age_lock": age.REGION_LOCK, "private_posting": True}
+                      "hide_offensive": True, "all_shows_sensitive": False, "age_lock": age.REGION_LOCK}
 
 
 def test_an_adult_answer_touches_nothing_else():
@@ -303,12 +303,13 @@ def test_the_export_and_the_clean_up():
     from ruqqus.helpers import data_export
     sections = dict(data_export.SECTIONS)
     assert "age_declared" in sections["age"] and "age_declared_utc" in sections["age"]
-    for column in ("age_lock", "age_assured_utc", "age_under_utc", "private_posting"):
+    for column in ("age_lock", "age_assured_utc", "age_under_utc"):
         assert column in sections["age"], "what the site holds about their age is theirs to download"
+    assert "private_posting" not in sections["age"]
     cleanup = read("ruqqus", "helpers", "account_cleanup.py")
     forget = cleanup.split('("forget the age answer",', 1)[1].split("),", 1)[0]
     for piece in ("age_declared = NULL", "age_declared_utc = 0", "age_lock = NULL", "age_assured_utc = 0", "age_under_utc = 0",
-                  "private_posting = FALSE", "WHERE id = :u"):
+                  "WHERE id = :u"):
         assert piece in forget, piece
     assert "WHERE target_user_id = :u AND action = 'age_declaration'" in cleanup, "an admin's note says what the answer was"
     assert "ADMIN_NOTICES" in cleanup, "and so does the notice they sent"

@@ -8,7 +8,7 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import MediaAsset
-from ruqqus.helpers import action_log, age_declaration, bell as bell_rules, circle_guard, circle_store, circles, private_posting, stories as rules, story_store
+from ruqqus.helpers import action_log, age_declaration, bell as bell_rules, circle_guard, circle_store, circles, stories as rules, story_store
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.i18n_runtime import msg, tr, trn
 from ruqqus.helpers.media import attach as media_attach, safety as media_safety
@@ -145,7 +145,7 @@ def _owner_by_id(user_id, v):
 @not_quarantined("story")
 @validate_formkey
 def story_create(v):
-    posting_error = age_declaration.activity_refusal(v, "posting")      # a story is posting: a parent can switch it off for a sub-account
+    posting_error = age_declaration.content_refusal(v)      # a story is posting: a parent can switch it off for a sub-account
     if posting_error:
         return _fail(msg(posting_error), 403)
     kind, error = rules.parse_kind(request.form.get("kind"))
@@ -154,7 +154,6 @@ def story_create(v):
     audience, tokens, error = circles.parse_audience(request.form.get("audience"), request.form.getlist("circles"))
     if error:
         return _fail(msg(error))
-    audience, tokens = private_posting.circles_chosen(v, audience, tokens, circles.CIRCLES)       # Private posting: Friends, never Public
     circle_ids, error = circle_store.resolve(g.db, v.id, tokens) if audience == circles.CIRCLES else ([], None)
     if error:
         return _fail(msg(error))

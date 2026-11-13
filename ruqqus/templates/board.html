@@ -61,7 +61,7 @@
 {% block PseudoSubmitForm %}
 {% from "partials/inline_composer.html" import inline_composer %}
 {# only guilds you may forward to get one: it posts on your profile and forwards here #}
-{% if b.can_forward(v) %}
+{% if b.can_forward(v) and not content_locked(v) %}
 {{ inline_composer(v, b) }}
 {% endif %}
 {% endblock %}

@@ -6,8 +6,8 @@ from flask import g, jsonify, request
 
 from ruqqus.__main__ import app, limiter
 from ruqqus.classes import PostDraft
-from ruqqus.helpers import post_drafts as pd
-from ruqqus.helpers.i18n_runtime import tr
+from ruqqus.helpers import age_declaration, post_drafts as pd
+from ruqqus.helpers.i18n_runtime import msg, tr
 from ruqqus.helpers.wrappers import auth_required, qr_limited_answer, validate_formkey
 
 
@@ -42,6 +42,9 @@ Form data: the composer's own fields (`title`, `url`, `body`, `forward_guilds`,
   (5 minutes to a year ahead, and it needs a title); without it the draft is
   saved unscheduled. Saving always unschedules a draft that was scheduled.
 """
+    child_error = age_declaration.content_refusal(v)       # a draft is a post in waiting, and a scheduled one is published as the member: a child account is read-only
+    if child_error:
+        return jsonify({"error": msg(child_error), "age_locked": True}), 403
     # a scheduled post goes out as the member long after any sign-in has ended, past "log out everywhere" (helpers/qr_login.py)
     if v.qr_limited and (request.form.get("publish_utc") or "").strip():
         return qr_limited_answer(v)

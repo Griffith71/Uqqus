@@ -127,7 +127,6 @@ class User(Base, Stndrd, Age_times):
     age_lock = Column(SmallInteger, default=None)           # None, 1 (a standalone lock a confirmed age may lift) or 2 (a parent's sub-account)
     age_assured_utc = Column(BigInteger, default=0)       # when a vendor or an admin confirmed 18 or over; 0 = never
     age_under_utc = Column(BigInteger, default=0)         # when a vendor's check found the holder under 18; 0 = never
-    private_posting = Column(Boolean, default=False)        # everything posted goes only to the Friends circle (helpers/private_posting.py)
     push_names = Column(Boolean, default=True)              # a push notification says who wrote (helpers/push_rules.py)
     chat_receipts = Column(Boolean, default=True)           # others see when they read and type ("Seen"; Settings > Chat)
     # word filter rating of the username / the bio

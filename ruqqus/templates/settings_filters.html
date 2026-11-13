@@ -30,13 +30,11 @@
 
                 <div class="body w-lg-100 age-state">
                   {% if age_note == "lifted" or age_note == "confirmed" %}
-                    <p class="mb-2 text-success" role="status">{{ _("Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it.") }}</p>
+                    <p class="mb-2 text-success" role="status">{{ _("Thanks. Your account no longer has the child lock.") }}</p>
                   {% elif age_note == "under" %}
                     <p class="mb-2" role="status">{{ _("The age check found that you're under 18, so the child lock stays on.") }}</p>
                   {% elif age_note == "asked_release" %}
                     <p class="mb-2" role="status">{{ _("Your parent or guardian has been asked to release your account. Nothing changes until they answer.") }}</p>
-                  {% elif age_note == "asked_private" %}
-                    <p class="mb-2" role="status">{{ _("Your parent or guardian has been asked to turn Private posting off.") }}</p>
                   {% elif age_note == "failed" %}
                     <p class="mb-2" role="status">{{ _("The age check didn't finish. Nothing has changed, and you can try again.") }}</p>
                   {% endif %}
@@ -55,7 +53,7 @@
                     <p class="mb-1">{{ _("Your account has the child lock on, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
                     {% endif %}
                     {% if child_account %}
-                    <span class="d-block text-small-extra text-muted">{% if sub %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive.") }}{% else %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off.") }}{% endif %}</span>
+                    <span class="d-block text-small-extra text-muted">{% if sub %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report.") }}{% else %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report.") }}{% endif %}</span>
                     {% elif v.age_assured_utc %}
                     <p class="mb-1">{{ _("Your age was confirmed on %(date)s.", date=date_text(v.age_assured_utc, "%d %B %Y")) }}</p>
                     {% else %}
@@ -92,33 +90,6 @@
                     {% if not child_account %}
                     <span class="d-block mt-2 text-small-extra text-muted">{{ _('You can\'t change this answer yourself. If it\'s wrong, <a href="%(url)s">contact us</a>: only an admin can change it.', url="/help/contact") }}</span>
                     {% endif %}
-                  {% endif %}
-                </div>
-
-              </div>
-
-              {# helpers/private_posting.py: every post goes only to the Friends circle while this is on #}
-              <div class="d-lg-flex border-bottom" id="private-posting">
-
-                <div class="title w-lg-25">
-                  <label for="private-posting-switch">{{ _("Private posting") }}</label>
-                </div>
-
-                <div class="body w-lg-100">
-                  <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="private-posting-switch" aria-describedby="private-posting-help"{% if v.private_posting %} checked{% endif %}{% if v.age_lock == 2 %} disabled{% endif %} onchange="post_toast('/settings/private_posting?on=' + this.checked)">
-                    <label class="custom-control-label" for="private-posting-switch"></label>
-                  </div>
-                  <span class="d-block mt-2 text-small-extra text-muted" id="private-posting-help">{{ _("Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public.") }}</span>
-                  {% if sub and v.private_posting %}
-                  {% if sub.ask_private %}
-                  <span class="d-block mt-2 text-small-extra" id="private-asked">{{ _("You asked your parent or guardian to turn this off. They haven't answered yet.") }}</span>
-                  {% else %}
-                  <form action="/settings/parent/ask" method="post" class="mt-2">
-                    <input type="hidden" name="formkey" value="{{ v.formkey }}"><input type="hidden" name="kind" value="private"><input type="hidden" name="next" value="/settings/content">
-                    <button type="submit" class="btn btn-secondary btn-sm">{{ _("Ask my parent to turn it off") }}</button>
-                  </form>
-                  {% endif %}
                   {% endif %}
                 </div>
 

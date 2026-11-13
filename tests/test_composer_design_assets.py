@@ -53,7 +53,7 @@ def test_the_head_holds_where_it_goes_and_who_sees_it_as_on_the_feed_composer():
     # its menu; where it goes is a dropdown at the top left with the guild search (the "cards" layout stays for Spaces)
     head = FORM.split('<div class="composer-head">')[1].split('<label for="post-title"')[0]
     assert '<details class="composer-pill composer-audience-pill" id="composer-audience">' in head
-    assert 'post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v), locked=private_posting_on(v))' in head
+    assert 'post_options.audience_field(audience_now, "post-audience", circles_now, circle_choices(v))' in head
     assert '"post-anon", compact=true)' in head and "post_options.anonymous_field(" in head
     assert '<details class="composer-pill composer-where-pill" id="composer-where">' in head
     assert 'post_options.where_profile("post-where", "forward_guild_input", "forward_guild_add", to_profile)' in head

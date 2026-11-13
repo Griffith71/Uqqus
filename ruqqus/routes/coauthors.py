@@ -9,7 +9,7 @@ from flask import abort, g, jsonify, redirect, render_template, request
 from jinja2 import Undefined
 
 from ruqqus.classes import PostCoauthor, Submission, User
-from ruqqus.helpers import age_declaration, coauthors, collab_view, private_posting
+from ruqqus.helpers import age_declaration, coauthors, collab_view
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_post, get_user
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
@@ -133,7 +133,7 @@ def coauthor_accept(pid, v):
     author = g.db.query(User).filter_by(id=post.author_id).first()
     if row is None or row.status != coauthors.PENDING:
         abort(404)
-    if age_declaration.activity_refusal(v, "posting") or private_posting.refusal(v):      # being on a public byline is posting
+    if age_declaration.content_refusal(v):      # being on a public byline is posting
         abort(403)
     if post.is_anonymous or (author and author.any_block_exists(v)):
         g.db.delete(row)         # the invitation can no longer stand

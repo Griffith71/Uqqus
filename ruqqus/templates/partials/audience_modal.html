@@ -15,7 +15,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <div id="audience-options">{{ audience_field(0, "audience-option", (), circle_choices(v), locked=private_posting_on(v)) }}</div>
+        <div id="audience-options">{{ audience_field(0, "audience-option", (), circle_choices(v)) }}</div>
         <p class="text-small text-muted mt-2 mb-0">{{ _("A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds.") }}</p>
         <div id="audience-status" class="text-small mt-2" role="status"></div>
       </div>

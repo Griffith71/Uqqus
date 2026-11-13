@@ -35,13 +35,13 @@ def sub_without_a_row(**kw):
 
 # ---------------------------------------------------------------- the rules
 
-def test_chat_spaces_money_and_anonymous_guilds_start_off_and_posting_and_commenting_start_on():
-    assert rules.DEFAULTS == {"chat": False, "spaces": False, "money": False, "anonymous_guilds": False, "posting": True, "commenting": True}
-    assert rules.CONTROLS == ("chat", "spaces", "money", "anonymous_guilds", "posting", "commenting")
+def test_chat_spaces_money_and_starting_a_guild_start_off_and_there_is_no_switch_for_posting_or_commenting():
+    assert rules.DEFAULTS == {"chat": False, "spaces": False, "money": False, "anonymous_guilds": False}
+    assert rules.CONTROLS == ("chat", "spaces", "money", "anonymous_guilds")      # the last is "starting a guild" (its old name): a child account only reads
     assert rules.switches(None) == rules.DEFAULTS and rules.switches({"chat": 1}) ["chat"] is True
 
 
-@pytest.mark.parametrize("name, expected", [("chat", "chat"), ("posting", "posting"), ("private_posting", None), ("", None), (None, None), ("CHAT", None),
+@pytest.mark.parametrize("name, expected", [("chat", "chat"), ("posting", None), ("commenting", None), ("private_posting", None), ("", None), (None, None), ("CHAT", None),
                                             ("chat; drop table users", None), (["chat"], None)])
 def test_a_control_is_only_ever_one_of_the_fixed_names(name, expected):
     assert rules.clean_control(name) == expected
@@ -95,7 +95,8 @@ def test_a_sub_account_is_allowed_what_its_parent_switched_on_and_told_whose_dec
     assert age.feature_refusal(off, "chat") == age.PARENT_OFF
     assert age.feature_refusal(chat, "chat") is None and age.feature_refusal(chat, "money") == age.PARENT_OFF
     assert age.feature_refusal(sub({"money": True}), "money") is None
-    assert age.feature_refusal(sub({"anonymous_guilds": True}), "guilds") is None and age.feature_refusal(sub({"anonymous_guilds": True}), "anonymous") is None
+    assert age.feature_refusal(sub({"anonymous_guilds": True}), "guilds") is None
+    assert age.feature_refusal(sub({"anonymous_guilds": True}), "anonymous") == age.PARENT_OFF, "there is no such feature any more: a child account posts nothing, anonymously or not"
     assert age.feature_refusal(sub({"chat": True}), None) == age.PARENT_OFF, "a feature with no name is never switched on"
 
 
@@ -111,37 +112,28 @@ def test_the_word_filter_and_sensitive_content_are_never_the_parents_to_switch()
     assert age.locked_filter(everything, 0) and age.locked_sensitive(everything, True)
 
 
-def test_anonymous_posting_follows_the_one_switch():
-    assert age.post_refusal(sub(), False, True) == age.PARENT_OFF
-    assert age.post_refusal(sub({"anonymous_guilds": True}), False, True) is None
-    assert age.post_refusal(sub(), False, False) is None
-    assert age.post_refusal(NS(age_declared=2, age_lock=1), False, True) == age.FEATURE_LOCKED
+def test_a_locked_account_may_neither_post_anonymously_nor_mark_sensitive_whatever_its_parent_switched():
+    everything = sub({name: True for name in rules.CONTROLS})
+    assert age.post_refusal(everything, False, True) == age.FEATURE_LOCKED and age.post_refusal(everything, True, False) == age.FEATURE_LOCKED
+    assert age.post_refusal(sub(), False, False) is None and age.post_refusal(NS(age_declared=2, age_lock=1), False, True) == age.FEATURE_LOCKED
+    assert age.post_refusal(adult(), True, True) is None and age.post_refusal(None, True, True) is None
 
 
-def test_posting_and_commenting_are_on_unless_the_parent_turned_them_off():
-    assert age.activity_refusal(sub(), "posting") is None and age.activity_refusal(sub({"posting": True}), "posting") is None
-    assert age.activity_refusal(sub({"posting": False, "commenting": True}), "posting") == age.PARENT_OFF
-    assert age.activity_refusal(sub({"posting": False, "commenting": False}), "commenting") == age.PARENT_OFF
-    assert age.activity_refusal(NS(age_declared=2, age_lock=1, child_controls={"posting": False}), "posting") is None, "only a parent's switch"
-    assert age.activity_refusal(adult(), "posting") is None and age.activity_refusal(None, "posting") is None
+def test_every_locked_account_is_read_only_whoever_holds_the_lock_and_whatever_its_parent_switched():
+    """The owner, 2026-11-05: a child account can't create content at all. One rule, no parent's switch."""
+    for locked in (sub(), sub({name: True for name in rules.CONTROLS}), sub_without_a_row(), NS(age_declared=2, age_lock=1, child_controls={}),
+                   NS(age_declared=2, age_lock=None)):
+        assert age.content_refusal(locked) == age.FEATURE_LOCKED, locked
+    assert age.content_refusal(adult()) is None and age.content_refusal(None) is None
+    assert age.content_refusal(NS(age_declared=None, age_lock=None)) is None, "an account not asked yet is not a child"
+    assert not hasattr(age, "activity_refusal"), "the parent's posting and commenting switches are gone"
 
 
 def test_a_sub_account_whose_controls_cant_be_read_is_refused_everything_it_fails_closed():
     lost = sub_without_a_row()
-    assert age.activity_refusal(lost, "posting") == age.PARENT_OFF and age.activity_refusal(lost, "commenting") == age.PARENT_OFF
+    assert age.content_refusal(lost) == age.FEATURE_LOCKED
     for feature in ("chat", "spaces", "money", "guilds", "anonymous", "messaging"):
         assert age.feature_refusal(lost, feature) == age.PARENT_OFF, feature
-
-
-def test_the_matrix_session_is_chat_and_nothing_else_so_spaces_alone_never_hold_a_chat_token():
-    """The chat token and keys are a full Matrix session: with it a child reads and writes every room it is in. A call Space runs on it, so a call is a chat feature
-    (the switch's own words: "Chat, group chats and calls"); a child with Spaces on and chat off has boards and live threads, and no way to mint a token."""
-    assert age.feature_refusal(sub(), "messaging") == age.PARENT_OFF
-    assert age.feature_refusal(sub({"chat": True}), "messaging") is None
-    assert age.feature_refusal(sub({"spaces": True}), "messaging") == age.PARENT_OFF, "Spaces alone is not chat"
-    assert age.feature_refusal(sub({"money": True, "anonymous_guilds": True}), "messaging") == age.PARENT_OFF
-    assert age.feature_refusal(sub({"spaces": True}), "spaces") is None and age.feature_refusal(sub({"spaces": True}), "chat") == age.PARENT_OFF
-    assert age.feature_refusal(NS(age_declared=2, age_lock=1, child_controls={"chat": True}), "messaging") == age.FEATURE_LOCKED
 
 
 def test_someone_can_reach_a_sub_account_for_what_its_parent_allowed():
@@ -151,22 +143,22 @@ def test_someone_can_reach_a_sub_account_for_what_its_parent_allowed():
     assert age.target_refusal(adult(), "chat") is None
 
 
-def test_a_sub_account_is_made_a_child_account_held_by_its_parent_on_the_child_filter_with_private_posting_on():
+def test_a_sub_account_is_made_a_child_account_held_by_its_parent_on_the_child_filter():
     fields = age.sub_account_fields(NOW)
     assert fields["age_declared"] == age.CHILD and fields["age_lock"] == age.PARENT_LOCK == 2
-    assert fields["filter_level"] == 2 and fields["all_shows_sensitive"] is False and fields["private_posting"] is True
+    assert fields["filter_level"] == 2 and fields["all_shows_sensitive"] is False and "private_posting" not in fields
 
 
 # ---------------------------------------------------------------- the SQL
 
 TABLES = (
     "CREATE TABLE users (id integer PRIMARY KEY, username text, is_deleted boolean DEFAULT 0, is_banned integer DEFAULT 0, unban_utc integer DEFAULT 0, "
-    "private_posting boolean DEFAULT 0, age_declared integer, age_lock integer, negative_balance_cents integer DEFAULT 0)",
+    "age_declared integer, age_lock integer, negative_balance_cents integer DEFAULT 0)",
     "CREATE TABLE child_family (id integer PRIMARY KEY AUTOINCREMENT, parent_id integer NOT NULL, child_id integer, made_utc integer NOT NULL DEFAULT 0, "
     "suspended_until_utc integer NOT NULL DEFAULT 0, prior_until_utc integer NOT NULL DEFAULT 0)",
     "CREATE TABLE account_links (child_id integer PRIMARY KEY, parent_id integer NOT NULL, created_utc integer NOT NULL DEFAULT 0)",
     "CREATE TABLE child_controls (child_id integer PRIMARY KEY, chat boolean NOT NULL DEFAULT 0, spaces boolean NOT NULL DEFAULT 0, money boolean NOT NULL DEFAULT 0, "
-    "anonymous_guilds boolean NOT NULL DEFAULT 0, posting boolean NOT NULL DEFAULT 1, commenting boolean NOT NULL DEFAULT 1, ask_private_utc integer NOT NULL DEFAULT 0, "
+    "anonymous_guilds boolean NOT NULL DEFAULT 0, "
     "ask_release_utc integer NOT NULL DEFAULT 0, ask_release_country text, updated_utc integer NOT NULL DEFAULT 0)",
     "CREATE TABLE submissions (id integer PRIMARY KEY, author_id integer, repost_id integer, deleted_utc integer DEFAULT 0, is_space boolean DEFAULT 0, "
     "is_anonymous boolean DEFAULT 0, is_banned boolean DEFAULT 0, audience integer DEFAULT 0, created_utc integer DEFAULT 0, post_public boolean DEFAULT 1, "
@@ -205,7 +197,7 @@ def test_a_child_is_linked_to_one_parent_with_the_defaults(db):
     assert store.link(db, KID, PARENT, NOW) is True
     assert store.link(db, KID, OTHER, NOW) is False, "a child has one parent"
     assert store.parent_of(db, KID) == PARENT and store.parent_of(db, STRANGER) is None
-    assert store.controls_of(db, KID) == {"chat": False, "spaces": False, "money": False, "anonymous_guilds": False, "posting": True, "commenting": True}
+    assert store.controls_of(db, KID) == {"chat": False, "spaces": False, "money": False, "anonymous_guilds": False}
     assert store.controls_of(db, STRANGER) is None
     assert store.linked(db, KID, PARENT) and store.linked(db, PARENT, KID) and not store.linked(db, KID, OTHER) and not store.linked(db, KID, KID2)
 
@@ -218,7 +210,7 @@ def test_a_parents_children_are_listed_oldest_first_with_their_switches(db):
     store.set_control(db, KID, "chat", True, NOW)
     listed = store.children_of(db, PARENT, NOW)
     assert [c["username"] for c in listed] == ["Kid", "kid2"] and listed[0]["controls"]["chat"] is True and listed[1]["controls"]["chat"] is False
-    assert all(c["ask_private_utc"] == 0 and c["ask_release_utc"] == 0 for c in listed)
+    assert all(c["ask_release_utc"] == 0 and "private_posting" not in c and "ask_private_utc" not in c for c in listed)
     assert store.made_since(db, PARENT, NOW + 1) == 1 and store.made_since(db, PARENT, 0) == 2
 
 
@@ -232,7 +224,7 @@ def test_a_parent_reaches_only_their_own_child_by_name_ignoring_case(db):
     assert store.child_of(db, PARENT, "kid", NOW) is None and store.children_of(db, PARENT, NOW) == []
 
 
-@pytest.mark.parametrize("name", ["chat", "spaces", "money", "anonymous_guilds", "posting", "commenting"])
+@pytest.mark.parametrize("name", ["chat", "spaces", "money", "anonymous_guilds"])
 def test_each_switch_changes_only_itself(db, name):
     store.link(db, KID, PARENT, NOW)
     before = store.controls_of(db, KID)
@@ -241,8 +233,8 @@ def test_each_switch_changes_only_itself(db, name):
     assert after[name] is (not before[name]) and {k: v for k, v in after.items() if k != name} == {k: v for k, v in before.items() if k != name}
 
 
-@pytest.mark.parametrize("name", ["", None, "private_posting", "chat = 1, money", "child_id", "ask_private_utc", "updated_utc"])
-def test_nothing_but_the_six_names_reaches_the_sql(db, name):
+@pytest.mark.parametrize("name", ["", None, "private_posting", "posting", "commenting", "chat = 1, money", "child_id", "ask_private_utc", "updated_utc"])
+def test_nothing_but_the_four_names_reaches_the_sql(db, name):
     store.link(db, KID, PARENT, NOW)
     assert store.set_control(db, KID, name, True, NOW) is False
     assert store.controls_of(db, KID) == rules.DEFAULTS
@@ -254,10 +246,11 @@ def test_a_switch_for_an_account_with_no_controls_changes_nothing(db):
 
 def test_a_child_asks_once_and_the_parent_clears_it(db):
     store.link(db, KID, PARENT, NOW)
-    assert store.asked(db, KID, "private") == 0 and store.asked(db, KID, "release") == 0
-    assert store.ask(db, KID, "private", NOW + 9) and store.asked(db, KID, "private") == NOW + 9 and store.asked(db, KID, "release") == 0
-    assert store.children_of(db, PARENT, NOW)[0]["ask_private_utc"] == NOW + 9
-    assert store.clear_ask(db, KID, "private") and store.asked(db, KID, "private") == 0
+    assert store.asked(db, KID, "release") == 0
+    assert store.ask(db, KID, "release", NOW + 9) and store.asked(db, KID, "release") == NOW + 9
+    assert store.children_of(db, PARENT, NOW)[0]["ask_release_utc"] == NOW + 9
+    assert store.clear_ask(db, KID, "release") and store.asked(db, KID, "release") == 0
+    assert store.ask(db, KID, "private", NOW) is False and store.asked(db, KID, "private") == 0, "Private posting is gone, and so is asking about it"
     assert store.ask(db, KID, "bogus", NOW) is False and store.asked(db, KID, "bogus") == 0
     assert store.ask(db, STRANGER, "release", NOW) is False, "an account with no controls row has nobody to ask"
 
@@ -318,7 +311,7 @@ def test_a_request_is_opened_once_and_answered_once(db):
     assert store.asked(db, KID, "release") == NOW + 1 and store.asked_country(db, KID) == "GB", "where the CHILD asked from is what is kept"
     assert store.take_ask(db, KID, "release") is True and store.take_ask(db, KID, "release") is False, "two answers at once do their work once"
     assert store.asked(db, KID, "release") == 0 and store.asked_country(db, KID) is None
-    assert store.ask(db, KID, "private", NOW, None) is True and store.take_ask(db, KID, "bogus") is False
+    assert store.ask(db, KID, "private", NOW, None) is False and store.take_ask(db, KID, "bogus") is False
 
 
 def test_a_suspension_the_site_gave_a_child_is_remembered_on_the_ledger_and_outlives_the_link(db):

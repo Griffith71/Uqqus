@@ -27,7 +27,7 @@ from ruqqus.helpers.word_filter_store import apply_comment_severity
 from ruqqus.helpers.languages import detect_language
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
-from ruqqus.helpers import age_declaration, anonymity, private_posting
+from ruqqus.helpers import age_declaration, anonymity
 from ruqqus.helpers import action_log, log_notices
 from ruqqus.classes import *
 from flask import *
@@ -349,7 +349,7 @@ Optional file data:
         return jsonify({"error": reason}), 403 if banned else 400
 
     # a child-locked account can't comment anonymously, and a parent can switch commenting off for a sub-account (helpers/age_declaration.py)
-    locked_error = (age_declaration.activity_refusal(v, "commenting")
+    locked_error = (age_declaration.content_refusal(v)
                     or age_declaration.post_refusal(v, False, flag(request.form, "anonymous")))
     if locked_error:
         return jsonify({"error": msg(locked_error)}), 403
@@ -653,7 +653,7 @@ Optional form data (left out: unchanged):
     if c.board.has_ban(v):
         abort(403)
 
-    commenting_error = age_declaration.activity_refusal(v, "commenting")      # an edit puts new words in a thread as a comment does; deleting stays open
+    commenting_error = age_declaration.content_refusal(v)      # an edit puts new words in a thread as a comment does; deleting stays open
     if commenting_error:
         return jsonify({"error": msg(commenting_error)}), 403
 
@@ -996,7 +996,7 @@ def repost_comment(cid, v):
     also appear (with an inline "Repost" tag next to its byline) on the
     reposter's Comments tab."""
 
-    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    posting_error = age_declaration.content_refusal(v)      # a parent can switch posting off for a sub-account: that covers sharing too
     if posting_error:
         return {"error": msg(posting_error)}, 403
     comment = get_comment(cid)
@@ -1010,8 +1010,6 @@ def repost_comment(cid, v):
     refusal = sharing.comment_refusal(comment, v)        # on a post that isn't public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
-    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
-        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": tr("A comment on a post for a Circle can't be reposted.")}, 400
@@ -1084,7 +1082,7 @@ def forward_comment(cid, v):
     The new post's title is generated automatically from the comment's own
     text - there is no user-editable title for a forwarded comment's post.
     """
-    posting_error = age_declaration.activity_refusal(v, "posting")      # a parent can switch posting off for a sub-account: that covers sharing too
+    posting_error = age_declaration.content_refusal(v)      # a parent can switch posting off for a sub-account: that covers sharing too
     if posting_error:
         return {"error": msg(posting_error)}, 403
     from .posts import create_forward_post_from_comment
@@ -1100,8 +1098,6 @@ def forward_comment(cid, v):
     refusal = sharing.comment_refusal(comment, v)        # on a post that isn't public: only its author shares it
     if refusal:
         return {"error": refusal}, 403
-    if private_posting.refusal(v):                       # Private posting: nothing leaves the Friends circle
-        return {"error": msg(private_posting.REFUSAL)}, 403
 
     if circle_guard.under_audience(g.db, comment):
         return {"error": tr("A comment on a post for a Circle can't be forwarded to a guild.")}, 400

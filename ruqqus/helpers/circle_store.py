@@ -224,28 +224,10 @@ def mutual_followers(db, a_id, b_id):
            AND (SELECT COUNT(*) FROM follows WHERE user_id = :b AND target_id = :a) > 0"""), {"a": a_id, "b": b_id}).scalar()
 
 
-def drop_non_mutual(db, a_id, b_id):
-    """After a follow between two accounts ended: where either has Private posting on and the two no longer follow each other, the other
-    leaves their custom circles (helpers/private_posting.py). Returns how many rows changed."""
-    if mutual_followers(db, a_id, b_id):
-        return 0
-    changed = 0
-    for owner, member in ((a_id, b_id), (b_id, a_id)):
-        changed += db.execute(text("""
-            DELETE FROM circle_members WHERE tier = 'member' AND user_id = :m
-            AND circle_id IN (SELECT c.id FROM circles c JOIN users u ON u.id = c.user_id
-                              WHERE c.user_id = :o AND c.kind = 'custom' AND u.private_posting)"""), {"m": member, "o": owner}).rowcount
-    return changed
-
-
 def add_member(db, owner_id, circle_id, target_id, now=None):
     """Put someone in one of the owner's custom circles. None, or the message why not. They are not told."""
     if not owned(db, owner_id, circle_id, kinds=(circles.CUSTOM,)):
         return tr("That circle isn't yours.")
-    from ruqqus.helpers import private_posting
-    owner_row = db.execute(text("SELECT private_posting FROM users WHERE id = :o"), {"o": owner_id}).fetchone()
-    if owner_row and owner_row[0] and not mutual_followers(db, owner_id, target_id):
-        return msg(private_posting.NOT_MUTUAL)
     already = bool(db.execute(text("SELECT 1 FROM circle_members WHERE circle_id = :c AND user_id = :u AND tier = 'member' AND status = 'active'"),
                               {"c": circle_id, "u": target_id}).fetchone())
     refusal = circles.refusal_to_add_member(

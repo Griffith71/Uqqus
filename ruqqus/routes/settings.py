@@ -28,7 +28,7 @@ from ruqqus.helpers import totp as totp_rules
 from ruqqus.helpers import post_feedback as post_feedback_rules
 from ruqqus.helpers import muting as muting_rules
 from ruqqus.helpers import sensitive as sensitive_rules
-from ruqqus.helpers import child_accounts, private_posting
+from ruqqus.helpers import child_accounts
 from ruqqus.helpers import text_length
 from ruqqus.helpers import profile_edit
 from ruqqus.helpers import age_declaration
@@ -1156,23 +1156,6 @@ def settings_all_shows_sensitive(v):
     g.db.commit()
     muting_rules.clear_cached_feeds(v)
     return jsonify({"message": tr("Saved.")})
-
-
-@app.route("/settings/private_posting", methods=["POST"])
-@auth_required
-@not_qr_limited
-@validate_formkey
-def settings_private_posting(v):
-    """Private posting (helpers/private_posting.py): every post goes only to the Friends circle while it is on. Turning it on is
-    always allowed; turning it off widens who reads what the member shares, so a limited QR sign-in can't, and a sub-account needs
-    its parent (Stage 2). Posts made while it was on stay Friends-only: Who can see this widens one."""
-    wanted = request.values.get("on") == "true"
-    if not wanted and not private_posting.may_turn_off(v):
-        return jsonify({"error": msg(private_posting.CAN_T_TURN_OFF)}), 403
-    v.private_posting = wanted
-    g.db.add(v)
-    g.db.commit()
-    return jsonify({"message": tr("Private posting is on.") if wanted else tr("Private posting is off.")})
 
 
 @app.route("/settings/all_opt_out", methods=["POST"])

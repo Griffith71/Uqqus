@@ -53,7 +53,7 @@ def set_columns(member, **values):
 
 
 def locked(member):
-    set_columns(member, age_declared=2, age_declared_utc=5, filter_level=2, age_lock=1, private_posting=True)
+    set_columns(member, age_declared=2, age_declared_utc=5, filter_level=2, age_lock=1)
     return member
 
 
@@ -93,7 +93,7 @@ def made(real_app, username):
     _, db_session = real_app
     db = db_session()
     db.rollback()
-    return db.execute(text("SELECT age_declared, age_lock, private_posting, filter_level, age_assured_utc FROM users WHERE username = :u"),
+    return db.execute(text("SELECT age_declared, age_lock, filter_level, age_assured_utc FROM users WHERE username = :u"),
                       {"u": username}).first()
 
 
@@ -105,7 +105,7 @@ def test_every_sign_up_from_a_strict_country_starts_locked_whatever_was_posted(r
     form = sign_up_form(client, age_declaration=posted)
     assert post(client, "/signup", country=country, **form).status_code == 302
     row = made(real_app, form["username"])
-    assert row is not None and row.age_declared == 2 and row.age_lock == 1 and row.private_posting is True and row.filter_level == 2
+    assert row is not None and row.age_declared == 2 and row.age_lock == 1 and row.filter_level == 2
     assert row.age_assured_utc == 0
 
 
@@ -116,7 +116,7 @@ def test_an_adult_answer_from_anywhere_else_is_unlocked(real_app, country):
     form = sign_up_form(client, age_declaration="1")
     assert post(client, "/signup", country=country, **form).status_code == 302
     row = made(real_app, form["username"])
-    assert row.age_declared == 1 and row.age_lock is None and row.private_posting is False and row.filter_level == 1
+    assert row.age_declared == 1 and row.age_lock is None and row.filter_level == 1
 
 
 def test_under_18_from_anywhere_starts_the_lock(real_app):
@@ -125,7 +125,7 @@ def test_under_18_from_anywhere_starts_the_lock(real_app):
     form = sign_up_form(client, age_declaration="2")
     assert post(client, "/signup", country="US", **form).status_code == 302
     row = made(real_app, form["username"])
-    assert row.age_declared == 2 and row.age_lock == 1 and row.private_posting is True
+    assert row.age_declared == 2 and row.age_lock == 1
 
 
 @pytest.mark.parametrize("country, adult_disabled, second", [("GB", True, "I'm 13 or over"), ("DE", True, "I'm 16 or over"),
@@ -228,8 +228,8 @@ def test_a_tick_lifts_the_lock_outside_the_strict_countries_and_not_inside(make_
     assert columns(member, "age_lock").age_lock == 1
     lifted = post(client, "/settings/age_declaration", country="US", formkey=member.formkey(client), age_declaration="1")
     assert lifted.status_code == 303
-    row = columns(member, "age_declared", "age_lock", "private_posting", "filter_level", "age_assured_utc")
-    assert (row.age_declared, row.age_lock, row.private_posting, row.filter_level, row.age_assured_utc) == (1, None, False, 1, 0)
+    row = columns(member, "age_declared", "age_lock", "filter_level", "age_assured_utc")
+    assert (row.age_declared, row.age_lock, row.filter_level, row.age_assured_utc) == (1, None, 1, 0)
 
 
 def test_a_parents_sub_account_cant_lift_itself(make_member):
@@ -263,8 +263,8 @@ def test_an_adult_result_lifts_the_lock_anywhere_and_records_the_check(make_memb
     client, where = run_check(member, "adult", "GB", monkeypatch)
     done = get(client, where.replace("http://localhost", ""), "GB")
     assert done.status_code == 303 and done.headers["Location"].endswith("age=confirmed")
-    row = columns(member, "age_declared", "age_lock", "private_posting", "filter_level", "age_assured_utc")
-    assert (row.age_declared, row.age_lock, row.private_posting, row.filter_level) == (1, None, False, 1) and row.age_assured_utc > 0
+    row = columns(member, "age_declared", "age_lock", "filter_level", "age_assured_utc")
+    assert (row.age_declared, row.age_lock, row.filter_level) == (1, None, 1) and row.age_assured_utc > 0
     # confirmed, so the strict country no longer holds the reader to the Child view
     author = adult(make_member())
     strong = add_post(author, word_severity=1)
@@ -338,8 +338,8 @@ def test_an_admin_marking_a_child_account_starts_the_lock(make_member):
     boss, member = admin(make_member), adult(make_member())
     client = boss.browser()
     assert post(client, "/admin/age_declaration", formkey=boss.formkey(client), username=member.username, answer="2").status_code == 302
-    row = columns(member, "age_declared", "age_lock", "private_posting", "filter_level")
-    assert (row.age_declared, row.age_lock, row.private_posting, row.filter_level) == (2, 1, True, 2)
+    row = columns(member, "age_declared", "age_lock", "filter_level")
+    assert (row.age_declared, row.age_lock, row.filter_level) == (2, 1, 2)
 
 
 # ---------------------------------------------------------------- what a locked account can't do

@@ -29,10 +29,7 @@ WELCOME = N_("Your parent or guardian made this account for you. They can see wh
              "who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features "
              "are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) "
              "so that only you know it, because anyone who knows it can sign in as you and read your chats.")
-ASKED_PRIVATE = N_("@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children).")
 ASKED_RELEASE = N_("@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children).")
-PRIVATE_ALLOWED = N_("Your parent or guardian turned Private posting off for your account.")
-PRIVATE_DENIED = N_("Your parent or guardian wants Private posting to stay on.")
 RELEASED = N_("Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in "
               "[Settings > Security](/settings/security), or they can still sign in as you.")
 RELEASE_DENIED = N_("Your parent or guardian didn't agree to release your account.")
@@ -188,17 +185,12 @@ def children_new(v):
 @not_qr_limited
 @validate_formkey
 def children_controls(username, v):
-    """Switch one control for one child (`control`, `on` = "true"): chat, spaces, money, anonymous_guilds, posting, commenting, or `private_posting`
-    (the parent decides it; any change answers the child's open request about it)."""
+    """Switch one control for one child (`control`, `on` = "true"): chat, spaces, money or anonymous_guilds (starting a guild). There is no control for
+    posting or commenting: a child account only reads."""
     child = _child_or_404(v, username)
     name = request.values.get("control")
     on = request.values.get("on") == "true"
-    if name == "private_posting":
-        row = _child_row(child)
-        row.private_posting = on
-        g.db.add(row)
-        child_store.clear_ask(g.db, child["id"], "private")
-    elif not child_store.set_control(g.db, child["id"], name, on, _now()):
+    if not child_store.set_control(g.db, child["id"], name, on, _now()):
         return jsonify({"error": msg(rules.UNKNOWN_CONTROL)}), 400
     if name == "money" and not on:
         _money_off(child["id"])
@@ -213,11 +205,11 @@ def children_controls(username, v):
 @not_qr_limited
 @validate_formkey
 def children_answer(username, v):
-    """Answer a child's open request: `request` is `private` (turn Private posting off) or `release` (they say they are 18 or over and ask to be released),
-    `answer` is `allow` or `deny`. A release lifts the child lock and ends the parent's access; it is refused where only an age check lifts a lock."""
+    """Answer a child's open request: `request` is `release` (they say they are 18 or over and ask to be released), `answer` is `allow` or `deny`. A release
+    lifts the child lock and ends the parent's access; it is refused where only an age check lifts a lock."""
     child = _child_or_404(v, username)
     kind, allow = request.form.get("request"), request.form.get("answer") == "allow"
-    if kind not in ("private", "release") or request.form.get("answer") not in ("allow", "deny"):
+    if kind != "release" or request.form.get("answer") not in ("allow", "deny"):
         abort(400)
     if not child_store.asked(g.db, child["id"], kind):
         return _back(error=msg(rules.NO_REQUEST))
@@ -232,13 +224,6 @@ def children_answer(username, v):
         if row.age_under_utc:
             return _back(error=msg(age_declaration.UNDER_18_FOUND))
     if not child_store.take_ask(g.db, child["id"], kind):          # another request answered it a moment ago and did the work: this one does none
-        return _back(message=tr("Saved."))
-    if kind == "private":
-        if allow:
-            row.private_posting = False
-            g.db.add(row)
-        g.db.commit()
-        notify(row, PRIVATE_ALLOWED if allow else PRIVATE_DENIED)
         return _back(message=tr("Saved."))
     if allow:
         release_child(row, _now())
@@ -353,7 +338,7 @@ def children_activity(username, v):
 @not_qr_limited
 @validate_formkey
 def settings_parent_ask(v):
-    """A child asks their parent: `kind` private (turn Private posting off) or release (I'm 18 or over, release my account). Asked once while it is open."""
+    """A child asks their parent: `kind` is release (I'm 18 or over, release my account). Asked once while it is open."""
     return ask_parent(v, request.form.get("kind"), request.form.get("next"))
 
 
@@ -362,24 +347,23 @@ def ask_parent(v, kind, back="/settings/content"):
     accepted: in the UK, the EU/EEA and Australia an age check is what releases an account."""
     from ruqqus.helpers.redirects import same_site
     back = same_site(back, "/settings/content")
-    if v.age_lock != age_declaration.PARENT_LOCK or kind not in ("private", "release"):
+    if v.age_lock != age_declaration.PARENT_LOCK or kind != "release":
         abort(404)
     country = age_declaration.request_country()
-    if kind == "release":
-        refusal = age_declaration.DECLARE_NOT_HERE if age_declaration.is_strict(country) else age_declaration.UNDER_18_FOUND if v.age_under_utc else None
-        if refusal:
-            return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(refusal), link=back,
-                                   link_text=msg(age_declaration.BACK)), 403
+    refusal = age_declaration.DECLARE_NOT_HERE if age_declaration.is_strict(country) else age_declaration.UNDER_18_FOUND if v.age_under_utc else None
+    if refusal:
+        return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(refusal), link=back,
+                               link_text=msg(age_declaration.BACK)), 403
     parent_id = child_store.parent_of(g.db, v.id)
     if parent_id is None:                  # a lock held by a parent who isn't there (a lost link): nobody to ask, and it doesn't lift itself
         return render_template("message.html", v=v, title=msg(age_declaration.ANSWER_TITLE), error=msg(age_declaration.TARGET_LOCKED), link=back,
                                link_text=msg(age_declaration.BACK)), 403
     # opened by the one request that changes the row (asking again while it is open changes nothing), so the parent is told once however many arrive
-    if child_store.ask(g.db, v.id, kind, _now(), age_declaration._country(country) if kind == "release" else None):
+    if child_store.ask(g.db, v.id, kind, _now(), age_declaration._country(country)):
         g.db.commit()
         parent = g.db.query(User).filter_by(id=parent_id).first()
         if parent is not None and not parent.is_deleted:
-            notify(parent, ASKED_PRIVATE if kind == "private" else ASKED_RELEASE, name=v.username)
+            notify(parent, ASKED_RELEASE, name=v.username)
     return redirect(back + ("&" if "?" in back else "?") + "age=asked_" + kind, code=303)
 
 

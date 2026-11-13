@@ -149,7 +149,8 @@ test.describe("a member from before the question", () => {
     await open(page, "/settings/content");
     await expect(page.locator("#age-declaration")).toContainText("Your account has the child lock on");
     await expect(page.locator("#age-confirm")).toContainText("confirm that you're 18 or over");
-    await expect(page.locator("#private-posting-switch")).toBeChecked();
+    await expect(page.locator("#private-posting-switch"), "Private posting is gone: a child account only reads").toHaveCount(0);
+    await expect(page.locator('a[href="/submit"], [data-compose]'), "no Post button for an account that can't post").toHaveCount(0);
     await expect(page.locator("#filterlevel")).toBeDisabled();
     await expect(page.locator("#filterlevel")).toHaveValue("2");
     await expect(page.locator("#filterlevel-save")).toBeHidden();

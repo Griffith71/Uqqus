@@ -21,11 +21,12 @@ from ruqqus.helpers.sanitize import sanitize
 from ruqqus.classes import *
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
+from ruqqus.helpers import age_declaration
 from ruqqus.helpers import live_threads as live_rules
 from ruqqus.helpers import live_thread_store as live_store
 from ruqqus.helpers import live_view, livestream_status, live_bus, anonymity
 from ruqqus.helpers.alerts import notify
-from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy
 from ruqqus.helpers.visibility import text_hidden
 
 _DAY = 86400
@@ -238,6 +239,9 @@ def live_update_one(uid, v):
 @is_not_banned
 @validate_formkey
 def live_update_add(pid, v):
+    child_error = age_declaration.content_refusal(v)        # an update is posting: a child account is read-only
+    if child_error:
+        return _error(msg(child_error), 403)
     post, primary = _readable(pid, v)
     refused = _space_refusal(primary)
     if refused:

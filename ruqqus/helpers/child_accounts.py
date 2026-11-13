@@ -9,9 +9,10 @@ and is linked to its parent in `account_links`. **A child who signs up alone is 
   least 13, or 16 in Australia, where the law keeps anyone under 16 off a service whatever their parent says (`child_min_age`). This is also how a teen
   below their country's digital age of consent gets an account: the parent consents.
 * **What the parent switches** (`child_controls`): chat, group chats and calls (`chat`), Spaces and live threads (`spaces`), coins, tips, Premium and paid
-  circles (`money`), anonymous posting and creating a guild (`anonymous_guilds`) all start **off**; `posting` and `commenting` start **on**. A locked account
-  is refused a feature unless its parent has switched it on (`age_declaration.feature_refusal`); Sensitive content and the Child word filter are never the
-  parent's to switch. Private posting starts on and the child asks the parent to turn it off.
+  circles (`money`) and starting a guild (`anonymous_guilds`, its old name) all start **off**. A locked account is refused a feature unless its parent has
+  switched it on (`age_declaration.feature_refusal`); Sensitive content and the Child word filter are never the parent's to switch. **There is no switch for
+  posting or commenting: a child account is read-only** (`age_declaration.content_refusal`, the owner's decision of 2026-11-05), so nothing it could post is
+  left for Private posting or anonymity to govern; both are gone.
 * **What the parent sees** (`child_activity`): the child's posts, comments, votes, bookmarks, follows, guilds, the reports made against them, their
   recent sign-ins and the names of who they chat with. **Never the content of a chat**: chats are end-to-end encrypted, the server can't read them. The
   child is told all of this in their own Settings and in the notice they get when the account is made.
@@ -32,10 +33,9 @@ ADULT_AGE = 18
 DEFAULT_MIN_AGE = 13
 PARENT_MIN_AGE = {"AU": 16}           # Australia: nobody under 16 may hold an account, with or without a parent's consent
 
-FEATURES = ("chat", "spaces", "money", "anonymous_guilds")      # start off
-ACTIVITY = ("posting", "commenting")                              # start on
-CONTROLS = FEATURES + ACTIVITY
-DEFAULTS = {**{name: False for name in FEATURES}, **{name: True for name in ACTIVITY}}
+FEATURES = ("chat", "spaces", "money", "anonymous_guilds")      # all start off
+CONTROLS = FEATURES
+DEFAULTS = {name: False for name in FEATURES}
 
 # what each control says on the parent's page: (name, what it allows). English stored, drawn with msg_text / msg
 CONTROL_TEXT = {
@@ -43,10 +43,7 @@ CONTROL_TEXT = {
              N_("They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them.")),
     "spaces": (N_("Spaces and live threads"), N_("They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on.")),
     "money": (N_("Coins, tips, Premium and paid circles"), N_("They can buy and spend coins, tip, buy Premium and join or run paid circles.")),
-    "anonymous_guilds": (N_("Anonymous posting and starting guilds"),
-                         N_("They can post anonymously and start a guild. You can still see who wrote an anonymous post.")),
-    "posting": (N_("Posting"), N_("They can make posts.")),
-    "commenting": (N_("Commenting"), N_("They can comment.")),
+    "anonymous_guilds": (N_("Starting guilds"), N_("They can start a guild. They still can't post or comment: a child account only reads.")),
 }
 
 NEED_ADULT = N_("You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content.")

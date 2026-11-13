@@ -1,6 +1,6 @@
 """Parent and child accounts, the database side (rules: helpers/child_accounts.py). Plain `text()` SQL on Postgres and SQLite (tested on SQLite, tables as in
 schema.sql); no ORM model, so no star import can replace it. The tables are `account_links` (a child and its parent: one row per child), `child_controls`
-(what the parent switched, and the child's open requests) and `child_family` (every account a parent made, kept when a link ends: what the limits count and
+(what the parent switched, and the child's open request to be released) and `child_family` (every account a parent made, kept when a link ends: what the limits count and
 what makes a family not alts). **No statement is built from text**: a control is named by `clean_control` and picks one of the fixed statements below.
 Nothing here commits: the caller does."""
 from sqlalchemy import text
@@ -106,20 +106,18 @@ def made_since(db, parent_id, since):
 
 
 def children_of(db, parent_id, now):
-    """[{id, username, created_utc, controls, ask_private_utc, ask_release_utc, suspended, ...}] of the parent's live children, oldest first. `suspended` is
+    """[{id, username, created_utc, controls, ask_release_utc, suspended, ...}] of the parent's live children, oldest first. `suspended` is
     whether a suspension is in force at `now`, not whether one ever was."""
     rows = db.execute(text("""
-        SELECT u.id, u.username, l.created_utc, c.chat, c.spaces, c.money, c.anonymous_guilds, c.posting, c.commenting, c.ask_private_utc, c.ask_release_utc,
-               u.is_banned, u.unban_utc, u.private_posting
+        SELECT u.id, u.username, l.created_utc, c.chat, c.spaces, c.money, c.anonymous_guilds, c.ask_release_utc, u.is_banned, u.unban_utc
         FROM account_links l JOIN users u ON u.id = l.child_id LEFT JOIN child_controls c ON c.child_id = l.child_id
         WHERE l.parent_id = :p AND NOT u.is_deleted ORDER BY l.child_id"""), {"p": parent_id})
     out = []
     for r in rows:
-        controls = rules.switches({"chat": r[3], "spaces": r[4], "money": r[5], "anonymous_guilds": r[6], "posting": r[7], "commenting": r[8]}
-                                  if r[3] is not None else None)
-        banned, until = bool(r[11]), r[12] or 0
-        out.append({"id": r[0], "username": r[1], "created_utc": r[2], "controls": controls, "ask_private_utc": r[9] or 0,
-                    "ask_release_utc": r[10] or 0, "suspended": banned and (until == 0 or until > now), "unban_utc": until, "private_posting": bool(r[13])})
+        controls = rules.switches({"chat": r[3], "spaces": r[4], "money": r[5], "anonymous_guilds": r[6]} if r[3] is not None else None)
+        banned, until = bool(r[8]), r[9] or 0
+        out.append({"id": r[0], "username": r[1], "created_utc": r[2], "controls": controls, "ask_release_utc": r[7] or 0,
+                    "suspended": banned and (until == 0 or until > now), "unban_utc": until})
     return out
 
 
@@ -133,11 +131,10 @@ def child_of(db, parent_id, username, now):
 
 def controls_of(db, child_id):
     """The child's switches as {name: bool}, or None when it has no row (it isn't a sub-account)."""
-    row = db.execute(text("SELECT chat, spaces, money, anonymous_guilds, posting, commenting FROM child_controls WHERE child_id = :c"), {"c": child_id}).fetchone()
+    row = db.execute(text("SELECT chat, spaces, money, anonymous_guilds FROM child_controls WHERE child_id = :c"), {"c": child_id}).fetchone()
     if row is None:
         return None
-    return {"chat": bool(row[0]), "spaces": bool(row[1]), "money": bool(row[2]), "anonymous_guilds": bool(row[3]), "posting": bool(row[4]),
-            "commenting": bool(row[5])}
+    return {"chat": bool(row[0]), "spaces": bool(row[1]), "money": bool(row[2]), "anonymous_guilds": bool(row[3])}
 
 
 def set_control(db, child_id, name, on, now):
@@ -148,16 +145,13 @@ def set_control(db, child_id, name, on, now):
     return db.execute(statement, {"on": bool(on), "now": now, "c": child_id}).rowcount > 0
 
 
-_ASK = {"private": text("UPDATE child_controls SET ask_private_utc = :t WHERE child_id = :c AND ask_private_utc = 0"),
-        "release": text("UPDATE child_controls SET ask_release_utc = :t, ask_release_country = :cc WHERE child_id = :c AND ask_release_utc = 0")}
-_TAKE = {"private": text("UPDATE child_controls SET ask_private_utc = 0 WHERE child_id = :c AND ask_private_utc > 0"),
-         "release": text("UPDATE child_controls SET ask_release_utc = 0, ask_release_country = NULL WHERE child_id = :c AND ask_release_utc > 0")}
-_OPEN = {"private": text("SELECT ask_private_utc FROM child_controls WHERE child_id = :c"),
-         "release": text("SELECT ask_release_utc FROM child_controls WHERE child_id = :c")}
+_ASK = {"release": text("UPDATE child_controls SET ask_release_utc = :t, ask_release_country = :cc WHERE child_id = :c AND ask_release_utc = 0")}
+_TAKE = {"release": text("UPDATE child_controls SET ask_release_utc = 0, ask_release_country = NULL WHERE child_id = :c AND ask_release_utc > 0")}
+_OPEN = {"release": text("SELECT ask_release_utc FROM child_controls WHERE child_id = :c")}
 
 
 def ask(db, child_id, kind, now, country=None):
-    """The child asks their parent (`private`: to turn Private posting off, `release`: to be released as an adult; `country` is where a release was asked from).
+    """The child asks their parent (`release`: to be released as an adult; `country` is where it was asked from).
     True only for the request that opened it: asking again while one is open changes nothing and says False, so the parent is told once."""
     if kind not in _ASK:
         return False

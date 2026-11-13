@@ -13,7 +13,7 @@ NOW = 2_000_000_000
 
 
 def member(**kw):
-    base = dict(age_declared=1, age_lock=None, age_assured_utc=0, age_under_utc=0, filter_level=None, private_posting=False)
+    base = dict(age_declared=1, age_lock=None, age_assured_utc=0, age_under_utc=0, filter_level=None)
     base.update(kw)
     return NS(**base)
 
@@ -75,9 +75,9 @@ def test_adult_cannot_be_chosen_from_a_strict_country_and_is_stored_as_the_locke
     assert age.signup_answer(age.CHILD, "GB") == age.CHILD and age.signup_answer(age.CHILD, "US") == age.CHILD
 
 
-def test_a_locked_sign_up_writes_the_lock_the_filter_and_private_posting_in_one_statement():
+def test_a_locked_sign_up_writes_the_lock_and_the_filter_in_one_statement():
     fields = age.fields_for(age.signup_answer(age.ADULT, "DE"), NOW)
-    assert fields["age_declared"] == age.CHILD and fields["age_lock"] == age.REGION_LOCK and fields["private_posting"] is True
+    assert fields["age_declared"] == age.CHILD and fields["age_lock"] == age.REGION_LOCK and "private_posting" not in fields
     assert fields["filter_level"] == CHILD and fields["all_shows_sensitive"] is False
 
 
@@ -128,9 +128,9 @@ def test_outside_a_request_the_account_alone_decides():
 
 # ---------------------------------------------------------------- lifting it
 
-def test_declaring_18_lifts_the_lock_turns_private_posting_off_and_returns_the_filter_to_standard():
+def test_declaring_18_lifts_the_lock_and_returns_the_filter_to_standard():
     lifted = age.lift_fields(NOW, False)
-    assert lifted == {"age_declared": 1, "age_declared_utc": NOW, "age_lock": None, "private_posting": False, "filter_level": 1}
+    assert lifted == {"age_declared": 1, "age_declared_utc": NOW, "age_lock": None, "filter_level": 1}
     assert "age_assured_utc" not in lifted, "a tick is not a check"
 
 
@@ -141,11 +141,11 @@ def test_a_check_also_records_that_it_happened_and_an_admins_leaves_the_filter_a
 
 def test_a_check_on_an_account_that_was_never_locked_only_records_it():
     plain = age.assure_fields(member(), NOW)
-    assert plain == {"age_assured_utc": NOW}, "its word filter and Private posting stay as the member chose"
+    assert plain == {"age_assured_utc": NOW}, "its word filter stays as the member chose"
     first = age.assure_fields(member(age_declared=None), NOW)
     assert first == {"age_assured_utc": NOW, "age_declared": 1, "age_declared_utc": NOW}
     locked = age.assure_fields(member(age_declared=2, age_lock=1), NOW)
-    assert locked["age_lock"] is None and locked["age_assured_utc"] == NOW and locked["private_posting"] is False
+    assert locked["age_lock"] is None and locked["age_assured_utc"] == NOW and "private_posting" not in locked
 
 
 # ---------------------------------------------------------------- what a locked account can't do

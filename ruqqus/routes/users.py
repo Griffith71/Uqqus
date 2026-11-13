@@ -513,7 +513,6 @@ URL path parameters:
 
     g.db.delete(follow)
     g.db.flush()
-    circle_store.drop_non_mutual(g.db, v.id, target.id)       # Private posting: a circle holds only mutual followers
 
     cache.delete_memoized(User.idlist, v, kind="user")
 

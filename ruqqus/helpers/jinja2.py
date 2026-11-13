@@ -182,11 +182,12 @@ def score_mode(v):
     return SCORE_NET if v is not None and getattr(v, "score_display", 0) == SCORE_NET else SCORE_UPVOTES
 
 
-@app.template_global("private_posting_on")
-def private_posting_on(v):
-    """Is Private posting on for this member (helpers/private_posting.py)? The audience choices are drawn locked to Friends."""
-    from ruqqus.helpers import private_posting
-    return private_posting.on(v)
+@app.template_global("content_locked")
+def content_locked(v):
+    """Is this account read-only (helpers/age_declaration.py `content_refusal`)? A child-locked account makes no post or comment, so the places that offer
+    to make one (the Post button, the composers, a comment box, an Edit) are not drawn for it."""
+    from ruqqus.helpers import age_declaration
+    return bool(age_declaration.content_refusal(v))
 
 
 @app.template_global("sensitive_definition")
@@ -254,12 +255,12 @@ def child_view(v):
         return None
     from ruqqus.helpers import child_accounts, child_store
     return {"controls": child_accounts.switches(v.child_controls), "text_of": child_accounts.CONTROL_TEXT, "order": child_accounts.CONTROLS,
-            "ask_private": child_store.asked(g.db, v.id, "private"), "ask_release": child_store.asked(g.db, v.id, "release")}
+            "ask_release": child_store.asked(g.db, v.id, "release")}
 
 
 @app.template_global("feature_locked")
 def feature_locked(v, feature):
-    """Is this feature off for this account (chat, spaces, money, guilds, anonymous)? A child-locked account has it off unless its parent switched it on."""
+    """Is this feature off for this account (chat, spaces, money, guilds)? A child-locked account has it off unless its parent switched it on."""
     from ruqqus.helpers import age_declaration
     return bool(age_declaration.feature_refusal(v, feature))
 

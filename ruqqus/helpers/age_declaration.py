@@ -10,15 +10,18 @@ without an answer (routes/login.py); a member from before is asked only in Setti
 
 **Two things lock, kept apart.**
 * *The stored lock* (`is_locked`): a child account (the under-18 option, or any sign-up from a strict country, where "18 or over" can't be
-  picked). It stays on the Child word filter, never shows Sensitive content, and can't use chat, Spaces, money, anonymity or guild creation
-  (`feature_refusal`; routes/wrappers.py `not_child_locked`); others can't start those things with it (`target_refusal`). Private posting
-  starts on for it (helpers/private_posting.py).
+  picked). It stays on the Child word filter, never shows Sensitive content, and can't use chat, Spaces, money or guild creation
+  (`feature_refusal`; routes/wrappers.py `not_child_locked`); others can't start those things with it (`target_refusal`). **It is read-only**
+  (the owner, 2026-11-05: "child accounts can't create content at all"): it can't post or comment in any form, new or edited, nor forward,
+  repost, make a poll, a draft, a shared draft, a story or a Space, in any guild (`content_refusal`, asked at every route that makes
+  something a reader sees). Reading, voting, following, joining guilds, bookmarking, reporting and **deleting its own items** still work.
+  **No parent switch covers it**: a parent's switches are chat, Spaces, money and starting a guild.
 * *The regional rule* (`region_locked`): anyone in a strict country who has not been age-confirmed browses at the Child level, a visitor or
   an account made elsewhere included. It changes only what they SEE, through `visibility.viewer_level`; features follow the stored lock.
   An unknown country (no header, Tor, a VPN) is not strict. Staff are confirmed through the admin route so they see what they moderate.
 
 A stored lock is lifted by the vendor check anywhere, or by declaring 18 or over where that is accepted (not a strict country): `lift_fields`.
-That is one statement, so the constraint is never broken in between, and it turns Private posting off. A child account's word filter and
+That is one statement, so the constraint is never broken in between. A child account's word filter and
 sensitive switch are held by `locked_filter` / `locked_sensitive` and the database CHECK `users_age_declared_rule`.
 
 What else a child account can't do is in routes/wrappers.py (`not_child_locked`). Rules here need no database except `terms_notice_ids`.
@@ -190,7 +193,8 @@ def signup_answer(answer, country):
 # a feature (what @not_child_locked names) and the switch of a parent's sub-account that turns it on (helpers/child_accounts.py)
 # `messaging` is the Matrix session itself (chat's token and keys): it is chat. A call Space runs on it too, so a call is a chat feature (the switch's own words:
 # "Chat, group chats and calls"): a child with Spaces on and chat off has boards and live threads and no calls, and never holds a Matrix token
-FEATURE_CONTROL = {"chat": "chat", "messaging": "chat", "spaces": "spaces", "money": "money", "guilds": "anonymous_guilds", "anonymous": "anonymous_guilds"}
+# (`anonymous_guilds` is the control's old name: it is only "starting a guild" now, since a child account can't post anonymously or at all)
+FEATURE_CONTROL = {"chat": "chat", "messaging": "chat", "spaces": "spaces", "money": "money", "guilds": "anonymous_guilds"}
 
 
 def _controls(v):
@@ -206,8 +210,9 @@ def parent_allows(v, feature):
 
 
 def feature_refusal(v, feature=None):
-    """The message when this account may not chat, host Spaces, spend or earn coins, post anonymously or make a guild (`feature`: chat, spaces, money,
-    guilds, anonymous), else None. A sub-account is allowed what its parent has switched on, and told whose decision it is when not."""
+    """The message when this account may not chat, host Spaces, spend or earn coins or make a guild (`feature`: chat, spaces, money, guilds), else None.
+    A sub-account is allowed what its parent has switched on, and told whose decision it is when not. (Posting and commenting are not features a parent
+    switches: `content_refusal`.)"""
     if not is_locked(v):
         return None
     if feature and parent_allows(v, feature):
@@ -215,25 +220,21 @@ def feature_refusal(v, feature=None):
     return PARENT_OFF if getattr(v, "age_lock", None) == PARENT_LOCK else FEATURE_LOCKED
 
 
-def activity_refusal(v, what):
-    """The message when a parent has switched off `posting` or `commenting` for this sub-account, else None. They start on. A sub-account with no controls row at
-    all (it can't be read: a lost row) is refused, like every feature: it fails closed."""
-    if getattr(v, "age_lock", None) != PARENT_LOCK:
-        return None
-    controls = _controls(v)
-    return None if controls and controls.get(what, True) else PARENT_OFF
+def content_refusal(v):
+    """The message when this account may not make a post or a comment in any form, else None: **every locked account is read-only** (the owner, 2026-11-05;
+    helpers/age_declaration.py docstring). It is the one question every route that makes something a reader sees asks: a new post, a comment, an edit of either,
+    a forward or repost, a poll, a draft or scheduled post, a shared draft, a story, a Space, a wiki edit, a live update. Deleting stays open (no route asks this
+    one for a delete), so a child can always take its own words down. No parent's switch changes it, so it is the account's lock, never "your parent turned this
+    off"."""
+    return FEATURE_LOCKED if is_locked(v) else None
 
 
 def post_refusal(v, sensitive, anonymous):
-    """The message when a locked account's new post asks for something it may not have: to be marked Sensitive (it can't see such content, so it doesn't
-    post it, and no parent can switch that) or anonymous (a sub-account's parent can). The composers don't draw those switches for it; this is the server's word."""
+    """The message when a locked account's new post asks for something it may not have: to be marked Sensitive (it can't see such content, so it doesn't post
+    it) or anonymous. `content_refusal` already refuses the post itself, so this only keeps the server's word about those two flags where a caller asks."""
     if not is_locked(v):
         return None
-    if sensitive:
-        return FEATURE_LOCKED
-    if anonymous and not parent_allows(v, "anonymous"):
-        return PARENT_OFF if getattr(v, "age_lock", None) == PARENT_LOCK else FEATURE_LOCKED
-    return None
+    return FEATURE_LOCKED if (sensitive or anonymous) else None
 
 
 def target_refusal(target, feature=None):
@@ -245,9 +246,9 @@ def target_refusal(target, feature=None):
 
 
 def sub_account_fields(now):
-    """The columns of a child account its parent makes: the child lock, held by the parent (`age_lock` 2), the Child filter and Private posting on."""
+    """The columns of a child account its parent makes: the child lock, held by the parent (`age_lock` 2), and the Child filter."""
     return {"age_declared": CHILD, "age_declared_utc": now, "filter_level": CHILD_FILTER, "hide_offensive": True, "all_shows_sensitive": False,
-            "age_lock": PARENT_LOCK, "private_posting": True}
+            "age_lock": PARENT_LOCK}
 
 
 def is_asked(v):
@@ -257,19 +258,17 @@ def is_asked(v):
 
 def fields_for(answer, now):
     """The columns an answer writes, in one statement so the constraints are never broken in between. The only place a filter
-    level, the sensitive choice, the lock and Private posting are set for being a child account. `answer` None clears it (an admin)."""
+    level, the sensitive choice and the lock are set for being a child account. `answer` None clears it (an admin)."""
     fields = {"age_declared": answer, "age_declared_utc": now if answer else 0, "age_lock": None}
     if answer == CHILD:
-        fields.update(filter_level=CHILD_FILTER, hide_offensive=True, all_shows_sensitive=False, age_lock=REGION_LOCK,
-                      private_posting=True)
+        fields.update(filter_level=CHILD_FILTER, hide_offensive=True, all_shows_sensitive=False, age_lock=REGION_LOCK)
     return fields
 
 
 def lift_fields(now, assured_by_check, reset_filter=True):
-    """The columns that lift a lock, in one statement: 18 or over, no lock, Private posting off (a grown-up who just confirmed
-    would otherwise keep posting to Friends only without knowing why), the word filter back to Standard (an admin's confirmation
+    """The columns that lift a lock, in one statement: 18 or over, no lock, the word filter back to Standard (an admin's confirmation
     leaves it: the member lowers it with their password). `assured_by_check` is a vendor's check or an admin's, never a tick."""
-    fields = {"age_declared": ADULT, "age_declared_utc": now, "age_lock": None, "private_posting": False}
+    fields = {"age_declared": ADULT, "age_declared_utc": now, "age_lock": None}
     if assured_by_check:
         fields["age_assured_utc"] = now
     if reset_filter:
@@ -279,7 +278,7 @@ def lift_fields(now, assured_by_check, reset_filter=True):
 
 def assure_fields(v, now):
     """The columns a confirmed age (a vendor's check, or an admin) writes for this account. A locked account is lifted (`lift_fields`);
-    an account that was never locked only records the check, and keeps the word filter and Private posting it chose."""
+    an account that was never locked only records the check, and keeps the word filter it chose."""
     if is_locked(v):
         return lift_fields(now, True)
     fields = {"age_assured_utc": now}

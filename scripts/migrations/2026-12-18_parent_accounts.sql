@@ -1,8 +1,9 @@
 -- Parent and child accounts (helpers/child_accounts.py, helpers/child_store.py; the owner, 2026-11-05). A parent (an age-confirmed adult) makes a
 -- child sub-account from their own Settings (users.age_lock = 2). `account_links` says whose it is (one parent a child, up to 5 a parent);
--- `child_controls` holds what the parent has switched on or off for that child: chat, Spaces, money and "anonymous posting and guilds" start OFF,
--- posting and commenting start ON. `ask_private_utc` and `ask_release_utc` are the child's open requests to the parent (to turn Private posting
--- off, and to be released as an adult after saying 18 or over where a tick is accepted); 0 means none; `ask_release_country` is where the child asked from
+-- `child_controls` holds what the parent has switched on or off for that child: chat, Spaces, money and starting a guild (`anonymous_guilds`, its old name)
+-- all start OFF. (A child account is read-only: no switch for posting or commenting, and no Private posting; the Log's slice D5 took them out.)
+-- `ask_release_utc` is the child's open request to the parent (to be released as an adult after saying 18 or over where a tick is accepted);
+-- 0 means none; `ask_release_country` is where the child asked from
 -- (whether a tick was accepted is the child's country's rule, not the parent's). The suspension the site gives a child because its parent was suspended is
 -- remembered on `child_family` (below), which outlives the link. Neither table has a foreign key to users
 -- (the project's rule), so closing an account deletes its rows (helpers/account_cleanup.py). Safe to run twice.
@@ -20,9 +21,6 @@ CREATE TABLE IF NOT EXISTS child_controls (
     spaces boolean NOT NULL DEFAULT false,
     money boolean NOT NULL DEFAULT false,
     anonymous_guilds boolean NOT NULL DEFAULT false,
-    posting boolean NOT NULL DEFAULT true,
-    commenting boolean NOT NULL DEFAULT true,
-    ask_private_utc integer NOT NULL DEFAULT 0,
     ask_release_utc integer NOT NULL DEFAULT 0,
     ask_release_country character varying(2),
     updated_utc integer NOT NULL DEFAULT 0
@@ -30,6 +28,10 @@ CREATE TABLE IF NOT EXISTS child_controls (
 -- a database that ran this file before it was finished
 ALTER TABLE child_controls ADD COLUMN IF NOT EXISTS ask_release_country character varying(2);
 ALTER TABLE child_controls DROP COLUMN IF EXISTS suspended_until_utc;
+-- a child account is read-only (the Log's slice D5): no switch for posting or commenting, and no Private posting to ask a parent about
+ALTER TABLE child_controls DROP COLUMN IF EXISTS posting;
+ALTER TABLE child_controls DROP COLUMN IF EXISTS commenting;
+ALTER TABLE child_controls DROP COLUMN IF EXISTS ask_private_utc;
 
 -- Every child account a parent has made, kept when a link ends (a release, stopping, a deleted child): the limits count what was made, not what is still
 -- linked (or stopping and deleting would make the limit free), and a parent, its children and their siblings are never alts of each other. `child_id` is

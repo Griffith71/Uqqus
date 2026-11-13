@@ -42,7 +42,7 @@ def row(member):
 
 def make_child(member):
     db = member.db_session()
-    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2, age_lock = 1, private_posting = true "
+    db.execute(text("UPDATE users SET age_declared = 2, age_declared_utc = 5, filter_level = 2, age_lock = 1 "
                     "WHERE id = :u"), {"u": member.id})
     db.commit()
 
@@ -59,7 +59,7 @@ def locked_columns(real_app, username):
     _, db_session = real_app
     db = db_session()
     db.rollback()
-    return db.execute(text("SELECT age_lock, private_posting, age_assured_utc FROM users WHERE username = :u"), {"u": username}).first()
+    return db.execute(text("SELECT age_lock, age_assured_utc FROM users WHERE username = :u"), {"u": username}).first()
 
 
 def sign_up_form(client, **fields):
@@ -117,7 +117,7 @@ def test_a_child_account_signs_up_on_the_child_filter_and_sees_no_notice(real_ap
     made = signed_up(real_app, form["username"])
     assert made.age_declared == 2 and made.filter_level == 2 and made.hide_offensive is True and made.all_shows_sensitive is False
     lock = locked_columns(real_app, form["username"])
-    assert lock.age_lock == 1 and lock.private_posting is True and lock.age_assured_utc == 0
+    assert lock.age_lock == 1 and lock.age_assured_utc == 0
     assert 'id="age-notice"' not in get(client, "/all").get_data(as_text=True)
 
 
@@ -250,7 +250,7 @@ def test_answering_under_18_starts_the_child_lock_at_once(make_member):
     assert saved.status_code == 303
     now = row(member)
     assert now.age_declared == 2 and now.filter_level == 2 and now.all_shows_sensitive is False
-    assert member.user().age_lock == 1 and member.user().private_posting is True
+    assert member.user().age_lock == 1
     assert 'id="age-notice"' not in get(client, "/all").get_data(as_text=True)
     assert post(client, "/settings/profile", formkey=member.formkey(client), filter_level="1",
                 password=member.password).status_code == 403, "the lock holds for an answer given in Settings"
@@ -286,7 +286,7 @@ def test_a_locked_account_can_lift_the_lock_by_saying_18_where_a_tick_is_accepte
     lifted = answer(member, client, age_declaration="1", next="/settings/content")
     assert lifted.status_code == 303 and lifted.headers["Location"].endswith("age=lifted")
     now = member.user()
-    assert now.age_declared == 1 and now.age_lock is None and now.private_posting is False and now.filter_level == 1
+    assert now.age_declared == 1 and now.age_lock is None and now.filter_level == 1
     assert now.age_assured_utc == 0, "a tick is not a check"
     assert answer(member, client, age_declaration="1").status_code == 409
 
@@ -424,15 +424,15 @@ def test_the_data_export_and_closing_the_account(make_member):
     db = member.db_session()
     exported = data_export.build(db, member.id)
     assert exported["age"] == [{"age_declared": "a child account", "age_declared_utc": 5, "age_lock": "child lock", "age_confirmed_utc": 0,
-                                "age_check_found_under_18_utc": 0, "private_posting": True}]
+                                "age_check_found_under_18_utc": 0}]
     db.rollback()
     set_columns = db.execute(text("UPDATE users SET age_assured_utc = 77, age_under_utc = 88 WHERE id = :u"), {"u": member.id})
     db.commit()
     account_cleanup.close_account(db, member.id, int(time.time()))
     db.commit()
     assert row(member).age_declared is None and row(member).age_declared_utc == 0
-    left = db.execute(text("SELECT age_lock, age_assured_utc, age_under_utc, private_posting FROM users WHERE id = :u"), {"u": member.id}).first()
-    assert tuple(left) == (None, 0, 0, False), "nothing about their age is kept"
+    left = db.execute(text("SELECT age_lock, age_assured_utc, age_under_utc FROM users WHERE id = :u"), {"u": member.id}).first()
+    assert tuple(left) == (None, 0, 0), "nothing about their age is kept"
 
 
 def test_closing_an_account_takes_an_admins_note_and_notice_with_it(make_member):

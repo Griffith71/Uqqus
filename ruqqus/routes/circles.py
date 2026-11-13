@@ -9,7 +9,7 @@ import time
 from flask import abort, g, jsonify, redirect, render_template, request
 
 from ruqqus.classes import Board, ForwardRelationship, RepostRelationship, Submission, User
-from ruqqus.helpers import age_declaration, child_store, circle_guard, circle_store, circles, coauthors, private_posting, sharing, subscriber_badges
+from ruqqus.helpers import age_declaration, child_store, circle_guard, circle_store, circles, coauthors, sharing, subscriber_badges
 from ruqqus.helpers.visibility import text_hidden
 from ruqqus.helpers.word_filter_store import get_filter
 from ruqqus.helpers.alerts import notify
@@ -136,8 +136,8 @@ def settings_circles(v):
 @not_qr_limited
 @validate_formkey
 def circle_create(v):
-    """Make a circle: `kind` custom (anyone, CUSTOM_LIMIT) or paid (Premium, PAID_LIMIT, with a `price`). A custom circle is free, and Private posting relies
-    on having them, so an age lock doesn't stop it; a paid circle is money, which it does."""
+    """Make a circle: `kind` custom (anyone, CUSTOM_LIMIT) or paid (Premium, PAID_LIMIT, with a `price`). A custom circle is free, so an age lock doesn't stop it (it holds
+    people the account chooses to show its own posts to: none, since it makes none); a paid circle is money, which it does."""
     kind = (request.values.get("kind") or circles.CUSTOM).strip()
     refused = age_declaration.feature_refusal(v, "money") if kind == circles.PAID else None
     if refused:
@@ -426,8 +426,6 @@ def circle_post_audience(pid, v):
     audience, tokens, error = circles.parse_audience(raw, chosen)
     if error:
         return _fail(error)
-    if audience != circles.CIRCLES and private_posting.refusal(v):
-        return _fail(msg(private_posting.REFUSAL), 403)          # Private posting: not Public until it is turned off
     circle_ids = []
     if audience == circles.CIRCLES:
         circle_ids, error = circle_store.resolve(g.db, v.id, tokens)

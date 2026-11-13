@@ -147,3 +147,54 @@ def test_the_routes_that_let_an_account_stop_spending_or_make_a_free_circle_ask_
     assert fund.index('"leave"') < fund.index('age_declaration.feature_refusal(v, "money")'), "leaving comes first and is never refused"
     circle = (ROUTES / "circles.py").read_text(encoding="utf-8").split("def circle_create(", 1)[1].split("\n@app.", 1)[0]
     assert 'if kind == circles.PAID else None' in circle and 'age_declaration.feature_refusal(v, "money")' in circle
+
+
+# --- slice D5: a child-locked account only reads (the owner, 2026-11-05). Every route that makes something a reader sees asks the one rule. ----------------------------
+CREATING = {
+    "posts.py": "submit_get submit_post edit_post forward_post repost_post",
+    "comments.py": "api_comment edit_comment forward_comment repost_comment",
+    "stories.py": "story_create",
+    "spaces.py": "spaces_new space_create space_message_add space_update_add",
+    "live_threads.py": "live_update_add",
+    "post_drafts.py": "save_draft",
+    "collab.py": "collab_new collab_publish collab_fork",
+    "coauthors.py": "coauthor_accept",
+    "guild_wiki.py": "guild_wiki_save",
+}
+
+
+def _function(module, name):
+    source = (ROUTES / module).read_text(encoding="utf-8")
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.FunctionDef) and node.name == name:
+            return ast.get_source_segment(source, node)
+    raise AssertionError((module, name, "no such function"))
+
+
+def test_every_route_that_makes_something_a_reader_sees_asks_the_one_rule():
+    for module, names in CREATING.items():
+        for name in names.split():
+            assert "age_declaration.content_refusal(" in _function(module, name), (module, name)
+
+
+def test_the_shared_draft_routes_that_type_or_join_ask_through_may_type():
+    collab = (ROUTES / "collab.py").read_text(encoding="utf-8")
+    assert "age_declaration.content_refusal(v)" in collab.split("def _may_type(", 1)[1].split("\n\n\n", 1)[0]
+    for name in ("collab_send_op", "collab_invite_answer"):
+        assert "_may_type(v)" in _function("collab.py", name), name
+
+
+def test_the_one_rule_refuses_every_locked_account_and_no_other_and_no_route_that_deletes_asks_it():
+    rule = (ROOT / "ruqqus" / "helpers" / "age_declaration.py").read_text(encoding="utf-8").split("def content_refusal(v):", 1)[1].split("\ndef ", 1)[0]
+    assert "return FEATURE_LOCKED if is_locked(v) else None" in rule, "no parent's switch changes it"
+    for module, name in (("posts.py", "delete_post_pid"), ("comments.py", "delete_comment"), ("stories.py", "story_delete")):
+        assert "content_refusal" not in _function(module, name), (module, "deleting stays open")
+
+
+def test_no_template_offers_a_child_account_a_way_to_post_or_comment():
+    for template in ("default.html", "header.html"):
+        assert "{% if v and not content_locked(v) %}" in (ROOT / "ruqqus" / "templates" / template).read_text(encoding="utf-8"), template
+    menu = (ROOT / "ruqqus" / "templates" / "partials" / "account_menu.html").read_text(encoding="utf-8")
+    assert "{% if not content_locked(v) %}" in menu and 'href="/submit"' in menu
+    for template in ("partials/comment_form.html", "home.html", "board.html"):
+        assert "content_locked(v)" in (ROOT / "ruqqus" / "templates" / template).read_text(encoding="utf-8"), template

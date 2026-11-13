@@ -1,6 +1,7 @@
 """Parent and child accounts on the real app and a real Postgres (helpers/child_accounts.py, routes/children_pages.py; CLAUDE.md "Age declaration and the child
 lock"): who may make one and how many, what a parent's switches do to what the child may do and to who may reach them, the child's requests, every road that
 releases or removes a child, and a parent's ban or deletion taking its children with it."""
+import contextlib
 import re
 import secrets
 import time
@@ -32,6 +33,14 @@ def post(client, path, country=None, **form):
     return client.post(path, base_url=BASE, headers=headers(country), environ_base={"REMOTE_ADDR": address()}, data=form)
 
 
+def page_of(client, path, country=None):
+    """A page, through one redirect to the item's own address (a post's address names its author)."""
+    answer = get(client, path, country)
+    if answer.status_code in (301, 302, 303, 308):
+        answer = get(client, answer.headers["Location"].replace(BASE, ""), country)
+    return answer
+
+
 def row(member_or_id, *names, db=None):
     db = db or member_or_id.db_session()
     db.rollback()
@@ -43,6 +52,21 @@ def set_columns(member, **values):
     db = member.db_session()
     db.execute(text("UPDATE users SET " + ", ".join(f"{k} = :{k}" for k in values) + " WHERE id = :u"), dict(values, u=member.id))
     db.commit()
+
+
+@contextlib.contextmanager
+def before_the_lock(member, kid):
+    """The child account as it was before it was locked, for the tests that need something it "wrote": a child account only reads (CLAUDE.md "Age
+    declaration and the child lock"), so a post or a comment of its own is made with the lock lifted in SQL and put back as it was after."""
+    db = member.db_session()
+    db.execute(text("UPDATE users SET age_declared = 1, age_lock = NULL, filter_level = 1 WHERE id = :u"), {"u": kid.id})
+    db.commit()
+    try:
+        yield
+    finally:
+        db.rollback()
+        db.execute(text("UPDATE users SET age_declared = 2, age_lock = 2, filter_level = 2, all_shows_sensitive = false WHERE id = :u"), {"u": kid.id})
+        db.commit()
 
 
 def parent(make_member):
@@ -109,7 +133,7 @@ def made(make_member, real_app):
 def controls(member, kid_id):
     db = member.db_session()
     db.rollback()
-    r = db.execute(text("SELECT chat, spaces, money, anonymous_guilds, posting, commenting, ask_private_utc, ask_release_utc FROM child_controls WHERE child_id = :c"),
+    r = db.execute(text("SELECT chat, spaces, money, anonymous_guilds, ask_release_utc FROM child_controls WHERE child_id = :c"),
                    {"c": kid_id}).first()
     return None if r is None else r
 
@@ -121,14 +145,15 @@ def switch(mum, kid, name, on):
 
 # ---------------------------------------------------------------- making one
 
-def test_an_adult_makes_a_child_account_with_the_lock_the_filter_private_posting_and_nothing_on(made):
+def test_an_adult_makes_a_child_account_with_the_lock_the_filter_and_nothing_on(made):
     mum, kid = made()
-    r = row(kid.id, "age_declared", "age_lock", "private_posting", "filter_level", "all_shows_sensitive", "following_visibility", "tos_agreed_utc",
+    r = row(kid.id, "age_declared", "age_lock", "filter_level", "all_shows_sensitive", "following_visibility", "tos_agreed_utc",
             "age_assured_utc", "email", db=mum.db_session())
-    assert (r.age_declared, r.age_lock, r.private_posting, r.filter_level, r.all_shows_sensitive) == (2, 2, True, 2, False)
+    assert (r.age_declared, r.age_lock, r.filter_level, r.all_shows_sensitive) == (2, 2, 2, False)
     assert r.following_visibility == 2 and r.tos_agreed_utc > 0 and r.age_assured_utc == 0 and r.email is None
     c = controls(mum, kid.id)
-    assert tuple(c)[:6] == (False, False, False, False, True, True) and c.ask_private_utc == 0 and c.ask_release_utc == 0
+    assert tuple(c)[:4] == (False, False, False, False) and c.ask_release_utc == 0
+    assert "posting" not in c._fields and "commenting" not in c._fields and "ask_private_utc" not in c._fields, "a child account only reads: no switch for it"
     db = mum.db_session()
     db.rollback()
     assert db.execute(text("SELECT parent_id FROM account_links WHERE child_id = :c"), {"c": kid.id}).scalar() == mum.id
@@ -280,7 +305,7 @@ def test_money_spaces_and_guilds_follow_their_own_switches(made, real_app):
 
 def test_the_sensitive_switch_and_the_word_filter_are_never_the_parents(made):
     mum, kid = made()
-    for name in ("chat", "spaces", "money", "anonymous_guilds", "posting", "commenting"):
+    for name in ("chat", "spaces", "money", "anonymous_guilds"):
         switch(mum, kid, name, True)
     client = kid.browser()
     refused = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="hello there", body="words", post_to_profile="1", sensitive="true")
@@ -289,32 +314,98 @@ def test_the_sensitive_switch_and_the_word_filter_are_never_the_parents(made):
     assert row(kid.id, "filter_level", db=mum.db_session()).filter_level == 2
 
 
-def test_posting_and_commenting_obey_their_switches(made, make_member):
+def test_a_child_account_only_reads_whatever_the_parent_switches(made, make_member):
+    """The owner's rule (the Log plan's decision 14): a child-locked account can't create content at all, and there is no switch for it."""
     mum, kid = made()
+    for name in ("chat", "spaces", "money", "anonymous_guilds"):
+        assert switch(mum, kid, name, True).status_code == 200
     client = kid.browser()
-    submit = lambda: post(client, "/api/vue/submit", formkey=kid.formkey(client), title=f"Kid post {secrets.token_hex(3)}", body="words", post_to_profile="1")
-    assert submit().status_code == 200, "on by default"
-    assert switch(mum, kid, "posting", False).status_code == 200
-    refused = submit()
-    assert refused.status_code == 403 and "parent or guardian has turned this off" in refused.get_data(as_text=True)
-    assert switch(mum, kid, "posting", True).status_code == 200 and submit().status_code == 200
+    key = kid.formkey(client)
+    refused = post(client, "/api/vue/submit", formkey=key, title=f"Kid post {secrets.token_hex(3)}", body="words", post_to_profile="1")
+    assert refused.status_code == 403 and "age-restricted" in refused.get_data(as_text=True), "the lock's own words, never 'your parent turned this off'"
+    assert "parent or guardian" not in refused.get_data(as_text=True)
     author = parent(make_member)
     posted = post((_c := author.browser()), "/api/vue/submit", formkey=author.formkey(_c), title="Adult post", body="x", post_to_profile="1")
     parent_post = posted.get_json()["id"]
-    comment = lambda: post(client, "/api/comment", formkey=kid.formkey(client), parent_fullname=f"t2_{parent_post}", body=f"hello {secrets.token_hex(3)}")
-    assert comment().status_code == 200
-    switch(mum, kid, "commenting", False)
-    assert comment().status_code == 403
+    assert post(client, "/api/comment", formkey=key, parent_fullname=f"t2_{parent_post}", body=f"hello {secrets.token_hex(3)}").status_code == 403
+    for name in ("posting", "commenting", "private_posting"):
+        assert switch(mum, kid, name, True).status_code == 400, f"{name} is not a switch any more"
+    assert post(client, "/settings/private_posting", formkey=key, on="false").status_code in (404, 405)
 
 
-def test_anonymous_posting_is_only_with_the_one_switch(made):
+def test_what_a_child_account_can_still_do_is_reading_voting_following_bookmarking_and_taking_its_own_words_down(made, make_member):
+    mum, kid = made()
+    author = parent(make_member)
+    ac = author.browser()
+    post_id = post(ac, "/api/vue/submit", formkey=author.formkey(ac), title=f"Adult post {secrets.token_hex(3)}", body="x", post_to_profile="1").get_json()["id"]
+    client = kid.browser()
+    key = kid.formkey(client)
+    assert page_of(client, f"/post/{post_id}").status_code == 200
+    assert post(client, f"/api/vote/post/{post_id}/1", formkey=key).status_code in (200, 204), "voting is not creating"
+    assert post(client, f"/api/follow/{author.username}", formkey=key).status_code in (200, 204, 302, 303), "following is not creating"
+    assert post(client, f"/save_post/{post_id}", formkey=key).status_code in (200, 204), "bookmarking is not creating"
+    with before_the_lock(mum, kid):
+        mine = post(client, "/api/vue/submit", formkey=key, title=f"Written before {secrets.token_hex(3)}", body="w", post_to_profile="1").get_json()["id"]
+    assert post(client, f"/delete_post/{mine}", formkey=key).status_code in (200, 204, 303), "a child can always take its own words down"
+
+
+def test_a_child_account_is_refused_every_way_of_making_something(made, make_member):
+    """Every route that makes something a reader sees, on real items (a refusal that came only from a missing id would prove nothing)."""
+    from ruqqus.helpers.base36 import base36encode
+    mum, kid = made()
+    for name in ("chat", "spaces", "money", "anonymous_guilds"):
+        switch(mum, kid, name, True)
+    author = parent(make_member)
+    ac = author.browser()
+    their_post = post(ac, "/api/vue/submit", formkey=author.formkey(ac), title=f"Adult post {secrets.token_hex(3)}", body="x", post_to_profile="1").get_json()["id"]
+    their_comment = post(ac, "/api/comment", formkey=author.formkey(ac), parent_fullname=f"t2_{their_post}", body="an adult's comment")
+    assert their_comment.status_code == 200, their_comment.get_data(as_text=True)[:200]
+    their_cid = base36encode(db_scalar(mum, "SELECT id FROM comments WHERE author_id = :u ORDER BY id DESC LIMIT 1", u=author.id))
+    client = kid.browser()
+    key = kid.formkey(client)
+    with before_the_lock(mum, kid):
+        mine = post(client, "/api/vue/submit", formkey=key, title=f"Kid post {secrets.token_hex(3)}", body="first", post_to_profile="1").get_json()["id"]
+        assert post(client, "/api/comment", formkey=key, parent_fullname=f"t2_{mine}", body="a first comment").status_code == 200
+    my_cid = base36encode(db_scalar(mum, "SELECT id FROM comments WHERE author_id = :u ORDER BY id DESC LIMIT 1", u=kid.id))
+    routes = (("/api/vue/submit", dict(title="t", body="b", post_to_profile="1")), ("/api/comment", dict(parent_fullname=f"t2_{their_post}", body="b")),
+              (f"/edit_post/{mine}", dict(title="t", body="b")), (f"/edit_comment/{my_cid}", dict(body="b")),
+              ("/api/stories", dict(kind="text", text="hi", audience="0")),
+              (f"/post/{their_post}/forward", dict(board="x")), (f"/post/{their_post}/repost", {}),
+              (f"/comment/{their_cid}/forward", dict(board="x")), (f"/comment/{their_cid}/repost", {}),
+              ("/api/collab/1/publish", {}), ("/collab/new", {}), (f"/collab/fork/{their_post}", {}),
+              ("/api/spaces", dict(title="t")), ("/api/spaces/abc/messages", dict(body="b")))
+    for path, form in routes:
+        answer = post(client, path, formkey=key, **form)
+        assert answer.status_code == 403, (path, answer.status_code, answer.get_data(as_text=True)[:160])
+    saved = post(client, "/api/drafts", formkey=key, title="a draft", body="b")
+    assert saved.status_code == 403 and saved.get_json()["age_locked"] is True, "a draft is a way of making a post too (a scheduled one is published as the child)"
+
+
+def test_the_composers_and_comment_boxes_are_not_drawn_for_a_child_account(made, make_member):
+    mum, kid = made()
+    author = parent(make_member)
+    ac = author.browser()
+    post_id = post(ac, "/api/vue/submit", formkey=author.formkey(ac), title=f"Adult post {secrets.token_hex(3)}", body="x", post_to_profile="1").get_json()["id"]
+    client = kid.browser()
+    page = page_of(client, f"/post/{post_id}").get_data(as_text=True)
+    assert 'id="comment-restriction-locked"' in page and "comment-form-space-" not in page
+    feed = get(client, "/all").get_data(as_text=True)
+    assert 'id="inline-composer"' not in feed and "data-compose" not in feed
+    assert 'class="dropdown-item" href="/submit"' not in feed
+    assert get(client, "/submit").status_code == 403
+    adult_feed = get(author.browser(), "/all").get_data(as_text=True)
+    assert 'id="inline-composer"' in adult_feed and "data-compose" in adult_feed, "an adult's composer is drawn as ever"
+
+
+def test_starting_a_guild_is_the_one_thing_the_anonymous_guilds_switch_allows(made):
     mum, kid = made()
     client = kid.browser()
-    anon = lambda: post(client, "/api/vue/submit", formkey=kid.formkey(client), title=f"Anon {secrets.token_hex(3)}", body="w", post_to_profile="1", anonymous="true")
-    assert anon().status_code == 403
+    assert post(client, "/create_guild", formkey=kid.formkey(client), name="kidsguild").status_code == 403
     switch(mum, kid, "anonymous_guilds", True)
-    assert anon().status_code in (200, 400), "the switch is the parent's; Private posting's own rule (a circle post can't be anonymous) may still say no"
-    assert "parent or guardian" not in anon().get_data(as_text=True)
+    answer = post(client, "/create_guild", formkey=kid.formkey(client), name="kidsguild")
+    assert "age_locked" not in answer.get_data(as_text=True) and "parent or guardian" not in answer.get_data(as_text=True)
+    anon = post(client, "/api/vue/submit", formkey=kid.formkey(client), title=f"Anon {secrets.token_hex(3)}", body="w", post_to_profile="1", anonymous="true")
+    assert anon.status_code == 403, "the switch no longer opens posting"
 
 
 def test_only_a_parent_with_a_child_can_switch_and_only_known_names_do_anything(made, make_member):
@@ -324,20 +415,10 @@ def test_only_a_parent_with_a_child_can_switch_and_only_known_names_do_anything(
     assert post(client, f"/settings/children/{kid.username}/controls", formkey=stranger.formkey(client), control="chat", on="true").status_code == 404
     assert controls(mum, kid.id)[0] is False
     mine = mum.browser()
-    for bad in ("", "chat; DROP TABLE users", "child_id", "age_lock", "ask_release_utc"):
+    for bad in ("", "chat; DROP TABLE users", "child_id", "age_lock", "ask_release_utc", "posting", "commenting", "private_posting"):
         assert post(mine, f"/settings/children/{kid.username}/controls", formkey=mum.formkey(mine), control=bad, on="true").status_code == 400, bad
-    assert tuple(controls(mum, kid.id))[:6] == (False, False, False, False, True, True)
+    assert tuple(controls(mum, kid.id))[:4] == (False, False, False, False)
     assert post(mine, f"/settings/children/{kid.username}/controls", control="chat", on="true").status_code in (302, 401, 403), "no form key"
-
-
-def test_the_parent_switches_private_posting_and_the_child_cant(made):
-    mum, kid = made()
-    client = kid.browser()
-    refused = post(client, "/settings/private_posting", formkey=kid.formkey(client), on="false")
-    assert refused.status_code == 403 and "parent or guardian has to agree" in refused.get_data(as_text=True)
-    assert row(kid.id, "private_posting", db=mum.db_session()).private_posting is True
-    assert switch(mum, kid, "private_posting", False).status_code == 200
-    assert row(kid.id, "private_posting", db=mum.db_session()).private_posting is False
 
 
 def test_others_can_chat_with_or_tip_a_child_only_if_the_parent_allows_it(made, make_member):
@@ -363,34 +444,14 @@ def notices(member):
     return [t[0] or "" for t in db.execute(text("SELECT a.notice_msgid FROM notifications n JOIN comments_aux a ON a.id = n.comment_id WHERE n.user_id = :u ORDER BY n.id"), {"u": member.id})]
 
 
-def test_a_child_asks_once_the_parent_is_told_and_answers(made):
+def test_the_one_request_a_child_can_make_is_to_be_released_and_nothing_asks_for_private_posting_any_more(made):
     mum, kid = made()
     client = kid.browser()
-    asked = post(client, "/settings/parent/ask", formkey=kid.formkey(client), kind="private", next="/settings/content")
-    assert asked.status_code == 303 and asked.headers["Location"].endswith("age=asked_private")
-    post(client, "/settings/parent/ask", formkey=kid.formkey(client), kind="private")
-    assert sum("asked you to turn Private posting off" in n for n in notices(mum)) == 1, "told once while the request is open"
-    assert controls(mum, kid.id).ask_private_utc > 0
+    refused = post(client, "/settings/parent/ask", formkey=kid.formkey(client), kind="private", next="/settings/content")
+    assert refused.status_code == 404, "there is no Private posting to ask about"
+    assert not any("Private posting" in n for n in notices(mum)) and controls(mum, kid.id).ask_release_utc == 0
     page = get(mum.browser(), "/settings/children").get_data(as_text=True)
-    assert "They asked you to turn Private posting off." in page
-    mine = mum.browser()
-    answered = post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="private", answer="allow", parent_password=mum.password)
-    assert answered.status_code == 303 and "msg=" in answered.headers["Location"]
-    assert controls(mum, kid.id).ask_private_utc == 0 and row(kid.id, "private_posting", db=mum.db_session()).private_posting is False
-    assert any("turned Private posting off" in n for n in notices(kid))
-    again = post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="private", answer="allow", parent_password=mum.password)
-    assert "error=" in again.headers["Location"], "nothing was asked"
-
-
-def test_a_denied_request_changes_nothing_and_the_child_is_told(made):
-    mum, kid = made()
-    post((_c := kid.browser()), "/settings/parent/ask", formkey=kid.formkey(_c), kind="private")
-    client = kid.browser()
-    post(client, "/settings/parent/ask", formkey=kid.formkey(client), kind="private")
-    mine = mum.browser()
-    post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="private", answer="deny")
-    assert row(kid.id, "private_posting", db=mum.db_session()).private_posting is True and controls(mum, kid.id).ask_private_utc == 0
-    assert any("wants Private posting to stay on" in n for n in notices(kid))
+    assert "Private posting" not in page and "They asked you" not in page
 
 
 def test_saying_18_asks_the_parent_in_a_country_that_takes_a_tick_and_the_parent_can_release(made):
@@ -405,8 +466,8 @@ def test_saying_18_asks_the_parent_in_a_country_that_takes_a_tick_and_the_parent
     mine = mum.browser()
     done = post(mine, f"/settings/children/{kid.username}/answer", "US", formkey=mum.formkey(mine), request="release", answer="allow", parent_password=mum.password)
     assert done.status_code == 303 and "msg=" in done.headers["Location"]
-    r = row(kid.id, "age_declared", "age_lock", "private_posting", "filter_level", db=mum.db_session())
-    assert (r.age_declared, r.age_lock, r.private_posting, r.filter_level) == (1, None, False, 1)
+    r = row(kid.id, "age_declared", "age_lock", "filter_level", db=mum.db_session())
+    assert (r.age_declared, r.age_lock, r.filter_level) == (1, None, 1)
     assert controls(mum, kid.id) is None and any("no longer" in n and "see it" in n for n in notices(kid))
     assert get(mine, f"/settings/children/{kid.username}").status_code == 404, "the parent's access ends"
 
@@ -462,6 +523,7 @@ def test_a_standalone_child_cant_ask_a_parent_it_hasnt_got(make_member):
     member = make_member()
     set_columns(member, age_declared=2, age_lock=1, age_declared_utc=5, filter_level=2)
     client = member.browser()
+    assert post(client, "/settings/parent/ask", formkey=member.formkey(client), kind="release").status_code == 404
     assert post(client, "/settings/parent/ask", formkey=member.formkey(client), kind="private").status_code == 404
     adult = parent(make_member)
     adult_client = adult.browser()
@@ -499,8 +561,8 @@ def test_stopping_managing_leaves_a_standalone_child_account(made):
     mine = mum.browser()
     done = post(mine, f"/settings/children/{kid.username}/stop", formkey=mum.formkey(mine), parent_password=mum.password)
     assert done.status_code == 303 and "msg=" in done.headers["Location"]
-    r = row(kid.id, "age_declared", "age_lock", "private_posting", db=mum.db_session())
-    assert (r.age_declared, r.age_lock, r.private_posting) == (2, 1, True) and controls(mum, kid.id) is None
+    r = row(kid.id, "age_declared", "age_lock", db=mum.db_session())
+    assert (r.age_declared, r.age_lock) == (2, 1) and controls(mum, kid.id) is None
     assert any("stopped managing your account" in n for n in notices(kid))
     assert get(mine, f"/settings/children/{kid.username}").status_code == 404
 
@@ -551,7 +613,8 @@ def test_a_parent_can_download_a_childs_data_with_their_password_and_nobody_else
 def test_the_parent_sees_the_childs_activity_escaped_and_never_anyone_elses(made, make_member):
     mum, kid = made()
     client = kid.browser()
-    made_post = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="Tom & Jerry <b>x</b>", body="w", post_to_profile="1")
+    with before_the_lock(mum, kid):
+        made_post = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="Tom & Jerry <b>x</b>", body="w", post_to_profile="1")
     assert made_post.status_code == 200
     page = get(mum.browser(), f"/settings/children/{kid.username}")
     body = page.get_data(as_text=True)
@@ -566,9 +629,11 @@ def test_the_page_lists_the_children_with_every_switch_and_the_form_when_eligibl
     mum, kid = made()
     body = get(mum.browser(), "/settings/children").get_data(as_text=True)
     assert f"@{kid.username}" in body and 'id="children-new"' in body
-    for name in ("chat", "spaces", "money", "anonymous_guilds", "posting", "commenting"):
+    for name in ("chat", "spaces", "money", "anonymous_guilds"):
         assert f'id="child-{kid.username}-{name}"' in body
-    assert f'id="child-{kid.username}-private"' in body and "chats are end-to-end encrypted" in body
+    for gone in ("posting", "commenting", "private"):
+        assert f'id="child-{kid.username}-{gone}"' not in body, gone
+    assert "chats are end-to-end encrypted" in body
     assert 'name="birth_year"' in body and "isn't kept" in body
 
 
@@ -595,9 +660,8 @@ def test_the_childs_settings_say_who_decides_and_what_is_on(made):
     assert 'id="parent-controls"' in body and "held by your parent or guardian" in body
     assert re.search(r"Chat, group chats and calls: <strong>On</strong>", body) and re.search(r"Spaces and live threads: <strong>Off</strong>", body)
     assert "never shows them what your chats say" in body.replace("&#39;", "'")
-    assert "Ask my parent to turn it off" in body and 'id="private-posting-switch"' in body
-    switch_tag = body.split('id="private-posting-switch"', 1)[1].split(">", 1)[0]
-    assert " disabled" in switch_tag
+    assert "Private posting" not in body and 'id="private-posting-switch"' not in body
+    assert "only reads" in body.replace("&#39;", "'") or "can't post or comment" in body.replace("&#39;", "'")
 
 
 # ---------------------------------------------------------------- a parent that goes
@@ -714,20 +778,8 @@ def test_a_child_whose_controls_are_lost_is_refused_everything(made):
     db.execute(text("DELETE FROM child_controls WHERE child_id = :c"), {"c": kid.id})
     db.commit()
     client = kid.browser()
-    answer = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="Hello there", body="w", post_to_profile="1")
-    assert answer.status_code == 403, "it fails closed"
-
-
-def test_stories_forwards_reposts_and_shared_drafts_obey_the_posting_switch(made):
-    mum, kid = made()
-    assert switch(mum, kid, "posting", False).status_code == 200
-    client = kid.browser()
-    key = kid.formkey(client)
-    for path, form in (("/api/stories", dict(kind="text", text="hi", audience="0")), ("/post/abc/forward", dict(board="x")), ("/post/abc/repost", {}),
-                       ("/comment/abc/forward", dict(board="x")), ("/comment/abc/repost", {}), ("/api/collab/1/publish", {})):
-        answer = post(client, path, formkey=key, **form)
-        assert answer.status_code == 403, (path, answer.status_code)
-        assert "turned this off" in answer.get_data(as_text=True), path
+    assert post(client, "/settings/premium/redeem", formkey=kid.formkey(client)).status_code == 403, "it fails closed"
+    assert post(client, "/api/vue/submit", formkey=kid.formkey(client), title="Hello there", body="w", post_to_profile="1").status_code == 403
 
 
 def test_a_child_with_nothing_switched_on_has_no_chat_session_or_chat_app_or_guild_channel(made):
@@ -752,7 +804,7 @@ def test_spending_is_refused_but_stopping_a_payment_leaving_the_fund_and_a_free_
     assert "error=" in post(client, "/settings/creator_fund", formkey=key, agree="1").headers["Location"]
     assert "msg=" in post(client, "/settings/creator_fund", formkey=key, action="leave").headers["Location"]
     free = post(client, "/api/circles", formkey=key, kind="custom", name="Family")
-    assert free.status_code == 200, "a free custom circle is what Private posting is for"
+    assert free.status_code == 200, "a free custom circle is not money, and not posting"
     paid = post(client, "/api/circles", formkey=key, kind="paid", name="Paid", price="5")
     assert paid.status_code == 403 and "turned this off" in paid.get_data(as_text=True)
 
@@ -854,26 +906,25 @@ def test_spaces_alone_give_no_chat_token_and_no_call(made):
     token = post(client, "/api/chat/token", formkey=key)
     assert token.status_code == 403 and "age_locked" in token.get_data(as_text=True), "a Matrix session is chat, whatever Spaces says"
     call = post(client, "/api/spaces", formkey=key, title="A call", space_kind="call", space_hours="1", space_start="now")
-    assert call.status_code == 403 and "turned this off" in call.get_data(as_text=True), "a call is a chat feature"
+    assert call.status_code == 403 and "age-restricted" in call.get_data(as_text=True), "starting a Space is making something: a child account only reads"
 
 
-def test_commenting_off_covers_a_spaces_board_and_editing(made):
+def test_a_childs_old_words_can_be_taken_down_but_not_changed(made):
     mum, kid = made()
     assert switch(mum, kid, "spaces", True).status_code == 200
     client = kid.browser()
     key = kid.formkey(client)
-    mine = post(client, "/api/vue/submit", formkey=key, title=f"Kid post {secrets.token_hex(3)}", body="first", post_to_profile="1").get_json()["id"]
-    comment = post(client, "/api/comment", formkey=key, parent_fullname=f"t2_{mine}", body="a first comment")
-    assert comment.status_code == 200
+    with before_the_lock(mum, kid):
+        mine = post(client, "/api/vue/submit", formkey=key, title=f"Kid post {secrets.token_hex(3)}", body="first", post_to_profile="1").get_json()["id"]
+        assert post(client, "/api/comment", formkey=key, parent_fullname=f"t2_{mine}", body="a first comment").status_code == 200
     from ruqqus.helpers.base36 import base36encode
     cid = base36encode(db_scalar(mum, "SELECT id FROM comments WHERE author_id = :u ORDER BY id DESC LIMIT 1", u=kid.id))
-    assert switch(mum, kid, "commenting", False).status_code == 200 and switch(mum, kid, "posting", False).status_code == 200
-    edited = post(client, f"/edit_comment/{cid}", formkey=key, body="words changed after the switch")
-    assert edited.status_code == 403 and "turned this off" in edited.get_data(as_text=True)
+    edited = post(client, f"/edit_comment/{cid}", formkey=key, body="words changed after the lock")
+    assert edited.status_code == 403
     edited_post = post(client, f"/edit_post/{mine}", formkey=key, title="A new title", body="new words")
-    assert edited_post.status_code == 403 and "turned this off" in edited_post.get_data(as_text=True)
+    assert edited_post.status_code == 403
     board = post(client, "/api/spaces/abc/messages", formkey=key, body="hello")
-    assert board.status_code == 403 and "turned this off" in board.get_data(as_text=True), "checked before the Space is even looked up"
+    assert board.status_code == 403, "checked before the Space is even looked up"
     deleted = post(client, f"/delete/comment/{cid}", formkey=key)
     assert deleted.status_code in (200, 204, 303), "a child can always take its own words down"
 
@@ -949,10 +1000,10 @@ def test_stopping_and_allowing_ask_for_the_parents_proof_and_stopping_signs_the_
     mine = mum.browser()
     refused = post(mine, f"/settings/children/{kid.username}/stop", formkey=mum.formkey(mine), parent_password="wrong")
     assert "error=" in refused.headers["Location"] and row(kid.id, "age_lock", db=mum.db_session()).age_lock == 2
-    post((_c := kid.browser()), "/settings/parent/ask", formkey=kid.formkey(_c), kind="private")
-    no_proof = post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="private", answer="allow")
-    assert "error=" in no_proof.headers["Location"] and row(kid.id, "private_posting", db=mum.db_session()).private_posting is True
-    deny = post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="private", answer="deny")
+    post((_c := kid.browser()), "/settings/age_declaration", "US", formkey=kid.formkey(_c), age_declaration="1")
+    no_proof = post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="release", answer="allow")
+    assert "error=" in no_proof.headers["Location"] and row(kid.id, "age_lock", db=mum.db_session()).age_lock == 2
+    deny = post(mine, f"/settings/children/{kid.username}/answer", formkey=mum.formkey(mine), request="release", answer="deny")
     assert "msg=" in deny.headers["Location"], "keeping things as they are never asks"
     done = post(mine, f"/settings/children/{kid.username}/stop", formkey=mum.formkey(mine), parent_password=mum.password)
     assert "msg=" in done.headers["Location"] and row(kid.id, "age_lock", db=mum.db_session()).age_lock == 1
@@ -1023,8 +1074,9 @@ def test_the_parents_download_and_page_hold_no_deleted_words_and_no_reporters_wo
     import json
     mum, kid = made()
     client = kid.browser()
-    shown = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="A post kept", body="kept body", post_to_profile="1").get_json()["id"]
-    gone = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="A post deleted later", body="deleted body", post_to_profile="1").get_json()["id"]
+    with before_the_lock(mum, kid):
+        shown = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="A post kept", body="kept body", post_to_profile="1").get_json()["id"]
+        gone = post(client, "/api/vue/submit", formkey=kid.formkey(client), title="A post deleted later", body="deleted body", post_to_profile="1").get_json()["id"]
     post(client, f"/delete_post/{gone}", formkey=kid.formkey(client))
     reporter = parent(make_member)
     rc = reporter.browser()

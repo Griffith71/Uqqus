@@ -21,7 +21,7 @@ from ruqqus.__main__ import app
 
 from sqlalchemy import text
 
-from ruqqus.helpers import action_log
+from ruqqus.helpers import action_log, age_declaration
 from ruqqus.helpers import guild_wiki as wiki_rules
 from ruqqus.helpers import guild_wiki_store as wiki_store
 from ruqqus.helpers.visibility import board_hidden, text_hidden
@@ -238,6 +238,9 @@ def guild_wiki_edit(guildname, slug, v):
 def guild_wiki_save(guildname, slug, v):
     board = visible_guild(guildname, v)
     slug, page = _page_or_404(board, slug)
+    child_error = age_declaration.content_refusal(v)       # a wiki page is text readers see, written by a member: a child account is read-only
+    if child_error:
+        return _error(msg(child_error), 403)
     refusal = edit_refusal_for(board, page, v)
     if refusal:
         return _error(refusal, 403)

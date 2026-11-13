@@ -94,7 +94,7 @@
 
 {% block PseudoSubmitForm %}
 {% from "partials/inline_composer.html" import inline_composer %}
-{{ inline_composer(v) }}
+{% if not content_locked(v) %}{{ inline_composer(v) }}{% endif %}
 {% endblock %}
 
 <!-- Left Sidebar (navigation-purposes, hidden on devices smaller than "large") -->

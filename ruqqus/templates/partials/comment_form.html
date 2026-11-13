@@ -9,7 +9,12 @@
   <div class="text-muted text-small border rounded p-3 mb-3" id="comment-restriction"><i class="fas fa-lock fa-fw mr-1"></i>{{ comment_restriction }}</div>
   {% endif %}
 
-  {% if not p.is_banned and is_allowed_to_comment and not comment_restriction and ((not p.is_blocking and not p.is_blocked) or v.admin_level>=3 or anon_hidden(p, v)) %}
+  {# a child-locked account only reads (helpers/age_declaration.py content_refusal): the box is replaced by a plain line #}
+  {% if v and not p.is_banned and is_allowed_to_comment and not comment_restriction and content_locked(v) %}
+  <div class="text-muted text-small border rounded p-3 mb-3" id="comment-restriction-locked"><i class="fas fa-lock fa-fw mr-1"></i>{{ _("Your account only reads for now, so it can't comment. You can still vote, follow and bookmark.") }}</div>
+  {% endif %}
+
+  {% if not p.is_banned and is_allowed_to_comment and not comment_restriction and not content_locked(v) and ((not p.is_blocking and not p.is_blocked) or v.admin_level>=3 or anon_hidden(p, v)) %}
   <div id="comment-form-space-{{ p.fullname }}" class="comment-write mb-3">
     <form id="comment-on-{{ p.fullname }}" class="input-group" action="/api/comment" method="post">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">

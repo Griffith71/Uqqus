@@ -270,7 +270,7 @@
       {% endif %}
     <ul class="navbar-nav ml-auto d-flex flex-nowrap" id="navbar-icon-row">
 
-        {% if v %}
+        {% if v and not content_locked(v) %}
         <li class="nav-item nav-item-post d-flex align-items-center justify-content-center">
           <a class="btn btn-outline-purple nav-post-btn" href="/submit" data-compose aria-label="{{ _('Create post') }}" data-toggle="tooltip" data-placement="bottom" data-delay='{"show":"700", "hide":"0"}' title="{{ _('Create post') }}"><i class="fas fa-plus" aria-hidden="true"></i>{{ pgettext("button", "Post") }}</a>
         </li>
