@@ -1,0 +1,208 @@
+{
+  "_about": "A live probe of Synapse's refresh tokens through the appservice login, run by hand on the dev Synapse (chat plan, phase 2, build step 5, gap 23) from the ruqqus container (plain HTTP to MATRIX_INTERNAL_URL with the appservice token; each step names its request); every access and refresh token is replaced by a label (A1, R1 ...). Chain A: login with refresh_token true on a chosen UQ device id, /refresh twice, a reuse of the first refresh token after its successor's access token was used, then a device delete. Chain B: a token that was looked up before the rotation deleted its row stays valid until its own expiry, even after the device is deleted (Synapse caches the lookup and only invalidates the tokens still in its table): one hour is the real limit for a copied token.",
+  "synapse": "matrixdotorg/synapse:v1.162.0",
+  "config": {
+    "refreshable_access_token_lifetime": "1h"
+  },
+  "mxid": "@ruqqus_99901:ruqqus.local",
+  "recorded_utc_date": "2026-11-10",
+  "device_id": "UQPROBEBBBBB",
+  "steps": [
+    {
+      "step": "login with refresh_token: true and a chosen device id",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "access_token": "A1",
+        "home_server": "ruqqus.local",
+        "device_id": "UQPROBEBBBBB",
+        "expires_in_ms": 3599983,
+        "refresh_token": "R1",
+        "well_known": {
+          "m.homeserver": {
+            "base_url": "http://localhost:8008/"
+          }
+        }
+      }
+    },
+    {
+      "step": "refresh R1 (the first /refresh)",
+      "status": 200,
+      "body": {
+        "access_token": "A2",
+        "refresh_token": "R2",
+        "expires_in_ms": 3600000
+      }
+    },
+    {
+      "step": "whoami with A2 (the successor's access token used)",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "is_guest": false,
+        "device_id": "UQPROBEBBBBB"
+      }
+    },
+    {
+      "step": "refresh R1 again (reuse after the successor's access token was used)",
+      "status": 403,
+      "body": {
+        "errcode": "M_FORBIDDEN",
+        "error": "refresh token isn't valid anymore"
+      }
+    },
+    {
+      "step": "refresh R2 (the second /refresh)",
+      "status": 200,
+      "body": {
+        "access_token": "A3",
+        "refresh_token": "R3",
+        "expires_in_ms": 3600000
+      }
+    },
+    {
+      "step": "refresh R1 after the second /refresh (R1 deleted by the rotation)",
+      "status": 401,
+      "body": {
+        "errcode": "M_UNKNOWN_TOKEN",
+        "error": "refresh token does not exist"
+      }
+    },
+    {
+      "step": "whoami with A3",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "is_guest": false,
+        "device_id": "UQPROBEBBBBB"
+      }
+    },
+    {
+      "step": "whoami with A1 (rotated away, never looked up before: refused, nothing was cached)",
+      "status": 401,
+      "body": {
+        "errcode": "M_UNKNOWN_TOKEN",
+        "error": "Invalid access token passed.",
+        "soft_logout": false
+      }
+    },
+    {
+      "step": "delete the device (appservice)",
+      "status": 200,
+      "body": {}
+    },
+    {
+      "step": "whoami with A3 after the delete",
+      "status": 401,
+      "body": {
+        "errcode": "M_UNKNOWN_TOKEN",
+        "error": "Invalid access token passed.",
+        "soft_logout": false
+      }
+    },
+    {
+      "step": "refresh R3 after the delete",
+      "status": 401,
+      "body": {
+        "errcode": "M_UNKNOWN_TOKEN",
+        "error": "refresh token does not exist"
+      }
+    },
+    {
+      "step": "login without refresh_token on the same chosen id (no refresh token, no expiry)",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "access_token": "N1",
+        "home_server": "ruqqus.local",
+        "device_id": "UQPROBEBBBBB",
+        "well_known": {
+          "m.homeserver": {
+            "base_url": "http://localhost:8008/"
+          }
+        }
+      }
+    },
+    {
+      "step": "delete the device again (clean up)",
+      "status": 200,
+      "body": {}
+    },
+    {
+      "step": "chain B: login with refresh_token: true",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "access_token": "B1",
+        "home_server": "ruqqus.local",
+        "device_id": "UQPROBEBBBBB",
+        "expires_in_ms": 3599991,
+        "refresh_token": "RB1",
+        "well_known": {
+          "m.homeserver": {
+            "base_url": "http://localhost:8008/"
+          }
+        }
+      }
+    },
+    {
+      "step": "chain B: whoami with B1 (its lookup is now cached)",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "is_guest": false,
+        "device_id": "UQPROBEBBBBB"
+      }
+    },
+    {
+      "step": "chain B: refresh RB1",
+      "status": 200,
+      "body": {
+        "access_token": "B2",
+        "refresh_token": "RB2",
+        "expires_in_ms": 3600000
+      }
+    },
+    {
+      "step": "chain B: whoami with B2",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "is_guest": false,
+        "device_id": "UQPROBEBBBBB"
+      }
+    },
+    {
+      "step": "chain B: refresh RB2 (deletes RB1 and B1)",
+      "status": 200,
+      "body": {
+        "access_token": "B3",
+        "refresh_token": "RB3",
+        "expires_in_ms": 3600000
+      }
+    },
+    {
+      "step": "chain B: whoami with B1 after its rows were deleted (still answers: cached lookup)",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "is_guest": false,
+        "device_id": "UQPROBEBBBBB"
+      }
+    },
+    {
+      "step": "chain B: delete the device (clean up)",
+      "status": 200,
+      "body": {}
+    },
+    {
+      "step": "chain B: whoami with B1 after the delete (still answers: the delete only clears the cached lookups of tokens still in its table)",
+      "status": 200,
+      "body": {
+        "user_id": "@ruqqus_99901:ruqqus.local",
+        "is_guest": false,
+        "device_id": "UQPROBEBBBBB"
+      }
+    }
+  ]
+}

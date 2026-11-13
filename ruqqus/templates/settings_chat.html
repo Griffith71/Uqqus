@@ -1,0 +1,87 @@
+{% extends "settings.html" %}
+
+{% block pagetitle %}{{ _("Chat - %(site)s") }}{% endblock %}
+
+{# Settings > Chat (routes/chat_settings_pages.py). The recovery code is made and shown in the chat page itself (crypto.js showNewCode):
+   the site never has it, so it can't be shown here. #}
+
+{% block content %}
+<div class="row">
+  <div class="col col-lg-8">
+    <div class="settings" id="chat-settings">
+
+      <h2 class="h5">{{ _("Chat") }}</h2>
+
+      <div class="settings-section rounded" id="recovery-code">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>{{ _("Recovery code") }}</label></div>
+          <div class="body w-lg-100">
+            {% if not set_up %}
+            <p class="mb-2">{{ _("Chat isn't set up on your account yet. Open Chat once to set it up and get your recovery code.") }}</p>
+            <a href="/chat" class="btn btn-primary btn-sm">{{ _("Open Chat") }}</a>
+            {% else %}
+            <p class="mb-2">
+              {% if code_saved_utc %}{{ _("You said you kept your recovery code on %(date)s.", date=date_text(code_saved_utc, "%d %B %Y")) }}
+              {% else %}{{ _("You haven't said you kept your recovery code.") }}{% endif %}
+            </p>
+            <p class="text-small text-muted mb-2">{{ _("If you forget your password, your recovery code, or a browser where you've used chat, brings your old messages back. The code can't be shown again: this site never has it. A new one replaces it.") }}</p>
+            <a href="/chat?recovery=new" class="btn btn-primary btn-sm">{{ _("Make a new recovery code") }}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section rounded" id="seen">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>{{ _("Seen and typing") }}</label></div>
+          <div class="body w-lg-100">
+            <form action="/settings/chat/receipts" method="post" class="mb-0">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <input type="hidden" name="on" value="{{ '0' if v.chat_receipts is not false else '1' }}">
+              <p class="mb-2">{% if v.chat_receipts is not false %}{{ _("People you chat with see when you've read their messages and when you're typing.") }}{% else %}{{ _("People you chat with don't see when you've read their messages or are typing, and you don't see theirs.") }}{% endif %}</p>
+              <button type="submit" class="btn btn-secondary btn-sm">{% if v.chat_receipts is not false %}{{ _("Turn off Seen and typing") }}{% else %}{{ _("Turn on Seen and typing") }}{% endif %}</button>
+            </form>
+            <p class="text-small text-muted mt-2 mb-0">{{ _("This is for chat on this site. A chat app you use outside it follows its own setting.") }}</p>
+          </div>
+        </div>
+      </div>
+
+      {% if push_offered %}
+      <div class="settings-section rounded" id="notifications">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>{{ _("Notifications") }}</label></div>
+          <div class="body w-lg-100">
+            {# assets/js/push_settings.js fills the line and shows the right button for this browser #}
+            <p class="mb-2" id="push-state" role="status">{{ _("Notifications need this page's script.") }}</p>
+            <p class="text-small text-muted mb-2" id="push-ios" hidden>{{ _("On an iPhone or iPad, add this site to your Home Screen first (Share, then Add to Home Screen), and turn notifications on from there.") }}</p>
+            <button type="button" class="btn btn-primary btn-sm" id="push-on" hidden>{{ _("Turn on notifications in this browser") }}</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="push-off" hidden>{{ _("Turn off notifications in this browser") }}</button>
+            <p class="text-small text-muted mt-2 mb-2">{{ _("You're told of new messages and calls in your chats, never what a message says. Each group can be set to every message, calls only or nothing, in the group's people sheet.") }}</p>
+            <form action="/settings/chat/push_names" method="post" class="mb-0">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <input type="hidden" name="names" value="{{ '0' if v.push_names is not false else '1' }}">
+              <p class="text-small mb-1">{% if v.push_names is not false %}{{ _("Notifications say who a message is from.") }}{% else %}{{ _("Notifications don't say who a message is from.") }}{% endif %}</p>
+              <button type="submit" class="btn btn-link btn-sm p-0">{% if v.push_names is not false %}{{ _("Don't say who it's from") }}{% else %}{{ _("Say who it's from") }}{% endif %}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <script src="{{ asset_url('js/push_settings.js') }}"></script>
+      {% endif %}
+
+      {% if not mfa_on %}
+      <div class="settings-section rounded" id="chat-two-factor">
+        <div class="d-lg-flex">
+          <div class="title w-lg-25"><label>{{ _("Two-factor sign-in") }}</label></div>
+          <div class="body w-lg-100">
+            <p class="mb-2">{{ _("Two-factor sign-in keeps someone who learns your password out of your account, and so out of your chats.") }}</p>
+            <a href="/settings/security" class="btn btn-secondary btn-sm">{{ _("Turn it on in Security") }}</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
