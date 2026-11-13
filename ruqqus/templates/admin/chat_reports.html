@@ -1,0 +1,50 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Reported chat messages</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Reported chat messages</h1>
+
+<p class="text-muted">Private chats (1:1 chats and groups) are end-to-end encrypted: the site can't read them. A member who reports a message sends it and up to four before it, <strong>as their own browser shows them</strong>. The site checked with the chat server that each of these messages is in that chat, and who sent it and when come from the chat server; <strong>the words can't be checked</strong>, so they are the reporter's copy. The page doesn't say who reported (though the reporter's own messages among these carry their name, as every message does), and the reported person is never told. The copied words are emptied 90 days after a report is closed.</p>
+
+{% for r in reports %}
+<div class="card mb-3 chat-report">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap text-small text-muted">
+      <div class="mr-3">{{ "A group" if r.kind == "group" else "A 1:1 chat" }} · reported {{ datetime_text(r.created_utc, '%d %B %Y at %H:%M UTC') }}</div>
+      <div>{% if r.reported %}Reported account: <a href="{{ r.reported.permalink }}">@{{ r.reported.username }}</a>{% else %}The reported account has no chat any more{% endif %}</div>
+    </div>
+    {% for m in r.messages %}
+    <div class="mt-2{% if m.reported %} border-left border-danger pl-2{% endif %}">
+      <div class="text-small text-muted">{% if m.sender %}@{{ m.sender.username }}{% else %}{{ m.sender_mxid }}{% endif %} · {{ datetime_text(m.sent_utc, '%d %B %Y at %H:%M UTC') }}{% if m.reported %} · the reported message{% endif %}</div>
+      <div class="chat-report-words">{% if m.body %}{{ m.body }}{% else %}<span class="text-muted">(no words: the copy was emptied, or the message had none)</span>{% endif %}</div>
+    </div>
+    {% endfor %}
+    {% if r.reason %}<div class="text-small text-muted mt-2">"{{ r.reason }}"</div>{% endif %}
+    <div class="mt-2">
+      <form action="/admin/chat_reports/{{ r.id }}/remove" method="post" class="d-inline">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button class="btn btn-danger btn-sm">Remove the message</button>
+      </form>
+      <form action="/admin/chat_reports/{{ r.id }}/done" method="post" class="d-inline">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button class="btn btn-secondary btn-sm">Done (acted on the account)</button>
+      </form>
+      <form action="/admin/chat_reports/{{ r.id }}/dismiss" method="post" class="d-inline">
+        <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <button class="btn btn-link btn-sm text-muted">Dismiss</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% else %}
+<p class="text-muted" id="chat-reports-empty">No chat messages are waiting for a look.</p>
+{% endfor %}
+
+{% endblock %}
