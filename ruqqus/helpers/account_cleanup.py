@@ -94,6 +94,11 @@ STEPS = (
     ("remove the age notices", "DELETE FROM notifications WHERE user_id = :u AND EXISTS (SELECT 1 FROM comments_aux a "
                                "WHERE a.id = notifications.comment_id AND a.notice_msgid = '')"),
     ("empty their appeals", "UPDATE log_appeals SET reason = '', decision_note = '' WHERE user_id = :u"),
+    # the private copy of what they erased themselves (kind `grace`: their own delete, which only they and the admins could open): closing the account is
+    # as clear a wish to have it gone as any. NOT emptied: a legal hold (kept by a duty, which the privacy page says), and a guild's hide or a post
+    # author's hide of their comment (other people's record of a decision, which empties on its own date)
+    ("empty their private copies", "UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, scrubbed_utc = :now "
+                                   "WHERE author_id = :u AND scrubbed_utc = 0 AND kind = 'grace' AND NOT legal_hold"),
     ("clear the profile", "UPDATE users SET display_name = '', bio = '', bio_html = '', profile_job = '', "
                           "profile_location = '', profile_website = '', email = NULL, premium_auto_renew = :no, "
                           "creator_fund_opt_in_utc = 0 WHERE id = :u"),

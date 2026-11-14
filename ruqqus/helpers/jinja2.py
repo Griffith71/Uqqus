@@ -190,6 +190,16 @@ def content_locked(v):
     return bool(age_declaration.content_refusal(v))
 
 
+@app.template_global("words_shown")
+def words_shown(severity, v):
+    """May this reader see a person's words that the Log or a history page draws (a reason, an edit summary) at their word-filter level? They carry
+    the filter's rating like any member text (the audit's M8); a reader who browses at Child, or whose filter hides extreme words, doesn't see a
+    rated one. Never for an admin's own page: those draw their own, unfiltered."""
+    from ruqqus.helpers.visibility import viewer_level
+    from ruqqus.helpers.wordfilter import is_hidden
+    return not is_hidden(viewer_level(v), severity or 0)
+
+
 @app.template_global("sensitive_definition")
 def sensitive_definition():
     """What Sensitive means, in the reader's language: one text (helpers/sensitive.py DEFINITION), used by every place that explains it."""

@@ -78,7 +78,7 @@ def test_an_account_suspension_is_public_and_names_no_guild_or_item(db):
 def test_staff_only_and_legal_actions_are_never_public_whatever_the_guild(db):
     assert audience(db, entry(db, action="clear_display_name", board=1, actor=20, role=log.ADMIN)) == log.STAFF
     assert audience(db, entry(db, action="force_sensitive_user", board=None, actor=20, role=log.ADMIN)) == log.STAFF
-    assert audience(db, entry(db, action="legal_removal", board=1, actor=1)) == log.LEGAL
+    assert audience(db, entry(db, action="suppress_content", board=1, actor=1)) == log.LEGAL
     assert audience(db, entry(db, action="suppress_content", board=1, actor=21, role=log.ADMIN)) == log.LEGAL
     # a ModAction's own notes for the two cases the site's code already marks
     assert audience(db, entry(db, action="ban_post", board=1, actor=1, note="CSAM detected")) == log.LEGAL
@@ -164,7 +164,7 @@ def test_a_snapshot_is_kept_privately_and_emptied_on_its_date_with_the_entry_lef
 
 
 def test_illegal_content_is_held_a_year_and_only_level_four_may_open_it(db):
-    e = entry(db, action="legal_removal", actor=1, snapshot=log.snapshot_of(Post(), legal_hold=True))
+    e = entry(db, action="suppress_content", actor=1, snapshot=log.snapshot_of(Post(), legal_hold=True))
     s = dict(db.execute(text("SELECT * FROM log_snapshots WHERE entry_id = :e"), {"e": e}).first()._mapping)
     assert s["expires_utc"] == NOW + log.LEGAL_HOLD_DAYS * DAY
     assert not log.snapshot_visible(s, viewer_id=30, level=0) and not log.snapshot_visible(s, viewer_id=20, level=3)
@@ -234,7 +234,7 @@ def _seed(db):
         "public": entry(db, board=1, reason="p"),
         "private": entry(db, board=2, reason="g"),
         "staff": log.record(db, "clear_display_name", 20, target_user_id=30, role=log.ADMIN, now=NOW),
-        "legal": log.record(db, "legal_removal", 1, board_id=1, now=NOW),
+        "legal": log.record(db, "suppress_content", 1, board_id=1, now=NOW),
     }
     return ids
 

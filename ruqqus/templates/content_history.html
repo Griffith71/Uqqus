@@ -46,12 +46,12 @@
       <span class="text-muted text-small">&middot; {{ date_text(entry.created_utc, "%d %B %Y") }}</span>
     </div>
 
-    {% if entry.reason %}
+    {% if entry.reason and words_shown(entry.text_severity, v) %}
     <div class="text-danger text-small mb-2">{{ _('Reason: %(reason)s', reason=entry.reason) }}</div>
     {% endif %}
 
     {% if entry.action == "edit" %}
-    {% if entry.summary %}
+    {% if entry.summary and words_shown(entry.text_severity, v) %}
     <div class="text-small mb-2">{{ _('Summary: %(summary)s', summary=entry.summary) }}</div>
     {% endif %}
     {% if entry.hidden_utc %}
@@ -93,7 +93,8 @@
     <span class="text-muted text-small">&middot; {{ date_text(obliteration.created_utc, "%d %B %Y") }}</span>
     {# Translators: the value is a fixed code (illegal_content, legal_takedown, other) #}
     <div class="text-small mt-1">{{ _('Category: %(category)s', category=obliteration.reason_category) }}</div>
-    <div class="text-small">{{ _('Reason: %(reason)s', reason=obliteration.reason) }}</div>
+    {# the reason is an admin's free text and can describe what was removed: the Log gives the public the rule only and level-4 admins the reason, and so does this page #}
+    {% if v and v.admin_level >= 4 %}<div class="text-small">{{ _('Reason: %(reason)s', reason=obliteration.reason) }}</div>{% endif %}
     <div class="text-muted text-small mt-2">{{ _('The original content is not retained anywhere, including in this history.') }}</div>
   </div>
   {% endif %}

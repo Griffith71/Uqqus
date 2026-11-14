@@ -30,6 +30,7 @@ import time
 from sqlalchemy import text
 
 from ruqqus.helpers.i18n_runtime import N_
+from ruqqus.helpers.wordfilter import is_hidden
 
 PUBLIC, GUILD, STAFF, LEGAL = 0, 1, 2, 3
 
@@ -79,7 +80,7 @@ _SANCTION = {
     "unban_user", "ban_guild", "unban_guild", "clear_display_name", "force_sensitive_user", "age_declaration",
     "child_removed_with_parent",
 } | _STAFF_SANCTIONS
-_SUPPRESSION = {"suppress_content", "legal_removal"}
+_SUPPRESSION = {"suppress_content"}
 
 # What can't be a guild's or the public's business: always these audiences, whatever the guild.
 ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}      # public: no guild, post or comment in them
@@ -98,12 +99,15 @@ RUNNING_ACTIONS = {
 }
 STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
                  "remove_story", "age_declaration"} | RUNNING_ACTIONS
-LEGAL_ACTIONS = {"suppress_content", "legal_removal"}
+LEGAL_ACTIONS = {"suppress_content"}
 
-# Actions that must say why (Wikipedia's reason). A caller with a reason box passes `require_reason=True`.
+# Actions that must say why (Wikipedia's reason): **every one is refused with no reason by the route that makes it** (a reason box the person
+# must fill: `tests/test_log_coverage_assets.py` `ENFORCED` names each route and fails when one stops asking, or when an action is listed
+# here that no route enforces). An exile's reason is optional on purpose (its one-tap menus don't ask yet), so it is not here. A caller
+# with a reason box may also pass `require_reason=True` to `record`.
 REASON_REQUIRED = {
-    "hide_post_from_guild", "hide_comment_from_guild", "ban_post", "ban_comment", "suspend_user", "ban_user",
-    "ban_guild", "suppress_content", "legal_removal", "exile_user", "hide_revision",
+    "hide_post_from_guild", "hide_comment_from_guild", "author_hide_comment", "ban_post", "ban_comment", "suspend_user", "ban_user",
+    "ban_guild", "suppress_content", "hide_revision",
 }
 
 # the markers an admin or automatic writer already puts in a ModAction's note (routes/admin_api.py, routes/settings.py,
@@ -113,7 +117,7 @@ _LEGAL_NOTES = ("csam", "banned image")
 _STAFF_NOTES = ("ban evasion",)
 
 PUBLIC_COLUMNS = ("id, created_utc, log_type, action, actor_id, actor_role, board_id, target_user_id, "
-                  "target_submission_id, target_comment_id, rule_key, reason, audience, redacted_utc, until_utc")
+                  "target_submission_id, target_comment_id, rule_key, reason, reason_severity, audience, redacted_utc, until_utc")
 STAFF_COLUMNS = PUBLIC_COLUMNS + ", staff_note, snapshot_id, notice_sent, redacted_by, legacy_modaction_id, linked_entry_id"
 
 
@@ -253,6 +257,43 @@ def keep_snapshot(db, snapshot, now=None, entry_id=None):
     return _keep(db, snapshot, entry_id, int(now if now is not None else time.time()))
 
 
+def rate(db, value):
+    """The word filter's rating of a text a person wrote that the Log draws to other readers (0 clean, 1 profanity, 2 extreme): a reason,
+    an edit summary. Drawn only to a reader whose filter level allows it (`visibility.is_hidden`), like any member text (the audit's M8).
+    Never raises: the paper trail must not fail for want of a rating, and an unrated text is drawn as one from before the column was."""
+    if not value:
+        return 0
+    try:
+        from ruqqus.helpers.word_filter_store import get_filter
+        return int(get_filter(db).severity(value) or 0)
+    except Exception:
+        _log.exception("the Log could not rate a text")
+        return 0
+
+
+def rescan_severities(db, rate_text, batch=500):
+    """Re-rate the Log's own words with the live list (`word_filter_store.rescan`, and the first time after the columns were added): an entry's
+    reason, and a history row's reason and summary together. `rate_text` is the filter's severity function. Returns how many ratings changed."""
+    changed = 0
+    for table, columns, column in (("log_entries", ("reason",), "reason_severity"),
+                                   ("content_edit_history", ("reason", "summary"), "text_severity")):
+        last = 0
+        selected = ", ".join(f"COALESCE({c}, '')" for c in columns)
+        while True:
+            rows = db.execute(text(f"SELECT id, {selected}, {column} FROM {table} WHERE id > :last ORDER BY id LIMIT :n"),
+                              {"last": last, "n": int(batch)}).all()
+            if not rows:
+                break
+            for row in rows:
+                words = " ".join(w for w in row[1:-1] if w)
+                rated = int(rate_text(words) or 0) if words else 0
+                if rated != (row[-1] or 0):
+                    db.execute(text(f"UPDATE {table} SET {column} = :s WHERE id = :i"), {"s": rated, "i": row[0]})
+                    changed += 1
+            last = rows[-1][0]
+    return changed
+
+
 def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=None, comment_id=None, rule=None,
            reason="", staff_note="", snapshot=None, role=None, note="", floor=PUBLIC, require_reason=False, now=None,
            legacy_id=None, created_utc=None, notice_sent=False, until_utc=0, linked_entry_id=None):
@@ -272,14 +313,15 @@ def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=
         post_id = comment_id = None
     row = db.execute(text(
         "INSERT INTO log_entries (created_utc, log_type, action, actor_id, actor_role, board_id, target_user_id, "
-        "target_submission_id, target_comment_id, rule_key, reason, staff_note, audience, notice_sent, legacy_modaction_id, "
-        "until_utc, linked_entry_id) "
-        "VALUES (:now, :type, :action, :actor, :role, :board, :tuser, :tpost, :tcomment, :rule, :reason, :staff, :audience, "
+        "target_submission_id, target_comment_id, rule_key, reason, reason_severity, staff_note, audience, notice_sent, "
+        "legacy_modaction_id, until_utc, linked_entry_id) "
+        "VALUES (:now, :type, :action, :actor, :role, :board, :tuser, :tpost, :tcomment, :rule, :reason, :severity, :staff, :audience, "
         ":notice, :legacy, :until, :linked) RETURNING id"),
         {"now": now, "type": type_of(action), "action": action, "actor": actor_id,
          "role": resolved, "board": board_id or None,
          "tuser": target_user_id or None, "tpost": post_id or None, "tcomment": comment_id or None,
-         "rule": parse_rule(rule), "reason": reason, "staff": clean_reason(staff_note), "audience": audience,
+         "rule": parse_rule(rule), "reason": reason, "severity": rate(db, reason), "staff": clean_reason(staff_note),
+         "audience": audience,
          "notice": bool(notice_sent), "legacy": legacy_id, "until": int(until_utc or 0),
          "linked": linked_entry_id or None}).first()
     entry_id = row[0]
@@ -363,6 +405,8 @@ def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snaps
     if reason is not None:
         sets.append("reason = :reason")
         values["reason"] = clean_reason(reason)
+        sets.append("reason_severity = :severity")
+        values["severity"] = rate(db, values["reason"])
     if staff_note is not None:
         sets.append("staff_note = :staff")
         values["staff"] = clean_reason(staff_note)
@@ -493,13 +537,15 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
         # an entry that names an account AND an item that is anonymous now would say who wrote it (H6)
         clauses.append(_NOT_PAIRED_WITH_ANONYMOUS)
     if before_id:
-        clauses.append("id < :before")
+        # the order is (created_utc, id), not id: a backfill run after live entries exist gives old entries higher ids (the audit's M6).
+        # The cursor stays an entry id, so the links are what they were
+        clauses.append("(created_utc, id) < (SELECT b.created_utc, b.id FROM log_entries b WHERE b.id = :before)")
         params["before"] = int(before_id)
     params["limit"] = int(limit) + 1
     params["offset"] = max(0, int(offset))
     columns = STAFF_COLUMNS if level >= 3 else PUBLIC_COLUMNS
     rows = [dict(r._mapping) for r in db.execute(
-        text(f"SELECT {columns} FROM log_entries WHERE {' AND '.join(clauses)} ORDER BY id DESC LIMIT :limit OFFSET :offset"),
+        text(f"SELECT {columns} FROM log_entries WHERE {' AND '.join(clauses)} ORDER BY created_utc DESC, id DESC LIMIT :limit OFFSET :offset"),
         params)]
     more = len(rows) > limit
     rows = rows[:limit]
@@ -536,9 +582,14 @@ def about_scope(*, post_ids=(), comment_ids=(), user_id=None, include_anonymous=
     if user_id:
         anonymous_post = "" if include_anonymous else " AND NOT COALESCE(s.is_anonymous, false)"
         anonymous_comment = "" if include_anonymous else " AND NOT COALESCE(c.is_anonymous, false)"
-        parts.append(f"(target_user_id = :about{unpaired})")
-        parts.append(f"target_submission_id IN (SELECT s.id FROM submissions s WHERE s.author_id = :about{anonymous_post})")
-        parts.append(f"target_comment_id IN (SELECT c.id FROM comments c WHERE c.author_id = :about{anonymous_comment})")
+        # a UNION of three index-driven reads (the account, its posts, its comments), not an OR across columns that no index can serve (the
+        # audit's M7): log_entries_target_user_idx, then submissions / comments by author and log_entries_post_idx / log_entries_comment_idx
+        parts.append(
+            "id IN (SELECT id FROM log_entries WHERE target_user_id = :about" + unpaired
+            + " UNION SELECT e.id FROM log_entries e JOIN submissions s ON s.id = e.target_submission_id WHERE s.author_id = :about"
+            + anonymous_post
+            + " UNION SELECT e.id FROM log_entries e JOIN comments c ON c.id = e.target_comment_id WHERE c.author_id = :about"
+            + anonymous_comment + ")")
         params["about"] = int(user_id)
     return ("(" + " OR ".join(parts) + ")", params) if parts else ("1 = 0", {})
 
@@ -643,17 +694,19 @@ def not_hidden_from(level, member_boards=(), column="modactions.id"):
     return f"NOT EXISTS (SELECT 1 FROM log_entries e WHERE e.legacy_modaction_id = {column} AND NOT {where})", params
 
 
-def notes_for(db, modaction_ids):
+def notes_for(db, modaction_ids, word_level=None):
     """{legacy modaction id: {rule_key, reason, redacted_utc}} for a page of a guild's log: the rule an action cited and
-    the reason written for it, which the old note column did not carry (an admin's removal, a rule menu)."""
+    the reason written for it, which the old note column did not carry (an admin's removal, a rule menu). With a `word_level` (the
+    reader's filter level) a reason their filter hides is left out, as any member text is."""
     ids = sorted({int(i) for i in modaction_ids or () if i})
     if not ids:
         return {}
     names = {f"m{n}": i for n, i in enumerate(ids)}
     marks = ", ".join(f":{n}" for n in names)
-    rows = db.execute(text(f"SELECT legacy_modaction_id, rule_key, reason, redacted_utc FROM log_entries "
+    rows = db.execute(text(f"SELECT legacy_modaction_id, rule_key, reason, redacted_utc, reason_severity FROM log_entries "
                            f"WHERE legacy_modaction_id IN ({marks})"), names)
-    return {r[0]: {"rule_key": r[1], "reason": "" if r[3] else r[2], "redacted_utc": r[3]} for r in rows}
+    return {r[0]: {"rule_key": r[1], "reason": "" if r[3] or (word_level is not None and is_hidden(word_level, r[4])) else r[2],
+                   "redacted_utc": r[3]} for r in rows}
 
 
 def snapshot_for(db, post_id=None, comment_id=None, viewer=None):
@@ -677,13 +730,15 @@ def snapshot_for(db, post_id=None, comment_id=None, viewer=None):
 
 # --- keeping and scrubbing ----------------------------------------------------------------------------------------------
 
+# the one statement that empties a private copy on its date: `helpers/retention.py` runs it every cycle, `scrub_due` runs it for a test
+SCRUB_DUE = ("UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, scrubbed_utc = :now "
+             "WHERE scrubbed_utc = 0 AND expires_utc > 0 AND expires_utc <= :now")
+
+
 def scrub_due(db, now=None):
     """Empty the text of every snapshot past its date (the row and the entry stay): returns how many."""
     now = int(now if now is not None else time.time())
-    result = db.execute(text(
-        "UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, scrubbed_utc = :now "
-        "WHERE scrubbed_utc = 0 AND expires_utc > 0 AND expires_utc <= :now"), {"now": now})
-    return result.rowcount or 0
+    return db.execute(text(SCRUB_DUE), {"now": now}).rowcount or 0
 
 
 def scrub_for(db, post_ids=(), comment_ids=(), now=None):

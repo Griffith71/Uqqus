@@ -1,8 +1,8 @@
-"""check_csam and check_csam_url must persist the author/alt ban and the removal, through the one ban routine.
+"""check_csam_url must persist the uploader's and alts' ban and the removal, through the one ban routine.
 
-Regression test for `db.add(v)` with an undefined `v` in check_csam(), which
-raised NameError before db.commit() so a positive CSAM match never saved the
-ban. Since the Log's slice D2 the ban itself is `scan_bans.ban_uploader` (-> `User.ban`, tested on the real app in
+Regression test for `db.add(v)` with an undefined `v`, which raised NameError before db.commit() so a positive CSAM match never saved the
+ban (in `check_csam(post)`, which nothing called and the Log's slice D4 removed: every scan now goes through `check_csam_url`, whose caller
+brings the content's own removal). Since the Log's slice D2 the ban itself is `scan_bans.ban_uploader` (-> `User.ban`, tested on the real app in
 tests/pg/test_scan_bans.py) and the removal is written to the Log (`action_log.record_image_check_removal`): both are replaced here by
 fakes that record what they were asked, so this file checks the checks - what they hand over, in which session, and that the
 whole thing is committed. Runs without Postgres, S3, Cloudflare or the app's heavy dependencies:
@@ -131,96 +131,6 @@ def aws(monkeypatch, tmp_path):
     module.asked = asked
     yield module
     sys.modules.pop("ruqqus.helpers.aws", None)
-
-
-def setup_case(aws, monkeypatch, status_code):
-    # Rows as loaded by check_csam's own session ...
-    db_author = User(1, alt_ids=(2, 3))
-    db_post = Submission(10, db_author, URL)
-    db = FakeSession({
-        (User, 1): db_author,
-        (User, 2): User(2),
-        (User, 3): User(3),
-        (Submission, 10): db_post,
-    })
-    # ... and the caller's copies, still attached to the request session.
-    caller_session = object()
-    post = Submission(10, User(1, alt_ids=(2, 3)), URL)
-    post._session = post.author._session = caller_session
-
-    deleted = []
-    monkeypatch.setattr(aws, "db_session", lambda: db)
-    monkeypatch.setattr(aws, "delete_file", deleted.append)
-    monkeypatch.setattr(aws.requests, "get",
-                        lambda *a, **k: Response(status_code))
-    return post, db, deleted
-
-
-def test_cloudflare_451_ban_is_committed(aws, monkeypatch):
-    post, db, deleted = setup_case(aws, monkeypatch, 451)
-
-    aws.check_csam(post)
-
-    for uid in (1, 2, 3):
-        row = db.committed[(User, uid)]
-        assert row["is_banned"] == 1
-        assert row["ban_reason"] == "Automatic image check"        # never what the match is believed to be: it can be wrong
-    assert db.committed[(Submission, 10)]["is_banned"] is True
-    assert deleted == ["post/abc/xyz"]
-    assert db.closed
-    # asked of the routine in the scan's own session, as a level-4 match, for good; and the removal is in the Log, in that session too
-    (ban,) = aws.asked.bans
-    assert ban["db"] is db and ban["user"] is db.rows[(User, 1)] and ban["days"] == 0 and ban["legal"] is True
-    (removal,) = aws.asked.removals
-    assert removal["db"] is db and removal["post_id"] == 10 and removal["board_id"] == 2 and removal["legal"] is True
-
-
-def test_phash_match_ban_is_committed(aws, monkeypatch):
-    post, db, deleted = setup_case(aws, monkeypatch, 200)
-    bad = types.SimpleNamespace(ban_reason="Known CSAM hash", ban_time=3)
-    monkeypatch.setattr(aws, "check_phash", lambda db_, name: bad)
-    monkeypatch.setattr(aws.time, "time", lambda: 1_000_000)
-
-    aws.check_csam(post)
-
-    unban = 1_000_000 + 60 * 60 * 24 * 3
-    for uid in (1, 2, 3):
-        row = db.committed[(User, uid)]
-        assert row["is_banned"] == 1
-        assert row["ban_reason"] == "Automatic image check"
-        assert row["unban_utc"] == unban
-    assert db.committed[(Submission, 10)]["is_banned"] is True
-    assert deleted == ["post/abc/xyz"]
-    assert db.closed
-    (ban,) = aws.asked.bans
-    assert ban["days"] == 3 and ban["legal"] is False
-    assert "Known CSAM hash" in ban["detail"]                      # the list's own reason is the staff's detail, nobody else's
-    (removal,) = aws.asked.removals
-    assert not removal.get("legal") and "Known CSAM hash" in removal["detail"]
-
-
-def test_phash_permanent_ban_has_no_unban_time(aws, monkeypatch):
-    post, db, _ = setup_case(aws, monkeypatch, 200)
-    bad = types.SimpleNamespace(ban_reason="Known CSAM hash", ban_time=0)
-    monkeypatch.setattr(aws, "check_phash", lambda db_, name: bad)
-
-    aws.check_csam(post)
-
-    for uid in (1, 2, 3):
-        assert db.committed[(User, uid)]["unban_utc"] == 0
-        assert db.committed[(User, uid)]["is_banned"] == 1
-    assert aws.asked.bans[0]["days"] == 0
-
-
-def test_no_match_bans_nobody(aws, monkeypatch):
-    post, db, deleted = setup_case(aws, monkeypatch, 200)
-    monkeypatch.setattr(aws, "check_phash", lambda db_, name: None)
-
-    aws.check_csam(post)
-
-    assert db.committed == {}
-    assert deleted == []
-    assert aws.asked.bans == [] and aws.asked.removals == []
 
 
 # --- an uploaded picture checked at its address (check_csam_url) ---------------------------------------------------------------

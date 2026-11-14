@@ -23,7 +23,8 @@ from ruqqus.classes.mod_logs import ACTIONTYPES
 from ruqqus.helpers import action_log, log_view
 from ruqqus.helpers.base36 import base36decode, base36encode
 from ruqqus.helpers.get import get_comment, get_guild, get_post, get_user
-from ruqqus.helpers.visibility import board_hidden, comment_hidden, hidden_notice, post_hidden, user_hidden
+from ruqqus.helpers.visibility import board_hidden, comment_hidden, hidden_notice, post_hidden, user_hidden, viewer_level
+from ruqqus.helpers.wordfilter import is_hidden
 from ruqqus.helpers.wrappers import admin_level_required, auth_desired, validate_formkey
 from ruqqus.__main__ import app, limiter
 
@@ -127,6 +128,7 @@ def _rows(entries, v):
     copies = action_log.copies_for(g.db, [e["id"] for e in entries])
     mine = action_log.led_boards(v)
     site = app.config["SITE_NAME"]
+    words = viewer_level(v)                 # the reader's own word filter: a reason is a person's words (the audit's M8)
     rows = []
     for e in entries:
         board = guilds.get(e["board_id"]) if e["board_id"] else None
@@ -162,7 +164,8 @@ def _rows(entries, v):
             "id": e["id"], "created_utc": e["created_utc"], "guild": board.name if board is not None else "",
             "sentence": log_view.sentence(e["action"], ACTIONTYPES, who, target, board.name if board is not None else ""),
             "icon": kind.get("icon", "fa-gavel"), "color": kind.get("color", "bg-info"),
-            "rule": e["rule_key"], "reason": e["reason"], "can_open": can_open, "type": e["log_type"],      # not "copy": a dict has that method
+            "rule": e["rule_key"], "reason": "" if is_hidden(words, e.get("reason_severity")) else e["reason"],
+            "can_open": can_open, "type": e["log_type"],                                                          # not "copy": a dict has that method
             "until": e.get("until_utc") or 0})
     return rows
 

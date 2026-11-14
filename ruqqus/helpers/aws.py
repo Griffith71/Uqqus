@@ -161,103 +161,11 @@ def delete_file(name):
     x = requests.post(url, headers=headers, json=data)
 
 
-def _load_post_and_author(db, post):
-
-    # `post` (and `post.author`) belong to the caller's session, which may be
-    # another thread/greenlet's still-open session: db.add() on them would
-    # raise "already attached to session". Re-load the rows into `db` so the
-    # ban is written and committed by this session. Imported here because
-    # ruqqus.classes.user/submission import this module.
-    from ruqqus.classes.submission import Submission
-    from ruqqus.classes.user import User
-
-    return db.get(Submission, post.id), db.get(User, post.author_id)
-
-
 def _load_user(db, user):
     """`user` belongs to the request's session, which may be over; the ban is written by the scan's own, so it loads the row again."""
     from ruqqus.classes.user import User
 
     return db.get(User, user.id)
-
-
-def check_csam(post):
-
-    # Relies on Cloudflare's photodna implementation
-    # 451 returned by CF = positive match
-
-    # ignore non-link posts
-    if not post.url:
-        return
-
-    parsed_url = urlparse(post.url)
-
-    if not BUCKET or parsed_url.netloc != BUCKET:
-        return
-
-    headers = {"User-Agent": "Ruqqus webserver"}
-    for i in range(10):
-        x = requests.get(post.url, headers=headers)
-
-        if x.status_code in [200, 451]:
-            break
-        else:
-            time.sleep(20)
-
-    db=db_session()
-
-    if x.status_code == 451:
-
-        post, author = _load_post_and_author(db, post)
-        from ruqqus.helpers import action_log, scan_bans
-
-        # ban user and alts, through User.ban (helpers/scan_bans.py): the Log hears of it, in generic words
-        scan_bans.ban_uploader(db, author, detail="the CDN answered 451 for the picture linked by this post", legal=True)
-
-        # remove content
-        post.is_banned = True
-        db.add(post)
-        action_log.record_image_check_removal(db, post_id=post.id, board_id=post.board_id, legal=True,
-                                              detail="the CDN answered 451 for the picture linked by this post")
-
-        db.commit()
-
-        # nuke aws
-        delete_file(parsed_url.path.lstrip('/'))
-        db.close()
-        return
-
-    #check phash
-    tempname = f"test_post_{post.base36id}"
-
-    with open(tempname, "wb") as file:
-        for chunk in x.iter_content(1024):
-            file.write(chunk)
-
-    h=check_phash(db, tempname)
-    if h:
-
-        post, author = _load_post_and_author(db, post)
-        from ruqqus.helpers import action_log, scan_bans
-        detail = f"matched a picture on the site's banned list: {h.ban_reason}"
-
-        # ban user and alts, through User.ban for `h.ban_time` days (0: for good)
-        scan_bans.ban_uploader(db, author, days=h.ban_time or 0, detail=detail)
-
-        # remove content
-        post.is_banned = True
-        db.add(post)
-        action_log.record_image_check_removal(db, post_id=post.id, board_id=post.board_id, detail=detail)
-
-        db.commit()
-
-        # nuke aws
-        delete_file(parsed_url.path.lstrip('/'))
-
-    remove(tempname)
-    db.close()
-
-
 
 
 def check_csam_url(url, v, delete_content_function):

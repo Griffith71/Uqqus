@@ -40,6 +40,7 @@ import time
 
 from sqlalchemy import text
 
+from ruqqus.helpers import action_log
 from ruqqus.helpers.collab_rules import RESYNC_AFTER
 
 QUIET_DRAFT_DAYS = 30
@@ -86,8 +87,7 @@ RULES = (
                                        "(SELECT id FROM site_feedback WHERE resolved_utc > 0 AND resolved_utc < :feedback_images)"),
     ("decided sign-up reviews", "DELETE FROM signup_reviews WHERE decision <> '' AND "
                                 "CASE WHEN decided_utc > 0 THEN decided_utc ELSE created_utc END < :signup_reviews"),
-    ("private copies past their date", "UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, "
-                                       "scrubbed_utc = :now WHERE scrubbed_utc = 0 AND expires_utc > 0 AND expires_utc <= :now"),
+    ("private copies past their date", action_log.SCRUB_DUE),          # the one statement: helpers/action_log.py `scrub_due` runs it too
     ("old traffic counts", "DELETE FROM site_traffic WHERE day < :traffic_day"),
     ("old traffic batches", "DELETE FROM site_traffic_flushes WHERE flushed_utc < :traffic_batches"),
     ("old ended sign-ins", "DELETE FROM ended_sign_ins WHERE ended_utc < :ended_sign_ins"),

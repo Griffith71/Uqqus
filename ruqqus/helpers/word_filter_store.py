@@ -278,6 +278,9 @@ def rescan(db, batch=500, log=None):
     # the "What's happening" events (helpers/site_events.py): a title, details and a score line a source or an admin wrote
     from ruqqus.helpers import site_event_store
     site_event_store.rescan_severities(db, f.severity, f.version)
+    # the Log's own words: an entry's reason, a history row's reason and edit summary (helpers/action_log.py)
+    from ruqqus.helpers import action_log
+    changed += action_log.rescan_severities(db, f.severity)
     db.commit()
 
     return changed

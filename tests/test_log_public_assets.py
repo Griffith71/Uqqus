@@ -122,7 +122,7 @@ def test_only_an_edits_history_row_carries_text_and_the_page_draws_only_that():
             if 'action="edit"' not in row:
                 assert "previous_" not in row, row[:80]
     assert 'entry.action == "edit"' in HISTORY and "entry.hidden_utc" in HISTORY
-    edit_part = '{% if entry.action == "edit" %}\n    {% if entry.summary %}'
+    edit_part = '{% if entry.action == "edit" %}\n    {% if entry.summary and words_shown(entry.text_severity, v) %}'
     assert "previous_body_html" in HISTORY.split(edit_part)[1] and "previous_body_html" not in HISTORY.split(edit_part)[0]
 
 
@@ -167,8 +167,10 @@ def test_the_history_decides_whether_to_name_the_account_that_acted_on_the_item_
 
 def test_the_private_copies_are_emptied_on_their_date_by_the_retention_step():
     retention = read("ruqqus", "helpers", "retention.py")
-    assert "private copies past their date" in retention and "expires_utc <= :now" in retention and '"now": now' in retention
-    assert "scrubbed_utc = :now WHERE scrubbed_utc = 0" in retention
+    # one statement, shared: helpers/action_log.py `SCRUB_DUE` is what the retention step runs and what `scrub_due` runs for a test
+    assert '"private copies past their date", action_log.SCRUB_DUE' in retention and '"now": now' in retention
+    log = read("ruqqus", "helpers", "action_log.py")
+    assert "WHERE scrubbed_utc = 0 AND expires_utc > 0 AND expires_utc <= :now" in log and "SET title = NULL, url = NULL, body = NULL" in log
 
 
 # --- the guild's own log ---------------------------------------------------------------------------------------------------------------

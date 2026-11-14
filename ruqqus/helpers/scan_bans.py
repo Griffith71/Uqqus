@@ -1,6 +1,6 @@
 """The ban an image check makes, through `User.ban` like every other ban (the Log, slice D2: the audit's H5 and S1).
 
-The checks (helpers/aws.py `check_csam` and `check_csam_url`, helpers/media/safety.py `_scan_public`, routes/media.py) run in a greenlet
+The checks (helpers/aws.py `check_csam_url`, helpers/media/safety.py `_scan_public`, routes/media.py) run in a greenlet
 with a session of their own, after the request that uploaded the picture is over, and used to set `is_banned` on the uploader and their
 alts by hand: the Log never heard of it, none of a permanent ban's other duties ran (the profile picture and banner, the guilds nobody
 leads any more, the sub-accounts, the roles) and the reason stored and shown on the banned profile, "Sexualizing Minors", accused the

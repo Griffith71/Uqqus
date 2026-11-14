@@ -1673,15 +1673,21 @@ Optional file data:
         g.db.add(new_post.submission_aux)
         g.db.commit()
 
-        #csam detection
+        #csam detection. The scan runs after this request is over, so what it does on a match uses a session of its
+        #own and finds the post again by id: `new_post` belongs to the request's session, which may still be open when a
+        #fast scan answers ("already attached to session": the audit's S7).
+        scanned_post_id = new_post.id
+
         def del_function():
-            db=db_session()
+            db = db_session()
             delete_file(name)
-            new_post.is_banned=True
-            db.add(new_post)
-            action_log.record_image_check_removal(db, post_id=new_post.id, board_id=new_post.board_id, legal=True,
-                                                  detail="the picture this post shows was taken down by the image check")
-            db.commit()
+            banned = db.get(Submission, scanned_post_id)
+            if banned is not None:
+                banned.is_banned = True
+                db.add(banned)
+                action_log.record_image_check_removal(db, post_id=banned.id, board_id=banned.board_id, legal=True,
+                                                      detail="the picture this post shows was taken down by the image check")
+                db.commit()
             db.close()
 
             
@@ -1709,15 +1715,19 @@ Optional file data:
             apply_post_severity(new_post, title, new_post_aux.body_html, extra=poll_rules.option_text(poll_options))
             g.db.commit()
 
-            #csam detection
+            #csam detection (a session of its own, the post found again by id: see above)
+            scanned_body_post_id = new_post.id
+
             def del_body_image_function():
                 db = db_session()
                 delete_file(bname)
-                new_post.is_banned = True
-                db.add(new_post)
-                action_log.record_image_check_removal(db, post_id=new_post.id, board_id=new_post.board_id, legal=True,
-                                                      detail="a picture in this post's text was taken down by the image check")
-                db.commit()
+                banned = db.get(Submission, scanned_body_post_id)
+                if banned is not None:
+                    banned.is_banned = True
+                    db.add(banned)
+                    action_log.record_image_check_removal(db, post_id=banned.id, board_id=banned.board_id, legal=True,
+                                                          detail="a picture in this post's text was taken down by the image check")
+                    db.commit()
                 db.close()
 
             body_csam_thread = gevent.spawn(

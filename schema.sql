@@ -5596,7 +5596,8 @@ CREATE TABLE public.content_edit_history (
     summary character varying(256),
     hidden_utc bigint DEFAULT 0 NOT NULL,
     hidden_by integer,
-    edit_group bigint
+    edit_group bigint,
+    text_severity smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.content_edit_history_id_seq
@@ -7222,6 +7223,7 @@ CREATE TABLE public.log_entries (
     target_comment_id integer,
     rule_key character varying(24) DEFAULT '' NOT NULL,
     reason character varying(512) DEFAULT '' NOT NULL,
+    reason_severity smallint DEFAULT 0 NOT NULL,
     staff_note character varying(512) DEFAULT '' NOT NULL,
     audience smallint DEFAULT 0 NOT NULL,
     snapshot_id bigint,
@@ -7241,6 +7243,9 @@ CREATE INDEX log_entries_board_idx ON public.log_entries (board_id, id DESC);
 CREATE INDEX log_entries_target_user_idx ON public.log_entries (target_user_id);
 CREATE INDEX log_entries_actor_idx ON public.log_entries (actor_id);
 CREATE INDEX log_entries_created_idx ON public.log_entries (created_utc);
+CREATE INDEX log_entries_order_idx ON public.log_entries (created_utc DESC, id DESC);
+CREATE INDEX log_entries_post_idx ON public.log_entries (target_submission_id) WHERE target_submission_id IS NOT NULL;
+CREATE INDEX log_entries_comment_idx ON public.log_entries (target_comment_id) WHERE target_comment_id IS NOT NULL;
 CREATE UNIQUE INDEX log_entries_legacy_idx ON public.log_entries (legacy_modaction_id) WHERE legacy_modaction_id IS NOT NULL;
 CREATE INDEX log_entries_linked_idx ON public.log_entries (linked_entry_id) WHERE linked_entry_id IS NOT NULL;
 CREATE INDEX log_entries_suspended_idx ON public.log_entries (until_utc) WHERE until_utc > 0;
@@ -7465,4 +7470,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-27_push.sql'),
     ('2026-12-28_channel_pictures.sql'),
     ('2026-12-29_chat_extras.sql'),
-    ('2026-12-30_log_paper_trail.sql');
+    ('2026-12-30_log_paper_trail.sql'),
+    ('2026-12-31_log_d4.sql');

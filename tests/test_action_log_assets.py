@@ -105,7 +105,7 @@ def test_an_obliteration_is_a_public_stub_with_the_rule_only_and_the_detail_for_
     assert "_decided(ma, rule=_OBLITERATE_RULE" in helper                  # no reason on the public stub
     assert '"suppress_content", v.id' in helper and "reason=reason" in helper
     assert 'type_of("suppress_content")' not in helper and '"suppress_content"' in ACTION_LOG
-    assert "LEGAL_ACTIONS = {\"suppress_content\", \"legal_removal\"}" in ACTION_LOG
+    assert "LEGAL_ACTIONS = {\"suppress_content\"}" in ACTION_LOG
 
 
 def test_the_csam_route_keeps_who_decided_a_year_of_text_and_the_bans_for_level_four_only():

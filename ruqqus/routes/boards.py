@@ -2426,14 +2426,19 @@ def _guild_log_json(action, notes):
 @api("read")
 def board_mod_log(guildname, v):
     """
-View guild mod log data.
+View guild mod log data: what the guild's guildmasters (and, where the entry says so, the site's admins) decided in it.
 
 URL path parameters:
-* `guildname` - The guild in which you are a guildmaster
+* `guildname` - The guild whose log you want. A public guild's is open to anyone; a private or Circle guild's only to its members (anyone else
+  gets the same 404 as for a guild that doesn't exist); a banned guild's is the admins'.
 
 Optional query parameters
 * `page` - The page of items to view. Default `1`.
 * `show` - `all` (default), `posts`, `comments` or `exiles`: only that kind of action.
+
+Each action has the rule it cited (`rule`) and the reason written for it (`reason`) when there is one and your word filter allows it. An admin's action
+is attributed to the site, never to the admin; a hidden post or comment is named by id, never by its title, unless you are one of the guild's
+guildmasters.
 """
 
     page=log_rules.parse_page(request.args.get("page"))
@@ -2464,7 +2469,7 @@ Optional query parameters
 
     next_exists=len(actions)==26
     actions=actions[0:25]
-    notes=action_log.notes_for(g.db, [a.id for a in actions])
+    notes=action_log.notes_for(g.db, [a.id for a in actions], word_level=viewer_level(v))
     # a title is the author's text: only the guild's own guildmasters and the admins see what a hidden post was called
     titles_shown=bool(v and (v.admin_level>=3 or board.leads(v)))
 
@@ -2515,7 +2520,7 @@ URL path parameters:
     if not g.db.query(ModAction.id).filter(ModAction.id==action.id).filter(_guild_log_reader(board, v)).first():
         abort(404)
 
-    notes=action_log.notes_for(g.db, [action.id])
+    notes=action_log.notes_for(g.db, [action.id], word_level=viewer_level(v))
     return render_template("guild/modlog.html",
         v=v,
         b=action.board,

@@ -18,6 +18,14 @@ LATER = (
     "decision_note VARCHAR(500) NOT NULL DEFAULT '', reversal_entry_id BIGINT, "
     "CHECK (status IN ('open', 'upheld', 'reversed', 'dismissed')))",
     "CREATE UNIQUE INDEX log_appeals_once_idx ON log_appeals (entry_id, user_id)",
+    # 2026-12-31_log_d4.sql
+    "ALTER TABLE log_entries ADD COLUMN reason_severity SMALLINT NOT NULL DEFAULT 0",
+    "CREATE INDEX log_entries_post_idx ON log_entries (target_submission_id) WHERE target_submission_id IS NOT NULL",
+    "CREATE INDEX log_entries_comment_idx ON log_entries (target_comment_id) WHERE target_comment_id IS NOT NULL",
+    "CREATE INDEX log_entries_order_idx ON log_entries (created_utc DESC, id DESC)",
+    # the word filter's list, which rates a reason when it is written (empty: the built-in list). schema.sql `word_filter_entries`
+    "CREATE TABLE word_filter_entries (id INTEGER PRIMARY KEY AUTOINCREMENT, word VARCHAR(100), severity SMALLINT, mode VARCHAR(10), "
+    "variants VARCHAR(500), suffixes VARCHAR(500), language VARCHAR(8), enabled BOOLEAN DEFAULT 1)",
 )
 
 # the guild mod log and the rows the after-the-fact copy reads (schema.sql `modactions`)

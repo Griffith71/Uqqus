@@ -666,6 +666,11 @@ def api_ban_guild(v, bid):
 
     board = get_board(bid, v=v)
 
+    if not action_log.clean_reason(request.form.get("reason")):
+        # the reason is public on the guild's page and in the Log, so a ban says why (REASON_REQUIRED)
+        return render_template("message.html", v=v, title=tr("Give a reason"),
+                               message=tr("A guild ban needs a public reason, so the guild's page and the Log can say why.")), 400
+
     board.is_banned = True
     board.ban_reason = request.form.get("reason", "")
 

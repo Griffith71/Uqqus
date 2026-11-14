@@ -1,4 +1,5 @@
 from sqlalchemy import *
+from sqlalchemy import event
 from sqlalchemy.orm import relationship
 from ruqqus.__main__ import Base
 from .mix_ins import *
@@ -6,16 +7,15 @@ import time
 
 
 class ContentEditHistory(Base, Stndrd):
-    """Tier 1/2 audit trail: an author editing/deleting their own post or
-    comment, or a guild's moderators hiding/unhiding it for breaking that
-    guild's rules. previous_* columns snapshot the content immediately
-    before the action, for every action type except plain restores
-    ("guild_unhide"), which don't change anything.
+    """The public history of one post or comment (`/post/<id>/history`, `/comment/<id>/history`): an author editing it, deleting it, or a
+    guild's moderators or a post's author hiding and unhiding it. **Only an edit's row keeps text**: `previous_*` is the version the author
+    edited away, and the page draws it. A delete, a hide or a removal keeps its text as a private copy in the Log (`log_snapshots`, helpers/
+    action_log.py: 90 days, who may open it depends on its kind), never here, so the history names who did what and when and never the words.
+    `summary` and `reason` are a person's words and carry the word filter's rating together (`text_severity`).
 
-    These snapshot columns must be scrubbed (set to NULL) whenever the
-    underlying content is later obliterated - see admin_obliterate_post/
-    admin_obliterate_comment in routes/admin_api.py - so no earlier edited-
-    out version of destroyed content can resurface here."""
+    The `previous_*` columns must be scrubbed (set to NULL) whenever the underlying content is later obliterated - see admin_obliterate_post/
+    admin_obliterate_comment in routes/admin_api.py - and an admin can empty one version (`hidden_utc`, every row of the same `edit_group`), so no
+    earlier edited-out version of destroyed content can resurface here."""
 
     __tablename__ = "content_edit_history"
 
@@ -39,6 +39,7 @@ class ContentEditHistory(Base, Stndrd):
     hidden_utc = Column(BigInteger, default=0)      # an admin hid this revision's text (the row stays)
     hidden_by = Column(Integer, default=None)
     edit_group = Column(BigInteger, default=None)   # the rows of ONE edit across a post and its copies: hiding one version hides all
+    text_severity = Column(SmallInteger, default=0)  # the word filter's rating of `reason` and `summary` together (the audit's M8)
 
     actor = relationship("User", lazy="joined", primaryjoin="User.id==ContentEditHistory.actor_id")
     board = relationship("Board", lazy="joined")
@@ -52,6 +53,16 @@ class ContentEditHistory(Base, Stndrd):
 
     def __repr__(self):
         return f"<ContentEditHistory(id={self.id})>"
+
+
+@event.listens_for(ContentEditHistory, "before_insert")
+def _rate_the_words(mapper, connection, target):
+    """The reason and the edit summary are a person's words that the history page draws to other readers, so they carry the word filter's
+    rating, as every member text does and a reader's filter level hides (the audit's M8). Written for every writer of a row, since there
+    are many; it never fails the row: an unrated text reads as clean, as one from before the column was."""
+    from ruqqus.helpers import action_log
+    words = " ".join(x for x in (target.reason, target.summary) if x)
+    target.text_severity = action_log.rate(connection, words) if words else 0
 
 
 class ObliterationRecord(Base, Stndrd):
