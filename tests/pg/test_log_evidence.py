@@ -269,3 +269,82 @@ def test_an_exile_that_cited_an_item_is_shown_as_lifted_on_the_appeal_page_once_
     assert post(mod.browser(), mod, f"/mod/unexile/{board_name}/{member.username}").status_code in (200, 204, 302)
     page = get(member.browser(), f"/log/{entry}/appeal").get_data(as_text=True)
     assert "already been lifted" in page and "Send appeal" not in page, "nothing to appeal: the exile was lifted"
+
+
+def test_an_exile_cannot_cite_what_is_deleted_removed_or_hidden_from_the_guildmasters(real_app, make_member):
+    mod, member = make_member(), make_member()
+    board_id, board_name = guild(real_app)
+    guildmaster(mod, board_id)
+    deleted_id, _, deleted = named_post(member, board_id)
+    removed_id, _, removed = named_post(member, board_id)
+    post_id, _, _ = named_post(member, board_id)
+    hidden_id, hidden36 = add_comment(member, post_id, board_id, "<p>hidden by the post's author</p>")
+    db = member.db_session()
+    db.execute(text("UPDATE submissions SET deleted_utc = :n WHERE id = :p"), {"n": 1, "p": deleted_id})
+    db.execute(text("UPDATE submissions SET is_banned = true WHERE id = :p"), {"p": removed_id})
+    db.execute(text("UPDATE comments SET author_hidden = true WHERE id = :c"), {"c": hidden_id})
+    db.commit()
+    for thing in (deleted, removed, f"t3_{hidden36}"):
+        answer = exile(mod, board_name, username=member.username, reason=REASON, thing=thing)
+        assert answer.status_code == 400 and "Cite at least one" in answer.get_json()["error"], thing
+    assert ban_of(real_app, board_id, member) is None
+    assert rows(real_app, "SELECT 1 FROM log_snapshots WHERE kind = 'evidence' AND author_id = :a", a=member.id) == []
+
+
+def test_the_picker_lists_the_guilds_copies_of_what_an_account_forwarded(real_app, make_member):
+    mod, forwarder, author = (make_member() for _ in range(3))
+    board_id, board_name = guild(real_app)
+    guildmaster(mod, board_id)
+    original_id, _ = add_post(author, 2, title="Written on a profile")
+    copy_id, copy36 = add_post(author, board_id, title=f"A forward {secrets.token_hex(3)}", repost_id=original_id)      # a copy keeps its author's id
+    db = forwarder.db_session()
+    db.execute(text("INSERT INTO forwardrels (primary_submission_id, board_id, forward_submission_id, forwarded_by_id, created_utc) VALUES (:p, :b, :c, :f, 1)"),
+               {"p": original_id, "b": board_id, "c": copy_id, "f": forwarder.id})
+    db.commit()
+    mine = get(mod.browser(), f"/mod/exile_items/{board_name}?username={forwarder.username}").get_json()["items"]
+    assert [i["id"] for i in mine] == [f"t2_{copy36}"], "whose a guild's copy is, for an exile, is its forwarder"
+    assert get(mod.browser(), f"/mod/exile_items/{board_name}?username={author.username}").get_json()["items"] == [], "not its author's"
+    done = exile(mod, board_name, username=forwarder.username, reason=REASON, thing=f"t2_{copy36}")
+    assert done.status_code in (200, 204), done.get_data(as_text=True)[:200]
+
+
+def test_the_guilds_exiled_page_draws_the_dialog_its_button_opens(real_app, make_member):
+    mod = make_member()
+    board_id, board_name = guild(real_app)
+    guildmaster(mod, board_id)
+    page = get(mod.browser(), f"/+{board_name}/mod/exiled").get_data(as_text=True)
+    assert 'id="decisionModal"' in page and "js/decision_dialog.js" in page and "exile_from_guild(" in page, "its shell is not the site's: it must draw the dialog itself"
+
+
+def test_an_item_made_anonymous_after_it_was_cited_is_no_longer_paired_with_the_exile(real_app, make_member):
+    mod, second_mod, member = (make_member() for _ in range(3))
+    board_id, board_name = guild(real_app)
+    guildmaster(mod, board_id)
+    guildmaster(second_mod, board_id)
+    post_id, b36, thing = named_post(member, board_id)
+    assert exile(mod, board_name, username=member.username, reason=REASON, thing=thing).status_code in (200, 204)
+    entry = one(real_app, "SELECT id FROM log_entries WHERE action = 'exile_user' AND target_user_id = :u", u=member.id)["id"]
+    assert "Cited:" in get(second_mod.browser(), f"/log/{entry}").get_data(as_text=True)
+    assert get(second_mod.browser(), f"/post/{b36}/copy").status_code == 200
+    db = member.db_session()
+    db.execute(text("UPDATE submissions SET is_anonymous = true WHERE id = :p"), {"p": post_id})      # what "Remove my name" does
+    db.commit()
+    for guildmaster_account in (mod, second_mod):
+        assert "Cited:" not in get(guildmaster_account.browser(), f"/log/{entry}").get_data(as_text=True)
+        assert get(guildmaster_account.browser(), f"/post/{b36}/copy").status_code == 404, "a copy would say this anonymous post was the exiled account's"
+    assert get(member.browser(), f"/post/{b36}/copy").status_code == 200, "the person may open their own"
+    assert get(admin_of(make_member).browser(), f"/post/{b36}/copy").status_code == 200, "and an admin"
+
+
+def test_an_admin_nuke_needs_a_reason_and_each_removal_carries_it(real_app, make_member):
+    admin, member = admin_of(make_member, 4), make_member()
+    board_id, _ = guild(real_app)
+    post_id, b36 = add_post(member, board_id, title="About to go")
+    refused = post(admin.browser(), admin, "/admin/nuke_user", user=member.username)
+    assert refused.status_code == 400 and refused.get_json()["error"] == "A reason is required."
+    assert one(real_app, "SELECT is_banned FROM submissions WHERE id = :p", p=post_id)["is_banned"] in (False, None), "nothing was removed"
+    done = post(admin.browser(), admin, "/admin/nuke_user", user=member.username, reason="Spam from a stolen account")
+    assert done.status_code in (200, 302), done.get_data(as_text=True)[:200]
+    assert one(real_app, "SELECT is_banned FROM submissions WHERE id = :p", p=post_id)["is_banned"] is True
+    entry = one(real_app, "SELECT reason FROM log_entries WHERE action = 'ban_post' AND target_submission_id = :p", p=post_id)
+    assert "Spam from a stolen account" in entry["reason"]

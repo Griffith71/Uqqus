@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -1863,6 +1863,21 @@ msgstr "+%(guild)s는 승인된 기여자로부터만 전달됩니다."
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s unmuted."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+%(guild)s reinstated, 그 페이지가 다시 열립니다."
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+%(guild)s's guild moderators 아직 위키를 작성하지 않았습니다."
@@ -3203,9 +3218,9 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "게시물의 텍스트는 %(count)s 문자 (중국, 일본어 및 한국어 문자 및 이모티콘 수 2) 수 있습니다."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "그것은 숨겨져있을 때이의 개인 사본, 제거 또는 삭제. 그 저자만, 길드의 길드 모더레이터가 숨겨져 있고 사이트의 관리자가 열릴 수 있고, 이제까지 유지되지 않습니다."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "그것은 숨겨져있을 때이 개인 사본, 삭제, 삭제 또는 결정에 의존. 그 저자만 결정하는 길드의 길드 모더레이터와 사이트의 관리자가 열 수 있습니다, 그리고 그것은 영원히 유지되지 않습니다."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4003,6 +4018,10 @@ msgstr "Alpha 사용자"
 msgid "Already approved"
 msgstr "Already 승인"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Already 금지"
+
 #, machine, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "+%(guild)s에 전달됨."
@@ -4255,9 +4274,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "익명"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "익명 #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "익명 #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "익명의 하나는 두 번째 관리자가 승인하지 않는 한 익명 유지, 그리고 그 옆에 로그인 이름."
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5673,6 +5700,10 @@ msgstr "색상 중 하나를 선택하십시오."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "자신의 앱 중 하나를 선택하세요 (설정 > 앱)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "이 게시물을 선택하거나 의견은 약, 최대 5입니다. 이 사이트는 현재로서의 개인 사본을 유지, 그들을 위해, 이 길드의 길드 모더레이터와 사이트의 관리자."
+
 #, machine
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "당신의 생명을 지키는 이야기를 선택하십시오. 하이라이트는 24 시간 후에 이야기를 유지하고 그 다음을 볼 수있는 사람들에게 각각 보여줍니다."
@@ -5802,6 +5833,14 @@ msgstr "당신의 자신의 원형"
 #, machine
 msgid "Circles you subscribe to"
 msgstr "구독할 수 있는 Circles"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "@%(name)s의 게시물 또는 댓글 +%(guild)s의 적어도 하나에 해당합니다."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "공급 능력:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7629,6 +7668,10 @@ msgstr "예 : 고양이 개 · \"cats\"또는 \"dogs\"가 없습니다"
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "예 : 행복한 시간 · 정확한 문구 \"해피 시간\""
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "추방"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "추방 %(alias)s"
@@ -7837,6 +7880,10 @@ msgstr "길 찾기"
 #, machine
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "커뮤니티를 찾아가기 당신은 당신의 sidebar에 표시하고 다음 피드에 가입."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "게시물 및 의견 찾기"
 
 #, machine
 msgid "Fire Extinguisher"
@@ -12992,6 +13039,10 @@ msgstr "이름 * <span class=\"text-muted font-weight-normal\">(선택)</span>"
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "일반 텍스트, 링크 없음. 자주 묻는 질문."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "일반 텍스트, 최대 512 문자. 로그인하고, 사람이 전송됩니다."
+
 #, machine, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13715,6 +13766,14 @@ msgstr "Propose 제거"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "저자로서 @%(name)s를 제거하는 제안? 그들이 그들에게 신용 한 것을 썼다."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "숫자로 제거"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "이 익명 저자를 제거하는 Propose? 다른 저자가 동의하는 경우, 그들은 제거되고, 그래서 당신은 그것이 누구인지 알 것이다. 그들이 썼는 것은 똑같은 수로에 의해 신용을 받았다."
+
 #, machine
 msgid "Propose these rules"
 msgstr "이 규칙을 제안"
@@ -14252,6 +14311,10 @@ msgid "Remove this topic"
 msgstr "이 주제 해제"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "저자로 제거"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "이 항목에서 이름을 제거?"
 
@@ -14679,6 +14742,10 @@ msgstr "기타"
 #, machine, plain1
 msgid "Rule"
 msgstr "【특전】"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "규칙 끊기"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17046,6 +17113,10 @@ msgstr "저자는 당신을 초대하기로 동의: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "자동 등록이 저장되었습니다."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "기본 정보 URL 이름 * <code>%(url)s</code>"
@@ -17341,6 +17412,10 @@ msgstr "이름 %(host)s는 찾을 수 없습니다."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "그들이 행한 것의 가장 새로운. 그들이 채팅하는 사람의 이름 만, 채팅이 말하는 것을 결코: 채팅은 암호화되지 않습니다."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "익명의 저자의 수"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -17955,6 +18030,10 @@ msgstr "이 또한 다른 곳에서 채팅을 차단, 채팅 앱 포함, 채팅�
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "이 저자는 %(time)s에 대 한 활성화 되지 않았다, 그래서 계산 되지 않습니다."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "이 금지는:"
+
 #, machine
 msgid "This bot can't take tips right now."
 msgstr "이 봇은 지금 바로 팁을 취할 수 없습니다."
@@ -18155,6 +18234,10 @@ msgstr "이 길드는 민감한 주제에 대해 논의합니다"
 #, machine
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "이 길드는 민감한 주제에 대해 논의합니다 (이 게시물은 기본적으로 흐릅니다)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "이 길드는 이미 금지되어 있습니다."
 
 #, machine
 msgid "This guild is banned."
@@ -18421,6 +18504,10 @@ msgstr "이 제안은 닫힙니다."
 #, machine
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "이 큐는 비어 있습니다. (좋은 일입니다.)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "이것은 익명 게시물 또는 코멘트에 의존합니다. 이 사이트는 현재로서의 개인 사본을 유지합니다."
 
 #, machine
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -19976,6 +20063,10 @@ msgid "What the guildmasters did"
 msgstr "길드 모더레이터는"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "이것에 대해"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "그들과 함께 할 일"
 
@@ -20742,6 +20833,10 @@ msgstr "+%(guild)s에서 발췌하고 현재 guild moderator가 될 수 없습�
 msgid "You are exiled from +%(guild)s."
 msgstr "+%(guild)s에서 발췌합니다."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "+%(guild)s에서 더 이상 배정되지 않습니다. 당신은 그것에 게시물을 전달하고 다시 코멘트를 할 수 있습니다."
+
 #, machine
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "당신은 어떤 길드의 회원이 아닙니다. 여기에 참여할 수 있습니다."
@@ -20925,6 +21020,17 @@ msgstr "자신의 계정이 18 이상으로 확인되면 자녀 계정을 만들
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "하루에 세 가지 매력을 만들 수 있습니다. 내일 다시 시도하십시오."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "하루에 최대 2개의 길드만 만들 수 있습니다. 나중에 다시 시도하십시오."
@@ -20970,6 +21076,10 @@ msgstr "당신은 당신의 이메일에 끄는 수 있습니다 <a href=\"%(url
 msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "대부분의 %(num)s 메시지를 스페이스에서 쓸 수 있습니다."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "+%(guild)s의 채널을 다시 작성할 수 있습니다."
 
 #, machine, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22374,6 +22484,10 @@ msgstr "구독이 갱신되지 않습니다. 지불 한 날까지 액세스 할 
 msgid "Your subscriptions"
 msgstr "귀하의 구독"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "중단이 종료되었습니다. 당신이 전에 한대로 %(site)s을 사용할 수 있습니다."
+
 #, machine, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "귀하의 제목은 질문입니다. %(min)s에서 %(max)s 옵션, 각 투표. 이 게시물의 모든 전달 및 재 게시로부터 투표 할 수 있습니다."
@@ -22522,6 +22636,14 @@ msgstr "[서비스 약관](/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[기타] (/help/titles)"
 
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr "[Your comment](%(item)s)는 게시물 아래에 다시 표시됩니다."
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
 #, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
@@ -22556,6 +22678,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22575,6 +22705,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine

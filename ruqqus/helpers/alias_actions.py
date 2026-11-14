@@ -20,7 +20,8 @@ the guess. (1) Exile the suspect BY NAME, then look at the exile list: if the su
 part, but no new named row appears (an account exiled by name answers "already exiled", so the alias row is the one case that is silent). (2) Exile the suspect by
 name FIRST, then exile the alias: no new row appears when the alias's author is the suspect, but also when it is any account that can't be acted on (a guildmaster,
 an admin, an approved contributor, the guildmaster's own), so one silent answer proves one of several things. Neither tells a guildmaster who it is when they have
-no suspect, and each costs a visible exile of the suspect. A name-based action on an account that was exiled by alias never says "already exiled", and un-exiling by
+no suspect, and each costs a visible exile of the suspect (and since 2026-11-15 an exile by name must first cite a real, named item of that account in this guild,
+asked before anything is said about its standing, so a miss is never cheaper than the exile it makes). A name-based action on an account that was exiled by alias never says "already exiled", and un-exiling by
 name never finds an alias row.
 
 Plain `text()` SQL where it can be, tested on SQLite (tests/test_alias_actions.py). Nothing here commits.

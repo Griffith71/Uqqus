@@ -95,11 +95,12 @@ def mod_exile_alias(guildname, board, v):
         g.db.add(BanRelationship(user_id=user.id, board_id=board.id, banning_mod_id=v.id, is_active=True, alias_post_id=thread, alias_n=number,
                                  mod_note=note))
     link = item.permalink
-    notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward "
-                    "posts to +%(guild)s or comment in it.\n\nYou were exiled for [this item](%(link)s)."), guild=board.name, link=link)
     entry = _logged(alias_actions.EXILE, board, v, item, number, user, with_item=True)
     sanction_evidence.keep(g.db, entry, board.id, user.id, [item])          # the anonymous item it cites, as it was: read through the copy pages only
     g.db.commit()
+    # told once the exile and its record are committed (`notify` commits on its own)
+    notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward "
+                    "posts to +%(guild)s or comment in it.\n\nYou were exiled for [this item](%(link)s)."), guild=board.name, link=link)
     if entry:
         log_notices.tell_appeal_way(g.db, entry, user)
         log_notices.mark_sent(g.db, entry)

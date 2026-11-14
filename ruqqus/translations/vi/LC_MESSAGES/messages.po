@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: vi\n"
@@ -1863,6 +1863,21 @@ msgstr "+%(guild)s chỉ chấp nhận từ những người đóng góp đượ
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s chưa được chuẩn bị."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+%(guild)s đã được nhận lại, và trang của nó lại mở ra."
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+%(guild)sCác thiết bị điều hòa của hội thẩm vẫn chưa được viết ra."
@@ -3203,9 +3218,9 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Tin nhắn có thể là %(count)s ký tự (tiếng Hoa, tiếng Nhật và tiếng Hàn và chữ emoji được tính là 2)."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "Một bản sao riêng của nó như khi nó được giấu, đã gỡ bỏ hoặc xoá bỏ. Chỉ có tác giả của nó, những người điều hòa hội thẩm nó đã được giấu trong và các nhà quản trị của trang web có thể mở nó ra, và nó không được giữ mãi mãi."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "Một bản sao riêng của điều này như khi nó được giấu, gỡ bỏ, xóa hoặc dựa vào một quyết định. Chỉ có tác giả của nó, những người điều hòa hội thẩm quyết định và những người quản trị trang web có thể mở nó, và nó không được giữ mãi mãi."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4003,6 +4018,10 @@ msgstr "Người dùng Alpha"
 msgid "Already approved"
 msgstr "Đã được phê chuẩn"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Đã bị cấm"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "Đã chuyển qua +%(guild)s."
@@ -4255,9 +4274,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Ẩn danh"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "Vô danh"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "Ẩn danh #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "Những kẻ vô danh sẽ ẩn danh trừ khi người quản lý thứ hai chấp nhận, và sau đó ghi tên tài khoản bên cạnh họ."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5674,6 +5701,10 @@ msgstr "Chọn một màu đi."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "Hãy chọn một ứng dụng riêng (đặt > Ứng dụng)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "Chọn các bài viết hoặc bình luận về vấn đề này, lên đến năm. Trang web có một bản sao riêng của mỗi người như bây giờ, đối với họ, guild điều hòa của guild này và các quản lý trang web."
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "Hãy chọn những câu chuyện để giữ dưới tiểu sử của bạn. Một điểm nổi bật giữ những câu chuyện của nó sau 24 tiếng đồng hồ và cho những người có thể thấy chúng."
@@ -5803,6 +5834,14 @@ msgstr "Vòng tròn của riêng bạn"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "Những vòng tròn bạn đặt mua"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "Ghi ít nhất một trong những bài viết của @%(name)s hoặc bình luận trong +%(guild)s mà điều này phụ thuộc vào."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "Điểm:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7630,6 +7669,10 @@ msgstr "Ví dụ: mèo con không có \"con mèo\" hay \"con chó\""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Ví dụ: giờ phút vui vẻ"
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "Trục xuất"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "Trục xuất %(alias)s"
@@ -7838,6 +7881,10 @@ msgstr "Tìm một nhóm"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "Tìm cộng đồng để tham gia. Các tổ chức mà bạn tham gia sẽ xuất hiện ở quầy bar và thức ăn kèm theo."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "Tìm vị trí và bình luận của họ"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -12994,6 +13041,10 @@ msgstr "Nơi <span class=\"text-muted font-weight-normal\">(tùy chọn)</span>"
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "Văn bản không có liên kết. Nói xem các bài viết đến từ đâu."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "Văn bản thường, lên đến 512 ký tự. Nó ở trong nhật ký, và người đó đã gửi nó."
+
 #, machine, plain1, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13718,6 +13769,14 @@ msgstr "Bảo bạn gỡ bỏ"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "Đề nghị gỡ bỏ @%(name)s là tác giả? Những gì họ viết sẽ được công nhận."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "Đặt cách gỡ bỏ theo số"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "Đề nghị gỡ bỏ tác giả vô danh này? Nếu các tác giả khác đồng ý, họ sẽ bị loại bỏ, và các bạn sẽ biết đó là ai. Những gì họ viết sẽ được ghi nhận, với cùng số lượng."
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "Đặt ra những quy tắc này"
@@ -14254,6 +14313,10 @@ msgid "Remove this topic"
 msgstr "Bỏ chủ đề này"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "Gỡ bỏ bạn như một tác giả"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Gỡ bỏ tên của bạn khỏi các mục này?"
 
@@ -14681,6 +14744,10 @@ msgstr "Ruby"
 #, machine, plain1
 msgid "Rule"
 msgstr "Quy tắc"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "Quy tắc bị phá vỡ"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17043,6 +17110,10 @@ msgstr "Các tác giả đồng ý mời bạn: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Sự kiểm duyệt tự động đã được tiết kiệm."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "Cơ sở URL là <code>%(url)s</code>"
@@ -17338,6 +17409,10 @@ msgstr "Tên %(host)s Không tìm thấy."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Điều mới nhất mà họ đã làm. Chỉ có tên của những người họ trò chuyện được hiển thị, không bao giờ những gì một cuộc trò chuyện nói: các cuộc trò chuyện được mã hóa từ cuối đến cuối."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "Số của tác giả vô danh"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -17952,6 +18027,10 @@ msgstr "Tùy chọn này cũng ngắt kết nối trò chuyện ở khắp mọi
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "Tác giả này chưa được kích hoạt cho %(time)sKhông tính."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "Lệnh cấm này phụ thuộc vào:"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "Con robot này không thể nhận tiền boa lúc này."
@@ -18152,6 +18231,10 @@ msgstr "Tổ chức này thảo luận những đề tài nhạy cảm"
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "Điều này thảo luận các chủ đề nhạy cảm (mọi bài ở đây sẽ bị che mờ theo mặc định)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "Tổ chức này đã bị cấm."
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -18418,6 +18501,10 @@ msgstr "Đề nghị này đã kết thúc."
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "Hàng đợi này trống. (Đó là điều tốt.)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "@ info/ rich Trang web có bản sao riêng của nó như bây giờ."
 
 #, machine, plain1
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -19962,6 +20049,10 @@ msgid "What the guildmasters did"
 msgstr "Những gì những người điều hòa đã làm"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "Điều này dựa trên"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "Làm gì với chúng đây"
 
@@ -20728,6 +20819,10 @@ msgstr "Bạn bị trục xuất khỏi +%(guild)s và hiện tại không thể
 msgid "You are exiled from +%(guild)s."
 msgstr "Anh bị trục xuất khỏi +%(guild)s."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "Bạn không còn bị lưu đày khỏi +%(guild)s. Bạn có thể chuyển bài cho nó và bình luận trong đó một lần nữa."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Anh không phải là thành viên của bất kỳ nhóm nào. Các tổ chức mà bạn tham gia sẽ được trưng bày ở đây."
@@ -20911,6 +21006,17 @@ msgstr "Bạn có thể kể cho con nghe khi lời tường thuật của bạn
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Anh có thể làm 3 lần 1 ngày. Ngày mai hãy thử lại."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "Bạn chỉ có thể tạo ra 2 hộp mỗi ngày. Hãy thử lại sau."
@@ -20956,6 +21062,10 @@ msgstr "Bạn có thể tắt những email này trong của bạn <a href=\"%(u
 msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "Bạn có thể viết nhiều nhất %(num)s Tin nhắn trong không gian mỗi ngày."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "Bạn có thể viết vào +%(guild)sLại là kênh tin tức."
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22344,6 +22454,10 @@ msgstr "Anh sẽ không đăng ký lại đâu. Anh giữ quyền truy cập cho
 msgid "Your subscriptions"
 msgstr "Bạn đăng ký"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "Việc đình chỉ của anh đã kết thúc. Anh có thể dùng %(site)s Như anh đã làm lúc trước."
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "Chức danh là câu hỏi. %(min)s phải %(max)s tùy chọn, mỗi người một phiếu. Cuộc bỏ phiếu có thể được bỏ phiếu từ mọi phía trước và sau của bài báo này."
@@ -22474,6 +22588,14 @@ msgid "[Titles](/help/titles)"
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr ""
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22507,6 +22629,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22526,6 +22656,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1

@@ -48,7 +48,7 @@ def test_only_the_reveal_s_own_code_reads_or_writes_the_evidence():
         source = path.read_text(encoding="utf-8")
         if "log_evidence" in source:
             users.add(path.relative_to(RUQQUS).as_posix())
-    assert users == {"helpers/log_evidence.py", "routes/log_evidence_pages.py", "routes/__init__.py", "routes/admin_api.py", "routes/log_pages.py", "classes/user.py"}, users
+    assert users == {"helpers/log_evidence.py", "routes/log_evidence_pages.py", "routes/__init__.py", "routes/admin_api.py", "routes/log_pages.py", "routes/log_appeal_pages.py", "classes/user.py"}, users
     for anonymiser in ("helpers/anonymise.py", "helpers/account_anonymise.py", "helpers/account_cleanup.py", "helpers/deletion.py"):
         assert "log_evidence" not in read("ruqqus", *anonymiser.split("/")), anonymiser + " must never touch the evidence: citing is not undone by deleting or unlinking"
 

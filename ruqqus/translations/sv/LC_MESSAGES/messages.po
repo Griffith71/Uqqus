@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -1986,6 +1986,21 @@ msgstr "+%(guild)s accepterar endast vidarebefordran från godkända bidragsgiva
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s omuterad."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+%(guild)s återinfördes och sidan är öppen igen."
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+%(guild)ss guild moderatorer har inte skrivit wiki ännu."
@@ -3381,9 +3396,9 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "Ett inlägg text kan vara %(count)s tecken (kinesiska, japanska och koreanska tecken och emoji räknas som 2)."
 msgstr[1] "Ett inlägg text kan vara %(count)s tecken (kinesiska, japanska och koreanska tecken och emoji räknas som 2)."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "En privat kopia av detta som det var när den var dold, borttagen eller borttagen. Endast dess författare, skuld moderatorer av skulden det var dold i och webbplatsens administratörer kan öppna den, och det hålls inte för evigt."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "En privat kopia av detta som det var när det var dolt, borttaget, raderat eller förlitat sig på för ett beslut. Endast dess författare, skuld moderatorer av skulden som beslutade och webbplatsens administratörer kan öppna den, och det hålls inte för evigt."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4196,6 +4211,10 @@ msgstr "Alpha Användare"
 msgid "Already approved"
 msgstr "Redan godkänd"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Redan förbjudet"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "Redan vidarebefordrad till +%(guild)s."
@@ -4452,9 +4471,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonym"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "Anonymt #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "Anonym #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "Anonyma personer är anonyma om inte en andra administratör godkänner, och sedan Log namnen ditt konto bredvid dem."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5882,6 +5909,10 @@ msgstr "Välj en av färgerna."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "Välj en av dina egna appar (Inställningar > Appar)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "Välj inlägg eller kommentarer som handlar om upp till fem. Webbplatsen håller en privat kopia av varje som det är nu, för dem, denna skuldens skuld moderatorer och webbplatsens administratörer."
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "Välj historier för att hålla under din bio. En höjdpunkt håller sina berättelser efter sina 24 timmar och visar var och en till de människor som kunde se det då."
@@ -6011,6 +6042,14 @@ msgstr "Cirklar av din egen"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "Cirklar du prenumererar på"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "Citera minst en av %(name)s inlägg eller kommentarer i +%(guild)s som detta bygger på."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "Citerad:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7845,6 +7884,10 @@ msgstr "Exempel: katter hundar har varken \"katter\" eller \"hundar\""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Exempel: happy hour har den exakta frasen \"happy hour\""
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "Förvisa"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "Förvisa %(alias)s"
@@ -8053,6 +8096,10 @@ msgstr "Hitta en guild"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "Hitta samhällen att gå med. Skulder du går upp i din sidofält och din Följande foder."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "Hitta deras inlägg och kommentarer"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -13250,6 +13297,10 @@ msgstr "Plats <span class=\"text-muted font-weight-normal\">(valfritt)</span>"
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "Smärta text, inga länkar. Säg var posterna kommer ifrån."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "Vanlig text, upp till 512 tecken. Det är i loggen, och personen skickas den."
+
 #, machine, plain1, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13976,6 +14027,14 @@ msgstr "Föreslå borttagning"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "Föreslå att ta bort @%(name)s Som författare? Vad de skrev förblir krediterade till dem."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "Föreslå att ta bort med nummer"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "Föreslå att ta bort denna anonyma författare? Om de andra författarna är överens, tas de bort, så kommer ni alla att veta vem det var. Vad de skrev förblir krediterade till dem, med samma nummer."
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "Föreslå dessa regler"
@@ -14518,6 +14577,10 @@ msgid "Remove this topic"
 msgstr "Ta bort det här ämnet"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "Ta bort dig som författare"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Ta bort ditt namn från dessa objekt?"
 
@@ -14946,6 +15009,10 @@ msgstr "Rugby"
 #, machine, plain1
 msgid "Rule"
 msgstr "Regel"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "Rule bruten"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17333,6 +17400,10 @@ msgstr "Författarna gick med på att bjuda in dig: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Automoderationen sparades."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "Basen URL är att <code>%(url)s</code>"
@@ -17634,6 +17705,10 @@ msgstr "Namnet %(host)s kunde inte hittas."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Det nyaste av vad de har gjort. Bara namnen på vem de chattar med visas, aldrig vad en chatt säger: chattar är end-to-end krypterade."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "Antalet anonyma författare"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -18255,6 +18330,10 @@ msgstr "Detta kopplar också bort chatt överallt, chattprogram ingår, förutom
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "Denna författare har inte varit aktiv för %(time)s, så räknas inte."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "Detta förbud bygger på:"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "Denna bot kan inte ta tips just nu."
@@ -18456,6 +18535,10 @@ msgstr "Denna skuld diskuterar känsliga ämnen"
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "Denna skuld diskuterar känsliga ämnen (varje inlägg här kommer att suddas som standard)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "Denna skuld är redan förbjuden."
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -18723,6 +18806,10 @@ msgstr "Detta förslag är stängt."
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "Denna kö är tom. (Det är bra.)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "Detta beror på det anonyma inlägget eller kommentaren du öppnade det från. Webbplatsen håller en privat kopia av den som den är nu."
 
 #, machine, plain1
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -20286,6 +20373,10 @@ msgid "What the guildmasters did"
 msgstr "Vad guild moderatorer gjorde"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "Vad detta bygger på"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "Vad att göra med dem"
 
@@ -21055,6 +21146,10 @@ msgstr "Du exiled från +%(guild)s och kan för närvarande inte bli en skuld mo
 msgid "You are exiled from +%(guild)s."
 msgstr "Du är exil från +%(guild)s."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "Du är inte längre exil från +%(guild)s. Du kan vidarebefordra inlägg till det och kommentera det igen."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Du är inte medlem i några skulder. Skulder du deltar i visas här."
@@ -21253,6 +21348,17 @@ msgstr "Du kan göra ett barnkonto när ditt eget konto bekräftas som 18 eller 
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Du kan göra tre överklaganden per dag. Försök igen imorgon."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "Du kan bara skapa upp till 2 skulder per dag. Försök igen senare."
@@ -21304,6 +21410,10 @@ msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "Du kan skriva på de flesta %(num)s meddelanden i Spaces per dag."
 msgstr[1] "Du kan skriva på de flesta %(num)s meddelanden i Spaces per dag."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "Du kan skriva in +%(guild)ss kanaler igen."
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22715,6 +22825,10 @@ msgstr "Din prenumeration kommer inte att förnya. Du håller tillgång tills de
 msgid "Your subscriptions"
 msgstr "Dina prenumerationer"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "Din suspension har avslutats. Du kan använda %(site)s som du gjorde tidigare."
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "Din titel är frågan. %(min)s till %(max)s alternativ, en röst vardera. Undersökningen kan röstas från varje framåt och repost av detta inlägg."
@@ -22858,6 +22972,14 @@ msgid "[Titles](/help/titles)"
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr ""
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22891,6 +23013,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22910,6 +23040,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1

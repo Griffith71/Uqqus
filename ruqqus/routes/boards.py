@@ -793,6 +793,23 @@ Optional form data:
     if user.id == v.id:
         return jsonify({"error": tr("You can't exile yourself.")}), 409
 
+    # the content the exile relies on (the owner, 2026-11-14): the item named, and any more, each a named post or comment of this account made
+    # here. An anonymous item, one that isn't theirs and one from another guild are all dropped without a word, so a refusal tells nothing about
+    # who wrote an anonymous item; with nothing left the exile is refused.
+    cited = [item] if item and sanction_evidence.usable(item, board.id, user.id, _exile_item_owner(item)) else []
+    for fullname in request.form.getlist("evidence")[:2 * sanction_evidence.MAX_CITED]:
+        found = get_from_fullname(fullname, graceful=True) if "_" in fullname else None
+        if (isinstance(found, (Submission, Comment)) and sanction_evidence.usable(found, board.id, user.id, _exile_item_owner(found))
+                and not any(type(found) is type(c) and found.id == c.id for c in cited)):
+            cited.append(found)
+    cited = cited[:sanction_evidence.MAX_CITED]
+    if not cited:
+        return jsonify({"error": tr("Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on.",
+                                    name=user.username, guild=board.name)}), 400
+    item = cited[0]
+
+    # (asked BEFORE anything is said about the account's standing here: an exile that cites nothing usable is the same 400 for an account exiled by alias, for one
+    # exiled by name, for a guildmaster and for anyone else, or the quiet answer an alias exile gets would pick it out of every participant for free)
     active = g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first()
     if active and active.alias_n:
         # exiled by alias already: "already exiled" would confirm to a guildmaster who guessed the name that this account is the alias they exiled (helpers/alias_actions.py)
@@ -813,21 +830,6 @@ Optional form data:
     # you can only exile a user who has previously participated in the guild
     if not board.has_participant(user):
         return jsonify({"error": tr("@%(name)s hasn't participated in +%(guild)s.", name=user.username, guild=board.name)}), 403
-
-    # the content the exile relies on (the owner, 2026-11-14): the item named, and any more, each a named post or comment of this account made
-    # here. An anonymous item, one that isn't theirs and one from another guild are all dropped without a word, so a refusal tells nothing about
-    # who wrote an anonymous item; with nothing left the exile is refused.
-    cited = [item] if item else []
-    for fullname in request.form.getlist("evidence")[:2 * sanction_evidence.MAX_CITED]:
-        found = get_from_fullname(fullname, graceful=True) if "_" in fullname else None
-        if (isinstance(found, (Submission, Comment)) and sanction_evidence.usable(found, board.id, user.id, _exile_item_owner(found))
-                and not any(type(found) is type(c) and found.id == c.id for c in cited)):
-            cited.append(found)
-    cited = cited[:sanction_evidence.MAX_CITED]
-    if not cited:
-        return jsonify({"error": tr("Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on.",
-                                    name=user.username, guild=board.name)}), 400
-    item = cited[0]
 
     if item:
         if isinstance(item, Submission):
@@ -863,20 +865,18 @@ Optional form data:
 
     # one whole message for each case (the item it was for, if any): stored in English, read in each reader's
     # language (helpers/alerts.py notify). Sent for a new exile and for one made again after it was lifted: the person is told either way.
+    # Sent AFTER the exile, its Log entry and the cited items' copies are committed (`notify` commits on its own): a failure on the way can't leave an exile with no record
     if not item:
-        notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
-                        "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."),
-               guild=board.name)
+        notice = (N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
+                     "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."), {"guild": board.name})
     elif isinstance(item, Comment):
-        notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
-                        "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."
-                        "\n\nYou were exiled for [this comment](%(link)s)."),
-               guild=board.name, link=item.permalink)
+        notice = (N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
+                     "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."
+                     "\n\nYou were exiled for [this comment](%(link)s)."), {"guild": board.name, "link": item.permalink})
     else:
-        notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
-                        "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."
-                        "\n\nYou were exiled for [this post](%(link)s)."),
-               guild=board.name, link=item.permalink)
+        notice = (N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been "
+                     "removed, however, you will not be able to forward posts to +%(guild)s or comment in it."
+                     "\n\nYou were exiled for [this post](%(link)s)."), {"guild": board.name, "link": item.permalink})
 
 
     ma=ModAction(
@@ -895,6 +895,7 @@ Optional form data:
     sanction_evidence.keep(g.db, exile_entry, board.id, user.id, cited)
 
     g.db.commit()
+    notify(user, notice[0], **notice[1])
     if exile_entry:
         log_notices.tell_appeal_way(g.db, exile_entry, user)       # beside the exile's own notice: the Log and the Appeal link
         log_notices.mark_sent(g.db, exile_entry)

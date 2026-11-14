@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ky\n"
@@ -1984,6 +1984,21 @@ msgid "+%(guild)s unmuted."
 msgstr ""
 
 #, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr ""
+
+#, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr ""
 
@@ -3375,9 +3390,9 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "Посттун тексти %(count)s белгиси болушу мүмкүн (кытай, жапон жана корей тамгалары жана эможи 2)."
 msgstr[1] "Посттун тексти %(count)s тамгалары болушу мүмкүн (кытай, жапон жана корей тамгалары жана эмоджи 2)."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "Анын жеке көчүрмөсү жашырылган, алынып салынган же өчүрүлгөн кездегидей. Анын автору, жашыруун гильдиянын модераторлору жана сайттын администраторлору гана аны ача алышат, жана ал түбөлүккө сакталбайт."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "Анын жеке көчүрмөсү, ал жашырылган, алынып салынган, жок кылынган же чечим кабыл алуу үчүн колдонулган. Анын автору, чечим кабыл алган гильдиянын модераторлору жана сайттын администраторлору гана аны ача алышат, жана ал түбөлүккө сакталбайт."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4190,6 +4205,10 @@ msgstr "Alpha колдонуучусу"
 msgid "Already approved"
 msgstr "Буга чейин бекитилген"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Буга чейин тыюу салынган"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "Буга чейин +%(guild)s дарегине жөнөтүлгөн."
@@ -4446,9 +4465,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Аноним"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "Аноним #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "Аноним #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "Анонимдер анонимдүү бойдон калат, эгерде экинчи администратор макул болбосо, анан журнал сиздин аккаунтуңузду алардын жанында атайт."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5874,6 +5901,10 @@ msgstr "Түстөрдүн бирин тандагыла."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "Өз тиркемелериңиздин бирин тандаңыз (Settings > Apps)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "Бул тууралуу билдирүүлөрдү же комментарийлерди бешкө чейин тандаңыз. Бул сайт ар биринин жеке көчүрмөсүн сактайт, анткени алар үчүн бул гильдиянын модераторлору жана сайттын администраторлору."
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "Биологияңыздын астында сактоо үчүн окуяларды тандаңыз. \"Анын чыгармалары 24 сааттан кийин сакталып, ар бирин ошол кездеги адамдарга көрсөтөт.\"\"\"."
@@ -6003,6 +6034,14 @@ msgstr "Өзүңөрдүн чөйрөңөр"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "Сиз жазылуучу чөйрөлөр"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "Бул жерде, жок дегенде, бир @%(name)s билдирүүлөрүн же комментарийлерин +%(guild)s дарегинде келтирилген."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "Жогоруда келтирилген:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7833,6 +7872,10 @@ msgstr "Мисал: мышыктар иттерде \"мышыктар\" да, \
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Мисал: бактылуу саат · \"бактылуу саат\" деген так сөз айкашы бар"
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "Сүргүн кылуу"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "Сүргүн кылуу %(alias)s"
@@ -8040,6 +8083,10 @@ msgstr "Гильдияны табыңыз"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "Кошулуу үчүн жамааттарды табуу. Сиз кошулган гильдиялар сиздин капталыңызда жана кийинки тамагыңызда пайда болот."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "Алардын кызмат орундарын жана комментарийлерин табыңыз"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -13232,6 +13279,10 @@ msgstr "Жер орду <span class=\"text-muted font-weight-normal\">(опци�
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "Жөнөкөй текст, шилтемелер жок. Посттордун кайдан келгенин айтып бергиле."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "Бул жөнөкөй текст, 512 тамгага чейин. Ал журналда, жана ал адам жөнөтүлөт."
+
 #, machine, plain1, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13957,6 +14008,14 @@ msgstr "Алып салууну сунуш кылыңыз"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "Жазуучу катары @%(name)s алып салууну сунуш кылыңыз? Алардын жазгандары аларга таандык."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "Сан боюнча алып салууну сунуш кылуу"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "Бул анонимдүү авторду алып салууну сунуш кылыңыз. Эгер башка авторлор макул болсо, алар алынып салынат, ошондуктан силер баарыңар анын ким экенин билесиңер. Алардын жазгандары ошол эле санда аларга таандык."
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "Бул эрежелерди сунуш кылуу"
@@ -14498,6 +14557,10 @@ msgid "Remove this topic"
 msgstr "Бул теманы алып салуу"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "Сизди автор катары алып салгыла"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Бул буюмдардан атыңарды алып салгылабы?"
 
@@ -14926,6 +14989,10 @@ msgstr "Ругби"
 #, machine, plain1
 msgid "Rule"
 msgstr "Эрежелер"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "Эрежелер бузулган"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17300,6 +17367,10 @@ msgstr "Авторлор сизди чакырууга макул болушту
 msgid "The auto-moderation was saved."
 msgstr "Автомодерация сакталып калган."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "База URL - <code>%(url)s</code>"
@@ -17600,6 +17671,10 @@ msgstr "Аты-жөнү %(host)s табылган жок."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Алардын жасаган иштеринин эң жаңысы. Алар ким менен сүйлөшкөнү гана көрсөтүлөт, эч качан чат эмне деп айтпайт: чаттар аягына чейин шифрленет."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "Анонимдүү автордун номери"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -18221,6 +18296,10 @@ msgstr "Бул чатты башка бардык жерде, анын ичин�
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "Бул автор %(time)s үчүн активдүү болгон эмес, ошондуктан эсепке алынбайт."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "Бул тыюу салуу төмөнкүлөргө негизделген:"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "Бул бот азыр кеңештерди ала албайт."
@@ -18422,6 +18501,10 @@ msgstr "Бул гильдия сезимтал темаларды талкуул
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "Бул гильдия сезимтал темаларды талкуулайт (бул жердеги ар бир билдирүү демейки шартта тунук болбойт)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "Бул гильдияга буга чейин эле тыюу салынган."
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -18689,6 +18772,10 @@ msgstr "Бул сунуш жабылды."
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "Бул кезек бош. (Бул жакшы нерсе.)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "Бул сиз ачкан анонимдүү билдирүүгө же комментарийге негизделген. Сайт анын жеке көчүрмөсүн азыркыдай эле сактайт."
 
 #, machine, plain1
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -20242,6 +20329,10 @@ msgid "What the guildmasters did"
 msgstr "Гильдия модераторлору эмне кылышкан"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "Бул эмнеге таянат"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "Алар менен эмне кылуу керек"
 
@@ -21011,6 +21102,10 @@ msgstr "Сиз +ден сүргүнгө айдалып жатасыз%(guild)s �
 msgid "You are exiled from +%(guild)s."
 msgstr "Сиз +%(guild)sден сүргүнгө айдалгансыз."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "Сиз мындан ары +ден сүргүнгө айдалган жоксуз%(guild)sСиз ага билдирүүлөрдү жөнөтүп, дагы бир жолу комментарий бере аласыз."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Сиз эч кандай гильдиянын мүчөсү эмессиз. Сиз катышкан гильдиялар бул жерде көрсөтүлөт."
@@ -21209,6 +21304,17 @@ msgstr "Балаңыздын эсеби 18 жаштан жогору деп та
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Күнүнө үч жолу кайрылуу жасай аласыз. Эртең дагы бир жолу аракет кылгыла."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "Сиз күнүнө 2 гильдияны гана жасай аласыз. Кийинчерээк дагы бир жолу аракет кылгыла."
@@ -21260,6 +21366,10 @@ msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "Бир күндө эң көп дегенде бир билдирүү жазсаңыз болот."
 msgstr[1] "Сиз күнүнө эң көп дегенде %(num)s билдирүү жаза аласыз."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "Сиз + менен жаза аласыз%(guild)s\"каналдар дагы бир жолу\"."
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22648,6 +22758,10 @@ msgstr "Сиздин жазылууңуз жаңыланбайт. Сиз төл�
 msgid "Your subscriptions"
 msgstr "Сиздин жазылууларыңыз"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "Сиздин токтотууңуз аяктады. Сиз колдоно аласыз %(site)s Сиз буга чейин кылгандай эле."
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "Сиздин аталышыңыз суроо. %(min)sден %(max)sге чейинки варианттар, ар бири бир добуш. Сурамжылоону ар бир алдыга карай добуш берүү жана бул кызматты кийинкиге жылдыруу мүмкүн."
@@ -22777,6 +22891,14 @@ msgid "[Titles](/help/titles)"
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr ""
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22810,6 +22932,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22829,6 +22959,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1

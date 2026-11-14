@@ -10,8 +10,8 @@ from flask import g, jsonify, request
 from sqlalchemy import or_
 
 from ruqqus.__main__ import app, limiter, member_limit_key
-from ruqqus.classes import Comment, Submission
-from ruqqus.helpers import sanction_evidence, visibility
+from ruqqus.classes import CommentForwardRelationship, Comment, ForwardRelationship, Submission
+from ruqqus.helpers import post_follows, sanction_evidence, visibility
 from ruqqus.helpers.get import get_user
 from ruqqus.helpers.wrappers import auth_required, is_guildmaster
 
@@ -35,17 +35,27 @@ def mod_exile_items(guildname, board, v):
         response.headers["Cache-Control"] = "private, no-store"
         return response
     found = []
+    not_removed = or_(Submission.is_banned == False, Submission.is_banned == None)
+    # what they made straight in the guild, and the guild's copies of what they forwarded here (a copy keeps the ORIGINAL author's id: whose it is for an exile
+    # is its forwarder, `post_follows.responsible_id`, as the exile route asks it)
     posts = g.db.query(Submission).filter(
         Submission.original_board_id == board.id, Submission.author_id == user.id, Submission.is_anonymous == False,
-        Submission.deleted_utc == 0, Submission.is_banned == False, or_(Submission.repost_id == None, Submission.repost_id == 0),
+        Submission.deleted_utc == 0, not_removed, or_(Submission.repost_id == None, Submission.repost_id == 0),
     ).order_by(Submission.created_utc.desc()).limit(LISTED).all()
-    for post in posts:
-        if sanction_evidence.usable(post, board.id, user.id, post.author_id) and not visibility.post_hidden(post, v):
+    forwarded = g.db.query(Submission).join(ForwardRelationship, ForwardRelationship.forward_submission_id == Submission.id).filter(
+        ForwardRelationship.board_id == board.id, ForwardRelationship.forwarded_by_id == user.id, Submission.is_anonymous == False,
+        Submission.deleted_utc == 0, not_removed).order_by(Submission.created_utc.desc()).limit(LISTED).all()
+    from_comments = g.db.query(Submission).join(
+        CommentForwardRelationship, CommentForwardRelationship.forwarded_submission_id == Submission.id).filter(
+        CommentForwardRelationship.board_id == board.id, CommentForwardRelationship.forwarded_by_id == user.id, Submission.is_anonymous == False,
+        Submission.deleted_utc == 0, not_removed).order_by(Submission.created_utc.desc()).limit(LISTED).all()
+    for post in {p.id: p for p in [*posts, *forwarded, *from_comments]}.values():
+        if sanction_evidence.usable(post, board.id, user.id, post_follows.responsible_id(g.db, post)) and not visibility.post_hidden(post, v):
             found.append((post.created_utc, {"id": post.fullname, "kind": "post", "text": _snippet(html.unescape(post.title or "")),
                                              "created_utc": post.created_utc}))
     comments = g.db.query(Comment).filter(
         Comment.original_board_id == board.id, Comment.author_id == user.id, Comment.is_anonymous == False,
-        Comment.deleted_utc == 0, Comment.is_banned == False,
+        Comment.deleted_utc == 0, or_(Comment.is_banned == False, Comment.is_banned == None),
     ).order_by(Comment.created_utc.desc()).limit(LISTED).all()
     for comment in comments:
         if sanction_evidence.usable(comment, board.id, user.id, comment.author_id) and not visibility.comment_hidden(comment, v):

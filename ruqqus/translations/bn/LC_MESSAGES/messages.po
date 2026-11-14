@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: bn\n"
@@ -1978,6 +1978,21 @@ msgstr "+%(guild)s শুধুমাত্র অনুমোদিত প্�
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s অমার্জিত."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+%(guild)s পুনরায় চালু করা হয়েছে এবং এর পাতা আবার খোলা হয়েছে।"
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+%(guild)s'guডিল্ড রাইডার এখনো উইকি লেখেন নি।"
@@ -3370,9 +3385,9 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "একটি পোস্ট এর লেখা হতে পারে %(count)s অক্ষর (চীনা, জাপানি এবং কোরিয়ান অক্ষর এবং ইমোজি ২)।"
 msgstr[1] "একটি পোস্ট এর লেখা হতে পারে %(count)s অক্ষর (চীনা, জাপানি ও কোরিয়ান অক্ষর এবং ইমোজি ২ হিসেবে)।"
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "এটি একটি ব্যক্তিগত কপির কাজ যখন আপনি গোপনভাবে মুছে ফেলতে পারেন, অথবা মুছে ফেলা হয়েছে। শুধুমাত্র এর লেখক, guiddidgers এটি লুকানো ছিল এবং সাইটের প্রশাসকরা এটি খুলতে পারে, আর এটা কখনো সংরক্ষণ করা হয় না।"
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "এর একটি ব্যক্তিগত কপি যখন লুকানো ছিল, মুছে ফেলা, মুছে ফেলা অথবা সিদ্ধান্তের উপর নির্ভর করা। একমাত্র লেখক, guiddigers যে সিদ্ধান্ত নিয়েছে আর সাইটের প্রশাসক তা খুলতে পারে, আর এটা কখনো খোলা যাবে না।"
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4184,6 +4199,10 @@ msgstr "আলফা ব্যবহারকারী"
 msgid "Already approved"
 msgstr "পূর্বে অনুমোদন করা হয়েছে"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "পূর্বেই প্রতিরোধ করা হয়েছে"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "পূর্বে প্রেরিত হয়েছে +%(guild)s."
@@ -4440,9 +4459,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "বেনামী"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "অজ্ঞাত #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "বেনামী #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "নাম প্রকাশ না হলে পরিচয় গোপন থাকবে।"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5868,6 +5895,10 @@ msgstr "রং বেছে নিন ।"
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "আপনার নিজের একটি অ্যাপার বেছে নিন ( বৈশিষ্ট্যাবলী > PApps) ।"
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "এই বিষয়ে পোস্ট বা মন্তব্য করুন, পাঁচ থেকে পাঁচ পর্যন্ত। এই সাইটটি এখন যেহেতু প্রতিটির একটি ব্যক্তিগত কপি রয়েছে, তাদের জন্য, এই guddidgardus এবং সাইটের প্রশাসক।"
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "আপনার বায়োর নিচে রাখা গল্পগুলো বেছে নিন। ২৪ ঘন্টা পরে এর কাহিনীটি সবার সামনে তুলে ধরা হয়েছে।"
@@ -5997,6 +6028,14 @@ msgstr "আপনার নিজস্ব বৃত্ত"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "আপনার সাথে একটি বৃত্ত যুক্ত করুন"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "অন্তত একটি@ action%(name)s' আকার পোস্ট বা মন্তব্য +%(guild)s সেটা নির্ভর করে।"
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "কি-রিং:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7832,6 +7871,10 @@ msgstr "উদাহরণস্বরূপ: বিড়ালের কুক
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "উদাহরণস্বরূপ: সুখী ঘন্টা য়েটার সঠিক শব্দ রয়েছে \"ধন্য ঘন্টা\""
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "নির্বাসিত করুন"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "নির্বাসিত করুন %(alias)s"
@@ -8040,6 +8083,10 @@ msgstr "Guiল্ড খুঁজুন"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "দলে যোগ দাও। Guids আপনি আপনার সাইডবার এবং নীচের ফিডে যোগ দিন।"
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "তাদের পোস্ট এবং মন্তব্য খুঁজুন"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -13229,6 +13276,10 @@ msgstr "প্লেসার <span class=\"text-muted font-weight-normal\">(ঐ
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "প্লেইন-টেক্সট, লিঙ্ক নয়। পোস্টগুলো কোথা থেকে এসেছে বলে বলুন।"
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "প্লেইন-টেক্সট টেক্সট, ৫১২ অক্ষরের উপর স্থাপন করা হবে। এটা লগে লেখা আছে, আর সে এটা পাঠিয়েছে।"
+
 #, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13955,6 +14006,14 @@ msgstr "প্রোপান বর্জন করা হচ্ছে"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "নির্বাচিত অংশ মুছে ফেলুন@ action%(name)s লেখক হিসেবে? যা তারা লিখেছে তা তাদের কাছে ঋণী থাকবে।"
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "সংখ্যা দ্বারা অপসারণকারী বৈশিষ্ট্য"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "এই বেনামী লেখক মুছে ফেলতে চান? যদি অন্যান্য লেখক এতে রাজি হন, তাহলে তাদেরকে সরিয়ে ফেলা হবে, আর আপনারা সবাই জানবে এটা কে। যা তারা লিখেছে তা তাদের কাছে ঋণী থাকবে।"
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "এই নিয়ম মেনে চলতে হবে"
@@ -14496,6 +14555,10 @@ msgid "Remove this topic"
 msgstr "এই বিষয়টি সরান"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "লেখক হিসেবে অপসারণ করো"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "এই বস্তুগুলি মুছে ফেলা হবে কি?"
 
@@ -14924,6 +14987,10 @@ msgstr "রগবি"
 #, machine, plain1
 msgid "Rule"
 msgstr "নিয়ম ( R)"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "নিয়ম"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17298,6 +17365,10 @@ msgstr "লেখকরা আপনাকে আমন্ত্রন জান
 msgid "The auto-moderation was saved."
 msgstr "অটো-modeেশন সংরক্ষিত হয়."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "ভিত্তি URL এবং <code>%(url)s</code>"
@@ -17599,6 +17670,10 @@ msgstr "নাম %(host)s সনাক্ত করা যায় নি।"
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "তারা যা করেছে তার নতুনত্ব। আলাপনের ক্ষেত্রে শুধুমাত্র সেই নাম ব্যবহৃত আলাপনের নাম। চ্যাটের ক্ষেত্রে : আড্ডা-স্ট্যাটিক আড্ডার ব্যবস্থা প্রয়োগ করা হয়।"
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "বেনামী লেখকের সংখ্যা"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -18220,6 +18295,10 @@ msgstr "এটি অন্যান্য সকল স্থানে চ্�
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "এই লেখকের জন্য সক্রিয় করা হয়নি %(time)s- তাই না।"
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "এর উপর নিষেধাজ্ঞা আরোপ:"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "এই রোবট এখন টিপস দিতে পারে না।"
@@ -18420,6 +18499,10 @@ msgstr "এই guiid সংবেদনশীল বিষয় নিয়ে
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "এই guigd সংবেদনশীল বিষয় নিয়ে আলোচনা করছে (এখানে সব পোস্টই ডিফল্ট ভাবে চাপা পড়ে যাবে)।"
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "এই guiid ইতিমধ্যেই নিষিদ্ধ।"
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -18687,6 +18770,10 @@ msgstr "এই প্রস্তাবটি বন্ধ হয়ে গে�
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "এই লাইন খালি। (এটা ভাল জিনিস"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "বেনামী পোস্টে এই বিষয়টির উপর নির্ভর করে অথবা আপনি এই বিষয়ে মন্তব্য করেন। সাইটটি এখন এর একটি ব্যক্তিগত কপি রেখে যাচ্ছে।"
 
 #, machine, plain1
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -20239,6 +20326,10 @@ msgid "What the guildmasters did"
 msgstr "Guidid Sulid Sory কি করল"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "এর উপর নির্ভর করে কি"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "তাদের সাথে কি করা যায়"
 
@@ -21008,6 +21099,10 @@ msgstr "আপনি + থেকে নির্বাসিত হয়%(guild
 msgid "You are exiled from +%(guild)s."
 msgstr "আপনি + থেকে নির্বাসিত হয়%(guild)s."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "আপনি আর + থেকে নির্বাসিত হতে পারবেন না%(guild)sআপনি আবার এই বিষয়ে মন্তব্য করতে পারেন।"
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "তুমি কোন guirds সদস্য নও. গিল্ডস এখানে প্রদর্শিত হবে।"
@@ -21206,6 +21301,17 @@ msgstr "আপনি একবার আপনার নিজের অ্য�
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "( হিতো. কালকে আবার চেষ্টা করো।"
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "আপনি প্রতিদিন 2 guilds তৈরি করতে পারেন. পরে চেষ্টা করো।"
@@ -21257,6 +21363,10 @@ msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] ""
 msgstr[1] ""
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "আপনি + লিখতে পারেন%(guild)sচ্যানেল আবার চালু করো"
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22660,6 +22770,10 @@ msgstr "তোমার গ্রাহকরা আবার ফিরে আ�
 msgid "Your subscriptions"
 msgstr "গ্রাহক"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "আপনার বরখাস্ত হয়েছে। আপনি ব্যবহার করতে পারেন %(site)s যেমনটা তুমি বলেছিলে।"
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "আপনার শিরোনাম হচ্ছে প্রশ্ন। %(min)s চিহ্নিত স্থানে চলুন %(max)s বিকল্প, প্রতিটি ভোট। এই পোস্টের প্রতিটি দিকে ভোট প্রদান এবং পুনরায় পোস্ট করা যাবে।"
@@ -22789,6 +22903,14 @@ msgid "[Titles](/help/titles)"
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr ""
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22822,6 +22944,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22841,6 +22971,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1

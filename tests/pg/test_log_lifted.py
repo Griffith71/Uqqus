@@ -166,7 +166,11 @@ def test_a_guild_ban_tells_its_heads_and_each_can_appeal_once_and_an_admin_rever
     queue = get(owner.browser(), "/admin/appeals").get_data(as_text=True)
     assert "We removed the content the same day" in queue and f"+{board_name}" in queue
     appeal = one(real_app, "SELECT id FROM log_appeals WHERE entry_id = :e AND user_id = :u", e=entry["id"], u=founder.id)["id"]
-    second_admin = admin_of(make_member)
+    junior = admin_of(make_member)                                 # only a level-4 admin bans or reinstates a guild: so only one decides its appeal
+    assert "We removed the content the same day" not in get(junior.browser(), "/admin/appeals").get_data(as_text=True)
+    assert post(junior.browser(), junior, f"/admin/appeals/{appeal}", outcome="reversed", note="No").status_code == 404
+    assert one(real_app, "SELECT is_banned FROM boards WHERE id = :b", b=board_id)["is_banned"] is True
+    second_admin = admin_of(make_member, 4)
     decided = post(second_admin.browser(), second_admin, f"/admin/appeals/{appeal}", outcome="reversed", note="The content is gone")
     assert decided.status_code == 303 and "Decided" in decided.headers["Location"]
     assert one(real_app, "SELECT is_banned FROM boards WHERE id = :b", b=board_id)["is_banned"] is False
@@ -234,15 +238,35 @@ def test_a_mute_by_alias_is_appealed_by_the_account_behind_it_and_the_deciders_n
 
 # --- a ban that cites anonymous items --------------------------------------------------------------------------------------------
 
-def test_a_ban_that_cites_anonymous_items_tells_the_account_which_and_what_an_approval_would_do(real_app, make_member):
-    admin, target = admin_of(make_member), make_member()
+def test_a_ban_that_cites_anonymous_items_tells_the_account_how_many_and_lists_which_on_its_own_appeal_page(real_app, make_member):
+    admin, target, other = admin_of(make_member), make_member(), make_member()
     board_id, _ = guild(real_app)
     anon_id, anon36 = add_post(target, board_id, title="An anonymous post", is_anonymous=True)
     named_id, named36 = add_post(target, board_id, title="A named post")
     assert ban(admin.browser(), admin, target, [f"p{anon36}", f"p{named36}"]).status_code in (200, 302)
-    (told,) = sayings(real_app, target, "relies on these of your anonymous")
-    assert f"[#{anon36}](/post/{anon36})" in told and f"/post/{named36})" not in told, "only what is anonymous: a named item is already public"
-    assert "second administrator approves" in told and "/log/" in told
-    other = make_member()
-    assert ban(admin.browser(), admin, other, []).status_code in (200, 302)
-    assert sayings(real_app, other, "relies on these") == [], "no citation, no notice"
+    (told,) = sayings(real_app, target, "relies on 1 of your anonymous")
+    assert "second administrator approves" in told and "/appeal)" in told
+    assert f"/post/{anon36}" not in told and f"/post/{named36}" not in told, "no item in a notice: whoever is signed in, a relayed code included, reads it"
+    entry = one(real_app, "SELECT id FROM log_entries WHERE action = 'ban_user' AND target_user_id = :u", u=target.id)["id"]
+    page = get(target.browser(), f"/log/{entry}/appeal").get_data(as_text=True)
+    assert 'id="ban-relies-on"' in page and f"/post/{anon36}" in page and f"/post/{named36}" in page, "the account's own page lists what the ban relies on"
+    assert get(other.browser(), f"/log/{entry}/appeal").status_code in (403, 404)
+    again = make_member()
+    assert ban(admin.browser(), admin, again, []).status_code in (200, 302)
+    assert sayings(real_app, again, "relies on") == [], "no citation, no notice"
+    plain_entry = one(real_app, "SELECT id FROM log_entries WHERE action = 'ban_user' AND target_user_id = :u", u=again.id)["id"]
+    assert "ban-relies-on" not in get(again.browser(), f"/log/{plain_entry}/appeal").get_data(as_text=True)
+
+
+def test_banning_a_banned_guild_again_changes_nothing_and_tells_nobody_twice(real_app, make_member):
+    from ruqqus.helpers.base36 import base36encode
+    founder = make_member()
+    board_id, board_name = guild(real_app)
+    guildmaster(founder, board_id)
+    owner = admin_of(make_member, 4)
+    first = post(owner.browser(), owner, f"/api/ban_guild/{base36encode(board_id)}", reason="Hosting content that breaks the rules", rule="criminal")
+    assert first.status_code in (200, 302)
+    again = post(owner.browser(), owner, f"/api/ban_guild/{base36encode(board_id)}", reason="Still hosting it", rule="criminal")
+    assert again.status_code == 409
+    assert len(rows(real_app, "SELECT 1 FROM log_entries WHERE action = 'ban_guild' AND board_id = :b", b=board_id)) == 1
+    assert len(sayings(real_app, founder, "was banned")) == 1

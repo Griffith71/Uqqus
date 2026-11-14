@@ -94,6 +94,7 @@
 <form action="/admin/nuke_user" method="post">
   <input type="hidden" name="formkey", value="{{ v.formkey }}">
   <input type="hidden" name="user" value="{{ u.username }}">
+  <input type="text" name="reason" class="form-control form-control-sm mb-1" maxlength="512" required placeholder="Why every post and comment is removed (it is in the Log)" aria-label="Reason">
   <input type="submit" class="btn btn-danger" value="Nuke User's Content">
 </form>
 {% else %}

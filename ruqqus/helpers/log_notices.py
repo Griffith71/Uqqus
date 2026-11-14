@@ -46,9 +46,10 @@ MUTED = N_("You can no longer write in +%(guild)s's channels, but you can still 
            "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
 GUILD_BANNED = N_("+%(guild)s was banned from %(site)s.\n\n```\n%(why)s\n```\n\n"
                   "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
-# a ban that cites anonymous items of the account says which, and that a second administrator's approval would name the account beside them
-BAN_CITES = N_("The ban relies on these of your anonymous posts and comments: %(items)s\n\nIf a second administrator approves, the Log will name "
-               "your account beside them. [See it in the Log](%(log)s)")
+# a ban that cites anonymous items of the account says how many and where to see which (the appeal page lists them to the account alone: a notice is read by
+# whoever is signed in, a relayed QR code included, and the ids of anonymous items are the account's to know)
+BAN_CITES = N_("The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account "
+               "beside them. [See which, and appeal](%(appeal)s)")
 
 # --- what was lifted ---------------------------------------------------------------------------------------------------------
 EXILE_LIFTED = N_("You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again.")
@@ -247,19 +248,16 @@ def tell_heads(db, board_id, message, *, entry_id=None, actor_id=None, **values)
 
 
 def tell_ban_cites(db, entry_id, user_id, items):
-    """Tell a banned account which of its anonymous posts and comments the ban relies on (`items` are `("post" | "comment", id)` that are anonymous now),
-    and that a second administrator's approval would name its account beside them in the Log (the owner, 2026-11-14). Each is a link to the item as its own
-    author sees it. Returns whether a notice went."""
+    """Tell a banned account how many of its anonymous posts and comments the ban relies on (`items` are `("post" | "comment", id)` that are anonymous now),
+    and that a second administrator's approval would name its account beside them in the Log (the owner, 2026-11-14). The link is to the appeal page, which lists
+    them to the account alone. Returns whether a notice went."""
     import logging
-
-    from ruqqus.helpers.base36 import base36encode
 
     try:
         user = _person(db, user_id)
         if user is None or not entry_id or not items:
             return False
-        links = ", ".join(f"[#{base36encode(i)}](/{kind}/{base36encode(i)})" for kind, i in items)
-        send(user, (BAN_CITES, {"items": links, "log": link_of(entry_id)}))
+        send(user, (BAN_CITES, {"num": len(items), "appeal": appeal_link_of(entry_id)}))
         return True
     except Exception:
         logging.getLogger(__name__).exception("the evidence notice for log entry %s was not sent", entry_id)

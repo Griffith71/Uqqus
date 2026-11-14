@@ -510,7 +510,7 @@ def log_copy(entry_id, v):
     entry, snapshot = action_log.entry_with_copy(g.db, entry_id, level, action_log.member_board_ids(g.db, v.id))
     if entry is None or snapshot is None:
         abort(404)
-    allowed = action_log.snapshot_visible({**snapshot, "scrubbed_utc": 0}, viewer_id=v.id, level=level,
+    allowed = action_log.snapshot_visible({**snapshot, "scrubbed_utc": 0}, viewer_id=None if getattr(v, "qr_limited", False) else v.id, level=level,
                                           guild_mod=snapshot["board_id"] in action_log.led_boards(v))
     if not allowed:
         abort(404)

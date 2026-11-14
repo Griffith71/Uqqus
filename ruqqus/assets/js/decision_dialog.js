@@ -98,7 +98,8 @@
     data.append("reason", reason);
     if (!el.ruleGroup.hidden && el.rule.value) data.append("rule", el.rule.value);
     var fields = current.fields || {};
-    Object.keys(fields).forEach(function (k) { data.append(k, fields[k]); });
+    // in a dialog that asks what the decision relies on, the item the menu was opened on is sent only if it is still ticked (`thing` is a citation like the others)
+    Object.keys(fields).forEach(function (k) { if (!(current.evidence && k === "thing")) data.append(k, fields[k]); });
     if (current.ask_username) {
       if (!el.user.value.trim()) { say(tr("Enter a username.")); el.user.focus(); return; }
       data.append("username", el.user.value.trim().replace(/^@/, ""));
@@ -108,6 +109,7 @@
       if (!ticked.length) { say(tr("Choose at least one post or comment this relies on.")); return; }
       if (ticked.length > MAX) { say(tr("Choose at most five.")); return; }
       ticked.forEach(function (id) { data.append("evidence", id); });
+      if (fields.thing && ticked.indexOf(fields.thing) >= 0) data.append("thing", fields.thing);
     }
     el.ok.disabled = true; say("");
     var xhr = new XMLHttpRequest();

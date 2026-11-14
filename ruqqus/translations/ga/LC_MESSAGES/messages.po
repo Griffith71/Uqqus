@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ga\n"
@@ -2355,6 +2355,21 @@ msgstr "+ %(guild)s glacann ach ar aghaidh ó ranníocóirí ceadaithe."
 msgid "+%(guild)s unmuted."
 msgstr "+ %(guild)s unmuted."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+ %(guild)s bhí reinstated, agus tá a leathanach ar oscailt arís."
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+ %(guild)s ar moderators guild nach bhfuil scríofa ar an wiki go fóill."
@@ -3921,9 +3936,9 @@ msgstr[2] "Is féidir le téacs an phoist a bheith %(count)s carachtair (Sínis,
 msgstr[3] "Is féidir le téacs an phoist a bheith %(count)s carachtair (Sínis, carachtair Seapáine agus Cóiréis agus emoji count mar 2)."
 msgstr[4] "Is féidir le téacs an phoist a bheith %(count)s carachtair (Sínis, carachtair Seapáine agus Cóiréis agus emoji count mar 2)."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "Cóip phríobháideach de seo mar a bhí sé nuair a bhí sé i bhfolach, a bhaint nó a scriosadh. Ach a údar, na moderators guild an guild bhí sé i bhfolach i agus is féidir riarthóirí an láithreáin a oscailt, agus nach bhfuil sé a choimeád ar feadh riamh."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "Cóip phríobháideach de seo mar a bhí sé nuair a bhí sé i bhfolach, a bhaint, a scriosadh nó ag brath ar chinneadh. Ach a údar, is féidir leis na moderators guild an guild a chinn agus riarthóirí an láithreáin a oscailt, agus nach bhfuil sé a choimeád ar feadh riamh."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4781,6 +4796,10 @@ msgstr "Úsáideoir alfa"
 msgid "Already approved"
 msgstr "Ceadaithe cheana féin"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Cheana féin toirmeasc"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "Cheana féin ar aghaidh go dtí + %(guild)s."
@@ -5049,9 +5068,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Gan ainm"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "Gan ainm #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "Gan ainm #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "Na cinn Anonymous fanacht gan ainm ach amháin má cheadaíonn an dara riarthóir, agus ansin an Logainmneacha do chuntas in aice leo."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -6511,6 +6538,10 @@ msgstr "Roghnaigh ceann de na dathanna."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "Roghnaigh ceann de do apps féin (Socruithe × Apps)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "Roghnaigh na poist nó tuairimí é seo faoi, suas go dtí cúig. Coinníonn an suíomh cóip phríobháideach de gach mar go bhfuil sé anois, dóibh, seo moderators guild guild agus an suíomh admins."
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "Roghnaigh na scéalta a choinneáil faoi do bhith. Coinníonn aird a tharraingt ar a scéalta tar éis a n-uaireanta 24 agus léiríonn gach ceann de na daoine a d'fhéadfadh a fheiceáil ansin."
@@ -6640,6 +6671,14 @@ msgstr "Ciorcail de do chuid féin"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "Ciorcail tú síntiús a íoc"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "Cite ar a laghad ar cheann de na poist @%(name)s nó tuairimí i + %(guild)s go mbraitheann sé seo ar."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "Gearrtha:"
 
 #, machine, plain1
 msgid "Classical"
@@ -8498,6 +8537,10 @@ msgstr "Sampla: madraí cait · níl \"cats\" ná \"dogs\""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Sampla: uair an chloig sásta · tá an frása cruinn \"uair an chloig sona\""
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "Díbir"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "Díbir %(alias)s"
@@ -8706,6 +8749,10 @@ msgstr "Aimsigh guild"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "Aimsigh pobail a bheith páirteach. Guilds leat a thaispeáint suas i do sidebar agus do bheatha Tar éis."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "Aimsigh a gcuid post agus tuairimí"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -14023,6 +14070,10 @@ msgstr "Áit Bhreise <span class=\"text-muted font-weight-normal\">taiseachas ae
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "Cuir téacs, aon naisc. Abair nuair a thagann na poist ó."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "Plain téacs, suas go dtí 512 carachtair. Tá sé sa Logáil, agus tá an duine a sheoladh é."
+
 #, machine, plain1, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -14755,6 +14806,14 @@ msgstr "Plean Gníomhaíochta don Oideachas"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "Propose remove @%(name)s mar údar? Cad a scríobh siad tréimhsí chun sochair dóibh."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "Plean Gníomhaíochta don Oideachas"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "Beartaithe a bhaint an t-údar anaithnid? Má aontaíonn na húdair eile, déantar iad a bhaint, agus mar sin beidh a fhios agat go léir a bhí sé. Cad a scríobh siad tréimhsí chun sochair dóibh, ag an uimhir chéanna."
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "Na rialacha seo a mholadh"
@@ -15312,6 +15371,10 @@ msgid "Remove this topic"
 msgstr "Bain an t-ábhar seo"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "Bain tú mar údar"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Bain d'ainm ó na míreanna seo?"
 
@@ -15743,6 +15806,10 @@ msgstr "Rugbaí"
 #, machine, plain1
 msgid "Rule"
 msgstr "Riail na Rialacha"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "Riail briste"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -18159,6 +18226,10 @@ msgstr "D'aontaigh na húdair cuireadh a thabhairt duit: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Sábháladh an dí-ocsaídiú."
 
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr "Braitheann an toirmeasc ar %(num)s de do phoist gan ainm agus tuairimí. Má cheadaíonn an dara riarthóir, beidh an Logainm do chuntas in aice leo. [Féach cé acu, agus achomharc](%(appeal)s)"
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "An bonn URL Is maith liom <code>%(url)s</code>"
@@ -18478,6 +18549,10 @@ msgstr "Ní fhéadfaí an t-ainm %(host)s a fháil."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "An newest de cad a rinne siad. Ach na hainmneacha a comhrá siad leis a thaispeántar, riamh cad a deir comhrá: Tá comhráite deireadh-le-deireadh criptithe."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "Líon údar anaithnid"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -19120,6 +19195,10 @@ msgstr "Seo freisin dhícheangal comhrá i ngach áit eile, apps comhrá san ái
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "Nach bhfuil an t-údar a bhí gníomhach le haghaidh %(time)s, mar sin nach bhfuil chomhaireamh."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "Braitheann an toirmeasc seo ar:"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "Ní féidir leis an bot leideanna a ghlacadh ceart anois."
@@ -19324,6 +19403,10 @@ msgstr "Pléann an treoir seo ábhair íogaire"
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "Pléann an guild seo ábhair íogaire (gach post anseo beidh sé doiléir de réir réamhshocraithe)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "Tá an guild toirmeasc cheana féin."
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -19594,6 +19677,10 @@ msgstr "Tá an togra seo dúnta."
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "Tá an scuaine folamh. (Sin rud maith.)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "Braitheann sé seo ar an bpost gan ainm nó trácht a d'oscail tú é ó. Coinníonn an suíomh cóip phríobháideach de mar go bhfuil sé anois."
 
 #, machine, plain1
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -21175,6 +21262,10 @@ msgid "What the guildmasters did"
 msgstr "Cad a rinne moderators guild"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "Cad é seo ag brath ar"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "Cad atá le déanamh leo"
 
@@ -21953,6 +22044,10 @@ msgstr "Tá tú ag exiled ó + %(guild)s agus ní féidir a bheith faoi láthair
 msgid "You are exiled from +%(guild)s."
 msgstr "Tá tú exiled ó + %(guild)s."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "Tá tú a thuilleadh exiled ó + %(guild)s. Is féidir leat post ar aghaidh chun é agus trácht a dhéanamh air arís."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Níl tú ina bhall d'aon guilds. Beidh Guilds ghlacann tú páirt ann a chur ar taispeáint anseo."
@@ -22196,6 +22291,17 @@ msgstr "Is féidir leat cuntas linbh a dhéanamh nuair a dheimhnítear do chunta
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Is féidir leat trí achomharc a dhéanamh in aghaidh an lae. Bain triail as arís amárach."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "Is féidir leat a chruthú ach suas le 2 guilds in aghaidh an lae. Bain triail as arís ina dhiaidh sin."
@@ -22265,6 +22371,10 @@ msgstr[1] "Is féidir leat scríobh ag an chuid is mó %(num)s teachtaireachtaí
 msgstr[2] "Is féidir leat scríobh ag an chuid is mó %(num)s teachtaireachtaí i Spásanna in aghaidh an lae."
 msgstr[3] "Is féidir leat scríobh ag an chuid is mó %(num)s teachtaireachtaí i Spásanna in aghaidh an lae."
 msgstr[4] "Is féidir leat scríobh ar an chuid is mó %(num)s teachtaireachtaí i Spásanna in aghaidh an lae."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "Is féidir leat scríobh i + %(guild)s bealaí arís."
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -23723,6 +23833,10 @@ msgstr "Ní bheidh do síntiús athnuachan. Coinníonn tú rochtain go dtí an l
 msgid "Your subscriptions"
 msgstr "Do síntiúis"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "Tá do fionraí dar críoch. Is féidir leat úsáid a bhaint %(site)s mar a rinne tú roimh."
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "Is é do theideal an cheist. %(min)s chun roghanna %(max)s, vóta amháin gach. Is féidir vótáil ar an vótaíocht ó gach aghaidh agus athphost an phoist seo."
@@ -23869,6 +23983,14 @@ msgstr "[Téarmaí seirbhíse](/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr ""
 
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr "[Do comment](%(item)s) a thaispeántar arís faoin bpost go bhfuil sé ar."
+
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr "[Do comment](%(item)s) a thaispeántar i + %(guild)s arís."
+
 #, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
@@ -23902,6 +24024,14 @@ msgid ""
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
 
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr "[Do comment](%(item)s) a athchóiriú."
+
+#, machine, plain2, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr "[Do phost](%(item)s) a thaispeántar i + %(guild)s arís."
+
 #, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
@@ -23923,6 +24053,10 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
+
+#, machine, plain2, python-format
+msgid "[Your post](%(item)s) was restored."
+msgstr "[An bpost tú](%(item)s) ais."
 
 #, machine, plain1
 msgid "[banned]"

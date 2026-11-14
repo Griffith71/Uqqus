@@ -151,3 +151,58 @@ def test_the_person_the_deciding_guilds_guildmasters_and_admins_open_an_evidence
     # a guild's hide is still the only other kind its guildmasters open: a copy an author erased is theirs and the admins' alone
     assert log.snapshot_visible(copy(kind="hide"), viewer_id=10, level=0, guild_mod=True)
     assert not log.snapshot_visible(copy(kind="grace"), viewer_id=10, level=0, guild_mod=True)
+
+
+# --- after the review of 2026-11-14 ------------------------------------------------------------------------------------------------------
+
+def test_an_item_an_admin_removed_or_a_posts_author_hid_cannot_be_cited():
+    """A guildmaster is shown only a placeholder for these, so they may not cite them and keep a copy the guild's other guildmasters could open."""
+    assert not evidence.usable(post(is_banned=True), BOARD, 30, 30)
+    assert not evidence.usable(comment(author_hidden=True), BOARD, 30, 30)
+    assert evidence.usable(post(is_banned=False), BOARD, 30, 30) and evidence.usable(comment(author_hidden=False), BOARD, 30, 30)
+
+
+def kept(db, item_id, action="exile_user", comment_item=False, owner=30):
+    entry = log.record(db, action, 10, board_id=BOARD, target_user_id=owner if action == "exile_user" else None, now=NOW,
+                       **({"comment_id": item_id} if comment_item else {"post_id": item_id}))
+    snapshot = log.snapshot_of(SimpleNamespace(id=item_id, author_id=owner, board_id=BOARD, original_board_id=BOARD, title="T", url=None, body="b", body_html="<p>b</p>",
+                                               word_severity=0, is_sensitive=False, is_anonymous=False, deleted_utc=0, parent_submission=1) if comment_item else post(id=item_id),
+                               BOARD, comment=comment_item, kind=log.EVIDENCE)
+    snapshot["author_id"] = owner
+    log.keep_snapshot(db, snapshot, NOW, entry)
+    return entry
+
+
+def test_a_guildmaster_loses_the_copy_of_an_item_made_anonymous_since_but_the_person_and_the_admins_keep_it(db):
+    entry = kept(db, 1)
+    assert evidence.openable(db, [entry], None, 0, [BOARD]) == {entry: [("post", 1)]}, "the guildmasters, while it is named"
+    db.execute(text("UPDATE submissions SET is_anonymous = 1 WHERE id = 1"))
+    assert evidence.openable(db, [entry], None, 0, [BOARD]) == {}, "a Remove my name since: the line would pair the account with the anonymous post"
+    assert evidence.openable(db, [entry], 30, 0, []) == {entry: [("post", 1)]}, "the person"
+    assert evidence.openable(db, [entry], 20, 3, []) == {entry: [("post", 1)]}, "an admin"
+    assert evidence.openable(db, [entry], None, 0, [4]) == {}, "and another guild's guildmasters never"
+
+
+def test_an_exile_by_alias_keeps_its_anonymous_item_for_the_guildmasters_who_cited_it(db):
+    db.execute(text("UPDATE submissions SET is_anonymous = 1 WHERE id = 1"))
+    entry = kept(db, 1, action="exile_alias")
+    assert evidence.openable(db, [entry], None, 0, [BOARD]) == {entry: [("post", 1)]}
+
+
+def test_the_copy_pages_follow_the_same_rule_for_the_viewer(db):
+    entry = kept(db, 1)
+    guildmaster = SimpleNamespace(id=10, admin_level=0, qr_limited=False, moderates=[SimpleNamespace(board_id=BOARD, accepted=True, invite_rescinded=False)])
+    person = SimpleNamespace(id=30, admin_level=0, qr_limited=False, moderates=[])
+    assert log.snapshot_for(db, post_id=1, viewer=guildmaster) is not None
+    db.execute(text("UPDATE submissions SET is_anonymous = 1 WHERE id = 1"))
+    assert log.snapshot_for(db, post_id=1, viewer=guildmaster) is None, "the guildmaster may not open a copy that says an anonymous post was the exiled account's"
+    assert log.snapshot_for(db, post_id=1, viewer=person) is not None
+    assert entry
+
+
+def test_a_limited_sign_in_is_a_stranger_to_the_copies_of_its_own_member():
+    snapshot = {"scrubbed_utc": 0, "legal_hold": False, "kind": "evidence", "author_id": 5, "board_id": BOARD, "hider_id": None}
+    viewer = SimpleNamespace(id=5, admin_level=0, qr_limited=False, moderates=[])
+    assert log.may_open_copy(snapshot, viewer) is True
+    viewer.qr_limited = True
+    assert log.may_open_copy(snapshot, viewer) is False, "a relayed code can't open what the member's anonymous items were kept as"

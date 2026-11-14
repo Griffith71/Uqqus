@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -1863,6 +1863,21 @@ msgstr "+%(guild)s は承認されたコントリビューターからの転送�
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s 未処理."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+%(guild)s は再指定され、再びページが開きます."
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+%(guild)s の guild モデレータはまだ wiki を書いていません."
@@ -3207,9 +3222,9 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "投稿のテキストは%(count)s文字(中国語、日本語、韓国語)、絵文字の2文字(絵文字)となります."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "隠されていたり、削除したり、削除されたりしたときにあったので、これのプライベートコピー。 著者のみ、隠されていたギルドのギルドモデレータとサイトの管理者が開いて、これまで保存されていない."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "隠されて、削除、削除、または決定のために頼まれたときだったので、これのプライベートコピー。 著者のみ、決定したギルドのギルドモデレータとサイトの管理者が開くことができ、これまで保存されていない."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4007,6 +4022,10 @@ msgstr "アルファ ユーザー"
 msgid "Already approved"
 msgstr "承認される既に"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "すでに禁止されている"
+
 #, machine, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "すでに +%(guild)s に転送されます."
@@ -4259,9 +4278,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "匿名"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "匿名 #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "匿名 #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "匿名のものは、第二の管理者が承認しない限り匿名で滞在し、アカウントのログ名はそれらの隣にあります."
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5671,6 +5698,10 @@ msgstr "カラーの1つを選択します."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "自分のアプリ(設定 > アプリ)のいずれかを選択します."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "投稿またはコメントを選択すると、これは5つまでです。 このサイトは、現在、各サイトの管理者とギルドのギルドモデレータのプライベートコピーを保持しています."
+
 #, machine
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "あなたのバイオを維持するためのストーリーを選択します。 ハイライトは24時間後にストーリーを保ち、それを見ることができる人それぞれに表示します."
@@ -5799,6 +5830,14 @@ msgstr "自分のサークル"
 #, machine
 msgid "Circles you subscribe to"
 msgstr "購読するサークル"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "@%(name)s の投稿やコメントを +%(guild)s に少なくとも 1 つ引用します."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "引用される:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7620,6 +7659,10 @@ msgstr ""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "例:ハッピーアワー・正確なフレーズ「ハッピーアワー」"
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "追放"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "追放 %(alias)s"
@@ -7827,6 +7870,10 @@ msgstr "ギルドを見つける"
 #, machine
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "参加するコミュニティを探す サイドバーと次のフィードでショーに参加するガイド."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "投稿やコメントを見つける"
 
 #, machine
 msgid "Fire Extinguisher"
@@ -12967,6 +13014,10 @@ msgstr "開催場所 <span class=\"text-muted font-weight-normal\">(オプショ
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "テキスト、リンクなし 投稿がどこから来ているかと言う."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "プレーンテキスト、最大512文字。 ログに、その人が送信されます."
+
 #, machine, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13691,6 +13742,14 @@ msgstr "プロポーズ除去"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "著者として @%(name)s を削除して提案する? 彼らが書いたことは彼らにクレジットされたままです."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "数字で除去する"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "この匿名の作者を取り除きますか? 他の著者が同意した場合、それらが削除され、それが誰であるかを知ることができます。 同じ番号でクレジットされたままに書いたもの."
+
 #, machine
 msgid "Propose these rules"
 msgstr "これらのルールを調べる"
@@ -14228,6 +14287,10 @@ msgid "Remove this topic"
 msgstr "このトピックを解除"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "著者として削除する"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "これらの項目から名前を削除しますか?"
 
@@ -14655,6 +14718,10 @@ msgstr "ラグビー"
 #, machine, plain1
 msgid "Rule"
 msgstr "ルール"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "ルール 壊れた"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17010,6 +17077,10 @@ msgstr "著者は、あなたを招待することに同意した: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "自動変調を保存しました."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "ベース URL お問い合わせ <code>%(url)s</code>"
@@ -17305,6 +17376,10 @@ msgstr "名前 %(host)s が見つかりませんでした."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "彼らが行っているものの最新の。 チャットでチャットしている人の名前のみが表示されます。チャットは、エンドツーエンド暗号化されます."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "匿名の著者の数"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -17918,6 +17993,10 @@ msgstr "これにより、チャットアプリを含む他のすべての場所
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "この著者は %(time)s では動作していません."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "この禁止事項:"
+
 #, machine
 msgid "This bot can't take tips right now."
 msgstr "今、このボットはヒントを取らない."
@@ -18115,6 +18194,10 @@ msgstr "このギルドは、敏感なトピックについて議論"
 #, machine
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "このギルドは、機密性の高いトピックについて議論します(ここにはデフォルトで空白とします)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "このギルドは既に禁止されています."
 
 #, machine
 msgid "This guild is banned."
@@ -18380,6 +18463,10 @@ msgstr "この提案は終了いたしました."
 #, machine
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "このキューは空です。 (良いことです。)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "これは、あなたがそれを開いた匿名の投稿やコメントに依存しています。 本サイトは、現在、そのままのプライベートコピーを保管しています."
 
 #, machine
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -19930,6 +20017,10 @@ msgid "What the guildmasters did"
 msgstr "ギルドモデレータが何をしたか"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "これに対する信頼"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "それらに何をすべきか"
 
@@ -20696,6 +20787,10 @@ msgstr "+%(guild)s から除外され、現在ギルドモデレーターにな�
 msgid "You are exiled from +%(guild)s."
 msgstr "+%(guild)s から除外されます."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "+%(guild)s から除外されることはありません。 投稿を転送し、コメントを繰り返します."
+
 #, machine
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "ギルドの会員ではありません。 参加するギルドがここに表示されます."
@@ -20878,6 +20973,17 @@ msgstr "自分のアカウントが18以上確認されると、お子様のア�
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "1日3つの魅力をつくります。 明日からもう一度お試しください."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "1日に最大2ギルドしか作成できません。 もう一度お試しください."
@@ -20923,6 +21029,10 @@ msgstr "これらのメールをオフにすることができます <a href=\"%
 msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "スペース内のほとんどの %(num)s メッセージを 1 日に書くことができます."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "+%(guild)s のチャンネルで書き込むことができます."
 
 #, machine, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22333,6 +22443,10 @@ msgstr "サブスクリプションは更新されません。 お支払いい�
 msgid "Your subscriptions"
 msgstr "サブスクリプション"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "ご利用停止が終了いたしました。 前にしたように %(site)s を使うことができます."
+
 #, machine, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "あなたのタイトルは質問です。 %(min)s から %(max)s オプション、それぞれ1つの投票。 投票は、この投稿のすべての転送および再投稿から投票することができます."
@@ -22481,6 +22595,14 @@ msgstr "[利用規約](/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[タイトル](/help/titles)"
 
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr "[コメント](%(item)s) は、投稿の後に再び表示されます."
+
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr "[コメント](%(item)s) は +%(guild)s に再び表示されます."
+
 #, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
@@ -22514,6 +22636,14 @@ msgid ""
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
 
+#, machine, plain2, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr "[コメント](%(item)s) が復元されました."
+
+#, machine, plain2, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr "[あなたの投稿](%(item)s) は +%(guild)s に再び表示されます."
+
 #, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
@@ -22534,6 +22664,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine

@@ -713,6 +713,9 @@ def api_ban_guild(v, bid):
 
     board = get_board(bid, v=v)
 
+    if board.is_banned:
+        return render_template("message.html", v=v, title=tr("Already banned"), message=tr("This guild is already banned.")), 409
+
     if not action_log.clean_reason(request.form.get("reason")):
         # the reason is public on the guild's page and in the Log, so a ban says why (REASON_REQUIRED)
         return render_template("message.html", v=v, title=tr("Give a reason"),
@@ -1096,13 +1099,17 @@ def admin_ban_domain(v):
 @validate_formkey
 def admin_nuke_user(v):
 
+    # a mass removal says why (the owner, 2026-11-14): asked first, before the account is looked at, and it is what every removal's entry in the Log carries
+    why = action_log.clean_reason(request.form.get("reason"))
+    if not why:
+        return jsonify({"error": tr("A reason is required.")}), 400
+
     user=get_user(request.form.get("user"))
     if not _outranks(v, user):
         abort(403)
 
     note='admin action'
-    if user.ban_reason:
-        note+=f" | {html.escape(user.ban_reason)}"     # the mod log draws notes as HTML (bug hunt C1)
+    note+=f" | {html.escape(why)}"     # the mod log draws notes as HTML (bug hunt C1)
 
 
     for post in g.db.query(Submission).filter_by(author_id=user.id).all():
@@ -1111,7 +1118,7 @@ def admin_nuke_user(v):
             
         post.is_banned=True
         # the removed post's page draws its reason as HTML (submission_banned.html): this one is typed text
-        post.ban_reason=html.escape(user.ban_reason) if user.ban_reason else user.ban_reason
+        post.ban_reason=html.escape(why)
         g.db.add(post)
 
         ma=ModAction(

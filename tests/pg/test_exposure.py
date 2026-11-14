@@ -16,8 +16,8 @@ NOTES = "SELECT id, actor_id, actor_role, audience, board_id, target_user_id, st
 REASON = "Spamming the channels"
 
 
-def by_name_exile(mod, board_name, member):
-    return post(mod.browser(), mod, f"/mod/exile/{board_name}", username=member.username, reason="A guess", thing="")
+def by_name_exile(mod, board_name, member, thing=""):
+    return post(mod.browser(), mod, f"/mod/exile/{board_name}", username=member.username, reason="A guess", thing=thing)
 
 
 def test_exiling_the_suspect_by_name_when_they_are_exiled_by_alias_is_noted_for_the_staff_and_answers_as_ever(real_app, make_member):
@@ -26,19 +26,25 @@ def test_exiling_the_suspect_by_name_when_they_are_exiled_by_alias_is_noted_for_
     guildmaster(mod, board_id)
     guildmaster(second, board_id)
     _, thing, _ = anonymous_comment(real_app, author, board_id)
+    _, _, own = named_post(author, board_id)                      # the account also wrote under its name here, so a guildmaster has something to cite
+    _, _, bystander_own = named_post(bystander, board_id)
     assert exile_alias(second, board_name, thing).status_code == 200
     told = len(notices_of(real_app, author.id))
-    answer = by_name_exile(mod, board_name, author)
-    assert answer.status_code == 204, "the answer is the quiet one it always was: nothing is confirmed"
+    # with nothing cited the exile is one answer for the alias account and for any other participant: asking whether a guess is right costs a citation
+    nothing = [by_name_exile(mod, board_name, who) for who in (author, bystander)]
+    assert {a.status_code for a in nothing} == {400}
+    assert len({a.get_data(as_text=True).replace(who.username, "NAME") for a, who in zip(nothing, (author, bystander))}) == 1, "the quiet answer is not cheaper than a refusal"
+    assert rows(real_app, NOTES, b=board_id) == [], "and nothing is noted for an exile that was refused"
+    answer = by_name_exile(mod, board_name, author, own)
+    assert answer.status_code == 204, "citing something real, the answer is the quiet one it always was: nothing is confirmed"
     assert len(notices_of(real_app, author.id)) == told, "the account is told nothing more"
     (entry,) = rows(real_app, NOTES, b=board_id)
     assert (entry["actor_id"], entry["actor_role"], entry["audience"], entry["target_user_id"]) == (mod.id, "guildmaster", 2, author.id)
     assert "exiled by name an account that is exiled by alias" in entry["staff_note"] and f"made by @{second.username}" in entry["staff_note"]
-    assert by_name_exile(mod, board_name, author).status_code == 204
+    assert by_name_exile(mod, board_name, author, own).status_code == 204
     assert len(rows(real_app, NOTES, b=board_id)) == 1, "the same test the same day is one line"
     # an ordinary exile of someone else is nobody's business
-    _, _, own = named_post(bystander, board_id)
-    assert post(mod.browser(), mod, f"/mod/exile/{board_name}", username=bystander.username, reason="Rude", thing=own).status_code in (200, 204)
+    assert post(mod.browser(), mod, f"/mod/exile/{board_name}", username=bystander.username, reason="Rude", thing=bystander_own).status_code in (200, 204)
     assert len(rows(real_app, NOTES, b=board_id)) == 1
 
 
@@ -48,8 +54,9 @@ def test_the_note_is_for_the_staff_alone(real_app, make_member):
     guildmaster(mod, board_id)
     guildmaster(second, board_id)
     _, thing, _ = anonymous_comment(real_app, author, board_id)
+    _, _, own = named_post(author, board_id)
     exile_alias(second, board_name, thing)
-    by_name_exile(mod, board_name, author)
+    by_name_exile(mod, board_name, author, own)
     visitor = real_app[0].test_client()
     for client in (visitor, stranger.browser(), mod.browser(), author.browser()):
         page = get(client, "/log?type=sanction").get_data(as_text=True)

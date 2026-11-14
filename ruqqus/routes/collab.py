@@ -205,7 +205,7 @@ def _panel_context(doc, v):
         payload = store.payload_of(p)
         by_alias = p[2] == rules.REMOVE and bool(payload.get("alias_n"))
         subject_out = _name_of(subjects.get(p[3]), v) if p[3] else None
-        if by_alias and p[9] != rules.PASSED and p[3] != v.id:
+        if by_alias and not (p[9] == rules.PASSED and payload.get("removed")) and p[3] != v.id:
             # a removal asked for by number: until it passes the other authors are shown the number, never the account (passed, the person is out, and known)
             subject_out = {"name": anonymity.alias_name(payload["alias_n"]), "handle": "", "link": None}
         proposals_out.append({
@@ -411,6 +411,7 @@ def _settle(doc, proposal, actor, now):
             live_bus.revoke(r, proposal[3], f"collab:{doc_id}")       # their open pages stop hearing it (C-07)
             _sync_coauthors(store.doc(g.db, doc_id))
             if was_author and payload.get("alias_n"):
+                store.mark_removed(g.db, proposal[0])               # only now may the panel name them: a vote that removed nobody (they had left) names nobody
                 # a removal asked for by number exposes the account to the authors, by the vote: the staff are told which account and which number
                 action_log.record_quietly(g.db, "collab_alias_removal", proposal[5], role=action_log.AUTHOR, target_user_id=proposal[3], post_id=doc[7] or None,
                                           staff_note=f"removed by vote from a shared draft as Anonymous #{int(payload['alias_n'])} (asked by user {proposal[5]})",
@@ -539,11 +540,14 @@ def collab_propose(doc_id, v):
             return _error(tr("Choose what to propose."))
     except rules.Refused as e:
         return _error(msg(str(e)))
-    if payload.get("alias_n"):
-        # a proposal by number is "like" another by the same number only: matching on the account would tell a proposer that the number is the person an open
-        # proposal by name is about
-        duplicate = any(store.payload_of(row).get("alias_n") == payload["alias_n"]
-                        for row in store.proposals(g.db, doc_id, open_only=True) if row[2] == rules.REMOVE)
+    if kind == rules.REMOVE:
+        # a removal is "like" another only in the way it was asked: by number against the same number, by name against the same person asked for by name.
+        # Matching across the two would tell a proposer that a number is the person an open proposal by name is about, or the other way round
+        open_removals = [row for row in store.proposals(g.db, doc_id, open_only=True) if row[2] == rules.REMOVE]
+        if payload.get("alias_n"):
+            duplicate = any(store.payload_of(row).get("alias_n") == payload["alias_n"] for row in open_removals)
+        else:
+            duplicate = any(row[3] == subject and not store.payload_of(row).get("alias_n") for row in open_removals)
     else:
         duplicate = store.open_like(g.db, doc_id, kind, subject)
     if duplicate:

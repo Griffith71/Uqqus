@@ -71,7 +71,7 @@ def test_a_lift_notice_has_no_link_and_the_imposed_ones_carry_the_log_and_the_ap
     for name in ("MUTED", "GUILD_BANNED"):
         text = getattr(n, name)
         assert "%(log)s" in text and "%(appeal)s" in text and "%(why)s" in text, name
-    assert "%(log)s" in n.BAN_CITES and "%(items)s" in n.BAN_CITES
+    assert "%(appeal)s" in n.BAN_CITES and "%(num)s" in n.BAN_CITES and "%(items)s" not in n.BAN_CITES, "a count and the way to the page that lists them: never an item"
 
 
 def test_no_lift_notice_can_name_an_alias():

@@ -100,7 +100,17 @@ def log_appeal_form(entry_id, v):
         return qr_limited_answer(v)               # the member's own items are not shown to a limited sign-in until the password is given
     entry = _appealable_or_404(entry_id, v)
     lines = _lines([_public_row(entry_id)], v)
-    return _noindex(render_template("log_appeal.html", v=v, rows=lines, entry_id=entry_id, mine=_my_appeal(entry_id, v.id),
+    # a ban that relies on the account's anonymous items says which, to the account alone (it is told how many, in its notice)
+    relied_on = []
+    if entry["action"] in ("suspend_user", "ban_user"):
+        from ruqqus.helpers import log_evidence
+        savepoint = g.db.begin_nested()
+        try:
+            relied_on = [{"kind": kind, "id": base36encode(item)} for kind, item in log_evidence.waiting_or_approved(g.db, entry_id, v.id)]
+            savepoint.commit()
+        except Exception:
+            savepoint.rollback()
+    return _noindex(render_template("log_appeal.html", v=v, rows=lines, entry_id=entry_id, mine=_my_appeal(entry_id, v.id), relied_on=relied_on,
                                     problem=log_appeals.can_appeal(g.db, entry, v.id), max_reason=log_appeals.REASON_MAX,
                                     error=request.args.get("error") or "", sent=bool(request.args.get("sent"))))
 
@@ -183,7 +193,7 @@ def _name(user_id):
 @app.route("/admin/appeals", methods=["GET"])
 @admin_level_required(3)
 def admin_appeals(v):
-    appeals = log_appeals.open_queue(g.db, None)
+    appeals = [a for a in log_appeals.open_queue(g.db, None) if _may_decide_site(a, v)]
     rows = _queue_rows(appeals, True)
     for row, a in zip(rows, appeals):
         row["conflicted"] = log_appeals.conflicted(g.db, {**a, "board_id": None}, v.id)
@@ -197,6 +207,12 @@ def _guild_mod(board, v):
     if not m or v.is_suspended:
         abort(404)
     return m
+
+
+def _may_decide_site(appeal, v):
+    """Whether this admin may decide a site-queue appeal: a guild's ban is a level-4 decision (only a level 4 admin bans or reinstates a guild), so its
+    appeal is theirs to decide too; every other appeal is any admin's (level 3)."""
+    return appeal["action"] != "ban_guild" or (v.admin_level or 0) >= 4
 
 
 def _may_decide_guild(m, action):
@@ -368,7 +384,7 @@ def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
 @validate_formkey
 def admin_appeal_decide(appeal_id, v):
     return _settle(appeal_id, request.form.get("outcome"), request.form.get("note"), v, "/admin/appeals",
-                   lambda appeal: appeal["board_id"] is None)
+                   lambda appeal: appeal["board_id"] is None and _may_decide_site(appeal, v))
 
 
 @app.route("/+<guildname>/mod/appeals/<int:appeal_id>", methods=["POST"])

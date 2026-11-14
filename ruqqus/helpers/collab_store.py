@@ -292,6 +292,15 @@ def propose(db, doc_id, kind, proposed_by, now, closes_utc, *, subject=None, pay
                 "closes": closes_utc}).scalar()
 
 
+def mark_removed(db, proposal_id):
+    """A removal asked for by number has taken the person out: its payload says so, and only then may the panel draw their name (a proposal that passed after they
+    had left removed nobody, and names nobody)."""
+    row = db.execute(text("SELECT payload FROM collab_proposals WHERE id = :i"), {"i": proposal_id}).first()
+    payload = _loads(row[0], {}) if row else {}
+    payload["removed"] = True
+    db.execute(text("UPDATE collab_proposals SET payload = :p WHERE id = :i"), {"p": _dumps(payload), "i": proposal_id})
+
+
 def proposal(db, doc_id, proposal_id):
     return db.execute(text(f"SELECT {_PROPOSAL} FROM collab_proposals WHERE id = :i AND doc_id = :d"),
                       {"i": proposal_id, "d": doc_id}).fetchone()

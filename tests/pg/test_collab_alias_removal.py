@@ -152,3 +152,31 @@ def test_a_failed_or_withdrawn_removal_never_names_the_account_and_the_panel_ask
     assert 'data-confirm="Propose removing this anonymous author?' in page, "the form asks before it sends"
     lonely = make_member()
     assert 'name="alias"' not in panel(lonely, _draft(lonely)), "a draft that isn't published has no numbers to remove by"
+
+
+def test_a_removal_by_name_is_not_a_duplicate_of_an_open_one_by_number_either(real_app, make_member):
+    doc, post_id, people = published(real_app, make_member)
+    author, named = people["author"], people["named"][0]
+    first = people["anon"][1]
+    assert propose(author, doc, alias="1").status_code == 200
+    by_name = propose(named, doc, username=first.username)
+    assert by_name.status_code == 200, "a 409 here would say the open removal of a number is about this person"
+    again = propose(author, doc, username=first.username)
+    assert again.status_code == 409, "two by name about the same person are duplicates"
+
+
+def test_a_removal_by_number_that_passes_after_the_person_left_removes_nobody_and_names_nobody(real_app, make_member):
+    doc, post_id, people = published(real_app, make_member)
+    author, named = people["author"], people["named"][0]
+    first, second = people["anon"][1], people["anon"][2]
+    assert propose(author, doc, alias="1").status_code == 200
+    pid = one(real_app, "SELECT id FROM collab_proposals WHERE doc_id = :d", d=doc)["id"]
+    db = author.db_session()
+    db.execute(text("UPDATE collab_authors SET left_utc = :n WHERE doc_id = :d AND user_id = :u"), {"n": int(time.time()), "d": doc, "u": first.id})
+    db.commit()                                                    # they leave while the vote is open
+    assert vote(named, doc, pid).status_code == 200 and vote(second, doc, pid).status_code == 200
+    assert one(real_app, "SELECT outcome FROM collab_proposals WHERE id = :i", i=pid)["outcome"] == "passed"
+    assert not any("removed you as an author" in n for n in notices_of(real_app, first.id)), "they were not removed: they left"
+    assert rows(real_app, "SELECT 1 FROM log_entries WHERE action = 'collab_alias_removal' AND target_user_id = :u", u=first.id) == []
+    page = panel(author, doc)
+    assert f"Remove {first.username}" not in page and "Remove Anonymous #1" in page, "a vote that removed nobody names nobody"

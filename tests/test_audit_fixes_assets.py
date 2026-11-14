@@ -323,7 +323,8 @@ def test_the_guild_mod_queue_has_prev_and_next():
 
 def test_guild_buttons_send_the_name_the_route_needs():
     assert "approve_from_guild('{{ b.name }}')" in read("templates", "guild", "contributors.html")
-    assert "exile_from_guild('{{ b.name }}')" in read("templates", "guild", "chatbans.html")
+    assert "exile_from_guild({{ b.name | tojson | forceescape }})" in read("templates", "guild", "bans.html")
+    assert "exile_from_guild" not in read("templates", "guild", "chatbans.html"), "its old exile modal had no way to open and posted no reason: gone"
 
 
 def test_admin_pages_only_point_at_routes_that_exist():

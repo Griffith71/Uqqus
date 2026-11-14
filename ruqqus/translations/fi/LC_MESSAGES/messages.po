@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -1986,6 +1986,21 @@ msgstr "+%(guild)s hyväksyy vain hyvitykset hyväksytyiltä vastaajilta."
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s silvomaton."
 
+#, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, machine, plain2, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr "+%(guild)s otettiin uudelleen käyttöön ja sen sivu on taas auki."
+
 #, machine, plain1, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr "+%(guild)s:n gold moderaattorit eivät ole vielä kirjoittaneet wikiä."
@@ -3381,9 +3396,9 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "Postin teksti voi olla %(count)s merkki (kiinalainen, japanilainen ja korealainen merkkiä ja emoji lasketaan 2)."
 msgstr[1] "Postin teksti voi olla %(count)s merkkiä (kiinalaiset, japanilaiset ja korealaiset merkit ja emojit lasketaan 2)."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "Yksityiskappale tästä sellaisena kuin se oli, kun se oli piilotettu, poistettu tai poistettu. Vain sen kirjoittaja, sen gulden moderaattorit, johon se oli piilossa ja sivuston ylläpitäjät voivat avata sen, eikä sitä pidetä ikuisesti."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "Yksityinen kopio tästä sellaisena kuin se oli, kun se oli piilotettu, poistettu, poistettu tai tukeutunut päätökseen. Vain sen kirjoittaja, killan moderaattorit, jotka päättivät ja sivuston ylläpitäjät voivat avata sen, eikä sitä pidetä ikuisesti."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4196,6 +4211,10 @@ msgstr "Alfa-käyttäjä"
 msgid "Already approved"
 msgstr "Jo hyväksytty"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Jo kielletty"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "Lähetetty jo osoitteeseen +%(guild)s."
@@ -4452,9 +4471,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Nimetön"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "Nimetön"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "Nimetön #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "Nimettömät pysyvät nimettöminä, ellei toinen valvoja hyväksy niitä, ja sitten loki nimeää tilisi niiden vieressä."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5881,6 +5908,10 @@ msgstr "Valitse yksi väreistä."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "Valitse yksi omista sovelluksista (Asetukset > Apps)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "Valitse virat tai kommentit tässä on kyse, enintään viisi. Sivustolla on yksityinen kopio jokaisesta sellaisena kuin se nyt on, heille, tämän guldenin moderaattorit ja sivuston ylläpitäjät."
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "Valitse tarinat pitää bio. Korostus pitää tarinansa 24 tunnin jälkeen ja näyttää jokaisen ihmisille, jotka näkivät sen silloin."
@@ -6010,6 +6041,14 @@ msgstr "Ympyrät"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "Ympyrät, joihin tilaat"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "Soita vähintään yksi @%(name)s:n viroista tai kommenteista +%(guild)s, joihin tämä perustuu."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "Kirjattu:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7844,6 +7883,10 @@ msgstr "Esimerkki: kissakoirat · ei ole \"kissat\" eikä \"koirat\""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Esimerkki: happy hour · on tarkka ilmaisu \"happy hour\""
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "Karkota"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "Karkota %(alias)s"
@@ -8052,6 +8095,10 @@ msgstr "Etsi killan"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "Löytää yhteisöjä liittyä. Killat, joihin liityt, ilmestyvät sivupalkkiin ja Seuraavaan rehuun."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "Etsi heidän virkansa ja kommenttinsa"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -13249,6 +13296,10 @@ msgstr "Paikka <span class=\"text-muted font-weight-normal\">(vapaaehtoinen)</sp
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "Tekstari, ei linkkejä. Kerro, mistä viestit tulevat."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "Pelkkä teksti, jopa 512 merkkiä. Se on lokikirjassa ja henkilö lähetetään sinne."
+
 #, machine, plain1, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13975,6 +14026,14 @@ msgstr "Ehdota poistoa"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "Ehdotatko @%(name)s:n poistamista kirjailijana? Se, mitä he kirjoittivat, jää heille."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "Ehdota poistoa numerolla"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "Ehdotatko nimettömän kirjailijan poistamista? Jos muut kirjoittajat ovat samaa mieltä, heidät poistetaan, joten te kaikki tiedätte kuka se oli. Se, mitä he kirjoittivat, pysyy heille hyvitettynä samalla numerolla."
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "Ehdota näitä sääntöjä"
@@ -14516,6 +14575,10 @@ msgid "Remove this topic"
 msgstr "Poista tämä aihe"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "Poista sinut kirjailijana"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Poistaa nimesi näistä kohteista?"
 
@@ -14944,6 +15007,10 @@ msgstr "Rugby"
 #, machine, plain1
 msgid "Rule"
 msgstr "Artikla"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "Sääntöä rikottu"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17319,6 +17386,10 @@ msgstr "Tekijät suostuivat kutsumaan sinut: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Automodaus pelastettiin."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "Tukikohta URL on <code>%(url)s</code>"
@@ -17620,6 +17691,10 @@ msgstr "Nimeä %(host)s ei löytynyt."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Uusinta, mitä he ovat tehneet. Vain niiden nimet, joiden kanssa he juttelevat, näytetään, eivät koskaan mitä chat sanoo: chatit ovat salaisia."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "Nimettömän tekijän numero"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -18241,6 +18316,10 @@ msgstr "Tämä myös irrottaa chat kaikkialla muualla, chat-sovellukset mukana, 
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "Tämä kirjailija ei ole ollut aktiivinen %(time)sNiin ei ole laskettu."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "Tämä kielto perustuu"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "Tämä botti ei kestä tippiä juuri nyt."
@@ -18442,6 +18521,10 @@ msgstr "Kilta käsittelee arkaluonteisia aiheita"
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "Tämä guldeni käsittelee arkaluonteisia aiheita (jokainen virka täällä hämärtyy oletuksena)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "Tämä kilta on jo kielletty."
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -18709,6 +18792,10 @@ msgstr "Ehdotus on päättynyt."
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "Tämä jono on tyhjä. Se on hyvä asia"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "Tämä perustuu nimettömään viestiin tai kommenttiin, josta avasit sen. Sivustolla on yksityinen kopio siitä sellaisenaan."
 
 #, machine, plain1
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
@@ -20273,6 +20360,10 @@ msgid "What the guildmasters did"
 msgstr "Mitä killan moderaattorit tekivät"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "Mihin tämä perustuu"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "Mitä tehdä heille"
 
@@ -21042,6 +21133,10 @@ msgstr "Olet karkotettu +%(guild)s eikä voi tällä hetkellä tulla gulden mode
 msgid "You are exiled from +%(guild)s."
 msgstr "Olet karkotettu +%(guild)s."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "Et ole enää karkotettu +%(guild)s. Voit lähettää viestit sille ja kommentoida sitä uudelleen."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Et ole minkään killan jäsen. Killat, joihin osallistut, näytetään täällä."
@@ -21240,6 +21335,17 @@ msgstr "Voit tehdä lapsitilin, kun oma tilisi on vahvistettu 18:ksi tai sitä s
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Voit tehdä kolme valitusta päivässä. Yritä uudelleen huomenna."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "Voit luoda vain kaksi guldenia päivässä. Yritä myöhemmin uudestaan."
@@ -21291,6 +21397,10 @@ msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "Voit kirjoittaa enintään %(num)s viesti Spaces päivässä."
 msgstr[1] "Voit kirjoittaa enintään %(num)s viestiä Spaces päivässä."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "Voit kirjoittaa uudelleen +%(guild)s:n kanaville."
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22705,6 +22815,10 @@ msgstr "Tilauksesi ei uusiudu. Pitäkää pääsy siihen päivään, josta makso
 msgid "Your subscriptions"
 msgstr "Tilauksesi"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "Erotuksesi on päättynyt. Voit käyttää %(site)s kuten ennenkin."
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "Nimesi on kysymys. %(min)s %(max)s vaihtoehtoon, yksi ääni kullekin. Äänestys voidaan äänestää jokaisesta tämän viran eteenpäin ja takaisin."
@@ -22854,6 +22968,14 @@ msgid "[Titles](/help/titles)"
 msgstr "[Otsikot](/help/titles)"
 
 #, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr ""
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22887,6 +23009,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22906,6 +23036,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1

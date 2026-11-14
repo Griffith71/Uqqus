@@ -8,7 +8,8 @@ edit or delete cannot rewrite what the guildmasters relied on. The person, the d
 
 **What can be cited** (`usable`): a post or comment made in this guild (`original_board_id`), that is NOT anonymous (an anonymous item would pair an
 account with it: an alias exile cites its own anonymous item and the copy is read only through the copy pages, which never name its author), not deleted,
-and that belongs to the exiled account (`owner_of`: a guild's copy of a post is its forwarder's). At most `MAX_CITED`.
+that no admin removed and no post's author hid (a guildmaster is shown only a placeholder for those), and that belongs to the exiled account
+(`owner_of`: a guild's copy of a post is its forwarder's). At most `MAX_CITED`.
 
 Plain SQL where it can be, tested on SQLite (tests/test_sanction_evidence.py). Nothing here commits.
 """
@@ -17,6 +18,9 @@ from sqlalchemy import text
 from ruqqus.helpers import action_log
 
 MAX_CITED = 5
+# the cited item has been made anonymous since (a "Remove my name", a deleted account): read now, never remembered, so what the exile cited can't be paired with it
+ANONYMOUS_NOW = ("EXISTS (SELECT 1 FROM submissions a WHERE a.id = s.target_submission_id AND COALESCE(a.is_anonymous, false)) "
+                 "OR EXISTS (SELECT 1 FROM comments b WHERE b.id = s.target_comment_id AND COALESCE(b.is_anonymous, false))")
 
 
 def is_comment(item):
@@ -29,6 +33,8 @@ def usable(item, board_id, user_id, owner_id, allow_anonymous=False):
         return False
     if getattr(item, "deleted_utc", 0):
         return False
+    if getattr(item, "is_banned", False) or getattr(item, "author_hidden", False):
+        return False                    # removed by the site's admins, or hidden by the post's author: not for a guildmaster to read, so not to cite and keep a copy of
     if getattr(item, "is_anonymous", False) and not allow_anonymous:
         return False
     return item.original_board_id == board_id and owner_id == user_id
@@ -82,17 +88,19 @@ def openable(db, entry_ids, viewer_id, level, boards=()):
     if level >= 3:
         who.append("1 = 1")
     if viewer_id:
-        who.append("author_id = :viewer")
+        who.append("s.author_id = :viewer")
         params["viewer"] = int(viewer_id)
     board_marks = []
     for n, board_id in enumerate(sorted({int(b) for b in boards or ()})):
         params[f"b{n}"] = board_id
         board_marks.append(f":b{n}")
     if board_marks:
-        who.append(f"board_id IN ({', '.join(board_marks)})")
+        # the deciding guild's guildmasters, but not for an item that has been made anonymous since: the line would pair the exiled account with it (an exile BY
+        # ALIAS cited an anonymous item to begin with, which is why they hold it)
+        who.append(f"(s.board_id IN ({', '.join(board_marks)}) AND (e.action = 'exile_alias' OR NOT ({ANONYMOUS_NOW})))")
     out = {}
-    rows = db.execute(text(f"SELECT entry_id, target_submission_id, target_comment_id FROM log_snapshots "
-                           f"WHERE entry_id IN ({marks}) AND kind = 'evidence' AND scrubbed_utc = 0 AND ({' OR '.join(who)}) ORDER BY id"), params)
+    rows = db.execute(text(f"SELECT s.entry_id, s.target_submission_id, s.target_comment_id FROM log_snapshots s JOIN log_entries e ON e.id = s.entry_id "
+                           f"WHERE s.entry_id IN ({marks}) AND s.kind = 'evidence' AND s.scrubbed_utc = 0 AND ({' OR '.join(who)}) ORDER BY s.id"), params)
     for entry_id, post, comment in rows:
         out.setdefault(entry_id, []).append(("comment", comment) if comment else ("post", post))
     return out

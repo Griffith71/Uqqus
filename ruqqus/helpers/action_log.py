@@ -478,7 +478,9 @@ def may_open_copy(snapshot, viewer):
     author, admins (a legal hold only level 4), whoever hid it, and the guildmasters of the guild only for a guild's hide."""
     if snapshot is None or viewer is None:
         return False
-    return snapshot_visible(snapshot, viewer_id=viewer.id, level=staff_level(viewer.admin_level),
+    # a limited sign-in (a relayed QR code) is a stranger to its own member's anonymous items, and a copy of an item is found by its author id
+    viewer_id = None if getattr(viewer, "qr_limited", False) else viewer.id
+    return snapshot_visible(snapshot, viewer_id=viewer_id, level=staff_level(viewer.admin_level),
                             guild_mod=snapshot["board_id"] in led_boards(viewer))
 
 
@@ -794,9 +796,28 @@ def snapshot_for(db, post_id=None, comment_id=None, viewer=None):
         {"v": int(value)})
     for row in rows:
         snapshot = dict(row._mapping)
-        if viewer is None or may_open_copy(snapshot, viewer):
+        if viewer is None or (may_open_copy(snapshot, viewer) and not _evidence_unpaired_for(db, snapshot, viewer)):
             return snapshot
     return None
+
+
+def _evidence_unpaired_for(db, snapshot, viewer):
+    """Whether this reader may NOT open an `evidence` copy because it would pair an exiled account with an item that is anonymous now: only the guildmasters of the
+    deciding guild are held back (the person and the admins may know), and not for an exile made by alias, whose cited item was anonymous to begin with."""
+    if snapshot.get("kind") != EVIDENCE or snapshot["author_id"] == viewer.id or staff_level(viewer.admin_level) >= 3:
+        return False
+    post, comment = snapshot.get("target_submission_id"), snapshot.get("target_comment_id")
+    if post is None and comment is None:
+        post, comment = db.execute(text("SELECT target_submission_id, target_comment_id FROM log_snapshots WHERE id = :i"), {"i": snapshot["id"]}).first() or (None, None)
+    anonymous = False
+    if post:
+        anonymous = bool(db.execute(text("SELECT COALESCE(is_anonymous, false) FROM submissions WHERE id = :i"), {"i": post}).scalar())
+    elif comment:
+        anonymous = bool(db.execute(text("SELECT COALESCE(is_anonymous, false) FROM comments WHERE id = :i"), {"i": comment}).scalar())
+    if not anonymous:
+        return False
+    by_alias = db.execute(text("SELECT 1 FROM log_entries WHERE id = :e AND action = 'exile_alias'"), {"e": snapshot.get("entry_id")}).first()
+    return by_alias is None
 
 
 # --- keeping and scrubbing ----------------------------------------------------------------------------------------------

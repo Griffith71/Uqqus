@@ -234,6 +234,16 @@ def revealed(db, post_ids=(), comment_ids=()):
     return found
 
 
+def waiting_or_approved(db, entry_id, target_id):
+    """`[("post" | "comment", id)]` that a ban's evidence still stands on (pending a second admin, or approved), for the banned account alone: its appeal page lists
+    them, since a notice is read by whoever is signed in and the ids of anonymous items are the account's to know. `target_id` must be the account the ban is about."""
+    out = []
+    for post, comment in db.execute(text("SELECT post_id, comment_id FROM log_evidence WHERE entry_id = :e AND target_user_id = :t "
+                                         "AND status IN ('pending', 'approved') ORDER BY id"), {"e": int(entry_id), "t": int(target_id)}):
+        out.append(("post", post) if post else ("comment", comment))
+    return out
+
+
 def listed(db, entry_ids):
     """{entry id: [(kind, id)]} for the ban entries with approved evidence: the ban's line lists these with the author named."""
     ids = sorted({int(i) for i in entry_ids or () if i})

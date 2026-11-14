@@ -128,7 +128,9 @@
 
 {% endblock %}
 
-{% block exileModal %}{# the exile dialog is the page shell's (partials/decision_dialog.html): a reason and what it relies on #}{% endblock %}
+{% block exileModal %}{# the exile dialog (partials/decision_dialog.html): a reason and what it relies on. This page's shell is not default.html, so it draws the dialog itself #}{% include "partials/decision_dialog.html" %}{% endblock %}
+
+{% block scripts %}<script src="{{ asset_url('js/decision_dialog.js') }}"></script>{% endblock %}
 
 {% block errorToasts %}
 

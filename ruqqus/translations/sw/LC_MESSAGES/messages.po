@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-14 16:26+1100\n"
+"POT-Creation-Date: 2026-11-15 02:43+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sw\n"
@@ -1979,6 +1979,21 @@ msgid "+%(guild)s unmuted."
 msgstr ""
 
 #, python-format
+msgid ""
+"+%(guild)s was banned from %(site)s.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "+%(guild)s was reinstated, and its page is open again."
+msgstr ""
+
+#, python-format
 msgid "+%(guild)s's guildmasters haven't written the wiki yet."
 msgstr ""
 
@@ -3371,9 +3386,9 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "Ujumbe wa maandishi unaweza kuwa %(count)s Tabia (Kichina, Kijapani na Kikorea wahusika na emoji kuhesabu kama 2)."
 msgstr[1] "Ujumbe wa maandishi unaweza kuwa %(count)s Wahusika (Kichina, Kijapani na Kikorea wahusika na emoji kuhesabu kama 2)."
 
-#, machine, plain1
-msgid "A private copy of this as it was when it was hidden, removed or deleted. Only its author, the guildmasters of the guild it was hidden in and the site's administrators can open it, and it is not kept for ever."
-msgstr "Nakala ya kibinafsi ya hii kama ilivyokuwa wakati ilifichwa, kuondolewa au kufutwa. Ni mwandishi wake tu, wasimamizi wa kikundi kilichofichwa ndani na watendaji wa tovuti wanaweza kuifungua, na haijahifadhiwa milele."
+#, machine, plain2
+msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
+msgstr "Nakala ya kibinafsi ya hii kama ilivyokuwa wakati ilifichwa, kuondolewa, kufutwa au kutegemewa kwa uamuzi. Ni mwandishi wake tu, wasimamizi wa kikundi kilichoamua na watendaji wa tovuti wanaweza kuifungua, na haihifadhiwa milele."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4183,6 +4198,10 @@ msgstr "Mtumiaji wa Alpha"
 msgid "Already approved"
 msgstr "Tayari kupitishwa"
 
+#, machine, plain2
+msgid "Already banned"
+msgstr "Tayari imepigwa marufuku"
+
 #, machine, plain1, python-format
 msgid "Already forwarded to +%(guild)s."
 msgstr "Tayari kwa ajili ya +%(guild)s."
@@ -4439,9 +4458,17 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Asiyejulikana"
 
+#, machine, plain2
+msgid "Anonymous #"
+msgstr "Jina la mtumiaji #"
+
 #, glossary, machine, plain2, python-format
 msgid "Anonymous #%(num)s"
 msgstr "Asiyejulikana #%(num)s"
+
+#, machine, plain2
+msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
+msgstr "Wasiojulikana hukaa bila kujulikana isipokuwa msimamizi wa pili anaidhinisha, na kisha Ingia jina la akaunti yako kando yao."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5869,6 +5896,10 @@ msgstr "Chagua moja ya rangi hizo."
 msgid "Choose one of your own apps (Settings > Apps)."
 msgstr "Chagua moja ya programu yako mwenyewe (Settings > Apps)."
 
+#, machine, plain2
+msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
+msgstr "Chagua makala au maoni kuhusu, hadi tano. Tovuti inaweka nakala ya kibinafsi ya kila mmoja kama ilivyo sasa, kwao, wasimamizi wa chama hiki na admins ya tovuti."
+
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
 msgstr "Chagua hadithi ili uendelee chini ya bio yako. Ishara inashikilia hadithi zake baada ya masaa yao ya 24 na inaonyesha kila mmoja kwa watu ambao wanaweza kuiona."
@@ -5998,6 +6029,14 @@ msgstr "Sehemu za siri zako mwenyewe"
 #, machine, plain1
 msgid "Circles you subscribe to"
 msgstr "Maeneo ambayo unaweza kujiunga"
+
+#, machine, plain2, python-format
+msgid "Cite at least one of @%(name)s's posts or comments in +%(guild)s that this relies on."
+msgstr "Tumia angalau moja ya @%(name)sMaoni au maoni katika +%(guild)s Hii inategemea."
+
+#, machine, plain2
+msgid "Cited:"
+msgstr "Kuwa:"
 
 #, machine, plain1
 msgid "Classical"
@@ -7831,6 +7870,10 @@ msgstr "Mfano: mbwa wa paka · hawana \"paka\" wala \"mbwa\""
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Mfano: Saa ya furaha · ina maneno halisi \"saa ya furaha\""
 
+#, glossary, machine, plain2
+msgid "Exile"
+msgstr "Fukuza"
+
 #, glossary, machine, plain2, python-format
 msgid "Exile %(alias)s"
 msgstr "Fukuza %(alias)s"
@@ -8039,6 +8082,10 @@ msgstr "Kupata kundi"
 #, machine, plain1
 msgid "Find communities to join. Guilds you join show up in your sidebar and your Following feed."
 msgstr "Tafuta jamii za kujiunga. Makundi unayojiunga yanaonyesha kwenye ubao wako na chakula chako kinachofuata."
+
+#, machine, plain2
+msgid "Find their posts and comments"
+msgstr "Kupata posts yako na maoni"
 
 #, machine, plain1
 msgid "Fire Extinguisher"
@@ -13225,6 +13272,10 @@ msgstr "Mahali pa nafasi <span class=\"text-muted font-weight-normal\">(Sauti ya
 msgid "Plain text, no links. Say where the posts come from."
 msgstr "Nakala ya maandishi, hakuna viungo. Waambie wapi barua hizo zinatoka."
 
+#, machine, plain2
+msgid "Plain text, up to 512 characters. It is in the Log, and the person is sent it."
+msgstr "Nakala ya wazi, hadi wahusika wa 512. Iko katika hali ya utulivu, na mtu anaweza kuitumia."
+
 #, machine, plain1, python-format
 msgid "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
 msgid_plural "Plain words, up to %(num)s in each box. They are looked for in a post's title and text."
@@ -13951,6 +14002,14 @@ msgstr "Jaribu kuondoa"
 msgid "Propose removing @%(name)s as an author? What they wrote stays credited to them."
 msgstr "Inajaribu kuondoa @%(name)s Kama mwandishi? Wanaamini kile wanachoandika."
 
+#, machine, plain2
+msgid "Propose removing by number"
+msgstr "Kuondolewa kwa idadi"
+
+#, machine, plain2
+msgid "Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number."
+msgstr "Je, una nia ya kuondoa mwandishi huyu asiyejulikana? Ikiwa waandishi wengine wanakubaliana, wataondolewa, na kwa hivyo utajua ni nani. Kile ambacho waliandika kinaaminiwa kwao, kwa idadi sawa."
+
 #, machine, plain1
 msgid "Propose these rules"
 msgstr "Kupendekeza Kanuni hizi"
@@ -14492,6 +14551,10 @@ msgid "Remove this topic"
 msgstr "Ondoa mada hii"
 
 #, machine, plain2
+msgid "Remove you as an author"
+msgstr "Kuwa mwandishi"
+
+#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Unaondoa jina lako kutoka kwenye orodha hizi?"
 
@@ -14918,6 +14981,10 @@ msgstr "Michezo ya Rugby"
 #, machine, plain1
 msgid "Rule"
 msgstr "Utawala wa sheria"
+
+#, machine, plain2
+msgid "Rule broken"
+msgstr "Utawala uliovunjika"
 
 #, glossary, machine, plain2
 msgid "Rules"
@@ -17291,6 +17358,10 @@ msgstr "Wajumbe wa kamati hiyo walipendekeza kuwa: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Usafiri wa treni uliokolewa."
 
+#, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
 msgstr "Msingi wa msingi URL Ilikuwa ni <code>%(url)s</code>"
@@ -17592,6 +17663,10 @@ msgstr "Majina ya %(host)s Haikuweza kupatikana."
 #, machine, plain1
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Kazi mpya wanayoifanya. Tu majina ya ambao wao kuzungumza na ni kuonyeshwa, kamwe nini chat anasema: chat ni mwisho-kwa-mwisho encrypted."
+
+#, machine, plain2
+msgid "The number of an anonymous author"
+msgstr "Idadi ya waandishi wasiojulikana"
 
 #, machine, plain2
 msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
@@ -18213,6 +18288,10 @@ msgstr "Hii pia kukatika chat kila mahali pengine, chat programu ni pamoja na, i
 msgid "This author hasn't been active for %(time)s, so isn't counted."
 msgstr "Mwandishi huyu hakuwa na kazi %(time)sKwa hiyo, si kuhesabiwa."
 
+#, machine, plain2
+msgid "This ban relies on:"
+msgstr "Marufuku hii inategemea:"
+
 #, machine, plain1
 msgid "This bot can't take tips right now."
 msgstr "Hii bot haiwezi kuchukua vidokezo hivi sasa."
@@ -18414,6 +18493,10 @@ msgstr "Mada hii inazungumzia mada nyeti"
 #, machine, plain1
 msgid "This guild discusses sensitive topics (every post here will be blurred by default)."
 msgstr "Chama hiki kinajadili mada nyeti (kila chapisho hapa litachanganyikiwa na default)."
+
+#, machine, plain2
+msgid "This guild is already banned."
+msgstr "Tayari mfumo huu umepigwa marufuku."
 
 #, machine, plain1
 msgid "This guild is banned."
@@ -18681,6 +18764,10 @@ msgstr "Pendekezo hili limekataliwa."
 #, machine, plain1
 msgid "This queue is empty. (That's a good thing.)"
 msgstr "Mstari huu ni tupu. (Hili ni jambo zuri sana.)"
+
+#, machine, plain2
+msgid "This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now."
+msgstr "Hii inategemea chapisho lisilojulikana au maoni uliyofungua kutoka. Tovuti inaendelea nakala ya kibinafsi kama ilivyo sasa."
 
 msgid "This requires entering a randomly-generated, 6-digit code and your password to login. See <a href=\"#\">Google Authenticator</a> or <a href=\"#\">Authy</a> for more details."
 msgstr ""
@@ -20231,6 +20318,10 @@ msgid "What the guildmasters did"
 msgstr "Nini Wazungu Wazungu walifanya"
 
 #, machine, plain2
+msgid "What this relies on"
+msgstr "Nini hii inategemea"
+
+#, machine, plain2
 msgid "What to do with them"
 msgstr "Nini cha kufanya nao"
 
@@ -21000,6 +21091,10 @@ msgstr "Umehamishwa kutoka +%(guild)s na huwezi sasa kuwa msimamizi wa kikundi."
 msgid "You are exiled from +%(guild)s."
 msgstr "Wewe ni wa thamani zaidi.+%(guild)s."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
+msgstr "Hamtakuwa tena watumwa+%(guild)sUnaweza kutuma ujumbe kwa hiyo na kutoa maoni tena."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Wewe si mwanachama wa chama chochote. Alama ambazo unaweza kushiriki zitaonyeshwa hapa."
@@ -21198,6 +21293,17 @@ msgstr "Unaweza kufanya akaunti ya mtoto mara tu akaunti yako imethibitishwa kam
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Unaweza kufanya maombi matatu kwa siku. Jaribu tena kesho."
 
+#, python-format
+msgid ""
+"You can no longer write in +%(guild)s's channels, but you can still read them.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
 msgstr "Unaweza kuunda hadi vikundi viwili kwa siku. Jaribu tena baadaye."
@@ -21249,6 +21355,10 @@ msgid "You can write at most %(num)s message in Spaces a day."
 msgid_plural "You can write at most %(num)s messages in Spaces a day."
 msgstr[0] "Unaweza kuandika ujumbe zaidi ya %(num)s katika nafasi kwa siku."
 msgstr[1] "Unaweza kuandika ujumbe zaidi ya %(num)s katika nafasi kwa siku."
+
+#, machine, plain2, python-format
+msgid "You can write in +%(guild)s's channels again."
+msgstr "Unaweza kuandika katika +%(guild)sKwa mara nyingine tena channel."
 
 #, machine, plain1, python-format
 msgid "You can write in this guild's channels once you've been in it for %(num)s day."
@@ -22654,6 +22764,10 @@ msgstr "Michango yako haitabadilika. Endelea na huduma hii mpaka siku utakapopat
 msgid "Your subscriptions"
 msgstr "Michango yako"
 
+#, machine, plain2, python-format
+msgid "Your suspension has ended. You can use %(site)s as you did before."
+msgstr "Kuacha kwako kumeisha. Unaweza kutumia %(site)s kama walivyofanya hapo awali."
+
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
 msgstr "Kichwa chako ni swali. %(min)s Kwa kuwa %(max)s Uchaguzi, kura moja kwa kila mmoja. Uchaguzi unaweza kupiga kura kutoka kwa kila mbele na kurudiwa kwa chapisho hili."
@@ -22783,6 +22897,14 @@ msgid "[Titles](/help/titles)"
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) is shown again under the post it is on."
+msgstr ""
+
+#, python-format
+msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22816,6 +22938,14 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "[Your comment](%(item)s) was restored."
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) is shown in +%(guild)s again."
+msgstr ""
+
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -22835,6 +22965,10 @@ msgid ""
 "```\n"
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1
