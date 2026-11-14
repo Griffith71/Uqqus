@@ -72,7 +72,7 @@ class ModAction(Base, Stndrd, Age_times):
     @property
     def note(self):
 
-        if self.kind=="exile_user":
+        if self.kind in ("exile_user", "exile_alias"):
             if self.target_post:
                 # Translators: why someone was exiled, in a guild's moderation log: for a post of theirs
                 return tr('for <a href="%(link)s">post</a>', link=self.target_post.permalink)
@@ -80,6 +80,8 @@ class ModAction(Base, Stndrd, Age_times):
                 # Translators: why someone was exiled, in a guild's moderation log: for a comment of theirs
                 return tr('for <a href="%(link)s">comment</a>', link=self.target_comment.permalink)
             return self._note or ""
+        elif self.kind in action_log.ALIAS_ACTIONS:
+            return ""                    # the note of an action on an alias is its label (drawn as the target), never a reason
         elif self.kind=="chatban_user":
             return tr('Reason: %(reason)s', reason=self._note) if self._note else ''
         else:
@@ -108,6 +110,10 @@ class ModAction(Base, Stndrd, Age_times):
         return self._target_link(True)
 
     def _target_link(self, titles=True):
+        if self.kind in action_log.ALIAS_ACTIONS:
+            # "Anonymous #3": the label an exile or a chat mute by alias was made with (helpers/alias_actions.py), never an account
+            from markupsafe import escape
+            return str(escape(self._note or ""))
         if self.target_user:
             if self.target_user.is_deleted:
                 return tr("[deleted user]")
@@ -274,6 +280,34 @@ ACTIONTYPES={
         "icon": "fa-user-slash",
         "color": "bg-muted",
         "title": N_('%(who)s un-exiled user %(name)s')
+    },
+    "exile_alias":{
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is "Anonymous" and a number
+        "str": N_('exiled %(target)s'),
+        "icon":"fa-user-slash",
+        "color": "bg-danger",
+        "title": N_('%(who)s exiled %(target)s')
+    },
+    "unexile_alias":{
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is "Anonymous" and a number
+        "str": N_('un-exiled %(target)s'),
+        "icon": "fa-user-slash",
+        "color": "bg-muted",
+        "title": N_('%(who)s un-exiled %(target)s')
+    },
+    "chatban_alias":{
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is "Anonymous" and a number
+        "str": N_('chatbanned %(target)s'),
+        "icon":"fa-comments-alt",
+        "color": "bg-danger",
+        "title": N_('%(who)s chatbanned %(target)s')
+    },
+    "unchatban_alias":{
+        # Translators: follows the moderator's name in a guild's moderation log; %(target)s is "Anonymous" and a number
+        "str": N_('un-chatbanned %(target)s'),
+        "icon": "fa-comments-alt",
+        "color": "bg-muted",
+        "title": N_('%(who)s un-chatbanned %(target)s')
     },
     "chatban_user":{
         # Translators: follows the moderator's name in a guild's moderation log; %(target)s is a link

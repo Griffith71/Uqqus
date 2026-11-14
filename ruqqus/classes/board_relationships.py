@@ -6,6 +6,8 @@ from ruqqus.__main__ import Base, cache
 from .mix_ins import *
 import time
 
+from ruqqus.helpers import alias_actions
+
 
 class ModRelationship(Base, Age_times):
     __tablename__ = "mods"
@@ -102,6 +104,15 @@ class BanRelationship(Base, Stndrd, Age_times):
     banning_mod_id = Column(Integer, ForeignKey("users.id"))
     is_active = Column(Boolean, default=False)
     mod_note = Column(String(128), default="")
+    # an exile made by alias ("Anonymous #3", helpers/alias_actions.py): the thread (the primary post's id) and the number, so the guild's list draws the alias
+    # and never the username; both NULL for an exile by name
+    alias_post_id = Column(Integer, default=None)
+    alias_n = Column(Integer, default=None)
+
+    @property
+    def alias_thread(self):
+        """The thread an alias exile was made in, as a post's short id for a link (None for an exile by name)."""
+        return base36encode(self.alias_post_id) if self.alias_post_id else None
 
     user = relationship(
         "User",
@@ -136,7 +147,13 @@ class BanRelationship(Base, Stndrd, Age_times):
     def json(self):
         data=self.json_core
 
-        data["user"]=self.user.json_core
+        if self.alias_n:
+            # made by alias: the account is never named, in an answer or on a page (helpers/alias_actions.py)
+            for key in ("user_id",):
+                data.pop(key, None)
+            data["alias"] = alias_actions.label(self.alias_n)
+        else:
+            data["user"]=self.user.json_core
         data["mod"]=self.banning_mod.json_core
         data["guild"]=self.board.json_core
 
@@ -150,6 +167,12 @@ class ChatBan(Base, Stndrd, Age_times):
     board_id = Column(Integer, ForeignKey("boards.id"))
     created_utc = Column(BigInteger, default=0)
     banning_mod_id = Column(Integer, ForeignKey("users.id"))
+    alias_post_id = Column(Integer, default=None)       # a chat mute made by alias, as BanRelationship's (helpers/alias_actions.py)
+    alias_n = Column(Integer, default=None)
+
+    @property
+    def alias_thread(self):
+        return base36encode(self.alias_post_id) if self.alias_post_id else None
 
     user = relationship(
         "User",
@@ -184,7 +207,13 @@ class ChatBan(Base, Stndrd, Age_times):
     def json(self):
         data=self.json_core
 
-        data["user"]=self.user.json_core
+        if self.alias_n:
+            # made by alias: the account is never named, in an answer or on a page (helpers/alias_actions.py)
+            for key in ("user_id",):
+                data.pop(key, None)
+            data["alias"] = alias_actions.label(self.alias_n)
+        else:
+            data["user"]=self.user.json_core
         data["mod"]=self.banning_mod.json_core
         data["guild"]=self.board.json_core
 

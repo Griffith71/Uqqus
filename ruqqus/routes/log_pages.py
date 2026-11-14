@@ -17,7 +17,7 @@ Not `log.py` / `action_log.py`: the star import of a routes package would put a 
 import html
 
 from flask import abort, g, redirect, render_template, request
-from markupsafe import Markup
+from markupsafe import Markup, escape
 from sqlalchemy import or_, text
 from sqlalchemy.orm import lazyload
 
@@ -202,7 +202,10 @@ def _rows(entries, v):
             who = log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted,
                                   hidden=user_hidden(actor, v))
         target = ""
-        if e["target_user_id"]:
+        if e["action"] in action_log.ALIAS_ACTIONS:
+            # an action on an alias is about "Anonymous #3", never an account (it has no target_user_id): the number is public, it is drawn on the item
+            target = Markup(escape(log_view.alias_label(e.get("alias_n"))))
+        elif e["target_user_id"]:
             # a person is the subject of an exile, a mute or a ban, even when an item is cited with it ("exiled user @x", not
             # "exiled #a1b2c"); the item is the subject only when there is no person
             user = people.get(e["target_user_id"])

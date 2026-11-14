@@ -203,11 +203,16 @@ def test_the_export_holds_what_the_log_says_about_them_and_their_own_copies_neve
     hidden = log.record(db, "suspend_user", 20, target_user_id=30, reason="A reason an owner hid.", role=log.ADMIN, now=NOW)
     db.execute(text("UPDATE log_entries SET redacted_utc = :n WHERE id = :e"), {"n": NOW, "e": hidden})
     staff = log.record(db, "age_lock", 20, target_user_id=30, role=log.ADMIN, floor=log.STAFF, staff_note="seen", now=NOW)
+    by_alias = log.record(db, "exile_alias", 10, board_id=1, reason="Harassment.", now=NOW)           # an exile made by alias names no account: the subject is theirs
+    db.execute(text("UPDATE log_entries SET alias_n = 2, subject_user_id = 30 WHERE id = :e"), {"e": by_alias})
+    someone_elses = log.record(db, "exile_alias", 10, board_id=1, reason="Spam.", now=NOW)
+    db.execute(text("UPDATE log_entries SET alias_n = 3, subject_user_id = 31 WHERE id = :e"), {"e": someone_elses})
     _snapshot(db, log.GRACE)
     _snapshot(db, log.GRACE, legal=True)
     sections = dict(data_export.SECTIONS)
     about = [dict(r._mapping) for r in db.execute(text(sections["log_entries_about_you"]), {"u": 30})]
-    assert [r["id"] for r in about] == [public, hidden], "a staff-only entry is not theirs to be given"
+    assert [r["id"] for r in about] == [public, hidden, by_alias], "a staff-only entry is not theirs to be given, one made by alias about them is"
+    assert about[2]["alias_n"] == 2 and someone_elses not in [r["id"] for r in about], "and never another account's"
     assert about[1]["reason"] == "" and about[0]["reason"] == "Spam links.", "a reason an owner hid stays hidden"
     assert staff not in [r["id"] for r in about]
     copies = [dict(r._mapping) for r in db.execute(text(sections["private_copies"]), {"u": 30})]

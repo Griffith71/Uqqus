@@ -35,8 +35,10 @@ def test_mod_edit_rule_loads_one_rule_of_this_guild():
 
 def test_exile_note_without_a_target_is_text_not_none():
     note = read("classes", "mod_logs.py").split("def note(self):")[1].split("@note.setter")[0]
-    exile = note.split('if self.kind=="exile_user":')[1].split('elif self.kind=="chatban_user"')[0]
+    exile = note.split('if self.kind in ("exile_user", "exile_alias"):')[1].split('elif self.kind in action_log.ALIAS_ACTIONS:')[0]
     assert 'return self._note or ""' in exile
+    # an action on an alias keeps its label in the note: it is the target, never a reason
+    assert 'elif self.kind in action_log.ALIAS_ACTIONS:\n            return ""' in note
 
 
 def test_password_reset_checks_the_account_before_using_it():

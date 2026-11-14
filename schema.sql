@@ -1511,7 +1511,9 @@ CREATE TABLE public.bans (
     created_utc integer,
     banning_mod_id integer,
     is_active boolean NOT NULL,
-    mod_note character varying(128)
+    mod_note character varying(128),
+    alias_post_id integer,
+    alias_n integer
 );
 
 
@@ -1631,7 +1633,9 @@ CREATE TABLE public.chatbans (
     user_id integer,
     board_id integer,
     created_utc integer,
-    banning_mod_id integer
+    banning_mod_id integer,
+    alias_post_id integer,
+    alias_n integer
 );
 
 
@@ -7229,6 +7233,8 @@ CREATE TABLE public.log_entries (
     reason character varying(512) DEFAULT '' NOT NULL,
     reason_severity smallint DEFAULT 0 NOT NULL,
     staff_note character varying(512) DEFAULT '' NOT NULL,
+    alias_n integer,
+    subject_user_id integer,
     audience smallint DEFAULT 0 NOT NULL,
     snapshot_id bigint,
     notice_sent boolean DEFAULT false NOT NULL,
@@ -7546,4 +7552,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2027-01-03_account_anonymise.sql'),
     ('2027-01-04_log_evidence.sql'),
     ('2027-01-05_anon_aliases.sql'),
-    ('2027-01-06_coauthor_credits.sql');
+    ('2027-01-06_coauthor_credits.sql'),
+    ('2027-01-07_alias_actions.sql');

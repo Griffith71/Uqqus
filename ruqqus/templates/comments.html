@@ -427,6 +427,11 @@
               {% if c.post and c.is_guildmaster('access') and v.id!=c.author_id and not author_of(c, v).is_deleted and not anon_hidden(c, v) and c.original_board_id==c.post.board_id %}
               <a class="dropdown-item text-danger" id="exile-comment-{{ c.base36id }}" href="javascript:void(0)" onclick="post_toast('/mod/exile/{{ c.post.board.name }}?username={{ author_of(c, v).username }}&toast=1&thing={{ c.fullname }}')"><i class="fas fa-user-minus fa-fw text-danger"></i>{{ _("Exile @%(name)s", name=author_of(c, v).username) }}</a>
               {% endif %}
+              {# an anonymous comment: a guildmaster acts on its number, "Anonymous #3", and is never told whose it is (helpers/alias_actions.py) #}
+              {% if c.post and v.id!=c.author_id and anon_hidden(c, v) and author_of(c, v).alias and c.original_board_id==c.post.board_id %}
+              {% if c.is_guildmaster('access') %}<a class="dropdown-item text-danger" id="exile-alias-comment-{{ c.base36id }}" href="javascript:void(0)" onclick="post_toast('/mod/exile_alias/{{ c.post.board.name }}?toast=1&thing={{ c.fullname }}')"><i class="fas fa-user-minus fa-fw text-danger"></i>{{ _("Exile %(alias)s", alias=author_of(c, v).shown_name) }}</a>{% endif %}
+              {% if c.is_guildmaster('content') %}<a class="dropdown-item text-danger" id="mute-alias-comment-{{ c.base36id }}" href="javascript:void(0)" onclick="post_toast('/mod/chatban_alias/{{ c.post.board.name }}?toast=1&thing={{ c.fullname }}')"><i class="fas fa-comment-slash fa-fw text-danger"></i>{{ _("Mute %(alias)s in the channels", alias=author_of(c, v).shown_name) }}</a>{% endif %}
+              {% endif %}
 
             </div>
           </div>
@@ -641,6 +646,10 @@
 
           {% if c.post and c.is_guildmaster('access') and c.author_id != v.id and not author_of(c, v).is_deleted and not anon_hidden(c, v) and c.original_board_id==c.post.board_id %}
           <li class="list-group-item"><a class="d-block text-danger" id="exile-comment2-{{ c.base36id }}" href="javascript:void(0)" onclick="post_toast('/mod/exile/{{ c.post.board.name }}?username={{ author_of(c, v).username }}&toast=1&thing={{ c.fullname }}')"><i class="fas fa-user-minus fa-fw text-danger"></i>{{ _("Exile @%(name)s", name=author_of(c, v).username) }}</a></li>
+          {% endif %}
+          {% if c.post and c.author_id != v.id and anon_hidden(c, v) and author_of(c, v).alias and c.original_board_id==c.post.board_id %}
+          {% if c.is_guildmaster('access') %}<li class="list-group-item"><a class="d-block text-danger" id="exile-alias-comment2-{{ c.base36id }}" href="javascript:void(0)" onclick="post_toast('/mod/exile_alias/{{ c.post.board.name }}?toast=1&thing={{ c.fullname }}')"><i class="fas fa-user-minus fa-fw text-danger"></i>{{ _("Exile %(alias)s", alias=author_of(c, v).shown_name) }}</a></li>{% endif %}
+          {% if c.is_guildmaster('content') %}<li class="list-group-item"><a class="d-block text-danger" id="mute-alias-comment2-{{ c.base36id }}" href="javascript:void(0)" onclick="post_toast('/mod/chatban_alias/{{ c.post.board.name }}?toast=1&thing={{ c.fullname }}')"><i class="fas fa-comment-slash fa-fw text-danger"></i>{{ _("Mute %(alias)s in the channels", alias=author_of(c, v).shown_name) }}</a></li>{% endif %}
           {% endif %}
 
           {% endif %}

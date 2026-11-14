@@ -328,6 +328,13 @@
       <span class="mr-2">@{{ u.username }}</span><button type="submit" class="btn btn-sm btn-link">{{ pgettext("button", "Unmute") }}</button>
     </form>
     {% endfor %}
+    {% for row_id, number in muted_aliases %}
+    {# muted by alias (helpers/alias_actions.py): listed by its number, never by name #}
+    <form class="d-flex align-items-center mb-1" method="post" action="/mod/unchatban_alias/{{ b.name }}/{{ row_id }}?back=channels">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <span class="mr-2"><i class="fas fa-user-secret fa-fw mr-1" aria-hidden="true"></i>{{ _("Anonymous #%(num)s", num=number) }}</span><button type="submit" class="btn btn-sm btn-link">{{ pgettext("button", "Unmute") }}</button>
+    </form>
+    {% endfor %}
     {% endif %}
 
   </div>

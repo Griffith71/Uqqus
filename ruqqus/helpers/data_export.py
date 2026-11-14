@@ -63,10 +63,11 @@ SECTIONS = (
     # the appeals they made against a decision in the Log, with how each ended (the Log's own entries about them are public or staff's)
     ("appeals", "SELECT a.entry_id, a.reason, a.status, a.decision_note, a.created_utc, a.decided_utc FROM log_appeals a "
                 "WHERE a.user_id = :u ORDER BY a.id"),
-    # what the Log says about them that anyone could read (a sanction, an exile: never a staff-only entry, and never a reason an owner hid), and the private
+    # what the Log says about them that anyone could read (a sanction, an exile, one made by alias too: it names the number and is theirs to be given, never a
+    # staff-only entry, and never a reason an owner hid), and the private
     # copies of their own words that the site still holds (what they erased themselves, what was hidden): never a copy kept for a legal duty
     ("log_entries_about_you", "SELECT e.id, e.created_utc, e.action, e.rule_key, CASE WHEN e.redacted_utc > 0 THEN '' ELSE e.reason END AS reason, "
-                              "e.board_id, e.until_utc FROM log_entries e WHERE e.target_user_id = :u AND e.audience = 0 ORDER BY e.id"),
+                              "e.board_id, e.until_utc, e.alias_n FROM log_entries e WHERE (e.target_user_id = :u OR e.subject_user_id = :u) AND e.audience = 0 ORDER BY e.id"),
     ("private_copies", "SELECT s.id, s.kind, s.created_utc, s.expires_utc, s.title, s.url, s.body FROM log_snapshots s "
                        "WHERE s.author_id = :u AND s.scrubbed_utc = 0 AND NOT s.legal_hold ORDER BY s.id"),
     ("automated_posting", "SELECT b.status, b.purpose, b.created_utc, s.url, s.status AS feed_status FROM bots b "

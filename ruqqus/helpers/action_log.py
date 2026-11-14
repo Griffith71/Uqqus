@@ -76,8 +76,11 @@ _CONTENT = {
 }
 # staff-only entries about a person: sanctions in kind, never public
 _STAFF_SANCTIONS = {"admin_alt_link", "admin_ip_ban", "admin_signup", "automatic_hold", "age_lock"}
+# an action on an alias ("Anonymous #3", helpers/alias_actions.py): an exile or a chat mute whose subject is a number in a thread, never an account. Its entry
+# carries the number (`alias_n`, public: it is on the item already) and, for the staff and the appeal alone, the account (`subject_user_id`)
+ALIAS_ACTIONS = ("exile_alias", "unexile_alias", "chatban_alias", "unchatban_alias")
 _SANCTION = {
-    "exile_user", "unexile_user", "chatban_user", "unchatban_user", "suspend_user", "unsuspend_user", "ban_user",
+    "exile_user", "unexile_user", "chatban_user", "unchatban_user", "exile_alias", "unexile_alias", "chatban_alias", "unchatban_alias", "suspend_user", "unsuspend_user", "ban_user",
     "unban_user", "ban_guild", "unban_guild", "clear_display_name", "force_sensitive_user", "age_declaration",
     "child_removed_with_parent",
 } | _STAFF_SANCTIONS
@@ -120,8 +123,8 @@ _LEGAL_NOTES = ("csam", "banned image")
 _STAFF_NOTES = ("ban evasion",)
 
 PUBLIC_COLUMNS = ("id, created_utc, log_type, action, actor_id, actor_role, board_id, target_user_id, "
-                  "target_submission_id, target_comment_id, rule_key, reason, reason_severity, audience, redacted_utc, until_utc")
-STAFF_COLUMNS = PUBLIC_COLUMNS + ", staff_note, snapshot_id, notice_sent, redacted_by, legacy_modaction_id, linked_entry_id"
+                  "target_submission_id, target_comment_id, rule_key, reason, reason_severity, audience, redacted_utc, until_utc, alias_n")
+STAFF_COLUMNS = PUBLIC_COLUMNS + ", subject_user_id, staff_note, snapshot_id, notice_sent, redacted_by, legacy_modaction_id, linked_entry_id"
 
 
 class ReasonRequired(ValueError):
@@ -367,7 +370,8 @@ def mirror_modaction(db, modaction_id, user_id, board_id, kind, target_user_id, 
     ones). The legacy note was stored HTML-escaped: it is stored here as plain text. Idempotent on the legacy id."""
     if db.execute(text("SELECT 1 FROM log_entries WHERE legacy_modaction_id = :i"), {"i": modaction_id}).first():
         return None
-    plain = html.unescape(note or "")
+    # an action on an alias keeps its label in the guild log's note: it is no reason (the Log draws the number from `alias_n`)
+    plain = "" if kind in ALIAS_ACTIONS else html.unescape(note or "")
     rule, reason = None, reason_in(plain)
     if user_id == SITE_ACCOUNT_ID and plain.strip().lower() in AUTOMATIC_NOTES:
         # the site's own removals write a bare word ("spam"): the Log says it in the generic words it uses everywhere
@@ -393,7 +397,8 @@ def mirror_from_table(db, modaction_id):
                             note, created)
 
 
-def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snapshot=None, floor=None, linked_entry_id=None):
+def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snapshot=None, floor=None, linked_entry_id=None, alias_n=None,
+             subject_user_id=None):
     """Add what a route knows to the entry its ModAction became: the cited rule, a written reason, a private note, the
     item as it was. When the copy of the ModAction failed when it was made, it is made now (`mirror_from_table`), so the rule, the
     reason and the preserved copy are never the price of one failed write. `linked_entry_id` says which entry this one is about (an appeal's
@@ -431,6 +436,12 @@ def annotate(db, modaction_id, *, rule=None, reason=None, staff_note=None, snaps
     if linked_entry_id:
         sets.append("linked_entry_id = :linked")
         values["linked"] = int(linked_entry_id)
+    if alias_n:
+        sets.append("alias_n = :alias_n")
+        values["alias_n"] = int(alias_n)
+    if subject_user_id:
+        sets.append("subject_user_id = :subject")
+        values["subject"] = int(subject_user_id)
     if sets:
         db.execute(text(f"UPDATE log_entries SET {', '.join(sets)} WHERE id = :e"), values)
     if snapshot:

@@ -15,7 +15,7 @@ from sqlalchemy import text
 from ruqqus.__main__ import app, cache, limiter
 from ruqqus.classes import BanRelationship, Board, Comment, ContentEditHistory, ModAction, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
-from ruqqus.helpers import action_log, log_appeals, log_notices, log_view
+from ruqqus.helpers import action_log, alias_actions, log_appeals, log_notices, log_view
 from ruqqus.helpers.base36 import base36encode
 from ruqqus.helpers.get import get_guild
 from ruqqus.helpers.i18n_runtime import msg
@@ -272,6 +272,19 @@ def _undo(entry, decider):
         ban.is_active = False
         g.db.add(ban)
         ma = ModAction(kind="unexile_user", user_id=decider.id, target_user_id=entry["target_user_id"], board_id=entry["board_id"])
+    elif action == "exile_alias":
+        # an exile made by alias is put right the same way, and the entry that says so names the number, not the account (helpers/alias_actions.py)
+        ban = g.db.query(BanRelationship).filter(BanRelationship.board_id == entry["board_id"], BanRelationship.user_id == entry["subject_user_id"],
+                                                 BanRelationship.is_active == True, BanRelationship.alias_n.isnot(None)).first()
+        if ban is None:
+            return None
+        ban.is_active = False
+        g.db.add(ban)
+        ma = ModAction(kind="unexile_alias", user_id=decider.id, board_id=entry["board_id"], note=alias_actions.label(entry["alias_n"]))
+        g.db.add(ma)
+        g.db.flush()
+        return action_log.annotate(g.db, ma.id, reason=UNDO_REASON, linked_entry_id=entry["id"], alias_n=entry["alias_n"],
+                                   subject_user_id=entry["subject_user_id"])
     elif action in ("suspend_user", "ban_user"):
         user = g.db.query(User).filter_by(id=entry["target_user_id"]).first()
         if user is None:

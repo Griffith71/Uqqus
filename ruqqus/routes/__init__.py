@@ -26,6 +26,7 @@ from .errors import *
 from .flagging import *
 from .front import *
 from .giphy import *
+from .alias_actions_pages import *
 from .history import *
 from .history_mass_pages import *
 from .legal import *

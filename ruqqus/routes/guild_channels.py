@@ -676,8 +676,9 @@ def guild_channel_search(cid, v):
 
 def _manage_page(board, v, error=None, notice=None, status=200):
     rows = store.of_board(g.db, board.id)
-    muted_ids = store.muted_ids(g.db, board.id)
+    muted_ids = store.muted_ids(g.db, board.id, by_name_only=True)         # a mute made by alias is listed by its alias, never by name
     muted = g.db.query(User).filter(User.id.in_(muted_ids)).all() if muted_ids else []
+    muted_aliases = store.muted_aliases(g.db, board.id)
     reports = store.open_reports(g.db, board.id)
     ids = [row.id for row in rows]
     swaps = {}                                  # the order after moving a channel one place up or down
@@ -708,7 +709,7 @@ def _manage_page(board, v, error=None, notice=None, status=200):
         if i < len(cat_ids) - 1:
             down[i + 1], down[i] = down[i], down[i + 1]
         cat_swaps[category_id] = {"up": ",".join(map(str, up)), "down": ",".join(map(str, down))}
-    return render_template("guild/channels.html", v=v, b=board, channels=rows, muted=muted, reports=reports, swaps=swaps,
+    return render_template("guild/channels.html", v=v, b=board, channels=rows, muted=muted, muted_aliases=muted_aliases, reports=reports, swaps=swaps,
                            categories=categories, cat_swaps=cat_swaps, space_refs=space_refs, roles=roles, overwrites=overwrites, feeds=feeds,
                            automod=store.automod_of(g.db, board.id), can_encrypt=bool(board.is_private or board.is_circle),
                            max_feeds=rules.MAX_FEEDS, max_words=automod.MAX_WORDS,
@@ -913,6 +914,9 @@ def guild_channel_mute(guildname, board, v):
         return _manage_page(board, v, error=tr("There's no account with that name."), status=404)
     if target.id == v.id or board.has_mod(target):
         return _manage_page(board, v, error=tr("You can't mute a guildmaster, or yourself."), status=409)
+    if store.alias_muted(g.db, board.id, target.id):
+        # muted by alias already: "already muted" would confirm to a guildmaster who guessed the name that this account is the alias they muted
+        return _manage_page(board, v, notice=tr("@%(name)s was muted in +%(guild)s's channels.", name=target.username, guild=board.name))[0]
     if not store.mute(g.db, board.id, target.id, v.id, _now()):
         return _manage_page(board, v, error=tr("@%(name)s is already muted here.", name=target.username), status=409)
     _log(board, v, "chatban_user", "", target_user_id=target.id)

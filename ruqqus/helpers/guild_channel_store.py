@@ -465,8 +465,20 @@ def post_in_board(db, board_id, post_id):
 
 # --- a guild-wide chat mute (the old `chatbans` table) ---------------------------------------------------------------------
 
-def muted_ids(db, board_id):
-    return [row[0] for row in db.execute(text("SELECT user_id FROM chatbans WHERE board_id = :b ORDER BY id"), {"b": board_id})]
+def muted_ids(db, board_id, by_name_only=False):
+    """Who is muted in this guild. `by_name_only` leaves out the mutes made by alias (helpers/alias_actions.py): a list a person reads names nobody it didn't name."""
+    extra = " AND alias_n IS NULL" if by_name_only else ""
+    return [row[0] for row in db.execute(text(f"SELECT user_id FROM chatbans WHERE board_id = :b{extra} ORDER BY id"), {"b": board_id})]
+
+
+def muted_aliases(db, board_id):
+    """[(row id, alias number)] of the mutes made by alias: what the guildmasters' list draws instead of a name."""
+    return [(row[0], row[1]) for row in db.execute(text("SELECT id, alias_n FROM chatbans WHERE board_id = :b AND alias_n IS NOT NULL ORDER BY id"), {"b": board_id})]
+
+
+def alias_muted(db, board_id, user_id):
+    """Is this account muted here by an alias action?"""
+    return db.execute(text("SELECT 1 FROM chatbans WHERE board_id = :b AND user_id = :u AND alias_n IS NOT NULL"), {"b": board_id, "u": user_id}).fetchone() is not None
 
 
 def is_muted(db, board_id, user_id):
@@ -483,7 +495,8 @@ def mute(db, board_id, user_id, mod_id, now):
 
 
 def unmute(db, board_id, user_id):
-    return bool(db.execute(text("DELETE FROM chatbans WHERE board_id = :b AND user_id = :u"), {"b": board_id, "u": user_id}).rowcount)
+    """Lifts a mute made by name; one made by alias is lifted from the list that draws it (`mod_unchatban_alias`)."""
+    return bool(db.execute(text("DELETE FROM chatbans WHERE board_id = :b AND user_id = :u AND alias_n IS NULL"), {"b": board_id, "u": user_id}).rowcount)
 
 
 # --- Redis: slow mode, the burst limit and a signature's one use ---------------------------------------------------------------

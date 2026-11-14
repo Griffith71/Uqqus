@@ -37,11 +37,12 @@ APPEALABLE = {
     "ban_comment": ("unban_comment", "content"),
     "author_hide_comment": ("author_unhide_comment", None),
     "exile_user": ("unexile_user", "access"),
+    "exile_alias": ("unexile_alias", "access"),
     "suspend_user": ("unban_user", None),
     "ban_user": ("unban_user", None),
 }
 # a person is the subject of these; everything else is about an item
-ABOUT_A_PERSON = {"exile_user", "suspend_user", "ban_user"}
+ABOUT_A_PERSON = {"exile_user", "exile_alias", "suspend_user", "ban_user"}
 # the actions that put a suspension or ban back
 LIFTS = ("unban_user", "unsuspend_user")
 
@@ -61,7 +62,7 @@ def parse_outcome(value):
 
 def _entry(db, entry_id):
     row = db.execute(text("SELECT id, action, actor_id, actor_role, board_id, target_user_id, target_submission_id, "
-                          "target_comment_id, audience, created_utc FROM log_entries WHERE id = :i"), {"i": int(entry_id)}).first()
+                          "target_comment_id, audience, created_utc, alias_n, subject_user_id FROM log_entries WHERE id = :i"), {"i": int(entry_id)}).first()
     return dict(row._mapping) if row is not None else None
 
 
@@ -73,6 +74,8 @@ def entry_of(db, entry_id):
 def subject_of(db, entry):
     """The account the decision is about, or None: the person for an exile, a suspension or a ban; for an item, the comment's author, or
     for a post the account responsible for it (its forwarder when it is a guild's copy, else its author)."""
+    if entry["action"] == "exile_alias":
+        return entry.get("subject_user_id")                     # an exile by alias names no account in the Log: the person it is about is the staff's and the appeal's to know
     if entry["action"] in ABOUT_A_PERSON:
         return entry["target_user_id"]
     if entry["target_comment_id"]:
@@ -99,12 +102,17 @@ def is_undone(db, entry):
     params = {f"a{n}": a for n, a in enumerate(actions)}
     params["id"] = entry["id"]
     where = [f"action IN ({marks})", "id > :id"]
-    for column, key in (("target_user_id", "target_user_id"), ("target_submission_id", "target_submission_id"),
-                        ("target_comment_id", "target_comment_id")):
-        if entry[key]:
-            where.append(f"{column} = :{key}")
-            params[key] = entry[key]
-    if entry["action"] in ("hide_post_from_guild", "hide_comment_from_guild", "exile_user") and entry["board_id"]:
+    if entry["action"] == "exile_alias":
+        # the lifting entry of an exile by alias names no account in the Log: it is matched on the account the staff and the appeal know, in this guild
+        where.append("subject_user_id = :subject")
+        params["subject"] = entry.get("subject_user_id")
+    else:
+        for column, key in (("target_user_id", "target_user_id"), ("target_submission_id", "target_submission_id"),
+                            ("target_comment_id", "target_comment_id")):
+            if entry[key]:
+                where.append(f"{column} = :{key}")
+                params[key] = entry[key]
+    if entry["action"] in ("hide_post_from_guild", "hide_comment_from_guild", "exile_user", "exile_alias") and entry["board_id"]:
         where.append("board_id = :board")
         params["board"] = entry["board_id"]
     return db.execute(text(f"SELECT 1 FROM log_entries WHERE {' AND '.join(where)} LIMIT 1"), params).first() is not None

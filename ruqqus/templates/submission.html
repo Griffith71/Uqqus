@@ -427,6 +427,10 @@
           {% if p.is_guildmaster('access') and not author_of(p, v).is_deleted and not anon_hidden(p, v) %}
           <button id="exile-user-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger" onclick="post_toast('/mod/exile/{{ p.board.name }}?username={{ author_of(p, v).username }}&toast=1&thing={{ p.fullname }}')"><i class="fas fa-user-minus mr-3 text-danger"></i>{{ _("Exile @%(name)s", name=author_of(p, v).username) }}</button>
           {% endif %}
+          {% if v.id != p.author_id and anon_hidden(p, v) and author_of(p, v).alias and p.original_board_id == p.board_id %}
+          {% if p.is_guildmaster('access') %}<button id="exile-alias-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger" onclick="post_toast('/mod/exile_alias/{{ p.board.name }}?toast=1&thing={{ p.fullname }}')"><i class="fas fa-user-minus mr-3 text-danger"></i>{{ _("Exile %(alias)s", alias=author_of(p, v).shown_name) }}</button>{% endif %}
+          {% if p.is_guildmaster('content') %}<button id="mute-alias-button-{{ p.base36id }}" class="btn btn-link btn-block btn-lg text-left text-danger" onclick="post_toast('/mod/chatban_alias/{{ p.board.name }}?toast=1&thing={{ p.fullname }}')"><i class="fas fa-comment-slash mr-3 text-danger"></i>{{ _("Mute %(alias)s in the channels", alias=author_of(p, v).shown_name) }}</button>{% endif %}
+          {% endif %}
           {% endif %}
 
           {% endif %}
@@ -778,6 +782,10 @@
                         {% if p.is_guildmaster('access') and p.deleted_utc == 0 and not author_of(p, v).is_deleted and not anon_hidden(p, v) %}
                         <a id="exile2-user-{{ p.base36id }}" class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/mod/exile/{{ p.board.name }}?username={{ author_of(p, v).username }}&toast=1&thing={{ p.fullname }}')"
                         ><i class="fas fa-user-slash fa-fw text-danger"></i>{{ _("Exile @%(name)s", name=author_of(p, v).username) }}</a>
+                        {% endif %}
+                        {% if p.deleted_utc == 0 and v.id != p.author_id and anon_hidden(p, v) and author_of(p, v).alias and p.original_board_id == p.board_id %}
+                        {% if p.is_guildmaster('access') %}<a id="exile-alias-user-{{ p.base36id }}" class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/mod/exile_alias/{{ p.board.name }}?toast=1&thing={{ p.fullname }}')"><i class="fas fa-user-slash fa-fw text-danger"></i>{{ _("Exile %(alias)s", alias=author_of(p, v).shown_name) }}</a>{% endif %}
+                        {% if p.is_guildmaster('content') %}<a id="mute-alias-user-{{ p.base36id }}" class="dropdown-item text-danger" href="javascript:void(0)" onclick="post_toast('/mod/chatban_alias/{{ p.board.name }}?toast=1&thing={{ p.fullname }}')"><i class="fas fa-comment-slash fa-fw text-danger"></i>{{ _("Mute %(alias)s in the channels", alias=author_of(p, v).shown_name) }}</a>{% endif %}
                         {% endif %}
                         {% endif %}
 

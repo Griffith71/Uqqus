@@ -46,7 +46,7 @@ SHOW = {
               "ban_post", "unban_post", "purge_post", "obliterate_post"),
     "comments": ("hide_comment_from_guild", "unhide_comment_from_guild", "ban_comment", "unban_comment",
                  "purge_comment", "obliterate_comment"),
-    "exiles": ("exile_user", "unexile_user", "chatban_user", "unchatban_user"),
+    "exiles": ("exile_user", "unexile_user", "chatban_user", "unchatban_user", "exile_alias", "unexile_alias", "chatban_alias", "unchatban_alias"),
 }
 # marked with N_ and drawn with msg_text() (guild/modlog.html); "All" alone is ambiguous, so it is a lazy string with
 # its context (the filter's), which msg_text() draws as it is
@@ -121,6 +121,11 @@ def person(name, deleted=False, hidden=False):
 def site_account(site_name):
     """The site's own account: what an admin or an automatic action is drawn as (an admin is never named)."""
     return Markup('<a href="/@{0}" class="font-weight-bold text-black">@{0}</a>').format(site_name)
+
+
+def alias_label(number):
+    """"Anonymous #3" (plain "Anonymous" when an old entry has no number): what an action on an alias is about."""
+    return tr("Anonymous #%(num)s", num=int(number)) if number else tr("Anonymous")
 
 
 def anonymous_actor(number=None):

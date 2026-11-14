@@ -180,7 +180,7 @@ STUBS = (
     "CREATE TABLE mods (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, accepted boolean DEFAULT 0, "
     "invite_rescinded boolean DEFAULT 0, perm_content boolean DEFAULT 0, perm_full boolean DEFAULT 0)",
     "CREATE TABLE bans (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, is_active boolean DEFAULT 0)",
-    "CREATE TABLE chatbans (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, created_utc integer, banning_mod_id integer)",
+    "CREATE TABLE chatbans (id integer PRIMARY KEY AUTOINCREMENT, user_id integer, board_id integer, created_utc integer, banning_mod_id integer, alias_post_id integer, alias_n integer)",
     "CREATE TABLE submissions (id integer PRIMARY KEY, author_id integer, deleted_utc integer DEFAULT 0, is_banned boolean, "
     "post_public boolean DEFAULT 1, repost_id integer DEFAULT 0)",
     "CREATE TABLE submissions_aux (id integer, title text, url text)",

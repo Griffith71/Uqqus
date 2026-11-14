@@ -783,7 +783,12 @@ Optional form data:
     if user.id == v.id:
         return jsonify({"error": tr("You can't exile yourself.")}), 409
 
-    if g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first():
+    active = g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first()
+    if active and active.alias_n:
+        # exiled by alias already: "already exiled" would confirm to a guildmaster who guessed the name that this account is the alias they exiled (helpers/alias_actions.py)
+        return (jsonify({"message": tr("@%(name)s was exiled from +%(guild)s", name=user.username, guild=board.name)})
+                if request.args.get("toast") else ("", 204))
+    if active:
         return jsonify({"error": tr("@%(name)s is already exiled from +%(guild)s.",
                                     name=user.username, guild=board.name)}), 409
 
@@ -894,8 +899,8 @@ URL path parameters:
 
     x =  g.db.query(BanRelationship).filter_by(board_id=board.id, user_id=user.id, is_active=True).first()
 
-    if not x:
-        abort(409)
+    if not x or x.alias_n:
+        abort(409)                   # an exile made by alias is lifted from the list that draws it (never by a name that would confirm a guess)
 
     x.is_active = False
 
@@ -2631,8 +2636,8 @@ def mod_unchatban_bid_user(bid, board, v):
 
     x =  g.db.query(ChatBan).filter_by(board_id=board.id, user_id=user.id).first()
 
-    if not x:
-        abort(409)
+    if not x or x.alias_n:
+        abort(409)                   # a chat mute made by alias is lifted from the list that draws it
 
     g.db.delete(x)
 
