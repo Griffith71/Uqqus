@@ -30,6 +30,8 @@ cycle; plain `text()` SQL, each rule in its own savepoint (tests/test_retention.
   can still be carrying one.
 - `chat_device_signouts`: a chat sign-out (helpers/chat_signouts.py) goes `CHAT_SIGNOUT_DAYS` after it was done; one still pending
   stays, however old (it is retried for ever).
+- `account_anonymise_jobs`: a finished job (helpers/account_anonymise.py: what a deleted account wrote becoming anonymous) goes after
+  `ANONYMISE_JOB_DAYS`; one still running stays.
 - `log_failures`: a note that the Log could not write an entry (helpers/action_log.py) goes after `LOG_FAILURE_DAYS`; /admin counts the last 7 days.
 - `log_appeals`: what a person wrote in an appeal and what was written back (helpers/log_appeals.py) is emptied `APPEAL_TEXT_DAYS` after it was
   decided; the appeal, its outcome and the entries stay. An open appeal keeps its words.
@@ -54,6 +56,7 @@ TRANSLATION_DAYS = 90           # helpers/translation_store.py: a kept translati
 FEEDBACK_IMAGE_DAYS = 30        # helpers/site_feedback.py: a month after the item was closed
 EVENT_DAYS = 400                # helpers/site_events.py: an event that ended over a year ago
 SIGNUP_REVIEW_DAYS = 90         # helpers/signup_review_store.py KEEP_DAYS: what the signup guard thought, once decided
+ANONYMISE_JOB_DAYS = 90         # helpers/account_anonymise.py KEEP_DONE_DAYS
 TRAFFIC_DAYS = 400              # helpers/traffic.py KEEP_DAYS
 TRAFFIC_BATCH_DAYS = 14         # more than helpers/traffic_store.py LIVE_DAYS: a batch can wait in Redis that long
 ENDED_SIGN_IN_DAYS = 400        # helpers/sign_in_ends.py KEEP_DAYS: longer than a cookie written back can last (365 days)
@@ -92,6 +95,7 @@ RULES = (
     ("old traffic batches", "DELETE FROM site_traffic_flushes WHERE flushed_utc < :traffic_batches"),
     ("old ended sign-ins", "DELETE FROM ended_sign_ins WHERE ended_utc < :ended_sign_ins"),
     ("finished chat sign-outs", "DELETE FROM chat_device_signouts WHERE done_utc > 0 AND done_utc < :chat_signouts"),
+    ("finished anonymising jobs", "DELETE FROM account_anonymise_jobs WHERE done_utc > 0 AND done_utc < :anonymise_jobs"),
     ("old notes of entries the Log could not write", "DELETE FROM log_failures WHERE created_utc < :log_failures"),
     ("words of decided appeals", "UPDATE log_appeals SET reason = '', decision_note = '' WHERE status <> 'open' AND decided_utc > 0 "
                                  "AND decided_utc < :appeal_text AND (reason <> '' OR decision_note <> '')"),
@@ -111,7 +115,7 @@ def prune(db, now):
               "signup_reviews": now - SIGNUP_REVIEW_DAYS * DAY,
               "traffic_day": now // DAY - TRAFFIC_DAYS, "traffic_batches": now - TRAFFIC_BATCH_DAYS * DAY,
               "ended_sign_ins": now - ENDED_SIGN_IN_DAYS * DAY,
-              "log_failures": now - LOG_FAILURE_DAYS * DAY, "appeal_text": now - APPEAL_TEXT_DAYS * DAY,
+              "anonymise_jobs": now - ANONYMISE_JOB_DAYS * DAY, "log_failures": now - LOG_FAILURE_DAYS * DAY, "appeal_text": now - APPEAL_TEXT_DAYS * DAY,
               "chat_signouts": now - CHAT_SIGNOUT_DAYS * DAY, "chat_reports": now - CHAT_REPORT_TEXT_DAYS * DAY,
               "events": now - EVENT_DAYS * DAY, "events_day": time.strftime("%Y-%m-%d", time.gmtime(now - EVENT_DAYS * DAY))}
     done = {}

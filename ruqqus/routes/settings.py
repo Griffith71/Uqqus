@@ -6,6 +6,7 @@ import mistletoe
 import re
 from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.helpers import action_log
+from ruqqus.helpers import account_anonymise, anonymise
 from ruqqus.helpers import ads as ads_rules
 from ruqqus.helpers import coins as coins_store
 from ruqqus.classes import *
@@ -672,6 +673,11 @@ def close_own_account(v, reason, sign_out_browser=True):
     # sign-in addresses, profile details
     from ruqqus.helpers import account_cleanup
     account_cleanup.close_account(g.db, v.id, int(time.time()))
+    # what it wrote becomes anonymous and stays, as Anonymous (the Log plan's decision 11): the first batch now, so an ordinary account is anonymous
+    # before this answers, and the rest by the job `close_account` queued (scripts/recomputes.py)
+    if account_anonymise.tables_ready(g.db):
+        account_anonymise.run_one(g.db, v.id, int(time.time()), batches=1, commit=False)
+        anonymise.clear_caches(author=v)
     _leave_chat_groups(v)
     # the chat name says it is gone (its devices were queued for sign-out above)
     chat_devices.sync_name(g.db, v)

@@ -91,12 +91,19 @@ def anonymise_comment(db, comment):
 
 
 def anonymise_replies(db, post_ids, author_id):
-    """The author's OWN comments under these posts, made anonymous by the delete (decision 25f): a named comment under an anonymous post would say who
-    wrote it. Comments by others stay as they are. Returns how many were changed."""
+    """The author's OWN comments under these posts, made anonymous by the delete (decision 25f) or by "remove my name" with its tick box: a named
+    comment under an anonymous post would say who wrote it. Comments by others stay as they are. Like any anonymising it takes the comments out of
+    every entry that pairs them with their author. Returns how many were changed."""
     ids = [int(i) for i in post_ids if i]
     if not ids:
         return 0
     marks, names = _marks("p", ids)
-    result = db.execute(text(f"UPDATE comments SET is_anonymous = :yes WHERE parent_submission IN ({marks}) AND author_id = :a "
-                             f"AND NOT COALESCE(is_anonymous, false)"), {**names, "a": int(author_id), "yes": True})
-    return result.rowcount or 0
+    params = {**names, "a": int(author_id)}
+    changed = [r[0] for r in db.execute(text(f"SELECT id FROM comments WHERE parent_submission IN ({marks}) AND author_id = :a "
+                                             f"AND NOT COALESCE(is_anonymous, false)"), params)]
+    if not changed:
+        return 0
+    db.execute(text(f"UPDATE comments SET is_anonymous = :yes WHERE parent_submission IN ({marks}) AND author_id = :a "
+                    f"AND NOT COALESCE(is_anonymous, false)"), {**params, "yes": True})
+    strip_pointers(db, author_id=author_id, comment_ids=changed)
+    return len(changed)

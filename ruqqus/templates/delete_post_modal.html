@@ -34,6 +34,12 @@
             <input type="radio" class="custom-control-input" name="delete-post-how" id="delete-post-how-unlink" value="unlink">
             <label class="custom-control-label font-weight-bold" for="delete-post-how-unlink">{{ _("Remove my name") }}</label>
             <div class="text-small text-muted">{{ _("The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you.") }}</div>
+            {# your own comments under the post: left under your name they tell readers who wrote the post, so the dialog says so and offers to take the name off them too (helpers/anonymise.py anonymise_replies); hidden until the count is known, and when it is none #}
+            <div class="custom-control custom-checkbox mt-2" id="deletePostCommentsOption" hidden>
+              <input type="checkbox" class="custom-control-input" id="delete-post-with-comments" checked>
+              <label class="custom-control-label" for="delete-post-with-comments" id="delete-post-with-comments-label"></label>
+              <div class="text-small text-muted">{{ _("Left unticked, your comments stay under your name, and that tells readers who wrote the post.") }}</div>
+            </div>
           </div>
         </fieldset>
         <p class="text-small text-muted">{{ _("This can't be undone. The site's admins can always see who wrote something.") }}</p>

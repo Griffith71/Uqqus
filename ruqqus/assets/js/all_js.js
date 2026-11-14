@@ -1125,6 +1125,24 @@ function delete_postModal(id, canUnlink) {
   document.getElementById("deletePostUnlinkOption").hidden = !canUnlink;
   document.getElementById("delete-post-how-delete").checked = true;
 
+  // the tick box under "Remove my name": your own comments under this post, still under your name (the count is the server's, asked once per opening)
+  var commentsOption = document.getElementById("deletePostCommentsOption");
+  var unlinkRadio = document.getElementById("delete-post-how-unlink");
+  var ownComments = 0;
+  var showComments = function() { commentsOption.hidden = !(canUnlink && unlinkRadio.checked && ownComments > 0); };
+  commentsOption.hidden = true;
+  ownComments = 0;
+  document.querySelectorAll('input[name="delete-post-how"]').forEach(function(radio) { radio.onchange = showComments; });
+  if (canUnlink) {
+    fetch('/api/post/' + id + '/own_comment_count', {credentials: 'same-origin'}).then(function(r) { return r.ok ? r.json() : null; }).then(function(data) {
+      if (!data || !data.count) return;
+      ownComments = data.count;
+      document.getElementById("delete-post-with-comments-label").textContent = trn('Also remove my name from my %(num)s comment here', 'Also remove my name from my %(num)s comments here', data.count, {num: data.count});
+      document.getElementById("delete-post-with-comments").checked = true;
+      showComments();
+    }).catch(function() {});
+  }
+
   document.getElementById("deletePostButton-mobile").onclick = delete_post;
 
   document.getElementById("deletePostButton").onclick = delete_post;
@@ -1139,7 +1157,7 @@ function delete_postModal(id, canUnlink) {
 
         location.reload();
       },
-      undefined, {how: how}
+      undefined, {how: how, with_comments: (how == "unlink" && ownComments > 0 && document.getElementById("delete-post-with-comments").checked) ? "1" : ""}
       )
   }
 
@@ -3475,6 +3493,25 @@ block_user=function() {
 
 }
 
+// the "comment as @me" switch: asks once, in the site's own sheet, because a named comment next to your anonymous post can give it away
+commentAsMe=function(box, prefix){
+  var label=box.parentNode;
+  var anon=document.getElementById(prefix+'-anon');
+  var settle=function(on){
+    box.checked=on;
+    label.classList.toggle('text-info', on);
+    if (anon) { anon.checked=!on; label.parentNode.querySelectorAll('label[for="'+prefix+'-anon"]').forEach(function(l){ l.classList.toggle('text-info', !on); }); }
+  };
+  if (!box.checked) { settle(false); return; }
+  var ask=window.confirmSheet ? confirmSheet({
+    title: tr('Comment as yourself?'),
+    text: tr('Your name will show on this comment. Your own words can still give away that you wrote the post, and a comment under your name is not linked to the post by anything we show.'),
+    ok: tr('Comment as me')
+  }) : Promise.resolve(confirm(tr('Comment as yourself? Your name will show on this comment.')));
+  box.checked=false;
+  ask.then(function(yes){ settle(!!yes); });
+}
+
 post_comment=function(fullname){
 
 
@@ -3494,7 +3531,11 @@ post_comment=function(fullname){
   form.append('made_with_ai', (aiBox && aiBox.checked) ? 'true' : '');
   // anonymous: the server also forces it on your own anonymous post, so a locked toggle needs no value
   var anonBox = document.getElementById('comment-disc-'+fullname+'-anon');
-  form.append('anonymous', (anonBox && anonBox.checked) ? 'true' : '');
+  // "comment as @me" (only drawn on your own anonymous post): your name shows, so the locked anonymous toggle stops counting
+  var meBox = document.getElementById('comment-disc-'+fullname+'-me');
+  var asMe = !!(meBox && meBox.checked);
+  form.append('anonymous', (anonBox && anonBox.checked && !asMe) ? 'true' : '');
+  form.append('as_me', asMe ? 'true' : '');
 
 
   var xhr = new XMLHttpRequest();

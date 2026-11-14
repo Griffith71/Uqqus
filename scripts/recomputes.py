@@ -370,6 +370,19 @@ def recompute():
             db.rollback()
             print_(f"the Log's upkeep failed: {e}")
 
+        # what deleted accounts wrote becomes anonymous (helpers/account_anonymise.py): the first batch ran with the deletion, this finishes the rest of
+        # an account that wrote a lot, and any whose first batch failed; each account in its own transaction
+        try:
+            from ruqqus.helpers import account_anonymise
+            if account_anonymise.tables_ready(db):
+                finished, changed, failed = account_anonymise.run_due(db, int(time.time()))
+                print_(f"deleted accounts' content: {finished} finished, {changed} items made anonymous, {failed} to try again")
+            else:
+                print_("deleted accounts' content: migration 2027-01-03_account_anonymise.sql not applied")
+        except Exception as e:
+            db.rollback()
+            print_(f"deleted accounts' content failed: {e}")
+
         # disappearing messages that are due (helpers/chat_disappear.py): the bot deletes each (a redaction), and their chat files
         # stop being served
         try:

@@ -10,6 +10,7 @@ in a shared draft stays credited to them, as when anyone leaves one.
 """
 from sqlalchemy import text
 
+from ruqqus.helpers import account_anonymise
 from ruqqus.helpers.age_declaration import ADMIN_NOTICES
 
 # the notices an admin's change of the age answer sent (helpers/age_declaration.py); they say what the answer became
@@ -99,6 +100,9 @@ STEPS = (
     # author's hide of their comment (other people's record of a decision, which empties on its own date)
     ("empty their private copies", "UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, scrubbed_utc = :now "
                                    "WHERE author_id = :u AND scrubbed_utc = 0 AND kind = 'grace' AND NOT legal_hold"),
+    # everything the account wrote becomes anonymous and stays (the Log plan's decision 11): queued here, the first batch runs before the deletion answers
+    # (routes/settings.py close_own_account) and the rest each cycle of scripts/recomputes.py (helpers/account_anonymise.py)
+    ("queue anonymising what they wrote", account_anonymise.QUEUE_SQL),
     ("clear the profile", "UPDATE users SET display_name = '', bio = '', bio_html = '', profile_job = '', "
                           "profile_location = '', profile_website = '', email = NULL, premium_auto_renew = :no, "
                           "creator_fund_opt_in_utc = 0 WHERE id = :u"),

@@ -21,7 +21,8 @@ def _tables(names):
             if not line or line.startswith(("CONSTRAINT", "PRIMARY KEY", "UNIQUE")):
                 continue
             col, *rest = line.split()
-            cols.append(f"{col} TEXT" if col not in ("id",) else "id INTEGER PRIMARY KEY")
+            # an inline primary key other than `id` (account_anonymise_jobs.user_id) is what its `ON CONFLICT (user_id)` needs
+            cols.append("id INTEGER PRIMARY KEY" if col == "id" else f"{col} TEXT PRIMARY KEY" if "PRIMARY KEY" in line else f"{col} TEXT")
         yield f"CREATE TABLE {name} ({', '.join(cols)})"
 
 

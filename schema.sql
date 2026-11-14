@@ -7300,6 +7300,17 @@ CREATE TABLE public.log_reports (
 CREATE UNIQUE INDEX log_reports_once_idx ON public.log_reports (entry_id, reporter_id);
 CREATE INDEX log_reports_open_idx ON public.log_reports (entry_id) WHERE status = 'open';
 
+-- what an account wrote becomes anonymous when it is deleted (2027-01-03_account_anonymise.sql; helpers/account_anonymise.py)
+CREATE TABLE public.account_anonymise_jobs (
+    user_id integer PRIMARY KEY,
+    queued_utc bigint DEFAULT 0 NOT NULL,
+    updated_utc bigint DEFAULT 0 NOT NULL,
+    done_utc bigint DEFAULT 0 NOT NULL,
+    tries integer DEFAULT 0 NOT NULL
+);
+
+CREATE INDEX account_anonymise_jobs_pending_idx ON public.account_anonymise_jobs (queued_utc) WHERE done_utc = 0;
+
 -- parent and child accounts (helpers/child_store.py; 2026-12-18_parent_accounts.sql)
 CREATE TABLE public.account_links (
     child_id integer PRIMARY KEY,
@@ -7493,4 +7504,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-30_log_paper_trail.sql'),
     ('2026-12-31_log_d4.sql'),
     ('2027-01-01_log_deletes.sql'),
-    ('2027-01-02_log_edits.sql');
+    ('2027-01-02_log_edits.sql'),
+    ('2027-01-03_account_anonymise.sql');

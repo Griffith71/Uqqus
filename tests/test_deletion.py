@@ -292,7 +292,13 @@ def test_the_delete_dialogs_offer_only_what_the_server_will_do_and_open_on_delet
     script = read("ruqqus", "assets", "js", "all_js.js")
     for fn, option in (("delete_postModal(id, canUnlink)", "deletePostUnlinkOption"), ("delete_commentModal(id, canUnlink)", "deleteCommentUnlinkOption")):
         body = script.split(f"function {fn}")[1].split("\n};")[0]
-        assert f'getElementById("{option}").hidden = !canUnlink' in body and "{how: how}" in body and '"unlink"' in body, fn
+        assert f'getElementById("{option}").hidden = !canUnlink' in body and "{how: how" in body and '"unlink"' in body, fn
+    # the post dialog's tick box ("also remove my name from my comments here (N)"): the count comes from the server, the box shows only under
+    # "Remove my name" and only when there is something to change, and what it says is sent as `with_comments`
+    post_dialog = script.split("function delete_postModal(id, canUnlink)")[1].split("\n};")[0]
+    assert "/own_comment_count" in post_dialog and "with_comments:" in post_dialog and "unlinkRadio.checked && ownComments > 0" in post_dialog
+    modal = read("ruqqus", "templates", "delete_post_modal.html")
+    assert 'id="deletePostCommentsOption" hidden' in modal and 'id="delete-post-with-comments"' in modal
     for name, call in (("submission_listing.html", "delete_postModal"), ("submission.html", "delete_postModal"), ("comments.html", "delete_commentModal")):
         text_ = read("ruqqus", "templates", name)
         assert text_.count(f"{call}('") == text_.count("may_unlink_"), name

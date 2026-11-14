@@ -33,8 +33,9 @@ def test_the_lists_are_the_authors_own_anonymous_items_once_each():
 
 
 def test_both_tab_bars_have_it_with_the_posts_and_comments_switch():
-    assert PAGE.count('href="/history/anonymous"') == 2 and PAGE.count("fa-user-secret") == 2
-    assert "{% if active_tab in ('bookmarked', 'upvoted', 'downvoted', 'anonymous') %}" in PAGE
+    # the two tab bars, and the Live | Deleted chips under them (the Log plan's slice D3c)
+    assert PAGE.count('href="/history/anonymous"') == 3 and PAGE.count("fa-user-secret") == 2
+    assert "{% if active_tab in ('bookmarked', 'upvoted', 'downvoted', 'anonymous', 'manage') and deleted_rows is none %}" in PAGE
     assert "active_tab == 'anonymous'" in read("templates", "history_empty.html")
 
 

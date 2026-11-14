@@ -94,7 +94,32 @@ def test_on_an_anonymous_post_the_authors_anonymous_comments_are_marked_op():
     assert an.op_badge(comment, post, user(id=3)) is True      # the same unnamed person, nothing learned
 
 
+def test_a_named_comment_by_the_author_of_an_anonymous_post_has_no_op_mark():
+    # "comment as @me" (the Log plan's decision 7): a named comment is linked to the anonymous post by nothing the site draws, so the mark
+    # (and the name beside it) can't say who wrote the post
+    alice = user(id=1)
+    post, comment = item(alice, anonymous=True), item(alice, anonymous=False)
+    assert an.op_badge(comment, post, user(id=3)) is False
+    assert an.op_badge(comment, post, None) is False
+    assert an.op_badge(comment, post, user(id=1)) is True      # the author sees their own post's identity
+    assert an.op_badge(comment, post, user(id=3, admin=3)) is True
+
+
 # --- commenting on your own anonymous post --------------------------------------
+
+def test_comment_as_me_is_the_one_way_out_of_the_forced_anonymity():
+    alice, bob = user(id=1), user(id=2)
+    mine, other = item(alice, anonymous=True), item(bob, anonymous=True)
+    assert an.comment_is_anonymous(mine, alice, asked=False) is True               # the default on your own anonymous post
+    assert an.comment_is_anonymous(mine, alice, asked=True) is True
+    assert an.comment_is_anonymous(mine, alice, asked=False, as_me=True) is False  # explicit
+    assert an.comment_is_anonymous(mine, alice, asked=True, as_me=True) is False   # explicit wins over the locked toggle
+    # nobody else's post, and no anonymous post, is touched by it
+    assert an.comment_is_anonymous(other, alice, asked=False, as_me=True) is False
+    assert an.comment_is_anonymous(other, alice, asked=True, as_me=True) is True
+    assert an.comment_is_anonymous(item(alice, anonymous=False), alice, asked=False, as_me=True) is False
+    assert an.comment_is_anonymous(item(alice, anonymous=False), alice, asked=True) is True
+
 
 def test_commenting_on_your_own_anonymous_post_is_anonymous():
     alice = user(id=1)

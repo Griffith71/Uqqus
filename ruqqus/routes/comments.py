@@ -312,6 +312,12 @@ Optional file data:
     else:
         abort(400)
 
+    # "comment as @me" under your own anonymous post (the Log plan's decision 7): a named comment next to your anonymous post can give it away
+    # to anyone who knows your words, so a relayed code's limited sign-in (which is a stranger to its own anonymous items) needs the password
+    as_me = flag(request.form, "as_me") and anonymity.must_be_anonymous(parent_post, v)
+    if as_me and getattr(v, "qr_limited", False):
+        return qr_limited_answer(v)
+
     #process and sanitize
     body = request.form.get("body", "").strip()
     if text_length.over_limit(body, COMMENT_MAX, stored_max=COMMENT_MAX):
@@ -482,9 +488,8 @@ Optional file data:
                 is_sensitive=(bool(request.form.get("sensitive", "")) or post.is_sensitive),
                 paid_partnership=flag(request.form, "paid_partnership"),
                 made_with_ai=flag(request.form, "made_with_ai"),
-                # commenting on your own anonymous post is anonymous, or your name
-                # next to the "OP" mark would undo it
-                is_anonymous=flag(request.form, "anonymous") or anonymity.must_be_anonymous(parent_post, v),
+                # commenting on your own anonymous post is anonymous by default, and "comment as @me" is the one explicit way out
+                is_anonymous=anonymity.comment_is_anonymous(parent_post, v, flag(request.form, "anonymous"), as_me),
                 original_board_id=parent_post.board_id,
                 is_bot=is_bot,
                 app_id=v.client.application.id if v.client else None,
@@ -849,6 +854,16 @@ Form field (the site only; an API app always deletes):
             return jsonify({"error": msg(UNLINK_SITE_ONLY)}), 400
         return unlink_comment(c, v)
 
+    refused = delete_comment_as(c, v)
+    if refused is not None:
+        return refused
+    return {"html": lambda: ("", 204),
+            "api": lambda: ("", 204)}
+
+
+def delete_comment_as(c, v):
+    """Deletes `c` as `v`, its author: what the delete route does, and what the History page's mass tool does for each comment it is given
+    (routes/history_mass_pages.py). Answers None when it is done, or the response that refuses it (a limited sign-in)."""
     now = int(time.time())
     author = c.author
     post = c.post
@@ -903,9 +918,7 @@ Form field (the site only; an API app always deletes):
             cache.delete_memoized(Board.idlist, forward_copy.board, sort="new")
 
     cache.delete_memoized(User.commentlisting, v)
-
-    return {"html": lambda: ("", 204),
-            "api": lambda: ("", 204)}
+    return None
 
 
 UNLINK_SITE_ONLY = N_("Removing your name is done on the site itself.")

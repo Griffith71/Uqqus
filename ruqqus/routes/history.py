@@ -4,7 +4,20 @@ from ruqqus.helpers.get import *
 from ruqqus.classes import *
 from sqlalchemy import func
 from ruqqus.helpers import bookmark_folders as folder_rules
+from ruqqus.helpers import mass_edit_store
 from ruqqus.__main__ import app
+
+
+def _deleted_row(row):
+    """One of History's Deleted rows from a snapshot: plain text only (the page draws it escaped, never as HTML or a link)."""
+    import html as html_
+    comment = bool(row["target_comment_id"])
+    ident = base36encode(row["target_comment_id"] if comment else row["target_submission_id"])
+    words = " ".join(html_.unescape(row.get("body") or "").split())
+    return {"comment": comment, "created": row["created_utc"], "public": row["kind"] == "delete",
+            "title": html_.unescape(row.get("title") or ""), "snippet": words[:300] + ("…" if len(words) > 300 else ""),
+            "copy_url": f"/comment/{ident}/copy" if comment else f"/post/{ident}/copy",
+            "log_url": f"/log/{row['entry_id']}" if row["kind"] == "delete" and row["entry_id"] else None}
 
 
 def _mixed_listing(v, post_ids, comment_ids, post_times, comment_times, page):
@@ -249,6 +262,14 @@ def history_anonymous(v):
     content_type = request.args.get("type", "all")
     if content_type not in ("all", "posts", "comments"):
         content_type = "all"
+
+    if request.args.get("show") == "deleted":
+        # the Deleted sub-tab (the Log plan's D3c): what you deleted yourself, from the private copies kept for you
+        rows, deleted_next = mass_edit_store.deleted_by(g.db, v.id, page)
+        shown = [_deleted_row(row) for row in rows]
+        return {"html": lambda: render_template("history.html", v=v, active_tab="anonymous", content_type="all", listing=[], mixed_listing=None,
+                                                deleted_rows=shown, page=page, next_exists=deleted_next),
+                "api": lambda: jsonify({"data": []})}
 
     post_ids = v.anonymous_idlist(page=page) if content_type in ("all", "posts") else []
     comment_ids = v.anonymous_comment_idlist(page=page) if content_type in ("all", "comments") else []

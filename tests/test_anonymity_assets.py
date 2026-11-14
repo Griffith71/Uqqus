@@ -41,7 +41,10 @@ def test_every_creation_path_sets_or_copies_the_flag():
     assert 'is_anonymous=flag(request.form, "anonymous")' in posts                # a new post
     assert "is_anonymous=primary.is_anonymous" in posts                          # a post forwarded to a guild
     assert "is_anonymous=comment.is_anonymous" in posts                          # a comment forwarded into a post
-    assert 'flag(request.form, "anonymous") or anonymity.must_be_anonymous(parent_post, v)' in comments
+    assert 'anonymity.comment_is_anonymous(parent_post, v, flag(request.form, "anonymous"), as_me)' in comments
+    # "comment as @me": only on your own anonymous post, never for a limited QR sign-in (a stranger to its own anonymous items)
+    assert 'as_me = flag(request.form, "as_me") and anonymity.must_be_anonymous(parent_post, v)' in comments
+    assert "if as_me and getattr(v, \"qr_limited\", False):\n        return qr_limited_answer(v)" in comments
     drafts = read("ruqqus", "helpers", "post_drafts.py")
     assert '"anonymous": flag(form, "anonymous")' in drafts and '"anonymous"' in drafts.split("def publish_form")[1]
 

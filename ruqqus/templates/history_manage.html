@@ -1,0 +1,88 @@
+{% extends "history.html" %}
+{# History > Manage: your own posts and comments, to make anonymous or delete in one go (helpers/mass_edit.py, routes/history_mass_pages.py). #}
+
+{% block content %}
+<div class="row no-gutters mt-md-3">
+  <div class="col-12">
+
+    {% if error %}
+    <div class="alert alert-danger mx-3" role="alert" id="history-mass-error">{{ error }}</div>
+    {% endif %}
+
+    {% if results is defined %}
+    <div class="card mx-3 mb-3" id="history-mass-result">
+      <div class="card-body">
+        <h2 class="h5 mb-2">{{ ngettext("%(num)s item changed", "%(num)s items changed", done) }}</h2>
+        {% if refused %}
+        <p class="text-small text-muted mb-2">{{ ngettext("%(num)s item couldn't be changed:", "%(num)s items couldn't be changed:", refused) }}</p>
+        <ul class="text-small mb-0">
+          {% for r in results if not r.ok %}
+          <li><span class="font-weight-bold" dir="auto">{{ r.label or (_("A comment") if r.kind == "comment" else _("A post")) }}</span> &mdash; {{ r.why }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/history/mass" id="history-mass" data-max="{{ max_items }}" data-confirm-delete="{{ _('Delete these items?') }}" data-confirm-anonymise="{{ _('Remove your name from these items?') }}">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="hidden" name="type" value="{{ content_type }}">
+      <input type="hidden" name="count" id="history-mass-count" value="">
+
+      {% if rows %}
+      <ul class="list-group list-group-flush" id="history-manage-list">
+        {% for r in rows %}
+        <li class="list-group-item px-3">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input history-mass-box" name="items" value="{{ r.token }}" id="manage-{{ r.token }}"{% if ticked is defined and r.token in ticked %} checked{% endif %}>
+            <label class="custom-control-label d-block" for="manage-{{ r.token }}">
+              <span class="badge badge-pill bg-white border text-muted text-small-extra mr-1">{% if r.kind == "comment" %}<i class="fas fa-comment fa-fw mr-1" aria-hidden="true"></i>{{ _("Comment") }}{% else %}<i class="fas fa-file-alt fa-fw mr-1" aria-hidden="true"></i>{{ _("Post") }}{% endif %}</span>
+              {% if r.anonymous %}<span class="badge badge-pill bg-white border text-muted text-small-extra mr-1"><i class="fas fa-user-secret fa-fw mr-1" aria-hidden="true"></i>{{ pgettext("label", "Anonymous") }}</span>{% endif %}
+              <span class="text-small text-muted">{{ date_text(r.created, '%d %B %Y') }}</span>
+              <span class="d-block" dir="auto">{{ r.title or _("(no text)") }}</span>
+            </label>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <div class="card mx-3 my-3" id="history-mass-panel">
+        <div class="card-body">
+          <p class="mb-2"><span id="history-mass-selected" aria-live="polite">{{ ngettext("%(num)s chosen", "%(num)s chosen", 0) }}</span>
+            <span class="text-small text-muted">&middot; {{ _("up to %(max)s at a time", max=max_items) }}</span></p>
+          <fieldset class="mb-3">
+            <legend class="sr-only">{{ _("What to do with them") }}</legend>
+            <div class="custom-control custom-radio mb-2">
+              <input type="radio" class="custom-control-input" name="action" id="mass-anonymise" value="anonymise">
+              <label class="custom-control-label font-weight-bold" for="mass-anonymise">{{ _("Remove my name") }}</label>
+              <div class="text-small text-muted">{{ _("They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed.") }}</div>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" name="action" id="mass-delete" value="delete">
+              <label class="custom-control-label font-weight-bold" for="mass-delete">{{ _("Delete them") }}</label>
+              <div class="text-small text-muted">{{ _("They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone.") }}</div>
+            </div>
+          </fieldset>
+          <div class="form-group">
+            <label for="mass-password">{{ _("Your password") }}</label>
+            <input type="password" class="form-control" name="password" id="mass-password" autocomplete="current-password" required>
+          </div>
+          {% if v.mfa_secret %}
+          <div class="form-group">
+            <label for="mass-twofactor">{{ _("Your two-factor code") }}</label>
+            <input type="text" class="form-control" name="twofactor" id="mass-twofactor" autocomplete="one-time-code" inputmode="numeric" required>
+          </div>
+          {% endif %}
+          <button type="submit" class="btn btn-danger" id="history-mass-submit" disabled>{{ _("Change them") }}</button>
+        </div>
+      </div>
+      {% else %}
+      {% include "history_empty.html" %}
+      {% endif %}
+    </form>
+
+  </div>
+</div>
+<script src="{{ asset_url('js/history_manage.js') }}" defer></script>
+{% endblock %}

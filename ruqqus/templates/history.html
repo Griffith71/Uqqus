@@ -31,6 +31,9 @@
           <li class="nav-item">
             <a class="nav-link{% if active_tab=='anonymous' %} active{% endif %}" href="/history/anonymous" aria-label="{{ pgettext('label', 'Anonymous') }}"><i class="fas fa-user-secret" aria-hidden="true"></i></a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='manage' %} active{% endif %}" href="/history/manage" aria-label="{{ _('Manage') }}"><i class="fas fa-list-check" aria-hidden="true"></i></a>
+          </li>
         </ul>
       </div>
     </div>
@@ -65,13 +68,30 @@
           <li class="nav-item">
             <a class="nav-link{% if active_tab=='anonymous' %} active{% endif %}" href="/history/anonymous"><i class="fas fa-user-secret"></i>{{ pgettext('label', 'Anonymous') }}</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link{% if active_tab=='manage' %} active{% endif %}" href="/history/manage"><i class="fas fa-list-check"></i>{{ _('Manage') }}</a>
+          </li>
         </ul>
       </div>
     </div>
   </div>
 </div>
 
-{% if active_tab in ('bookmarked', 'upvoted', 'downvoted', 'anonymous') %}
+{% set deleted_rows = deleted_rows | default(none) %}
+{% if active_tab == 'anonymous' %}
+<div class="container-fluid bg-white box-shadow-bottom history-anonymous-tabs">
+  <div class="row py-2">
+    <div class="col">
+      <div class="d-flex flex-wrap align-items-center">
+        <a class="folder-chip{% if deleted_rows is none %} active{% endif %}" href="/history/anonymous">{{ _('Live') }}</a>
+        <a class="folder-chip{% if deleted_rows is not none %} active{% endif %}" href="/history/anonymous?show=deleted">{{ _('Deleted') }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if active_tab in ('bookmarked', 'upvoted', 'downvoted', 'anonymous', 'manage') and deleted_rows is none %}
 <div class="container-fluid bg-light box-shadow-bottom history-show-bar">
   <div class="row py-2">
     <div class="col">
@@ -125,7 +145,11 @@
   <div class="col-12">
     <div class="posts" id="posts">
 
-      {% if mixed_listing is not none %}
+      {% if deleted_rows is defined and deleted_rows is not none %}
+
+        {% include "history_deleted.html" %}
+
+      {% elif mixed_listing is not none %}
 
         {% if mixed_listing %}
           {% for kind, item, ts in mixed_listing %}

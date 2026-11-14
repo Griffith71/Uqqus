@@ -2052,7 +2052,22 @@ def unlink_post(post, v):
     if refusal:
         return jsonify({"error": msg(refusal)}), 409
     anonymise.anonymise_post(g.db, post)
+    if flag(request.form, "with_comments"):
+        # the tick box: "also remove my name from my comments here". Left unticked they stay under the name, which tells readers who wrote the post
+        anonymise.anonymise_replies(g.db, [r.id for r in family], post.author_id)
     return "", 204
+
+
+@app.route("/api/post/<pid>/own_comment_count", methods=["GET"])
+@auth_required
+def post_own_comment_count(pid, v):
+    """How many of your own comments under this post (and its copies) are still under your name: the number in the "Remove my name" dialog's tick
+    box. Only the author is told; anyone else gets the post's own refusal."""
+    post = get_post(pid)
+    if not anonymity.is_author(post, v) or post.is_deleted:
+        abort(404)
+    family = anonymise.family_of(g.db, post)
+    return jsonify({"count": len(deletion_store.own_named_comments(g.db, [r.id for r in family], post.author_id))})
 
 
 def delete_post_as(post, v):

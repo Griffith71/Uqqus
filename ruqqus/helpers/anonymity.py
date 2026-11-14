@@ -117,13 +117,23 @@ def op_badge(comment, post, viewer):
         return False
     if identity_hidden(comment, viewer):
         return identity_hidden(post, viewer)   # both anonymous: the same unnamed person
-    return True
+    # a named comment by the author of a post whose author is hidden from this reader: no mark, or the name beside it would say who wrote the
+    # post ("comment as @me", the Log plan's decision 7: a named comment is linked to the anonymous post by nothing the site draws)
+    return not identity_hidden(post, viewer)
 
 
 def must_be_anonymous(post, commenter):
     """Someone commenting on their own anonymous post comments anonymously, or
     their name next to the "OP" mark would undo it."""
     return bool(getattr(post, "is_anonymous", False)) and post.author_id == commenter.id
+
+
+def comment_is_anonymous(post, commenter, asked, as_me=False):
+    """Is a new comment anonymous? On your own anonymous post it is, by default; "comment as @me" (`as_me`) is the one explicit way out, with its
+    warning in the form (your name shows, and your own words can still give away that you wrote the post). Anywhere else it is what was asked."""
+    if must_be_anonymous(post, commenter):
+        return not as_me
+    return bool(asked)
 
 
 def off_profile(model, viewer):

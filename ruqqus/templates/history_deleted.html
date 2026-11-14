@@ -1,0 +1,28 @@
+{# History > Anonymous > Deleted: what you deleted yourself, from the private copies kept for you (helpers/mass_edit_store.py deleted_by). Plain text
+   only, drawn escaped: a deleted item's words are never drawn as HTML or as links. A copy that stays in the public Log has no end; an erased item's
+   private copy goes after 90 days. #}
+{% if deleted_rows %}
+<p class="text-small text-muted px-3 pt-2 mb-2">{{ _("What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days.") }}</p>
+<ul class="list-group list-group-flush" id="history-deleted">
+  {% for row in deleted_rows %}
+  <li class="list-group-item px-3">
+    <div class="d-flex flex-wrap align-items-baseline">
+      <span class="badge badge-pill bg-white border text-muted text-small-extra mr-2">{% if row.comment %}<i class="fas fa-comment fa-fw mr-1" aria-hidden="true"></i>{{ _("Comment") }}{% else %}<i class="fas fa-file-alt fa-fw mr-1" aria-hidden="true"></i>{{ _("Post") }}{% endif %}</span>
+      <span class="text-small text-muted">{{ date_text(row.created, '%d %B %Y') }}</span>
+      <span class="text-small text-muted ml-auto">{% if row.public %}{{ _("In the Log as Anonymous") }}{% else %}{{ _("Private copy") }}{% endif %}</span>
+    </div>
+    {% if row.title %}<div class="font-weight-bold mt-1" dir="auto">{{ row.title }}</div>{% endif %}
+    {% if row.snippet %}<div class="text-small mt-1" dir="auto">{{ row.snippet }}</div>{% endif %}
+    <div class="mt-1 text-small">
+      <a href="{{ row.copy_url }}">{{ _("Open your copy") }}</a>
+      {% if row.log_url %}<span class="text-muted mx-1">&middot;</span><a href="{{ row.log_url }}">{{ _("See it in the Log") }}</a>{% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="text-center text-muted py-5 px-3">
+  <i class="fas fa-trash-alt fa-2x mb-3" aria-hidden="true"></i>
+  <p class="mb-0">{{ _("Nothing you deleted is kept here.") }}</p>
+</div>
+{% endif %}

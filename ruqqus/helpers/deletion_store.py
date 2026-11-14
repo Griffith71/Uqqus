@@ -29,6 +29,18 @@ def others_replied_to_posts(db, post_ids, author_id):
                       {**names, "a": int(author_id)}).first() is not None
 
 
+def own_named_comments(db, post_ids, author_id):
+    """The ids of the author's own live comments, still under their name, under these posts (a post and its copies): what "also remove my name
+    from my comments here" would change. A deleted comment is the Log's already, a removed one keeps its own record."""
+    ids = [int(i) for i in post_ids if i]
+    if not ids:
+        return []
+    marks, names = _marks("p", ids)
+    rows = db.execute(text(f"SELECT id FROM comments WHERE parent_submission IN ({marks}) AND author_id = :a AND deleted_utc = 0 "
+                           f"AND NOT COALESCE(is_banned, false) AND NOT COALESCE(is_anonymous, false) ORDER BY id"), {**names, "a": int(author_id)})
+    return [r[0] for r in rows]
+
+
 def others_replied_to_comment(db, comment_id, author_id):
     """Has anyone but the author commented directly on this comment?"""
     return db.execute(text("SELECT 1 FROM comments WHERE parent_comment_id = :c AND author_id <> :a LIMIT 1"),

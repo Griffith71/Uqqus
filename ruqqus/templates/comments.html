@@ -480,7 +480,7 @@
                 <input id="file-upload-comment-{{ c.fullname }}" type="file" name="file" accept="image/*" onchange="document.getElementById('filename-show-comment-{{ c.base36id }}').textContent=document.getElementById('file-upload-comment-{{ c.fullname }}').files[0].name;" hidden>
           </label>
 
-          {{ post_options.disclosure_toggles("comment-disc-" ~ c.fullname, false, false, true, c.post.is_anonymous and v and v.id == c.post.author_id and not anon_hidden(c.post, v)) }}
+          {{ post_options.disclosure_toggles("comment-disc-" ~ c.fullname, false, false, true, c.post.is_anonymous and v and v.id == c.post.author_id and not anon_hidden(c.post, v), c.post.is_anonymous and v and v.id == c.post.author_id and not anon_hidden(c.post, v) and not v.qr_limited) }}
           <a href="javascript:void(0)" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.add('d-none')" class="btn btn-link text-muted ml-auto cancel-form">{{ _("Cancel") }}</a> 
           <a id="save-comment-on-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">{{ pgettext('button', 'Comment') }}</a> 
         </div> 

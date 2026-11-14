@@ -27,6 +27,7 @@ from .flagging import *
 from .front import *
 from .giphy import *
 from .history import *
+from .history_mass_pages import *
 from .legal import *
 from .login import *
 from .qr_login_pages import *
