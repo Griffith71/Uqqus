@@ -45,7 +45,7 @@ from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.helpers import text_length
 from ruqqus.helpers import sharing
-from ruqqus.helpers import anonymise, deletion, deletion_store
+from ruqqus.helpers import anon_aliases, anonymise, deletion, deletion_store
 from ruqqus.helpers import bell as bell_rules
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session, member_limit_key
@@ -1596,6 +1596,8 @@ Optional file data:
 
     g.db.add(new_post)
     g.db.flush()
+    if new_post.is_anonymous:
+        anon_aliases.give(g.db, anon_aliases.scope_key(new_post), v.id)          # the author's number in this post's thread (the Log plan's decision 23)
     if audience == circle_rules.CIRCLES:
         circle_store.set_post_circles(g.db, new_post.id, circle_ids)
 

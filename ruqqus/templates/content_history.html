@@ -26,7 +26,7 @@
       {# the account that acted is the target's author, except when a post's author hid or restored a comment under it: then it is the POST's author, and
          whether that is hidden is the post's rule, not the comment's (a comment on an anonymous post is named; its post's author who hid it is not) #}
       {% set owner = target.post if (target_type == "comment" and entry.action in ("author_hide", "author_restore")) else target %}
-      {% set actor %}{% if anon_hidden(owner, v) and entry.actor_id == owner.author_id %}{{ _('Anonymous') }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
+      {% set actor %}{% if anon_hidden(owner, v) and entry.actor_id == owner.author_id %}{{ author_of(owner, v).shown_name }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
       {% endif %}
       <strong>
         {% if entry.action == "edit" %}

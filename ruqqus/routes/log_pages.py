@@ -23,7 +23,7 @@ from sqlalchemy.orm import lazyload
 
 from ruqqus.classes import Board, Comment, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
-from ruqqus.helpers import action_log, deletion, deletion_store, log_view, sensitive as sensitive_rules
+from ruqqus.helpers import action_log, anon_aliases, log_evidence, deletion, deletion_store, log_view, sensitive as sensitive_rules
 from ruqqus.helpers import sanitize as sanitize_rules
 from ruqqus.helpers import anonymity
 from ruqqus.helpers.base36 import base36decode, base36encode
@@ -125,6 +125,38 @@ def _guilds(ids):
     return {b.id: b for b in g.db.query(Board).options(lazyload("*")).filter(Board.id.in_(ids)).all()}
 
 
+def _numbers(entries):
+    """{("post"|"comment", id): number} for the anonymous items a page's deletion and edit lines are about: "Anonymous #3" in place of "Anonymous"."""
+    posts = [e["target_submission_id"] for e in entries if e["target_submission_id"] and e["log_type"] in (action_log.DELETION, action_log.EDIT)]
+    comments = [e["target_comment_id"] for e in entries if e["target_comment_id"] and e["log_type"] in (action_log.DELETION, action_log.EDIT)]
+    savepoint = g.db.begin_nested()
+    try:
+        found = anon_aliases.numbers_for_items(g.db, posts, comments)
+        savepoint.commit()
+        return found
+    except Exception:
+        savepoint.rollback()
+        return {}
+
+
+def _reveals(entries):
+    """What a ban's approved evidence lets this page name (the Log plan's decision 10, helpers/log_evidence.py): `(named, listed, accounts)`.
+    `named` is {("post"|"comment", id): username} for the cited items the page's lines are about, `listed` {ban entry id: [(kind, id)]} for the ban's own
+    line and `accounts` {ban entry id: username} for the account that ban names (a deleted account too). A reveal shows only while a second admin has
+    approved it and the ban hasn't been reversed. The savepoint keeps a database without the table showing the page as it was."""
+    posts = [e["target_submission_id"] for e in entries if e["target_submission_id"] and e["log_type"] in (action_log.DELETION, action_log.EDIT)]
+    comments = [e["target_comment_id"] for e in entries if e["target_comment_id"] and e["log_type"] in (action_log.DELETION, action_log.EDIT)]
+    bans = [e["id"] for e in entries if e["log_type"] == action_log.SANCTION]
+    savepoint = g.db.begin_nested()
+    try:
+        out = (log_evidence.revealed(g.db, posts, comments), log_evidence.listed(g.db, bans), log_evidence.author_of_entry(g.db, bans))
+        savepoint.commit()
+        return out
+    except Exception:
+        savepoint.rollback()
+        return {}, {}, {}
+
+
 def _rows(entries, v):
     """The public page's lines: the words, the rule, the reason and whether this reader may open a preserved copy. Entries
     whose guild or people the reader's own word filter hides are left out or drawn as 'a member'."""
@@ -139,6 +171,8 @@ def _rows(entries, v):
     texts = action_log.deleted_texts(g.db, [e["id"] for e in entries if e["log_type"] == action_log.DELETION])
     post_languages, comment_languages = deletion_store.languages(
         g.db, [t["post_id"] for t in texts.values()], [t["comment_id"] for t in texts.values()])
+    named, cited, accounts = _reveals(entries)
+    numbers = _numbers(entries)
     rows = []
     for e in entries:
         board = guilds.get(e["board_id"]) if e["board_id"] else None
@@ -149,13 +183,17 @@ def _rows(entries, v):
             board = None                    # a profile post's board is the site's own, not a guild to name (L1)
         role = e["actor_role"]
         actor = people.get(e["actor_id"])
+        item = ("post", e["target_submission_id"]) if e["target_submission_id"] else ("comment", e["target_comment_id"])
         if role == action_log.AUTHOR:
-            if e["log_type"] == action_log.DELETION:
-                who = log_view.anonymous_actor()
+            if e["log_type"] in (action_log.DELETION, action_log.EDIT) and item in named:
+                # a ban cited this item and a second admin approved: the Log's lines about it say who wrote it (the item stays anonymous elsewhere)
+                who = log_view.person(named[item])
+            elif e["log_type"] == action_log.DELETION:
+                who = log_view.anonymous_actor(numbers.get(item))
             elif e["log_type"] == action_log.EDIT:
                 # an edit names its editor unless the item is anonymous (`fetch` has already taken the id out of an anonymous item's: M10, M11)
                 who = (log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted, hidden=user_hidden(actor, v))
-                       if e["actor_id"] else log_view.anonymous_actor())
+                       if e["actor_id"] else log_view.anonymous_actor(numbers.get(item)))
             else:
                 who = log_view.post_author()
         elif role != action_log.GUILDMASTER or e["actor_id"] is None:
@@ -168,8 +206,12 @@ def _rows(entries, v):
             # a person is the subject of an exile, a mute or a ban, even when an item is cited with it ("exiled user @x", not
             # "exiled #a1b2c"); the item is the subject only when there is no person
             user = people.get(e["target_user_id"])
-            target = log_view.person(getattr(user, "username", ""), deleted=user is None or user.is_deleted,
-                                     hidden=user_hidden(user, v))
+            if e["id"] in accounts:
+                # a ban with approved evidence names the account, a deleted one too (the plan's decision 18)
+                target = log_view.person(accounts[e["id"]], hidden=bool(user is not None and user_hidden(user, v)))
+            else:
+                target = log_view.person(getattr(user, "username", ""), deleted=user is None or user.is_deleted,
+                                         hidden=user_hidden(user, v))
         elif e["target_submission_id"]:
             target = log_view.item_link("post", base36encode(e["target_submission_id"]))
         elif e["target_comment_id"]:
@@ -185,6 +227,8 @@ def _rows(entries, v):
             "rule": e["rule_key"], "reason": "" if is_hidden(words, e.get("reason_severity")) else e["reason"],
             "can_open": can_open, "type": e["log_type"],                                                          # not "copy": a dict has that method
             "until": e.get("until_utc") or 0})
+        if cited.get(e["id"]):
+            rows[-1]["evidence"] = [{"kind": kind, "id": base36encode(item_id)} for kind, item_id in cited[e["id"]]]
         if e["log_type"] == action_log.EDIT:
             rows[-1]["item"] = ("post", e["target_submission_id"]) if e["target_submission_id"] else ("comment", e["target_comment_id"])
         if e["log_type"] == action_log.DELETION:
@@ -407,7 +451,7 @@ def log_thread(pid, v):
             out["kind"], out["line"] = "line", _comment_line("blocked")
         else:
             author = anonymity.author_of(c, v)
-            out["who"] = (log_view.anonymous_actor() if c.is_anonymous and author is anonymity.ANONYMOUS else
+            out["who"] = (log_view.anonymous_actor(getattr(author, "alias", None)) if c.is_anonymous and isinstance(author, anonymity.AnonymousAuthor) else
                           log_view.person(author.username, deleted=bool(author.is_deleted), hidden=user_hidden(author, v)))
             out["words"] = {"view": "text", "title": "", "url": "", "body": Markup(c.body_html or ""), "lang": c.language_code or ""}
         return out

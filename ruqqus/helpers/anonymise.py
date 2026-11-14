@@ -11,6 +11,8 @@ Not here: the delete itself (`routes/posts.py delete_post_as`, `routes/comments.
 (`helpers/action_log.py`), the pages (`routes/log_pages.py`)."""
 from sqlalchemy import or_, text
 
+from ruqqus.helpers import anon_aliases
+
 
 def _marks(prefix, ids):
     names = {f"{prefix}{n}": int(i) for n, i in enumerate(ids)}
@@ -71,6 +73,7 @@ def anonymise_post(db, post, *, scope="family"):
         row.gm_distinguish = 0                        # and so does a guildmaster's herald
         db.add(row)
     strip_pointers(db, author_id=post.author_id, post_ids=[r.id for r in rows])
+    anon_aliases.give(db, anon_aliases.scope_key(post), post.author_id)       # the author's number in this thread, from their post on (decision 23)
     clear_caches(posts=rows, author=post.author)
     return rows
 
@@ -86,6 +89,9 @@ def anonymise_comment(db, comment):
         forward.gm_distinguish = 0
         db.add(forward)
     strip_pointers(db, author_id=comment.author_id, post_ids=[f.id for f in forwards], comment_ids=[comment.id])
+    scope = anon_aliases.scope_of(comment)
+    if scope is not None:
+        anon_aliases.give(db, scope, comment.author_id)                          # its author's number in the thread it is in
     clear_caches(posts=forwards, author=comment.author)
     return [comment] + forwards
 
@@ -106,4 +112,7 @@ def anonymise_replies(db, post_ids, author_id):
     db.execute(text(f"UPDATE comments SET is_anonymous = :yes WHERE parent_submission IN ({marks}) AND author_id = :a "
                     f"AND NOT COALESCE(is_anonymous, false)"), {**params, "yes": True})
     strip_pointers(db, author_id=author_id, comment_ids=changed)
+    for scope_id in {r[0] for r in db.execute(text(
+            f"SELECT COALESCE(NULLIF(s.repost_id, 0), s.id) FROM submissions s WHERE s.id IN ({marks})"), names)}:
+        anon_aliases.give(db, (anon_aliases.POST, scope_id), author_id)           # a thread the author is now anonymous in
     return len(changed)

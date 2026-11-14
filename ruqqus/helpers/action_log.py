@@ -98,7 +98,7 @@ PUBLIC_ACTIONS = {"remove_broadcast_message", "remove_space_message", "end_space
 RUNNING_ACTIONS = {
     "admin_badge", "admin_alt_link", "admin_ip_ban", "admin_image_ban", "admin_image_purge", "admin_word_filter", "admin_app",
     "admin_trending", "admin_feed_server", "admin_bot", "admin_signup", "admin_throttle", "admin_chat_report", "admin_siege",
-    "admin_domain", "redact_entry", "correct_entry", "automatic_hold", "auto_space_takedown", "age_lock",
+    "admin_domain", "redact_entry", "correct_entry", "automatic_hold", "auto_space_takedown", "age_lock", "admin_evidence",
 }
 STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
                  "remove_story", "age_declaration"} | RUNNING_ACTIONS

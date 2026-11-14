@@ -1958,6 +1958,16 @@ class User(Base, Stndrd, Age_times):
         entry_id = action_log.record_unban(g.db, self.id, actor.id if actor else 1, reason=reason, automatic=actor is None,
                                            notice_sent=notice_sent, floor=floor)
 
+        # reversing a ban withdraws the reveal of what it cited (the Log plan's decision 10, helpers/log_evidence.py): the Log's lines draw Anonymous again.
+        # In a savepoint: a database that hasn't reached the migration still unbans
+        from ruqqus.helpers import log_evidence
+        savepoint = g.db.begin_nested()
+        try:
+            log_evidence.withdraw(g.db, self.id, int(time.time()))
+            savepoint.commit()
+        except Exception:
+            savepoint.rollback()
+
         # the sub-accounts the site suspended with a parent come back with it (helpers/child_accounts.py): found by the ledger, which outlives a link that ended
         # meanwhile, and lifted only while the suspension is still the one the site gave (an admin's later ban is the child's own); a shorter ban of the child's
         # own that the cascade extended comes back as it was

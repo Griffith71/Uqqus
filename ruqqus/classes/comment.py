@@ -273,6 +273,7 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
             'level': self.level,
             'author_name': None if (self.author.is_deleted or anonymity.identity_hidden(self, anonymity.current_viewer())) else self.author.username,
             'is_anonymous': bool(self.is_anonymous),
+            'alias': getattr(anonymity.author_of(self, anonymity.current_viewer()), "alias", None) if self.is_anonymous else None,
             'body': self.body,
             'body_html': self.body_html,
             'is_archived': self.is_archived,

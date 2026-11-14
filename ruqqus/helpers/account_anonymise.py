@@ -14,7 +14,7 @@ with their author; the caches that list by author are cleared by the caller, whi
 """
 from sqlalchemy import text
 
-from ruqqus.helpers import anonymise
+from ruqqus.helpers import anon_aliases, anonymise
 
 BATCH = 200                     # posts, and as many comments, in one batch (one commit)
 JOBS_PER_CYCLE = 5              # accounts one cycle of `scripts/recomputes.py` works on
@@ -50,12 +50,17 @@ def batch(db, user_id, size=BATCH):
         marks, names = _marks("p", posts)
         db.execute(text(f"UPDATE submissions SET is_anonymous = :yes, distinguish_level = 0, gm_distinguish = 0 WHERE id IN ({marks})"), {**names, "yes": True})
         anonymise.strip_pointers(db, author_id=user_id, post_ids=posts)
+        for scope_id in {r[0] for r in db.execute(text(f"SELECT COALESCE(NULLIF(repost_id, 0), id) FROM submissions WHERE id IN ({marks})"), names)}:
+            anon_aliases.give(db, (anon_aliases.POST, scope_id), user_id)         # a number in each thread it wrote in, given now (decision 23)
     comments = [r[0] for r in db.execute(text(
         "SELECT id FROM comments WHERE author_id = :u AND NOT COALESCE(is_anonymous, false) ORDER BY id LIMIT :n"), {"u": int(user_id), "n": size})]
     if comments:
         marks, names = _marks("c", comments)
         db.execute(text(f"UPDATE comments SET is_anonymous = :yes WHERE id IN ({marks})"), {**names, "yes": True})
         anonymise.strip_pointers(db, author_id=user_id, comment_ids=comments)
+        for scope_id in {r[0] for r in db.execute(text(
+                f"SELECT COALESCE(NULLIF(s.repost_id, 0), s.id) FROM comments c JOIN submissions s ON s.id = c.parent_submission WHERE c.id IN ({marks})"), names)}:
+            anon_aliases.give(db, (anon_aliases.POST, scope_id), user_id)
     return len(posts), len(comments)
 
 

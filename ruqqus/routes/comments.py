@@ -29,7 +29,7 @@ from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import age_declaration, anonymity
 from ruqqus.helpers import action_log, log_notices
-from ruqqus.helpers import anonymise, deletion, deletion_store
+from ruqqus.helpers import anon_aliases, anonymise, deletion, deletion_store
 from ruqqus.classes import *
 from flask import *
 from ruqqus.helpers import sharing
@@ -498,6 +498,8 @@ Optional file data:
 
     g.db.add(c)
     g.db.flush()
+    if c.is_anonymous:
+        anon_aliases.give(g.db, anon_aliases.scope_key(parent_post), v.id)        # the same number as on the post, if it is theirs (the Log plan's decision 23)
 
 
     if v.has_premium:

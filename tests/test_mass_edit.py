@@ -192,7 +192,7 @@ def test_the_job_is_in_the_migration_the_schema_the_ledger_and_the_cleanup_and_t
     assert "CREATE TABLE IF NOT EXISTS public.account_anonymise_jobs" in migration and "user_id integer PRIMARY KEY" in migration
     assert "FOREIGN KEY" not in migration and "REFERENCES" not in migration, "the project keeps no foreign keys to users"
     schema = read("schema.sql")
-    assert "CREATE TABLE public.account_anonymise_jobs" in schema and "('2027-01-03_account_anonymise.sql');" in schema
+    assert "CREATE TABLE public.account_anonymise_jobs" in schema and "('2027-01-03_account_anonymise.sql')" in schema
     cleanup = read("ruqqus", "helpers", "account_cleanup.py")
     assert '("queue anonymising what they wrote", account_anonymise.QUEUE_SQL)' in cleanup
     settings = read("ruqqus", "routes", "settings.py")

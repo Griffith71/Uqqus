@@ -7311,6 +7311,43 @@ CREATE TABLE public.account_anonymise_jobs (
 
 CREATE INDEX account_anonymise_jobs_pending_idx ON public.account_anonymise_jobs (queued_utc) WHERE done_utc = 0;
 
+-- the ban reveal: items an admin cited for a ban, and whether a second admin approved naming their author (2027-01-04_log_evidence.sql; helpers/log_evidence.py)
+CREATE TABLE public.log_evidence (
+    id bigserial PRIMARY KEY,
+    entry_id bigint NOT NULL,
+    target_user_id integer NOT NULL,
+    post_id integer,
+    comment_id integer,
+    proposed_by integer NOT NULL,
+    proposed_utc bigint DEFAULT 0 NOT NULL,
+    status character varying(10) DEFAULT 'pending' NOT NULL,
+    decided_by integer,
+    decided_utc bigint DEFAULT 0 NOT NULL,
+    sole_admin boolean DEFAULT false NOT NULL,
+    withdrawn_utc bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT log_evidence_status CHECK (status IN ('pending', 'approved', 'declined', 'withdrawn')),
+    CONSTRAINT log_evidence_one_item CHECK ((post_id IS NULL) <> (comment_id IS NULL))
+);
+
+CREATE UNIQUE INDEX log_evidence_post_once_idx ON public.log_evidence (entry_id, post_id) WHERE post_id IS NOT NULL;
+CREATE UNIQUE INDEX log_evidence_comment_once_idx ON public.log_evidence (entry_id, comment_id) WHERE comment_id IS NOT NULL;
+CREATE INDEX log_evidence_pending_idx ON public.log_evidence (proposed_utc) WHERE status = 'pending';
+CREATE INDEX log_evidence_target_idx ON public.log_evidence (target_user_id) WHERE status IN ('pending', 'approved');
+CREATE INDEX log_evidence_post_idx ON public.log_evidence (post_id) WHERE post_id IS NOT NULL AND status = 'approved';
+CREATE INDEX log_evidence_comment_idx ON public.log_evidence (comment_id) WHERE comment_id IS NOT NULL AND status = 'approved';
+
+-- a stable alias per thread for anonymous participants: "Anonymous #3" (2027-01-05_anon_aliases.sql; helpers/anon_aliases.py)
+CREATE TABLE public.anon_aliases (
+    scope_kind character varying(8) NOT NULL,
+    scope_id integer NOT NULL,
+    user_id integer NOT NULL,
+    n integer NOT NULL,
+    created_utc bigint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (scope_kind, scope_id, user_id)
+);
+
+CREATE UNIQUE INDEX anon_aliases_number_idx ON public.anon_aliases (scope_kind, scope_id, n);
+
 -- parent and child accounts (helpers/child_store.py; 2026-12-18_parent_accounts.sql)
 CREATE TABLE public.account_links (
     child_id integer PRIMARY KEY,
@@ -7505,4 +7542,6 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-31_log_d4.sql'),
     ('2027-01-01_log_deletes.sql'),
     ('2027-01-02_log_edits.sql'),
-    ('2027-01-03_account_anonymise.sql');
+    ('2027-01-03_account_anonymise.sql'),
+    ('2027-01-04_log_evidence.sql'),
+    ('2027-01-05_anon_aliases.sql');

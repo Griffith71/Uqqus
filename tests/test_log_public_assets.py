@@ -290,7 +290,7 @@ def test_an_anonymous_item_is_left_out_of_a_profiles_log_unless_the_reader_is_an
 
 def test_an_authors_own_delete_is_an_entry_drawn_as_anonymous_with_words_only_from_a_public_copy():
     rows = body(LOG_PAGES, "_rows")
-    assert "log_view.anonymous_actor()" in rows and "action_log.deleted_texts(" in rows        # who: nobody named; the words: only a public `delete` copy
+    assert "log_view.anonymous_actor(numbers.get(item))" in rows and "action_log.deleted_texts(" in rows        # who: nobody named; the words: only a public `delete` copy
     assert "_may_see_deletes" not in LOG_PAGES and "_delete_rows" not in LOG_PAGES and "author_deletes" not in ACTION_LOG
     words = LOG_PAGES.split("def _deleted_words(")[1].split("\n\n\n")[0]
     assert "deletion.text_view(" in words and "log_view.without_links(log_view.without_media(" in words      # the rules, and no link or picture

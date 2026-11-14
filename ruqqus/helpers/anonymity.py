@@ -62,6 +62,34 @@ class AnonymousAuthor:
 ANONYMOUS = AnonymousAuthor()
 
 
+class AliasedAnonymousAuthor(AnonymousAuthor):
+    """The stand-in for an anonymous person who has a number in this thread (helpers/anon_aliases.py): "Anonymous #3". Everything else it answers is the plain
+    stand-in's, so a template that draws it can learn nothing more than the number, which is per thread and never global."""
+
+    def __init__(self, number):
+        self.alias = int(number)
+        self.shown_name = LazyProxy(lambda: alias_name(self.alias), enable_cache=False)
+
+    def __str__(self):
+        return alias_name(self.alias)
+
+
+def alias_name(number):
+    """"Anonymous #3", as the reader reads it."""
+    from ruqqus.helpers.i18n_runtime import tr
+    return tr("Anonymous #%(num)s", num=int(number))
+
+
+# The app sets this to a function `item -> number or None` (routes/anonymity.py): it asks the database for the item's author's number in its thread, once a thread a
+# request. Left None, as in the pure tests, every anonymous author is the plain stand-in.
+alias_resolver = None
+
+
+def alias_of(item):
+    """The number an anonymous item's author has in its thread, or None (no resolver, or none given yet: drawn as plain Anonymous)."""
+    return alias_resolver(item) if alias_resolver is not None else None
+
+
 def current_viewer():
     """The logged-in viewer of the current request, for code that is not handed
     one (JSON, feeds). None for a visitor or outside a request."""
@@ -100,13 +128,19 @@ def identity_hidden(item, viewer):
 
 
 def author_of(item, viewer):
-    """The author to draw for this viewer: the real one, or the stand-in."""
-    return ANONYMOUS if identity_hidden(item, viewer) else item.author
+    """The author to draw for this viewer: the real one, or the stand-in ("Anonymous #3" in a thread where this person has a number)."""
+    if not identity_hidden(item, viewer):
+        return item.author
+    number = alias_of(item)
+    return AliasedAnonymousAuthor(number) if number else ANONYMOUS
 
 
 def label_of(item, viewer):
-    """The author's name as text ("Anonymous" when hidden)."""
-    return shown() if identity_hidden(item, viewer) else item.author.username
+    """The author's name as text ("Anonymous" when hidden, "Anonymous #3" with a number)."""
+    if not identity_hidden(item, viewer):
+        return item.author.username
+    number = alias_of(item)
+    return alias_name(number) if number else shown()
 
 
 def op_badge(comment, post, viewer):

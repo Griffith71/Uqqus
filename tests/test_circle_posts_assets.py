@@ -107,6 +107,8 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
     # helpers/post_counts.py 1 (2026-10-13): a post's share count leaves out forward copies that are not public, so the
     # number never hints at a private guild the post went to.
     # helpers/similar_store.py 1 (2026-10-14): Similar accounts ties accounts to guilds through public posts only.
+    # helpers/log_evidence.py 2 (slice D3d): a ban can cite only a public item (not a Circle's, not a private guild's): the reveal puts a name in the PUBLIC Log, so
+    # a post that is not public is counted in the picker and never listed or cited.
     # classes/boards.py 4 -> 0 (2026-11, audit A-01, the owner's choice): a private guild's page and comment list show a
     # non-member only their own posts, not the ones forwarded while it was public.
     # helpers/guild_channel_store.py 1 (2026-11): a bot's new posts go into an announcement channel (helpers/guild_channel_feeds.py)
@@ -127,7 +129,7 @@ def test_lists_that_ask_for_public_posts_are_the_ones_known_and_each_decision_is
                 counts[str(path.relative_to(ROOT)).replace("\\", "/")] = n
     assert counts == {
         "ruqqus/classes/submission.py": 3, "ruqqus/classes/user.py": 15,
-        "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/child_activity.py": 2, "ruqqus/helpers/media/attach.py": 3, "ruqqus/helpers/guild_channel_store.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/space_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
+        "ruqqus/helpers/ads.py": 1, "ruqqus/helpers/child_activity.py": 2, "ruqqus/helpers/media/attach.py": 3, "ruqqus/helpers/guild_channel_store.py": 1, "ruqqus/helpers/post_counts.py": 1, "ruqqus/helpers/space_counts.py": 1, "ruqqus/helpers/similar_store.py": 1, "ruqqus/helpers/log_evidence.py": 2, "ruqqus/helpers/circle_clause.py": 2, "ruqqus/helpers/creator_fund_store.py": 3, "ruqqus/helpers/circle_guard.py": 1, "ruqqus/helpers/trending_store.py": 2,
         # Post Info's site-wide standing compares a profile post with public ones only: counts, a Circle post isn't one
         "ruqqus/helpers/post_standing.py": 1,
         "ruqqus/routes/circles.py": 1, "ruqqus/routes/curations.py": 2,

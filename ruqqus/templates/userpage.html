@@ -97,17 +97,7 @@
   <input type="submit" class="btn btn-danger" value="Nuke User's Content">
 </form>
 {% else %}
-<form action="/api/ban_user/{{ u.id }}" method="post">
-  <input type="hidden" name="formkey" value="{{ v.formkey }}">
-  <input id="user-ban-message" type="text" class="form-control" name="message" placeholder="Ban Message Reason" onchange="document.getElementById('user-ban-submit').disabled=false">
-  <input id="user-ban-reason" type="text" class="form-control" name="reason" placeholder="Ban Reason (public, required)" required maxlength="512" onchange="document.getElementById('user-ban-submit').disabled=false">
-  <select id="user-ban-rule" class="form-control" name="rule" aria-label="Rule broken">
-    <option value="">Rule broken</option>
-    {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
-  </select>
-  <input id="user-ban-days" type="number" class="form-control" name="days" placeholder="Days (blank = permanent)">
-  <input id="user-ban-submit" type="submit" class="btn btn-warning" value="Ban user" disabled>
-</form>
+{% include "admin/ban_form.html" %}
 {% endif %}
 {% endif %}
 {% if v.admin_level >=3 and v.admin_level > u.admin_level %}

@@ -30,6 +30,30 @@ def _op_badge(comment, post, v=None):
     return anonymity.op_badge(comment, post, _viewer(v))
 
 
+def _alias_resolver(item):
+    """The number the item's author has in its thread, from one query a thread a request (the numbers of every person who has one there)."""
+    from flask import g, has_request_context
+    from ruqqus.helpers import anon_aliases
+    if not has_request_context() or getattr(g, "db", None) is None:
+        return None
+    scope = anon_aliases.scope_of(item)
+    author = getattr(item, "author_id", None)
+    if scope is None or author is None:
+        return None
+    cache = g.__dict__.setdefault("_alias_numbers", {})
+    if scope not in cache:
+        savepoint = g.db.begin_nested()
+        try:
+            cache[scope] = anon_aliases.numbers_in(g.db, scope)
+            savepoint.commit()
+        except Exception:                       # a database that hasn't reached the migration draws plain Anonymous
+            savepoint.rollback()
+            cache[scope] = {}
+    return cache[scope].get(author)
+
+
+anonymity.alias_resolver = _alias_resolver
+
 app.jinja_env.globals.update(
     anon_hidden=_anon_hidden,
     author_of=_author_of,

@@ -42,10 +42,7 @@
   <input type="submit" class="btn btn-success" value="Unban user">
 </form>
 {% else %}
-<form action="/api/ban_user/{{ u.id }}", method="post">
-  <input type="hidden" name="formkey", value="{{ v.formkey }}">
-  <input type="submit" class="btn btn-warning" value="Ban user">
-</form>
+{% include "admin/ban_form.html" %}
 {% endif %}
 {% endif %}
 {% if v.admin_level >=4 and v.admin_level > u.admin_level %}

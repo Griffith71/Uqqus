@@ -57,8 +57,9 @@ def test_an_admins_ban_needs_a_public_reason_names_the_rule_and_hides_the_alts()
     assert route.count("rule=rule, staff_note=message, notice_sent=True") == 2
     assert 'staff_note=f"alt of @{user.username}", floor=action_log.STAFF' in route         # the public never learns who is linked
     assert "user.unban(admin=v" in body(ADMIN_API, "unban_user")
-    form = read("ruqqus", "templates", "userpage.html")
+    form = read("ruqqus", "templates", "admin", "ban_form.html")           # one form for every profile an admin can ban from (slice D3d)
     assert 'name="reason" placeholder="Ban Reason (public, required)" required' in form and 'name="rule"' in form
+    assert '{% include "admin/ban_form.html" %}' in read("ruqqus", "templates", "userpage.html")
 
 
 def test_every_reason_the_site_gives_for_its_own_ban_is_classified():

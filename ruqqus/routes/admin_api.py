@@ -12,8 +12,8 @@ from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.aws import delete_file
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers import translation_store
-from ruqqus.helpers.i18n_runtime import N_, tr
-from ruqqus.helpers import action_log, log_notices
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
+from ruqqus.helpers import action_log, log_evidence, log_notices
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -111,6 +111,17 @@ def ban_user(user_id, v):
         return render_template("message.html", v=v, title=tr("Give a reason"),
                                message=tr("A suspension or ban needs a public reason, so the Log can say why.")), 400
 
+    # the items the banning admin cites for the ban (the Log plan's decision 10, helpers/log_evidence.py): checked BEFORE anything changes, so a list that can't
+    # be cited bans nobody. They are only proposed here: a different admin approves before the Log names anyone
+    ticked, problem = log_evidence.parse_items(request.form.getlist("evidence"))
+    if problem:
+        return render_template("message.html", v=v, title=tr("Evidence can't be cited"), message=msg(problem[0]) % problem[1]), 400
+    cited = [(kind, base36decode(b36)) for kind, b36 in ticked]
+    refused = log_evidence.refusals(g.db, user.id, cited)
+    if refused:
+        return render_template("message.html", v=v, title=tr("Evidence can't be cited"),
+                               message=" ".join(sorted({msg(why) for why in refused.values()}))), 400
+
     # the notices go to the member, so they are in the member's language (the admin's own words stay as written)
     if days > 0:
         if message:
@@ -131,6 +142,11 @@ def ban_user(user_id, v):
 
         entry = user.ban(admin=v, reason=reason, rule=rule, staff_note=message, notice_sent=True)
 
+
+    if entry and cited:
+        proposed = log_evidence.propose(g.db, entry, user.id, v.id, cited, int(time.time()))
+        action_log.record_staff(g.db, "admin_evidence", v, f"proposed citing {proposed} item(s) for entry {entry}: a different admin has to approve before "
+                                                          f"the Log names the author", target_user_id=user.id)
 
     for x in user.alts:
         if not x.is_deleted and _outranks(v, x):

@@ -1,0 +1,36 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Ban evidence - {{ 'SITE_NAME' | app_config }} Admin</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Admin">
+{% endblock %}
+
+{% block content %}
+<h1>Ban evidence waiting for a second admin</h1>
+<p>When an admin bans or suspends an account they may cite the posts and comments that justify it. Once a <strong>different admin</strong> approves, the
+Log names the account for those items (its lines about them draw the author instead of Anonymous) and the ban's line lists them. Everywhere else the
+items stay anonymous. Declining, or leaving it, publishes nothing, and reversing the ban takes the names back. The only exception to "a different admin"
+is the owner (level 4) when no other admin exists; that is recorded as a sole-admin approval. Public: what you approve here is public for ever in the
+Log until the ban is reversed, so check that the items really show what the ban says.</p>
+{% if msg %}<div class="alert alert-info" role="status">Done: {{ msg }}.</div>{% endif %}
+
+{% for w in waiting %}
+<div class="card p-3 mb-3" id="evidence-{{ w.entry_id }}">
+  <div><strong>@{{ w.target_name }}</strong> <a href="/log/{{ w.entry_id }}">(the ban, entry {{ w.entry_id }})</a></div>
+  <div class="text-small text-muted">Proposed by @{{ w.by_name }}, {{ datetime_text(w.proposed_utc, "%d %b %Y %H:%M") }} (UTC) &middot; {{ w['items'] | length }} item{{ '' if (w['items'] | length) == 1 else 's' }}</div>
+  <ul class="text-small mt-2 mb-2">
+    {% for kind, item in w['items'] %}<li>{% if kind == 'post' %}<a href="/post/{{ item }}">post #{{ item }}</a>{% else %}<a href="/comment/{{ item }}">comment #{{ item }}</a>{% endif %}</li>{% endfor %}
+  </ul>
+  <form method="post" action="/admin/log_evidence/{{ w.entry_id }}" class="form-inline">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    {% if w.can_decide %}<button class="btn btn-success btn-sm mr-2 mb-2" type="submit" name="decision" value="approve">Approve: name the author in the Log</button>{% elif w.mine %}<span class="text-small text-muted mr-2 mb-2">Waiting for a different admin.</span>{% endif %}
+    <button class="btn btn-outline-secondary btn-sm mb-2" type="submit" name="decision" value="decline">Decline</button>
+  </form>
+</div>
+{% else %}
+<p class="text-muted">Nothing is waiting.</p>
+{% endfor %}
+{% endblock %}

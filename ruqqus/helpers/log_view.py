@@ -123,8 +123,11 @@ def site_account(site_name):
     return Markup('<a href="/@{0}" class="font-weight-bold text-black">@{0}</a>').format(site_name)
 
 
-def anonymous_actor():
-    """Who deleted it, on the Deleted tab: nobody is named, whoever looks (the item is anonymous from the moment it is deleted)."""
+def anonymous_actor(number=None):
+    """Who deleted it, on the Deleted tab: nobody is named, whoever looks (the item is anonymous from the moment it is deleted), only the number its author has
+    in that thread ("Anonymous #3", helpers/anon_aliases.py) so the thread's people can be told apart without being named."""
+    if number:
+        return Markup(escape(tr("Anonymous #%(num)s", num=int(number))))
     return Markup(escape(tr("Anonymous")))
 
 

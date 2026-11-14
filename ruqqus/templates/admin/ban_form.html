@@ -1,0 +1,24 @@
+{# The admin's ban and suspension form, for every profile an admin can ban from (a live, a deleted, a blocked and a banned account's): the public reason, the rule,
+   the days, and the items to cite as evidence (the Log plan's decision 10; helpers/log_evidence.py). Citing is optional: ticking nothing reveals nothing. A different admin
+   has to approve before the Log names the author, and the items stay anonymous everywhere else on the site. Admin pages are English. #}
+<form action="/api/ban_user/{{ u.id }}" method="post" id="user-ban-form">
+  <input type="hidden" name="formkey" value="{{ v.formkey }}">
+  <input id="user-ban-message" type="text" class="form-control" name="message" placeholder="Ban Message Reason" onchange="document.getElementById('user-ban-submit').disabled=false">
+  <input id="user-ban-reason" type="text" class="form-control" name="reason" placeholder="Ban Reason (public, required)" required maxlength="512" onchange="document.getElementById('user-ban-submit').disabled=false">
+  <select id="user-ban-rule" class="form-control" name="rule" aria-label="Rule broken">
+    <option value="">Rule broken</option>
+    {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
+  </select>
+  <input id="user-ban-days" type="number" class="form-control" name="days" placeholder="Days (blank = permanent)">
+  <details id="ban-evidence" class="mt-2" data-url="/admin/evidence_items/{{ u.id }}">
+    <summary>Cite items as evidence (optional)</summary>
+    <p class="text-small text-muted mb-2">Tick the posts and comments that justify this ban. Once <strong>a different admin approves</strong>, the Log names @{{ u.username }} for them
+      (its lines about each item, and this ban's line), even if they were anonymous or the account is deleted. They stay anonymous everywhere else on the site, and reversing the ban
+      takes the names back. Up to 50. Items in private places can't be cited and are only counted.</p>
+    <div id="ban-evidence-list" class="text-small"></div>
+    <p id="ban-evidence-note" class="text-small text-muted mb-1" hidden></p>
+    <button type="button" id="ban-evidence-more" class="btn btn-link btn-sm px-0" hidden>More items</button>
+  </details>
+  <input id="user-ban-submit" type="submit" class="btn btn-warning mt-2" value="Ban user" disabled>
+</form>
+<script src="{{ asset_url('js/ban_evidence.js') }}" defer></script>

@@ -558,6 +558,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     def json_raw(self):
         data = {'author_name': None if (self.author.is_deleted or anonymity.identity_hidden(self, anonymity.current_viewer())) else self.author.username,
                 'is_anonymous': bool(self.is_anonymous),
+                'alias': getattr(anonymity.author_of(self, anonymity.current_viewer()), "alias", None) if self.is_anonymous else None,
                 'permalink': self.permalink,
                 'is_banned': bool(self.is_banned),
                 'is_deleted': self.is_deleted,
