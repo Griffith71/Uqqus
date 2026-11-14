@@ -14,15 +14,23 @@ from flask import abort, g, jsonify, redirect, request
 
 from ruqqus.__main__ import app, limiter, member_limit_key
 from ruqqus.classes import BanRelationship, ChatBan, Comment, ModAction, Submission, User
-from ruqqus.helpers import action_log, alias_actions, log_notices
+from ruqqus.helpers import action_log, alias_actions, log_notices, sanction_evidence
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_from_fullname
-from ruqqus.helpers.i18n_runtime import N_, msg
+from ruqqus.helpers.i18n_runtime import N_, msg, tr
 from ruqqus.helpers.wrappers import auth_required, is_guildmaster, validate_formkey
 
 
 def _accepted():
     return jsonify({"message": msg(alias_actions.ACCEPTED)})
+
+
+def _needs_reason():
+    """A 400 when the form has no reason (the owner, 2026-11-14: every exile and chat mute needs one). Asked FIRST, before the target is looked at, so the
+    refusal says nothing about anyone: it is the same whatever `thing` names."""
+    if not action_log.clean_reason(request.form.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
+    return None
 
 
 def _target(board, v):
@@ -62,7 +70,11 @@ def _logged(kind, board, v, item, number, user, *, with_item):
 @is_guildmaster("access")
 @validate_formkey
 def mod_exile_alias(guildname, board, v):
-    """Exile the author of an anonymous post or comment, by the number it is drawn with."""
+    """Exile the author of an anonymous post or comment, by the number it is drawn with. Needs a `reason`; the anonymous item named by `thing` is
+    what the exile cites, and the site keeps a private copy of it as it was (helpers/sanction_evidence.py)."""
+    refused = _needs_reason()
+    if refused:
+        return refused
     found = _target(board, v)
     if found is None:
         return _accepted()
@@ -71,16 +83,19 @@ def mod_exile_alias(guildname, board, v):
         return _accepted()                                      # already exiled, by name or by alias: nothing changes, and nothing is said
     existing = g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=False).first()
     now = int(time.time())
+    note = action_log.clean_reason(request.form.get("reason"))[:128]          # the exile list's Reason column
     if existing is not None:
         existing.is_active, existing.created_utc, existing.banning_mod_id = True, now, v.id
-        existing.alias_post_id, existing.alias_n = thread, number
+        existing.alias_post_id, existing.alias_n, existing.mod_note = thread, number, note
         g.db.add(existing)
     else:
-        g.db.add(BanRelationship(user_id=user.id, board_id=board.id, banning_mod_id=v.id, is_active=True, alias_post_id=thread, alias_n=number))
+        g.db.add(BanRelationship(user_id=user.id, board_id=board.id, banning_mod_id=v.id, is_active=True, alias_post_id=thread, alias_n=number,
+                                 mod_note=note))
     link = item.permalink
     notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward "
                     "posts to +%(guild)s or comment in it.\n\nYou were exiled for [this item](%(link)s)."), guild=board.name, link=link)
     entry = _logged(alias_actions.EXILE, board, v, item, number, user, with_item=True)
+    sanction_evidence.keep(g.db, entry, board.id, user.id, [item])          # the anonymous item it cites, as it was: read through the copy pages only
     g.db.commit()
     if entry:
         log_notices.tell_appeal_way(g.db, entry, user)
@@ -115,7 +130,10 @@ def mod_unexile_alias(guildname, ban_id, board, v):
 @is_guildmaster("content")
 @validate_formkey
 def mod_chatban_alias(guildname, board, v):
-    """Mute the author of an anonymous post or comment in the guild's channels, by the number it is drawn with."""
+    """Mute the author of an anonymous post or comment in the guild's channels, by the number it is drawn with. Needs a `reason`."""
+    refused = _needs_reason()
+    if refused:
+        return refused
     found = _target(board, v)
     if found is None:
         return _accepted()

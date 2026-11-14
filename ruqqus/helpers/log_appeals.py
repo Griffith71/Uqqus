@@ -107,8 +107,11 @@ def is_undone(db, entry):
         where.append("subject_user_id = :subject")
         params["subject"] = entry.get("subject_user_id")
     else:
-        for column, key in (("target_user_id", "target_user_id"), ("target_submission_id", "target_submission_id"),
-                            ("target_comment_id", "target_comment_id")):
+        # an exile that cites an item carries the item beside the person, and the entry that lifts it names the person only: a person's
+        # decision is matched on the person, never on what it cited
+        about = (("target_user_id", "target_user_id"),) if entry["action"] in ABOUT_A_PERSON else (
+            ("target_user_id", "target_user_id"), ("target_submission_id", "target_submission_id"), ("target_comment_id", "target_comment_id"))
+        for column, key in about:
             if entry[key]:
                 where.append(f"{column} = :{key}")
                 params[key] = entry[key]

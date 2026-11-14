@@ -28,6 +28,7 @@
     {% if r.reason %}<div class="text-small text-muted mt-1">Latest reason: {{ r.reason }}</div>{% endif %}
     <form action="/admin/story_reports/{{ r.story_id }}/remove" method="post" class="d-inline mt-2">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="text" name="reason" class="form-control form-control-sm d-inline-block w-auto mr-2 mb-1" placeholder="Reason (kept by the staff, required)" required maxlength="512" aria-label="Reason">
       <button class="btn btn-danger btn-sm">Remove the story</button>
     </form>
     <form action="/admin/story_reports/{{ r.story_id }}/dismiss" method="post" class="d-inline">

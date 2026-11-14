@@ -320,6 +320,8 @@
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
       <label class="sr-only" for="mute-name">{{ _("Username") }}</label>
       <input type="text" class="form-control form-control-sm mr-2" id="mute-name" name="username" placeholder="{{ _('@username') }}" required>
+      <label class="sr-only" for="mute-reason">{{ _("Reason") }}</label>
+      <input type="text" class="form-control form-control-sm mr-2" id="mute-reason" name="reason" maxlength="512" placeholder="{{ _('Reason') }}" required>
       <button type="submit" class="btn btn-sm btn-secondary">{{ pgettext("button", "Mute") }}</button>
     </form>
     {% for u in muted %}

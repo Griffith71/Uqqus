@@ -213,9 +213,12 @@ def test_the_lists_never_name_an_alias_row_and_the_menus_offer_only_the_number()
         assert "ban.alias_n" in page and "ban.alias_thread" in page, template
     channels = read("ruqqus", "templates", "guild", "channels.html")
     assert "muted_aliases" in channels and "unchatban_alias" in channels
+    calls = read("ruqqus", "templates", "partials", "decision_calls.html")
+    assert "/mod/exile_alias/" in calls and "/mod/chatban_alias/" in calls, "the dialog's calls name the routes (a reason is asked first)"
     for template in ("comments.html", "submission.html"):
         page = read("ruqqus", "templates", template)
-        assert "exile_alias" in page and "chatban_alias" in page and "author_of(" in page, template
+        assert "alias_exile_call(" in page and "alias_mute_call(" in page and "author_of(" in page, template
+        assert "post_toast('/mod/exile" not in page and "post_toast('/mod/chatban" not in page, "an exile or a mute is never one tap now: it asks why"
     models = read("ruqqus", "classes", "board_relationships.py")
     assert models.count('data.pop(key, None)') == 2 and models.count('alias_actions.label(self.alias_n)') == 2
 

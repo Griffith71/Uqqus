@@ -1103,6 +1103,9 @@ def admin_clear_display_name(v):
     with a lower admin level than the admin's own: the same bar as banning (helpers/display_names.py)."""
     from ruqqus.helpers.alerts import notify
 
+    # taking a name off an account says why (the owner, 2026-11-14: every admin takedown needs a reason)
+    if not action_log.clean_reason(request.form.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
     target = get_user(request.form.get("username", ""), graceful=True)
     if target is None or target.is_deleted or v.admin_level <= (target.admin_level or 0):
         abort(404)

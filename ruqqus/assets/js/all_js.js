@@ -2173,8 +2173,19 @@ function showModeration(post_id, removed) {
 }
 
 function removePost(post_id) {
+  // a removal says why, in public (the owner, 2026-11-14): this button used to send no reason and the route refused it every time
+  var reason = window.prompt(tr("Why is this post being removed? Your reason is shown in the public log."));
+  if (reason == null || reason.trim() == "") return;
   post("/api/ban_post/" + post_id, function() { showModeration(post_id, true); },
-    tr("Unable to remove post at this time. Please try again later."));
+    tr("Unable to remove post at this time. Please try again later."), {reason: reason.trim()});
+}
+
+// erase a comment's text for good (an admin): the sheet asked "are you sure?", this asks why, in public
+function purgeComment(cid) {
+  var reason = window.prompt(tr("Why is this comment's text being erased? Your reason is shown in the public log."));
+  if (reason == null || reason.trim() == "") return;
+  post("/api/purge_comment/" + cid, function() { window.location.reload(true); },
+    tr("Unable to erase the comment at this time. Please try again later."), {reason: reason.trim()});
 }
 
 function approvePost(post_id) {
@@ -3351,39 +3362,17 @@ function autoSuggestTitle()  {
 
 // Exile Member
 
+// Exile a user whose name is typed (the guild's Exiled page): an exile needs a reason and at least one post or comment of theirs it relies on, so this opens the
+// decision dialog (assets/js/decision_dialog.js), which asks for both and lists the account's own items in this guild once their name is typed
 function exile_from_guild(boardname) {
-
-  var exileForm = document.getElementById("exile-form");
-
-  var exileError = document.getElementById("toast-error-message");
-
-  var usernameField = document.getElementById("exile-username");
-
-  var isValidUsername = usernameField.checkValidity();
-
-  username = usernameField.value;
-
-  if (isValidUsername) {
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("post", "/mod/exile/"+boardname);
-    xhr.withCredentials=true;
-    f=new FormData();
-    f.append("username", username);
-    f.append("formkey", formkey());
-    xhr.onload=function(){
-      if (xhr.status==204) {
-        window.location.reload(true);
-      }
-      else {
-        $('#toast-exile-error').toast('dispose');
-        $('#toast-exile-error').toast('show');
-        exileError.textContent = JSON.parse(xhr.response)["error"];
-      }
-    }
-    xhr.send(f)
-  }
-
+  decisionDialog({
+    title: tr("Exile user from +%(guild)s", {guild: boardname}),
+    ok: tr("Exile user"),
+    url: "/mod/exile/" + encodeURIComponent(boardname) + "?toast=1",
+    ask_username: true,
+    evidence: true,
+    evidenceUrl: "/mod/exile_items/" + encodeURIComponent(boardname)
+  });
 }
 
 // Approve user

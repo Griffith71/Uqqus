@@ -236,11 +236,49 @@ ENFORCED = {
 }
 
 
+# since 2026-11-14 (the owner): every exile and chat mute, by name or by alias, and every admin takedown. Each is pinned to its own route function:
+# the check must be INSIDE that function (a file that asks elsewhere proves nothing), and before anything it changes
+ENFORCED_IN = {
+    "exile_user": ("ruqqus/routes/boards.py", "def mod_ban_bid_user("),
+    "exile_alias": ("ruqqus/routes/alias_actions_pages.py", "def mod_exile_alias("),
+    "chatban_user": ("ruqqus/routes/guild_channels.py", "def guild_channel_mute("),
+    "chatban_alias": ("ruqqus/routes/alias_actions_pages.py", "def mod_chatban_alias("),
+    "purge_post": ("ruqqus/routes/admin_api.py", "def purge_post("),
+    "purge_comment": ("ruqqus/routes/admin_api.py", "def purge_comment("),
+    "clear_display_name": ("ruqqus/routes/settings.py", "def admin_clear_display_name("),
+    "remove_wiki_revision": ("ruqqus/routes/guild_wiki.py", "def admin_wiki_remove_revision("),
+    "remove_broadcast_message": ("ruqqus/routes/broadcasts.py", "def admin_broadcast_report_act("),
+    "remove_space_message": ("ruqqus/routes/spaces.py", "def admin_space_message_remove("),
+    "end_space": ("ruqqus/routes/spaces.py", "def admin_space_report_end("),
+    "remove_story": ("ruqqus/routes/stories.py", "def admin_story_remove("),
+    "remove_chat_message": ("ruqqus/routes/chat_reports_pages.py", "def admin_chat_report_act("),
+}
+
+
+def _route_body(path, signature):
+    source = read(path)
+    start = source.index(signature)
+    ends = [i for i in (source.find("\n@app.", start), source.find("\ndef ", start + 5)) if i > 0]
+    return source[start:min(ends) if ends else len(source)]
+
+
 def test_every_action_that_must_say_why_is_refused_with_no_reason_by_a_route_and_nothing_else_is_listed():
-    assert set(ENFORCED) == log.REASON_REQUIRED, "REASON_REQUIRED says only what a route really enforces"
+    assert set(ENFORCED) | set(ENFORCED_IN) == log.REASON_REQUIRED, "REASON_REQUIRED says only what a route really enforces"
+    assert not set(ENFORCED) & set(ENFORCED_IN)
     for action, (path, words) in ENFORCED.items():
         assert words in read(path), (action, path)
-    assert "exile_user" not in log.REASON_REQUIRED
+    for action, (path, signature) in ENFORCED_IN.items():
+        body = _route_body(path, signature)
+        asked = [i for i in (body.find("clean_reason("), body.find("_needs_reason()")) if i >= 0]
+        assert asked, (action, "no reason is asked inside", signature)
+        refuses = "A reason is required" in body or "_needs_reason()" in body
+        assert refuses, (action, "a missing reason is not refused inside", signature)
+        # before anything is changed: no write precedes the check
+        first_change = [i for i in (body.find("g.db.add("), body.find(".is_banned = "), body.find("store.mute("), body.find("redact_as_bot("),
+                                    body.find("story_store.remove("), body.find("wiki_store.remove_revision("), body.find("    _end("),
+                                    body.find("space_store.remove_message("), body.find("purge_post_text("), body.find("purge_comment_text("),
+                                    body.find("BanRelationship(")) if i >= 0]
+        assert not first_change or min(asked) < min(first_change), (action, "the reason is asked after something changed", signature)
 
 
 def test_the_scan_callbacks_find_the_item_again_in_their_own_session():

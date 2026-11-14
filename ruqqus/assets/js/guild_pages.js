@@ -2,7 +2,7 @@
  * A guild's Wiki, Events and Resources pages (templates/guild/*.html; routes/guild_wiki.py, routes/guild_events.py).
  * Every change is a POST with the form key:
  *   <form data-guild-form action="...">     sends its fields; an error shows in the form's [role=alert]
- *   <button data-guild-post="url" data-confirm="...">   asks first when it has data-confirm
+ *   <button data-guild-post="url" data-confirm="...">   asks first when it has data-confirm; data-ask-reason="question" asks for the reason a takedown must give
  *   <input type="checkbox" data-guild-toggle="url">     sends setting=true|false
  *   <form data-new-wiki-page="/+guild/wiki/">           opens the editor of a new page's address
  * An answer with a `url` goes there; otherwise the page reloads to show what the server keeps (a page that sets
@@ -66,8 +66,15 @@
     event.preventDefault();
     var question = b.getAttribute('data-confirm');
     if (question && !window.confirm(question)) return;
+    var body = new URLSearchParams();
+    var ask = b.getAttribute('data-ask-reason');
+    if (ask) {                                                    // a takedown says why (the owner, 2026-11-14): no reason, nothing is sent
+      var reason = window.prompt(ask);
+      if (reason === null || reason.trim() === '') return;
+      body.set('reason', reason.trim());
+    }
     b.disabled = true;
-    send(b.getAttribute('data-guild-post')).then(done).catch(function (e) { b.disabled = false; tell(null, e); });
+    send(b.getAttribute('data-guild-post'), body).then(done).catch(function (e) { b.disabled = false; tell(null, e); });
   });
 
   document.addEventListener('change', function (event) {

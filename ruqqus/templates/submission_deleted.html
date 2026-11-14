@@ -111,6 +111,7 @@
 {% if v.admin_level >=3 and not p.purged_utc %}
 <form action="/api/purge_post/{{ p.base36id }}" method="post" onsubmit="return confirmForm(event, {{ {'title': _('Erase this post for good?'), 'text': _('This permanently erases the post title, text and link. It cannot be undone, even by an admin.'), 'ok': pgettext('verb', 'Purge'), 'icon': 'fa-fire'} | tojson | forceescape }})">
   <input type="hidden" name="formkey", value="{{ v.formkey }}">
+  <input type="text" class="form-control" name="reason" placeholder="Erasure reason (public, required)" required maxlength="512">
   <input type="submit" class="btn btn-danger" value="Purge Post (permanent)">
 </form>
 {% endif %}

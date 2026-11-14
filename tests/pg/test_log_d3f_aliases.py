@@ -37,9 +37,10 @@ def anonymous_comment(real_app, member, board_id, host=None):
     return found, f"t3_{base36encode(found)}", post_id
 
 
-def exile_alias(mod, board_name, thing, **extra):
+def exile_alias(mod, board_name, thing, reason="Harassing other members", **extra):
+    """An exile by alias (every one needs a reason: the owner, 2026-11-14)."""
     client = mod.browser()
-    return post(client, mod, f"/mod/exile_alias/{board_name}", thing=thing, **extra)
+    return post(client, mod, f"/mod/exile_alias/{board_name}", thing=thing, reason=reason, **extra)
 
 
 def json_of(real_app, model, row_id):
@@ -59,7 +60,7 @@ def test_a_guildmaster_exiles_an_alias_and_every_list_draws_the_number_never_the
     board_id, board_name = guild(real_app)
     guildmaster(mod, board_id)
     comment_id, thing, post_id = anonymous_comment(real_app, author, board_id)
-    answer = exile_alias(mod, board_name, thing, reason="Harassing other members", rule="")
+    answer = exile_alias(mod, board_name, thing, rule="")
     assert answer.status_code == 200 and answer.get_json() == {"message": "Done."}
     ban = ban_of(real_app, board_id, author)
     assert ban["is_active"] and ban["alias_n"] == 1 and ban["alias_post_id"] == post_id, "an ordinary exile for the account, marked with the thread and the number"
@@ -134,8 +135,10 @@ def test_a_name_based_action_never_confirms_a_guess_and_an_alias_exile_is_lifted
     assert ban_of(real_app, board_id, author)["is_active"], "still exiled"
     # exiling by name answers the same as for any member who has taken part (never "already exiled") and changes nothing about the alias exile.
     # What a guildmaster who suspects an account can still see is that no new named row appears for it: the residual risk, said in helpers/alias_actions.py
-    again = post(client, mod, f"/mod/exile/{board_name}", username=author.username)
-    fresh = post(client, mod, f"/mod/exile/{board_name}", username=clean.username)
+    from ruqqus.helpers.base36 import base36encode
+    clean_post = one(real_app, "SELECT id FROM submissions WHERE author_id = :a ORDER BY id DESC LIMIT 1", a=clean.id)["id"]
+    again = post(client, mod, f"/mod/exile/{board_name}", username=author.username, reason="Breaking the rules")
+    fresh = post(client, mod, f"/mod/exile/{board_name}", username=clean.username, reason="Breaking the rules", thing=f"t2_{base36encode(clean_post)}")
     assert (again.status_code, again.get_data(as_text=True)) == (fresh.status_code, fresh.get_data(as_text=True)) == (204, "")
     assert len(rows(real_app, "SELECT 1 FROM bans WHERE board_id = :b AND user_id = :u", b=board_id, u=author.id)) == 1
     assert ban_of(real_app, board_id, clean)["is_active"] and ban_of(real_app, board_id, clean)["alias_n"] is None
@@ -182,7 +185,7 @@ def test_a_chat_mute_by_alias_is_listed_by_its_number_and_lifted_only_from_that_
     guildmaster(mod, board_id)
     _, thing, post_id = anonymous_comment(real_app, author, board_id)
     client = mod.browser()
-    assert post(client, mod, f"/mod/chatban_alias/{board_name}", thing=thing).status_code == 200
+    assert post(client, mod, f"/mod/chatban_alias/{board_name}", thing=thing, reason="Spamming the channels").status_code == 200
     mute = rows(real_app, "SELECT id, alias_n, alias_post_id FROM chatbans WHERE board_id = :b AND user_id = :u", b=board_id, u=author.id)
     assert mute == [{"id": mute[0]["id"], "alias_n": 1, "alias_post_id": post_id}]
     from ruqqus.classes import ChatBan
@@ -199,7 +202,7 @@ def test_a_chat_mute_by_alias_is_listed_by_its_number_and_lifted_only_from_that_
     assert guess.status_code == nobody.status_code == 404 and "They aren't muted here." in html.unescape(guess.get_data(as_text=True))
     unmute_alias_guess, nobody2 = (post(client, mod, f"/mod/unchatban/{base36encode(board_id)}", username=m.username) for m in (author, clean))
     assert unmute_alias_guess.status_code == nobody2.status_code == 409
-    by_name = post(client, mod, f"/+{board_name}/mod/channels/mute", username=author.username)
+    by_name = post(client, mod, f"/+{board_name}/mod/channels/mute", username=author.username, reason="Spamming the channels")
     assert by_name.status_code == 200 and "is already muted" not in html.unescape(by_name.get_data(as_text=True)), "never 'already muted'"
     assert len(rows(real_app, "SELECT 1 FROM chatbans WHERE board_id = :b AND user_id = :u", b=board_id, u=author.id)) == 1, "one mute, still by alias"
     assert rows(real_app, "SELECT alias_n FROM chatbans WHERE board_id = :b AND user_id = :u", b=board_id, u=author.id) == [{"alias_n": 1}]
@@ -214,7 +217,7 @@ def test_alias_actions_are_limited_per_guildmaster_and_the_menu_names_only_the_n
     guildmaster(mod, board_id)
     comment_id, thing, post_id = anonymous_comment(real_app, author, board_id, host=host)
     client = mod.browser()
-    statuses = [post(client, mod, f"/mod/exile_alias/{board_name}", thing="t3_zzzz").status_code for _ in range(21)]
+    statuses = [post(client, mod, f"/mod/exile_alias/{board_name}", thing="t3_zzzz", reason="A reason").status_code for _ in range(21)]
     assert statuses == [200] * 20 + [429], "twenty an hour a guildmaster, whatever each did"
     from ruqqus.helpers.base36 import base36encode
     thread = get(mod.browser(), f"/post/{base36encode(post_id)}").get_data(as_text=True)

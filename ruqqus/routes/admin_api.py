@@ -279,6 +279,10 @@ nothing that references it breaks; only the text itself is gone.
     if not post:
         abort(400)
 
+    # erasing someone's words says why, in public (the owner, 2026-11-14: every admin takedown needs a reason)
+    if not action_log.clean_reason(request.form.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
+
     purge_post_text(post, v, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return (redirect(post.permalink), post)
 
@@ -442,6 +446,9 @@ nothing that references it breaks; only the text itself is gone.
     comment = g.db.query(Comment).filter_by(id=base36decode(c_id)).first()
     if not comment:
         abort(404)
+
+    if not action_log.clean_reason(request.form.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
 
     purge_comment_text(comment, v, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return "", 204

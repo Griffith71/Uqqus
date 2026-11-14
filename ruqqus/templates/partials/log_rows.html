@@ -13,6 +13,12 @@
             {% if e.rule in LOG_RULES %}&middot; {{ msg_text(LOG_RULES[e.rule]) }}{% endif %}
           </div>
           {% if e.reason %}<div class="text-small mt-1">{{ _('Reason: %(reason)s', reason=e.reason) }}</div>{% endif %}
+          {% if e.cited %}
+          {# what an exile relied on: a named public item is named by id for everyone; the person, the deciding guild's guildmasters and the admins can open the private copy kept as it was #}
+          <div class="text-small mt-1">{{ _('Cited:') }}
+            {% for x in e.cited %}<a href="/{{ 'post' if x.kind == 'post' else 'comment' }}/{{ x.id }}/{{ 'copy' if x.can_open else 'log' }}"{% if x.can_open %} rel="nofollow"{% endif %}>{% if x.kind == 'post' %}{{ _('post #%(id)s', id=x.id) }}{% else %}{{ _('comment #%(id)s', id=x.id) }}{% endif %}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+          </div>
+          {% endif %}
           {% if e.evidence %}
           {# the items this ban cited, which a second admin approved naming the author of: each leads to its own log, where the line about it draws the author #}
           <div class="text-small mt-1">{{ _('Evidence:') }}

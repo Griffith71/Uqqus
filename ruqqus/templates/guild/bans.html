@@ -36,7 +36,7 @@
 				<p class="text-small text-muted mb-md-0">{{ _("The following users are prohibited from participating in +%(guild)s.", guild=b.name) }}</p>
 			</div>
 			<div class="mt-auto">
-				<button class="btn btn-primary" data-toggle="modal" data-target="#guildmasterExileModal">{{ _("Exile user") }}</button>
+				<button type="button" class="btn btn-primary" onclick="exile_from_guild({{ b.name | tojson | forceescape }})">{{ _("Exile user") }}</button>
 			</div>
 		</div>
 
@@ -128,32 +128,7 @@
 
 {% endblock %}
 
-{% block exileModal %}
-<!-- Guildmaster Exile User Modal -->
-<div class="modal fade" id="guildmasterExileModal" tabindex="-1" role="dialog" aria-labelledby="guildmasterExileModalTitle" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<form action="/mod/exile/{{ b.base36id }}" id="exile-form" method="post" onsubmit="return false;">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">{{ _("Exile user from +%(guild)s", guild=b.name) }}</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
-						<span aria-hidden="true"><i class="fas fa-times"></i></span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<p>{{ _("Users exiled from a guild will receive a notification shortly after you exile them.") }}</p>
-					<input type="hidden" name="formkey" value="{{ v.formkey }}">
-					<input type="text" name="username" placeholder="{{ _('enter username') }}" id="exile-username" class="form-control" maxlength=25 required>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
-					<button type="button" class="btn btn-primary" id="exileUserButton" onclick="exile_from_guild('{{ b.name }}')">{{ _("Exile user") }}</button>
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
-{% endblock %}
+{% block exileModal %}{# the exile dialog is the page shell's (partials/decision_dialog.html): a reason and what it relies on #}{% endblock %}
 
 {% block errorToasts %}
 

@@ -186,3 +186,16 @@ def test_the_queue_names_the_item_by_id_and_never_carries_its_words(db):
     row = appeals.open_queue(db, 3)[0]
     assert set(row) >= {"id", "entry_id", "user_id", "reason", "action", "target_submission_id", "entry_reason", "rule_key"}
     assert not {"title", "body", "url"} & set(row)
+
+
+def test_an_exile_that_cited_an_item_is_undone_by_the_lifting_of_that_person_in_that_guild(db):
+    """The entry that lifts an exile names the person and no item, so an exile that carries the item it cited beside the person must be matched on the person."""
+    exile = log.record(db, "exile_user", 10, board_id=3, target_user_id=30, post_id=7, reason="Harassment", now=NOW)
+    entry = appeals.entry_of(db, exile)
+    assert entry["target_submission_id"] == 7
+    assert appeals.is_undone(db, entry) is False
+    log.record(db, "unexile_user", 11, board_id=1, target_user_id=30, now=NOW + 1)                     # another guild
+    log.record(db, "unexile_user", 11, board_id=3, target_user_id=31, now=NOW + 2)                     # another person
+    assert appeals.is_undone(db, entry) is False
+    log.record(db, "unexile_user", 11, board_id=3, target_user_id=30, now=NOW + 3)
+    assert appeals.is_undone(db, entry) is True

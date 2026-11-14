@@ -24,6 +24,7 @@
     {% for reason in r.reasons %}<div class="text-small text-muted">"{{ reason }}"</div>{% endfor %}
     <form action="/admin/broadcast_reports/{{ r.post_id }}/remove" method="post" class="d-inline mt-2">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="text" name="reason" class="form-control form-control-sm d-inline-block w-auto mr-2 mb-1" placeholder="Reason (public, required)" required maxlength="512" aria-label="Reason">
       <button class="btn btn-danger btn-sm">Remove the message</button>
     </form>
     <form action="/admin/broadcast_reports/{{ r.post_id }}/dismiss" method="post" class="d-inline">

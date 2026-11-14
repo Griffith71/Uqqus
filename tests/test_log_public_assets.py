@@ -317,14 +317,15 @@ def test_the_snapshot_kind_migration_is_in_the_schema_and_its_ledger_and_safe_to
         assert "REFERENCES" not in migration
     table = schema.split("CREATE TABLE public.log_snapshots (", 1)[1].split(");", 1)[0]
     assert "kind character varying(12) NOT NULL" in table and "hider_id integer" in table
-    assert "CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal'))" in table
+    assert "CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal', 'evidence'))" in table      # `evidence` since 2027-01-08_evidence.sql
     assert "    edit_group bigint" in schema.split("CREATE TABLE public.content_edit_history (", 1)[1].split(");", 1)[0]
     assert "edit_group = Column(BigInteger" in read("ruqqus", "classes", "content_history.py")
 
 
 def test_a_guildmaster_opens_only_a_guilds_hide_and_every_writer_says_what_its_copy_is():
     visible = body(ACTION_LOG, "snapshot_visible")
-    assert 'guild_mod and kind == HIDE' in visible and 'snapshot.get("hider_id") == viewer_id' in visible
+    # a guild's guildmasters open a guild's hide and, since 2026-11-14, the evidence an exile relied on (helpers/sanction_evidence.py): nothing else
+    assert 'guild_mod and kind in (HIDE, EVIDENCE)' in visible and 'snapshot.get("hider_id") == viewer_id' in visible
     assert "SNAPSHOT_KINDS" in ACTION_LOG and "raise ValueError" in body(ACTION_LOG, "_keep")      # no default kind
     for src, fn, kind in ((POSTS, "delete_post_as", "kind=action_log.GRACE"), (COMMENTS, "delete_comment", "kind=action_log.GRACE"),
                           (COMMENTS, "author_hide_comment", "kind=action_log.AUTHOR_HIDE, hider_id=v.id"),

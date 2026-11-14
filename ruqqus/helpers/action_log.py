@@ -45,11 +45,14 @@ SITE_BOARDS = (1, 2)                # +general and +systemprofile (where every p
 # What a private copy is a copy OF, which decides who may open it (`snapshot_visible`), for how long it is kept and whether it
 # is public. `delete` is the copy of an item its author deleted after the grace window (helpers/deletion.py): it never expires, and its
 # text is drawn through the Log to whoever the ENTRY's audience allows (`log_snapshots.public`: not for a child account's or a removed item's).
-HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND = "hide", "author_hide", "grace", "delete", "legal"
-SNAPSHOT_KINDS = (HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND)
+# `evidence` is the documentation of a sanction (helpers/sanction_evidence.py): the content an exile cites, as it was when the decision was made,
+# for the person, the deciding guild's guildmasters and the admins; kept a year.
+HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND, EVIDENCE = "hide", "author_hide", "grace", "delete", "legal", "evidence"
+SNAPSHOT_KINDS = (HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND, EVIDENCE)
 
 SNAPSHOT_DAYS = 90                  # how long the text of what was hidden, removed or deleted is kept privately
 LEGAL_HOLD_DAYS = 365               # illegal content: the one-year preservation duty
+EVIDENCE_DAYS = 365                 # what a sanction relied on: as long as it can sensibly be appealed
 REASON_MAX = 512
 DAY = 86400
 
@@ -102,18 +105,22 @@ RUNNING_ACTIONS = {
     "admin_badge", "admin_alt_link", "admin_ip_ban", "admin_image_ban", "admin_image_purge", "admin_word_filter", "admin_app",
     "admin_trending", "admin_feed_server", "admin_bot", "admin_signup", "admin_throttle", "admin_chat_report", "admin_siege",
     "admin_domain", "redact_entry", "correct_entry", "automatic_hold", "auto_space_takedown", "age_lock", "admin_evidence",
+    "remove_chat_message",
 }
 STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
                  "remove_story", "age_declaration"} | RUNNING_ACTIONS
 LEGAL_ACTIONS = {"suppress_content"}
 
 # Actions that must say why (Wikipedia's reason): **every one is refused with no reason by the route that makes it** (a reason box the person
-# must fill: `tests/test_log_coverage_assets.py` `ENFORCED` names each route and fails when one stops asking, or when an action is listed
-# here that no route enforces). An exile's reason is optional on purpose (its one-tap menus don't ask yet), so it is not here. A caller
+# must fill: `tests/test_log_d4.py` `ENFORCED` names each route and fails when one stops asking, or when an action is listed here that no route
+# enforces). Since 2026-11-14 (the owner) that includes every exile and chat mute, by name or by alias, and every admin takedown. A caller
 # with a reason box may also pass `require_reason=True` to `record`.
 REASON_REQUIRED = {
     "hide_post_from_guild", "hide_comment_from_guild", "author_hide_comment", "ban_post", "ban_comment", "suspend_user", "ban_user",
     "ban_guild", "suppress_content", "hide_revision",
+    "exile_user", "exile_alias", "chatban_user", "chatban_alias",
+    "purge_post", "purge_comment", "clear_display_name", "remove_wiki_revision", "remove_broadcast_message", "remove_space_message",
+    "end_space", "remove_story", "remove_chat_message",
 }
 
 # the markers an admin or automatic writer already puts in a ModAction's note (routes/admin_api.py, routes/settings.py,
@@ -247,8 +254,8 @@ def snapshot_of(item, board_id=None, legal_hold=False, comment=False, kind=None,
 
 
 def _keep(db, snapshot, entry_id, now):
-    days = LEGAL_HOLD_DAYS if snapshot.get("legal_hold") else SNAPSHOT_DAYS
     kind = LEGAL_KIND if snapshot.get("legal_hold") else snapshot.get("kind")
+    days = LEGAL_HOLD_DAYS if snapshot.get("legal_hold") else (EVIDENCE_DAYS if kind == EVIDENCE else SNAPSHOT_DAYS)
     if kind not in SNAPSHOT_KINDS:
         raise ValueError(f"a private copy needs a kind: {kind!r}")     # no default: who may open it depends on it
     expires = 0 if kind == DELETE else now + days * DAY               # a delete copy never expires: only an admin's scrub empties it
@@ -733,9 +740,10 @@ def entry_with_copy(db, entry_id, level, member_boards=()):
 
 def snapshot_visible(snapshot, *, viewer_id, level, guild_mod=False):
     """Whether a reader may open a snapshot: its author, admins (level 3; legal holds only level 4), the account that hid it
-    (a post's author, for a comment under it) and, **for a guild's hide only**, the guildmasters of that guild (`guild_mod`).
+    (a post's author, for a comment under it) and, **for a guild's hide or a sanction's evidence only**, the guildmasters of that guild (`guild_mod`).
     A comment its author deleted, or a Circle post's copy, carries the guild's board id too, and the guildmasters have no
-    business reading it (the audit, 2026-11-05: H2). A scrubbed one has no text for anyone."""
+    business reading it (the audit, 2026-11-05: H2). The same for a sanction's `evidence`: the deciding guild's guildmasters made the decision
+    on it. A scrubbed one has no text for anyone."""
     if snapshot["scrubbed_utc"]:
         return False
     kind = snapshot.get("kind")
@@ -745,7 +753,7 @@ def snapshot_visible(snapshot, *, viewer_id, level, guild_mod=False):
         return True
     if viewer_id and (snapshot["author_id"] == viewer_id or snapshot.get("hider_id") == viewer_id):
         return True
-    return bool(guild_mod and kind == HIDE)
+    return bool(guild_mod and kind in (HIDE, EVIDENCE))
 
 
 def not_hidden_from(level, member_boards=(), column="modactions.id"):

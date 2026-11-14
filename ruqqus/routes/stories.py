@@ -306,11 +306,14 @@ def admin_story_remove(sid, v):
     story = story_store.get(g.db, sid)
     if story is None:
         abort(404)
+    reason = action_log.clean_reason(request.form.get("reason"))
+    if not reason:                                          # a takedown says why (the owner, 2026-11-14), asked before it is taken down
+        return _fail(tr("A reason is required."))
     story_store.remove(g.db, sid)
     story_store.resolve_reports(g.db, sid)
     # the Log, for the staff only: a story may be for a circle, and who made it is not the public's to read
     action_log.record(g.db, "remove_story", v.id, role=action_log.ADMIN, target_user_id=story.user_id, floor=action_log.STAFF,
-                      staff_note=f"removed story #{sid} after a report")
+                      staff_note=f"removed story #{sid} after a report", reason=reason, rule=request.form.get("rule"))
     g.db.commit()
     return redirect("/admin/story_reports")
 

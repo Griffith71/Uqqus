@@ -23,7 +23,7 @@ from sqlalchemy.orm import lazyload
 
 from ruqqus.classes import Board, Comment, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
-from ruqqus.helpers import action_log, anon_aliases, log_evidence, deletion, deletion_store, log_view, sensitive as sensitive_rules
+from ruqqus.helpers import action_log, anon_aliases, log_evidence, deletion, deletion_store, log_view, sanction_evidence, sensitive as sensitive_rules
 from ruqqus.helpers import sanitize as sanitize_rules
 from ruqqus.helpers import anonymity
 from ruqqus.helpers.base36 import base36decode, base36encode
@@ -173,6 +173,10 @@ def _rows(entries, v):
         g.db, [t["post_id"] for t in texts.values()], [t["comment_id"] for t in texts.values()])
     named, cited, accounts = _reveals(entries)
     numbers = _numbers(entries)
+    sanctioned = [e["id"] for e in entries if e["log_type"] == action_log.SANCTION]
+    quoted_public = sanction_evidence.public_cited(g.db, sanctioned)          # what an exile cited: named, public items, by id, for everyone
+    quoted_mine = sanction_evidence.openable(                                 # and what this reader may open a private copy of
+        g.db, sanctioned, None if getattr(v, "qr_limited", False) else getattr(v, "id", None), level, mine) if v is not None else {}
     rows = []
     for e in entries:
         board = guilds.get(e["board_id"]) if e["board_id"] else None
@@ -230,6 +234,11 @@ def _rows(entries, v):
             "rule": e["rule_key"], "reason": "" if is_hidden(words, e.get("reason_severity")) else e["reason"],
             "can_open": can_open, "type": e["log_type"],                                                          # not "copy": a dict has that method
             "until": e.get("until_utc") or 0})
+        quoted = list(dict.fromkeys(quoted_mine.get(e["id"], []) + quoted_public.get(e["id"], [])))
+        if quoted:
+            can_copy = set(quoted_mine.get(e["id"], []))
+            rows[-1]["cited"] = [{"kind": kind, "id": base36encode(item_id), "can_open": (kind, item_id) in can_copy}
+                              for kind, item_id in quoted]          # not "copy": a dict has that method
         if cited.get(e["id"]):
             rows[-1]["evidence"] = [{"kind": kind, "id": base36encode(item_id)} for kind, item_id in cited[e["id"]]]
         if e["log_type"] == action_log.EDIT:

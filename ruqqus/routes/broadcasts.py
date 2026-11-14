@@ -381,6 +381,10 @@ def admin_broadcast_report_act(pid, action, v):
         abort(404)
     now = _now()
     if action == "remove":
+        # a takedown says why (the owner, 2026-11-14), asked before anything is taken down; the message in the report is what it cites
+        reason = action_log.clean_reason(request.form.get("reason"))
+        if not reason:
+            return _error("A reason is required.", 400)
         channel = channel_store.get(g.db, row[0])
         if channel is not None:
             try:
@@ -399,7 +403,7 @@ def admin_broadcast_report_act(pid, action, v):
                 media_cdn.purge([asset.path])
         # the Log: a message in a public channel is something members read, so an admin's removal is a public entry (no words, no
         # sender, no channel: the message is the channel's own)
-        action_log.record_quietly(g.db, "remove_broadcast_message", v.id, role=action_log.ADMIN)
+        action_log.record_quietly(g.db, "remove_broadcast_message", v.id, role=action_log.ADMIN, reason=reason, rule=request.form.get("rule"))
     channel_store.resolve_reports(g.db, pid, now)
     g.db.commit()
     return redirect("/admin/broadcast_reports")

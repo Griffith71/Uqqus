@@ -344,7 +344,9 @@ def mod_wiki_enable(bid, board, v):
 @admin_level_required(3)
 @validate_formkey
 def admin_wiki_remove_revision(page_id, rid, v):
-    """An admin takes a revision's text down (it stays listed in the history with no text)."""
+    """An admin takes a revision's text down (it stays listed in the history with no text). Needs a `reason` (the owner, 2026-11-14)."""
+    if not action_log.clean_reason(request.values.get("reason")):
+        return jsonify({"error": tr("A reason is required.")}), 400
     wiki_store.remove_revision(g.db, page_id, rid, int(time.time()))
     board_id = g.db.execute(text("SELECT board_id FROM guild_wiki_pages WHERE id = :p"), {"p": page_id}).scalar()
     action_log.record_quietly(g.db, "remove_wiki_revision", v.id, board_id=board_id, role=action_log.ADMIN,

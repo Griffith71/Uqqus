@@ -623,6 +623,7 @@
 {% include "bootstrap.html" %}
 
 {% if v %}{% include "partials/confirm_sheet.html" %}{% endif %}{# the "are you sure?" sheet and the toast with Undo (assets/js/confirm_sheet.js) #}
+{% if v and not request.args.get('embed') %}{% include "partials/decision_dialog.html" %}{% endif %}{# an exile or a mute that must say why: reason, rule, what it relies on (assets/js/decision_dialog.js) #}
 {% if v and not request.args.get('embed') %}{% include "partials/site_feedback_modal.html" %}{% endif %}
 {% if v and not request.args.get('embed') %}{% include "partials/share_chat_modal.html" %}{% include "partials/coauthors_modal.html" %}{% include "partials/audience_modal.html" %}{% include "partials/comment_permission_modal.html" %}{% endif %}
 {% if v and organise_bookmarks and not request.args.get('embed') %}{% include "partials/bookmark_folder_modal.html" %}{% endif %}
@@ -633,7 +634,8 @@
 
 <script src="{{ asset_url('js/text_length.js') }}"></script>{# weighted lengths for the counters (helpers/text_length.py) #}
 <script src="{{ asset_url('js/all_js.js') }}" importance="high" ></script>
-{% if v %}<script src="{{ asset_url('js/confirm_sheet.js') }}"></script>{% endif %}{# confirmSheet(), blockUser(): every Block asks first (partials/confirm_sheet.html) #}
+{% if v %}<script src="{{ asset_url('js/confirm_sheet.js') }}"></script>{% endif %}
+{% if v and not request.args.get('embed') %}<script src="{{ asset_url('js/decision_dialog.js') }}"></script>{% endif %}{# confirmSheet(), blockUser(): every Block asks first (partials/confirm_sheet.html) #}
 <script src="{{ asset_url('js/video_playback.js') }}"></script>{# the reader's video choices (Settings > Content > Video playback) #}
 <script src="{{ asset_url('js/consent.js') }}"></script>{# the reader's answer to the consent banner: before the script that starts players reads it #}
 <script src="{{ asset_url('js/feed_video_autoplay.js') }}"></script>

@@ -603,10 +603,13 @@ def test_an_exile_never_pairs_an_account_with_an_anonymous_item_and_reads_as_the
     board_id, name = guild(real_app)
     gm, author, visible_author = guildmaster(make_member, board_id), make_member(), make_member()
     anon_id, anon36 = add_post(author, board_id, "Anonymous post", "<p>x</p>", anonymous=True)
-    add_comment(author, anon_id, board_id, "<p>a named comment: this is how they took part</p>")
+    _, own_comment36 = add_comment(author, anon_id, board_id, "<p>a named comment: this is how they took part</p>")
     named_id, named36 = add_post(visible_author, board_id, "Named post", "<p>y</p>")
-    for username, fullname in ((author.username, f"t2_{anon36}"), (visible_author.username, f"t2_{named36}")):
-        answer = post(gm.browser(), gm, f"/mod/exile/{name}", username=username, thing=fullname)
+    # an exile needs a reason and a named item of the account's own: the anonymous post named as `thing` is dropped without a word, so the account
+    # also cites its named comment (an exile that cited nothing else would be refused, and say nothing about who wrote the anonymous post)
+    for username, extra in ((author.username, {"thing": f"t2_{anon36}", "evidence": f"t3_{own_comment36}"}),
+                            (visible_author.username, {"thing": f"t2_{named36}"})):
+        answer = post(gm.browser(), gm, f"/mod/exile/{name}", username=username, reason="Breaking the guild's rules", **extra)
         assert answer.status_code in (200, 204), answer.get_data(as_text=True)[:200]
     anon_entry, = entries(real_app, action="exile_user", target_user_id=author.id)
     named_entry, = entries(real_app, action="exile_user", target_user_id=visible_author.id)

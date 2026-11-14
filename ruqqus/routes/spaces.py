@@ -1226,10 +1226,15 @@ def admin_space_report_end(sid, v):
     row = space_store.get(g.db, sid)
     if row is None:
         abort(404)
+    # ending someone's Space says why, in public (the owner, 2026-11-14: every admin takedown needs a reason), asked before it is ended
+    reason = action_log.clean_reason(request.form.get("reason"))
+    if not reason:
+        return jsonify({"error": tr("A reason is required.")}), 400
     post = get_post(base36encode(row[1]), v=v, graceful=True)
     _end(_Space(row, post), int(time.time()), by_admin=True)
     space_store.resolve_reports(g.db, sid, int(time.time()))
-    action_log.record_quietly(g.db, "end_space", v.id, role=action_log.ADMIN, post_id=row[1])     # public, by the item's id
+    action_log.record_quietly(g.db, "end_space", v.id, role=action_log.ADMIN, post_id=row[1],     # public, by the item's id
+                              reason=reason, rule=request.form.get("rule"))
     g.db.commit()
     return redirect("/admin/space_reports")
 
@@ -1241,11 +1246,15 @@ def admin_space_message_remove(mid, v):
     row = space_store.message(g.db, mid)
     if row is None:
         abort(404)
+    reason = action_log.clean_reason(request.form.get("reason"))
+    if not reason:
+        return jsonify({"error": tr("A reason is required.")}), 400
     now = int(time.time())
     space_store.remove_message(g.db, mid, v.id, now)
     space_store.resolve_message_reports(g.db, mid, now)
     space_row = space_store.get(g.db, row[1])
-    action_log.record_quietly(g.db, "remove_space_message", v.id, role=action_log.ADMIN, post_id=space_row[1] if space_row else None)
+    action_log.record_quietly(g.db, "remove_space_message", v.id, role=action_log.ADMIN, post_id=space_row[1] if space_row else None,
+                              reason=reason, rule=request.form.get("rule"))
     g.db.commit()
     live_bus.publish(r, live_bus.topic_channel(f"space:{row[1]}"), "space.message_gone", {"id": mid})
     return redirect("/admin/space_reports")

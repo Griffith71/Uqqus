@@ -30,6 +30,7 @@
     <div class="mt-2">
       <form action="/admin/chat_reports/{{ r.id }}/remove" method="post" class="d-inline">
         <input type="hidden" name="formkey" value="{{ v.formkey }}">
+        <input type="text" name="reason" class="form-control form-control-sm d-inline-block w-auto mr-2 mb-1" placeholder="Reason (kept by the staff, required)" required maxlength="512" aria-label="Reason">
         <button class="btn btn-danger btn-sm">Remove the message</button>
       </form>
       <form action="/admin/chat_reports/{{ r.id }}/done" method="post" class="d-inline">

@@ -1656,15 +1656,18 @@ def test_exiling_never_tells_a_guildmaster_who_wrote_an_anonymous_item(make_memb
     anonymous item in the guild. Its named comments still count."""
     mod, _, copy_id = guildmaster_with_post
     hidden, named = make_member(), make_member()
+    from ruqqus.helpers.base36 import base36encode
     cid = _comment_on(hidden, copy_id)
-    _comment_on(named, copy_id)
+    named_cid = _comment_on(named, copy_id)
     db = fresh(mod)
     db.execute(text("UPDATE comments SET is_anonymous = true WHERE id = :c"), {"c": cid})
     db.commit()
     here = mod.browser()
-    refused = post(here, "/mod/exile/general", {"username": hidden.username, "formkey": mod.formkey(here)})
+    # (an exile needs a reason, and a cited item of the account's own: the participation check comes before the cited item is asked for)
+    refused = post(here, "/mod/exile/general", {"username": hidden.username, "reason": "Breaking the rules", "formkey": mod.formkey(here)})
     assert refused.status_code == 403 and "participated" in refused.get_json()["error"]
-    done = post(here, "/mod/exile/general", {"username": named.username, "formkey": mod.formkey(here)})
+    done = post(here, "/mod/exile/general", {"username": named.username, "reason": "Breaking the rules",
+                                             "thing": f"t3_{base36encode(named_cid)}", "formkey": mod.formkey(here)})
     assert done.status_code < 400, done.get_data(as_text=True)[:300]
 
 
@@ -1692,9 +1695,9 @@ def test_removing_a_contributor_through_the_v2_api_works_and_an_odd_thing_is_not
     assert fresh(mod).execute(text("SELECT is_active FROM contributors WHERE user_id = :u AND board_id = 1"),
                               {"u": member.id}).scalar() is False
     here = mod.browser()
-    odd = post(here, "/mod/exile/general", {"username": member.username, "thing": f"t1_{base36encode(member.id)}",
+    odd = post(here, "/mod/exile/general", {"username": member.username, "thing": f"t1_{base36encode(member.id)}", "reason": "Breaking the rules",
                                             "formkey": mod.formkey(here)})
-    assert odd.status_code == 400
+    assert odd.status_code == 400 and "isn't a post or comment" in odd.get_json()["error"]
 
 
 def test_switching_two_factor_off_with_the_recovery_code_signs_out_the_other_browsers(make_member):
@@ -2057,12 +2060,12 @@ def test_a_forwarder_can_be_exiled_with_the_copy_they_forwarded(make_member, gui
                       {"f": forwarder.id, "s": copy_id}).rowcount == 1
     db.commit()
     here = mod.browser()
-    answer = post(here, "/mod/exile/general", {"username": forwarder.username, "thing": f"t2_{base36encode(copy_id)}",
+    answer = post(here, "/mod/exile/general", {"username": forwarder.username, "thing": f"t2_{base36encode(copy_id)}", "reason": "Breaking the rules",
                                                "formkey": mod.formkey(here)})
     assert answer.status_code < 400, answer.get_data(as_text=True)[:300]
-    wrong = post(here, "/mod/exile/general", {"username": author.username, "thing": f"t2_{base36encode(copy_id)}",
+    wrong = post(here, "/mod/exile/general", {"username": author.username, "thing": f"t2_{base36encode(copy_id)}", "reason": "Breaking the rules",
                                               "formkey": mod.formkey(here)})
-    assert wrong.status_code == 400
+    assert wrong.status_code == 400 and "isn't @" in wrong.get_json()["error"]
 
 
 def test_a_banned_guild_never_keeps_a_curation_from_going_public(make_member):

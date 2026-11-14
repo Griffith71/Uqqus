@@ -1329,3 +1329,12 @@ button.show-more-link, button.translate-btn, .btn-link.btn-sm {
         border-top-color: var(--border);
     }
 }
+
+// What a decision relies on (partials/decision_dialog.html): the account's posts and comments a guildmaster may cite, in a box that scrolls on its own.
+.decision-items {
+    max-height: px2rem(224px);
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+}

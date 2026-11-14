@@ -1,0 +1,46 @@
+{# One dialog for a guildmaster's decision that must say why (the owner, 2026-11-14): an exile (by name or by alias) and a chat mute by alias. assets/js/decision_dialog.js
+   fills it from what a menu item passes to `decisionDialog({...})`: the title and button words (the menu's own, already translated), the address, the fields the route reads,
+   and for an exile by name the posts and comments of the account in that guild it can rely on. The reason is required; an exile needs at least one cited item (the route
+   refuses it too). Included once for members, like the other sheets. #}
+<div class="modal fade" id="decisionModal" tabindex="-1" role="dialog" aria-labelledby="decisionTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm-bottom" role="document">
+    <form class="modal-content" id="decisionForm" novalidate>
+      <div class="modal-header">
+        <h5 class="modal-title" id="decisionTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-small text-muted" id="decisionIntro"></p>
+        <div id="decisionUserGroup" class="form-group" hidden>
+          <label for="decisionUser">{{ _("Username") }}</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="decisionUser" autocomplete="off" maxlength="30" placeholder="{{ _('@username') }}">
+            <div class="input-group-append"><button type="button" class="btn btn-secondary" id="decisionFind">{{ _("Find their posts and comments") }}</button></div>
+          </div>
+        </div>
+        <fieldset id="decisionEvidence" class="form-group" hidden>
+          <legend class="text-small font-weight-bold">{{ _("What this relies on") }}</legend>
+          <p class="text-small text-muted mb-2" id="decisionEvidenceHelp">{{ _("Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins.") }}</p>
+          <div id="decisionItems" class="decision-items"></div>
+        </fieldset>
+        <div class="form-group">
+          <label for="decisionReason">{{ _("Reason") }}</label>
+          <textarea class="form-control" id="decisionReason" rows="3" maxlength="512" required></textarea>
+          <small class="form-text text-muted">{{ _("Plain text, up to 512 characters. It is in the Log, and the person is sent it.") }}</small>
+        </div>
+        <div class="form-group" id="decisionRuleGroup">
+          <label for="decisionRule">{{ _("Rule") }}</label>
+          <select class="form-control" id="decisionRule">
+            <option value="">{{ _("Rule broken") }}</option>
+            {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ msg_text(label) }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="text-danger text-small" id="decisionError" role="alert" hidden></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link" data-dismiss="modal">{{ _("Cancel") }}</button>
+        <button type="submit" class="btn btn-danger" id="decisionOk"></button>
+      </div>
+    </form>
+  </div>
+</div>

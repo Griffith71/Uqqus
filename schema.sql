@@ -7210,7 +7210,7 @@ CREATE TABLE public.log_snapshots (
     public boolean DEFAULT false NOT NULL,
     word_severity smallint DEFAULT 0 NOT NULL,
     is_sensitive boolean DEFAULT false NOT NULL,
-    CONSTRAINT log_snapshots_kind CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal'))
+    CONSTRAINT log_snapshots_kind CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal', 'evidence'))
 );
 
 CREATE INDEX log_snapshots_entry_idx ON public.log_snapshots (entry_id);
@@ -7553,4 +7553,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2027-01-04_log_evidence.sql'),
     ('2027-01-05_anon_aliases.sql'),
     ('2027-01-06_coauthor_credits.sql'),
-    ('2027-01-07_alias_actions.sql');
+    ('2027-01-07_alias_actions.sql'),
+    ('2027-01-08_evidence.sql');

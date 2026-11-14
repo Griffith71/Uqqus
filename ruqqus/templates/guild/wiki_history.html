@@ -39,7 +39,7 @@
       <button type="button" class="btn btn-sm btn-link ml-auto" data-guild-post="{{ b.permalink }}/wiki/{{ page[2] }}/restore/{{ r[0] }}" data-confirm="{{ _("Put this revision's text back? It becomes a new revision; nothing in the history is lost.") }}">{{ pgettext("button", "Restore") }}</button>
       {% endif %}
       {% if v and v.admin_level >= 3 and not r[8] %}
-      <button type="button" class="btn btn-sm btn-link text-danger{% if not (gm and r[0] != page[5]) %} ml-auto{% endif %}" data-guild-post="/admin/wiki/{{ page[0] }}/revision/{{ r[0] }}/remove" data-confirm="Take this revision's text down for everyone but admins?">Remove (admin)</button>
+      <button type="button" class="btn btn-sm btn-link text-danger{% if not (gm and r[0] != page[5]) %} ml-auto{% endif %}" data-guild-post="/admin/wiki/{{ page[0] }}/revision/{{ r[0] }}/remove" data-confirm="Take this revision's text down for everyone but admins?" data-ask-reason="Why is this revision's text being taken down? Your reason is shown in the public log.">Remove (admin)</button>
       {% endif %}
     </li>
     {% else %}

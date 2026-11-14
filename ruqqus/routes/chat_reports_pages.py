@@ -105,6 +105,9 @@ def admin_chat_report_act(rid, action, v):
         abort(404)
     if row[8] != report_rules.OPEN:
         return redirect("/admin/chat_reports")
+    reason = action_log.clean_reason(request.form.get("reason"))
+    if action == "remove" and not reason:                   # a takedown says why (the owner, 2026-11-14), asked before the message is taken down
+        return _error("A reason is required.", 400)
     if action == "remove":
         try:
             matrix.redact_as_bot(row[2], row[4], secrets.token_hex(12), "Removed by the site's admins")
@@ -114,6 +117,6 @@ def admin_chat_report_act(rid, action, v):
     report_store.resolve(g.db, rid, status, v.id, int(time.time()))
     if action == "remove":
         # the Log, for the staff only: a private chat's message is nobody else's business, and its words were never the site's to read
-        action_log.record_staff(g.db, "admin_chat_report", v, f"removed the reported message of chat report #{rid}")
+        action_log.record_staff(g.db, "remove_chat_message", v, f"removed the reported message of chat report #{rid}", reason=reason)
     g.db.commit()
     return redirect("/admin/chat_reports")

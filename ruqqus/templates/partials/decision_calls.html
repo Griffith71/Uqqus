@@ -1,0 +1,17 @@
+{# What a menu item calls to open the decision dialog (partials/decision_dialog.html, assets/js/decision_dialog.js): an exile by name (it must cite what it relies on), an exile by alias and
+   a chat mute by alias ("Anonymous #3": only the number, never the account). Each prints a call, escaped for an attribute: `onclick="{{ exile_call(...) }}"`. The words are the
+   menu's own, already translated. #}
+{% macro exile_call(board, username, fullname, snippet) -%}
+{% set opts = {'title': _("Exile @%(name)s", name=username), 'ok': _("Exile"), 'url': '/mod/exile/' ~ board ~ '?toast=1', 'fields': {'username': username, 'thing': fullname}, 'evidence': true, 'evidenceUrl': '/mod/exile_items/' ~ board, 'thing': fullname, 'thingText': snippet} %}
+decisionDialog({{ opts | tojson | forceescape }})
+{%- endmacro %}
+
+{% macro alias_exile_call(board, fullname, alias) -%}
+{% set opts = {'title': _("Exile %(alias)s", alias=alias), 'ok': _("Exile"), 'url': '/mod/exile_alias/' ~ board ~ '?toast=1', 'fields': {'thing': fullname}, 'intro': _("This relies on the anonymous post or comment you opened it from. The site keeps a private copy of it as it is now.")} %}
+decisionDialog({{ opts | tojson | forceescape }})
+{%- endmacro %}
+
+{% macro alias_mute_call(board, fullname, alias) -%}
+{% set opts = {'title': _("Mute %(alias)s in the channels", alias=alias), 'ok': pgettext("button", "Mute"), 'url': '/mod/chatban_alias/' ~ board ~ '?toast=1', 'fields': {'thing': fullname}} %}
+decisionDialog({{ opts | tojson | forceescape }})
+{%- endmacro %}

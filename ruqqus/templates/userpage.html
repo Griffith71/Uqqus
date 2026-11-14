@@ -127,6 +127,7 @@
 <form action="/admin/display_name/clear" method="post" onsubmit="return confirm('Remove the display name &quot;{{ u.display_name | e }}&quot; from @{{ u.username }}? They are told.');">
   <input type="hidden" name="formkey" value="{{ v.formkey }}">
   <input type="hidden" name="username" value="{{ u.username }}">
+  <input type="text" name="reason" class="form-control form-control-sm d-inline-block w-auto mr-2 mb-1" placeholder="Reason (kept by the staff, required)" required maxlength="512" aria-label="Reason">
   <input type="submit" class="btn btn-outline-danger btn-sm mb-2" value="Remove display name">
 </form>
 {% endif %}

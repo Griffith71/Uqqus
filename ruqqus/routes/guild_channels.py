@@ -22,6 +22,7 @@ from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, r, limiter
 
+from ruqqus.helpers import action_log
 from ruqqus.helpers import guild_channels as rules
 from ruqqus.helpers import guild_channel_store as store
 from ruqqus.helpers import age_declaration
@@ -57,8 +58,10 @@ def _severity(text):
 
 
 def _log(board, v, kind, note="", target_user_id=0):
-    g.db.add(ModAction(kind=kind, user_id=v.id, board_id=board.id, note=html.escape(note)[:256],     # the log draws it as HTML
-                       target_user_id=target_user_id))
+    ma = ModAction(kind=kind, user_id=v.id, board_id=board.id, note=html.escape(note)[:256],     # the log draws it as HTML
+                   target_user_id=target_user_id)
+    g.db.add(ma)
+    return ma
 
 
 # --- what a viewer may do ---------------------------------------------------------------------------------------------------
@@ -908,7 +911,11 @@ def guild_channel_order(guildname, board, v):
 @is_guildmaster("content")
 @validate_formkey
 def guild_channel_mute(guildname, board, v):
-    """Muted in the guild's channels: they can read, not write. Not a guildmaster, not yourself."""
+    """Muted in the guild's channels: they can read, not write. Not a guildmaster, not yourself. Needs a `reason` (the owner, 2026-11-14), asked
+    first, before the account is looked at."""
+    reason = action_log.clean_reason(request.values.get("reason"))
+    if not reason:
+        return _manage_page(board, v, error=tr("A reason is required."), status=400)
     target = get_user((request.values.get("username") or "").lstrip("@"), graceful=True)
     if target is None or target.is_deleted:
         return _manage_page(board, v, error=tr("There's no account with that name."), status=404)
@@ -919,7 +926,9 @@ def guild_channel_mute(guildname, board, v):
         return _manage_page(board, v, notice=tr("@%(name)s was muted in +%(guild)s's channels.", name=target.username, guild=board.name))[0]
     if not store.mute(g.db, board.id, target.id, v.id, _now()):
         return _manage_page(board, v, error=tr("@%(name)s is already muted here.", name=target.username), status=409)
-    _log(board, v, "chatban_user", "", target_user_id=target.id)
+    ma = _log(board, v, "chatban_user", "", target_user_id=target.id)
+    g.db.flush()
+    action_log.annotate(g.db, ma.id, rule=request.values.get("rule"), reason=reason)
     for cid, room in store.encrypted_rooms_of(g.db, board.id, target.id):      # the site can't stop them writing there
         try:
             matrix.kick_as_bot(room, matrix.mxid_for(target.id), "Muted in the guild's channels")
