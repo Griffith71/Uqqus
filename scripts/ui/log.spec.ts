@@ -63,7 +63,9 @@ test("a signed-in member reads the same page, and the old address lands on it", 
   const page = await context.newPage();
   await page.goto("/log/deleted", { waitUntil: "load" });
   expect(new URL(page.url()).pathname).toBe("/log");
-  await expect(page.locator("#site-log .log-entry")).toHaveCount(2);
+  expect(new URL(page.url()).searchParams.get("type")).toBe("deletion");               // the old address leads to the Deleted tab (slice D3a), which has nothing seeded here
+  await page.goto("/log", { waitUntil: "load" });
+  await expect(page.locator("#site-log .log-entry")).toHaveCount(2);                   // and the member reads the same Moderation tab as a visitor
   const text = await page.locator("#site-log").innerText();
   expect(text).not.toContain("PRIVATE-GUILD-REASON");
   await context.close();

@@ -126,6 +126,7 @@ def test_a_name_based_action_never_confirms_a_guess_and_an_alias_exile_is_lifted
     board_id, board_name = guild(real_app)
     guildmaster(mod, board_id)
     add_post(clean, board_id)                                    # an ordinary member who has taken part in the guild, as the one exiled by alias has
+    _, author_thing_id = add_post(author, board_id)              # and the exiled one wrote under its name too, so a guildmaster has something real to cite for either
     _, thing, _ = anonymous_comment(real_app, author, board_id)
     exile_alias(mod, board_name, thing)
     client = mod.browser()
@@ -137,7 +138,7 @@ def test_a_name_based_action_never_confirms_a_guess_and_an_alias_exile_is_lifted
     # What a guildmaster who suspects an account can still see is that no new named row appears for it: the residual risk, said in helpers/alias_actions.py
     from ruqqus.helpers.base36 import base36encode
     clean_post = one(real_app, "SELECT id FROM submissions WHERE author_id = :a ORDER BY id DESC LIMIT 1", a=clean.id)["id"]
-    again = post(client, mod, f"/mod/exile/{board_name}", username=author.username, reason="Breaking the rules")
+    again = post(client, mod, f"/mod/exile/{board_name}", username=author.username, reason="Breaking the rules", thing=f"t2_{author_thing_id}")
     fresh = post(client, mod, f"/mod/exile/{board_name}", username=clean.username, reason="Breaking the rules", thing=f"t2_{base36encode(clean_post)}")
     assert (again.status_code, again.get_data(as_text=True)) == (fresh.status_code, fresh.get_data(as_text=True)) == (204, "")
     assert len(rows(real_app, "SELECT 1 FROM bans WHERE board_id = :b AND user_id = :u", b=board_id, u=author.id)) == 1

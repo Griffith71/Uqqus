@@ -470,7 +470,7 @@ def test_c1_an_admin_nukes_typed_reason_is_shown_as_text_on_the_removed_post(mak
     db.execute(text("UPDATE users SET ban_reason = :r WHERE id = :u"), {"r": XSS, "u": author.id})
     db.commit()
     client = admin.browser()
-    assert post(client, "/admin/nuke_user", {"user": author.username, "formkey": admin.formkey(client)}).status_code in (200, 302)
+    assert post(client, "/admin/nuke_user", {"user": author.username, "reason": XSS, "formkey": admin.formkey(client)}).status_code in (200, 302)    # the reason is typed now
     reader = make_member()                  # an admin is shown the post itself; a member gets the removed page with its reason
     page = reader.browser().get(f"/post/{base36encode(copy_id)}", base_url=BASE, follow_redirects=True).get_data(as_text=True)
     assert XSS not in page and "&lt;img src=x" in page
@@ -1122,7 +1122,7 @@ def test_an_admin_acts_only_on_accounts_below_their_own_level(make_member):
     assert post(here, f"/api/ban_user/{senior.id}", {"reason": "x", "formkey": junior.formkey(here)}).status_code == 403
     assert not banned(senior)
     here = senior.browser()
-    assert post(here, "/admin/nuke_user", {"user": peer.username, "formkey": senior.formkey(here)}).status_code == 403
+    assert post(here, "/admin/nuke_user", {"user": peer.username, "reason": "x", "formkey": senior.formkey(here)}).status_code == 403
     assert post(here, f"/api/ban_user/{junior.id}", {"reason": "x", "days": "1", "formkey": senior.formkey(here)}).status_code in (200, 302)
     assert banned(junior), "a senior admin still bans below their level"
     db = fresh(junior)
@@ -1663,9 +1663,14 @@ def test_exiling_never_tells_a_guildmaster_who_wrote_an_anonymous_item(make_memb
     db.execute(text("UPDATE comments SET is_anonymous = true WHERE id = :c"), {"c": cid})
     db.commit()
     here = mod.browser()
-    # (an exile needs a reason, and a cited item of the account's own: the participation check comes before the cited item is asked for)
+    # an exile needs a reason and a cited item of the account's own, asked before anything about its standing: an account whose only activity here is
+    # anonymous, and one that never took part, get the same answer (the old "hasn't participated" no longer tells them apart)
+    stranger = make_member()
     refused = post(here, "/mod/exile/general", {"username": hidden.username, "reason": "Breaking the rules", "formkey": mod.formkey(here)})
-    assert refused.status_code == 403 and "participated" in refused.get_json()["error"]
+    never = post(here, "/mod/exile/general", {"username": stranger.username, "reason": "Breaking the rules", "formkey": mod.formkey(here)})
+    assert refused.status_code == never.status_code == 400
+    assert refused.get_json()["error"].replace(hidden.username, "NAME") == never.get_json()["error"].replace(stranger.username, "NAME")
+    assert "Cite at least one" in refused.get_json()["error"]
     done = post(here, "/mod/exile/general", {"username": named.username, "reason": "Breaking the rules",
                                              "thing": f"t3_{base36encode(named_cid)}", "formkey": mod.formkey(here)})
     assert done.status_code < 400, done.get_data(as_text=True)[:300]
