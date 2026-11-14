@@ -20,16 +20,24 @@ PER_PAGE = 25
 MAX_PAGE = 1000
 
 # the public Log's tabs: the entries' `log_type`s a visitor may read (suppressions are level 4, in /admin/log)
-CONTENT, SANCTION, GUILD_CHANGE, DELETED = "content", "sanction", "guild", "deletion"
-TABS = (CONTENT, SANCTION, GUILD_CHANGE, DELETED)
+CONTENT, SANCTION, GUILD_CHANGE, DELETED, EDITED = "content", "sanction", "guild", "deletion", "edit"
+TABS = (CONTENT, SANCTION, GUILD_CHANGE, DELETED, EDITED)
 TAB_LABELS = {
     CONTENT: N_("Moderation"),
     SANCTION: N_("Sanctions"),
     GUILD_CHANGE: N_("Guild changes"),
     DELETED: N_("Deleted"),
+    EDITED: N_("Edits"),
 }
-# the Deleted tab's one extra filter: posts or comments (the actions its entries are written with)
-WHAT = {"post": "author_delete_post", "comment": "author_delete_comment"}
+# the Deleted and Edits tabs' one extra filter: posts or comments (the actions their entries are written with)
+WHAT = {DELETED: {"post": "author_delete_post", "comment": "author_delete_comment"},
+        EDITED: {"post": "edit_post", "comment": "edit_comment"}}
+WHAT_NAMES = ("post", "comment")
+
+
+def action_for(tab, what):
+    """The action a tab's posts-or-comments filter selects, or None for both."""
+    return WHAT.get(tab, {}).get(what)
 
 # the guild log's own filters: what to show of the ModAction kinds
 SHOW = {
@@ -62,8 +70,21 @@ def parse_tab(raw):
 
 
 def parse_what(raw):
-    """The Deleted tab's filter: `post`, `comment` or None for both."""
-    return raw if raw in WHAT else None
+    """The Deleted and Edits tabs' filter: `post`, `comment` or None for both."""
+    return raw if raw in WHAT_NAMES else None
+
+
+def group_edits(rows):
+    """The Edits tab's lines with an item's CONSECUTIVE edits folded into one ("N edits in a row", the others behind a disclosure), as Wikipedia folds a
+    page's run of changes: the log stays one row per edit, only the drawing is short. `rows` are `_rows` lines, newest first, each with an `item`
+    (kind, id); a run is broken by any other item between two edits of one."""
+    grouped = []
+    for row in rows:
+        if grouped and row.get("item") is not None and grouped[-1].get("item") == row["item"]:
+            grouped[-1].setdefault("more", []).append(row)
+        else:
+            grouped.append(dict(row))
+    return grouped
 
 
 def parse_show(raw):

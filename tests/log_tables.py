@@ -45,14 +45,14 @@ MODACTIONS = ("CREATE TABLE modactions (id INTEGER PRIMARY KEY AUTOINCREMENT, us
 
 def migration_statements(sql):
     """The CREATE statements of 2026-12-09_action_log.sql (comments stripped) in SQLite's words, with the role CHECK as
-    2026-12-30_log_paper_trail.sql leaves it and the type CHECK as 2027-01-01_log_deletes.sql does (SQLite cannot replace a constraint, and Postgres does)."""
+    2026-12-30_log_paper_trail.sql leaves it and the type CHECK as 2027-01-01_log_deletes.sql and 2027-01-02_log_edits.sql leave it (SQLite cannot replace a constraint, and Postgres does)."""
     sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
     for statement in (part.strip() for part in sql.split(";")):
         if statement.startswith("CREATE"):
             yield (statement.replace("public.", "").replace("IF NOT EXISTS ", "")
                    .replace("BIGSERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
                    .replace("('guildmaster', 'admin', 'system')", "('guildmaster', 'admin', 'system', 'author')")
-                   .replace("('content', 'sanction', 'guild', 'suppression')", "('content', 'sanction', 'guild', 'suppression', 'deletion')"))
+                   .replace("('content', 'sanction', 'guild', 'suppression')", "('content', 'sanction', 'guild', 'suppression', 'deletion', 'edit')"))
 
 
 def apply(conn, *, modactions=False):

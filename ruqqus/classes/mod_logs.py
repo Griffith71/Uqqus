@@ -781,6 +781,14 @@ ACTIONTYPES.update({
         # Translators: follows the author's name in the Log; %(target)s is a link to a comment
         "str": N_('deleted a %(target)s'), "icon": "fa-trash-alt", "color": "bg-muted",
         "title": N_('%(who)s deleted a comment')},
+    "edit_post": {
+        # Translators: follows the editor's name in the Log (or "Anonymous"); %(target)s is a link to a post
+        "str": N_('edited post %(target)s'), "icon": "fa-pen", "color": "bg-muted",
+        "title": N_('%(who)s edited post %(title)s')},
+    "edit_comment": {
+        # Translators: follows the editor's name in the Log (or "Anonymous"); %(target)s is a link to a comment
+        "str": N_('edited a %(target)s'), "icon": "fa-pen", "color": "bg-muted",
+        "title": N_('%(who)s edited a comment')},
     "suspend_user": {
         # Translators: follows the moderator's name in the Log; %(target)s is a link to an account
         "str": N_('suspended %(target)s'), "icon": "fa-user-slash", "color": "bg-danger",

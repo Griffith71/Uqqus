@@ -7236,7 +7236,7 @@ CREATE TABLE public.log_entries (
     legacy_modaction_id bigint,
     until_utc bigint DEFAULT 0 NOT NULL,
     linked_entry_id bigint,
-    CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression', 'deletion')),
+    CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression', 'deletion', 'edit')),
     CONSTRAINT log_entries_role CHECK (actor_role IN ('guildmaster', 'admin', 'system', 'author')),
     CONSTRAINT log_entries_audience CHECK (audience BETWEEN 0 AND 3)
 );
@@ -7492,4 +7492,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-29_chat_extras.sql'),
     ('2026-12-30_log_paper_trail.sql'),
     ('2026-12-31_log_d4.sql'),
-    ('2027-01-01_log_deletes.sql');
+    ('2027-01-01_log_deletes.sql'),
+    ('2027-01-02_log_edits.sql');

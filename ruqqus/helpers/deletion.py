@@ -19,6 +19,7 @@ from ruqqus.helpers.wordfilter import is_hidden
 
 GRACE_SECONDS = 300                 # the item's own age, counted from when it was made: an edit never restarts it
 GRACE_ERASES_PER_DAY = 20           # erases inside the window one account may make a day: past it a delete publishes like a later one
+EDITS_PER_HOUR = "30/hour"          # an account's edits of posts and comments (the owner's decision 19): beyond it the edit is refused, as Wikipedia throttles edits
 
 DELETE, UNLINK = "delete", "unlink"
 

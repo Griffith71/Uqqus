@@ -34,8 +34,8 @@ from ruqqus.helpers.wordfilter import is_hidden
 
 PUBLIC, GUILD, STAFF, LEGAL = 0, 1, 2, 3
 
-CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION, DELETION = "content", "sanction", "guild", "suppression", "deletion"
-TYPES = (CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION, DELETION)
+CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION, DELETION, EDIT = "content", "sanction", "guild", "suppression", "deletion", "edit"
+TYPES = (CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION, DELETION, EDIT)
 
 GUILDMASTER, ADMIN, SYSTEM, AUTHOR = "guildmaster", "admin", "system", "author"
 ROLES = (GUILDMASTER, ADMIN, SYSTEM, AUTHOR)
@@ -83,6 +83,7 @@ _SANCTION = {
 } | _STAFF_SANCTIONS
 _SUPPRESSION = {"suppress_content"}
 _DELETION = {"author_delete_post", "author_delete_comment"}      # a member's own delete after the grace window (helpers/deletion.py)
+EDIT_ACTIONS = {"edit_post", "edit_comment"}                      # a member's own edit after the grace window: named, unless the item is anonymous
 
 # What can't be a guild's or the public's business: always these audiences, whatever the guild.
 ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}      # public: no guild, post or comment in them
@@ -132,6 +133,8 @@ def type_of(action):
         return SUPPRESSION
     if action in _DELETION:
         return DELETION
+    if action in EDIT_ACTIONS:
+        return EDIT
     if action in _SANCTION:
         return SANCTION
     if action in _CONTENT:
@@ -517,6 +520,30 @@ _NOT_PAIRED_WITH_ANONYMOUS = (
     "AND COALESCE(cp.is_anonymous, false)))))")
 
 
+# the entry's item is anonymous NOW, whenever it was made so (a read-time check, as `about_scope` makes it for items): an edit's editor is named on an item
+# that isn't, and is Anonymous on one that is (the audit's M10 and M11)
+_ITEM_ANONYMOUS_NOW = (
+    "(EXISTS (SELECT 1 FROM submissions sa WHERE sa.id = log_entries.target_submission_id AND COALESCE(sa.is_anonymous, false)) OR "
+    "EXISTS (SELECT 1 FROM comments ca WHERE ca.id = log_entries.target_comment_id AND COALESCE(ca.is_anonymous, false)))")
+_EDIT_MARKS = "('edit_post', 'edit_comment')"
+# below staff, filtering by "who" must not list an admin's entries (they are "Site admin"), a post author's hide of a comment (drawn "the post's author"), nor
+# any author-role entry whose item is anonymous (an own delete, an edit of an anonymous item): it would list exactly one person's anonymous activity
+_ACTOR_MAY_BE_FILTERED = f"(actor_role <> 'admin' AND (actor_role <> 'author' OR (action IN {_EDIT_MARKS} AND NOT {_ITEM_ANONYMOUS_NOW})))"
+
+
+def _anonymous_edit_items(db, rows):
+    """{("post"|"comment", id)} among the edit entries of these rows whose item is anonymous now: their editor is not named."""
+    posts = sorted({r["target_submission_id"] for r in rows if r["actor_role"] == AUTHOR and r["action"] in EDIT_ACTIONS and r["target_submission_id"]})
+    comments = sorted({r["target_comment_id"] for r in rows if r["actor_role"] == AUTHOR and r["action"] in EDIT_ACTIONS and r["target_comment_id"]})
+    found = set()
+    for kind, table, ids in (("post", "submissions", posts), ("comment", "comments", comments)):
+        if ids:
+            names = {f"a{n}": int(i) for n, i in enumerate(ids)}
+            marks = ", ".join(f":{n}" for n in names)
+            found |= {(kind, r[0]) for r in db.execute(text(f"SELECT id FROM {table} WHERE id IN ({marks}) AND COALESCE(is_anonymous, false)"), names)}
+    return found
+
+
 def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_id=None, target_user_id=None,
           rule=None, action=None, before_id=None, limit=50, open_guilds_only=None, scope=None, offset=0):
     """A page of entries, newest first, for a reader with this `level`: (rows, has_more). The staff-only columns come
@@ -543,8 +570,8 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
             params[name] = value
     if actor_id not in (None, "") and level < 3:
         # an admin is "Site admin" below staff, and a post's author hiding a comment is "the post's author" (their name is not drawn:
-        # the post may be anonymous): filtering by either's id would list exactly their entries
-        clauses.append("actor_role NOT IN ('admin', 'author')")
+        # the post may be anonymous): filtering by either's id would list exactly their entries. An edit's editor is named only while its item is not anonymous
+        clauses.append(_ACTOR_MAY_BE_FILTERED)
     if target_user_id not in (None, "") and level < 3:
         # an entry that names an account AND an item that is anonymous now would say who wrote it (H6)
         clauses.append(_NOT_PAIRED_WITH_ANONYMOUS)
@@ -562,9 +589,15 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
     more = len(rows) > limit
     rows = rows[:limit]
     if level < 3:
+        anonymous = _anonymous_edit_items(db, rows)
         for row in rows:
-            if row["actor_role"] in (ADMIN, AUTHOR):
+            if row["actor_role"] == ADMIN:
                 row["actor_id"] = None
+            elif row["actor_role"] == AUTHOR:
+                # an own delete and a post author's hide of a comment never name the author; an edit names its editor unless the item is anonymous now
+                item = ("post", row["target_submission_id"]) if row["target_submission_id"] else ("comment", row["target_comment_id"])
+                if row["action"] not in EDIT_ACTIONS or item in anonymous:
+                    row["actor_id"] = None
             if row["redacted_utc"]:
                 row["reason"] = ""
     return rows, more

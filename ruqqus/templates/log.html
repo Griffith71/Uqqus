@@ -28,6 +28,8 @@
   <p class="text-muted text-small mb-3">
     {% if tab == 'deletion' %}
     {{ _("What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down.") }}
+    {% elif tab == 'edit' %}
+    {{ _("What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page.") }}
     {% else %}
     {{ _("What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed.") }}
     {% endif %}
@@ -45,8 +47,9 @@
   <form method="get" class="form-inline mb-3" id="log-filter">
     <input type="hidden" name="type" value="{{ tab }}">
     <input name="guild" value="{{ filters.guild }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="+ {{ _('Guild') }}" aria-label="{{ _('Guild') }}">
-    {% if tab == 'deletion' %}
-    {# every delete is Anonymous, so there is no "by" and no "to" here: filtering by a person would list exactly one person's anonymous deletes #}
+    {% if tab == 'deletion' or tab == 'edit' %}
+    {# every delete is Anonymous, so there is no "by" and no "to" there: filtering by a person would list exactly one person's anonymous deletes. Edits have a "by": an editor is named on an item that isn't anonymous #}
+    {% if tab == 'edit' %}<input name="by" value="{{ filters.by }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="@ {{ _('Edited by') }}" aria-label="{{ _('Edited by') }}">{% endif %}
     <select name="what" class="form-control form-control-sm mr-2 mb-2" aria-label="{{ _('Posts or comments') }}">
       <option value="">{{ _('Posts and comments') }}</option>
       <option value="post"{% if what == 'post' %} selected{% endif %}>{{ _('Posts') }}</option>

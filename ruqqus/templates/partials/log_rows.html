@@ -13,6 +13,12 @@
             {% if e.rule in LOG_RULES %}&middot; {{ msg_text(LOG_RULES[e.rule]) }}{% endif %}
           </div>
           {% if e.reason %}<div class="text-small mt-1">{{ _('Reason: %(reason)s', reason=e.reason) }}</div>{% endif %}
+          {% if e.more %}
+          <details class="text-small mt-1">
+            <summary class="text-muted">{{ ngettext('%(num)s edit in a row', '%(num)s edits in a row', e.more | length + 1) }}</summary>
+            <ul class="mb-0">{% for m in e.more %}<li>{{ date_text(m.created_utc, "%d %B %Y") }}{% if m.reason %}: {{ m.reason }}{% endif %}</li>{% endfor %}</ul>
+          </details>
+          {% endif %}
           {% if e.deleted %}
           {# what a member deleted, as Anonymous: its words are plain (no link, no picture), under the reader's word filter and the sensitive rule #}
           <div class="log-deleted mt-2 p-2 border rounded text-small" lang="{{ e.deleted.lang }}" dir="auto">

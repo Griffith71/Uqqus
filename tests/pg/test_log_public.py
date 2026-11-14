@@ -2,9 +2,9 @@
 tests/test_action_log.py and tests/test_log_view.py). The promises, end to end:
 
 - /log shows who (by role), when, where, which rule and the reason of a hide or a removal, and never a title or text; it is the same
-  page for a visitor and for an admin, names no admin and no private guild, and /log/deleted only redirects to it;
-- what an author deletes is not published: the text is a private copy for the author and the admins, the history row holds none, and
-  the history of a post a guild hid shows the reason but not the words;
+  page for a visitor and for an admin, names no admin and no private guild, and /log/deleted only redirects to its Deleted tab;
+- what an author deletes stays in the Log as Anonymous (slice D3a): the words are a public copy, the history row holds none, and the history
+  and the copy page of a deleted item stay its author's and the admins'; the history of a post a guild hid shows the reason but not the words;
 - a guild's guildmasters, the item's author and the admins open a preserved copy; everyone else gets a 404;
 - an edit carries a summary, and an admin can hide one version of an item's history, which is logged;
 - a private guild's log is a 404 for non-members and its entries never reach the public page;
@@ -169,7 +169,7 @@ def test_a_private_guilds_decisions_are_never_on_the_public_page_and_its_log_is_
 
 def test_the_old_deletion_log_address_only_redirects(real_app):
     answer = get(real_app[0].test_client(), "/log/deleted")
-    assert answer.status_code == 301 and answer.headers["Location"].endswith("/log")
+    assert answer.status_code == 301 and answer.headers["Location"].endswith("/log?type=deletion"), "what authors delete is the Log's Deleted tab now"
 
 
 # --- the guild's own log ------------------------------------------------------------------------------------------------------------
@@ -185,27 +185,27 @@ def test_a_public_guilds_log_names_a_hidden_post_by_id_to_the_public_and_by_titl
 
 # --- what an author deletes ----------------------------------------------------------------------------------------------------------------
 
-def test_an_authors_delete_is_a_private_copy_for_the_author_and_the_admins_and_is_nowhere_public(make_member, real_app):
+def test_an_authors_delete_stays_in_the_log_as_anonymous_while_its_history_and_copy_page_stay_private(make_member, real_app):
     board_id, name = guild(real_app)
     author, other, admin = make_member(), make_member(), admin_of(make_member)
     post_id, b36 = add_post(author, board_id, "DELETED-TITLE", "<p>DELETED-WORDS</p>")
     here = author.browser()
     assert post(here, author, f"/delete_post/{b36}").status_code in (200, 204, 302)
     (snap,) = snapshots(real_app, target_submission_id=post_id)
-    assert (snap["author_id"], snap["title"], snap["scrubbed_utc"]) == (author.id, "DELETED-TITLE", 0)
-    assert snap["expires_utc"] - snap["created_utc"] == 90 * 86400
+    assert (snap["kind"], snap["public"], snap["expires_utc"], snap["author_id"], snap["title"], snap["scrubbed_utc"]) == ("delete", True, 0, author.id, "DELETED-TITLE", 0)
     _, db_session = real_app
     db = db_session()
     db.expire_all()
     row = db.execute(text("SELECT previous_title, previous_body, previous_body_html FROM content_edit_history "
                           "WHERE target_submission_id = :p AND action = 'delete'"), {"p": post_id}).first()
     assert tuple(row) == (None, None, None)                                                         # the public history row holds no text
-    assert entries(real_app, target_submission_id=post_id) == []                                    # a self-delete is not a decision: not in the Log
+    (entry,) = entries(real_app, target_submission_id=post_id)
+    assert entry["log_type"] == "deletion" and entry["actor_role"] == "author" and entry["audience"] == 0
     for client in (real_app[0].test_client(), other.browser()):
-        for path in ("/log", f"/post/{b36}/history", f"/post/{b36}/copy"):
-            body = get(client, path)
-            assert "DELETED-WORDS" not in body.get_data(as_text=True) and "DELETED-TITLE" not in body.get_data(as_text=True), path
-        assert get(client, f"/post/{b36}/copy").status_code == 404
+        deleted = get(client, "/log?type=deletion").get_data(as_text=True)
+        assert "DELETED-WORDS" in deleted and "DELETED-TITLE" in deleted and author.username not in deleted    # the Log keeps the words, as Anonymous
+        for path in (f"/post/{b36}/history", f"/post/{b36}/copy"):
+            assert get(client, path).status_code == 404, path                                       # the history and the copy page are not public
     for member in (author, admin):
         copy = get(member.browser(), f"/post/{b36}/copy")
         assert copy.status_code == 200 and "DELETED-WORDS" in copy.get_data(as_text=True)
@@ -360,19 +360,21 @@ def test_a_profiles_log_names_no_anonymous_item_to_the_public_but_the_admins_see
     assert "Anonymous but off topic" in own and author.username not in lines(own)
 
 
-def test_an_authors_own_delete_is_a_date_for_the_author_and_the_admins_and_nobody_else(make_member, real_app):
+def test_an_authors_delete_is_a_line_on_the_posts_log_for_everyone_as_anonymous_and_never_on_the_authors_own_log(make_member, real_app):
     board_id, name = guild(real_app)
     author, other, admin = make_member(), make_member(), admin_of(make_member)
-    post_id, b36 = add_post(author, board_id, "DELETED-AND-PRIVATE", "<p>DELETED-WORDS</p>")
+    post_id, b36 = add_post(author, board_id, "DELETED-AND-PUBLIC", "<p>DELETED-WORDS</p>")
     assert post(author.browser(), author, f"/delete_post/{b36}").status_code in (200, 204, 302)
-    for who, client, should in (("author", author.browser(), True), ("admin", admin.browser(), True),
-                                ("member", other.browser(), False), ("visitor", real_app[0].test_client(), False)):
-        for path in (f"/@{author.username}/log", f"/post/{b36}/log"):
-            page = get(client, path)
-            html = page.get_data(as_text=True)
-            assert "DELETED-AND-PRIVATE" not in html and "DELETED-WORDS" not in html, (who, path)
-            if page.status_code == 200:
-                assert ("deleted post" in lines(html)) is should, (who, path)
+    for who, client in (("author", author.browser()), ("admin", admin.browser()), ("member", other.browser()), ("visitor", real_app[0].test_client())):
+        page = get(client, f"/post/{b36}/log")
+        html = page.get_data(as_text=True)
+        assert page.status_code == 200, who
+        assert "deleted post" in lines(html) and "Anonymous" in lines(html) and author.username not in lines(html), who
+        assert "DELETED-WORDS" in html, who                                                         # it stays in the Log: that is the point
+    for who, client, listed in (("author", author.browser(), False), ("member", other.browser(), False), ("visitor", real_app[0].test_client(), False),
+                                ("admin", admin.browser(), True)):
+        html = get(client, f"/@{author.username}/log").get_data(as_text=True)
+        assert ("deleted post" in lines(html)) is listed, who                                      # an anonymous item is left out of an account's log, an admin's excepted
     assert get(author.browser(), f"/@{author.username}/log").status_code == 200
 
 
@@ -440,8 +442,8 @@ def followed(client, location):
     return client.get(location, base_url=BASE, headers=HEADERS, environ_base={"REMOTE_ADDR": address()})
 
 
-def test_a_deleted_posts_page_and_address_name_nobody_and_its_history_is_the_authors_and_the_admins(make_member, real_app):
-    """H1 and H8: the page of a deleted post says "Anon", so its address and its history page may not say whose it was."""
+def test_a_deleted_posts_address_leads_to_the_logs_thread_and_names_nobody_and_its_history_is_the_authors_and_the_admins(make_member, real_app):
+    """H1 and H8: the page of a deleted post is Anonymous, so its address and its history page may not say whose it was."""
     board_id, name = guild(real_app)
     author, other, admin = make_member(), make_member(), admin_of(make_member)
     post_id, b36 = add_post(author, board_id, "GONE-TITLE", "<p>GONE-WORDS</p>")
@@ -449,9 +451,11 @@ def test_a_deleted_posts_page_and_address_name_nobody_and_its_history_is_the_aut
     visitor = real_app[0].test_client()
     for client in (visitor, other.browser()):
         moved = get(client, f"/post/{b36}")
-        assert moved.status_code == 301 and author.username not in moved.headers["Location"], moved.headers.get("Location")
+        assert moved.status_code == 302 and author.username not in moved.headers["Location"], moved.headers.get("Location")
+        assert moved.headers["Location"].endswith(f"/log/post/{b36}")
         page = followed(client, moved.headers["Location"])
         assert page.status_code == 200 and author.username not in page.get_data(as_text=True)
+        assert "GONE-TITLE" in page.get_data(as_text=True), "the thread is the deleted post as Anonymous"
         assert get(client, f"/post/{b36}/history").status_code == 404                           # it would say "Deleted by @author"
     for member in (author, admin):
         history = get(member.browser(), f"/post/{b36}/history")
@@ -478,7 +482,7 @@ def test_guildmasters_open_the_copy_of_a_hide_but_not_of_what_an_author_deleted_
     deleted_id, deleted36 = add_comment(commenter, post_id, board_id, "<p>DELETED-BY-ITS-AUTHOR</p>")
     assert post(commenter.browser(), commenter, f"/delete/comment/{deleted36}").status_code in (200, 204, 302)
     (snap,) = snapshots(real_app, target_comment_id=deleted_id)
-    assert snap["kind"] == "grace" and snap["board_id"] == board_id
+    assert snap["kind"] == "delete" and snap["board_id"] == board_id
     assert get(gm.browser(), f"/comment/{deleted36}/copy").status_code == 404                  # the guild's guildmaster has no business here
     assert get(stranger.browser(), f"/comment/{deleted36}/copy").status_code == 404
     for member in (commenter, admin):

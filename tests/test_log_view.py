@@ -42,9 +42,10 @@ def test_the_cursor_is_a_plain_number_and_nothing_else(raw, expected):
     assert view.parse_cursor(raw) == expected
 
 
-def test_the_public_tabs_are_moderation_sanctions_guild_changes_and_deleted_and_never_suppressions():
-    assert view.TABS == ("content", "sanction", "guild", "deletion") == tuple(view.TAB_LABELS)
+def test_the_public_tabs_are_moderation_sanctions_guild_changes_deleted_and_edits_and_never_suppressions():
+    assert view.TABS == ("content", "sanction", "guild", "deletion", "edit") == tuple(view.TAB_LABELS)
     assert view.parse_tab("sanction") == "sanction" and view.parse_tab("guild") == "guild" and view.parse_tab("deletion") == "deletion"
+    assert view.parse_tab("edit") == "edit"
     assert view.parse_what("post") == "post" and view.parse_what("comment") == "comment" and view.parse_what("x") is None and view.parse_what(None) is None
     for raw in (None, "", "suppression", "CONTENT", "../x", "content;"):
         assert view.parse_tab(raw) == "content"                           # the legal tab is not a thing a visitor can ask for

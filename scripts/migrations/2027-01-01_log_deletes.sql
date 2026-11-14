@@ -18,8 +18,16 @@ ALTER TABLE public.log_snapshots ADD COLUMN IF NOT EXISTS public boolean DEFAULT
 ALTER TABLE public.log_snapshots ADD COLUMN IF NOT EXISTS word_severity smallint DEFAULT 0 NOT NULL;
 ALTER TABLE public.log_snapshots ADD COLUMN IF NOT EXISTS is_sensitive boolean DEFAULT false NOT NULL;
 
-ALTER TABLE public.log_entries DROP CONSTRAINT IF EXISTS log_entries_type;
-ALTER TABLE public.log_entries ADD CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression', 'deletion'));
+-- widened only while it lacks `deletion`: a later migration (2027-01-02_log_edits.sql) widens it again, and running this one a second time must neither narrow
+-- it (a row of the newer type would then violate it) nor change it
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'log_entries_type' AND conrelid = 'public.log_entries'::regclass
+                   AND pg_get_constraintdef(oid) LIKE '%deletion%') THEN
+        ALTER TABLE public.log_entries DROP CONSTRAINT IF EXISTS log_entries_type;
+        ALTER TABLE public.log_entries ADD CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression', 'deletion'));
+    END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS log_entries_type_order_idx ON public.log_entries (log_type, created_utc DESC, id DESC);
 

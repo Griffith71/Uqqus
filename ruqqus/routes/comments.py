@@ -35,7 +35,7 @@ from flask import *
 from ruqqus.helpers import sharing
 from ruqqus.helpers import bell as bell_rules
 from ruqqus.helpers import text_length
-from ruqqus.__main__ import app, limiter, db_session
+from ruqqus.__main__ import app, limiter, db_session, member_limit_key
 from .front import frontlist
 from .posts import canonical_redirect
 
@@ -628,6 +628,7 @@ Optional file data:
 
 @app.route("/edit_comment/<cid>", methods=["POST"])
 @app.patch("/api/v2/comments/<cid>")
+@limiter.limit(deletion.EDITS_PER_HOUR, key_func=member_limit_key)         # per account, as Wikipedia throttles edits rather than merging log lines
 @is_not_banned
 @validate_formkey
 @api("update")
@@ -768,10 +769,13 @@ Optional form data (left out: unchanged):
 
     now = int(time.time())
 
-    # edits within 90s of the comment's own creation are treated as part
-    # of drafting the original, not a tracked edit - no history row, no
-    # edited_utc bump
-    if now - c.created_utc > 90:
+    # edits within the grace window of the comment's own creation (five minutes, `deletion.GRACE_SECONDS`) are treated as part of drafting the original,
+    # not a tracked edit - no history row, no Log entry, no edited_utc bump
+    if now - c.created_utc > deletion.GRACE_SECONDS:
+        action_log.record_quietly(
+            g.db, "edit_comment", v.id, role=action_log.AUTHOR, board_id=c.post.board_id, comment_id=c.id,
+            reason=action_log.clean_reason(request.form.get("edit_summary"), 256),
+            floor=deletion.entry_floor(circle=bool(c.post.audience) or bool(getattr(c.post.board, "is_circle", False))), now=now)
         g.db.add(ContentEditHistory(
             actor_id=v.id,
             target_comment_id=c.id,

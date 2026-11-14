@@ -150,7 +150,14 @@ def _rows(entries, v):
         role = e["actor_role"]
         actor = people.get(e["actor_id"])
         if role == action_log.AUTHOR:
-            who = log_view.anonymous_actor() if e["log_type"] == action_log.DELETION else log_view.post_author()
+            if e["log_type"] == action_log.DELETION:
+                who = log_view.anonymous_actor()
+            elif e["log_type"] == action_log.EDIT:
+                # an edit names its editor unless the item is anonymous (`fetch` has already taken the id out of an anonymous item's: M10, M11)
+                who = (log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted, hidden=user_hidden(actor, v))
+                       if e["actor_id"] else log_view.anonymous_actor())
+            else:
+                who = log_view.post_author()
         elif role != action_log.GUILDMASTER or e["actor_id"] is None:
             who = log_view.site_account(site)
         else:
@@ -178,6 +185,8 @@ def _rows(entries, v):
             "rule": e["rule_key"], "reason": "" if is_hidden(words, e.get("reason_severity")) else e["reason"],
             "can_open": can_open, "type": e["log_type"],                                                          # not "copy": a dict has that method
             "until": e.get("until_utc") or 0})
+        if e["log_type"] == action_log.EDIT:
+            rows[-1]["item"] = ("post", e["target_submission_id"]) if e["target_submission_id"] else ("comment", e["target_comment_id"])
         if e["log_type"] == action_log.DELETION:
             rows[-1]["deleted"] = _deleted_words(texts.get(e["id"]), board_row, words, shows_sensitive, post_languages, comment_languages)
         # the Report button is on an entry that shows a person's words (a deleted item's, or a reason): a signed-in member asks the admins to take
@@ -416,14 +425,17 @@ def public_log(v):
     tab = log_view.parse_tab(args.get("type"))
     rule = action_log.parse_rule(args.get("rule"))
     before = log_view.parse_cursor(args.get("before"))
-    what = log_view.parse_what(args.get("what")) if tab == log_view.DELETED else None
-    # the Deleted tab has no "by" and no "to": every delete is Anonymous, so filtering by a person would list exactly one person's anonymous deletes (M11)
+    what = log_view.parse_what(args.get("what")) if tab in (log_view.DELETED, log_view.EDITED) else None
+    # the Deleted tab has no "by" and no "to": every delete is Anonymous, so filtering by a person would list exactly one person's anonymous deletes (M11).
+    # The Edits tab has a "by" (an editor is named on an item that isn't anonymous, and `fetch` matches only those) and no "to": nobody is its subject
     by = None if tab == log_view.DELETED else _id_of(get_user, args.get("by"))
-    to = None if tab == log_view.DELETED else _id_of(get_user, args.get("to"))
+    to = None if tab in (log_view.DELETED, log_view.EDITED) else _id_of(get_user, args.get("to"))
     entries, more = action_log.fetch(
-        g.db, level=0, log_type=tab, rule=rule or None, before_id=before, limit=log_view.PER_PAGE, action=log_view.WHAT.get(what),
+        g.db, level=0, log_type=tab, rule=rule or None, before_id=before, limit=log_view.PER_PAGE, action=log_view.action_for(tab, what),
         board_id=_id_of(get_guild, args.get("guild")), actor_id=by, target_user_id=to)
     rows = _rows(entries, v)
+    if tab == log_view.EDITED:
+        rows = log_view.group_edits(rows)               # an item's run of edits is one line, the rest behind a disclosure
     return _noindex(render_template(
         "log.html", v=v, tab=tab, rows=rows, more=more, next_before=entries[-1]["id"] if entries else None,
         tabs=log_view.TABS, tab_labels=log_view.TAB_LABELS, rule=rule, what=what,

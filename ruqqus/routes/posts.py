@@ -48,7 +48,7 @@ from ruqqus.helpers import sharing
 from ruqqus.helpers import anonymise, deletion, deletion_store
 from ruqqus.helpers import bell as bell_rules
 from .front import frontlist
-from ruqqus.__main__ import app, limiter, cache, db_session
+from ruqqus.__main__ import app, limiter, cache, db_session, member_limit_key
 from flask import session as flask_session
 
 
@@ -252,6 +252,7 @@ def _edit_error(message, code=400):
 
 @app.route("/edit_post/<pid>", methods=["POST"])
 @app.patch("/api/v2/submissions/<pid>")
+@limiter.limit(deletion.EDITS_PER_HOUR, key_func=member_limit_key)         # per account, as Wikipedia throttles edits rather than merging log lines
 @is_not_banned
 @no_negative_balance("html")
 @api("update")
@@ -473,10 +474,9 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
 
         now = int(time.time())
 
-        # edits within 90s of the post's own creation are treated as part of
-        # drafting the original, not a tracked edit - no history row, no
-        # edited_utc bump
-        tracked = now - primary.created_utc > 90
+        # edits within the grace window of the post's own creation (five minutes, `deletion.GRACE_SECONDS`) are treated as part of drafting the
+        # original, not a tracked edit - no history row, no Log entry, no edited_utc bump
+        tracked = now - primary.created_utc > deletion.GRACE_SECONDS
 
         # the original plus every live forwarded copy; a copy in a guild
         # that has since exiled the author is left as it was
@@ -484,6 +484,12 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
                             if not f.is_banned and not f.is_deleted and not f.board.has_ban(v)]
 
         edit_group = secrets.randbits(52) + 1       # one edit = one row per copy; an admin hiding the version hides them all
+        if tracked:
+            # ONE entry in the Log for the edit, however many copies it reached: its editor is named unless the post is anonymous, its reason is the
+            # note the editor gave, and the versions are on the post's history page (the Edits tab, helpers/action_log.py EDIT_ACTIONS)
+            action_log.record_quietly(
+                g.db, "edit_post", v.id, role=action_log.AUTHOR, board_id=primary.board_id, post_id=primary.id,
+                reason=action_log.clean_reason(form.get("edit_summary"), 256), floor=deletion.entry_floor(circle=_is_circle_item(primary)), now=now)
         for row in rows:
             if tracked:
                 g.db.add(ContentEditHistory(

@@ -272,7 +272,7 @@ def test_the_migration_schema_and_fixture_agree_on_the_d3a_columns():
     for needle in ("public boolean DEFAULT false NOT NULL", "word_severity smallint DEFAULT 0 NOT NULL", "is_sensitive boolean DEFAULT false NOT NULL"):
         assert needle in migration and needle in schema, needle
     assert "'deletion'" in migration and "'deletion'" in schema and "CREATE TABLE public.log_reports" in schema and "('2027-01-01_log_deletes.sql')" in schema
-    assert "DROP CONSTRAINT IF EXISTS log_entries_type" in migration
+    assert "pg_get_constraintdef(oid) LIKE '%deletion%'" in migration, "widened only while it lacks the type: running it again after D3b must not narrow it"
 
 
 def test_every_path_that_publishes_or_takes_a_name_off_asks_for_the_password_first():
