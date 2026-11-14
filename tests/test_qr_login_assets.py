@@ -33,7 +33,7 @@ HELD = {
     "history_mass_pages.py": "history_manage history_mass",
     "legal.py": "legal_1 legal_2 legal_final dmca_post counter_dmca_post",
     "collab.py": "collab_propose collab_vote collab_withdraw collab_invite_answer collab_leave collab_publish",
-    "coauthors.py": "coauthor_invite coauthor_accept",
+    "coauthors.py": "coauthor_invite coauthor_accept coauthor_hide_name",
     "discord.py": "join_discord discord_redirect",
     "age_declaration_pages.py": "settings_age_declaration settings_age_assurance_start settings_age_assurance_callback",
     "children_pages.py": "settings_children children_new children_controls children_answer children_stop children_password children_delete children_export "

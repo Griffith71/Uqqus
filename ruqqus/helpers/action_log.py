@@ -525,10 +525,15 @@ _NOT_PAIRED_WITH_ANONYMOUS = (
 _ITEM_ANONYMOUS_NOW = (
     "(EXISTS (SELECT 1 FROM submissions sa WHERE sa.id = log_entries.target_submission_id AND COALESCE(sa.is_anonymous, false)) OR "
     "EXISTS (SELECT 1 FROM comments ca WHERE ca.id = log_entries.target_comment_id AND COALESCE(ca.is_anonymous, false)))")
+# the editor's CREDIT on the post is anonymous (a co-author of a post written with others, slice D3f, decision 21): an edit by them is not named either
+_ACTOR_CREDIT_ANONYMOUS = (
+    "EXISTS (SELECT 1 FROM post_coauthors pc JOIN submissions sc ON sc.id = log_entries.target_submission_id "
+    "WHERE pc.post_id = COALESCE(NULLIF(sc.repost_id, 0), sc.id) AND pc.user_id = log_entries.actor_id AND pc.is_anonymous)")
 _EDIT_MARKS = "('edit_post', 'edit_comment')"
 # below staff, filtering by "who" must not list an admin's entries (they are "Site admin"), a post author's hide of a comment (drawn "the post's author"), nor
 # any author-role entry whose item is anonymous (an own delete, an edit of an anonymous item): it would list exactly one person's anonymous activity
-_ACTOR_MAY_BE_FILTERED = f"(actor_role <> 'admin' AND (actor_role <> 'author' OR (action IN {_EDIT_MARKS} AND NOT {_ITEM_ANONYMOUS_NOW})))"
+_ACTOR_MAY_BE_FILTERED = (f"(actor_role <> 'admin' AND (actor_role <> 'author' OR "
+                          f"(action IN {_EDIT_MARKS} AND NOT {_ITEM_ANONYMOUS_NOW} AND NOT {_ACTOR_CREDIT_ANONYMOUS})))")
 
 
 def _anonymous_edit_items(db, rows):
@@ -542,6 +547,18 @@ def _anonymous_edit_items(db, rows):
             marks = ", ".join(f":{n}" for n in names)
             found |= {(kind, r[0]) for r in db.execute(text(f"SELECT id FROM {table} WHERE id IN ({marks}) AND COALESCE(is_anonymous, false)"), names)}
     return found
+
+
+def _anonymous_credit_edits(db, rows):
+    """{entry id} among these rows' edit entries whose editor's CREDIT on the post is anonymous: an edit of a post written with others is drawn as its editor's alias
+    (the Edits tab), never by name."""
+    ids = sorted({r["id"] for r in rows if r["actor_role"] == AUTHOR and r["action"] in EDIT_ACTIONS and r["actor_id"] and r["target_submission_id"]})
+    if not ids:
+        return set()
+    names = {f"c{n}": int(i) for n, i in enumerate(ids)}
+    marks = ", ".join(f":{n}" for n in names)
+    return {r[0] for r in db.execute(text(
+        f"SELECT log_entries.id FROM log_entries WHERE log_entries.id IN ({marks}) AND {_ACTOR_CREDIT_ANONYMOUS}"), names)}
 
 
 def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_id=None, target_user_id=None,
@@ -590,13 +607,14 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
     rows = rows[:limit]
     if level < 3:
         anonymous = _anonymous_edit_items(db, rows)
+        credit_hidden = _anonymous_credit_edits(db, rows)
         for row in rows:
             if row["actor_role"] == ADMIN:
                 row["actor_id"] = None
             elif row["actor_role"] == AUTHOR:
                 # an own delete and a post author's hide of a comment never name the author; an edit names its editor unless the item is anonymous now
                 item = ("post", row["target_submission_id"]) if row["target_submission_id"] else ("comment", row["target_comment_id"])
-                if row["action"] not in EDIT_ACTIONS or item in anonymous:
+                if row["action"] not in EDIT_ACTIONS or item in anonymous or row["id"] in credit_hidden:
                     row["actor_id"] = None
             if row["redacted_utc"]:
                 row["reason"] = ""

@@ -30,6 +30,7 @@ class PostCoauthor(Base):
     post_id = Column(Integer)
     user_id = Column(Integer)
     status = Column(String)
+    is_anonymous = Column(Boolean, default=False)       # slice D3f: an anonymous credit never counts for a block or a mute
 
 
 @pytest.fixture

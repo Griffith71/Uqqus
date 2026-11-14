@@ -34,7 +34,7 @@ from ruqqus.helpers import collab_authorship as authorship
 from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
 from ruqqus.helpers import collab_store as store
-from ruqqus.helpers import age_declaration, collab_view, coauthors, live_bus
+from ruqqus.helpers import age_declaration, anon_aliases, anonymity, collab_view, coauthors, live_bus
 from ruqqus.helpers.visibility import user_hidden
 from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, msg, tr, trn, trp
 
@@ -76,7 +76,25 @@ def _users(ids):
     return {u.id: u for u in g.db.query(User).filter(User.id.in_(ids)).all()} if ids else {}
 
 
-def _name_of(user, v):
+def _hidden_credits(post, v):
+    """{user id: "Anonymous #N"} for the people whose credit on this PUBLISHED post is anonymous and that this viewer may not be told (the Log plan's decision 21,
+    slice D3f): its co-authors with the flag, and its author when the post is anonymous. Admins and the person themselves are told, so nothing is hidden from them.
+    A person who left the draft keeps their credit's flag (the sync keeps an anonymous row), so what they typed is still shown by the alias."""
+    from ruqqus.helpers import anon_aliases
+    if post is None:
+        return {}
+    PostCoauthor = coauthors._classes()[0]
+    flagged = {r.user_id for r in g.db.query(PostCoauthor).filter_by(post_id=post.id, is_anonymous=True).all()}
+    if post.is_anonymous:
+        flagged.add(post.author_id)
+    numbers = anon_aliases.numbers_cached(g.db, anon_aliases.scope_key(post)) if flagged else {}
+    return {uid: (anonymity.alias_name(numbers[uid]) if numbers.get(uid) else anonymity.shown())
+            for uid in flagged if not (v is not None and ((getattr(v, "admin_level", 0) or 0) >= 3 or (v.id == uid and not getattr(v, "qr_limited", False))))}
+
+
+def _name_of(user, v, hidden=None):
+    if hidden and user is not None and user.id in hidden:
+        return {"name": hidden[user.id], "handle": "", "link": None}      # an anonymous credit: its alias, never the account, whether or not it is deleted now
     if user is None or user.is_deleted:
         return {"name": tr("Deleted account"), "handle": "", "link": None}
     if user_hidden(user, v):
@@ -198,7 +216,7 @@ def collab_editor(doc_id, v):
 def collab_options(doc_id, v):
     """The post options kept with the draft (link, who can comment, disclosure, sensitive, guilds to forward to).
     Any author may change them, the last save wins, and they are used the next time the draft is published."""
-    _doc_or_404(doc_id, v)
+    doc = _doc_or_404(doc_id, v)
     if not _may_write(v):
         abort(403)
     form = request.form
@@ -209,10 +227,13 @@ def collab_options(doc_id, v):
             "paid_partnership": any(x.strip().lower() == "true" for x in form.getlist("paid_partnership")),
             "made_with_ai": any(x.strip().lower() == "true" for x in form.getlist("made_with_ai")),
             "sensitive": bool(form.get("sensitive")),
+            "anonymous": bool(form.get("anonymous")),
             "forward_guilds": [x for x in form.getlist("forward_guilds") if x.strip()],
         })
     except rules.Refused as e:
         return _error(msg(str(e)))
+    if doc[7]:
+        options["anonymous"] = store.options_of(doc)["anonymous"]       # whether the post is anonymous was decided when it was made, and never changes
     if _listed_link(options.get("url")):
         # never kept: whoever publishes would be held to it (an autoban link suspended the publisher, chosen by
         # another author; bug hunt). Refused here, never a ban: posting is where links are judged against accounts
@@ -653,13 +674,16 @@ def _sync_coauthors(doc):
     rows = {row.user_id: row for row in g.db.query(PostCoauthor).filter_by(post_id=post.id).all()}
     now = _now()
     for uid, row in rows.items():
-        if uid not in current:
-            g.db.delete(row)
+        if uid not in current and not row.is_anonymous:
+            g.db.delete(row)             # (an anonymous credit stays, as the flag that keeps what they typed anonymous)
     for uid in current:
         row = rows.get(uid)
         if row is None:
+            # a post made anonymous from the start gives every credit the same (decision 21); the alias is theirs from now
             g.db.add(PostCoauthor(post_id=post.id, user_id=uid, invited_by_id=post.author_id,
-                                  status=coauthors.ACCEPTED, created_utc=now, accepted_utc=now))
+                                  status=coauthors.ACCEPTED, created_utc=now, accepted_utc=now, is_anonymous=bool(post.is_anonymous)))
+            if post.is_anonymous:
+                anon_aliases.give(g.db, anon_aliases.scope_key(post), uid, now)
         elif row.status != coauthors.ACCEPTED:
             row.status, row.accepted_utc = coauthors.ACCEPTED, now
             g.db.add(row)
@@ -828,14 +852,15 @@ def collab_fork(pid, v):
 
 # --- who wrote what, revisions (public once published) ----------------------------------------------------------------
 
-def _shares(runs, v, doc_id):
-    """[{name..., percent, tint, from_original}] for a legend; tints are fixed classes, by share."""
+def _shares(runs, v, doc_id, hidden=None):
+    """[{name..., percent, tint, from_original}] for a legend; tints are fixed classes, by share. `hidden` is `_hidden_credits`: the anonymous credits of a published
+    post, drawn by their alias."""
     ever = set(store.everyone(g.db, doc_id)) if doc_id else set()
     out = []
     shares = authorship.shares(runs)
     people = _users([u for u, _, _ in shares])
     for index, (uid, units, percent) in enumerate(shares):
-        out.append(dict(_name_of(people.get(uid), v), id=uid, percent=percent, tint=index % TINTS,
+        out.append(dict(_name_of(people.get(uid), v, hidden), id=uid, percent=percent, tint=index % TINTS,
                         from_original=bool(doc_id) and uid not in ever))
     return out
 
@@ -855,7 +880,7 @@ def collab_written_by(pid, v):
     row = store.publish_row(g.db, doc[0], number) if number else store.latest_publish(g.db, doc[0])
     if row is None:
         abort(404)
-    legend = _shares(row[5]["body"] + row[5]["title"], v, doc[0])
+    legend = _shares(row[5]["body"] + row[5]["title"], v, doc[0], _hidden_credits(post, v))
     return render_template("collab/written_by.html", v=v, p=post, doc=doc, row=row, legend=legend,
                            title_pieces=_tinted(row[3], row[5]["title"], legend),
                            body_pieces=_tinted(row[4], row[5]["body"], legend), draft=False)
@@ -879,9 +904,10 @@ def collab_revisions(pid, v):
     post, doc = _readable_collab_post(pid, v)
     rows = store.publishes(g.db, doc[0])
     people = _users([row[4] for row in rows])
+    hidden = _hidden_credits(post, v)
     fork_post = get_post(base36encode(doc[10]), v=v, graceful=True) if doc[10] else None
     return render_template("collab/revisions.html", v=v, p=post, doc=doc, rows=rows, diff=None,
-                           publishers={uid: _name_of(u, v) for uid, u in people.items()},
+                           publishers={uid: _name_of(u, v, hidden) for uid, u in people.items()},
                            fork_post=fork_post, fork_count=store.fork_count(g.db, post.id))
 
 
@@ -897,8 +923,9 @@ def collab_revision(pid, number, v):
     before = store.publish_row(g.db, doc[0], number - 1)
     lines = guild_wiki.diff(((before[3] + "\n\n" + before[4]) if before else ""), row[3] + "\n\n" + row[4])
     people = _users([row[6]])
+    hidden = _hidden_credits(post, v)
     return render_template("collab/revisions.html", v=v, p=post, doc=doc, rows=None, diff=lines, row=row, before=before,
-                           publishers={uid: _name_of(u, v) for uid, u in people.items()}, fork_post=None, fork_count=0)
+                           publishers={uid: _name_of(u, v, hidden) for uid, u in people.items()}, fork_post=None, fork_count=0)
 
 
 # --- for the post page and menus ----------------------------------------------------------------------------------

@@ -21,6 +21,8 @@ class PostCoauthor(Base, Age_times):
     status = Column(String(8), nullable=False, default="pending")
     created_utc = Column(Integer, nullable=False, default=0)
     accepted_utc = Column(Integer, nullable=False, default=0)
+    # this credit is hidden from everyone but admins and the co-author themselves, and drawn by its alias (the Log plan's decision 21, slice D3f)
+    is_anonymous = Column(Boolean, nullable=False, default=False)
 
     user = relationship("User", primaryjoin="User.id==PostCoauthor.user_id", foreign_keys=[user_id])
 

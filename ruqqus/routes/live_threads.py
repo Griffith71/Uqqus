@@ -98,7 +98,7 @@ def _runner_names(primary):
     from ruqqus.helpers import coauthors
     author = g.db.query(User).filter_by(id=primary.author_id).first()
     names = [author.username] if author is not None and not author.is_deleted else []
-    return names + [u.username for u in coauthors.accepted_of(primary) if u.username not in names]
+    return names + [u.username for u in coauthors.named_of(primary) if u.username not in names]       # an anonymous credit is never named (decision 21)
 
 
 def thread_json(primary, v, row=None):

@@ -9,10 +9,11 @@ from flask import abort, g, jsonify, redirect, render_template, request
 from jinja2 import Undefined
 
 from ruqqus.classes import PostCoauthor, Submission, User
-from ruqqus.helpers import age_declaration, coauthors, collab_view
+from ruqqus.helpers import age_declaration, anon_aliases, anonymity, coauthors, collab_view
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_post, get_user
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
+from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers.visibility import post_hidden
 from ruqqus.helpers.wrappers import auth_required, not_qr_limited, validate_formkey
 from ruqqus.__main__ import app, cache
@@ -96,17 +97,24 @@ def coauthor_list(pid, v):
         abort(404)
     is_author = post.author_id == v.id
     rows = coauthors.rows_of(g.db, post.id)
+    numbers = anon_aliases.numbers_cached(g.db, anon_aliases.scope_key(post)) if any(r.is_anonymous for r in rows) else {}
     out = []
     for row in rows:
         user = g.db.query(User).filter_by(id=row.user_id).first()
-        if not user or user.is_deleted:
+        if not user or (user.is_deleted and not row.is_anonymous):
             continue
         if row.status != coauthors.ACCEPTED and not is_author:
             continue
-        out.append({"username": user.username, "profile_url": user.profile_url, "status": row.status})
+        # an anonymous credit is told to the post's author (who invited them), the co-author and admins only; everyone else is shown its alias
+        if row.is_anonymous and not (is_author or coauthors.sees_credit(user, v)):
+            number = numbers.get(user.id)
+            out.append({"username": anonymity.alias_name(number) if number else anonymity.shown(), "profile_url": anonymity.DEFAULT_AVATAR,
+                        "status": row.status, "alias": True})
+            continue
+        out.append({"username": user.username, "profile_url": user.profile_url, "status": row.status, "alias": False})
     return jsonify({
         "is_author": is_author,
-        "can_invite": is_author and not post.is_anonymous and len(rows) < coauthors.MAX_COAUTHORS,
+        "can_invite": is_author and len(rows) < coauthors.MAX_COAUTHORS,
         "limit": coauthors.MAX_COAUTHORS,
         "coauthors": out,
     })
@@ -118,7 +126,7 @@ def coauthor_page(pid, v):
     """The invitation (accept or decline), or, once accepted, the way to step off."""
     post = _primary(pid)
     row = _row(post, v.id)
-    if row is None or post.is_anonymous:
+    if row is None:
         abort(404)
     return render_template("coauthor_invite.html", v=v, post=post, row=row, accepted=(row.status == coauthors.ACCEPTED))
 
@@ -135,17 +143,40 @@ def coauthor_accept(pid, v):
         abort(404)
     if age_declaration.content_refusal(v):      # being on a public byline is posting
         abort(403)
-    if post.is_anonymous or (author and author.any_block_exists(v)):
+    if author and author.any_block_exists(v):
         g.db.delete(row)         # the invitation can no longer stand
         g.db.commit()
         abort(404)
     row.status, row.accepted_utc = coauthors.ACCEPTED, int(time.time())
+    # a co-author may accept without their name (admins can always see it): the credit is anonymous from the start, as on a post made anonymous
+    if flag(request.form, "anonymous"):
+        row.is_anonymous = True
     g.db.add(row)
+    if row.is_anonymous:
+        anon_aliases.give(g.db, anon_aliases.scope_key(post), v.id)       # their number in the post's thread (the Log plan's decision 23)
     g.db.commit()
     _changed()
     if author:
         _tell(author, N_("@%(name)s accepted your invitation to co-author [your post](%(link)s)."),
               name=v.username, link=post.permalink)
+    return redirect(post.permalink)
+
+
+@app.post("/api/coauthor/<pid>/hide_name")
+@auth_required
+@not_qr_limited
+@validate_formkey
+def coauthor_hide_name(pid, v):
+    """A co-author takes their name off their credit, for good ("Remove my name", decision 21): only their credit becomes Anonymous (shown by its alias on the
+    byline and the shared-post pages); the other authors stay named and the post is unchanged. Admins and the post's author still see who it is. It is the
+    credit that is hidden, not what they wrote: it can't be undone, and they remain a co-author who can step off."""
+    post = _primary(pid)
+    row = _row(post, v.id)
+    if row is None or row.status != coauthors.ACCEPTED:
+        abort(404)
+    if coauthors.hide_credit(g.db, post, v.id):
+        g.db.commit()
+        _changed()
     return redirect(post.permalink)
 
 
@@ -203,7 +234,8 @@ def coauthor_remove(pid, v):
 
 
 def _coauthors_of(post, v=None):
-    return coauthors.accepted_of(post, None if isinstance(v, Undefined) else v)
+    """What a byline draws for the co-authors: accounts, and an anonymous credit's alias for whoever may not be told (helpers/coauthors.py credits_of)."""
+    return coauthors.credits_of(post, None if isinstance(v, Undefined) else v)
 
 
 def _is_coauthor(post, v=None):
@@ -213,7 +245,7 @@ def _is_coauthor(post, v=None):
 def _may_invite(post, v=None):
     """Offer the Co-authors menu item: the author, on a post of their own profile that is not anonymous."""
     v = None if isinstance(v, Undefined) else v
-    return bool(v and isinstance(post, Submission) and post.author_id == v.id and not post.is_anonymous
+    return bool(v and isinstance(post, Submission) and post.author_id == v.id
                 and not post.audience and post.repost_id in (0, None) and not collab_view.is_collab(post))
 
 

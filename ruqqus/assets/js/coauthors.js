@@ -47,7 +47,7 @@
     name.className = 'flex-grow-1 text-truncate';
     var strong = document.createElement('span');
     strong.className = 'font-weight-bold';
-    strong.textContent = '@' + person.username;
+    strong.textContent = (person.alias ? '' : '@') + person.username;       // an anonymous credit is told to everyone but its author by its alias, "Anonymous #2"
     name.appendChild(strong);
     if (person.status !== 'accepted') {
       var waiting = document.createElement('span');
@@ -71,7 +71,7 @@
     });
     item.appendChild(avatar);
     item.appendChild(name);
-    item.appendChild(remove);
+    if (!person.alias) item.appendChild(remove);       // only the post's author removes anyone, and they are told whose credit it is
     return item;
   }
 

@@ -13,7 +13,7 @@ def user(id=2, name="bob", **kw):
 
 
 def why(candidate="default", **kw):
-    args = dict(anonymous=False, primary=True, author_id=1, candidate=user() if candidate == "default" else candidate,
+    args = dict(primary=True, author_id=1, candidate=user() if candidate == "default" else candidate,
                 count=0, blocked=False, already=False)
     args.update(kw)
     return co.refusal("bob", **args)
@@ -66,11 +66,12 @@ def test_an_ordinary_account_may_be_invited():
     assert why() is None
 
 
-def test_never_on_an_anonymous_post_and_only_on_a_post_on_the_authors_profile():
-    assert why(anonymous=True) == "A co-authored post can't be anonymous."
+def test_anonymity_is_no_longer_a_reason_to_refuse_and_only_a_post_on_the_authors_profile_has_co_authors():
+    # slice D3f lifted "never on an anonymous post": the credit is anonymous instead (helpers/coauthors.py credits_of)
+    assert "anonymous" not in co.refusal.__code__.co_varnames[:co.refusal.__code__.co_argcount + co.refusal.__code__.co_kwonlyargcount]
     assert why(primary=False) == "Only a post on your profile can have co-authors."
     # the post comes first: nothing about the person is said about a post that cannot have co-authors
-    assert why(anonymous=True, candidate=None) == "A co-authored post can't be anonymous."
+    assert why(primary=False, candidate=None) == "Only a post on your profile can have co-authors."
 
 
 def test_a_name_that_does_not_exist_yourself_and_accounts_that_cannot_be_invited():
@@ -91,4 +92,4 @@ def test_once_each_and_at_most_five():
 
 
 def test_the_message_names_the_account_as_it_is_spelt():
-    assert co.refusal("BOB", anonymous=False, primary=True, author_id=1, candidate=user(name="Bob"), count=0, blocked=True, already=False) == "@Bob can't be invited."
+    assert co.refusal("BOB", primary=True, author_id=1, candidate=user(name="Bob"), count=0, blocked=True, already=False) == "@Bob can't be invited."

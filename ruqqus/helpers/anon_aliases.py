@@ -88,6 +88,28 @@ def numbers_in(db, scope):
     return {r[0]: r[1] for r in db.execute(text("SELECT user_id, n FROM anon_aliases WHERE scope_kind = :k AND scope_id = :s"), {"k": kind, "s": int(scope_id)})}
 
 
+def numbers_cached(db, scope):
+    """`numbers_in`, once a thread a request (what drawing a page of a thread needs, whoever asks): the request's own cache, which `give` clears. Outside a
+    request, or where the table isn't there yet, nothing is cached and a missing table is no numbers."""
+    try:
+        from flask import g, has_request_context
+        cache = g.__dict__.setdefault("_alias_numbers", {}) if has_request_context() else None
+    except Exception:
+        cache = None
+    if cache is not None and scope in cache:
+        return cache[scope]
+    savepoint = db.begin_nested()
+    try:
+        found = numbers_in(db, scope)
+        savepoint.commit()
+    except Exception:                               # a database that hasn't reached the migration draws plain Anonymous
+        savepoint.rollback()
+        found = {}
+    if cache is not None:
+        cache[scope] = found
+    return found
+
+
 def numbers_for_items(db, post_ids=(), comment_ids=()):
     """{("post"|"comment", id): number} for these items' authors in their own threads, for the Log's lines (a deleted or edited item is drawn as its
     author's alias). An item whose author has no number yet is absent: it is drawn as plain "Anonymous"."""

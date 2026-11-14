@@ -54,7 +54,7 @@ def test_the_filters_are_numbers_and_names_only_and_a_private_guild_is_not_confi
     route = body(LOG_PAGES, "public_log")
     assert "log_view.parse_cursor" in route and "log_view.parse_tab" in route and "action_log.parse_rule" in route
     assert "_id_of(get_guild" in route                                       # an unknown name lists nothing: -1 matches no row
-    assert "_ACTOR_MAY_BE_FILTERED" in ACTION_LOG and "actor_role <> 'admin' AND (actor_role <> 'author' OR (action IN" in ACTION_LOG
+    assert "_ACTOR_MAY_BE_FILTERED" in ACTION_LOG and "actor_role <> 'admin' AND (actor_role <> 'author' OR " in ACTION_LOG and "NOT {_ACTOR_CREDIT_ANONYMOUS}" in ACTION_LOG
     # filtering by an admin (or a post's author) must not list their entries; an edit's editor is named only while its item is not anonymous
 
 

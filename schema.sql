@@ -5926,6 +5926,7 @@ CREATE TABLE public.post_coauthors (
     status character varying(8) DEFAULT 'pending' NOT NULL,
     created_utc integer DEFAULT 0 NOT NULL,
     accepted_utc integer DEFAULT 0 NOT NULL,
+    is_anonymous boolean DEFAULT false NOT NULL,
     CONSTRAINT post_coauthors_pair_key UNIQUE (post_id, user_id),
     CONSTRAINT post_coauthors_status CHECK (status IN ('pending', 'accepted'))
 );
@@ -7544,4 +7545,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2027-01-02_log_edits.sql'),
     ('2027-01-03_account_anonymise.sql'),
     ('2027-01-04_log_evidence.sql'),
-    ('2027-01-05_anon_aliases.sql');
+    ('2027-01-05_anon_aliases.sql'),
+    ('2027-01-06_coauthor_credits.sql');

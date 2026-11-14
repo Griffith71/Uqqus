@@ -79,7 +79,7 @@ def text_view(copy, *, board_banned, level, shows_sensitive):
 # What "remove my name" refuses, and why. The standalone action only: a delete anonymises whatever it deletes (`force`).
 CIRCLE = N_("A post for a Circle can't have its name removed.")
 TIPPED = N_("A post that has been tipped can't have its name removed, because the coins went to you.")
-SHARED = N_("A post written with others can't have its name removed here yet.")
+SHARED = N_("A post written with others can't have its name removed here yet.")     # no longer asked: slice D3f hides one credit, not the post (kept for the catalogues)
 SPACE = N_("A Space can't have its name removed.")
 ALREADY = N_("This is already anonymous.")
 GONE = N_("This has been deleted.")

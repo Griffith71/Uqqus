@@ -200,13 +200,14 @@ def check_title(value):
 
 # --- the post options a draft keeps ------------------------------------------------------------------------------
 # What a regular post has beside its title and text and that a collaborative post can have too: a link, who can
-# comment, content disclosure, sensitive, and guilds to forward to. Not here, on purpose: an audience of circles,
-# anonymous, co-authors (the authors ARE the co-authors), a poll, a Space or a live thread (see the module notes).
+# comment, content disclosure, sensitive, anonymous (slice D3f: every author's credit is hidden from the public, admins always see it; decided before the first
+# publish and never changed after, as for any post) and guilds to forward to. Not here, on purpose: an audience of circles, co-authors (the authors ARE the
+# co-authors), a poll, a Space or a live thread (see the module notes).
 
 URL_MAX = 2048
 FORWARD_MAX = 10
 COMMENT_CHOICES = (0, 1, 2, 3)           # everyone, accounts the author follows, Premium, no one (helpers/comment_permission.py)
-FLAG_OPTIONS = ("paid_partnership", "made_with_ai", "sensitive")
+FLAG_OPTIONS = ("paid_partnership", "made_with_ai", "sensitive", "anonymous")
 _GUILD_NAME = re.compile(r"[A-Za-z0-9_]{1,40}")
 
 
@@ -259,6 +260,8 @@ def post_fields(options):
         fields[name] = "true" if options[name] else ""
     if options["sensitive"]:
         fields["sensitive"] = "on"
+    if options["anonymous"]:
+        fields["anonymous"] = "true"             # read only when the post is made: whether a post is anonymous is never changed afterwards
     if options["forward_guilds"]:
         fields["forward_guilds"] = list(options["forward_guilds"])
     return fields

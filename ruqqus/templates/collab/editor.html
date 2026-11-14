@@ -96,7 +96,12 @@
                 <label class="custom-control-label" for="collab-sensitive">{{ _("Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it.") }}</label>
               </div>
               {% endif %}
-              <p class="text-muted text-small mt-3 mb-0">{{ _("A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish.") }}</p>
+              {# slice D3f: anonymous from the start hides every author from the public (shown as "Anonymous #N"); admins always see them; decided before the first publish #}
+              <div class="custom-control custom-checkbox mt-3">
+                <input type="checkbox" class="custom-control-input" id="collab-anonymous" name="anonymous"{% if options.anonymous %} checked{% endif %}{% if doc[7] %} disabled{% endif %}>
+                <label class="custom-control-label" for="collab-anonymous">{{ _("Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published.") }}</label>
+              </div>
+              <p class="text-muted text-small mt-3 mb-0">{{ _("A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish.") }}</p>
             </div>
           </details>
           <div class="text-small text-muted mt-2" id="collab-options-status" role="status" aria-live="polite"></div>

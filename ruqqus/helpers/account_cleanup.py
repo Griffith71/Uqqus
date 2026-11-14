@@ -25,7 +25,10 @@ STEPS = (
     ("stop their circles renewing", "UPDATE circle_members SET cancelled = :yes WHERE circle_id IN "
                                     "(SELECT id FROM circles WHERE user_id = :u)"),
     # co-authorships, stories, Highlights
-    ("end co-authorships", "DELETE FROM post_coauthors WHERE user_id = :u"),
+    # a co-author who deletes their account: only their credit becomes Anonymous (the Log plan's decision 21; its number is given by the job, helpers/account_anonymise.py);
+    # an invitation not answered goes
+    ("end unanswered co-author invitations", "DELETE FROM post_coauthors WHERE user_id = :u AND status <> 'accepted'"),
+    ("make their co-author credits anonymous", "UPDATE post_coauthors SET is_anonymous = :yes WHERE user_id = :u AND status = 'accepted'"),
     ("remove stories", "UPDATE stories SET deleted_utc = :now WHERE user_id = :u AND deleted_utc = 0"),
     ("remove Highlights", "DELETE FROM highlights WHERE user_id = :u"),
     # channels they own close; memberships go

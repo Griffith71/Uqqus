@@ -1477,7 +1477,7 @@ Optional file data:
         if coauthor_names and v.qr_limited:
             refused = qr_limited_answer(v)
             return {"html": lambda: refused, "api": lambda: refused}
-        coauthor_error = (coauthors.check_names(g.db, v, coauthor_names, anonymous=flag(request.form, "anonymous"))
+        coauthor_error = (coauthors.check_names(g.db, v, coauthor_names)
                           if coauthor_names else None)
     except coauthors.CoauthorError as error:
         coauthor_names, coauthor_error = [], error.message
@@ -2043,13 +2043,14 @@ def _is_circle_item(post):
 
 def unlink_post(post, v):
     """Remove the author's name from a post and its copies, for good ("Remove my name"). Refused for what needs the name (a Circle post, a tipped
-    one, one written with others, a Space); the delete dialog doesn't offer it there, and this says why if a request comes anyway."""
+    one, a Space); the delete dialog doesn't offer it there, and this says why if a request comes anyway. A post written with others is no longer refused
+    (slice D3f): it hides THIS author's credit (`submissions.is_anonymous`), and each co-author has their own (`coauthors.hide_credit`)."""
     if getattr(v, "qr_limited", False):
         return qr_limited_answer(v)          # irreversible, and a relayed code's: it needs the password (the owner's decision 22)
     family = anonymise.family_of(g.db, post)
     refusal = deletion.unlink_refusal(
         circle=_is_circle_item(post), tipped=deletion_store.post_tipped(g.db, [r.id for r in family]),
-        shared=deletion_store.is_shared(g.db, post.repost_id or post.id), space=bool(post.is_space or cperm.is_space(post)),
+        shared=False, space=bool(post.is_space or cperm.is_space(post)),
         already=bool(post.is_anonymous), deleted=False, bot=bool(post.is_bot))
     if refusal:
         return jsonify({"error": msg(refusal)}), 409

@@ -4,6 +4,9 @@ schema.sql so this cannot drift from it."""
 from sqlalchemy import text
 
 LATER = (
+    # 2027-01-06_coauthor_credits.sql (and post_coauthors, which the by= filter reads to leave out an anonymous credit's edits)
+    "CREATE TABLE IF NOT EXISTS post_coauthors (id INTEGER PRIMARY KEY, post_id INTEGER, user_id INTEGER, invited_by_id INTEGER, status VARCHAR(8) DEFAULT 'pending', "
+    "is_anonymous BOOLEAN NOT NULL DEFAULT 0)",
     # 2026-12-21_log_snapshot_kinds.sql
     "ALTER TABLE log_snapshots ADD COLUMN kind VARCHAR(12) NOT NULL DEFAULT 'hide'",
     "ALTER TABLE log_snapshots ADD COLUMN hider_id INTEGER",

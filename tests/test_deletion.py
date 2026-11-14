@@ -84,7 +84,7 @@ def test_remove_my_name_is_refused_where_the_name_is_needed_and_says_why():
     expect = {"deleted": deletion.GONE, "already": deletion.ALREADY, "space": deletion.SPACE, "circle": deletion.CIRCLE,
               "tipped": deletion.TIPPED, "shared": deletion.SHARED}
     for key, message in expect.items():
-        assert deletion.unlink_refusal(**{**ok, key: True}) == message, key
+        assert deletion.unlink_refusal(**{**ok, key: True}) == message, key       # the rule still exists; the site no longer asks it of a shared post (slice D3f)
     assert deletion.unlink_refusal(**ok, bot=True) == deletion.BOT
     assert deletion.parse_how("unlink") == deletion.UNLINK and deletion.parse_how("x") == deletion.parse_how(None) == deletion.DELETE
 
@@ -105,7 +105,7 @@ def db():
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0)"))
         conn.execute(text("CREATE TABLE award_relationships (id INTEGER PRIMARY KEY, user_id INTEGER, submission_id INTEGER, comment_id INTEGER, coins INTEGER)"))
-        conn.execute(text("CREATE TABLE post_coauthors (id INTEGER PRIMARY KEY, post_id INTEGER, user_id INTEGER, status VARCHAR(10))"))
+        conn.execute(text("CREATE TABLE IF NOT EXISTS post_coauthors (id INTEGER PRIMARY KEY, post_id INTEGER, user_id INTEGER, status VARCHAR(10))"))
         conn.execute(text("CREATE TABLE collab_docs (id INTEGER PRIMARY KEY, post_id INTEGER, deleted_utc INTEGER DEFAULT 0)"))
         conn.execute(text("INSERT INTO boards VALUES (1, 0, 0), (2, 1, 0), (3, 0, 1)"))
         conn.execute(text("INSERT INTO users VALUES (1, 0), (10, 0), (20, 3), (30, 0), (31, 0)"))

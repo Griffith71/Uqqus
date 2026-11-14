@@ -40,16 +40,7 @@ def _alias_resolver(item):
     author = getattr(item, "author_id", None)
     if scope is None or author is None:
         return None
-    cache = g.__dict__.setdefault("_alias_numbers", {})
-    if scope not in cache:
-        savepoint = g.db.begin_nested()
-        try:
-            cache[scope] = anon_aliases.numbers_in(g.db, scope)
-            savepoint.commit()
-        except Exception:                       # a database that hasn't reached the migration draws plain Anonymous
-            savepoint.rollback()
-            cache[scope] = {}
-    return cache[scope].get(author)
+    return anon_aliases.numbers_cached(g.db, scope).get(author)
 
 
 anonymity.alias_resolver = _alias_resolver

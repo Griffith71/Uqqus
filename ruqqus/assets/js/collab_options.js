@@ -35,6 +35,7 @@
       if (input.type === 'hidden' || input.checked) form.append(input.name, input.type === 'hidden' ? '' : input.value);
     });
     if (box.querySelector('input[name="sensitive"]:checked')) form.append('sensitive', 'on');
+    if (box.querySelector('input[name="anonymous"]:checked')) form.append('anonymous', 'on');
     Array.prototype.forEach.call(box.querySelectorAll('#forward_guild_inputs input[name="forward_guilds"]'), function (input) {
       form.append('forward_guilds', input.value);
     });

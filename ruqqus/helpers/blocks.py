@@ -30,7 +30,9 @@ def coauthored_with(model, user_ids):
     """A condition: the post (its primary, for a forwarded copy) has an accepted co-author in `user_ids`."""
     from ruqqus.classes.coauthors import PostCoauthor
     primary = func.coalesce(func.nullif(model.repost_id, 0), model.id)
-    return exists().where(and_(PostCoauthor.post_id == primary, PostCoauthor.status == "accepted",
+    # an anonymous credit never counts, as an anonymous item is never left out for its author: leaving a post out for a co-author the viewer can't see would
+    # tell the viewer who the anonymous credit is (the Log plan's decision 21)
+    return exists().where(and_(PostCoauthor.post_id == primary, PostCoauthor.status == "accepted", PostCoauthor.is_anonymous == False,
                                PostCoauthor.user_id.in_(user_ids)))
 
 

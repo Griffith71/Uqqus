@@ -64,6 +64,15 @@ def batch(db, user_id, size=BATCH):
     return len(posts), len(comments)
 
 
+def credits(db, user_id):
+    """A number for this account in every thread it co-authored in: its accepted co-author credits are anonymous (`close_account` made them so) and each gets its
+    number there now, at the moment it becomes anonymous (decision 23). Idempotent: `give` finds a number already given. Returns how many credits were visited."""
+    posts = [r[0] for r in db.execute(text("SELECT post_id FROM post_coauthors WHERE user_id = :u AND status = 'accepted' AND is_anonymous"), {"u": int(user_id)})]
+    for post_id in posts:
+        anon_aliases.give(db, (anon_aliases.POST, post_id), user_id)
+    return len(posts)
+
+
 def remaining(db, user_id):
     """Is there anything of this account's left to anonymise?"""
     for table in ("submissions", "comments"):
@@ -76,6 +85,7 @@ def run_one(db, user_id, now, *, batches=BATCHES_PER_JOB, size=BATCH, commit=Tru
     """Work one account's job: batches until nothing is left or `batches` ran, each committed on its own (a failed one is rolled back and the job is
     asked again later). Marks the job done when nothing remains. Returns `(posts, comments, done)`."""
     posts_total = comments_total = 0
+    credits(db, user_id)
     for _ in range(max(int(batches), 1)):
         posts, comments = batch(db, user_id, size)
         posts_total += posts

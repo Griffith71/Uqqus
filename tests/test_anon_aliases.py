@@ -140,17 +140,17 @@ def test_every_way_of_becoming_anonymous_gives_a_number_and_the_database_gets_th
     anonymise = read("ruqqus", "helpers", "anonymise.py")
     assert anonymise.count("anon_aliases.give(") == 3, "a post, a comment and the author's own comments under a deleted or unlinked post"
     job = read("ruqqus", "helpers", "account_anonymise.py")
-    assert job.count("anon_aliases.give(") == 2, "the account job: the threads of its posts and of its comments"
+    assert job.count("anon_aliases.give(") == 3, "the account job: the threads of its posts, of its comments and of its co-author credits (slice D3f)"
     assert "anon_aliases" in read("ruqqus", "routes", "anonymity.py") and "anonymity.alias_resolver = _alias_resolver" in read("ruqqus", "routes", "anonymity.py")
     migration, schema = read("scripts", "migrations", "2027-01-05_anon_aliases.sql"), read("schema.sql")
     assert "PRIMARY KEY (scope_kind, scope_id, user_id)" in migration and "REFERENCES" not in migration
-    assert "CREATE TABLE public.anon_aliases" in schema and "('2027-01-05_anon_aliases.sql');" in schema
+    assert "CREATE TABLE public.anon_aliases" in schema and "('2027-01-05_anon_aliases.sql')" in schema
     assert "CREATE UNIQUE INDEX anon_aliases_number_idx" in schema, "the unique index is what makes a number never repeat"
 
 
 def test_the_log_and_the_json_draw_the_number():
     pages = read("ruqqus", "routes", "log_pages.py")
-    assert "numbers = _numbers(entries)" in pages and pages.count("log_view.anonymous_actor(numbers.get(item))") == 2
+    assert "numbers = _numbers(entries)" in pages and pages.count("log_view.anonymous_actor(numbers.get(item))") == 1
     assert 'log_view.anonymous_actor(getattr(author, "alias", None))' in pages and "isinstance(author, anonymity.AnonymousAuthor)" in pages
     assert '"alias"' in read("ruqqus", "classes", "comment.py") and '"alias"' in read("ruqqus", "classes", "submission.py")
     assert "author_of(owner, v).shown_name" in read("ruqqus", "templates", "content_history.html"), "the history page's 'Edited by'"

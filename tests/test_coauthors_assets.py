@@ -1,6 +1,6 @@
 """Co-authored posts cross the model, the schema, the routes, the composer and its drafts, submit_post, two
 listings, the byline and the menus. These checks keep the layers agreeing and keep the promises: never on an
-anonymous post, only the author invites, only the invited answers, and a name that cannot be invited stops
+anonymous post (an anonymous credit, since slice D3f, instead of "never on an anonymous post"), only the author invites, only the invited answers, and a name that cannot be invited stops
 the post instead of vanishing."""
 import re
 from pathlib import Path
@@ -30,12 +30,14 @@ def route(name):
 
 def test_the_model_the_schema_and_the_migration_have_the_same_columns():
     model = set(re.findall(r"^    (\w+) = Column\(", read("ruqqus", "classes", "coauthors.py"), re.M))
-    assert model == {"id", "post_id", "user_id", "invited_by_id", "status", "created_utc", "accepted_utc"}
-    for sql, header in ((read("schema.sql"), "CREATE TABLE public.post_coauthors"),
-                        (read("scripts", "migrations", "2026-10-08_coauthors.sql"), "CREATE TABLE IF NOT EXISTS post_coauthors")):
+    assert model == {"id", "post_id", "user_id", "invited_by_id", "status", "created_utc", "accepted_utc", "is_anonymous"}
+    # `is_anonymous` came with slice D3f (2027-01-06_coauthor_credits.sql): the schema has it in the table, the first migration is the table as it was
+    assert "ADD COLUMN IF NOT EXISTS is_anonymous boolean DEFAULT false NOT NULL" in read("scripts", "migrations", "2027-01-06_coauthor_credits.sql")
+    for sql, header, expected in ((read("schema.sql"), "CREATE TABLE public.post_coauthors", model),
+                                  (read("scripts", "migrations", "2026-10-08_coauthors.sql"), "CREATE TABLE IF NOT EXISTS post_coauthors", model - {"is_anonymous"})):
         block = re.search(rf"{header} \((.*?)\n\);", sql, re.S).group(1)
         columns = {line.split()[0] for line in (x.strip() for x in block.splitlines()) if line and not line.startswith("CONSTRAINT")}
-        assert columns == model, header
+        assert columns == expected, header
         assert "CONSTRAINT post_coauthors_pair_key UNIQUE (post_id, user_id)" in block
         assert "CHECK (status IN ('pending', 'accepted'))" in block
     assert "from .coauthors import *" in read("ruqqus", "classes", "__init__.py")
@@ -65,12 +67,12 @@ def test_only_the_invited_account_answers_and_a_decision_cannot_be_repeated():
         assert "row = _row(post, v.id)" in body and "row.status != coauthors.PENDING" in body and "abort(404)" in body, name
     leave = route("coauthor_leave")
     assert "row = _row(post, v.id)" in leave and "row.status != coauthors.ACCEPTED" in leave
-    assert "_row(post, v.id)" in route("coauthor_page") and "post.is_anonymous" in route("coauthor_page")
+    assert "_row(post, v.id)" in route("coauthor_page") and "row is None" in route("coauthor_page")       # an anonymous post's invitation stands now (slice D3f)
 
 
 def test_an_invitation_that_can_no_longer_stand_is_dropped_on_accepting():
     accept = route("coauthor_accept")
-    assert "post.is_anonymous or (author and author.any_block_exists(v))" in accept
+    assert "author and author.any_block_exists(v)" in accept and "post.is_anonymous or" not in accept
     assert accept.index("g.db.delete(row)") < accept.index("row.status, row.accepted_utc")
 
 
@@ -83,12 +85,12 @@ def test_every_id_resolves_to_the_primary_post_and_a_dead_post_is_a_404():
 def test_the_list_shows_waiting_invitations_to_the_author_only():
     body = route("coauthor_list")
     assert "row.status != coauthors.ACCEPTED and not is_author" in body
-    assert 'not post.is_anonymous and len(rows) < coauthors.MAX_COAUTHORS' in body
+    assert '"can_invite": is_author and len(rows) < coauthors.MAX_COAUTHORS' in body
 
 
 def test_the_menu_item_is_for_the_author_of_a_profile_post_that_is_not_anonymous():
     may = ROUTES.split("def _may_invite(")[1].split("app.jinja_env")[0]
-    assert "post.author_id == v.id and not post.is_anonymous" in may and "post.repost_id in (0, None)" in may
+    assert "post.author_id == v.id" in may and "not post.is_anonymous" not in may and "post.repost_id in (0, None)" in may
     assert "app.jinja_env.globals.update(coauthors_of=_coauthors_of, is_coauthor=_is_coauthor, may_invite_coauthors=_may_invite)" in ROUTES
 
 
@@ -106,7 +108,7 @@ def test_a_name_that_cannot_be_invited_stops_the_post_before_it_is_made():
     made = POSTS.index("    new_post = Submission(\n        author_id=v.id,")
     assert refusal < made
     block = POSTS[refusal:made]
-    assert "coauthors.check_names(g.db, v, coauthor_names, anonymous=flag(request.form, \"anonymous\"))" in block
+    assert "coauthors.check_names(g.db, v, coauthor_names)" in block
     assert "({\"error\": coauthor_error}, 400)" in block and "submit.html" in block
     # the invitations go out once the post exists, and before the draft is used up
     assert POSTS.index("coauthors.invite_names(g.db, v, new_post, coauthor_names)") < POSTS.index("_discard_draft(v, request.form.get(\"draft_id\"))")
@@ -128,12 +130,14 @@ def test_there_is_no_co_authors_field_in_the_composers_or_drafts_any_more():
 def test_a_co_authored_post_is_on_the_co_authors_profile_and_in_the_following_feed():
     listing = USER.split("def userpagelisting")[1].split("def commentlisting")[0]
     assert 'select(PostCoauthor.post_id).where(PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted")' in listing
+    assert "coauthored = coauthored.where(PostCoauthor.is_anonymous == False)" in listing, "an anonymous credit is left off a profile (admins see it, as an anonymous post)"
     assert "or_(Submission.author_id == self.id, Submission.id.in_(coauthored))" in listing
     feed = USER.split("def idlist")[1][:3500]
-    assert "PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == \"accepted\"" in feed
+    assert "PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == \"accepted\"" in feed and "PostCoauthor.is_anonymous == False" in feed
     assert "and_(or_(Submission.author_id.in_(user_ids), Submission.id.in_(coauthored)), not_(Submission.is_anonymous))" in feed
     count = USER.split("def public_post_count")[1].split("@property")[0]
     assert "is_anonymous=False" in count[:200] and "PostCoauthor.status == \"accepted\"" in count and "Submission.is_anonymous == False" in count
+    assert "PostCoauthor.is_anonymous == False" in count
 
 
 def test_the_byline_and_the_menus_are_in_every_place_a_post_is_drawn():
@@ -156,7 +160,7 @@ def test_the_sheet_is_only_for_a_member_outside_the_panel_frames_and_its_script_
     ids = set(re.findall(r"getElementById\('([\w-]+)'\)", SCRIPT))
     assert {"coauthorsModal", "coauthors-list", "coauthors-form", "coauthors-input", "coauthors-invite", "coauthors-status"} <= ids
     assert not [i for i in ids if f'id="{i}"' not in MODAL]
-    assert "innerHTML" not in SCRIPT and "strong.textContent = '@' + person.username" in SCRIPT
+    assert "innerHTML" not in SCRIPT and "strong.textContent = (person.alias ? '' : '@') + person.username" in SCRIPT
 
 
 def test_both_stylesheets_style_it():

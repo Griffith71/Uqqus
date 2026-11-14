@@ -245,11 +245,13 @@ def test_the_schema_mirrors_the_migration():
 
 def test_options_keep_only_known_values_in_their_own_types():
     assert rules.clean_options(None) == {"comment_permission": 0, "paid_partnership": False, "made_with_ai": False,
-                                         "sensitive": False, "forward_guilds": []}
+                                         "sensitive": False, "anonymous": False, "forward_guilds": []}
     got = rules.clean_options({"url": "https://example.com/a", "comment_permission": "2", "paid_partnership": "true",
                                "sensitive": True, "forward_guilds": ["+Cats", "cats", "bad name", "dogs"], "evil": "<script>"})
     assert got == {"url": "https://example.com/a", "comment_permission": 2, "paid_partnership": True, "made_with_ai": False,
-                   "sensitive": True, "forward_guilds": ["Cats", "dogs"]}
+                   "sensitive": True, "anonymous": False, "forward_guilds": ["Cats", "dogs"]}
+    assert rules.clean_options({"anonymous": "on"})["anonymous"] is True and rules.post_fields({"anonymous": True})["anonymous"] == "true"
+    assert "anonymous" not in rules.post_fields({"anonymous": False}), "a post that isn't anonymous sends no field"
     assert "url" not in rules.clean_options({"url": "javascript:alert(1)"})
     assert rules.clean_options({"comment_permission": 9})["comment_permission"] == 0
 

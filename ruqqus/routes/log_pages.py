@@ -193,7 +193,7 @@ def _rows(entries, v):
             elif e["log_type"] == action_log.EDIT:
                 # an edit names its editor unless the item is anonymous (`fetch` has already taken the id out of an anonymous item's: M10, M11)
                 who = (log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted, hidden=user_hidden(actor, v))
-                       if e["actor_id"] else log_view.anonymous_actor(numbers.get(item)))
+                       if e["actor_id"] else log_view.anonymous_actor())       # no number: the editor may be a co-author whose credit is anonymous, not the item's author
             else:
                 who = log_view.post_author()
         elif role != action_log.GUILDMASTER or e["actor_id"] is None:
@@ -340,11 +340,12 @@ def deleted_post_context(post, v):
 
 
 def may_unlink_post(post):
-    """Offer "Remove my name" in a post's delete dialog? Only where the route will do it (`deletion.unlink_refusal`): not a Circle post, a tipped one, one
-    written with others, a Space, a bot's, or one that is already anonymous. The cheap checks only (the route asks the database too)."""
-    from ruqqus.helpers import coauthors, collab_view, comment_permission as cperm
+    """Offer "Remove my name" in a post's delete dialog? Only where the route will do it (`deletion.unlink_refusal`): not a Circle post, a tipped one, a Space,
+    a bot's, or one that is already anonymous. A post written with others is offered it (slice D3f): it hides this author's credit. The cheap checks only
+    (the route asks the database too)."""
+    from ruqqus.helpers import comment_permission as cperm
     return not (post.is_anonymous or post.audience or getattr(post.board, "is_circle", False) or (post.tip_coins or 0) > 0 or post.is_space
-                or cperm.is_space(post) or post.is_bot or collab_view.is_collab(post) or coauthors.accepted_of(post, None))
+                or cperm.is_space(post) or post.is_bot)
 
 
 def may_unlink_comment(comment):

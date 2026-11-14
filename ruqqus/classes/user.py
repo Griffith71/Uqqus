@@ -349,7 +349,9 @@ class User(Base, Stndrd, Age_times):
         )
 
         # a post a followed account co-authors counts as theirs (helpers/coauthors.py)
-        coauthored = select(PostCoauthor.post_id).where(PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == "accepted")
+        # (an anonymous credit is not: following someone must not list what they co-author anonymously, decision 21)
+        coauthored = select(PostCoauthor.post_id).where(PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == "accepted",
+                                                        PostCoauthor.is_anonymous == False)
 
         posts = posts.filter(
             or_(
@@ -755,7 +757,10 @@ class User(Base, Stndrd, Age_times):
 
         # ---- Posts authored by this user ----
         # a post this account co-authors (helpers/coauthors.py) is listed here too, once they accepted
+        # an anonymous credit is left off a profile for everyone, its owner too, and shown to admins, as an anonymous post is (anonymity.off_profile)
         coauthored = select(PostCoauthor.post_id).where(PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted")
+        if not (v and (v.admin_level or 0) >= 3):
+            coauthored = coauthored.where(PostCoauthor.is_anonymous == False)
 
         authored = g.db.query(
             Submission.id,
@@ -1417,7 +1422,7 @@ class User(Base, Stndrd, Age_times):
         """What a profile shows: no anonymous posts; co-authored ones count."""
         own = self.submissions.filter_by(is_banned=False, is_anonymous=False).count()
         shared = g.db.query(PostCoauthor.id).join(Submission, Submission.id == PostCoauthor.post_id).filter(
-            PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted",
+            PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted", PostCoauthor.is_anonymous == False,
             Submission.is_banned == False, Submission.is_anonymous == False, Submission.deleted_utc == 0).count()
         return own + shared
 

@@ -20,22 +20,49 @@
     <div class="card-body">
       <a href="{{ post.permalink }}" class="h5 d-block mb-1">{{ post.title | safe }}</a>
       {# Translators: the post's author, under its title #}
-      <div class="text-muted text-small">{{ _('by <a href="%(link)s">@%(name)s</a>', link=author_of(post, v).permalink, name=author_of(post, v).username) }}</div>
+      {% if anon_hidden(post, v) %}<div class="text-muted text-small">{{ _('by %(name)s', name=author_of(post, v).shown_name) }}</div>
+      {% else %}<div class="text-muted text-small">{{ _('by <a href="%(link)s">@%(name)s</a>', link=author_of(post, v).permalink, name=author_of(post, v).username) }}</div>{% endif %}
     </div>
   </div>
 
   {% if accepted %}
+  {# slice D3f: the credit can be hidden, for good: only this credit becomes "Anonymous #N" (admins and the post's author still see whose it is) #}
+  {% if row.is_anonymous %}
+  <p class="text-muted">{{ _('Your credit on this post is anonymous: other members see it as "Anonymous #N". Admins and the post\'s author can still see it is yours. This can\'t be undone.') }}</p>
+  {% else %}
+  <form method="post" action="/api/coauthor/{{ post.base36id }}/hide_name" class="mb-3" onsubmit="return confirm({{ _('Remove your name from your credit on this post? Other members will see "Anonymous" with a number. This can\'t be undone.') | tojson | forceescape }});">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <button type="submit" class="btn btn-outline-secondary">{{ _('Remove my name from this post') }}</button>
+    <span class="text-muted text-small d-block mt-1">{{ _("Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you.") }}</span>
+  </form>
+  {% endif %}
+  {% if not row.is_anonymous %}
   <p class="text-muted">{{ _('The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name.') }}</p>
+  {% else %}
+  <p class="text-muted">{{ _("The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit.") }}</p>
+  {% endif %}
   <form method="post" action="/api/coauthor/{{ post.base36id }}/leave" onsubmit="return confirm({{ _('Step off as co-author of this post?') | tojson | forceescape }});">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">
     <button type="submit" class="btn btn-outline-danger">{{ pgettext("button", "Step off") }}</button>
     <a href="{{ post.permalink }}" class="btn btn-link">{{ _('Back to the post') }}</a>
   </form>
   {% else %}
-  <p class="text-muted">{{ _('@%(name)s invited you to share this post. If you accept, it carries your name and appears on your profile too. Votes, comments and forwards stay shared, and only its author edits or deletes it. You can step off at any time.', name=author_of(post, v).username) }}</p>
+  {% if anon_hidden(post, v) %}
+  <p class="text-muted">{{ _('You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it.') }}</p>
+  {% else %}  <p class="text-muted">{{ _('@%(name)s invited you to share this post. If you accept, it carries your name and appears on your profile too. Votes, comments and forwards stay shared, and only its author edits or deletes it. You can step off at any time.', name=author_of(post, v).username) }}</p>
+  {% endif %}
   <div class="d-flex">
     <form method="post" action="/api/coauthor/{{ post.base36id }}/accept" class="mr-2">
       <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      {% if row.is_anonymous %}
+      <input type="hidden" name="anonymous" value="true">
+      <p class="text-muted text-small mb-2">{{ _("This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you.") }}</p>
+      {% else %}
+      <div class="custom-control custom-checkbox mb-2">
+        <input type="checkbox" class="custom-control-input" id="accept-anonymous" name="anonymous" value="true">
+        <label class="custom-control-label" for="accept-anonymous">{{ _("Accept without my name (admins and the post's author can still see it is me)") }}</label>
+      </div>
+      {% endif %}
       <button type="submit" class="btn btn-primary">{{ pgettext("button", "Accept") }}</button>
     </form>
     <form method="post" action="/api/coauthor/{{ post.base36id }}/decline">
