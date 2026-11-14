@@ -322,12 +322,28 @@ def test_the_deleted_list_is_the_members_own_copies_in_plain_text(real_app, make
 # ---------------------------------------------------------------- account deletion
 
 def delete_account(client, member, password=PASSWORD):
-    """Deletes the account. It is made old first: the site takes down everything a throwaway account (under 12 hours old) wrote as spam, and the
-    `User` model stamps "now" whatever a test says."""
-    db = member.db_session()
-    db.execute(text("UPDATE users SET created_utc = :old WHERE id = :u"), {"old": int(time.time()) - 90 * 86400, "u": member.id})
-    db.commit()
+    """Deletes the account. (It used to be made old first: the site took down everything a throwaway account, under 12 hours old, wrote as spam. It no
+    longer does, whatever the account's age, and the `User` model stamps "now" whatever a test says.)"""
     return post(client, member, "/settings/delete_account", password=password, delete_reason="done")
+
+
+def test_a_brand_new_account_that_is_deleted_keeps_what_it_wrote_as_anonymous_and_nothing_is_taken_down(real_app, make_member):
+    leaver = make_member()
+    board_id, _ = guild(real_app)
+    post_id, base36 = add_post(leaver, board_id, title=f"Posted a minute ago {secrets.token_hex(3)}")
+    comment_id, _ = add_comment(leaver, post_id, board_id, body="and a comment a minute ago")
+    db = leaver.db_session()
+    db.execute(text("UPDATE users SET created_utc = :now WHERE id = :u"), {"now": int(time.time()) - 60, "u": leaver.id})
+    db.commit()
+    assert delete_account(leaver.browser(), leaver).status_code == 200
+    state = rows(real_app, "SELECT is_banned, is_anonymous, deleted_utc FROM submissions WHERE id = :i", i=post_id)[0]
+    assert state == {"is_banned": False, "is_anonymous": True, "deleted_utc": 0}, "not removed, anonymous"
+    assert flags(real_app, "comments", [comment_id]) == {comment_id: True}
+    assert rows(real_app, "SELECT is_banned FROM comments WHERE id = :i", i=comment_id)[0]["is_banned"] is False
+    assert rows(real_app, "SELECT 1 FROM log_entries WHERE target_submission_id = :p AND action IN ('ban_post', 'ban_comment')", p=post_id) == [], \
+        "and no 'Automatic spam check' removal is written for it"
+    page = get(app_client(real_app), f"/post/{base36}").get_data(as_text=True)
+    assert "Posted a minute ago" in page and leaver.username not in page
 
 
 def test_deleting_an_account_makes_everything_it_wrote_anonymous_and_leaves_it_on_the_site(real_app, make_member):

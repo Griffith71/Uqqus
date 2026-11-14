@@ -699,34 +699,6 @@ def close_own_account(v, reason, sign_out_browser=True):
         flask_session.pop("user_id", None)
         flask_session.pop("session_id", None)
 
-    #deal with throwaway spam - auto nuke content if account age below threshold
-    if int(time.time()) - v.created_utc < 60*60*12:
-        for post in v.submissions:
-            post.is_banned=True
-
-            new_ma=ModAction(
-                user_id=1,
-                kind="ban_post",
-                target_submission_id=post.id,
-                note="spam",
-		board_id=post.board_id
-                )
-
-            g.db.add(post)
-            g.db.add(new_ma)
-
-        for comment in v.comments:
-            comment.is_banned=True
-            new_ma=ModAction(
-                user_id=1,
-                kind="ban_comment",
-                target_comment_id=comment.id,
-                note="spam",
-		board_id=comment.post.board_id
-                )
-            g.db.add(comment)
-            g.db.add(new_ma)
-
 
 child_accounts.closer = close_own_account        # a parent's banned or deleted account closes its children the same way (helpers/child_accounts.py)
 
