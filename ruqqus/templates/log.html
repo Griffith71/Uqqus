@@ -37,7 +37,8 @@
   </p>
 
   <div class="d-flex flex-wrap align-items-center mb-3">
-    <div class="btn-group btn-group-sm mr-3" role="group">
+    {# flex-wrap: five tabs, longer in other languages, are wider than a phone, and the group can't shrink on its own #}
+    <div class="btn-group btn-group-sm flex-wrap mr-3" role="group">
       {% for t in tabs %}
       <a href="?type={{ t }}{{ keep }}" class="btn btn-sm {% if tab == t %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if tab == t %} aria-current="page"{% endif %}>{{ msg_text(tab_labels[t]) }}</a>
       {% endfor %}

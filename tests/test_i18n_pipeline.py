@@ -378,6 +378,25 @@ def test_signing_out_is_said_as_signing_out_in_every_language():
                     assert not any(WRONG_SIGN_OUT.search(t) for t in texts), (key, domain, msgid, texts)
 
 
+def test_a_hash_before_a_value_stays_with_its_number_in_arabic_script():
+    # a digit after an Arabic letter is an Arabic number to the bidirectional algorithm and a "#" before it no longer joins it, so "مجهول #3" was
+    # drawn "مجهول 3#" in Arabic, Persian and Urdu (measured in Chromium, 2026-11-14); a left-to-right mark before the "#" keeps "#3" together
+    lrm = "\u200e"
+    assert tx.tidy("Anonymous #%(num)s", "مجهول #%(num)s") == f"مجهول {lrm}#%(num)s"
+    assert tx.tidy("post #%(id)s", "نوشته #%(id)s") == f"نوشته {lrm}#%(id)s"
+    assert tx.tidy("Anonymous #%(num)s", f"مجهول {lrm}#%(num)s") == f"مجهول {lrm}#%(num)s", "asked again, unchanged"
+    # Hebrew and the Latin, Cyrillic and CJK languages draw it right as it is; a string with no "#" before a value is left alone
+    assert tx.tidy("Anonymous #%(num)s", "אנונימי #%(num)s") == "אנונימי #%(num)s"
+    assert tx.tidy("Anonymous #%(num)s", "Anonym #%(num)s") == "Anonym #%(num)s"
+    assert tx.tidy("Save %(n)s", "ذخیره %(n)s") == "ذخیره %(n)s"
+    # the mark is not a dropped "#": the entry still passes the check
+    assert cat.problems("Anonymous #%(num)s", f"مجهول {lrm}#%(num)s") == []
+    glossary = json.loads((cat.OUT / tx.GLOSSARY).read_text(encoding="utf-8"))
+    for key in ("ar", "fa", "ur"):
+        assert glossary[key]["Anonymous #%(num)s"][""].count(lrm) == 1, key
+    assert all(lrm not in glossary[key]["Anonymous #%(num)s"][""] for key in glossary if key not in ("ar", "fa", "ur"))
+
+
 def test_a_hash_before_a_value_is_kept():
     # the label an anonymous person is drawn with in a thread: machines wrote "Anonyme3", "Anonimo!3", "Anonymous # 3" (2026-11-14)
     assert "a # before a value is dropped" in cat.problems("Anonymous #%(num)s", "Anonyme%(num)s")

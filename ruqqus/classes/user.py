@@ -2202,10 +2202,12 @@ class User(Base, Stndrd, Age_times):
     def anonymous_idlist(self, page=1):
         """This member's own anonymous posts, newest first: History > Anonymous (routes/history.py). Only ever built for
         the signed-in member themselves, so no visibility rule but their own deletions and removals: the originals only
-        (a guild copy of the same post would list it twice)."""
+        (a guild copy of the same post would list it twice). A post written with others in which this member's own credit is
+        anonymous is theirs here too (helpers/coauthors.py): they hid it, so this is where they find it again."""
+        credit = select(PostCoauthor.post_id).where(PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted",
+                                                    PostCoauthor.is_anonymous == True)
         posts = g.db.query(Submission.id).filter(
-            Submission.author_id == self.id,
-            Submission.is_anonymous == True,
+            or_(and_(Submission.author_id == self.id, Submission.is_anonymous == True), Submission.id.in_(credit)),
             Submission.deleted_utc == 0,
             Submission.is_banned == False,
             or_(Submission.repost_id.is_(None), Submission.repost_id == 0),

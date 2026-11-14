@@ -95,6 +95,30 @@ def test_a_co_author_can_hide_only_their_own_credit_and_it_cannot_be_undone(real
     assert second.username not in str(others) and any(c["alias"] and c["username"] == "Anonymous #1" for c in others["coauthors"])
 
 
+def test_a_hidden_credit_is_found_again_in_history_anonymous_and_only_by_the_member_it_belongs_to(real_app, make_member):
+    author, second, third = (make_member() for _ in range(3))
+    board_id, _ = guild(real_app)
+    title = f"Credit in history {secrets.token_hex(3)}"
+    post_id, base36 = add_post(author, board_id, title=title)
+    for m in (second, third):
+        db = m.db_session()
+        db.execute(text("INSERT INTO post_coauthors (post_id, user_id, invited_by_id, status, created_utc, accepted_utc, is_anonymous) "
+                        "VALUES (:p, :u, :a, 'accepted', :n, :n, false)"), {"p": post_id, "u": m.id, "a": author.id, "n": int(time.time())})
+        db.commit()
+    forget_cache()
+    listed = lambda member: title in get(member.browser(), "/history/anonymous").get_data(as_text=True)
+    assert not listed(second) and not listed(author), "a named credit is not an anonymous one: nothing to find there"
+    assert post(second.browser(), second, f"/api/coauthor/{base36}/hide_name").status_code in (200, 302)
+    assert listed(second), "once they hide their credit, the post is in their own History > Anonymous"
+    assert not listed(third) and not listed(author), "nobody else's list gains it"
+    # a credit that is not accepted yet, or a post that is gone, is not listed
+    db = third.db_session()
+    db.execute(text("UPDATE post_coauthors SET status = 'pending', is_anonymous = true WHERE post_id = :p AND user_id = :u"), {"p": post_id, "u": third.id})
+    db.commit()
+    forget_cache()
+    assert not listed(third), "an invitation not yet accepted is not a credit"
+
+
 def test_an_anonymous_credit_is_left_off_the_profile_the_feed_and_the_counts_and_never_costs_a_block(real_app, make_member):
     author, hidden, named, follower = (make_member() for _ in range(4))
     board_id, _ = guild(real_app)

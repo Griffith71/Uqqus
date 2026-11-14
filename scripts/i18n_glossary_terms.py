@@ -434,7 +434,7 @@ LABELS = (
     ("Other spellings:", "",
      "Label on the filtered words page before a list of other ways the same listed word is written (spelling variants); not magic spells and not literary works."),
     ("Anonymous #%(num)s", "",
-     "The name an anonymous person is drawn with inside one thread, 'Anonymous' plus their number in that thread (Anonymous #3); a name shown beside their comments, never a sentence. Keep the # and the number."),
+     "The name an anonymous person is drawn with inside one thread, 'Anonymous' plus their number in that thread (Anonymous #3); a name shown beside their comments, never a sentence. Keep the # and the number (Arabic, Persian and Urdu put a left-to-right mark before the #, or it is drawn after the number)."),
     ("Exile %(alias)s", "",
      "Menu item for a guildmaster on an anonymous post or comment: exile (expel from the guild) the person behind it; %(alias)s is that person's numbered name such as 'Anonymous #3'. Imperative verb, then the name."),
     ("Mute %(alias)s in the channels", "",
