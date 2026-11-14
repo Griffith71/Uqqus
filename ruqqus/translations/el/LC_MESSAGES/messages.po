@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -513,6 +513,12 @@ msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s όριο χαρακτήρων για τίτλους."
 msgstr[1] "%(num)s όριο χαρακτήρων για τίτλους."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "επιλέχθηκε %(num)s"
+msgstr[1] "%(num)s επιλέχθηκε"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -580,6 +586,12 @@ msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "υπολείπονται %(num)s ημέρες"
 msgstr[1] "υπολείπονται %(num)s ημέρες"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s επεξεργασία στη σειρά"
+msgstr[1] "%(num)s επεξεργασίες στη σειρά"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -651,6 +663,18 @@ msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s ενδιαφερόμενος"
 msgstr[1] "%(num)s ενδιαφερόμενοι"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s αντικείμενο άλλαξε"
+msgstr[1] "%(num)s αντικείμενα άλλαξαν"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s αντικείμενο δεν μπορούσε να αλλάξει:"
+msgstr[1] "%(num)s αντικείμενα δεν μπορούσαν να αλλάξουν:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1297,6 +1321,10 @@ msgstr "%(who)s αποδεκτή πρόσκληση συντονιστή συν�
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s πρόσθεσε ένα bot feed %(target)s σε ένα κανάλι"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s πρόσθεσε ένα σημείωμα κοινότητας"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s πρόσθεσε μια ετικέτα"
@@ -1361,6 +1389,10 @@ msgstr "%(who)s άλλαξε αν τα εμπρός χρειάζονται ετ�
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s άλλαξε ποιος μπορεί να επεξεργαστεί μια σελίδα wiki"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chatbanned %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s chatbanned χρήστης %(name)s"
@@ -1409,6 +1441,10 @@ msgstr "%(who)s διέγραψε μια σελίδα wiki"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s διαγραμμένη θέση %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s επεξεργασία ενός σχολίου"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s επεξεργασία μιας σελίδας wiki"
@@ -1416,6 +1452,18 @@ msgstr "%(who)s επεξεργασία μιας σελίδας wiki"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s επεξεργασία ενός γεγονότος"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s επεξεργασμένη δημοσίευση %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s τερμάτισε ένα διάστημα"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s εξορισμένος %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1436,6 +1484,10 @@ msgstr "%(who)s τονίζουν τη θέση τους %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s έκρυψε ένα σχόλιο από αυτή τη συντεχνία"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s έκρυψαν ένα σχόλιο κάτω από τη δική τους θέση"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1485,6 +1537,10 @@ msgstr "%(who)s σημείωσε ένα σχόλιο ως ευαίσθητο π�
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s σημειωμένη θέση %(title)s ως ευαίσθητο περιεχόμενο"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s άνοιξε + %(guild)s σε όλους"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s διαγράφηκε οριστικά ένα σχόλιο"
@@ -1525,6 +1581,18 @@ msgstr "%(who)s επαναφορά της θέσης %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s αφαίρεση μηνύματος καναλιού"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s αφαίρεση σημείωσης κοινότητας"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s αφαίρεσε ένα μήνυμα από τον πίνακα του Space"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s αφαίρεση μηνύματος από δημόσιο κανάλι"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s αφαίρεσε την αναθεώρηση του wiki μιας συντεχνίας"
@@ -1549,6 +1617,10 @@ msgstr "%(who)s αφαιρέθηκε ο χρήστης %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s μετονομάστηκε σε κατηγορία καναλιού"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s αντικατέστησε ένα σημείωμα κοινότητας"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s ανάκληση πρόσκλησης συντονιστή συντεχνίας στο @ %(name)s"
@@ -1564,6 +1636,10 @@ msgstr "%(who)s ορίσατε nsfw στη θέση %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s ορίστε την ετικέτα του post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s έδειξε ξανά ένα σχόλιο"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1589,9 +1665,17 @@ msgstr "%(who)s πήρε μια καρφίτσα από ένα μήνυμα κα
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s πήρε ρόλο από το %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s χωρίς συνομιλία %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s μη chatbaned χρήστης %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s ανεξόριστο %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1677,6 +1761,10 @@ msgstr "(από το πρωτότυπο)"
 msgid "(in a private place)"
 msgstr "(σε ιδιωτικό χώρο)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(όχι κείμενο)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(χωρίς τίτλο)"
@@ -1748,6 +1836,10 @@ msgstr "** Πατήστε **"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Προσθήκη επιλογής"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+%(guild)s Προσφυγές"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2261,10 +2353,6 @@ msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [O
 msgstr ""
 
 #, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "Ο @%(name)s σου ζήτησε να κλείσεις την ιδιωτική απόσπαση για λογαριασμό τους. Μπορείτε να απαντήσετε στο [Sυθμίσεις > Παιδιά]( /settings/children)."
-
-#, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "ο @%(name)s έκλεισε."
 
@@ -2617,6 +2705,10 @@ msgstr "Ένας χώρος δεν μπορεί να είναι ανώνυμος
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Ένας χώρος δεν μπορεί να φιλοξενηθεί σε μια συντεχνία Κύκλου."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Ένας χώρος δεν μπορεί να αφαιρέσει το όνομά του."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "Ένας χώρος δεν μπορεί να ξεκινήσει στο παρελθόν."
@@ -2644,6 +2736,10 @@ msgstr "Ένα σήμα συνδρομητή δίπλα στο όνομά σας
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "Ένα κουμπί Translate εμφανίζει κάτω από τις δημοσιεύσεις και τα σχόλια σε καμία από τις γλώσσες σας. Τίποτα δεν μεταφράζεται αν δεν το πατήσετε."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Μια απαγόρευση μπορεί να αναφέρει μέχρι και στοιχεία %(max)s."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2831,9 +2927,25 @@ msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "Το όνομα ενός κύκλου μπορεί να είναι ένας χαρακτήρας το πολύ."
 msgstr[1] "Το όνομα ενός κύκλου μπορεί να είναι %(num)s χαρακτήρες το πολύ."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "Μια συστημένη θέση δεν μπορεί να είναι ανώνυμη."
+#, machine, plain2
+msgid "A comment"
+msgstr "Ένα σχόλιο"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Ένα σχόλιο από ένα λογαριασμό που μπλοκάρισες ή που σε εμπόδισε."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Ένα σχόλιο κρυμμένο από έναν συντονιστή συντεχνίας."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Ένα σχόλιο κρυμμένο από το φίλτρο λέξης σας."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Ένα σχόλιο του συγγραφέα του διαγράφηκε. Αυτό που είπε δεν φαίνεται εδώ."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2842,6 +2954,10 @@ msgstr "Ένα σχόλιο για μια θέση για έναν Κύκλο δ
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "Ένα σχόλιο για μια θέση για έναν Κύκλο δεν μπορεί να αναδημοσιευτεί."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "Ένα σχόλιο που αφαιρέθηκε από τους διαχειριστές του site."
 
 #, machine, plain1, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2859,6 +2975,14 @@ msgstr "Μια επιμελημένη τροφοδοσία ολόκληρης τ
 msgid "A day"
 msgstr "Μια μέρα"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "Απόφαση στο Ημερολόγιο"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Μια διαγραμμένη θέση και ό,τι ειπώθηκε κάτω από αυτήν"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2870,6 +2994,10 @@ msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "Μια περιγραφή είναι το πολύ %(num)s χαρακτήρας."
 msgstr[1] "Μια περιγραφή είναι το πολύ %(num)s χαρακτήρες."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Ένας άλλος διαχειριστής πρέπει να επιβεβαιώσει μια αποκάλυψη."
 
 #, machine, plain1, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2974,6 +3102,10 @@ msgstr "Ένα όνομα ομάδας δεν μπορεί να περιέχει
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "Ένα όνομα ομάδας δεν μπορεί να περιέχει τον έλεγχο ή αόρατους χαρακτήρες."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Μια απαγόρευση συντεχνίας χρειάζεται έναν δημόσιο λόγο, έτσι ώστε η σελίδα της συντεχνίας και το ημερολόγιο να μπορούν να πουν γιατί."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3094,6 +3226,10 @@ msgstr "Ένας μηνιαίος προϋπολογισμός μοιράστη�
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Ένα σιωπηλό άτομο μπορεί ακόμα να διαβάσει, αλλά δεν μπορεί να γράψει σε κανένα από τα κανάλια του +%(guild)s. Τους λένε όταν προσπαθούν."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Σημείωση για το πρόσωπο"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3157,6 +3293,10 @@ msgstr[1] "Μια επιλογή δημοσκόπησης μπορεί να εί
 msgid "A poll option can't hold control characters."
 msgstr "Μια επιλογή δημοσκόπησης δεν μπορεί να κρατήσει τους χαρακτήρες ελέγχου."
 
+#, machine, plain2
+msgid "A post"
+msgstr "Θέση"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3180,6 +3320,10 @@ msgstr "Μια θέση για έναν Κύκλο δεν μπορεί να αν
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "Μια θέση για έναν Κύκλο δεν μπορεί να έχει συν-συγγραφείς."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Μια θέση για έναν Κύκλο δεν μπορεί να αφαιρεθεί το όνομά του."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3209,6 +3353,10 @@ msgstr "Μια θέση χάνει το μισό βάρος της"
 msgid "A post needs a title."
 msgstr "Μια θέση χρειάζεται έναν τίτλο."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "Μια θέση που έχει φιλοδώρημα δεν μπορεί να αφαιρεθεί το όνομά του, επειδή τα νομίσματα πήγαν σε σας."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Μια ανάρτηση που δεν είναι δημόσια δεν μπορεί να χρησιμοποιήσει αυτή την εικόνα αποστολής: τα αρχεία της μπορούν να ανοιχτούν από οποιονδήποτε με τη διεύθυνση. Προσθέστε την εικόνα από τη συνδεδεμένη αποθήκευσή σας (Settings > Media)."
@@ -3217,9 +3365,17 @@ msgstr "Μια ανάρτηση που δεν είναι δημόσια δεν �
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Μια θέση με συν-συγγραφείς δεν μπορεί να μετακινηθεί σε κύκλους. Η μετακίνηση μιας δημόσιας θέσης σε κύκλους παίρνει κάτω τα αντίγραφα που προωθήσατε? αντίγραφα άλλα άτομα προωθήθηκε διαμονή στις συντεχνίες τους."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Μια ανάρτηση γραμμένη μαζί είναι δημόσια και δεν μπορεί να είναι ανώνυμη, να μοιράζεται με κύκλους, ή να έχει μια δημοσκόπηση. Οι συγγραφείς του είναι οι συν-συγγραφείς του. Αυτές οι επιλογές μοιράζονται από κάθε συγγραφέα και χρησιμοποιούνται κάθε φορά που δημοσιεύετε."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Μια δημοσίευση γραμμένη μαζί διαγράφεται μόνο όταν οι συντάκτες της συμφωνούν, στο κοινό της σχέδιο."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Μια ανάρτηση γραμμένη μαζί είναι δημόσια και δεν μπορεί να μοιραστεί με κύκλους ή να έχει μια δημοσκόπηση. Οι συγγραφείς του είναι οι συν-συγγραφείς του. Αυτές οι επιλογές μοιράζονται από κάθε συγγραφέα και χρησιμοποιούνται κάθε φορά που δημοσιεύετε."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Μια θέση γραμμένη με άλλους δεν μπορεί να αφαιρεθεί το όνομά της ακόμα εδώ."
 
 #, machine, plain1, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3562,6 +3718,10 @@ msgstr "Αποδοχή πρόσκλησης"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Αποδοχή πρόσκλησης συντονιστή"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Δέξου χωρίς το όνομά μου (οι συμβουλές και ο συγγραφέας της δημοσίευσης μπορούν ακόμα να δουν ότι είμαι εγώ)"
 
 #, machine, plain1
 msgid "Account"
@@ -4182,6 +4342,10 @@ msgstr "Ένας συγγραφέας σταματά να μετριέται μ�
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Ένας συγγραφέας που δεν ήταν ενεργός στην ιστοσελίδα για %(time)s Δεν μετράει."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Μια αυτοματοποιημένη ανάρτηση δεν μπορεί να αφαιρέσει το όνομά της."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Ένα κρυπτογραφημένο κανάλι δεν μπορεί να ζητήσει την αποδοχή των κανόνων του: ο ιστότοπος δεν μπορεί να ελέγξει ποιος έγραψε."
@@ -4294,9 +4458,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Ανώνυμη"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Ανώνυμη απόσπαση και έναρξη συντεχνιών"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Ανώνυμος #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4381,6 +4545,26 @@ msgstr "Ο καθένας μπορεί να δει ποιον ακολουθεί
 #, machine, plain1
 msgid "App Name"
 msgstr "Όνομα εφαρμογής"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Αίτηση αναιρέσεως"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Προσφυγή - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Προσφυγή στην παρούσα απόφαση"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Προσφυγές"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Εφαρμογές αποφάσεων που έλαβαν οι συντονιστές της συντεχνίας αυτής. Μια έφεση είναι ιδιωτική: μόνο οι συντονιστές συντεχνιών που μπορεί να την αποφασίσουν διαβάζουν. Αντιστρέφοντας μια απόφαση την αναιρεί και γράφει μια νέα καταχώρηση στο Ημερολόγιο, που συνδέεται με το πρώτο· το άτομο λέγεται πώς τελείωσε. Δεν μπορείς να αποφασίσεις την έφεση της δικής σου απόφασης ενώ ένας άλλος συντονιστής συντεχνίας θα μπορούσε."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4520,10 +4704,6 @@ msgstr "Ορεινά υψίπεδα"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Ως συγγραφέας επεξεργάζεστε το προσχέδιο ζωντανά μαζί τους, και κάθε χαρακτήρας που πληκτρολογείτε πιστώνεται σε σας. Μόλις δημοσιευθεί το άρθρο, όποιος το δει μπορεί να δει ποιος έγραψε τι. Οι συγγραφείς αποφασίζουν από κοινού:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Ζήτα από τους γονείς μου να το κλείσουν"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5389,6 +5569,10 @@ msgstr "Τροποποίηση των κανόνων"
 msgid "Change the two-factor settings for your account."
 msgstr "Αλλάξτε τις ρυθμίσεις δύο συντελεστών για το λογαριασμό σας."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Αλλάξτε τα"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "Αλλάξτε τον κωδικό του λογαριασμού σας."
@@ -5660,6 +5844,10 @@ msgstr "Επιλέξτε τουλάχιστον έναν κύκλο ή δημο�
 msgid "Choose at least one of your circles."
 msgstr "Διάλεξε τουλάχιστον έναν από τους κύκλους σου."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Επιλέξτε τουλάχιστον ένα post ή σχόλιο."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "Διάλεξε τουλάχιστον μια ιστορία."
@@ -5715,6 +5903,10 @@ msgstr "Διάλεξε τι είδους ρομπότ είναι."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Επιλέξτε τι είδους ανατροφοδότηση είναι αυτό."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Διάλεξε τι θα τους κάνεις."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -5988,6 +6180,10 @@ msgstr "Κόμικς & κινούμενα σχέδια"
 msgid "Coming up"
 msgstr "Έρχεται"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Σχόλιο"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5997,9 +6193,13 @@ msgstr "Σχόλιο"
 msgid "Comment %(id)s has been removed"
 msgstr "Το σχόλιο %(id)s έχει αφαιρεθεί"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Σχόλιο ανώνυμα: άλλοι χρήστες δεν θα δουν το όνομά σας"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Σχόλιο ανώνυμα: άλλοι χρήστες δεν θα δουν το όνομά σας. Εάν ένας διαχειριστής απαγορεύσει ή αναστείλει το λογαριασμό για αυτό, το Ημερολόγιο μπορεί να ονομάσει το λογαριασμό για αυτό το σχόλιο."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Σχόλιο όπως τον εαυτό σας: το όνομά σας δείχνει σε αυτό το σχόλιο"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -6008,10 +6208,6 @@ msgstr "Σχόλιο σελιδοδείκτη."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Το σχόλιο δημοσιεύτηκε!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Σχόλιο"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6603,6 +6799,10 @@ msgstr "Δεν επιτρέπονται αντιληπτικοί URL συντο�
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Δεν επιτρέπονται απωθητικοί βραχίονες URL."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Αποφασίστε"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6666,6 +6866,10 @@ msgstr "Διαγραφή σχολίου?"
 msgid "Delete folder"
 msgstr "Διαγραφή φακέλου"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Διαγραφή της"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "Διαγραφή του λογαριασμού μου"
@@ -6689,6 +6893,14 @@ msgstr "Διαγραφή του λογαριασμού"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "Διαγραφή της δημοσίευσης"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Διαγραφή τους"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Διαγραφή αυτών των αντικειμένων?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6733,6 +6945,10 @@ msgstr "Διαγραφή του λογαριασμού σας %(site)s"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "Διαγραφή δημοσιεύσεων και σχολίων"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Διαγράφεται"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -6927,6 +7143,14 @@ msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "Συζητήθηκε σε %(num)s άλλο μέρος"
 msgstr[1] "Συζήτηση σε %(num)s άλλα μέρη"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Συζητήθηκε σε + %(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Συζητημένο σε ένα προφίλ"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "Συζήτηση"
@@ -7009,6 +7233,10 @@ msgstr "Έγινε από"
 #, machine, plain1
 msgid "Done to"
 msgstr "Έγινε"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Έγινε."
 
 #, machine, plain1
 msgid "Download"
@@ -7205,6 +7433,10 @@ msgstr "Επεξεργασία δημοσιεύσεων και σχολίων"
 msgid "Edited %(when)s"
 msgstr "Επεξ. %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Επεξεργασία από"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "Επεξεργάσθηκε από %(who)s"
@@ -7220,6 +7452,10 @@ msgstr "Η επεξεργασία ενημερώνει επίσης τα αντ�
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Επεξεργασία ενημερώσεων αυτής της ανάρτησης παντού έχει προωθηθεί."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Επεξεργασία"
 
 #, machine, plain1
 msgid "Education"
@@ -7562,13 +7798,13 @@ msgstr "Ο καθένας βλέπει τις αλλαγές του άλλου �
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Τα πάντα από τις συντεχνίες και τους λογαριασμούς σας, νέα πρώτα."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Όλα όσα δημοσιεύουν πάνε μόνο στον κύκλο των φίλων τους. Κλείστε το για να τους αφήσετε να το δημοσιεύσουν δημόσια."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Τα στοιχεία δεν μπορούν να αναφερθούν"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Ό,τι αναρτάς πηγαίνει μόνο στον κύκλο των Φίλων σου, τους ανθρώπους που ακολουθείς που σε ακολουθούν, οπότε τίποτα δεν είναι τυχαίο. Οι κύκλοι σας μπορούν να κρατήσουν τους ανθρώπους μόνο έτσι, και δεν μπορείτε να προωθήσετε, να επανατοποθετήσετε ή να γράψετε ένα κοινό σχέδιο. Τα σχόλια για τις θέσεις άλλων ανθρώπων είναι ακόμα δημόσια."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Στοιχεία:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7615,6 +7851,10 @@ msgstr "Παράδειγμα: γάτες σκυλιά · δεν έχει ούτ�
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Παράδειγμα: happy hour · έχει την ακριβή φράση \" happy hour\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Αποβολή %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9015,6 +9255,10 @@ msgstr "Πόσο καιρό"
 msgid "How long it runs"
 msgstr "Πόσο καιρό διαρκεί"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Πώς καταγράφεται η μετριοπάθεια"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Πόσο χρονών είσαι?"
@@ -9208,6 +9452,10 @@ msgstr "Στο %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "Σε συντεχνία"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "Στο ημερολόγιο ως Anonymous"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9503,6 +9751,14 @@ msgstr "Τελειώνει μόνη της μετά από αυτό. Μπορε�
 msgid "It is reviewed with the bot."
 msgstr "Ανασκοπείται με το ρομπότ."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Αφήνει τις σελίδες της ιστοσελίδας. Αν είναι λιγότερο από πέντε λεπτά παλιά και κανείς άλλος δεν έχει σχολιάσει σε αυτό, διαγράφεται: μόνο εσείς και οι διαχειριστές του site μπορούν να ανοίξουν ένα ιδιωτικό αντίγραφο, για 90 ημέρες. Διαφορετικά αυτό που έλεγε μένει στο Ημερολόγιο ως Ανώνυμος, χωρίς όνομα και χωρίς σύνδεσμο, και ο καθένας μπορεί να το διαβάσει εκεί."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Αφήνει το προφίλ, το φαγητό και τις συντεχνίες. Εάν είναι λιγότερο από πέντε λεπτά ηλικίας και κανείς άλλος δεν έχει σχολιάσει, διαγράφεται: μόνο εσείς και οι διαχειριστές του site μπορούν να ανοίξουν ένα ιδιωτικό αντίγραφο, για 90 ημέρες. Διαφορετικά αυτό που έλεγε μένει στο Ημερολόγιο ως Ανώνυμος, χωρίς όνομα και χωρίς σύνδεσμο, και ο καθένας μπορεί να το διαβάσει εκεί."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Ζει στο προφίλ σου, κάτω από το Spaces. Μια συντεχνία δείχνει την κάρτα της, με ψήφους και μετοχές, και ανοίγει το Διάστημα."
@@ -9519,13 +9775,13 @@ msgstr "Δείχνει, πλήρως, κάθε λέξη και φράση που
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Μένει ένας λογαριασμός παιδιού με την κλειδαριά του παιδιού, αλλά δεν μπορείτε πλέον να το δείτε ή να αλλάξετε τι μπορεί να κάνει, και δεν μπορείτε να το συνδέσετε ξανά."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Παραμένει στο φίλτρο λέξης Child, το οποίο κρύβει βωμολοχίες και οτιδήποτε σημαδεμένο ευαίσθητο."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Παραμένει στο φίλτρο λέξης Child, το οποίο κρύβει βωμολοχίες και οτιδήποτε σημαδεμένο ευαίσθητο. Ένας λογαριασμός για παιδιά μόνο λέει: δεν μπορεί να δημοσιεύσει ή να σχολιάσει, αλλά μπορείτε ακόμα να ψηφίσετε, να ακολουθήσετε, να ενταχθούν συντεχνίες, σελιδοδείκτη και έκθεση."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Παραμένει στο φίλτρο λέξης Child, το οποίο κρύβει βωμολοχίες και οτιδήποτε σημαδεμένο ευαίσθητο. Chat, Spaces, νομίσματα, ανώνυμη ανάρτηση και έναρξη μιας συντεχνίας είναι off, και άλλοι δεν μπορούν να ξεκινήσουν μια συνομιλία ή φιλοδώρημα σας. Οι δημοσιεύσεις σας πηγαίνουν στον κύκλο των φίλων σας μόνο αν απενεργοποιήσετε την ιδιωτική απόσπαση."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Παραμένει στο φίλτρο λέξης Child, το οποίο κρύβει βωμολοχίες και οτιδήποτε σημαδεμένο ευαίσθητο. Η συνομιλία, οι χώροι, τα νομίσματα και η έναρξη μιας συντεχνίας είναι off, και άλλοι δεν μπορούν να ξεκινήσουν μια συνομιλία ή φιλοδώρημα σας. Ένας λογαριασμός για παιδιά μόνο λέει: δεν μπορεί να δημοσιεύσει ή να σχολιάσει, αλλά μπορείτε ακόμα να ψηφίσετε, να ακολουθήσετε, να ενταχθούν συντεχνίες, σελιδοδείκτη και έκθεση."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9691,10 +9947,6 @@ msgstr "Ηλιοστάσιο Ιουνίου"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K- Παπ"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Συνέχισε"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9953,6 +10205,10 @@ msgstr "Αριστερά"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "Αριστερά + %(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "Τα σχόλιά σας παραμένουν στο όνομά σας, και αυτό λέει στους αναγνώστες που έγραψαν τη δημοσίευση."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10747,6 +11003,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Σίγαση"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "Σίγαση %(alias)s στα κανάλια"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Μούτρο + %(guild)s"
@@ -11096,6 +11356,10 @@ msgstr "Δεν έχουν προστεθεί ακόμα λογαριασμοί."
 msgid "No ads"
 msgstr "Χωρίς διαφημίσεις"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Καμία έφεση δεν περιμένει."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "Χωρίς δεσμευμένους λογαριασμούς"
@@ -11351,6 +11615,10 @@ msgstr "Κανείς δεν μπορεί να πληρώσει για να εν�
 msgid "Nobody can sign in to your account with a code."
 msgstr "Κανείς δεν μπορεί να υπογράψει στο λογαριασμό σου με κωδικό."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Κανείς δεν το σχολίασε."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Κανείς δεν παίρνει περισσότερα από το %(share)s%% του προϋπολογισμού ενός μήνα. Οι μετοχές στρογγυλοποιούνται σε ολόκληρα νομίσματα."
@@ -11516,6 +11784,10 @@ msgstr "Δεν έχει καταγραφεί"
 msgid "Not slowed by slow mode"
 msgstr "Δεν επιβραδύνεται με αργή λειτουργία"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Δεν προχωρήσαμε περαιτέρω"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "Μη λήψη συνδρομητών"
@@ -11663,6 +11935,10 @@ msgstr "Τίποτα δεν έχει γραφτεί ακόμα."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Τίποτα ακόμα."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Τίποτα που διαγράψατε δεν κρατιέται εδώ."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11934,6 +12210,10 @@ msgstr "Μόνο οι λογαριασμοί @%(name)s που ακολουθού
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Μόνο οι λογαριασμοί που ακολουθείτε μπορούν να σχολιάσουν αυτή τη δημοσίευση τώρα."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Μόνο ένας διαχειριστής μπορεί να επιβεβαιώσει μια αποκάλυψη."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "Μόνο ένας διαχειριστής μπορεί να το ξεκινήσει ξανά."
@@ -12202,6 +12482,10 @@ msgstr "Μόνο εσύ"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Μόνο εσύ μπορείς να δεις αυτό. Αυτές είναι οι κατηγορίες: κανείς που κοίταξε, ψήφισε ή απάντησε σε μια δημοσκόπηση δεν ονομάζεται."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Μόνο οι πιστωτικές σας αλλαγές: οι άλλοι συγγραφείς παραμένουν όνομα. Οι διοικητές και ο συγγραφέας της θέσης μπορούν ακόμα να δουν ότι είσαι εσύ."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12270,6 +12554,10 @@ msgstr "Άνοιγμα για εκκίνηση"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "Άνοιγμα μέχρι %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Άνοιγμα αντιγράφου σας"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12410,17 +12698,17 @@ msgstr "Άλλα ή άγνωστα"
 msgid "Other spellings:"
 msgstr "Άλλες γραφές:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Άλλοι χρήστες βλέπουν Anonymous αντί για το όνομά σας. Εσύ και οι διαχειριστές του site μπορείτε ακόμα να το δείτε, ακολουθεί τους ίδιους κανόνες με οποιαδήποτε θέση, και δεν μπορεί να αναιρεθεί μετά την απόσπαση. Ένα φίλτρο περιοχής δείχνει ακόμα από ποια περιοχή προέρχεται. Δεν είναι καταχωρημένο στο προφίλ σας: το βρίσκετε στην Ιστορία, κάτω από Anonymous."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Άλλοι χρήστες βλέπουν Anonymous αντί για το όνομά σας. Εσύ και οι διαχειριστές του site μπορείτε ακόμα να το δείτε, ακολουθεί τους ίδιους κανόνες με οποιαδήποτε θέση, και δεν μπορεί να αναιρεθεί μετά την απόσπαση. Ένα φίλτρο περιοχής δείχνει ακόμα από ποια περιοχή προέρχεται. Δεν είναι καταχωρημένο στο προφίλ σας: το βρίσκετε στην Ιστορία, κάτω από Anonymous. Εάν ένας διαχειριστής απαγορεύσει ή αναστείλει το λογαριασμό για αυτό, το Ημερολόγιο μπορεί να ονομάσει το λογαριασμό για αυτό."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Άλλοι χρήστες το βλέπουν αυτό ως Ανώνυμο. Μόνο εσείς και οι διαχειριστές της ιστοσελίδας δείτε το όνομά σας."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Άλλοι βλέπουν Anonymous αντί για το όνομά σας? εσείς και διαχειριστές site εξακολουθεί να το βλέπει. Ένα φίλτρο περιοχής δείχνει ακόμα από ποια περιοχή προέρχεται. Δεν μπορεί να αλλάξει μετά την ανάρτηση."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Άλλοι βλέπουν Anonymous αντί για το όνομά σας? εσείς και διαχειριστές site εξακολουθεί να το βλέπει. Ένα φίλτρο περιοχής δείχνει ακόμα από ποια περιοχή προέρχεται. Δεν μπορεί να αλλάξει μετά την ανάρτηση. Εάν ένας διαχειριστής απαγορεύσει ή αναστείλει το λογαριασμό για αυτό, το Ημερολόγιο μπορεί να ονομάσει το λογαριασμό για αυτό."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12429,6 +12717,10 @@ msgstr "Η απάντησή μας στα σχόλιά σας \" %(excerpt)s\": 
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Οι μάγοι ασφαλείας μας έχουν κάνει ένα αδιαπέραστο ξόρκι ασπίδας γύρω από αυτή τη σελίδα."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Αποτέλεσμα"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -13111,6 +13403,10 @@ msgid "Popular this week"
 msgstr "Δημοφιλή αυτή την εβδομάδα"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Δημοσίευση"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Δημοσίευση"
@@ -13131,6 +13427,10 @@ msgstr "Δημοσίευση ενημέρωσης"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Ανώνυμη δημοσίευση"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Δημοσίευση ανώνυμα: άλλα μέλη βλέπουν κάθε συγγραφέα ως Ανώνυμο με έναν αριθμό. Οι διοικητές μπορούν πάντα να δουν ποιοι είναι. Δεν μπορεί να αλλάξει μόλις δημοσιευθεί η ανάρτηση."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -13208,10 +13508,6 @@ msgid "Posted on that day."
 msgstr "Αναρτήθηκε εκείνη τη μέρα."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "Απόθεση"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Ανάρτηση ψύξης"
 
@@ -13239,6 +13535,10 @@ msgstr "Αναρτήσεις"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Αναρτά μια συντεχνία με ετικέτα αυτή την ετικέτα. Με:+guild, την ετικέτα της συντεχνίας."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Θέσεις και σχόλια"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13329,6 +13629,10 @@ msgstr "Θέσεις σε συντεχνία. in:#gaming is the guilds of a topi
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Θέσεις σε μια γλώσσα: ένας κωδικός (en) ή το όνομά του (αγγλικά)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Θέσεις ή σχόλια"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13522,6 +13826,10 @@ msgstr "Ιδιωτικό περιεχόμενο, ορατό επειδή είσ�
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Ιδιωτικό περιεχόμενο, ορατό επειδή είστε εγκεκριμένος συνεισφέρων σε + %(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Ιδιωτικό αντίγραφο"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Ιδιωτική λειτουργία."
@@ -13581,26 +13889,6 @@ msgstr "Ιδιωτική θέση, ορατή σε σας επειδή είστ�
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Ιδιωτική ανάρτηση, ορατή σε σας επειδή είστε ένας εγκεκριμένος συνεισφέρων σε + %(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Ιδιωτική απόσπαση"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Η ιδιωτική απόσπαση ακυρώνεται."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "Η ιδιωτική ανάρτηση ισχύει, οπότε αυτό μπορεί να πάει μόνο στον κύκλο των φίλων σου. Μπορείτε να το αλλάξετε αυτό στις Settings > Περιεχόμενο."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "Η ιδιωτική ανάρτηση ισχύει, οπότε αυτό πάει μόνο στον κύκλο των φίλων σου. Μπορείτε να το αλλάξετε αυτό στις Settings > Περιεχόμενο."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "Η ιδιωτική απόσπαση αρχίζει."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14163,6 +14451,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Αφαίρεση συντονιστή"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Αφαίρεση του ονόματός μου"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Αφαιρέστε το όνομά μου από αυτή τη δημοσίευση"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "Αφαίρεση επιλογής %(number)s"
@@ -14227,6 +14523,14 @@ msgstr "Αφαίρεση του εξυπηρετητή"
 msgid "Remove this topic"
 msgstr "Αφαίρεση αυτού του θέματος"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Να αφαιρέσω το όνομά σου από αυτά τα αντικείμενα?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Να αφαιρέσεις το όνομά σου από την πίστωση σε αυτή τη θέση; Άλλα μέλη θα δουν \"Ανώνυμο\" με αριθμό. Αυτό δεν μπορεί να αναιρεθεί."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14267,6 +14571,10 @@ msgstr "Αφαιρέθηκε. Το ρομπότ δεν διαβάζει πια �
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "Η αφαίρεση ενός ενεργοποιείται αμέσως."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "Η αφαίρεση του ονόματός σας γίνεται στην ίδια την ιστοσελίδα."
 
 #, machine, plain1
 msgctxt "button"
@@ -14328,6 +14636,10 @@ msgstr "Αναφορά σχολίου"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Αναφορά ανάρτησης"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Αναφορά"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -14826,6 +15138,18 @@ msgstr "Πες τι θα ποστάρει το bot και από πού προέ
 msgid "Say who it's from"
 msgstr "Πες από ποιον είναι"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Πες γιατί πρέπει να κατέβει, με λίγα λόγια."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Πες γιατί είσαι ελκυστική."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Πες γιατί νομίζεις ότι ήταν λάθος. Μόνο οι άνθρωποι που αποφασίζουν τις εκκλήσεις διαβάζουν αυτά που γράφεις, και θα σου πουν πώς τελείωσε."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Σάρωση αυτού του γραμμωτού κώδικα (ή εισαγωγή του κώδικα) χρησιμοποιώντας μια εφαρμογή ταυτοποίησης δύο παραγόντων όπως Google Ταυτοποιητής ή Όθι."
@@ -14991,6 +15315,10 @@ msgstr "Δείτε όλες τις αναρτήσεις"
 msgid "See everything live"
 msgstr "Δες τα πάντα ζωντανά"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Δείτε το στο Ημερολόγιο"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "Δείτε την τρέχουσα σελίδα"
@@ -15014,6 +15342,10 @@ msgstr "Δείτε τι είναι τάση"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Δες τι κάνουν"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Δείτε την έφεση σας"
 
 #, machine, plain1
 msgid "See your username"
@@ -15068,6 +15400,10 @@ msgstr "Αποστολή συμβουλής"
 msgid "Send a tip"
 msgstr "Στείλτε μια πληροφορία"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Αποστολή προσφυγής"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Αποστολή ανατροφοδότησης"
@@ -15100,6 +15436,10 @@ msgstr "Ευαίσθητο Περιεχόμενο?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Ευαίσθητο περιεχόμενο"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Ευαίσθητο περιεχόμενο: δείξτε το"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15178,10 +15518,6 @@ msgstr "Κανόνισε την ισορροπία σου πρώτα."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "Set σύνδεσης δύο βημάτων"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "Σεξουαλοποίηση Ανηλίκων"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -15909,6 +16245,10 @@ msgstr "Εκκίνηση του χώρου"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Ξεκίνα να τρως. Όλα όσα ζητήσατε με \"Δείτε λιγότερες θέσεις όπως αυτή\" ξεχνιέται, έτσι ώστε οι θέσεις και οι συντεχνίες και οι κατηγορίες τους να επανέλθουν. Η ημερομηνία επαναφοράς σας αποθηκεύεται στο λογαριασμό σας, αλλά για εσάς δεν την χρησιμοποιεί για τις ψήφους και τις συντεχνίες σας ακόμα."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Εκκίνηση συντεχνιών"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "Ξεκινώντας σύντομα"
@@ -16244,6 +16584,10 @@ msgstr "Πρωτοσέλιδα τεχνολογίας από το BBC News. Όχ
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Πες το %(site)s Η κοινότητα λίγο για σένα."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Πες τους γιατί, σε μια σειρά"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Πες μας τι συνέβη, τι κοιτάζει μακριά, ή τι θα θέλατε. Για έντομο, πες τι έκανες και τι περίμενες."
@@ -16311,6 +16655,10 @@ msgstr "Θέσεις κειμένου"
 msgid "Text size"
 msgstr "Μέγεθος κειμένου"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Ευχαριστώ"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "Σας ευχαριστώ που αναφέρατε αυτό το σχόλιο!"
@@ -16372,9 +16720,9 @@ msgstr "Ευχαριστώ. Ένας διαχειριστής θα εξετάσ�
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Ευχαριστώ. Ένας διαχειριστής θα εξετάσει το bot σύντομα? Θα λάβετε μια ειδοποίηση. Η εικόνα δεν μπόρεσε να αποθηκευτεί. Δοκιμάστε ξανά από τη σελίδα του bot."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Ευχαριστώ. Ο λογαριασμός σου δεν έχει πλέον την κλειδαριά του παιδιού, και η ιδιωτική απόσπαση είναι κλειστή. Θέσεις που κάνατε πριν μείνετε όπως ήταν: χρήση Ποιος μπορεί να το δει αυτό σε μια θέση για να αλλάξει ποιος το βλέπει."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Ευχαριστώ. Ο λογαριασμός σου δεν έχει πλέον την κλειδαριά του παιδιού."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16714,6 +17062,10 @@ msgstr "Αυτό το όνομα είναι πιασμένο."
 msgid "That password isn't right."
 msgstr "Αυτός ο κωδικός δεν είναι σωστός."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Αυτός ο κωδικός δεν είναι σωστός. Τίποτα δεν άλλαξε."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "Η φόρμα επαναφοράς κωδικού πρόσβασης έχει λήξει."
@@ -17041,6 +17393,10 @@ msgstr "Τα νομίσματα πάνε στον ιδρυτή, <a href=\"%(url)
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Τα νομίσματα που κερδίζετε από συμβουλές, πληρωμένους κύκλους και το ταμείο δημιουργών, για τις τελευταίες 30 ημέρες και όλη την ώρα."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Το σχόλιο μένει εκεί που είναι, με το όνομά σου να το βγάζει. Όλοι όσοι το είδαν με το όνομά σου ξέρουν ότι ήσουν εσύ."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17057,6 +17413,10 @@ msgstr[1] "Τα αντίγραφα που προωθήσατε στο %(guilds)s
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "Οι ημερομηνίες δεν αφήνουν μέρες."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "Η απόφαση ισχύει"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17273,6 +17633,10 @@ msgstr "Το όνομα %(host)s δεν βρέθηκε."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Το νεότερο από αυτά που έχουν κάνει. Εμφανίζονται μόνο τα ονόματα με τους οποίους συνομιλούν, ποτέ αυτά που λέει μια συνομιλία: οι συνομιλίες είναι κρυπτογραφημένες."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Ο αριθμός των αντικειμένων που επιβεβαιώσατε δεν ταιριάζει με αυτό που επιλέξατε. Τίποτα δεν άλλαξε."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Οι αριθμοί εμφανίζονται πάντα στο προφίλ σου. Αυτό αποφασίζει ποιος μπορεί να ανοίξει κάθε λίστα και να δει τους λογαριασμούς σε αυτήν. Ένας λογαριασμός παρατίθεται μόνο όταν το επιτρέπει και η δική του ρύθμιση."
@@ -17321,9 +17685,25 @@ msgstr "Η δημοσίευση εμφανίζεται στο προφίλ αυ�
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "Η ανάρτηση φέρει το όνομά σας και αναγράφεται στο προφίλ σας. Οι ψήφοι, τα σχόλια και τα forwards μοιράζονται με τον συγγραφέα του, ο οποίος το επεξεργάζεται και το διαγράφει. Μπορείτε να απομακρυνθείτε ανά πάσα στιγμή: η θέση παραμένει, χωρίς το όνομά σας."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "Η δημοσίευση δεν είναι καταχωρημένη στο προφίλ σας. Οι ψήφοι, τα σχόλια και τα forwards μοιράζονται με τον συγγραφέα του, ο οποίος το επεξεργάζεται και το διαγράφει. Μπορείτε να απομακρυνθείτε ανά πάσα στιγμή: η θέση παραμένει, χωρίς την πίστωση σας."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "Η θέση αρνήθηκε την αλλαγή."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "Η δημοσίευση μένει εκεί που είναι, με το όνομά σου να βγαίνει και να αφήνει το προφίλ σου. Η φήμη του σε αφήνει κι εσένα. Όλοι όσοι το είδαν με το όνομά σου ξέρουν ότι ήσουν εσύ."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "Συγγραφέας της δημοσίευσης"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "Ο συγγραφέας της δημοσίευσης την διέγραψε, οπότε εμφανίζεται ως Anonymous: no name and no link. Τα σχόλια που βρίσκονται κάτω από αυτό παραμένουν όπως ήταν· ένα συγγραφέα του διαγράφεται εμφανίζεται ως Anonymous πάρα πολύ."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17394,9 +17774,17 @@ msgstr "Ο σέρβερ πιστεύει ότι ρωτάς κάτι ανόητο
 msgid "The site refused the bot's session."
 msgstr "Η ιστοσελίδα αρνήθηκε τη συνεδρία του ρομπότ."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Οι διαχειριστές του site το έχουν ήδη."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Οι διαχειριστές της ιστοσελίδας σημάδεψαν αυτή τη συντεχνία ευαίσθητη, οπότε μόνο ένας διαχειριστής μπορεί να το αλλάξει αυτό."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Οι διαχειριστές του site θα το διαβάσουν. Ποτέ δεν τους λένε ποιος αναφέρθηκε."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17562,9 +17950,17 @@ msgstr "Δεν υπάρχουν αναρτήσεις εδώ."
 msgid "There is no account named @%(name)s."
 msgstr "Δεν υπάρχει λογαριασμός με το όνομα @%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Δεν υπάρχει τίποτα εδώ για έφεση."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "Δεν υπάρχει τίποτα να σώσουμε ακόμα."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Δεν υπάρχει τίποτα που να περιμένει αυτή την απαγόρευση."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17659,36 +18055,24 @@ msgid "They aren't muted here."
 msgstr "Δεν είναι μουγκοί εδώ."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Σου ζήτησαν να κλείσεις την ιδιωτική απόσπαση."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Μπορούν να αγοράσουν και να ξοδέψουν νομίσματα, φιλοδώρημα, να αγοράσουν Premium και να ενταχθούν ή να εκτελέσουν κύκλους που έχουν πληρωθεί."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Μπορούν να σχολιάσουν."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Μπορούν να φιλοξενήσουν και να ενωθούν με τους Spaces και να τρέξουν ζωντανές κλωστές. Οι φωνητικές κλήσεις σε ένα Διάστημα χρειάζονται επίσης συνομιλία για να είναι on."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Μπορούν να κάνουν δημοσιεύσεις."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "Μπορούν να στέλνουν μηνύματα στους ανθρώπους, να συμμετέχουν σε ομαδικές συζητήσεις και να κάνουν τηλεφωνήματα. Ο ιστότοπος δεν σας δείχνει ποτέ τι λέει μια συνομιλία: οι συνομιλίες είναι κρυπτογραφημένες. Όποιος ξέρει τον κωδικό του μπορεί ακόμα να υπογράψει και να τον διαβάσει."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Μπορούν να δημοσιεύσουν ανώνυμα και να ξεκινήσουν μια συντεχνία. Μπορείτε ακόμα να δείτε ποιος έγραψε μια ανώνυμη ανάρτηση."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Μπορούν να δουν τι κάνετε στο site: τις δημοσιεύσεις σας, σχόλια, ψήφους, σελιδοδείκτες, ακολουθεί, συντεχνίες, με τους οποίους συνομιλείτε, ότι ο λογαριασμός σας αναφέρθηκε, και τα πρόσφατα σημεία εισόδου σας. Η ιστοσελίδα δεν τους δείχνει ποτέ τι λένε οι συνομιλίες σας, επειδή οι συνομιλίες είναι κρυπτογραφημένες. Αλλά όποιος γνωρίζει τον κωδικό σας, ένας γονέας που τον επέλεξε, μπορεί να υπογράψει όπως εσείς: να τον αλλάξει στην Ασφάλεια, ώστε μόνο εσείς να το ξέρετε. Επιλέγουν ποια από αυτές είναι για λογαριασμό σας:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Μπορούν να ξεκινήσουν μια συντεχνία. Ακόμα δεν μπορούν να δημοσιεύσουν ή να σχολιάσουν: ένας λογαριασμός παιδιού διαβάζει μόνο."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17706,6 +18090,10 @@ msgstr "Πάνε κατευθείαν στο υπόλοιπό σου."
 msgid "They haven't asked for that."
 msgstr "Δεν το ζήτησαν αυτό."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Φεύγουν από το σημείο. Αυτά που είπαν μένουν στο Ημερολόγιο ως Ανώνυμοι, εκτός από οτιδήποτε φτιάχτηκε τα τελευταία πέντε λεπτά που κανείς δεν έχει σχολιάσει, το οποίο διαγράφεται. Αυτό δεν μπορεί να αναιρεθεί."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Πρέπει να είναι στη συντεχνία, και όχι να εξοριστούν από αυτήν."
@@ -17717,6 +18105,14 @@ msgstr "Πρέπει να μπουν στο κανάλι πρώτα."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "Λένε ότι είναι 18 ή πάνω και σας ζήτησε να απελευθερώσει το λογαριασμό τους. Αν το κάνεις, γίνεται δικό τους και δεν μπορείς να το δεις πια."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Μένουν εκεί που είναι, με το όνομά σου να τους βγάζει. Αυτό δεν μπορεί να αναιρεθεί. Οι δημοσιεύσεις που χρειάζονται το όνομά σας (για έναν Κύκλο, ή με συμβουλές) αναφέρονται στη συνέχεια ως δεν έχουν αλλάξει."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Έγραψαν: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17891,6 +18287,10 @@ msgstr[1] "Αυτή η κλήση είναι πλήρης (%(num)s άτομα)."
 msgid "This can't be translated right now."
 msgstr "Αυτό δεν μπορεί να μεταφραστεί τώρα."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Αυτό δεν μπορεί να αναιρεθεί. Οι διαχειριστές του site μπορούν πάντα να δουν ποιος έγραψε κάτι, και αν ένας διαχειριστής απαγορεύει ή αναστέλλει το λογαριασμό για αυτό, το Log μπορεί να ονομάσει το λογαριασμό για αυτό."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Αυτό το κανάλι δεν ζητά να γίνουν δεκτοί οι κανόνες του."
@@ -17975,6 +18375,10 @@ msgstr "Το περιεχόμενο αυτό έχει ήδη δημοσιευθ�
 msgid "This copy is no longer kept."
 msgstr "Αυτό το αντίγραφο δεν φυλάσσεται πλέον."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Αυτό δεν μπορεί να αλλάξει τώρα."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Αυτό δημιουργεί μια νέα, ανεξάρτητη θέση στην εν λόγω συντεχνία με τις δικές της ψήφους και σχόλια. Ο τίτλος δημιουργείται από το κείμενο του σχολίου. Ένας σύνδεσμος πίσω στο αρχικό σχόλιο θα εμφανιστεί στη νέα θέση."
@@ -18002,6 +18406,22 @@ msgstr "Αυτή η επιμέλεια συντεχνιών και λογαρι�
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Αυτή η επιμέλεια κανόνες του feed πήρε πάρα πολύ καιρό για να τρέξει. Ο ιδιοκτήτης του μπορεί να τους κάνει πιο στενούς."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Αυτή η απόφαση δεν μπορεί να γίνει δεκτή."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Η απόφαση αυτή έχει ήδη αρθεί."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Αυτή η απόφαση αφορά εσένα. Αν νομίζεις ότι ήταν λάθος, μπορείς να κάνεις έφεση."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18047,6 +18467,14 @@ msgstr "Αυτή η συντεχνία είναι ιδιωτική. Το περ�
 msgid "This guild's channels are closed."
 msgstr "Τα κανάλια αυτής της συντεχνίας είναι κλειστά."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Αυτό έχει ποινικό μητρώο, το οποίο δεν μπορεί να αναφερθεί."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Αυτό έχει διαγραφεί."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "Η πρόσκληση αυτή είχε ήδη απαντηθεί."
@@ -18067,6 +18495,10 @@ msgstr "Αυτό είναι ένα Διάστημα: ο οικοδεσπότης
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Αυτό είναι ένα αρχείο ενεργειών συντονιστή που εκτελούνται σε +%(guild)s. Αυτά που ο καθένας μπορεί να διαβάσει είναι επίσης σε όλη την ιστοσελίδα <a href=\"%(url)s\">Καταγραφή</a>. Αυτό που τα μέλη διαγράφονται δεν δημοσιεύεται."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Αυτό είναι ήδη ανώνυμο."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "Αυτό είναι ήδη στη γλώσσα σας."
@@ -18084,6 +18516,10 @@ msgstr "Αυτό είναι για τα μέλη μιας συντεχνίας �
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "Αυτό είναι για τους ανθρώπους σε ένα από τα <a href=\"%(url)s\">@%(name)s</a>Είναι κύκλοι."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Αυτό είναι σε ιδιωτικό χώρο, και ένα ιδιωτικό αντικείμενο δεν μπορεί να αναφερθεί στο δημόσιο ημερολόγιο."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Αυτό είναι το έθιμο της συντεχνίας. CSS Αρχείο."
@@ -18096,6 +18532,10 @@ msgstr "Αυτό είναι πάρα πολύ σαν αυτό που δημοσ�
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Αυτό δεν είναι διαθέσιμο όσο ο λογαριασμός σας είναι περιορισμένος. Μπορείτε να επιβεβαιώσετε την ηλικία σας στις Settings > Περιεχόμενο."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Αυτό δεν είναι ένα από τα άρθρα ή σχόλια του λογαριασμού."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Αυτό δεν φαίνεται στο τρέχον επίπεδο φίλτρου λέξεων. Μπορείτε να αναθεωρήσετε το φίλτρο λέξεων στις ρυθμίσεις περιεχομένου σας."
@@ -18107,6 +18547,10 @@ msgstr "Αυτό δεν φαίνεται που είσαι μέχρι να επ�
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Αυτό δεν φαίνεται όσο ο λογαριασμός σου είναι περιορισμένος."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Αυτό δεν είναι δικό σου για να αλλάξεις, ή έχει ήδη φύγει."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18213,6 +18657,10 @@ msgstr "Αυτή η ανάρτηση δεν έχει σχόλια για το π
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "Αυτή η ανάρτηση δεν έχει ζωντανή κλωστή."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Αυτή η ανάρτηση είναι ανώνυμη, έτσι ώστε η πίστωσή σας θα είναι πάρα πολύ: άλλα μέλη θα το δείτε ως \"Ανώνυμο\" με έναν αριθμό. Οι διοικητές και ο συγγραφέας της θέσης μπορούν ακόμα να δουν ότι είσαι εσύ."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18330,6 +18778,10 @@ msgstr[1] "Αυτό το κανάλι φωνής είναι γεμάτο (%(num)
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "Αυτό το κανάλι φωνής δεν είναι διαθέσιμο τώρα."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Αυτό διαγράφηκε μέσα σε πέντε λεπτά από τότε που έγινε, οπότε δεν έχει κανένα δημόσιο αρχείο να επισυναφθεί."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18534,6 +18986,10 @@ msgstr "Πάρα πολλές συντεχνίες έχουν ήδη οδηγη�
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Πολλά ζωντανά ρεύματα είναι ανοιχτά. Κλείσε ένα λογαριασμό και δοκίμασε ξανά."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Πάρα πολλές αναφορές σήμερα"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "Πάρα πολύ spam!"
@@ -18640,6 +19096,10 @@ msgstr "Αληθινό Έγκλημα"
 msgid "Try again"
 msgstr "Προσπάθησε ξανά"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Δοκιμάστε ξανά αύριο."
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18648,10 +19108,6 @@ msgstr "Τεύχος"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Στεπιά της Τουρανίας"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Κλείστο"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18871,6 +19327,10 @@ msgstr "Κατάργηση διάκρισης"
 msgid "Undo"
 msgstr "Αναίρεση"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Αναίρεση της απόφασης"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19077,6 +19537,10 @@ msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Μέχρι %(num)s τη φορά. Ο λογαριασμός σας πρέπει να είναι 30 ημερών."
 msgstr[1] "Μέχρι το %(num)s κάθε φορά. Ο λογαριασμός σας πρέπει να είναι 30 ημερών."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Μέχρι %(num)s χαρακτήρες. Μπορείτε να κάνετε έφεση μια φορά, και να κάνετε τρεις προσφυγές την ημέρα."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -19792,13 +20256,21 @@ msgstr "Τι γράφει"
 msgid "What it posts:"
 msgstr "Τι γράφει:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Αυτό που είπε δεν φαίνεται εδώ."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "Τι είδους Διάστημα?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Αυτό που τα μέλη διαγράφουν δεν δημοσιεύεται εδώ."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Όσα μέλη διέγραψαν, νεότερα πρώτα, με τις λέξεις που είχε, ως Anonymous: no name and no link. Κάτι διαγράφηκε μέσα σε πέντε λεπτά από το να γραφτεί διαγράφεται και δεν είναι εδώ. Το κουμπί Αναφορά ζητά από τους διαχειριστές του site να κατεβάσουν τις λέξεις."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Τι επεξεργάστηκαν τα μέλη, νεότεροι πρώτα: ποιος (Ανώνυμος για μια ανώνυμη ανάρτηση ή σχόλιο), πότε και το σημείωμα που έδωσαν. Μια σειρά επεξεργασιών σε ένα αντικείμενο είναι μια γραμμή. Μια επεξεργασία στα πρώτα πέντε λεπτά μετά κάτι που γράφτηκε δεν καταγράφεται. Οι εκδόσεις είναι στη σελίδα ιστορίας του αντικειμένου."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19812,6 +20284,18 @@ msgstr "Τι παίρνουν οι συνδρομητές"
 msgid "What the guildmasters did"
 msgstr "Τι έκαναν οι συντονιστές συντεχνίας"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Τι να τους κάνω"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Τι να κάνετε με το σχόλιό σας"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Τι να κάνετε με τη θέση σας"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "Τι να πω"
@@ -19823,6 +20307,14 @@ msgstr "Τι να αναζητηθεί"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "Τι λειτουργεί σε εφαρμογές"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Αυτό που διαγράφετε παραμένει στο αρχείο καταγραφής ως Anonymous, χωρίς όνομα, εκτός αν το διαγράψετε μέσα σε πέντε λεπτά."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Αυτό που διέγραψες μόνος σου. Ένα αντίγραφο από κάτι που διαγράφηκε μετά τα πρώτα πέντε λεπτά του μένει στο Ημερολόγιο ως Ανώνυμο, χωρίς όνομα. Ένα αντίγραφο από κάτι διαγραμμένο μέσα σε πέντε λεπτά είναι ιδιωτικό, και πηγαίνει μετά από 90 ημέρες."
 
 #, machine, plain1
 msgid "What you do"
@@ -19877,6 +20369,10 @@ msgstr "Όπου πάνε τα αρχεία"
 #, machine, plain1
 msgid "Where it is"
 msgstr "Πού είναι"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Όπου συζητήθηκε"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -20036,6 +20532,10 @@ msgstr "Ποιος έγραψε τι"
 msgid "Who you follow"
 msgstr "Ποιον ακολουθείς"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Ποιος, πότε, πού, ποιος κυβερνά και γιατί. Ποτέ δεν δείχνει τον τίτλο ή το κείμενο του τι ήταν κρυμμένο ή αφαιρέθηκε."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Όποιος το ξεκίνησε, ανέφερε τον περιηγητή και έβαλε τον εαυτό του, οπότε δεν αποδεικνύει τίποτα."
@@ -20065,6 +20565,14 @@ msgstr "Γιατί όχι"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "Γιατί όχι (τους λένε)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Γιατί να κατέβει?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Γιατί ήταν λάθος?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20121,10 +20629,6 @@ msgstr "Με Premium παίρνεις ένα μέρος για όλα όσα β�
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Με το Premium βλέπετε τι κάνει κάθε μία από τις θέσεις σας: απόψεις ανά ημέρα, πόσα άτομα έχουν υπογράψει, ψήφοι, σχόλια, σελιδοδείκτες, φόργουορντ και αναδημοσιεύσεις, πώς τα καταφέρνει σε κάθε συντεχνία που προωθήθηκε, και τα αποτελέσματα της δημοσκόπησης της."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Με ιδιωτική απόσπαση, ένας κύκλος μπορεί να κρατήσει μόνο τους ανθρώπους που ακολουθούν και τους οποίους ακολουθείτε."
 
 #, machine, plain1
 msgid "With a link"
@@ -20474,6 +20978,10 @@ msgstr[1] "Ήδη ηγείσαι των %(num)s συντεχνιών."
 msgid "You already made that comment: %(link)s"
 msgstr "Έχετε ήδη κάνει αυτό το σχόλιο: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Το ανέφερες ήδη"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "Ανέφερες ήδη αυτόν τον λογαριασμό."
@@ -20505,6 +21013,10 @@ msgstr "Ήδη ψηφίσατε σε αυτή τη θέση, στην αρχικ
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Εσείς και μέχρι 3 βοηθοί γράφετε · τα μέλη διαβάζουν και αντιδρούν. Για άλλους κύκλους, κάντε το <a href=\"%(url)s\">σελίδα καναλιών σας</a>Μπορείς να έχεις μέχρι 3 κανάλια."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Κάνατε έφεση σε αυτή την απόφαση."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20583,10 +21095,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Ζήτησες από τον γονέα ή κηδεμόνα σου να σου δώσει το λογαριασμό. Δεν απάντησαν ακόμα."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Ζήτησες από τον γονέα ή κηδεμόνα σου να το κλείσει. Δεν απάντησαν ακόμα."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Μπορείτε να προσθέσετε φωτογραφίες στις 500 φημολογίες, ή νωρίτερα με Premium"
 
@@ -20621,6 +21129,10 @@ msgstr "Μπορείτε να αλλάξετε αυτό για κάθε βίντ
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Μπορείς να το αλλάξεις μόλις δεχτούν το μήνυμά σου."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Μπορείτε να αλλάξετε μέχρι το %(max)s αντικείμενα κάθε φορά."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20735,6 +21247,10 @@ msgstr[1] "Μπορείτε να κάνετε %(num)s wiki επεξεργαστ�
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Μπορείτε να κάνετε ένα λογαριασμό παιδιού μόλις επιβεβαιωθεί ο λογαριασμός σας ως 18 ή πάνω. Μπορείτε να το πείτε στις Settings > Περιεχόμενο."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Μπορείς να κάνεις τρεις εκκλήσεις την ημέρα. Προσπάθησε ξανά αύριο."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21074,6 +21590,10 @@ msgid_plural "You have %(num)s coins."
 msgstr[0] "Έχεις ένα νόμισμα."
 msgstr[1] "Έχεις %(num)s νομίσματα."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Έχετε ήδη ασκήσει έφεση σε αυτήν την απόφαση."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Έχετε ήδη μπλοκάρει το @%(name)s."
@@ -21115,6 +21635,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -21213,6 +21742,10 @@ msgstr "Δεν είπες ότι κράτησες τον κωδικό σου."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Δεν μας το είπες ακόμα."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Πήρες αυτή την απόφαση, έτσι ένας άλλος συντονιστής συντεχνιών αποφασίζει την έφεσή του."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21317,6 +21850,14 @@ msgstr "Υπέγραψες με ένα QR Κωδικός. Εισάγετε το�
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Μας είπες ότι ήθελες να αλλάξεις. %(site)s email λογαριασμού. Για να ολοκληρώσετε αυτή τη διαδικασία, επιβεβαιώστε τη νέα σας διεύθυνση email:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Σε κάλεσαν να μοιραστείς αυτή την ανώνυμη θέση. Αν δεχτείτε, η πίστωση σας είναι επίσης ανώνυμη, και η θέση δεν είναι καταχωρημένη στο προφίλ σας. Οι ψήφοι, τα σχόλια και τα προωθητικά παραμένουν κοινά και μόνο ο συντάκτης του το επεξεργάζεται ή το διαγράφει."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -21700,6 +22241,10 @@ msgstr "Ο λογαριασμός σου πρέπει να είναι τουλά
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Ο λογαριασμός σας δεν δημοσιεύει πλέον αυτόματα. Οι αναρτήσεις του μένουν."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Ο λογαριασμός σου διαβάζει μόνο για τώρα, οπότε δεν μπορεί να σχολιάσει. Μπορείτε ακόμα να ψηφίσετε, να ακολουθήσετε και σελιδοδείκτη."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "Ο λογαριασμός σας δημοσιεύει από εδώ και πέρα."
@@ -21735,6 +22280,53 @@ msgstr "Η ηλικία σου επιβεβαιώθηκε στο %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "Η απάντησή σας"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Η έκκλησή σου περιμένει να διαβαστεί."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Η έφεσή σας έγινε δεκτή και η απόφαση αντιστράφηκε."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Η έφεσή σας εξετάστηκε και η απόφαση ισχύει."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Η έφεσή σας δεν προωθήθηκε περαιτέρω."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Η έφεσή σου στάλθηκε."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21819,12 +22411,12 @@ msgid "Your circles - %(site)s"
 msgstr "Οι κύκλοι σας - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Το σχόλιό σας θα αφαιρεθεί από τις σελίδες της ιστοσελίδας. Η ιστοσελίδα διατηρεί ένα ιδιωτικό αντίγραφο για 90 ημέρες, το οποίο μόνο εσείς και οι διαχειριστές της ιστοσελίδας μπορούν να ανοίξουν. Αυτό δεν μπορεί να αναιρεθεί."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "Τα σχόλιά σας θα δείξουν εδώ."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Η πίστωσή σας σε αυτή τη θέση είναι ανώνυμη: άλλα μέλη το βλέπουν ως \"Ανώνυμο #N\". Οι διοικητές και ο συγγραφέας της θέσης μπορούν ακόμα να δουν ότι είναι δικό σου. Αυτό δεν μπορεί να αναιρεθεί."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21969,14 +22561,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "Ο γονιός ή κηδεμόνας σας έχει κληθεί να αποδεσμεύσει το λογαριασμό σας. Τίποτα δεν αλλάζει μέχρι να απαντήσουν."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "Ο γονιός σου ή ο κηδεμόνας σου ζήτησαν να κλείσεις την ιδιωτική απόσπαση."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Ο γονιός σας ή ο κηδεμόνας σας πρέπει να συμφωνήσουν πριν ιδιωτικό απόσπαση μπορεί να απενεργοποιηθεί."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Ο γονιός ή ο κηδεμόνας σου το έκλεισε για λογαριασμό σου."
 
@@ -21991,14 +22575,6 @@ msgstr "Ο γονιός ή ο κηδεμόνας σου όρισε νέο κωδ
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Ο γονιός ή κηδεμόνας σου σταμάτησε να διαχειρίζεται το λογαριασμό σου. Κρατάει το παιδί κλειδωμένο μέχρι να επιβεβαιώσετε την ηλικία σας στις Settings > Περιεχόμενο. Επέλεξαν τον κωδικό σας: αλλάξτε τον σε [Sυθμίσεις > Ασφάλεια](/settings/security), ή μπορούν ακόμα να υπογράψουν ως εσάς."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Ο γονιός ή ο κηδεμόνας σου απέκλεισε την ιδιωτική απόσπαση για τον λογαριασμό σου."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Ο γονιός σου ή ο κηδεμόνας σου θέλει η ιδιωτική απόσπαση να παραμείνει."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22031,10 +22607,6 @@ msgstr "Το τηλέφωνό σου είπε όχι, οπότε κανείς δ
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Η θέση σας είναι καταχωρημένη στο προφίλ σας ούτως ή άλλως. Επιλογή Το προφίλ μου για να έχω εκεί τα σχόλιά του, και να προσθέσω συντεχνίες για να το αναρτήσω απευθείας σε αυτές: κάθε συντεχνία παίρνει το δικό της αντίγραφο με τις δικές της ψήφους και σχόλια."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Το πόστο σας θα αφαιρεθεί από το προφίλ σας, τις τροφές και τις συντεχνίες σας. Η ιστοσελίδα διατηρεί ένα ιδιωτικό αντίγραφο για 90 ημέρες, το οποίο μόνο εσείς και οι διαχειριστές της ιστοσελίδας μπορούν να ανοίξουν. Αυτό δεν μπορεί να αναιρεθεί."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -22153,6 +22725,10 @@ msgstr "Ο τίτλος σου είναι το ερώτημα. %(min)s προς 
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Ο τίτλος σου είναι το ερώτημα. Δώστε %(min)s στις επιλογές %(max)s. Οι άνθρωποι μπορούν να ψηφίσουν από κάθε πρόοδο και αναδημοσίευση αυτής της θέσης, μία φορά ο καθένας."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "Ο κωδικός σου για δύο συντελεστές"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Το όνομα χρήστη είναι το μοναδικό σας <code>@handle</code>: η διεύθυνση του προφίλ σας, και τι οι άνθρωποι αναφέρουν και ψάχνουν. Η αλλαγή κοστίζει 20 νομίσματα και μπορεί να γίνει μία φορά κάθε 7 ημέρες. Για να αλλάξετε τον τρόπο με τον οποίο το όνομά σας διαβάζει χωρίς αυτό, χρησιμοποιήστε το όνομα εμφάνισης σας παραπάνω."
@@ -22216,6 +22792,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Απαίτηση ανάληψης] /help/siege"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[Πώς καταγράφεται η μετριοπάθεια]( /help/moderation)"
 
 #, machine, plain1
 msgid "[Legal Policies](/help/legal)"
@@ -22285,6 +22865,61 @@ msgstr "[Όροι υπηρεσίας]( /help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Τίτλοι] /help/titles"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[απαγόρευση]"
@@ -22335,6 +22970,10 @@ msgstr "[ήχος]"
 msgid "a day"
 msgstr "μια ημέρα"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "μια διαγραμμένη θέση"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "μια συντεχνία ή μια ανάρτηση που ονομάζεται δεν υπάρχει πλέον."
@@ -22374,6 +23013,12 @@ msgstr "δραστηριότητα"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "πρόσθεσε ένα bot feed %(target)s σε ένα κανάλι"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "προσέθεσε ένα σημείωμα κοινότητας στο %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22460,12 +23105,16 @@ msgstr "bots"
 msgid "by %(author)s"
 msgstr "από %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "κατά %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "κατά %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "από <a href=\"%(link)s\">@%(name)s</a>"
@@ -22550,6 +23199,12 @@ msgstr "αλλαγμένο αν τα προθεσμιακά χρειάζοντα
 msgid "changed who may edit a wiki page"
 msgstr "αλλαγμένος που μπορεί να επεξεργαστεί μια σελίδα wiki"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chatbanned %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22569,6 +23224,10 @@ msgstr "κέρματα"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "σχόλιο"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "σχόλιο # %(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22657,6 +23316,12 @@ msgstr "π.χ. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>: �
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "π.χ. <span class=\"font-weight-bold\">%(score)s</span> για %(up)s επάνω και %(down)s Κάτω"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "επεξεργασία ενός %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22667,10 +23332,21 @@ msgstr "επεξεργασία μιας σελίδας wiki"
 msgid "edited an event"
 msgstr "επεξεργασία ενός γεγονότος"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "επεξεργασμένη δημοσίευση %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "τέλος"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "τελείωσε το Διάστημα %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -22696,6 +23372,12 @@ msgstr "τα πάντα μέσα σε αυτό"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "όλα όσα πληκτρολογείτε πιστώνονται σε σας"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "εξορισμένος %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22776,6 +23458,11 @@ msgstr "τονίζουν το %(target)s τους"
 msgid "heralded their post %(target)s"
 msgstr "τονίστηκε η θέση τους %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "κρυμμένο %(target)s κάτω από τη δική τους θέση"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22836,6 +23523,10 @@ msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "σε %(num)s λεπτό"
 msgstr[1] "σε %(num)s λεπτά"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "σε αυτό το νήμα"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -23000,6 +23691,11 @@ msgstr "παλιά"
 msgid "only guildmasters write here"
 msgstr "μόνο συντονιστές συντεχνιών γράφουν εδώ"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "άνοιξε + %(guild)s σε όλους"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "εξωτερικός διακομιστής"
@@ -23056,6 +23752,10 @@ msgstr "καθηλωμένο μήνυμα σε ένα κανάλι"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "εγκλωβισμένη θέση %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "θέση # %(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23130,6 +23830,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "αφαίρεση μηνύματος κατά %(target)s από ένα κανάλι"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "αφαίρεση μηνύματος από δημόσιο κανάλι"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "αφαίρεσε ένα μήνυμα από τον πίνακα του διαστήματος %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "αφαίρεσε την αναθεώρηση του wiki μιας συντεχνίας"
@@ -23152,6 +23862,12 @@ msgstr "αφαιρούμενος συντονιστής συντεχνίας %(t
 msgid "removed post %(target)s"
 msgstr "αφαιρούμενη θέση %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "αφαίρεσε το σημείωμα της κοινότητας στο %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -23160,6 +23876,12 @@ msgstr "μετονομασία σε κατηγορία καναλιού"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "ανανέωση %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "αντικατέστησε το σημείωμα της κοινότητας στις %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23203,6 +23925,11 @@ msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "να το μοιραστούμε. Μόνο ο συγγραφέας μπορεί να μοιραστεί αυτή τη δημοσίευση."
 msgstr[1] "μετοχές. Μόνο ο συγγραφέας μπορεί να μοιραστεί αυτή τη δημοσίευση."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "έδειξε ξανά %(target)s κάτω από τη θέση του"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -23324,11 +24051,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "κορυφαία"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "χωρίς συνομιλία %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "μη chatbanned χρήστης %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "μη εξορισμένο %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23389,6 +24128,14 @@ msgstr "unhid a %(target)s σε αυτή τη συντεχνία"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "ανύπαντρη δημοσίευση %(target)s σε αυτή τη συντεχνία"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "έως %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "έως %(max)s κάθε φορά"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

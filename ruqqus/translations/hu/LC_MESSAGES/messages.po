@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hu\n"
@@ -467,6 +467,11 @@ msgid "%(num)s character limit for titles."
 msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s a címek karakterének határa."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s kiválasztott"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -523,6 +528,11 @@ msgstr[0] "%(num)s nap maradt"
 msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s a hátralévő napok"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s edit in a sorban"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -583,6 +593,16 @@ msgstr[0] "%(num)s a hívásban"
 msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s érdekel"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s a tételek megváltoztak"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s A tárgyakat nem lehetett megváltoztatni:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1178,6 +1198,10 @@ msgstr "%(who)s elfogadott guild moderator meghívás"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s hozzáadott egy bot takarmány %(target)s egy csatorna"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s közösségi megjegyzés"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s hozzáadott egy címkét"
@@ -1242,6 +1266,10 @@ msgstr "%(who)s Megváltoztatta, hogy szükség van-e címkére"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s megváltoztatott egy wiki oldalt"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chattilled %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s chattiltott felhasználó %(name)s"
@@ -1290,6 +1318,10 @@ msgstr "%(who)s törölt egy wiki oldalt"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s Törölt bejegyzés %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s hozzászólás szerkesztése"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s wiki oldalt szerkesztett"
@@ -1297,6 +1329,18 @@ msgstr "%(who)s wiki oldalt szerkesztett"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s rendezvény szerkesztése"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s szerkesztett post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s véget ért egy tér"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s száműzve %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1317,6 +1361,10 @@ msgstr "%(who)s kiemelte a posztjukat %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s Elrejtett egy megjegyzést a céhtől."
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s Elrejtett egy megjegyzést a saját poszt"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1366,6 +1414,10 @@ msgstr "%(who)s egy megjegyzést érzékeny tartalomként jelölt meg"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s jelöléssel ellátott post %(title)s érzékeny tartalom"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s nyitott +%(guild)s mindenkinek"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s véglegesen megsemmisített egy megjegyzést"
@@ -1406,6 +1458,18 @@ msgstr "%(who)s visszahelyezett állás %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s eltávolított egy csatornaüzenetet"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s eltávolított egy közösségi jegyzetet"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s eltávolított egy üzenetet egy űrtábláról"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s eltávolított egy üzenetet egy nyilvános csatornáról"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s eltávolította a guild wiki felülvizsgálatát"
@@ -1430,6 +1494,10 @@ msgstr "%(who)s eltávolított felhasználó %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s A csatorna kategóriájának átnevezése"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s közösségi jegyzetet váltott"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s visszavont céhmoderátor meghívó @%(name)s"
@@ -1445,6 +1513,10 @@ msgstr "%(who)s unit description in lists %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s a poszt címkéjének beállítása %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s ismét mutatott egy megjegyzést"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1470,9 +1542,17 @@ msgstr "%(who)s levett egy jelet egy csatornaüzenetről"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s a %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s un- chattilled %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s nem-chattilled user %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s száműzetés nélkül %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1558,6 +1638,10 @@ msgstr "(eredeti)"
 msgid "(in a private place)"
 msgstr "(magánhelyen)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(nincs szöveg)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(cím nélkül)"
@@ -1629,6 +1713,10 @@ msgstr "**Sajtó**"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Lehetőség hozzáadása"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+ %(guild)s Fellebbezések"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2135,10 +2223,6 @@ msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [O
 msgstr ""
 
 #, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@ %(name)s megkért, hogy kapcsold ki a Private posztolást a számlájukra. Válaszolhat a [Beállítások > gyermekek] (/settings/children) rovatban."
-
-#, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@ %(name)s blokkolva."
 
@@ -2482,6 +2566,10 @@ msgstr "A tér nem lehet névtelen."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Az űrt nem lehet a Circle Cild-ben tartani."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Egy űrt nem lehet eltávolítani."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "Egy tér nem indulhat el a múltban."
@@ -2509,6 +2597,10 @@ msgstr "Feliratkozási jelvény az Ön neve mellett @%(name)sa profilját és a 
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "A Fordítás gomb a hozzászólások és megjegyzések alatt egyik nyelven sem jelenik meg. Semmi sincs lefordítva, hacsak nem nyomod meg."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "A tilalom idézhet akár %(max)s tételek."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2680,9 +2772,25 @@ msgid "A circle's name can be %(num)s character at most."
 msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "A kör neve legfeljebb %(num)s karakter lehet."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "Nem lehet névtelen, ha egy társszerzőt jelölnek."
+#, machine, plain2
+msgid "A comment"
+msgstr "Hozzászólás"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Egy olyan számla kommentje, amit letiltott, vagy ami blokkolta."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Egy megjegyzés, amit egy céhmoderátor rejtett el."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Egy megjegyzés elrejtve a szó szűrő."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Egy megjegyzés, amit a szerző törölt. Amit mondott, itt nincs feltüntetve."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2691,6 +2799,10 @@ msgstr "A Circle-i posztra vonatkozó megjegyzést nem lehet továbbítani a cé
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "A hozzászólás egy poszt egy kör nem lehet áthelyezni."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "A komment eltávolította az oldal administrs."
 
 #, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2708,6 +2820,14 @@ msgstr "Az egész telephely gyógyított takarmányához legfeljebb egy hónapos
 msgid "A day"
 msgstr "Egy nap"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "A határozat a napló"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Törölt bejegyzés, és ami alatta volt"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2717,6 +2837,10 @@ msgstr[0] "A leírás legfeljebb %(num)s karakter lehet."
 msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "A leírás legfeljebb %(num)s karakter."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Egy másik adminisztrátornak meg kell erősítenie a leleplezést."
 
 #, machine, plain1, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2815,6 +2939,10 @@ msgstr "A csoport neve nem tartalmazhat @: ez lenne a fogantyú."
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "A csoport neve nem tartalmazhat kontrollt vagy láthatatlan karaktereket."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "A céhtilalomnak nyilvános indokra van szüksége, így a céhek oldala és a napló meg tudja mondani, miért."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -2924,6 +3052,10 @@ msgstr "A havi költségvetés megosztva azon tagok között, akiknek a beosztá
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Egy néma ember még tud olvasni, de nem tud írni a +%(guild)sa csatornákat. Azt mondják nekik, ha megpróbálják."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Egy megjegyzés a személynek"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -2980,6 +3112,10 @@ msgstr[0] "A felmérés opció lehet %(num)s karakterek (kínai, japán és kore
 msgid "A poll option can't hold control characters."
 msgstr "A közvélemény-kutatás opció nem képes irányítani a karaktereket."
 
+#, machine, plain2
+msgid "A post"
+msgstr "Egy poszt"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3001,6 +3137,10 @@ msgstr "Egy kör posztját nem lehet áthelyezni."
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "Egy körnek nem lehetnek társszerzői."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Egy kör posztját nem lehet eltávolítani."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3030,6 +3170,10 @@ msgstr "A post elveszíti a súlyának felét"
 msgid "A post needs a title."
 msgstr "A posztnak cím kell."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "A fülest nem lehet eltávolítani, mert az érmék hozzád kerültek."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Egy nem nyilvános posta nem használhatja ezt a képfeltöltést: a fájlokat bárki megnyithatja a címmel. Helyezze a képet a kapcsolódó tárhelyéről (Beállítások > Média)."
@@ -3038,9 +3182,17 @@ msgstr "Egy nem nyilvános posta nem használhatja ezt a képfeltöltést: a fá
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "A társszerzőket nem lehet körökbe ültetni. A nyilvános helyfoglalást a körökbe mozgatni az általad továbbított példányokat veszi le; másolja, hogy mások a céhükben tartózkodnak."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "A közösen írt hozzászólás nyilvános, és nem lehet névtelen, megosztva a körökkel, vagy egy közvélemény-kutatás. A szerzők a társszerzők. Ezeket a lehetőségeket megosztja minden szerző, és használják minden alkalommal, amikor közzéteszi."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "A közös szövegtervezetben csak a szerzők egyetértésével törlik a közös szöveget."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "A közösen írt hozzászólás nyilvános, és nem osztható meg a körökkel, vagy nem lehet szavazást tartani. A szerzők a társszerzők. Ezeket a lehetőségeket megosztja minden szerző, és használják minden alkalommal, amikor közzéteszi."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Egy másokkal írt posztot még nem lehet eltávolítani innen."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3370,6 +3522,10 @@ msgstr "Meghívó elfogadása"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "A moderátor meghívása"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Fogadd el a nevem nélkül (tollak és a posta szerzője még mindig látja, hogy én vagyok)"
 
 #, machine, plain1
 msgid "Account"
@@ -3987,6 +4143,10 @@ msgstr "A szerző megáll számolni után ez a hosszú távolságra a webhely"
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Egy szerző, aki nem aktív az oldalon %(time)s nem számít."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Egy automata posztot nem lehet eltávolítani."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Egy titkosított csatorna nem kérheti a szabályai elfogadását: az oldal nem tudja ellenőrizni, hogy ki írta."
@@ -4095,9 +4255,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Névtelen"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Névtelen kiküldetés és indító céhek"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Névtelen #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4181,6 +4341,26 @@ msgstr "Bárki láthatja, kit követsz, ki követ téged és a Kör előfizetői
 #, machine, plain1
 msgid "App Name"
 msgstr "Alkalmazási név"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "A határozat fellebbezése"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "A határozat fellebbezése - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "A határozat fellebbezése"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Fellebbezések"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "A Céhek Ligája által hozott döntések. A fellebbezés magánjellegű: csak a guild moderátorok dönthetnek úgy, hogy olvassa. A döntés visszafordítása visszavonja, és új bejegyzést ír a naplóba, ami az elsőhöz kapcsolódik; a személynek meg kell mondani, hogyan végződött. Nem dönthetsz a saját döntésed ellen, amíg egy másik Liga moderátor képes rá."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4320,10 +4500,6 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Íróként a draft szerkesztése él velük, és minden karakter, amit gépel, az Ön számára jóváírható. Amint kiadják a posztot, bárki láthatja, ki mit írt. A szerzők közösen döntenek:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Kérd meg a szüleimet, hogy kapcsolják ki"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5179,6 +5355,10 @@ msgstr "A szabályok módosítása"
 msgid "Change the two-factor settings for your account."
 msgstr "A fiókod kétfaktoros beállításainak módosítása."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Változtasd meg őket"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "Változtasd meg a fiókod jelszavát."
@@ -5450,6 +5630,10 @@ msgstr "Válasszon legalább egy kört, vagy tegye közzé."
 msgid "Choose at least one of your circles."
 msgstr "Válassz legalább egy kört."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Válasszon legalább egy bejegyzést vagy megjegyzést."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "Válassz legalább egy történetet."
@@ -5505,6 +5689,10 @@ msgstr "Válaszd ki, milyen robot ez."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Válassza ki, milyen visszajelzés ez."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Válaszd ki, mit csinálj velük."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -5778,6 +5966,10 @@ msgstr "Képregények és rajzfilmek"
 msgid "Coming up"
 msgstr "Máris"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Megjegyzés"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5787,9 +5979,13 @@ msgstr "Hozzászólás"
 msgid "Comment %(id)s has been removed"
 msgstr "Megjegyzés %(id)s eltávolították"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Megjegyzés névtelenül: más felhasználók nem fogják látni a nevét"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Megjegyzés névtelenül: más felhasználók nem fogják látni a nevét. Ha egy admin megtiltja vagy felfüggeszti a számlát, a Log megnevezheti a számlát ehhez a megjegyzéshez."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Megjegyzés, mint te: a neve mutatja ezt a megjegyzést"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -5798,10 +5994,6 @@ msgstr "Megjegyzés könyvjelzővel."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Hozzászólás elküldve!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Megjegyzés"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6390,6 +6582,10 @@ msgstr "Csaló URL rövidítők nem engedélyezettek."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "A (z) URL rövidítők használata nem megengedett."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Döntés"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6453,6 +6649,10 @@ msgstr "A megjegyzés törlendő?"
 msgid "Delete folder"
 msgstr "A mappa törlése"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Törlés"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "A fiókom törlése"
@@ -6476,6 +6676,14 @@ msgstr "A számla törlése"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "A közzétett bejegyzés törlése"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Törlés"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Törölni ezeket a tárgyakat?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6520,6 +6728,10 @@ msgstr "A %(site)s számla törlése"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "A hozzászólások és megjegyzések törlése"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Törölt"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -6712,6 +6924,14 @@ msgid "Discussed in %(num)s other place"
 msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "Tárgyalás %(num)s egyéb helyeken"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Megvitatva: + %(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "A profil megvitatása"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "Vita"
@@ -6794,6 +7014,10 @@ msgstr "Kelt."
 #, machine, plain1
 msgid "Done to"
 msgstr "Kelt"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Kész."
 
 #, machine, plain1
 msgid "Download"
@@ -6989,6 +7213,10 @@ msgstr "A hozzászólások és megjegyzések szerkesztése"
 msgid "Edited %(when)s"
 msgstr "Módosítva %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Szerkesztette:"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "Edited by %(who)s"
@@ -7004,6 +7232,10 @@ msgstr "A szerkesztés szintén frissíti e poszt másolatait a céheknek továb
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Szerkesztése frissíti ezt a bejegyzést mindenhol továbbították."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Szerszámok"
 
 #, machine, plain1
 msgid "Education"
@@ -7344,13 +7576,13 @@ msgstr "Mindenki úgy látja egymás változásait, ahogy gépelnek, és minden 
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Minden a céh és a számlák közül, a legújabb."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Minden, amit posztolnak, csak a Jóbarátaik köreibe kerül. Kapcsold ki, hogy nyilvánosan kiküldhessék."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Bizonyítékot nem lehet idézni"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Minden, amit posztolsz, csak a barátaidnak szól, az emberek, akiket követsz, akik követnek, szóval semmi sem nyilvános véletlenül. A köreitek csak így tudnak tartani embereket, és nem tudtok előre, áthelyezni vagy közös vázlatot írni. Más emberek álláshelyeire vonatkozó észrevételek még mindig nyilvánosak."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Bizonyíték:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7397,6 +7629,10 @@ msgstr "Példa: macskák kutyák · nincs \"macskák\" vagy \"kutyák\""
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Példa: happy hour · van a pontos kifejezés \"happy hour\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Kitiltás %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -8788,6 +9024,10 @@ msgstr "Meddig"
 msgid "How long it runs"
 msgstr "Mennyi ideig tart"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Hogyan rögzítik a moderációt"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Hány éves vagy?"
@@ -8980,6 +9220,10 @@ msgstr "In %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "Céhben"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "A napló mint Anonymous"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9274,6 +9518,14 @@ msgstr "Ezután magától véget ér. Hamarabb véget vethetsz neki."
 msgid "It is reviewed with the bot."
 msgstr "A bottal felülvizsgálták."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Elhagyja az oldal oldalait. Ha öt percnél fiatalabb, és senki más nem kommentálta, töröljük: csak Ön és az oldal administrs lehet nyitni egy privát másolatot, 90 napig. Máskülönben, amit mondott, Anonymous marad a naplóban, név és kapcsolat nélkül, és bárki elolvashatja ott."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Magára hagyja a profilodat, a takarmányokat és a céheket. Ha ez kevesebb, mint öt perc, és senki más nem nyilatkozott, azt törlik: csak Ön és az oldal administrs lehet nyitni egy privát másolatot, 90 napig. Máskülönben, amit mondott, Anonymous marad a naplóban, név és kapcsolat nélkül, és bárki elolvashatja ott."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "A profilodon él, a Spaces alatt. A céhek megmutatják a kártyájukat, szavazással és részvényekkel, és megnyitják a teret."
@@ -9290,13 +9542,13 @@ msgstr "Teljes egészében megmutatja, minden szót és kifejezést, amit a szû
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Ez marad a gyermek számla a gyermek zár, de már nem látni, vagy változtatni, amit tud, és nem tudja összekapcsolni újra."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny. A gyermek számla csak azt mondja: nem tud posztolni vagy kommentálni, de még mindig szavazhat, követheti, csatlakozhat céhek, könyvjelző és jelentés."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny. Chat, Spaces, érmék, névtelen kiküldetés és a céh indítása lefújva, és mások nem tudnak elkezdeni egy beszélgetést vagy borravalót. A beosztásaid csak akkor mennek a Jóbarátok körére, ha nem kapcsolod ki a Közlegényt."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "A Gyermek szó szűrőn marad, ami elrejti a káromkodást, és mindent, ami érzékeny. A chat, a Spaces, az érmék, és a céhalapítás lefújva, és mások nem tudnak beszélgetést kezdeményezni vagy borravalót adni. A gyermek számla csak azt mondja: nem tud posztolni vagy kommentálni, de még mindig szavazhat, követheti, csatlakozhat céhek, könyvjelző és jelentés."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9458,10 +9710,6 @@ msgstr "Júniusi napforduló"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K- Pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Tartsd magadon"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9715,6 +9963,10 @@ msgstr "Bal"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "Bal + %(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "A megjegyzéseid a neved alatt maradnak, és ez elárulja az olvasóknak, ki írta a posztot."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10499,6 +10751,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Némítás"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "%(alias)s némítása a csatornákban"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Néma + %(guild)s"
@@ -10844,6 +11100,10 @@ msgstr "Még nem adtak hozzá számlákat."
 msgid "No ads"
 msgstr "Nincs hirdetés"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Nincsenek fellebbezések."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "Nincs zárolt számla"
@@ -11098,6 +11358,10 @@ msgstr "Senki sem tud fizetni, hogy csatlakozzon: a céhek csak meghívással j�
 msgid "Nobody can sign in to your account with a code."
 msgstr "Senki sem tud belépni a számládra egy kóddal."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Senki sem kommentálta."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Senki sem kap többet, mint %(share)s%% egy havi költségvetésből. A részvények egész érmékre vannak kerekítve."
@@ -11263,6 +11527,10 @@ msgstr "Nincs rögzítve"
 msgid "Not slowed by slow mode"
 msgstr "Lassú üzemmóddal nem lassítható"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "További részletek"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "Az előfizetők kihagyása"
@@ -11410,6 +11678,10 @@ msgstr "Még semmi."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Még semmi."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Semmi sem marad itt, amit letörölt."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11679,6 +11951,10 @@ msgstr "Csak a következő fiókok @ %(name)s kommentálhatja ezt a bejegyzést.
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Csak az Ön által követett számlák kommentálhatják ezt a posztot."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Csak egy adminisztrátor tudja megerősíteni a leleplezést."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "Csak egy adminisztrátor kezdheti újra."
@@ -11945,6 +12221,10 @@ msgstr "Csak te"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Csak te látod ezt. Ezek a számok: senki, aki nézett, szavazott vagy válaszolt a közvélemény-kutatás van elnevezve."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Csak a hitel változása: a többi szerző neve marad. Adományok, és a posta szerzője még mindig látja, hogy te vagy az."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12013,6 +12293,10 @@ msgstr "Megnyitás indításig"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "Megnyitás %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Nyissa ki a másolatát"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12153,17 +12437,17 @@ msgstr "Egyéb vagy ismeretlen"
 msgid "Other spellings:"
 msgstr "Más írásmódok:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Más felhasználók Anonymous helyett a nevét. Ön és a telephely administrs még mindig látni, hogy ugyanazt a szabályokat követi, mint bármely bejegyzést, és nem lehet visszavonni után kiküldetés. A régió szűrője még mindig mutatja, hogy melyik régióból származik. Nem szerepel a profilodban: megtaláltad a történelemben, Anonymous alatt."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Más felhasználók Anonymous helyett a nevét. Ön és a telephely administrs még mindig látni, hogy ugyanazt a szabályokat követi, mint bármely bejegyzést, és nem lehet visszavonni után kiküldetés. A régió szűrője még mindig mutatja, hogy melyik régióból származik. Nem szerepel a profilodban: megtaláltad a történelemben, Anonymous alatt. Ha egy admin tiltja vagy felfüggeszti a számlát, a napló megnevezheti a számlát."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Más felhasználók ezt névtelennek tekintik. Csak te és az ügyintézők láthatják a neved."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Mások Anonymoust látják a neved helyett, te és az ügyintézők még mindig látjátok. A régió szűrője még mindig mutatja, hogy melyik régióból származik. A kiküldetés után nem lehet megváltoztatni."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Mások Anonymoust látják a neved helyett, te és az ügyintézők még mindig látjátok. A régió szűrője még mindig mutatja, hogy melyik régióból származik. A kiküldetés után nem lehet megváltoztatni. Ha egy admin tiltja vagy felfüggeszti a számlát, a napló megnevezheti a számlát."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12172,6 +12456,10 @@ msgstr "A visszajelzésekre adott válaszunk \"%(excerpt)s\": %(response)s"
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "A biztonsági warlock-jaink áthatolhatatlan pajzsvarázslatot vetettek erre az oldalra."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Eredmény"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -12852,6 +13140,10 @@ msgid "Popular this week"
 msgstr "Népszerű ezen a héten"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Közzététel"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Közzététel"
@@ -12872,6 +13164,10 @@ msgstr "Frissítés"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Névtelen közzététel"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Posta névtelenül: más tagok minden szerző Anonymous egy számot. Az injekciók mindig látják, hogy kik ők. Nem lehet megváltoztatni, ha kiadják a posztot."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -12949,10 +13245,6 @@ msgid "Posted on that day."
 msgstr "Azon a napon."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "Posting"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Hidegrázás"
 
@@ -12980,6 +13272,10 @@ msgstr "Bejegyzések"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Egy céh ezzel a címkével van megjelölve. Ezzel együtt: +guild annak a céhnek a címkéje."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Feladatok és megjegyzések"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13069,6 +13365,10 @@ msgstr "Egy céhben pózol. In: #gaming a guilds of a tematic and in: &news is a
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Egy nyelv: egy kód (en) vagy annak neve (angol)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Feladatok vagy megjegyzések"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13262,6 +13562,10 @@ msgstr "Privát tartalom, látható, mert a cild moderátor + %(guild)s."
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Privát tartalom, látható, mert Ön jóváhagyott közreműködő a + %(guild)s -ban."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Privát másolat"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Privát mód."
@@ -13321,26 +13625,6 @@ msgstr "Privát posta, látható az Ön számára, mert tagja a Circle cild."
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Privát posta, látható az Ön számára, mert egy jóváhagyott közreműködő +%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Privát kiküldetés"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "A privát kiküldetés lefújva."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "Privát kiküldetés van, így ez csak megy a Jóbarátok kör. Ezen változtathat a Beállítások > Tartalom részben."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "Privát kiküldetés van, így ez csak a Jóbarátok körére vonatkozik. Ezen változtathat a Beállítások > Tartalom részben."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "Privát kiküldetés van."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -13898,6 +14182,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "A moderátor eltávolítása"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Távolítsa el a nevem"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Távolítsa el a nevem erről a posztról"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "%(number)s. lehetőség eltávolítása"
@@ -13962,6 +14254,14 @@ msgstr "A kiszolgáló eltávolítása"
 msgid "Remove this topic"
 msgstr "Téma eltávolítása"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Távolítsa el a nevét ezekről a tárgyakról?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Távolítsa el a nevét a számlájáról? A többi tag az \"Anonymous\" -t egy számmal látja. Ezt nem lehet visszacsinálni."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14002,6 +14302,10 @@ msgstr "Eltávolítva. A robot már nem olvas."
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "Az egyik eltávolítása egyszerre hat."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "A neved eltávolítása az oldalon történik."
 
 #, machine, plain1
 msgctxt "button"
@@ -14063,6 +14367,10 @@ msgstr "Hozzászólás jelentése"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Bejegyzés jelentése"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Jelentse ezt"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -14560,6 +14868,18 @@ msgstr "Mondd, hogy mit fog a bot posztolni, és honnan származik (legalább 10
 msgid "Say who it's from"
 msgstr "Mondd meg, kitől van"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Mondd el, miért kell lejönnie, néhány szóban."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Mondd el, miért vagy vonzó."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Mondd el, miért gondolod, hogy helytelen volt. Csak azok olvassák el, akik a fellebbezésről döntenek, amit írsz, és meg fogják mondani, hogy végződött."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Jelölje be ezt a vonalkódot (vagy adja meg a kódot) kétfaktoros hitelesítési alkalmazás használatával, például Google Hitelesítő vagy Authy."
@@ -14724,6 +15044,10 @@ msgstr "Minden megtekintése az Összesben"
 msgid "See everything live"
 msgstr "Mindent láss élőben"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Lásd a naplóban"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "Lásd az aktuális oldalt"
@@ -14747,6 +15071,10 @@ msgstr "Látod, mi a divat"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Lássuk, mit csinálnak"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Lásd a fellebbezést"
 
 #, machine, plain1
 msgid "See your username"
@@ -14801,6 +15129,10 @@ msgstr "Tipp küldése"
 msgid "Send a tip"
 msgstr "Küldj egy tippet"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Fellebbezés küldése"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Visszacsatolás küldése"
@@ -14833,6 +15165,10 @@ msgstr "Érzékeny tartalom?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Érzékeny tartalom"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Érzékeny tartalom: mutasd meg"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -14911,10 +15247,6 @@ msgstr "Előbb rendezd az egyensúlyod."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "Kétlépcsős bejelentkezés beállítása"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "Szexualizáló kiskorúak"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -15628,6 +15960,10 @@ msgstr "Start the Space"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Kezdd el etetni magad. Minden, amit a \"Kevesebb hozzászólás, mint ez\" -nél kért, elfelejtett, így azok az oszlopok, a céhek és a kategóriák visszajönnek. Az újraindítási dátum elmentve a számlájára, de For You nem használja azt a szavazatok és cilds még."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Alapítványok indítása"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "Hamarosan kezdődik"
@@ -15961,6 +16297,10 @@ msgstr "Technológia főcím a BBC News-tól. Nem a BBC irányítja."
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Mondd el a %(site)s A közösség egy kicsit magáról."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Mondd el, miért, egy sorban"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Mondja el, mi történt, mi néz ki, vagy mit szeretne. Egy poloskának mondd el, mit tettél, és mit vártál."
@@ -16028,6 +16368,10 @@ msgstr "Szövegbejegyzések"
 msgid "Text size"
 msgstr "Szövegméret"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Köszönöm"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "Köszönjük, hogy ezt a megjegyzést!"
@@ -16089,9 +16433,9 @@ msgstr "Köszönöm. Egy adminisztrátor hamarosan megnézi a robotot; értesít
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Köszönöm. Egy adminisztrátor hamarosan megnézi a robotot; értesítést fog kapni. A képet nem lehetett tárolni; próbálja újra a bot oldaláról."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Köszönöm. A számláján már nincs gyerekzár, és a privát kiküldetés lefújva. A hozzászólások, amiket azelőtt készítettél, hogy maradtatok volna: használd azt, aki látja ezt egy poszton, hogy megváltoztasd, aki látja."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Köszönöm. A számláján már nincs zár."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16431,6 +16775,10 @@ msgstr "Ez a név foglalt."
 msgid "That password isn't right."
 msgstr "Ez a jelszó nem helyes."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Ez a jelszó nem helyes. Semmi sem változott."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "A jelszó visszaállítása lejárt."
@@ -16757,6 +17105,10 @@ msgstr "Az érmék az alapítóhoz kerülnek, <a href=\"%(url)s\">@%(name)s</a>.
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Az érmék, amiket tippekből, fizetett körökből és a teremtői alapból keresel, az elmúlt 30 napban és minden időben."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "A komment ott marad, ahol van, a te neveddel. Mindenki, aki látta a neveddel, még mindig tudja, hogy te voltál."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -16771,6 +17123,10 @@ msgstr[0] "A másolatokat, amiket a %(guilds)s - nek küldött, le fogjuk venni.
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "A dátumok nem múlnak napokig."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "A határozat érvényben van"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -16984,6 +17340,10 @@ msgstr "A %(host)s név nem található."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "A legújabb, amit tettek. Csak annak a nevét mutatjuk meg, akivel beszélgetnek, soha nem azt, amit egy beszélgetés mond: a beszélgetések végtől végéig titkosítottak."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "A megerősített tárgyak száma nem egyezik a kiválasztottakkal. Semmi sem változott."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "A számok mindig megjelennek a profilodon. Ez határozza meg, hogy ki nyithat meg minden listát, és láthatja a számlákat rajta. Egy fiókot csak akkor sorolnak fel, ha saját beállítása is lehetővé teszi."
@@ -17032,9 +17392,25 @@ msgstr "A bejegyzés azon a profilon jelenik meg, aki először kiadja. A közö
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "A poszt tartalmazza a nevét, és szerepel a profilján. Szavazatokat, megjegyzéseket és előre megosztják a szerző, aki szerkeszti és törli azt. Bármikor távozhat: a posta marad, a neve nélkül."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "A bejegyzés nincs a profilodban. Szavazatokat, megjegyzéseket és előre megosztják a szerző, aki szerkeszti és törli azt. Bármikor távozhat: a posta marad, a hitele nélkül."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "A posta elutasította a változtatást."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "A posta ott marad, ahol van, leveszi a nevét, és elhagyja a profilját. A hírneve téged is elhagyott. Mindenki, aki látta a neveddel, még mindig tudja, hogy te voltál."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "A bejegyzés szerzője"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "A bejegyzés szerzője törölte, így látható, mint Anonymous: nincs név és nincs link. A hozzá fűzött megjegyzések a jelenlegi állapotukban maradnak; az egyik íróját Anonymous-ként is feltüntetik."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17103,9 +17479,17 @@ msgstr "A szerver szerint valami butaságot kérdezel. Lehet, hogy komolyabban v
 msgid "The site refused the bot's session."
 msgstr "Az oldal elutasította a robot foglalkozását."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Az oldal igazgatóinál már megvan."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Az oldal adminisztrátorai ezt a céh érzékenységet jelölték, így csak egy adminisztrátor változtathat ezen."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Az oldal adminisztrátorai majd elolvassák. Sosem árulják el, ki jelentette."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17267,9 +17651,17 @@ msgstr "Itt nincsenek oszlopok."
 msgid "There is no account named @%(name)s."
 msgstr "Nincs @ %(name)s nevű fiók."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Nincs itt semmi fellebbezés."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "Még nincs mit megmenteni."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Semmi sem vár erre a tilalomra."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17364,36 +17756,24 @@ msgid "They aren't muted here."
 msgstr "Itt nincsenek elnémítva."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Megkértek, hogy kapcsold ki a közlegényt."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Vásárolhatnak és költhetnek érméket, borravalót, vásárolhatnak Premium és csatlakozhatnak vagy futhatnak fizetett köröket."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Kommentálhatják."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Ők befogadják és csatlakoznak a Spaces-hez, és élő szálakat futtatnak. Hanghívások egy Space is kell chat be."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Posztolhatnak."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "Üzenhetnek az embereknek, beszélgethetnek és telefonálhatnak. Az oldal soha nem mutatja meg, mit mond egy chat: chats endo-to-end titkosított. Bárki tudja a jelszavát, még bejelentkezhet és elolvashatja."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Névtelenül posztolhatnak, és alapíthatnak egy céheket. Még mindig láthatod, ki írt névtelen posztot."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Láthatják, mit csinálsz az oldalon: a hozzászólásokat, a szavazatokat, a könyvjelzőket, a következő céheket, akikkel beszélsz, hogy a számládat jelentették, és a legutóbbi bejelentéseidet. Az oldal nem mutatja meg nekik, mit mondanak a beszélgetéseitek, mert a beszélgetések végtől-végig titkosítottak. De bárki, aki ismeri a jelszavad, egy szülő, aki ezt választotta, bejelentkezhet, mint te: megváltoztathatja a biztonságiaknál, hogy csak te tudd. Ők döntik el, hogy ezek közül melyik szerepel az Ön számláján:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Elindíthatnak egy céhet. Még mindig nem tudják postázni vagy kommentálni: a gyermekszámla csak olvas."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17411,6 +17791,10 @@ msgstr "Egyenesen az érmére mennek."
 msgid "They haven't asked for that."
 msgstr "Ezt még nem kérték."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Elhagyják az oldalt. Amit mondtak, az Anonymous naplójában marad, kivéve azt, ami az elmúlt öt percben készült, de senki nem kommentálta, amit töröltek. Ezt nem lehet visszacsinálni."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "A céhben kell lenniük, és nem száműzve."
@@ -17422,6 +17806,14 @@ msgstr "Először be kell lépniük a csatornába."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "Azt mondják, 18 évesek vagy annál idősebbek, és megkértek, hogy add ki a számlájukat. Ha megteszed, a sajátjukká válik, és nem látod többé."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Ott maradnak, ahol vannak, és leveszik róluk a neved. Ezt nem lehet visszacsinálni. A nevedre szoruló hozzászólások (egy Kör, vagy tippekkel) a továbbiakban nem változtak."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Azt írták: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17594,6 +17986,10 @@ msgstr[0] "Ez a hívás teljes (%(num)s )."
 msgid "This can't be translated right now."
 msgstr "Ezt most nem lehet lefordítani."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Ezt nem lehet visszacsinálni. A honlap administrs mindig látni, hogy ki írt valamit, és ha egy admin tilt vagy felfüggeszti a számlát, a napló megnevezheti a számlát."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Ez a csatorna nem kéri, hogy elfogadják a szabályait."
@@ -17678,6 +18074,10 @@ msgstr "Ez a tartalom már kikerült"
 msgid "This copy is no longer kept."
 msgstr "Ezt a példányt már nem őrzik meg."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Ezt most nem lehet megváltoztatni."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Ez létrehoz egy új, független posztot a céhben, saját szavazatokkal és megjegyzésekkel. A cím a hozzászólás szövegéből származik. Egy link vissza az eredeti megjegyzést jelenik meg az új bejegyzést."
@@ -17705,6 +18105,22 @@ msgstr "Ez a kalkulált takarmány céhek és számlák"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Túl sokáig tartott, míg ez a kurált takarmány szabálya életbe lépett. A tulaj szűkebbé teheti őket."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Ezt a döntést nem lehet fellebbezni."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Ezt a döntést már feloldották."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Ez a döntés rólad szól. Ha úgy gondolja, hogy helytelen, fellebbezhet."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -17750,6 +18166,14 @@ msgstr "Ez magánügy. A magánzárkába helyezés előtt kiadott tartalom minde
 msgid "This guild's channels are closed."
 msgstr "A céhek csatornái le vannak zárva."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Ez egy jogi szintű rekord, amit nem lehet idézni."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Ezt törölték."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "A meghívóra már válaszoltak."
@@ -17770,6 +18194,10 @@ msgstr "Ez egy Space: a host és a co-hosts posztolja frissítéseit a Space."
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Ez egy log moderátor tevékenységek végzett +%(guild)sAzok, amiket mindenki olvashat, szintén a helyszínen vannak. <a href=\"%(url)s\">Log</a>. A tagok nem teszik közzé magukat."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Ez már névtelen."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "Ez már a te nyelveden van."
@@ -17787,6 +18215,10 @@ msgstr "Ez a Circle Guild tagjainak szól."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "Ez az egyik emberé. <a href=\"%(url)s\">@%(name)s</a>A köröket."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Ez egy privát helyen van, és egy privát tárgyat nem lehet idézni a nyilvános naplóban."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Ez a céhek szokása. CSS akta."
@@ -17799,6 +18231,10 @@ msgstr "Ez túl sok ahhoz, amit ma automatikusan posztoltak."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Ez nem elérhető, amíg a számlád korhatáros. Megerősíti korát a Beállítások > -ban Tartalom."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Ez nem a számla egyik saját posztja vagy kommentje."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Ez nem jelenik meg a jelenlegi szó szűrő szinten. A tartalom beállításaiban megtekintheti a szószűrőt."
@@ -17810,6 +18246,10 @@ msgstr "Ez nem mutatja, hol vagy, amíg a korodat meg nem erősítik. Jelentkezz
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Ez nem látható, amíg a számlád korhatáros."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Ezt nem te változtathatod meg, vagy már nincs többé."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17915,6 +18355,10 @@ msgstr "Ennek a posztnak most nincs hozzáfűznivalója a profiljához. Észrev�
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "Ennek a posztnak nincs élő szála."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Ez a bejegyzés névtelen, így a hitel is: más tagok úgy fogják tekinteni, mint \"Anonymous\" egy számot. Adományok, és a posta szerzője még mindig látja, hogy te vagy az."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18031,6 +18475,10 @@ msgstr[0] "Ez a hangcsatorna tele van (%(num)s )."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "Ez a hangcsatorna jelenleg nem elérhető."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Ezt öt percen belül törölték, tehát nincs nyilvános feljegyzése."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18231,6 +18679,10 @@ msgstr "A hálózatból már így is túl sok guild vezet (legfeljebb %(limit)s)
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Túl sok élő patak van nyitva. Zárd be a füled és próbáld újra."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Túl sok jelentés van ma"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "Túl sok spam!"
@@ -18337,6 +18789,10 @@ msgstr "Igaz bűntény"
 msgid "Try again"
 msgstr "Próbáld újra"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Próbáld újra holnap."
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18345,10 +18801,6 @@ msgstr "Sze"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turániai sztyeppe"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Kapcsold ki"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18568,6 +19020,10 @@ msgstr "Hivatalos jelölés törlése"
 msgid "Undo"
 msgstr "Visszavonás"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "A határozat visszavonása"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -18773,6 +19229,10 @@ msgstr "Címzetlen tervezet"
 msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Fel %(num)s Egyszerre. A számlája 30 napos lehet."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Legfeljebb %(num)s karakter. Egyszer fellebbezhet, és naponta háromszor fellebbezhet."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -19475,13 +19935,21 @@ msgstr "Mit posztol"
 msgid "What it posts:"
 msgstr "Mit jelent:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Amit mondott, itt nincs feltüntetve."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "Milyen tér?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Amit a tagok törlik magukat itt nem teszik közzé."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Mi tagok törölt, legújabb első, a szavak, mint Anonymous: nincs név és nincs link. Valami, amit 5 percen belül töröltek, kitörölték, és nincs itt. A jelentés gomb arra kéri az oldal administrs, hogy vegye le a szavakat."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Mi tagok szerkesztette, legújabb első: ki (Anonymous egy anonim bejegyzést vagy megjegyzést), mikor és a jegyzet adtak. Egy sor szerkesztés egy tételre egy sor. A szerkesztés az első öt percben, miután valamit írtak, nincs rögzítve. A verziók a termék saját történelem oldalon."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19495,6 +19963,18 @@ msgstr "Amit az előfizetők kapnak"
 msgid "What the guildmasters did"
 msgstr "Mit tettek a guild moderátorok"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Mit csináljunk velük"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Mi a teendő a megjegyzést"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Mi a teendő a poszt"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "Mit mondjak"
@@ -19506,6 +19986,14 @@ msgstr "Mit keresel"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "Mi működik az alkalmazásokban"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Amit töröl, az Anonymous-ként marad, név nélkül, hacsak nem törli öt percen belül."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Amit kitöröltél. Egy másolat valami törölt után az első öt perc marad a napló, mint Anonymous, név nélkül. Egy másolat arról, amit öt percen belül töröltek, magánügy, és 90 nap után megy."
 
 #, machine, plain1
 msgid "What you do"
@@ -19560,6 +20048,10 @@ msgstr "Hová kerülnek a fájlok"
 #, machine, plain1
 msgid "Where it is"
 msgstr "Hol van"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Ahol megvitatták"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -19719,6 +20211,10 @@ msgstr "Ki mit írt"
 msgid "Who you follow"
 msgstr "Kit követsz"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Ki, mikor, hol, melyik szabály és miért. Sosem mutatja a rejtett vagy eltávolított dolgok címét vagy szövegét."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Bárki is kezdte, jelentette a böngészőt, és elhelyezte magát, így nem bizonyít semmit."
@@ -19748,6 +20244,14 @@ msgstr "Miért nem"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "Miért nem (azt mondták)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Miért kellene lejönnie?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Miért volt rossz?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -19804,10 +20308,6 @@ msgstr "A Premium kap egy hely mindent, amit keres, és keresni %(site)s:"
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "A Premium -vel láthatja, hogy minden egyes hozzászólás hogyan működik: megtekintés naponta, hány aláírás érkezett az emberekben, szavazások, megjegyzések, könyvjelzők, előre és átiratok, hogyan működik minden céhben továbbították, és a közvélemény-kutatás eredményeit."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Private posztolással, egy kör csak azokat tartja, akik követnek, és akiket te követsz."
 
 #, machine, plain1
 msgid "With a link"
@@ -20154,6 +20654,10 @@ msgstr[0] "Te már a maximumot %(num)s Bűnösök."
 msgid "You already made that comment: %(link)s"
 msgstr "Ezt a megjegyzést már megmondtad: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Ezt már jelentette"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "Már jelentette ezt a számlát."
@@ -20185,6 +20689,10 @@ msgstr "Már szavazott erről a posztról az eredeti poszton. Távolítsa el a s
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Te és akár 3 segítõ írtok; a tagok olvasnak és reagálnak. Más körök, hogy a <a href=\"%(url)s\">a csatornák oldala</a>Legfeljebb 3 csatorna lehet."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Fellebbeztél."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20263,10 +20771,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Megkérte a szüleit vagy a gyámjukat, hogy bocsássák ki a számlájukat. Még nem válaszoltak."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Megkérted a szüleidet vagy a gyámodat, hogy kapcsold ki. Még nem válaszoltak."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Képeket is hozzáadhat 500 Reputáció, vagy korábban Premium"
 
@@ -20301,6 +20805,10 @@ msgstr "Minden videóhoz megváltoztathatod, ha hozzáadod. A videókat nem gyer
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Ezen változtathatsz, ha elfogadták az üzeneted."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Felválthatsz %(max)s -ra cikkeket egyszerre."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20400,6 +20908,10 @@ msgstr[0] "You can make %(num)s Wiki szerkeszti a napot egy céhben. Próbáld �
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Gyerekszámlát is készíthet, ha a saját számláját megerősítette, hogy 18 éves vagy idősebb. Ezt lehet mondani a Beállítások > Tartalom."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Naponta háromszor fellebbezhet. Próbáld újra holnap."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20730,6 +21242,10 @@ msgid "You have %(num)s coin."
 msgid_plural "You have %(num)s coins."
 msgstr[0] "Igen. %(num)s érmék."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Ön már fellebbezett a döntés ellen."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Már blokkoltad @ %(name)s."
@@ -20771,6 +21287,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -20869,6 +21394,10 @@ msgstr "Nem mondtad, hogy megtartottad a helyreállítási kódodat."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Még nem mondtad el."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Te hoztad ezt a döntést, így egy másik céhmoderátor dönt a fellebbezéséről."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -20971,6 +21500,14 @@ msgstr "Ön jelentkezett a QR kód. Adja meg jelszavát, hogy ezt a nyomtatvány
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Azt mondta, meg akarja változtatni a %(site)s fiók e-mail. A folyamat befejezéséhez ellenőrizze az új e-mail címét:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Meghívták, hogy ossza meg ezt a névtelen posztot. Ha elfogadja, a hitele is névtelen, és a bejegyzés nincs a profilján. Szavazások, megjegyzések és előre marad megosztott, és csak a szerző szerkeszti vagy törli azt."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -21351,6 +21888,10 @@ msgstr "A számlájának legalább 30 naposnak kell lennie, hogy futtasson egy r
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "A számlája már nem automatikusan posztol. A helyei maradnak."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "A számlád csak most olvas, így nem nyilatkozhat. Még mindig szavazhatsz, követhetsz és könyvelhetsz."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "Mostantól kezdve a számlád a képekből."
@@ -21386,6 +21927,53 @@ msgstr "A korodat a %(date)s -en igazolták."
 #, machine, plain1
 msgid "Your answer"
 msgstr "A válaszod"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "A fellebbezésed arra vár, hogy elolvassák."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "A fellebbezését elfogadták, és a döntést visszavonták."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "A fellebbezését megvizsgálták, és a döntés érvényben van."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "A fellebbezését nem vették tovább."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "A fellebbezését elküldték."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21470,12 +22058,12 @@ msgid "Your circles - %(site)s"
 msgstr "A köreid - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "A kommentjét levesszük az oldal oldaláról. Az oldal megtart egy privát másolatot 90 napig, amit csak Ön és az oldal adminisztrátorai nyithatnak meg. Ezt nem lehet visszacsinálni."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "A kommentáló történeted itt fog megjelenni."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Az Ön hitele ezen a poszton névtelen: más tagok úgy látják, hogy \"Anonymous #N\". Adatok, és a posta szerzője még mindig látja, hogy a tiéd. Ezt nem lehet visszacsinálni."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21618,14 +22206,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "A szüleit vagy a gyámjukat felkérték, hogy bocsássák ki a számlájukat. Semmi sem változik, amíg nem válaszolnak."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "A szüleit vagy a gyámjukat megkérték, hogy kapcsolják ki a közlegényt."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "A szüleinek vagy a gyámjuknak egyet kell érteniük, mielőtt a privát posztolást kikapcsolják."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "A szüleid vagy a gyámod kikapcsolta ezt a számládra."
 
@@ -21640,14 +22220,6 @@ msgstr "A szülője vagy a gyámja új jelszót állított be a fiókjához, és
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "A szüleid vagy a gyámotok nem kezelte a számláitokat. Ez tartja a gyermek zár, amíg meg nem erősíti a kort Beállítások > Tartalom. Kiválasztották a jelszót: módosítsa [Beállítások > Biztonság] (/settings/security), vagy még mindig jelentkezhet, mint Ön."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "A szülei vagy a gyámjuk kikapcsolta a magánzárkát a számlájára."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "A szüleid vagy a gyámotok azt akarja, hogy maradjon a privát poszton."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -21680,10 +22252,6 @@ msgstr "A telefonod nemet mondott, így senki sem jelentkezett be."
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "A beosztása mindenképpen szerepel a profilján. Válasszon Az én profilom, hogy a megjegyzéseket is ott, és hozzá céhek, hogy egyenesen őket: minden céhek kap saját másolatot saját szavazatok és megjegyzések."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Az állásod le lesz véve a profilodról, a takarmányodról és a céhekről. Az oldal megtart egy privát másolatot 90 napig, amit csak Ön és az oldal adminisztrátorai nyithatnak meg. Ezt nem lehet visszacsinálni."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -21802,6 +22370,10 @@ msgstr "A címe a kérdés. %(min)s - %(max)s Lehetőségek, egyenként egy szav
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "A címe a kérdés. Adjon %(min)s - %(max)s opciókat. Az emberek ennek a posztnak minden egyes előremeneteléről és áttelepítéséről szavazhatnak."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "A kétfaktoros kódod"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "A felhasználóneved az egyedi <code>@handle</code>: a profil címe, és amit az emberek említenek és keresnek. Változás 20 érme, és lehet tenni egyszer 7 naponta. Ha meg akarod változtatni a neved anélkül, használd a kijelződ."
@@ -21864,6 +22436,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Céhek átvétele] (/help/siege)"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[Hogyan rögzítik a moderációt] (/help/moderation)"
 
 #, machine, plain1
 msgid "[Legal Policies](/help/legal)"
@@ -21933,6 +22509,61 @@ msgstr "[Szolgáltatási feltételek] (/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Cím] (/help/titles)"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[tiltva]"
@@ -21983,6 +22614,10 @@ msgstr "[hang]"
 msgid "a day"
 msgstr "egy nap"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "törölt bejegyzés"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "a céhek vagy posták már nem léteznek."
@@ -22022,6 +22657,12 @@ msgstr "aktivitás"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "hozzáadott egy bot takarmány %(target)s egy csatorna"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "hozzáadott egy közösségi megjegyzést a %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22107,12 +22748,16 @@ msgstr "botok"
 msgid "by %(author)s"
 msgstr "Szerző: %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "a %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "a %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "a <a href=\"%(link)s\">@%(name)s</a>"
@@ -22197,6 +22842,12 @@ msgstr "megváltoztatta, hogy szükség van-e címkére"
 msgid "changed who may edit a wiki page"
 msgstr "megváltozott, aki szerkeszthet egy wiki oldalt"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chattilled %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22216,6 +22867,10 @@ msgstr "érmék"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "hozzászólás"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "megjegyzés #%(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22304,6 +22959,12 @@ msgstr "pl. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>kék, 
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "pl. <span class=\"font-weight-bold\">%(score)s</span> MELLÉKLET %(up)s fel és %(down)s lefelé"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "a %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22314,10 +22975,21 @@ msgstr "szerkesztett egy wiki oldalt"
 msgid "edited an event"
 msgstr "rendezvény szerkesztése"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "szerkesztett poszt %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "befejezve"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "Véget ért a tér %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -22343,6 +23015,12 @@ msgstr "minden benne van"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "minden, amit gépelsz, neked van jóváírva"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "száműzve %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22421,6 +23099,11 @@ msgstr "kiemelte a %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "kiemelte posztjukat: %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "%(target)s a saját posztjuk alatt rejtve"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22478,6 +23161,10 @@ msgstr[0] "%(num)s óra"
 msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "in %(num)s perc"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "ebben a fonalban"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -22642,6 +23329,11 @@ msgstr "régi"
 msgid "only guildmasters write here"
 msgstr "csak a guild moderátorok írnak itt"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "megnyílt + %(guild)s mindenkinek"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "külső szerver"
@@ -22698,6 +23390,10 @@ msgstr "egy csatornába rejtett üzenetet"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "beszorított oszlop %(target)s"
+
+#, python-format
+msgid "post #%(id)s"
+msgstr ""
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -22772,6 +23468,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "üzenet eltávolítása: %(target)s egy csatornáról"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "egy nyilvános csatornáról küldött üzenet eltávolítása"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "eltávolított egy üzenetet a tér táblájáról: %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "eltávolította a guild wiki felülvizsgálatát"
@@ -22794,6 +23500,12 @@ msgstr "eltávolított guild moderátor %(target)s"
 msgid "removed post %(target)s"
 msgstr "eltávolítása %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "eltávolította a közösségi feljegyzést %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -22802,6 +23514,12 @@ msgstr "a csatorna kategóriájának átnevezése"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "új hírek %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "a közösségi jegyzék helyébe a %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -22844,6 +23562,11 @@ msgstr "a %(target)s felirat beállítása"
 msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "részvények. Csak a szerző oszthatja meg ezt a bejegyzést."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "a %(target)s ismét a poszt alatt volt"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -22965,11 +23688,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "legjobb"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "nem-csevegett %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "un- chattiltott felhasználó %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "nem száműzött %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23030,6 +23765,14 @@ msgstr "unhided a %(target)s ebben a céhben"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "unhided post %(target)s ebben a céhben"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "amíg %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "legfeljebb %(max)s egyszerre"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

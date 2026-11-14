@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ur\n"
@@ -513,6 +513,12 @@ msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s حروف کی حد."
 msgstr[1] "%(num)s حروف کی حد."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s منتخب"
+msgstr[1] "%(num)s منتخب"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -580,6 +586,12 @@ msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s دن باقی"
 msgstr[1] "%(num)s دن باقی ہیں۔"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s ترتیب میں ترمیم"
+msgstr[1] "%(num)s تدوین کو قطار میں"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -651,6 +663,18 @@ msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s دلچسپی"
 msgstr[1] "%(num)s دلچسپی"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s آئٹم تبدیل کريں"
+msgstr[1] "%(num)s آئٹمس بدل گئی"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s آئٹم تبدیل نہیں کیا جا سکتا:"
+msgstr[1] "%(num)s چیزوں کو تبدیل نہیں کیا جا سکتا:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1297,6 +1321,10 @@ msgstr "%(who)s گلوکار موڈر دعوت قبول کرتے تھے۔"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s بوٹی کا کھانا شامل کریں %(target)s چینل تک"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s ایک کمیونٹی نوٹ شامل کریں"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s لیبل شامل کريں"
@@ -1361,6 +1389,10 @@ msgstr "%(who)s آگے کی ضرورت ہے کہ تبدیل کیا گیا ہے"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s کون تبدیل کر سکتا ہے"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s گفتگو %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s گفتگو نیٹ ورک %(name)s"
@@ -1409,6 +1441,10 @@ msgstr "%(who)s مجازی صفحہ حذف کریں"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s پوسٹ حذف %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s تبصرے کی تدوین"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s تدوین wiki صفحہ"
@@ -1416,6 +1452,18 @@ msgstr "%(who)s تدوین wiki صفحہ"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s ایک تقریب مدون کی گئی"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s مدون کی تدوین کی %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s ایک اسپیس ختم ہو گیا"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s جلاوطن %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1436,6 +1484,10 @@ msgstr "%(who)s ان کی پوسٹ پر روشنی ڈالی گئی %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s اس گولڈ سے تبصرہ چھپا۔"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s اپنی پوسٹ کے تحت تبصرہ چھپتا تھا۔"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1485,6 +1537,10 @@ msgstr "%(who)s حساس مواد کے طور پر تبصرہ کی نشان دہ
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s دستخط %(title)s حساس مواد کے طور پر"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s کھولیں%(guild)s سب کے لئے"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s مستقل تبصرے کو ختم کر دیں"
@@ -1525,6 +1581,18 @@ msgstr "%(who)s جگہ %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s چینل پیام حذف کریں"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s ایک کمیونٹی نوٹ ہٹا دیا"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s اسپیس بورڈ سے پیغام ہٹا دیا"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s ایک عوامی چینل سے پیام حذف کیا"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s گولڈ کی ایک ترمیم ہٹا دی"
@@ -1549,6 +1617,10 @@ msgstr "%(who)s صارف حذف کریں %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s چینل کی تنصیب کا نام بدلیں"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s عوامی نوٹ کی جگہ"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s دوبارہ گلوکار موڈٹر دعوت @%(name)s"
@@ -1564,6 +1636,10 @@ msgstr "%(who)s پوسٹ پر نیٹف مقرر %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s پوسٹ کا لیبل مقرر %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s ایک تبصرہ دوبارہ دکھایا"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1589,9 +1665,17 @@ msgstr "%(who)s چینل پیغام دور کریں"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s سے ایک کردار لیا %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s غیر متصل %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s غیر متصل صارف %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s غیر مکمل %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1676,6 +1760,10 @@ msgstr ""
 msgid "(in a private place)"
 msgstr "(ایک نجی مقام پر)۔"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(کچھ متن نہیں)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(کچھ عنوان نہیں)"
@@ -1747,6 +1835,10 @@ msgstr "اذیت کا نشانہ"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ آپشن شامل کریں"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+%(guild)s اپیل"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2259,10 +2351,6 @@ msgstr "@ فرماتا ہوں:%(name)s اضافہ %(curation)s."
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
 
-#, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr ""
-
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@ فرماتا ہوں:%(name)s روک."
@@ -2610,6 +2698,10 @@ msgstr "ایک اسپیس نہیں کیا جا سکتا."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "ایک اسپیس ایک چکر گولڈ میں میزبانی نہیں کی جاسکتی۔."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "ایک اسپیس اس کا نام حذف نہیں ہو سکتا۔."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "ماضی میں ایک اسپیس شروع نہیں ہو سکتا۔."
@@ -2637,6 +2729,10 @@ msgstr "@ @ پر آپ کے نام کے پاس ایک ذیلی ذیلی تقسی�
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "آپ کی زبانوں میں سے کسی کے تبصرے اور تبصرے سے ظاہر ہوتا ہے ۔ جب تک آپ اسے دبا نہیں دیں کوئی ترجمہ نہیں ہے."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "پابندی کا حوالہ دیا جا سکتا ہے۔ %(max)s کچھ."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2824,9 +2920,25 @@ msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "ایک دائرے کا نام زیادہ تر حروف میں %(num)s ہو سکتا ہے۔."
 msgstr[1] "ایک دائرے کا نام اکثر %(num)s حروف ہو سکتا ہے۔."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "ایک مشترکہ ڈاک ٹکٹ نامزد نہیں کیا جا سکتا۔."
+#, machine, plain2
+msgid "A comment"
+msgstr "جواب"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "اگر آپ کسی اکاؤنٹ کی طرف سے کوئی تبصرہ بند کر دیتے ہیں یا آپ کو روک دیا جاتا ہے ۔."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "ایک گلوکار موڈر کی طرف سے چھپی ہوئی تبصرہ۔."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "آپ کے کلام فیلڈر کی طرف سے چھپی ہوئی تبصرہ۔."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "اس کے مصنف کا تبصرہ ختم ہو گیا۔ یہ کیا کہا یہاں نہیں دکھایا گیا ہے."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2835,6 +2947,10 @@ msgstr "کسی حلقے کے لیے پوسٹ پر تبصرہ کسی گولڈ م�
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "کسی حلقے کے لیے پوسٹ پر تبصرہ دوبارہ نہیں کیا جا سکتا۔."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "سائٹ کے اشتہاروں کی جانب سے ایک تبصرہ حذف ہوا۔."
 
 #, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2852,6 +2968,14 @@ msgstr "پوری سائٹ کے کھانے کو ایک ماہ یا اس سے بھ
 msgid "A day"
 msgstr "ایک دن"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "لاگ میں فیصلہ"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "ایک حذف شدہ پوسٹ اور اس کے نیچے جو کچھ کہا گیا تھا وہ ختم ہو گیا۔"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2863,6 +2987,10 @@ msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "ایک تفسیر زیادہ تر %(num)s حروف پر مشتمل ہے۔."
 msgstr[1] "ایک تفسیر زیادہ تر %(num)s حروف پر مشتمل ہے۔."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "ایک الگ اذانین کو ایک انکشاف کی تصدیق کرنی پڑتی ہے۔."
 
 #, machine, plain1, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2967,6 +3095,10 @@ msgstr "ایک گروپ کا نام اس میں موجود نہیں ہے @: یہ
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "ایک گروہی نام قابو میں نہیں رہ سکتا۔."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "ایک گولڈ ممنوعہ کو عوامی وجہ کی ضرورت ہوتی ہے اس لیے گولڈ کا صفحہ اور لاگ اس کی وجہ کہہ سکتے ہیں۔."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3087,6 +3219,10 @@ msgstr "اُن ارکان میں ایک ماہانہ بجٹ تقسیم کِیا 
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "ایک منفرد شخص اب بھی پڑھ سکتا ہے لیکن کسی بھی + میں لکھنے سے قاصر نہیں۔%(guild)s' چینل. ان کی کوشش کب کی جاتی ہے۔"
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "انسان کیلئے ایک خط"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3150,6 +3286,10 @@ msgstr[1] "ایک پولنگ انتخاب %(num)s حروف ہو سکتا ہے (�
 msgid "A poll option can't hold control characters."
 msgstr "ایک پولیشن انتخاب قابو میں نہیں رکھ سکتا."
 
+#, machine, plain2
+msgid "A post"
+msgstr "بند"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3173,6 +3313,10 @@ msgstr "کسی حلقے کے لیے پوسٹ دوبارہ نہیں کیا جا �
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "حلقے کے لیے پوسٹ نہیں ہو سکتا۔."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "کسی حلقے کے لیے پوسٹ اس کا نام حذف نہیں ہو سکتا۔."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3202,6 +3346,10 @@ msgstr "ایک پوسٹ اپنا آدھا وزن کھو دیتا ہے۔"
 msgid "A post needs a title."
 msgstr "ایک پوسٹ کو عنوان کی ضرورت ہوتی ہے۔."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "ایک ڈاک ٹکٹ جو ٹیپ کیا گیا ہے اس کا نام حذف نہیں کیا جا سکتا کیونکہ دینار آپ کے پاس چلے گئے۔."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "ایک پوسٹ جو عوام نہیں ہو سکے اس تصویر کو اپلوڈ نہیں کر سکتا: اس کی فائلوں کو پتے کے ساتھ کسی سے کھولا جا سکتا ہے۔ اِس مضمون میں اِن سوالوں کے جواب دئے جائیں گے :."
@@ -3210,9 +3358,17 @@ msgstr "ایک پوسٹ جو عوام نہیں ہو سکے اس تصویر کو 
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "ہمایوں کے ساتھ ایک پوسٹ کو حلقے میں منتقل نہیں کیا جا سکتا۔ اِس کے علاوہ اُن لوگوں کی نقلیں جو آپ نے لکھی تھیں اُن میں سے کچھ لکھ لیں ۔."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "ایک ڈاک ٹکٹ ملا کر عوامی ہے اور غیر منقوط نہیں کیا جا سکتا، حلقے سے مشارکت کی جا سکتی ہے یا ان کے پاس کوئی رائے ہے۔ اس کے مصنف اس کے ہم عصر ہیں۔ یہ اختیارات ہر مصنف کی جانب سے مشترک ہوتے ہیں اور ہر بار آپ شائع کرتے ہیں۔."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "اس کے شعری ڈرافٹ میں صرف ایک پوسٹ حذف کیا جاتا ہے جب اس کے مصنف متفق ہوتے ہیں۔."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "ایک ڈاک ٹکٹ ملا کر عوامی ہوتا ہے اور حلقے کے ساتھ شیئر نہیں کیا جا سکتا یا اس میں رائے شماری ہوتی ہے۔ اس کے مصنف اس کے ہم عصر ہیں۔ یہ اختیارات ہر مصنف کی جانب سے مشترک ہوتے ہیں اور ہر بار آپ شائع کرتے ہیں۔."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "دوسروں کے ساتھ لکھے گئے ایک ڈاک ٹکٹ ابھی تک یہاں اس کا نام حذف نہیں ہو سکتا۔."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3555,6 +3711,10 @@ msgstr "دعوت قبول کریں"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "موڈر دعوت قبول کریں"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "میری نام کے بغیر قبول کرنا (عبدمین اور پوسٹ کے مصنف اب بھی مجھے دیکھ سکتے ہیں)۔"
 
 #, machine, plain1
 msgid "Account"
@@ -4175,6 +4335,10 @@ msgstr "ایک مصنف اس طویل دور کے بعد شمار کرنا بن�
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "ایک مصنف جو اس مقام پر سرگرم عمل نہیں ہوا ہے۔ %(time)s شمار نہیں کیا جاتا ہے۔"
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "اس کا نام حذف نہیں کیا جا سکتا."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "ایک مصدقہ چینل اپنے دستور کو قبول کرنے کے لیے درخواست نہیں کر سکتا: ویب سائٹ کس نے لکھا ہے۔."
@@ -4287,9 +4451,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "گمنام"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "اِس کی وجہ یہ ہے کہ اُس نے اُن کی مدد کی ۔"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "گمنام #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4374,6 +4538,26 @@ msgstr "ہر کوئی آپ کو دیکھ سکتا ہے جو آپ کے ماتحت
 #, machine, plain1
 msgid "App Name"
 msgstr "ایپ کا نام"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "فیصلہ کریں"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "فیصل آباد - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "اس فیصلے کی توثیق کریں"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "اپیل"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "اس گولڈ کے گولڈ موڈر کے فیصلے کرنے والوں کی اپیل۔ ایک اپیل نجی ہے: صرف گول موڈر ہی اسے پڑھ سکتے ہیں۔ اس کی تصدیق کرتے ہوئے ایک فیصلہ کن حل کرتا ہے اور لاگ میں ایک نیا داخلہ لکھا ہے، پہلے سے جڑے ہوئے؛ فرد کو بتایا جاتا ہے کہ یہ کس طرح ختم ہوا۔ آپ اپنے فیصلے کی اپیل کا فیصلہ نہیں کر سکتے جبکہ ایک اور گولڈ موڈر سکتا تھا۔."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4513,10 +4697,6 @@ msgstr "آریائی بلند میدان"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "ایک مصنف کے طور پر آپ ڈرافٹ ان کے ساتھ رہتے ہیں اور آپ کی ہر قسم آپ کی تعریف کی جاتی ہے۔ ایک بار پوسٹ شائع ہوتا ہے، جس نے دیکھا وہ دیکھ سکتا ہے کہ کس نے کیا لکھا ہے۔ مصنف مل کر فیصلہ کرتے ہیں:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "میرے والدین سے پوچھیں کہ اسے چھوڑ دیں"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5381,6 +5561,10 @@ msgstr "ہدایات کو تبدیل کریں"
 msgid "Change the two-factor settings for your account."
 msgstr "اپنے اکاؤنٹ کے لیے دو دوبارہ ترتیبات بدلیں."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "ان کو تبدیل کریں"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "اپنا اکاؤنٹ تبدیل کریں."
@@ -5652,6 +5836,10 @@ msgstr "کم از کم ایک حلقے کا انتخاب کریں یا اسے ع
 msgid "Choose at least one of your circles."
 msgstr "کم از کم ایک حلقے کا انتخاب کریں۔."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "کم از کم ایک پوسٹ یا تبصرے کا انتخاب کریں۔."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "کم از کم ایک کہانی منتخب کریں."
@@ -5707,6 +5895,10 @@ msgstr "انتخاب کریں یہ کس قسم کی بوٹی ہے۔."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "انتخاب کریں یہ کس قسم کا رد عمل ہے۔."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "ان کے ساتھ کیا کرنے کا انتخاب کریں۔."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -5980,6 +6172,10 @@ msgstr "کامکس اور کارٹون"
 msgid "Coming up"
 msgstr "اٹھو"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "جواب"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5989,9 +6185,13 @@ msgstr "تبصرہ کریں"
 msgid "Comment %(id)s has been removed"
 msgstr "جواب %(id)s انتقال ہوا۔"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "تبصرہ: دیگر صارفین آپ کا نام نہیں دیکھیں گے۔"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "تبصرہ: دوسرے صارفین آپ کا نام نہیں دیکھیں گے۔ اگر کوئی اشتہاری پابندیوں یا اس کے لیے اکاؤنٹنگ کرتا ہے تو لاگ اس تبصرے کے لیے اکاؤنٹ کا نام ہو سکتا ہے۔."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "خود تبصرہ: آپ کا نام اس تبصرے پر ظاہر ہوتا ہے۔"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -6000,10 +6200,6 @@ msgstr "اِس کتاب کا عنوان ہے :."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "تبصرہ پوسٹ ہو گیا!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "تبصرہ"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6595,6 +6791,10 @@ msgstr "منطق URL مختص کرنے والوں کو اجازت نہیں ہے�
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "منطق URL مختص کرنے والوں کو اجازت نہیں ہے۔"
 
+#, machine, plain2
+msgid "Decide"
+msgstr "فیصلے"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6658,6 +6858,10 @@ msgstr "تبصرہ حذف؟"
 msgid "Delete folder"
 msgstr "فولڈر حذف کریں"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "حذف"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "میرا حساب حذف کرو"
@@ -6681,6 +6885,14 @@ msgstr "کھاتہ حذف كیجیے"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "شائع شدہ پوسٹ حذف"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "حذف"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "ان چیزوں کو حذف؟"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6725,6 +6937,10 @@ msgstr "آپ کو حذف کریں %(site)s اکاؤنٹ"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "اپنی پوسٹ اور تبصروں کو حذف کریں"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "حذف"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -6919,6 +7135,13 @@ msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "%(num)s دوسرے مقام پر فائز ہوئے۔"
 msgstr[1] "دیگر مقامات پر %(num)s٪"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "+ میں ترمیم%(guild)s"
+
+msgid "Discussed on a profile"
+msgstr ""
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "غیر متصل"
@@ -7001,6 +7224,10 @@ msgstr "لکھنؤ"
 #, machine, plain1
 msgid "Done to"
 msgstr "جگہ"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "ہو گیا۔"
 
 #, machine, plain1
 msgid "Download"
@@ -7197,6 +7424,10 @@ msgstr "اپنی پوسٹ اور تبصرے مرتب کرو"
 msgid "Edited %(when)s"
 msgstr "ترمیم شدہ %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "تدوین"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "تدوین %(who)s"
@@ -7212,6 +7443,10 @@ msgstr "تدوین اس ڈاک ٹکٹ کی نقلیں بھی تیار کرتی �
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "تدوین یہ پوسٹ ہر جگہ جاری کیا گیا ہے۔."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "تدوین"
 
 #, machine, plain1
 msgid "Education"
@@ -7554,13 +7789,13 @@ msgstr "ہر شخص اپنی نوعیت کی تبدیلی کو دیکھتا ہے
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "آپ کی گلیوں اور حساب سے سب کچھ، سب سے پہلے."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "وہ سب کچھ صرف اپنے دوستوں کے دائرے میں جاتا ہے. انہیں عوام میں پوسٹ کرنے کے لئے بند کر دیں."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "ثبوت نہیں دیا جا سکتا"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "آپ کا پوسٹ صرف آپ کے دوستوں کے دائرے میں جاتا ہے، وہ لوگ جو آپ کے پیچھے پیچھے چلتے ہیں، آپ کے حلقے صرف لوگوں کو اس طرح برقرار رکھ سکتے ہیں اور آپ آگے نہیں بڑھ سکتے، رد عمل یا ایک مشترک ڈرافٹ لکھ سکتے ہیں۔ دوسرے لوگوں کے پوسٹس پر تبصرے اب بھی عوامی ہیں۔."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "ثبوت:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7607,6 +7842,10 @@ msgstr "مثال کے طور پر : کتوں کے کتے · اس کے پاس ن�
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "مثال : خوش‌کُن گھڑی · خوش‌کُن الفاظ ” مبارک گھڑی “ رکھتے ہیں"
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "بے دخل کریں %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9007,6 +9246,10 @@ msgstr "کتنی دیر تک"
 msgid "How long it runs"
 msgstr "یہ کتنی دیر تک چلتا ہے۔"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "کتنا اعتدال ریکارڈ کیا جاتا ہے۔"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "تم کتنے پرانے ہو؟"
@@ -9199,6 +9442,10 @@ msgstr "میں %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "گلڈ میں"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "لاگ ان میں بطور لو گ"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9493,6 +9740,14 @@ msgstr "اس کے بعد یہ خود ختم ہو جاتا ہے۔ آپ اسے ج�
 msgid "It is reviewed with the bot."
 msgstr "اس کا تجزیہ بھٹو کے ساتھ کیا جاتا ہے۔."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "یہ سائٹ کے صفحات چھوڑ دیتی ہے۔ اگر یہ پانچ منٹ سے کم ہے اور کوئی اور اس پر تبصرہ نہیں کر چکا ہے، تو یہ غیر واضح ہے: صرف آپ اور سائٹ کے اشتہار 90 دن تک ایک نجی کاپی کھول سکتے ہیں۔ ورنہ جو کچھ وہ کہہ رہا ہے وہ لاگ ان میں رہ گیا، اس کا نام اور کوئی تعلق نہیں اور کوئی بھی اسے وہاں پڑھ سکتا ہے۔."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "یہ آپ کے پروڈیوس، غذا اور گول چھوڑ دیتا ہے۔ اگر یہ پانچ منٹ سے کم ہے اور کوئی اور تبصرہ نہیں کر رہا ہے، تو اس کا خلاصہ یہ ہے کہ: صرف آپ اور ویب سائٹ کے اشتہار 90 دن تک ایک نجی کاپی کھول سکتے ہیں۔ ورنہ جو کچھ وہ کہہ رہا ہے وہ لاگ ان میں رہ گیا، اس کا نام اور کوئی تعلق نہیں اور کوئی بھی اسے وہاں پڑھ سکتا ہے۔."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "یہ آپ کے پروڈیوس پر زیرِزمین رہتی ہے۔ ایک گولڈ اپنے کارڈ کو دکھاتا ہے، ووٹوں اور حصص کے ساتھ اور اسپیس کھول دیتا ہے۔."
@@ -9509,13 +9764,13 @@ msgstr "اس سے ظاہر ہوتا ہے کہ ہر لفظ، ہر لفظ اور �
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "اس میں بچے کا حساب بچے کے ساتھ رہتا ہے لیکن اب آپ اسے دیکھ نہیں سکتے یا اسے تبدیل نہیں کر سکتے اور نہ ہی یہ کام کر سکتے ہیں."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "یہ بچے کے لفظ فیلڈر پر قائم رہتا ہے جس میں ہر چیز کو چھپا کر رکھا جاتا ہے ۔."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "یہ بچے کے لفظ فیلڈر پر قائم رہتا ہے جس میں ہر چیز کو چھپا کر رکھا جاتا ہے ۔ بچوں کا اکاؤنٹ صرف یہ پڑھتا ہے: یہ پوسٹ یا تبصرہ نہیں کر سکتا بلکہ آپ اب بھی ووٹ دے سکتے ہیں، پیرو، گولڈ، بکمارک اور رپورٹ میں شامل ہو سکتے ہیں۔."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "یہ بچے کے لفظ فیلڈر پر قائم رہتا ہے جس میں ہر چیز کو چھپا کر رکھا جاتا ہے ۔ چیٹ، اسپیس، پیسے، غیر منافع بخش کرنیں ختم ہو جاتی ہیں اور دوسرے آپ کی بات چیت شروع نہیں کر سکتے۔ آپ کا پوسٹ صرف اپنے دوستوں کے دائرے میں جانا جب تک آپ نجی طور پر بند نہ."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "یہ بچے کے لفظ فیلڈر پر قائم رہتا ہے جس میں ہر چیز کو چھپا کر رکھا جاتا ہے ۔ چیٹ، اسپیس، روپے اور گولنگ شروع کرنے کے بعد، اور دیگر آپ کی گفتگو یا سرکہ شروع نہیں کر سکتے۔ بچوں کا اکاؤنٹ صرف یہ پڑھتا ہے: یہ پوسٹ یا تبصرہ نہیں کر سکتا بلکہ آپ اب بھی ووٹ دے سکتے ہیں، پیرو، گولڈ، بکمارک اور رپورٹ میں شامل ہو سکتے ہیں۔."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9681,10 +9936,6 @@ msgstr "جون"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "کیپ"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "یہ رکھیں"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9943,6 +10194,10 @@ msgstr "بایاں"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "بایاں +%(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "آپ کے تبصرے آپ کے نام کے تحت قائم رہیں اور یہ پڑھنے والوں کو بتاتا ہے کہ اُنہوں نے پوسٹ لکھا ہے ۔."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10737,6 +10992,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "خاموش"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "چینلوں میں %(alias)s کو خاموش کریں"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "خاموش +%(guild)s"
@@ -11086,6 +11345,10 @@ msgstr "ابھی تک اکاؤنٹ شامل نہیں ہوئے۔."
 msgid "No ads"
 msgstr "کوئی ادیب"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "کوئی اپیل انتظار نہیں کر رہی ۔."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "کھاتہ بند نہیں کیا گیا"
@@ -11341,6 +11604,10 @@ msgstr "اب کوئی بھی شخص اس میں شامل ہونے کیلئے ا�
 msgid "Nobody can sign in to your account with a code."
 msgstr "کوئی بھی آپ کے اکاؤنٹ پر کوڈ کے ساتھ دستخط نہیں کر سکتا۔."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "کوئی اس پر تبصرہ نہیں کرتا ۔."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "کسی کو زیادہ سے زیادہ مل جاتا ہے۔ %(share)s%% ایک ماہ کا بجٹ۔ شیئر پورے روپے تک گردش کئے جاتے ہیں۔"
@@ -11506,6 +11773,10 @@ msgstr "محفوظ نہیں"
 msgid "Not slowed by slow mode"
 msgstr "سست موڈ سے سست نہیں"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "مزید نہیں لی گئی"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "سرمایہ‌کاری نہ کریں"
@@ -11653,6 +11924,10 @@ msgstr "ابھی تک کچھ نہیں لکھا۔."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "اب تک کچھ بھی نہیں."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "آپ کو ختم کر دیا کچھ بھی یہاں رکھا ہے."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11924,6 +12199,10 @@ msgstr "صرف سرگزشتیں%(name)s اس پوسٹ پر درج ذیل تبص�
 msgid "Only accounts you follow can comment on this post now."
 msgstr "اب آپ اس پوسٹ پر تبصرہ کر سکتے ہیں."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "صرف Admin کسی انکشاف کی تصدیق کر سکتا ہے۔."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "اسے دوبارہ شروع کر سکتے ہیں."
@@ -12192,6 +12471,10 @@ msgstr "صرف آپ کو"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "صرف آپ کو یہ دیکھ سکتے ہیں. یہ بات اہمیت کی حامل ہے : کسی نے دیکھا ، ووٹ دیا یا جواب دیا ۔."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "صرف آپ کی کریڈٹ تبدیلیوں: دوسرے مصنفین نے نام رکھا۔ ناظمین اور پوسٹ کے مصنف اب بھی یہ دیکھ سکتے ہیں۔."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12260,6 +12543,10 @@ msgstr "شروع کرنے کے لئے کھولیں"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "کھولیں %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "اپنا کاپی کھولو"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12400,17 +12687,17 @@ msgstr "دوسرے یا نامعلوم"
 msgid "Other spellings:"
 msgstr "دیگر املا:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "دوسرے صارفین آپ کے نام کی بجائے انفصرام دیکھتے ہیں۔ آپ اور ویب سائٹ Admins اب بھی اسے دیکھ سکتے ہیں، یہ کسی بھی پوسٹ کے برابر اصولوں کی پیروی کرتا ہے، اور اس کو منسوخ کرنے کے بعد بھی نہیں کیا جا سکتا۔ ایک علاقہ فیلڈر اب بھی ظاہر کرتا ہے کہ یہ علاقہ کس علاقے سے آتا ہے۔ یہ آپ کے پرو فا ئل پر درج نہیں ہے: آپ اسے تاریخ میں، ذیل میں تلاش کرتے ہیں۔."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "دوسرے صارفین آپ کے نام کی بجائے انفصرام دیکھتے ہیں۔ آپ اور ویب سائٹ Admins اب بھی اسے دیکھ سکتے ہیں، یہ کسی بھی پوسٹ کے برابر اصولوں کی پیروی کرتا ہے، اور اس کو منسوخ کرنے کے بعد بھی نہیں کیا جا سکتا۔ ایک علاقہ فیلڈر اب بھی ظاہر کرتا ہے کہ یہ علاقہ کس علاقے سے آتا ہے۔ یہ آپ کے پرو فا ئل پر درج نہیں ہے: آپ اسے تاریخ میں، ذیل میں تلاش کرتے ہیں۔ اگر کوئی اdمین پابندیوں یا اس کے لیے اکاؤنٹ نامزد کرے تو لاگ اس کے لیے اکاؤنٹ نام ہو سکتا ہے۔."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "دوسرے صارفین اس کو انفنٹری کے طور پر دیکھتے ہیں۔ صرف آپ اور ویب سائٹ ناظمین آپ کے نام کو دیکھتے ہیں۔."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "دوسرے لوگ آپ کے نام کی بجائے آپ کو دیکھتے ہیں ؛ آپ اور سائٹ‌مین ابھی تک اسے دیکھتے ہیں ۔ ایک علاقہ فیلڈر اب بھی ظاہر کرتا ہے کہ یہ علاقہ کس علاقے سے آتا ہے۔ اس کا تبدیل نہیں کیا جا سکتا۔."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "دوسرے لوگ آپ کے نام کی بجائے آپ کو دیکھتے ہیں ؛ آپ اور سائٹ‌مین ابھی تک اسے دیکھتے ہیں ۔ ایک علاقہ فیلڈر اب بھی ظاہر کرتا ہے کہ یہ علاقہ کس علاقے سے آتا ہے۔ اس کا تبدیل نہیں کیا جا سکتا۔ اگر کوئی اdمین پابندیوں یا اس کے لیے اکاؤنٹ نامزد کرے تو لاگ اس کے لیے اکاؤنٹ نام ہو سکتا ہے۔."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12419,6 +12706,10 @@ msgstr "آپ کے رد عمل کے لئے ہمارا جواب \"%(excerpt)s\": %
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "ہمارے حفاظتی جنگی بلاکس نے اس صفحے کے ارد گرد ایک غیر مستحکم سپر جادو پھینک دیا ہے۔."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "برآمد"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -13101,6 +13392,10 @@ msgid "Popular this week"
 msgstr "اس ہفتے مقبول"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "پوسٹ کریں"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "پوسٹ کریں"
@@ -13121,6 +13416,10 @@ msgstr "تجدید پوسٹ کریں"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "گمنام پوسٹ کریں"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "پوسٹ اناطولیہ: دیگر ارکان ہر مصنف کو کئی عدد سے منسوب کرتے ہوئے دیکھتے ہیں۔ ناظم ہمیشہ یہ دیکھ سکتے ہیں کہ وہ کون ہیں. یہ پوسٹ شائع ہونے کے بعد تبدیل نہیں کیا جا سکتا۔."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -13198,10 +13497,6 @@ msgid "Posted on that day."
 msgstr "اس دن پوسٹ کیا۔."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "پوسٹ"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "ٹھنڈا بند کرنا"
 
@@ -13229,6 +13524,10 @@ msgstr "پوسٹس"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "اس لیبل کے ساتھ ایک گول کیمرا پوسٹ کرتا ہے. کے ساتھ:+guild، کہ گولڈ کے لیبل."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "پوسٹ اور تبصرے"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13319,6 +13618,10 @@ msgstr "ایک گول میں پوسٹ. اندر:#gaming ایک موضوع اور
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "کسی زبان میں پوسٹس: ایک کوڈ (en) یا اس کا نام (english)۔."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "پوسٹ یا تبصرے"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13512,6 +13815,10 @@ msgstr "نجی مواد، نظر آنے کی وجہ سے آپ + کے ایک گو
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "نجی مواد، نظر آنے کی وجہ سے کہ آپ + میں ایک منظور شراکت دار ہیں%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "نجی کاپی"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "نجی موڈ۔"
@@ -13571,26 +13878,6 @@ msgstr "ذاتی پوسٹ، آپ کو دیکھنے کے لئے آپ کو دیک�
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "نجی پوسٹ، آپ کو دیکھنے کے لئے آپ کو نظر آتا ہے کیونکہ آپ + میں ایک منظور شراکت دار ہیں%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "ذاتی اتصال"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "ذاتی مداخلت بند ہے."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "ذاتی مداخلت پر ہے، تو یہ صرف آپ کے دوستوں کے دائرے میں جا سکتا ہے. آپ مزید معلومات حاصل کر سکتے ہیں ۔."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "ذاتی مداخلت جاری ہے، تو یہ صرف آپ کے دوست دائرے تک جاتا ہے. آپ مزید معلومات حاصل کر سکتے ہیں ۔."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "نجی مداخلت پر ہے."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14153,6 +14440,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "ڈرائیور خارج کریں"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "میرا نام حذف کریں"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "اس پوسٹ سے میرا نام حذف کرو"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "آپشن %(number)s ہٹائیں"
@@ -14217,6 +14512,14 @@ msgstr "سرور حذف کریں"
 msgid "Remove this topic"
 msgstr "یہ موضوع ہٹائیں"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "ان چیزوں سے اپنا نام حذف کریں؟"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "اس پوسٹ پر آپ کے کریڈٹ سے اپنا نام ہٹا دیں؟ دیگر ارکان ایک عدد کے ساتھ \"انونیموس\" دیکھیں گے۔ یہ غلط نہیں ہو سکتا."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14257,6 +14560,10 @@ msgstr "حذف. اب بوٹ وہ کھانا نہیں پڑھتا ۔."
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "ایک بار کسی کو رد کرنا اثر انداز ہوتا ہے۔."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "آپ کا نام خارج کرنا خود سائٹ پر کیا گیا ہے۔."
 
 #, machine, plain1
 msgctxt "button"
@@ -14318,6 +14625,10 @@ msgstr "تبصرہ رپورٹ کریں"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "پوسٹ رپورٹ کریں"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "اس رپورٹ کی وضاحت کریں"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -14815,6 +15126,18 @@ msgstr "کہو کیا بوٹ پوسٹ کرے گا اور کہاں سے آئے گ
 msgid "Say who it's from"
 msgstr "کہہ دو کہ وہ کون ہے جو اس سے"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "کہو کیوں نیچے اتر جانا چاہیے چند الفاظ میں۔."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "کہو کیوں تم دلکش ہو."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "کہو کہ یہ غلط کیوں لگتا ہے. صرف وہی لوگ جو اپیل کرتے ہیں جو آپ کی تحریریں پڑھتے ہیں اور آپ کو بتایا جائے گا کہ یہ کس طرح ختم ہوئی۔."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "اس برق کووڈ (یا کوڈ میں داخل ہونے والا) دو تصدیقی ایپ کا استعمال کرتے ہوئے Google Authentic or Authy."
@@ -14980,6 +15303,10 @@ msgstr "سب فیڈ میں سب کچھ دیکھیں"
 msgid "See everything live"
 msgstr "سب کچھ دیکھ کر"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "اسے لاگ میں دیکھیں"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "حالیہ صفحہ دیکھیں"
@@ -15003,6 +15330,10 @@ msgstr "غور کریں کہ رُجحان کیا رہا ہے"
 #, machine, plain1
 msgid "See what they do"
 msgstr "دیکھتے ہیں جو کچھ وہ کرتے ہیں"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "اپنی اپیل کو دیکھیں"
 
 #, machine, plain1
 msgid "See your username"
@@ -15057,6 +15388,10 @@ msgstr "بھیجو"
 msgid "Send a tip"
 msgstr "ا وپر لکھیں"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "درخواست بھیجیں"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "درخواست بھیج دیجئے"
@@ -15089,6 +15424,10 @@ msgstr "غیرضروری مواد ؟"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "حساس مواد"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "حساس مواد : اسے دکھائیں"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15167,10 +15506,6 @@ msgstr "پہلے اپنا توازن قائم رکھیں ۔."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "دو رخی وقفہ ڈالیں"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "جنسی طور پر بخارات"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -15894,6 +16229,10 @@ msgstr "کائنات کا آغاز"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "اپنے لئے خوراک شروع کریں ۔ آپ نے سب کچھ \"اس طرح کے کم پوسٹ دکھا\" کے لئے طلب کیا ہے، بھول گیا ہے، تو ان پوسٹس اور ان کے گلوکاروں اور ان کی جماعتیں واپس لوٹ آئیں. آپ کی تاریخ کو آپ کے حساب سے محفوظ رکھا جاتا ہے لیکن آپ ابھی تک اسے اپنے اُوپر کی پٹیوں اور گالوں کے لئے استعمال نہیں کرتے ۔."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "حشرات شروع کرنا"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "جلد شروع"
@@ -16229,6 +16568,10 @@ msgstr "BBC News کی طرف سے ٹیکنالوجی کے اشتہارات. بی
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "بتائیں %(site)s اپنے بارے میں تھوڑا سا کمیونٹی."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "انہیں بتائیں کہ کیوں، ایک لائن میں"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "ہمیں بتائیں کہ کیا ہوا، کیا نظر آتا ہے یا کیا آپ چاہتے ہیں. ایک بیگم کے لئے، آپ نے کیا کیا اور آپ کی توقع."
@@ -16296,6 +16639,10 @@ msgstr "متن"
 msgid "Text size"
 msgstr "متن کا سائز"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "شکریہ"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "اس تبصرے کی رپورٹ کرنے کیلئے آپکا شکریہ !"
@@ -16357,9 +16704,9 @@ msgstr "شکریہ. تھوڑی دیر بعد ایک اشتہار نظر آئے �
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "شکریہ. تھوڑی دیر بعد ایک اشتہار نظر آئے گا ۔ تصویر کو ذخیرہ نہیں کیا جاسکتا تھا؛ بوٹ کے صفحے سے دوبارہ کوشش کرنا۔."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "شکریہ. آپ کا اکاؤنٹ اب بچّہ بند نہیں ہے، اور نجی مداخلت ختم ہو گئی ہے. آپ نے قیام سے پہلے کیا تھا کے طور پر: استعمال کون یہ دیکھ سکتا ہے کہ کون اسے دیکھ سکتا ہے."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "شکریہ. آپ کا اکاؤنٹ اب بچے کو بند نہیں ہے."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16699,6 +17046,10 @@ msgstr "یہ نام لیا گیا ہے ۔."
 msgid "That password isn't right."
 msgstr "یہ لفظ صحیح نہیں ہے."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "یہ لفظ صحیح نہیں ہے. کچھ بھی نہیں بدلا گیا ۔."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "یہ پاس ورڈ دوبارہ تیار کرنے کی صورت ختم ہو گئی ہے ۔."
@@ -17026,6 +17377,10 @@ msgstr "پیسے مالک کے پاس جاتے ہیں، <a href=\"%(url)s\">@ ف
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "جو رقم آپ نے تحائف، دائرے اور خالق فنڈ سے حاصل کی، پچھلے 30 دن اور تمام وقت کے لئے."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "آپ کا نام لے کر چلے گئے ۔ جو بھی آپ کے نام سے اسے دیکھ رہا تھا وہ اب بھی آپ ہی جانتے ہیں."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17042,6 +17397,10 @@ msgstr[1] "آپ نے جو نقلیں لکھیں %(guilds)s اُن کو نکال 
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "تاریخیں کوئی دن نہیں چھوڑتا۔."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "فیصلہ کھڑا ہوتا ہے۔"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17258,6 +17617,10 @@ msgstr "نام %(host)s نہیں مل سکا۔"
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "انہوں نے جو کام کیے ان میں نیا ترین کردار ادا کیا۔ صرف ایسے نام دکھائے گئے ہیں جن سے وہ بات چیت کرتے ہیں، کبھی بھی نہیں کیا کہ بات چیت ختم ہو جاتی ہے۔."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "جتنی چیزیں آپ نے تصدیق کی تھیں ان کی تعداد اس سے مطابقت نہیں رکھتی جو منتخب کی گئی تھیں۔ کچھ بھی نہیں بدلا گیا ۔."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "نمبر ہمیشہ آپ کے پرو فا ئل پر دکھائے جاتے هيں اس سے یہ فیصلہ ہوتا ہے کہ کون ہر لسٹ کھول کر اس پر اکاؤنٹ دیکھ سکتا ہے۔ اِس سلسلے میں ایک مثال پر غور کریں ۔."
@@ -17306,9 +17669,25 @@ msgstr "پوسٹ سب سے پہلے شائع ہونے والے شخص کے پر�
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "پوسٹ آپ کا نام لیتا ہے اور آپ کے پروڈیوس پر مشتمل ہوتا ہے۔ ویدوں، تبصروں اور پیشوں کو اس کے مصنف کے ساتھ مشترکہ طور پر کیا جاتا ہے، جو ترمیم کرتا ہے اور اسے حذف کرتا ہے۔ آپ کسی بھی وقت قدم اُٹھا سکتے ہیں: آپ کے نام کے بغیر پوسٹ باقی رہ سکتا ہے۔."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "پوسٹ آپ کے پروڈیوس نہیں کیا گیا. ویدوں، تبصروں اور پیشوں کو اس کے مصنف کے ساتھ مشترکہ طور پر کیا جاتا ہے، جو ترمیم کرتا ہے اور اسے حذف کرتا ہے۔ آپ کسی بھی وقت قدم اُٹھا سکتے ہیں : آپ کی کریڈٹ کے بغیر پوسٹ باقی رہ سکتا ہے ۔."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "پوسٹ نے اس تبدیلی سے انکار کر دیا۔."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "پوسٹ وہ جگہ رہتا ہے جہاں آپ کے نام کے ساتھ اس کا نام لیا جاتا ہے اور آپ کی پرورش چھوڑ دیتا ہے۔ اس کا ردِعمل بھی آپ کو چھوڑ دیتا ہے ۔ جو بھی آپ کے نام سے اسے دیکھ رہا تھا وہ اب بھی آپ ہی جانتے ہیں."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "پوسٹ کے مصنف ہیں۔"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "پوسٹ کے مصنف نے اس کو حذف کر دیا، اس لیے اس کو غیر نام اور کوئی تعلق ظاہر کیا جاتا ہے۔ اس کے نیچے موجود تبصرے کو بھی ختم کر دیا جاتا ہے ۔."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17379,9 +17758,17 @@ msgstr "سرور کا خیال ہے کہ آپ کو کچھ سوال کر رہے �
 msgid "The site refused the bot's session."
 msgstr "سائٹ نے بھٹو کے سیشن سے انکار کر دیا۔."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "سائٹ کے اشتہار پہلے سے موجود ہیں۔."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "اس سائٹ کے اراکین نے اس گولڈ حساسیت کی نشان دہی کی، اس لیے صرف ایک اشتہارین اس تبدیلی کو بدل سکتا ہے۔."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "سائٹ کے اذان اسے پڑھ لیں گے۔ انہیں کبھی نہیں بتایا جاتا کہ کس نے بتایا۔."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17547,9 +17934,17 @@ msgstr "یہاں پوسٹ نہیں ہیں۔."
 msgid "There is no account named @%(name)s."
 msgstr "کوئی اکاؤنٹ نام نہیں ہے%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "یہاں اپیل کرنے کے لئے کچھ نہیں ہے."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "ابھی تک کچھ نہیں بچا۔."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "اس پابندی کا انتظار نہیں ہے۔."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17644,36 +18039,24 @@ msgid "They aren't muted here."
 msgstr "وہ یہاں نہیں ہیں."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "انہوں نے آپ سے ذاتی مداخلت کو دور کرنے کے لئے کہا."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "وہ روپے خرید سکتے ہیں، سر، خریداری کر سکتے ہیں۔ Premium اور ساتھ مل کر یا دوڑ میں حصہ لیا۔"
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "وہ تبصرہ کر سکتے ہیں."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "یہ اسپیس کی میزبانی اور اس میں شامل ہو سکتے ہیں اور زندہ طیاروں کو چلا سکتے ہیں۔ کسی اسپیس میں آوازیں بھی گفتگو کی ضرورت ہوتی ہیں۔."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "وہ پوسٹس بنا سکتے ہیں."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "وہ لوگوں کو پیغام دے سکتے ہیں ، گروپ گفتگو کر سکتے ہیں اور فون کر سکتے ہیں ۔ سائٹ کبھی آپ کو کبھی دکھائی نہیں دیتی کہ ایک چیٹ کیا کہتی ہے: گفتگو ختم ہو رہی ہے۔ جو شخص ان کا پاس ورڈ جانتا ہے وہ اب بھی ان پر دستخط کرکے انہیں پڑھ سکتا ہے۔."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "وہ غیرحقیقی طور پر پوسٹ کر کے ایک گول شروع کر سکتے ہیں. آپ اب بھی دیکھ سکتے ہیں کہ کس نے نامزدگی لکھی تھی ۔."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "وہ سائٹ پر آپ کا کیا کام دیکھ سکتے ہیں: آپ کے پوسٹس، تبصرے، ووٹ، کتب خانے کی پیروی، گولڈ، جو آپ سے بات کرتے ہیں، سائٹ انہیں کبھی ظاہر نہیں کرتی کہ آپ کے گفتگو کیا کہتے ہیں، کیونکہ گفتگو ختم ہو گئی ہے. لیکن جو شخص آپ کا پاس ورڈ جانتا ہے، وہ والدین جس نے اس کا انتخاب کیا، آپ کے طور پر دستخط کر سکتے ہیں: اسے سیکورٹی میں تبدیل کر سکتے ہیں تاکہ آپ کو معلوم ہی ہو۔ وہ آپ کے لئے منتخب کرتے ہیں۔"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "وہ ایک گلوکارہ شروع کر سکتے ہیں. وہ اب بھی پوسٹ یا تبصرہ نہیں کر سکتے: بچوں کا اکاؤنٹ صرف پڑھ سکتا ہے۔."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17691,6 +18074,10 @@ msgstr "وہ آپ کے دینار توازن پر سیدھے چلتے ہیں۔."
 msgid "They haven't asked for that."
 msgstr "انہوں نے اس کے لئے درخواست نہیں کی ہے."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "وہ جگہ چھوڑ دیتے ہیں ۔ انھوں نے پچھلے پانچ منٹوں میں بنائی ہوئی چیز کے علاوہ لاگو میں جو کچھ بھی کہا ہے، جس پر کسی نے تبصرہ کیا ہے، یہ غلط نہیں ہو سکتا."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "انہیں گولڑہ میں ہونا چاہیے اور اس سے جلاوطن نہیں ہونا چاہیے۔."
@@ -17702,6 +18089,14 @@ msgstr "انہیں پہلے چینل میں شامل کرنے کی ضرورت ہ
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "وہ کہتے ہیں کہ وہ 18 یا اس سے زیادہ ہیں اور آپ سے درخواست کی کہ ان کے حساب سے رہائی پائے ۔ اگر ایسا ہے تو یہ ان کی ذات بن جاتی ہے اور اب آپ اسے دیکھ نہیں سکتے۔."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "وہ کہاں رہتے ہیں، آپ کے نام سے ان کو ہٹا لیا. یہ غلط نہیں ہو سکتا. ایسے ڈاک ٹکٹ جو آپ کے نام کی ضرورت ہو (ایک حلقہ کے لیے، یا ساتھ ساتھ) اس کے بعد درج کیے جاتے ہیں جیسا کہ تبدیل نہیں ہوتا۔."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "انہوں نے لکھا: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17875,6 +18270,10 @@ msgstr[1] "یہ دعوت مکمل (%(num)s افراد) ہے۔."
 msgid "This can't be translated right now."
 msgstr "ابھی یہ ترجمہ نہیں کیا جا سکتا۔."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "یہ غلط نہیں ہو سکتا. سائٹ کے ادیان ہمیشہ دیکھ سکتے ہیں کہ کس نے کچھ لکھا ہے اور اگر کوئی اشتہارین پابندیوں یا اس کے لیے اکاؤنٹنگ کرتا ہے تو لاگ اس کے لیے اکاؤنٹ نام رکھ سکتا ہے۔."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "یہ چینل قبول کرنے کے لیے اپنے قوانین کا مطالبہ نہیں کرتا۔."
@@ -17959,6 +18358,10 @@ msgstr "اس مواد کو پہلے ہی مرتب کیا گیا ہے۔"
 msgid "This copy is no longer kept."
 msgstr "یہ کاپی اب جاری نہیں ہے۔."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "یہ ابھی تبدیل نہیں ہو سکا۔."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "اس سے اس گول میں ایک نیا، آزادانہ پوسٹ اپنے ووٹوں اور تبصروں کے ساتھ تخلیق ہوتا ہے۔ یہ عنوان تبصرہ کی عبارت سے ماخوذ ہے۔ اصل تبصرے سے متعلق ایک تعلق نئے پوسٹ پر ظاہر کیا جائے گا۔."
@@ -17986,6 +18389,22 @@ msgstr "اس قابل کاشت کھانے کی گولیوں اور حساب"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "اس ذمہ دارانہ خوراک کے اصولوں نے بہت جلد ختم ہونے میں مدد کی۔ اس کا دار الحکومت انہیں تنگ کر سکتا ہے۔."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "اس فیصلے کی اپیل نہیں کی جا سکتی۔."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "یہ فیصلہ پہلے ہی ختم کر دیا گیا ہے۔."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "یہ فیصلہ آپ کے بارے میں ہے۔ اگر آپ کو لگتا ہے کہ یہ غلط ہے تو آپ اس کی اپیل کر سکتے ہیں ۔."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18031,6 +18450,14 @@ msgstr "یہ گولڑ نجی ہے۔ ہر شخص کو ذاتی طور پر پیش
 msgid "This guild's channels are closed."
 msgstr "اس گولڈ کے چینل بند ہیں۔."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "اس میں ایک قانونی سطح کا ریکارڈ ہے، جس کا حوالہ نہیں دیا جا سکتا۔."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "یہ ختم ہو گیا ہے."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "اس دعوت کا جواب پہلے ہی دیا گیا تھا۔."
@@ -18051,6 +18478,10 @@ msgstr "یہ ایک فلکیاتی آلہ ہے: اس کی میزبانی اور 
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "یہ + میں کیے گئے موڈٹر عمل کا لاگو ہے۔%(guild)s. سب پڑھنے والے بھی جگہ جگہ میں موجود ہیں۔ <a href=\"%(url)s\">لاگ</a>. خود کو حذف کرنے والے ارکان کی اشاعت نہیں ہوتی۔"
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "یہ پہلے ہی غیر محفوظ ہے."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "یہ آپ کی زبان میں پہلے سے موجود ہے۔."
@@ -18068,6 +18499,10 @@ msgstr "یہ حلقے کے ارکان کے لیے ہے۔."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "بیشک یہ قرآن کافی ہے سارے جہان والوں کو، <a href=\"%(url)s\">@ فرماتا ہوں:%(name)s</a>' دائرے."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "یہ ایک نجی مقام پر ہے اور عوامی لاگ میں ایک نجی چیز کا حوالہ نہیں دیا جا سکتا۔."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "یہ گولڑ کا دستور ہے۔ CSS فائل."
@@ -18080,6 +18515,10 @@ msgstr "یہ بات آجکل خودبخود مرتب کی گئی تھی ۔."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "یہ دستیاب نہیں ہے جبکہ آپ کا اکاؤنٹ عمر رسیدہ ہے۔ آپ اپنی عمر کے بارے میں مزید معلومات حاصل کر سکتے ہیں ۔ مواد."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "یہ اکاؤنٹ کی اپنی پوسٹ یا تبصرے میں سے کسی ایک نہیں ہے۔."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "یہ آپ کے موجودہ لفظ فیلڈر سطح پر نہیں دکھایا گیا ہے. آپ اپنے الفاظ فیلڈر کو مواد کی ترتیبات میں جانچ سکتے ہیں۔."
@@ -18091,6 +18530,10 @@ msgstr "اس بات کو ظاہر نہیں کیا گیا کہ آپ کہاں ہی
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "یہ ظاہر نہیں کیا گیا جبکہ آپ کا اکاؤنٹ عمر رسیدہ ہے۔."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "یہ آپ کو تبدیل کرنے کے لئے نہیں ہے یا یہ پہلے سے ہی ختم ہو گیا ہے."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18197,6 +18640,10 @@ msgstr "اس پوسٹ کے پاس اب آپ کے profile پر کوئی تبصر�
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "اس پوسٹ میں کوئی زندہ نعرہ نہیں ہے۔."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "یہ پوسٹ نامناسب ہے، تو آپ کا کریڈٹ بھی ہوگا: دیگر ارکان اسے نمبر کے ساتھ \"انونیموس\" کے طور پر دیکھیں گے۔ ناظمین اور پوسٹ کے مصنف اب بھی یہ دیکھ سکتے ہیں۔."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18314,6 +18761,10 @@ msgstr[1] "یہ آواز چینل مکمل (%(num)s افراد) ہے۔."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "یہ آواز چینل ابھی دستیاب نہیں ہے۔."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "یہ پانچ منٹ کے اندر اندر ہی تیار کِیا گیا تھا لہٰذا اس میں کوئی عوامی ریکارڈ نہیں ہے ۔."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18517,6 +18968,10 @@ msgstr "بہت سارے گول پہلے ہی آپ کے نیٹ ورک سے چلا
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "بہت سے نہریں کھلی ہیں۔ ایک تب بند کرو اور پھر کوشش کرو۔."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "آجکل بہت سی خبریں"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "بہت زیادہ سیم!"
@@ -18623,6 +19078,10 @@ msgstr "حقیقی جُرم"
 msgid "Try again"
 msgstr "دوبارہ کوشش"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "کل دوبارہ کوشش کریں۔"
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18631,10 +19090,6 @@ msgstr "ٹو"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "تُرَنَّانِي سَرَپ"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "بند کریں"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18854,6 +19309,10 @@ msgstr "امتیازی نشان ہٹائیں"
 msgid "Undo"
 msgstr "کالعدم کریں"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "فیصلہ کو معطل کریں"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19060,6 +19519,10 @@ msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "ایک وقت میں %(num)s تک. آپ کا اکاؤنٹ 30 دن ہونا ضروری ہے."
 msgstr[1] "ایک وقت میں %(num)s تک. آپ کا اکاؤنٹ 30 دن ہونا ضروری ہے."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "جگہ %(num)s حروف آپ ایک مرتبہ فیصلہ کر سکتے ہیں اور ایک دن تین اپیل کر سکتے ہیں ۔"
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -19764,13 +20227,21 @@ msgstr "کیا پوسٹ"
 msgid "What it posts:"
 msgstr "یہ کیا پوسٹ:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "یہ کیا کہا یہاں نہیں دکھایا گیا ہے."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "کس قسم کی اسپیس؟"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "خود کو حذف کرنے والے ارکان یہاں شائع نہیں ہوتے ہیں۔."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "جس چیز کے ارکان نے سب سے پہلے ، نئے اور الفاظ کو ختم کر دیا تھا ، جیساکہ یہ تھا : کوئی نام اور کوئی تعلق نہیں ۔ لکھنؤ کے پانچ منٹ کے اندر کچھ حذف ہو گیا ہے اور یہاں نہیں ہے. رپورٹ بٹن اس جگہ کے اذان طلب کرتا ہے تاکہ الفاظ نیچے لے جائیں۔."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "جو ارکان ترمیم کرتے تھے، ان میں سے سب سے پہلے: کون (Anonymous for anology actress یا تبصرے)۔ ایک آئٹمس میں ترمیم کی دوڑ ایک لائن ہے. کسی چیز کے لکھنے کے پہلے پانچ منٹ بعد ایک ترمیم ریکارڈ نہیں کی گئی ہے۔ نسخے آئٹم کی تاریخ کے صفحہ پر ہیں۔."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19783,6 +20254,18 @@ msgstr "ماہرین کو کیا حاصل ہوتا ہے"
 msgid "What the guildmasters did"
 msgstr ""
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "ان کے ساتھ کیا کرنا ہے۔"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "آپ کے تبصرے سے کیا مراد ہے۔"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "آپ کی پوسٹ کے ساتھ کیا کرنا ہے"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "کیا کہنا"
@@ -19794,6 +20277,14 @@ msgstr "کیا تلاش کریں"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "ڈیوس میں کیا کام کرتے ہیں"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "جو آپ لاگ میں کو ختم کر دیتے ہیں، اس کے ساتھ کوئی نام نہیں، جب تک آپ اسے پانچ منٹ کے اندر حذف نہ کر دیں."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "تم نے خود کو ختم کیا. اس کے پہلے پانچ منٹ بعد ایک کاپی ہٹا دی گئی جس کا کوئی نام نہیں تھا پانچ منٹ کے اندر اندر کسی چیز کی نقل ذاتی ہوتی ہے اور 90 دن بعد جاتی ہے۔."
 
 #, machine, plain1
 msgid "What you do"
@@ -19848,6 +20339,10 @@ msgstr "جہاں فائلیں چلتے ہیں۔"
 #, machine, plain1
 msgid "Where it is"
 msgstr "یہ کہاں ہے؟"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "جہاں یہ بحث کی گئی تھی۔"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -20007,6 +20502,10 @@ msgstr "کس نے کیا لکھا"
 msgid "Who you follow"
 msgstr "جو تمہاری پیروی کرتے ہیں۔"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "کون، کہاں، کس پر حکمرانی اور کیوں. اس میں کبھی بھی چھپے ہوئے یا ہٹائے گئے متن کا عنوان یا متن نہیں دکھایا گیا ہے۔."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "جس نے یہ خبر شروع کی تھی کہ براؤزر اور خود کو جگہ دی، اس لیے وہ کچھ بھی ثابت نہیں کرتے۔."
@@ -20036,6 +20535,14 @@ msgstr "کیوں نہیں"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "کیوں نہیں ؟"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "یہ نیچے کیوں آنا چاہئے ؟"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "یہ غلط کیوں تھا ؟"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20092,10 +20599,6 @@ msgstr "ساتھ Premium آپ کو ہر چیز کے لئے ایک جگہ حاص�
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "ساتھ Premium آپ دیکھ سکتے ہیں کہ آپ کے ہر پوسٹ کام کس طرح کر رہے ہیں: ہر روز دیکھو، کتنے دستخط شدہ لوگ آئے، ووٹ، تبصرے، کتب خانے، پیش کش اور رد عمل، کس طرح ہر گول میں یہ کام انجام دیتا ہے، اور اس کے نتیجے کے نتائج۔"
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "ذاتی طور پر پیچھے ہٹ جانے کے ساتھ، ایک حلقہ صرف لوگوں کو آپ کے پیچھے رہ سکتا ہے."
 
 #, machine, plain1
 msgid "With a link"
@@ -20445,6 +20948,10 @@ msgstr[1] "آپ پہلے ہی %(num)s گولوں کی سب سے زیادہ قی�
 msgid "You already made that comment: %(link)s"
 msgstr "تم نے پہلے ہی یہ تبصرہ کیا ہے: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "آپ نے یہ پہلے ہی بتا دیا تھا"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "آپ نے یہ اکاؤنٹ پہلے ہی بتا دیا تھا۔."
@@ -20476,6 +20983,10 @@ msgstr "آپ نے پہلے ہی اس پوسٹ پر ووٹ دیے، اصل پوس
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "آپ اور اُن کے 3 بہن‌بھائیوں کو لکھیں ۔ دوسرے حلقے کے لیے اسے اس پر بناتے ہیں۔ <a href=\"%(url)s\">آپ کے چینل</a>. آپ 3 چینل تک پہنچ سکتے ہیں."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "آپ نے اس فیصلے کی اپیل کی۔."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20554,10 +21065,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "آپ نے اپنے والدین یا سرپرست سے درخواست کی کہ وہ اپنے حساب کو آزاد کریں۔ انہوں نے ابھی تک کوئی جواب نہیں دیا۔."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "آپ نے اپنے والدین یا سرپرست سے درخواست کی کہ وہ اس کو ہٹا دیں۔ انہوں نے ابھی تک کوئی جواب نہیں دیا۔."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "آپ 500 ریپیشن میں تصاویر شامل کر سکتے ہیں یا پہلے سے ہی Premium"
 
@@ -20592,6 +21099,10 @@ msgstr "آپ اسے ہر ویڈیو کے لئے بدل سکتے ہیں جب آپ
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "آپ اس تبدیلی کر سکتے ہیں جب انہوں نے آپ کا پیغام قبول کر لیا ہے."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "تم پر تبدیل کر سکتے ہیں %(max)s ایک وقت میں چیزیں."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20706,6 +21217,10 @@ msgstr[1] "آپ ایک گولڈ میں دن میں %(num)s ویکی ترمیم �
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "ایک بار آپ اپنے حساب سے بچوں کا حساب لگا سکتے ہیں ۔ آپ مزید معلومات حاصل کر سکتے ہیں ۔."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "آپ دن میں تین اپیل کر سکتے ہیں ۔ کل پھر کوشش کریں."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21045,6 +21560,10 @@ msgid_plural "You have %(num)s coins."
 msgstr[0] "آپ کے پاس %(num)s روپیہ ہے."
 msgstr[1] "آپ کے پاس %(num)s روپے ہیں."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "آپ نے پہلے ہی اس فیصلے کی اپیل کی ہے۔."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "آپ نے پہلے ہی روک دیا ہے ~%(name)s."
@@ -21086,6 +21605,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -21184,6 +21712,10 @@ msgstr "تم نے اپنے بحالی کوڈ کو برقرار رکھنے نہی
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "تم نے ابھی تک ہمیں نہیں بتایا ہے."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "آپ نے یہ فیصلہ کیا تو ایک اور گلوکار موڈر اس کی اپیل کا فیصلہ کرتا ہے۔."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21288,6 +21820,14 @@ msgstr "آپ نے ایک کے ساتھ دستخط QR کوڈ. اس فارم اس�
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "آپ نے ہمیں بتایا کہ آپ کو تبدیل کرنا چاہتا ہے %(site)s اکاؤنٹ ای میل. اس عمل کو ختم کرنے کے لیے، اپنے نئے ای میل کی تصدیق کریں:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "آپ کو اس نامزد پوسٹ میں شرکت کی دعوت دی گئی۔ اگر آپ کو قبول کیا جائے تو آپ کا کریڈٹ بھی نامناسب ہے اور پوسٹ آپ کی پرفارمنس پر درج نہیں ہے۔ ویدوں، تبصروں اور پیشوں میں حصہ لیا جاتا ہے اور صرف اس کے مصنف کی تدوین یا اسے حذف کر دیتا ہے۔."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -21665,6 +22205,10 @@ msgstr "آپ کا اکاؤنٹ کم از کم 30 دن پرانا ہونا ضرو
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "اب آپ کا اکاؤنٹ خودبخود پوسٹ نہیں کِیا جا سکتا ۔ اس کے پوسٹ."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "آپ کا بیان صرف اب تک پڑھا جاتا ہے، تو یہ تبصرہ نہیں کر سکتا۔ آپ اب بھی ووٹ، پیروی اور کتابچہ بازی کر سکتے ہیں۔."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "اب آپ کا اکاؤنٹ اِن خوراک سے پوسٹ کرتا ہے ۔."
@@ -21699,6 +22243,53 @@ msgstr "آپ کی عمر مبارک پر تصدیق ہوئی۔ %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "آپ کا جواب"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "آپ کی اپیل پڑھنے کا انتظار ہے."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "آپ کی اپیل قبول کر لی گئی اور یہ فیصلہ واپس کر دیا گیا۔."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "آپ کی اپیل پر غور کیا گیا اور فیصل کھڑا ہوا۔."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "آپ کی اپیل مزید نہیں لی گئی۔."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "آپ کی اپیل بھیجی گئی۔."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21782,12 +22373,12 @@ msgid "Your circles - %(site)s"
 msgstr "آپ کے حلقے - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "آپ کا تبصرہ سائٹ کے صفحات سے اخذ کیا جائے گا۔ سائٹ 90 دن تک نجی کاپی رکھتی ہے، جو صرف آپ اور سائٹ کے منتظمین کھل سکتے ہیں۔ یہ غلط نہیں ہو سکتا."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "آپ کا تبصرہ تاریخ یہاں دکھائی دے گا۔."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "اس ڈاک ٹکٹ پر آپ کا کریڈٹ غیر منقوط ہے: دیگر ارکان اسے \"انونیموس\" کے طور پر دیکھتے ہیں۔ #N\". ایڈمینس اور پوسٹ کے مصنف اب بھی یہ آپ ہی کی حیثیت رکھتا ہے۔ یہ غلط نہیں ہو سکتا."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21932,14 +22523,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "آپ کے والدین یا سرپرست سے پوچھا گیا ہے کہ وہ آپ کے حساب سے رخصت ہوں۔ جب تک وہ جواب نہیں دیتے ۔."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "آپ کے والدین یا سرپرست سے کہا گیا ہے کہ وہ نجی طور پر مداخلت کریں."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "آپ کے والدین یا سرپرست کو نجی جائداد بند کرنے سے پہلے اتفاق کرنا پڑتا ہے۔."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "آپ کے والد یا سرپرست نے آپ کے حساب کے لیے اس بات کو مسترد کر دیا ہے۔."
 
@@ -21951,14 +22534,6 @@ msgstr ""
 
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr ""
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "آپ کے والد یا سرپرست نے آپ کے اکاؤنٹ کے لئے نجی مداخلت کی."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "آپ کے والدین یا سرپرست چاہتے ہیں کہ نجی طور پر مداخلت کرے."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -21990,10 +22565,6 @@ msgstr "آپ کے فون نے کہا نہیں، تو میں کوئی دستخط 
 
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr ""
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "آپ کا پوسٹ آپ کے پروڈیوس، کھانا اور گلوکاروں کو ہٹا دیا جائے گا۔ سائٹ 90 دن تک نجی کاپی رکھتی ہے، جو صرف آپ اور سائٹ کے منتظمین کھل سکتے ہیں۔ یہ غلط نہیں ہو سکتا."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -22106,6 +22677,10 @@ msgstr "آپ کا لقب سوال ہے۔ %(min)s جگہ %(max)s اختیارات
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "آپ کا لقب سوال ہے۔ دے %(min)s جگہ %(max)s ایسی صورت میں ۔ لوگ اس پوسٹ کے ہر آگے سے ووٹ دے سکتے ہیں اور دوبارہ سے اس پوسٹ کے ذریعے، ایک بار،"
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "آپ کے دو طرفہ کوڈ"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "آپ کی دادی آپ کا منفرد ہے <code>@handle</code>: آپ کی پرورش کا پتہ اور لوگوں کا ذکر اور تلاش۔ اسے تبدیل کرنے کے لیے 20 کوائن خرچ ہوتے ہیں اور ہر 7 دن میں ایک مرتبہ کیا جا سکتا ہے۔ اِس لیے اُس کا نام بدل دیا جائے گا ۔"
@@ -22165,6 +22740,9 @@ msgstr "[FAQ](/help/faq)"
 msgid "[Guild Siege](/help/siege)"
 msgstr ""
 
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr ""
+
 msgid "[Legal Policies](/help/legal)"
 msgstr ""
 
@@ -22219,6 +22797,61 @@ msgstr ""
 msgid "[Titles](/help/titles)"
 msgstr ""
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[ب]"
@@ -22269,6 +22902,10 @@ msgstr "[چیخ]"
 msgid "a day"
 msgstr "ایک دن"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "حذف شدہ پوسٹ"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "ایک گول یا پوسٹ جسے اب کوئی نام نہیں دیا گیا ۔."
@@ -22308,6 +22945,12 @@ msgstr "سرگرمی"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "بوٹی کا کھانا شامل کریں %(target)s چینل تک"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "ایک کمیونٹی نوٹ کو شامل کریں %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22394,12 +23037,16 @@ msgstr "بائٹس"
 msgid "by %(author)s"
 msgstr "از %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "قسم %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "قسم %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "قسم <a href=\"%(link)s\">@ فرماتا ہوں:%(name)s</a>"
@@ -22484,6 +23131,12 @@ msgstr "آگے کی ضرورت ہے کہ تبدیل کیا گیا ہے"
 msgid "changed who may edit a wiki page"
 msgstr "کون تبدیل کر سکتا ہے"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "گفتگو %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22503,6 +23156,10 @@ msgstr "سکوں"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "تبصرہ"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "تبصرہ #%(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22591,6 +23248,12 @@ msgstr "جی ہاں. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</sp
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "جی ہاں. <span class=\"font-weight-bold\">%(score)s</span> کے لئے %(up)s اٹھو. %(down)s نیچے"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "مدون کی تدوین %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22601,10 +23264,21 @@ msgstr "تدوین wiki صفحہ"
 msgid "edited an event"
 msgstr "ایک تقریب مدون کی گئی"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "مدون کی تدوین کی %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "ختم ہوا"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "فلکیات کا خاتمہ %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -22630,6 +23304,12 @@ msgstr "اور جو کچھ اس میں ہے سب کچھ"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "آپ کی نوعیت سب کچھ آپ پر قابل تعریف ہے۔"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "جلاوطن %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22710,6 +23390,11 @@ msgstr "ان کی روشنی میں %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "ان کی پوسٹ پر روشنی ڈالی گئی %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "پوشیدہ %(target)s اپنے دستخط کے تحت"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22770,6 +23455,10 @@ msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "%(num)s منٹ میں"
 msgstr[1] "%(num)s منٹ میں"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "اس سوراخ میں"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -22934,6 +23623,11 @@ msgstr "پرانی"
 msgid "only guildmasters write here"
 msgstr "یہاں صرف گولڈ موڈر لکھتے ہیں۔"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "کھولیں%(guild)s سب کے لئے"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "بیرونی سرور"
@@ -22990,6 +23684,10 @@ msgstr "چینل میں پیام ملا"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "بند %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "پوسٹ #%(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23064,6 +23762,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "پیغام ہٹا کر %(target)s چینل سے"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "ایک عوامی چینل سے پیام حذف کیا"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "اسپیس بورڈ سے پیغام ہٹا دیا %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "گولڈ کی ایک ترمیم ہٹا دی"
@@ -23086,6 +23794,12 @@ msgstr "گول موڈر ہٹا دیا %(target)s"
 msgid "removed post %(target)s"
 msgstr "پوسٹ بند کریں %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "کمیونٹی نوٹ ہٹا دیا %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -23094,6 +23808,12 @@ msgstr "چینل کی تنصیب کا نام بدلیں"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "تجدید %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "کمیونٹی نوٹ کی جگہ %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23137,6 +23857,11 @@ msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "حصہ. صرف مصنف اس پوسٹ کو شیئر کر سکتا ہے۔."
 msgstr[1] "حصہ. صرف مصنف اس پوسٹ کو شیئر کر سکتا ہے۔."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "ڈسپلے %(target)s ایک بار پھر اپنی پوسٹ کے تحت"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -23258,11 +23983,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "ٹاپ"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "غیر متصل %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "غیر متصل صارف %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "غیر مکمل %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23323,6 +24060,14 @@ msgstr "غیر متصل %(target)s اس گلی میں"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "غیر متصل %(target)s اس گلی میں"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "تک %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "اوپر %(max)s ایک وقت ہے"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

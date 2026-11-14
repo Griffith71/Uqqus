@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: lt\n"
@@ -559,6 +559,13 @@ msgstr[0] "%(num)s simbolių riba pavadinimams."
 msgstr[1] "%(num)s simbolių riba pavadinimams."
 msgstr[2] "%(num)s simbolių riba pavadinimams."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s pasirinkta"
+msgstr[1] "%(num)s pasirinkta"
+msgstr[2] "%(num)s pasirinkta"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -637,6 +644,13 @@ msgid_plural "%(num)s days remaining"
 msgstr[0] "likusios %(num)s dienos"
 msgstr[1] "likusios %(num)s dienos"
 msgstr[2] "liko %(num)s dienų"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s redaguoti iš eilės"
+msgstr[1] "%(num)s iš eilės"
+msgstr[2] "%(num)s eilučių iš eilės"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -719,6 +733,20 @@ msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s suinteresuotos"
 msgstr[1] "%(num)s suinteresuotos"
 msgstr[2] "%(num)s suinteresuotos"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s punktas pakeistas"
+msgstr[1] "%(num)s punktai pakeisti"
+msgstr[2] "pasikeitė %(num)s elementų"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "nepavyko pakeisti %(num)s elemento:"
+msgstr[1] "nepavyko pakeisti %(num)s elementų:"
+msgstr[2] "nepavyko pakeisti %(num)s elementų:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1416,6 +1444,10 @@ msgstr "%(who)s priimtas gildijos moderatoriaus kvietimas"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s pridėjo bot feed %(target)s į kanalą"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s pridėjo bendrijos raštelį"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s pridėjo etiketę"
@@ -1480,6 +1512,10 @@ msgstr "%(who)s pakeitė ar reikia etiketės į priekį"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s pasikeitė kas gali redaguoti wiki puslapį"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s uždraudė %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s naudotojas, kuriam draudžiama naudoti chatisolesą %(name)s"
@@ -1528,6 +1564,10 @@ msgstr "%(who)s išbraukė wiki puslapį"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s pašalintas po %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s redagavo komentarą"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s redagavo wiki puslapį"
@@ -1535,6 +1575,18 @@ msgstr "%(who)s redagavo wiki puslapį"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s redagavo įvykį"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s redaguotas postas %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s baigė kosmosą"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s išmesta %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1555,6 +1607,10 @@ msgstr "%(who)s pabrėžė jų postą %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s paslėpė komentarą iš šios gildijos"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s paslėpė komentarą savo poste"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1604,6 +1660,10 @@ msgstr "%(who)s pažymėtas komentaras kaip jautrus turinys"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s pažymėtas kaip jautrus turinys po %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s atidarytas + %(guild)s visiems"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s neištrino komentaro"
@@ -1644,6 +1704,18 @@ msgstr "%(who)s atkurtas paštas %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s pašalino kanalo pranešimą"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s pašalino bendrijos raštelį"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s pašalino pranešimą iš kosmoso lentos"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s pašalino pranešimą iš viešojo kanalo"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s pašalino gildijos wiki modifikaciją"
@@ -1668,6 +1740,10 @@ msgstr "%(who)s pašalintas naudotojas %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s pervadinta kanalo kategorija"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s pakeitė bendrijos notą"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s atšauktas gildijos moderatoriaus kvietimas į @ %(name)s"
@@ -1683,6 +1759,10 @@ msgstr "%(who)s nustatyti nsfw po %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s nustatyti po %(title)s etiketę"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s vėl parodė komentarą"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1708,9 +1788,17 @@ msgstr "%(who)s nuėmė kanalo pranešimo kaištį"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s atliko vaidmenį iš %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s ne-chatuždraustas %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s ne-chatuždraustas naudotojas %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s neišspaustas %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1796,6 +1884,10 @@ msgstr "(iš originalo)"
 msgid "(in a private place)"
 msgstr "(privačioje vietoje)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(nėra teksto)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(nėra pavadinimo)"
@@ -1867,6 +1959,10 @@ msgstr "**Spauda**"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Pridėti parinktį"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+ %(guild)s Skundai"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2386,10 +2482,6 @@ msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [O
 msgstr ""
 
 #, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@ %(name)s paprašė jūsų išjungti savo paskyrą. Atsakymą galite pateikti [Nustatymai > Vaikai] (/settings/children)."
-
-#, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@ %(name)s blokuotas."
 
@@ -2739,6 +2831,10 @@ msgstr "Kosmosas negali būti anonimiškas."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Kosmosas negali būti patalpintas rato gildijos."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Kosmosas negali būti pašalintas."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "Kosmosas negali prasidėti praeityje."
@@ -2766,6 +2862,10 @@ msgstr "Prenumeratoriaus ženklas šalia Jūsų vardo @%(name)sprofilis ir žinu
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "Translate mygtukas rodo po žinutes ir komentarus nė viena iš jūsų kalbų. Nieko nėra išversta, nebent paspausite."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Draudimas gali nurodyti iki %(max)s elementus."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2969,9 +3069,25 @@ msgstr[0] "Apskritimo vardas gali būti ne daugiau kaip %(num)s simbolis."
 msgstr[1] "Apskritimo vardas gali būti ne daugiau kaip %(num)s simboliai."
 msgstr[2] "Apskritimo vardas gali būti ne daugiau kaip %(num)s simbolių."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "Koautorinis postas negali būti anonimiškas."
+#, machine, plain2
+msgid "A comment"
+msgstr "Komentaras"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Užblokuotas arba užblokuotas paskyros komentaras."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Name."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Jūsų žodžių filtro paslėptas komentaras."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Komentaras jo autorius pašalintas. Tai, ką jis pasakė, čia nėra parodyta."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2980,6 +3096,10 @@ msgstr "Komentaras apie postą Circle negali būti siunčiami į gildiją."
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "Komentaras apie Circle postą negali būti pakartotinai paskelbtas."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "Svetainės administratorių pašalintas komentaras."
 
 #, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2997,6 +3117,14 @@ msgstr "Viso sklypo Quarated pašarui reikia mėnesio ar mažiau amžiaus ribos.
 msgid "A day"
 msgstr "Diena"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "Sprendimas žurnale"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Pašalinti paštu ir kas buvo pasakyta pagal jį"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -3010,6 +3138,10 @@ msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "Aprašymas yra ne daugiau kaip %(num)s simbolis."
 msgstr[1] "Aprašas yra ne daugiau kaip %(num)s ženklai."
 msgstr[2] "Aprašymas yra ne daugiau kaip %(num)s simbolių."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Kitas admin turi patvirtinti atskleisti."
 
 #, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -3119,6 +3251,10 @@ msgstr "Grupės pavadinimas negali sudėti @: jis būtų skaitoma kaip rankena."
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "Grupės pavadinimas negali turėti kontrolės ar nematomų simbolių."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Norint uždrausti gildiją, reikia viešos priežasties, todėl gildijos puslapis ir žurnalas gali pasakyti kodėl."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3250,6 +3386,10 @@ msgstr "Mėnesinis biudžetas, kurį dalijasi nariai, kurių pareigybes ir komen
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Pasmaugtas žmogus vis dar gali skaityti, bet negali rašyti jokiame iš + %(guild)s kanalų. Jiems sakoma, kai jie bando."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Pastaba asmeniui"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3320,6 +3460,10 @@ msgstr[2] ""
 msgid "A poll option can't hold control characters."
 msgstr "Apklausos parinktis negali turėti valdymo simbolių."
 
+#, machine, plain2
+msgid "A post"
+msgstr "A post"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3345,6 +3489,10 @@ msgstr "Rato postas negali būti perkrautas."
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "Rato postas negali turėti bendraautorių."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Rato postas negali turėti jo vardo."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3374,6 +3522,10 @@ msgstr "Postas praranda pusę savo svorio"
 msgid "A post needs a title."
 msgstr "Paštui reikia titulo."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "Pašto, kuris buvo išpilamas negali turėti savo pavadinimą pašalinti, nes monetos nuėjo pas jus."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Pranešimas, kuris nėra viešas, negali naudoti šio paveikslėlio įkelti: jos failus gali atidaryti bet kas su adresu. Įdėkite paveikslėlį iš susietos saugyklos, o ne (Parametrai > Media)."
@@ -3382,9 +3534,17 @@ msgstr "Pranešimas, kuris nėra viešas, negali naudoti šio paveikslėlio įke
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Su bendraautorių žinutė negali būti perkelta į ratą. Perkeliant viešąjį postą į apskritimus nukrenta jūsų persiųsti kopijos; kopijos kiti žmonės persiųsti likti savo kaltes."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Rašymas parašytas kartu yra viešas ir negali būti anonimiškas, bendrinamas su apskritimais, arba turi apklausą. Jos autoriai yra jos bendraautoriai. Šios parinktys yra dalijamasi kiekvieno autoriaus ir naudojamas kiekvieną kartą, kai jūs publikuoti."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Kartu parašytas įrašas išbraukiamas tik tada, kai jo autoriai sutinka, bendrame projekte."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Rašymas parašytas kartu yra viešas ir negali būti dalijamasi su apskritimais ar turi apklausą. Jos autoriai yra jos bendraautoriai. Šios parinktys yra dalijamasi kiekvieno autoriaus ir naudojamas kiekvieną kartą, kai jūs publikuoti."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Su kitais parašytas įrašas negali turėti savo vardą pašalinti čia dar."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3740,6 +3900,10 @@ msgstr "Priimti pakvietimą"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Priimti moderatoriaus pakvietimą"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Priimti be mano vardo (admins ir posto autorius vis dar gali matyti tai aš)"
 
 #, machine, plain1
 msgid "Account"
@@ -4363,6 +4527,10 @@ msgstr "Autorius nustoja būti skaičiuojamas po to toli nuo svetainės"
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Autorius, kuris nebuvo aktyvus svetainėje %(time)s nesuskaičiuota."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Automatinis postas negali jo vardo pašalinti."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Užšifruotas kanalas negali prašyti priimti jo taisyklių: svetainė negali patikrinti, kas parašė."
@@ -4479,9 +4647,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonimas"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Anoniminis komandiravimas ir kaltės nustatymas"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Anonimas #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4567,6 +4735,26 @@ msgstr "Kiekvienas gali pamatyti, kas jūs sekate, kas seka jus ir jūsų apskri
 #, machine, plain1
 msgid "App Name"
 msgstr "Programos pavadinimas"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Sprendimo apskundimas"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Skundžiamas sprendimas - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Šio sprendimo apskundimas"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Skundai"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Skundai sprendimus šios gildijos gildijos moderatoriai padarė. Apeliacinis skundas yra privatus: tik gildijos moderatoriai, kurie gali nuspręsti jį perskaityti. Grąžinant sprendimą atšaukia jį ir rašo naują įrašą Prisijungti, susijęs su pirmuoju; asmeniui yra pasakyta, kaip jis baigėsi. Jūs negalite nuspręsti savo sprendimo apeliaciją, o kitas gildijos moderatorius galėtų."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4706,10 +4894,6 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kaip autorius redaguojate projektą gyventi su jais, ir kiekvienas simbolis, kurį įvedėte yra kredituojamas jums. Kai pranešimas yra paskelbtas, bet kas, kas gali pamatyti, gali pamatyti, kas parašė ką. Autoriai kartu sprendžia:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Paprašyk mano tėvo išjungti"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5585,6 +5769,10 @@ msgstr "Taisyklių keitimas"
 msgid "Change the two-factor settings for your account."
 msgstr "Pakeiskite dviejų faktorių paskyros nustatymus."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Pakeisti juos"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "Pakeiskite paskyros slaptažodį."
@@ -5856,6 +6044,10 @@ msgstr "Pasirinkite bent vieną ratą arba paskelbkite jį viešai."
 msgid "Choose at least one of your circles."
 msgstr "Pasirinkite bent vieną savo ratą."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Pasirinkite bent vieną pranešimą ar komentarą."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "Pasirinkite bent vieną istoriją."
@@ -5911,6 +6103,10 @@ msgstr "Pasirinkite, koks jis yra botas."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Pasirinkite, koks tai atsiliepimas."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Pasirinkite, ką su jais daryti."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -6184,6 +6380,10 @@ msgstr "Komiksai ir animacijos"
 msgid "Coming up"
 msgstr "Artėja"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Komentaras"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -6193,9 +6393,13 @@ msgstr "Komentuoti"
 msgid "Comment %(id)s has been removed"
 msgstr "Komentaras %(id)s buvo pašalintas"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Komentaras anonimiškai: kiti vartotojai nematys jūsų vardo"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Komentuokite anonimiškai: kiti vartotojai jūsų vardo nematys. Jei administratorius uždraudžia arba sustabdo sąskaitą už ją, žurnalas gali nurodyti sąskaitą už šią pastabą."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Komentaras kaip sau: jūsų vardas rodo šį komentarą"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -6204,10 +6408,6 @@ msgstr "Komentaras pažymėtas."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Komentaras paskelbtas!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Komentavimas"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6802,6 +7002,10 @@ msgstr "Desepsiniai URL sutrumpikliai neleidžiami."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Neleidžiami desepsiniai URL sutrumpikliai."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Nuspręsti"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6865,6 +7069,10 @@ msgstr "Pašalinti komentarą?"
 msgid "Delete folder"
 msgstr "Pašalinti aplanką"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Pašalinti"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "Pašalinti mano paskyrą"
@@ -6888,6 +7096,14 @@ msgstr "Pašalinti paskyrą"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "Pašalinti paskelbtą postą"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Ištrinti"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Ištrinti šiuos elementus?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6932,6 +7148,10 @@ msgstr "Ištrinti savo %(site)s paskyrą"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "Pašalinti savo pranešimus ir komentarus"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Panaikinta"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -7128,6 +7348,14 @@ msgstr[0] "Aptarta kitoje %(num)s vietoje"
 msgstr[1] "Aptartos %(num)s kitose vietose"
 msgstr[2] "Aptarta %(num)s kitų vietų"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Aptarta + %(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Aptartas profilyje"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "Diskusija"
@@ -7210,6 +7438,10 @@ msgstr "Priimta"
 #, machine, plain1
 msgid "Done to"
 msgstr "Priimta"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Atlikta."
 
 #, machine, plain1
 msgid "Download"
@@ -7407,6 +7639,10 @@ msgstr "Keisti savo pranešimus ir komentarus"
 msgid "Edited %(when)s"
 msgstr "Redaguota %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Redagavo"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "Šį pranešimą redagavo %(who)s"
@@ -7422,6 +7658,10 @@ msgstr "Redaguoti taip pat atnaujina kopijas šio posto persiųsti į kaltes."
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Redaguoti atnaujinimus šį postą visur jis buvo išsiųstas."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Redai"
 
 #, machine, plain1
 msgid "Education"
@@ -7766,13 +8006,13 @@ msgstr "Visi mato vienas kito pakeitimus, kai jie įveda, ir kiekvienas veikėja
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Viskas iš tavo kaltės ir sąskaitų, naujausia pirma."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Viskas, ką jie rašyti eina tik į savo draugų ratą. Išjunkite jį, kad jie rašyti viešai."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Įrodymų negalima nurodyti"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Viskas, ką rašote, eina tik į draugų ratą, žmones, kuriuos sekate, kurie jus seka, taigi niekas nėra viešas atsitiktinai. Jūsų apskritimai gali tik laikyti žmones kaip, ir jūs negalite persiųsti, perrašyti ar parašyti bendrą projektą. Pastabos apie kitų žmonių postus vis dar viešos."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Įrodymai:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7819,6 +8059,10 @@ msgstr "Pavyzdys: katės šunys · neturi nei \"katės\", nei \"šunys\""
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Pavyzdys: laiminga valanda · turi tikslią frazę \"laiminga valanda\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Ištremti %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9228,6 +9472,10 @@ msgstr "Kiek laiko"
 msgid "How long it runs"
 msgstr "Kiek tai trunka"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Kaip saikingas įrašymas"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Kiek tau metų?"
@@ -9422,6 +9670,10 @@ msgstr "Į %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "Gildijoje"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "Į žurnalą kaip anoniminis"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9718,6 +9970,14 @@ msgstr "Po to viskas baigiasi savaime. Gali tai užbaigti anksčiau."
 msgid "It is reviewed with the bot."
 msgstr "Jis peržiūrimas su botu."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Jis palieka svetainės puslapius. Jei jis yra mažiau nei penkių minučių senumo ir niekas kitas pakomentavo apie jį, jis ištrinamas: tik jūs ir svetainės administratoriai gali atidaryti privačią kopiją, 90 dienų. Priešingu atveju, ką jis sakė likti žurnalo kaip Anoniminis, be pavadinimo ir nuorodos, ir bet kas gali skaityti jį ten."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Jis palieka tavo profilį, maitina ir kaltes. Jei jis yra mažiau nei penkių minučių amžiaus ir niekas kitas komentavo, jis ištrinamas: tik jūs ir svetainės administratoriai gali atidaryti privačią kopiją, 90 dienų. Priešingu atveju, ką jis sakė likti žurnalo kaip Anoniminis, be pavadinimo ir nuorodos, ir bet kas gali skaityti jį ten."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Jis gyvena tavo profilyje, po kosmosu. Giild rodo savo kortelę, balsus ir akcijas, ir atveria erdvę."
@@ -9734,13 +9994,13 @@ msgstr "Jis rodo, visiškai, kiekvieną žodį ir frazę žodis filtras atrodo, 
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Jis lieka vaiko sąskaitą su vaiko užraktas, bet jūs negalite daugiau pamatyti ar pakeisti, ką ji gali padaryti, ir jūs negalite susieti ją vėl."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Jis lieka ant Vaiko žodžių filtro, kuris slepia nuolankumą ir bet ką pažymėtą jautrų."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Jis lieka ant Vaiko žodžių filtro, kuris slepia nuolankumą ir bet ką pažymėtą jautrų. Vaiko sąskaita tik skaito: ji negali rašyti ar komentuoti, bet jūs vis dar galite balsuoti, sekti, prisijungti gudrybės, žymelė ir ataskaita."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Jis lieka ant Vaiko žodžių filtro, kuris slepia nuolankumą ir bet ką pažymėtą jautrų. Pokalbis, tarpai, monetos, anoniminis skelbimas ir gildijos pradžia yra išjungti, ir kiti negali pradėti pokalbį ar patarimą jums. Jūsų žinutės eiti į savo draugų ratą tik tada, jei jūs išjungti Privatus skelbimas."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Jis lieka ant Vaiko žodžių filtro, kuris slepia nuolankumą ir bet ką pažymėtą jautrų. Pokalbis, tarpai, monetos ir gildijos pradžia yra išjungtos, o kiti negali pradėti pokalbio ar patarti jums. Vaiko sąskaita tik skaito: ji negali rašyti ar komentuoti, bet jūs vis dar galite balsuoti, sekti, prisijungti gudrybės, žymelė ir ataskaita."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9910,10 +10170,6 @@ msgstr "Birželio saulėgrįža"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Laikykite jį įjungtą"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -10177,6 +10433,10 @@ msgstr "Kairė"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "Kairė + %(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "Kairėje nepažymėtas, jūsų komentarai likti pagal savo vardą, ir kad sako skaitytojams, kurie parašė pranešimą."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10980,6 +11240,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Išjungti"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "Nutildyti %(alias)s kanaluose"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Nutildyti + %(guild)s"
@@ -11333,6 +11597,10 @@ msgstr "Dar nepridėta jokių sąskaitų."
 msgid "No ads"
 msgstr "Nėra skelbimų"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Jokių apeliacijų nelaukiama."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "Nėra užblokuotų paskyrų"
@@ -11589,6 +11857,10 @@ msgstr "Niekas negali dabar sumokėti už prisijungimą: gildija yra tik kvietim
 msgid "Nobody can sign in to your account with a code."
 msgstr "Niekas negali pasirašyti jūsų sąskaitos kodu."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Niekas apie tai nekomentavo."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Niekas negauna daugiau kaip %(share)s %% iš mėnesio biudžeto. Akcijos suapvalinamos iki sveiko skaičiaus."
@@ -11754,6 +12026,10 @@ msgstr "Neįrašytos"
 msgid "Not slowed by slow mode"
 msgstr "Nesulėtėjo lėta veiksena"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Daugiau nepriimta"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "Nepriimti abonentų"
@@ -11901,6 +12177,10 @@ msgstr "Dar nieko neparašyta."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Dar nieko."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Čia nėra nieko, ką ištrintum."
 
 #, machine, plain1
 msgid "Notification types"
@@ -12174,6 +12454,10 @@ msgstr "Tik paskyros @ %(name)s gali komentuoti šį pranešimą."
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Tik sąskaitos jums sekti gali komentuoti šį pranešimą dabar."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Tik admin gali patvirtinti atskleisti."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "Tik admin gali pradėti jį vėl."
@@ -12444,6 +12728,10 @@ msgstr "Tik tu"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Tik tu tai matai. Tai svarbu: niekas, kuris žiūrėjo, balsavo ar atsakį apklausą, nėra įvardytas."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Tik jūsų kredito pokyčiai: kiti autoriai lieka pavadinti. Adresai ir posto autorius vis dar gali pamatyti tai jūs."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12512,6 +12800,10 @@ msgstr "Atverti startui"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "Atidaryti iki %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Atidarykite savo kopiją"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12652,17 +12944,17 @@ msgstr "Kita arba nežinoma"
 msgid "Other spellings:"
 msgstr "Kiti rašymo variantai:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Kiti vartotojai pamatyti Anoniminis vietoj savo vardą. Jūs ir svetainės administratoriai vis dar galite pamatyti, ji laikosi tų pačių taisyklių, kaip ir bet koks pranešimas, ir jis negali būti atšauktas po komandiravimo. Regiono filtras vis dar rodo, iš kurio regiono jis kilęs. Ji nėra įtraukta į jūsų profilį: rasite jį Istorijoje, pagal Anonimas."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Kiti vartotojai pamatyti Anoniminis vietoj savo vardą. Jūs ir svetainės administratoriai vis dar galite pamatyti, ji laikosi tų pačių taisyklių, kaip ir bet koks pranešimas, ir jis negali būti atšauktas po komandiravimo. Regiono filtras vis dar rodo, iš kurio regiono jis kilęs. Ji nėra įtraukta į jūsų profilį: rasite jį Istorijoje, pagal Anonimas. Jei administratorius uždraudžia arba sustabdo sąskaitą, žurnalas gali nurodyti sąskaitą."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Kiti naudotojai mano, kad tai anonimiška. Tik jūs ir svetainės administratoriai pamatysite savo vardą."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Kiti mato anonimiškas vietoj savo vardą; jūs ir svetainės administratoriai vis dar pamatyti. Regiono filtras vis dar rodo, iš kurio regiono jis kilęs. Jis negali būti pakeistas po komandiravimo."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Kiti mato anonimiškas vietoj savo vardą; jūs ir svetainės administratoriai vis dar pamatyti. Regiono filtras vis dar rodo, iš kurio regiono jis kilęs. Jis negali būti pakeistas po komandiravimo. Jei administratorius uždraudžia arba sustabdo sąskaitą, žurnalas gali nurodyti sąskaitą."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12671,6 +12963,10 @@ msgstr "Mūsų atsakymas į atsiliepimus \"%(excerpt)s\": %(response)s"
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Mūsų apsauginiai spynos išliejo neįveikiamą skydą aplink šį puslapį."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Rezultatai"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -13355,6 +13651,10 @@ msgid "Popular this week"
 msgstr "Populiarus šią savaitę"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Skelbti"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Skelbti"
@@ -13375,6 +13675,10 @@ msgstr "Paskelbti atnaujinimą"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Skelbti anonimiškai"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Post anonimiškai: kiti nariai kiekvieną autorių laiko anonimišku numeriu. Gydytojai visada gali pamatyti, kas jie yra. Jis negali būti pakeistas, kai paštas yra paskelbtas."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -13452,10 +13756,6 @@ msgid "Posted on that day."
 msgstr "Paskelbta tą dieną."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "Siuntimas"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Sušalimas"
 
@@ -13483,6 +13783,10 @@ msgstr "Įrašai"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Name Su: +guild, to gildo etikete."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Pranešimai ir pastabos"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13574,6 +13878,10 @@ msgstr "Guli gildijoje. in: #gaming yra temos gudrybės, o in: &news yra viešo 
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Leidinių kalba: kodas (lt) arba jo pavadinimas (english)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Pareigybės arba pastabos"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13767,6 +14075,10 @@ msgstr "Privatus turinys, matomas, nes esate gildijos moderatorius + %(guild)s."
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Privatus turinys, matomas, nes esate patvirtintas + %(guild)s duomenų teikėjas."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Privati kopija"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Privatus režimas."
@@ -13826,26 +14138,6 @@ msgstr "Privatus pranešimas, matomas jums, nes esate šio rato gildijos narys."
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Privatus pranešimas, matomas jums, nes esate patvirtintas + %(guild)s dalyvis."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Asmeninis komandiravimas"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Asmeninis komandiravimas išjungtas."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "Privatus skelbimas yra ant, todėl tai gali eiti tik į savo draugų ratą. Galite pakeisti tai Parametrai > Turinio."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "Privatus skelbimas yra, todėl tai eina tik į savo draugų ratą. Galite pakeisti tai Parametrai > Turinio."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "Privati komandiruotė įjungta."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14414,6 +14706,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Pašalinti tvarkyklę"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Pašalinti mano vardą"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Pašalinti mano vardą iš šio posto"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "Pašalinti parinktį %(number)s"
@@ -14478,6 +14778,14 @@ msgstr "Pašalinti serverį"
 msgid "Remove this topic"
 msgstr "Pašalinti šią temą"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Pašalinti savo vardą iš šių elementų?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Pašalinti savo vardą iš savo kredito šiame pranešime? Kiti nariai bus pamatyti \"Anoniminis\" su numeriu. To negalima panaikinti."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14518,6 +14826,10 @@ msgstr "Pašalinta. Botas nebeskaito to pašaro."
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "Panaikinimas įsigalioja iš karto."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "Pašalinti savo vardą daroma pačioje svetainėje."
 
 #, machine, plain1
 msgctxt "button"
@@ -14579,6 +14891,10 @@ msgstr "Pranešti apie komentarą"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Pranešti apie įrašą"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Pranešti apie tai"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -15078,6 +15394,18 @@ msgstr "Pasakykite, ką botas rašyti ir kur jis ateina iš (bent 10 simbolių).
 msgid "Say who it's from"
 msgstr "Pasakyk, kas tai iš"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Pasakyk, kodėl jis turėtų nusileisti, keliais žodžiais."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Pasakyk, kodėl tu patraukli."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Pasakyk, kodėl manai, kad tai neteisinga. Tik tie, kurie sprendžia apeliacinius skundus, skaito tai, ką rašote, ir jums bus pasakyta, kaip tai baigėsi."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Skaitykite šį brūkšninį kodą (arba įveskite kodą) naudodami dviejų faktorių autentiškumo nustatymo programą, pvz., Google Authy ar Authy."
@@ -15244,6 +15572,10 @@ msgstr "Atidaryti srautą Viskas"
 msgid "See everything live"
 msgstr "Pamatyti viską gyvai"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Žiūrėti jį žurnale"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "Žr. dabartinį puslapį"
@@ -15267,6 +15599,10 @@ msgstr "Pamatyti, kas vyksta"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Pamatyti, ką jie daro"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Žr. savo apeliacinį skundą"
 
 #, machine, plain1
 msgid "See your username"
@@ -15321,6 +15657,10 @@ msgstr "Siųsti patarimą"
 msgid "Send a tip"
 msgstr "Siųsti patarimą"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Siųsti apeliacinį skundą"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Siųsti atsiliepimą"
@@ -15353,6 +15693,10 @@ msgstr "Jautrus turinys?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Jautrus turinys"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Jautrus turinys: rodyti"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15431,10 +15775,6 @@ msgstr "Pirmiausia sutvarkyk pusiausvyrą."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "Nustatyti dviejų etapų prisijungimą"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "Seksualinių nepilnamečių"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -16172,6 +16512,10 @@ msgstr "Paleisti erdvę"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Pradėk maitintis. Viskas, ko prašėte su \"Rodyti mažiau pranešimų kaip šis\" yra pamiršta, todėl tie pranešimai ir jų kaltės ir kategorijos grįžti. Jūsų nustatymo data yra išsaugota jūsų sąskaitoje, bet jums nenaudoja jį savo viršvalandžių ir kaltės dar."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Paleidimo kalvos"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "Pradedant greitai"
@@ -16509,6 +16853,10 @@ msgstr "Technologijos antraštės iš BBC News. Ne BBC."
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Papasakokite %(site)s bendruomenei apie save."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Pasakyk jiems, kodėl, linijoje"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Papasakok, kas nutiko, kas atrodo ar ko norėtum. Papasakok, ką padarei ir ko tikėjaisi."
@@ -16576,6 +16924,10 @@ msgstr "Tekstiniai pranešimai"
 msgid "Text size"
 msgstr "Teksto dydis"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Ačiū"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "Ačiū, kad pranešėte šią pastabą!"
@@ -16637,9 +16989,9 @@ msgstr "Ačiū. Admin bus pažvelgti į bot greitai; gausite pranešimą."
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Ačiū. Admin bus pažvelgti į bot greitai; gausite pranešimą. Paveikslėlis negali būti saugomi; bandykite dar kartą iš boto puslapyje."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Ačiū. Jūsų sąskaita nebėra vaikų užraktas, ir Privatus skelbimas yra išjungtas. Pareigybės, kurias jūs padarėte prieš viešnagės, kaip jie buvo: naudoti Kas gali pamatyti tai paštu pakeisti kas mato jį."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Ačiū. Jūsų paskyra nebeturi vaikų užrakto."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16979,6 +17331,10 @@ msgstr "Tas vardas paimtas."
 msgid "That password isn't right."
 msgstr "Tas slaptažodis neteisingas."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Tas slaptažodis neteisingas. Niekas nepasikeitė."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "Ši slaptažodžio atšaukimo forma pasibaigė."
@@ -17307,6 +17663,10 @@ msgstr "Monetos atitenka įkūrėjui, <a href=\"%(url)s\">@%(name)s</a>."
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Monetos, kurias uždirbate iš patarimų, mokamų ratą ir kūrėjas fondas, per pastarąsias 30 dienų ir visą laiką."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Komentaras lieka ten, kur jis yra, o jūsų vardas atimamas. Visi, kurie matė tai su tavo vardu, žino, kad tai tu."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17325,6 +17685,10 @@ msgstr[2] "Į %(guilds)s atsiųstos kopijos bus atimtos."
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "Datos nepalieka dienų."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "Sprendimas lieka galioti"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17544,6 +17908,10 @@ msgstr "Nepavyko rasti pavadinimo %(host)s."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Naujausia, ką jie padarė. Rodomi tik tų, su kuriais jie kalbasi, vardai, o ne tai, ką pokalbis sako: pokalbiai užšifruoti."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Patvirtintų elementų skaičius neatitinka pasirinkto skaičiaus. Niekas nepasikeitė."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Skaičiai visada rodomi jūsų profilyje. Tai nusprendžia, kas gali atidaryti kiekvieną sąrašą ir pamatyti jo sąskaitas. Sąskaita yra įtraukta tik tada, kai jos pačios nustatymas leidžia ją taip pat."
@@ -17592,9 +17960,25 @@ msgstr "The post pasirodo visų pirma jį skelbiančių asmenų profilyje. Pasir
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "The post atlieka savo vardą ir yra įtrauktas į jūsų profilį. Balsai, komentarai ir pirmyn dalijamasi su autoriumi, kuris juos redaguoja ir ištrina. Jūs galite pasitraukti bet kuriuo metu: postas lieka be jūsų vardo."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "The post nėra įtrauktas į jūsų profilį. Balsai, komentarai ir pirmyn dalijamasi su autoriumi, kuris juos redaguoja ir ištrina. Jūs galite pasitraukti bet kuriuo metu: po lieka, be jūsų kredito."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "Pareigūne pakeitimas buvo atmestas."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "The post lieka ten, kur jis yra, su savo vardą pašalinti, ir palieka savo profilį. Jos Reputacija taip pat jus palieka. Visi, kurie matė tai su tavo vardu, žino, kad tai tu."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "Pašto autorius"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "Rašto autorius jį išbraukė, todėl jis rodomas kaip anonimiškas: nėra pavadinimo ir jokios nuorodos. Komentarai pagal jį likti tokie, kokie jie buvo; vienas jos autorius išbrauktas yra rodomas kaip Anoniminis taip pat."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17667,9 +18051,17 @@ msgstr "Serveris mano, kad prašai ko nors kvailo. Jei nusiimsi jesterio aprang�
 msgid "The site refused the bot's session."
 msgstr "Svetainė atsisakė boto sesijos."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Svetainės administratoriai ją jau turi."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Svetainės administratoriai pažymėjo šį gild jautrus, todėl tik admin gali pakeisti tai."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Svetainės administratoriai ją perskaitys. Jiems niekada nesakoma, kas pranešė."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17839,9 +18231,17 @@ msgstr "Čia nėra jokių žinučių."
 msgid "There is no account named @%(name)s."
 msgstr "Paskyros pavadinimu @ %(name)s nėra."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Čia nėra ko kreiptis."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "Kol kas nėra nieko, ką būtų galima išgelbėti."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Niekas nelaukia šio draudimo."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17936,36 +18336,24 @@ msgid "They aren't muted here."
 msgstr "Jie čia netyčiojasi."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Jie prašė išjungti eilinį komandiravimą."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Jie gali pirkti ir išleisti monetas, pasiduoti, pirkti Premium ir prisijungti arba paleisti apmokamus apskritimus."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Jie gali komentuoti."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Jie gali priimti ir prisijungti Spaces ir paleisti gyvų siūlų. Balso skambučiai erdvėje taip pat reikia Pokalbis būti."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Jie gali kurti postus."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "Jie gali pranešti žmonėms, prisijungti prie grupinių pokalbių ir skambinti. Svetainė niekada nerodo, ką pokalbis sako: pokalbiai užšifruoti. Tas, kas žino savo slaptažodį, vis tiek gali jį pasirašyti ir perskaityti."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Jie gali rašyti anonimiškai ir pradėti gildiją. Jūs vis dar galite pamatyti, kas parašė anoniminį pranešimą."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Jie gali pamatyti, ką jūs darote svetainėje: savo pranešimus, komentarus, balsus, žymeles, taip, guilds, kas jūs kalbate su, kad jūsų paskyra buvo pranešta, ir jūsų naujausi ženklai. Svetainė niekada jiems nerodo, ką sako jūsų pokalbiai, nes pokalbiai užšifruoti. Bet kiekvienas, kuris žino jūsų slaptažodį, tėvas, kuris pasirinko jį įtraukti, gali pasirašyti kaip jūs: pakeisti jį į Saugumo, kad tik jūs žinote jį. Jie pasirenka, kuris iš jų yra jūsų sąskaitoje:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Jie gali pradėti gildiją. Jie vis dar negali rašyti ar komentuoti: vaikų sąskaitą skaito tik."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17983,6 +18371,10 @@ msgstr "Jie eina tiesiai prie jūsų monetų balanso."
 msgid "They haven't asked for that."
 msgstr "Jie to neprašė."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Jie palieka svetainę. Tai, ką jie sakė, lieka žurnale kaip Anoniminis, išskyrus viską, ką padarė per paskutines penkias minutes, kad niekas komentavo, kuris yra ištrintas. To negalima panaikinti."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Jie turi būti gildijoje, o ne ištremti iš jos."
@@ -17994,6 +18386,14 @@ msgstr "Pirmiausia jiems reikia prisijungti prie kanalo."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "Jie sako, kad yra 18 ar daugiau ir paprašė jūsų paleisti jų sąskaitą. Jei taip, tai tampa jų pačių, ir jūs nebegalite to matyti."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Jie lieka ten, kur yra, o tavo vardas nuimtas. To negalima panaikinti. Pareigybės, kad reikia savo vardą (Circle, arba su patarimais) yra išvardyti vėliau kaip nepakeista."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Jie parašė: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -18170,6 +18570,10 @@ msgstr[2] "Šis skambutis pilnas (%(num)s žmonių)."
 msgid "This can't be translated right now."
 msgstr "To dabar negalima išversti."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "To negalima panaikinti. Svetainės administratoriai visada gali pamatyti, kas parašė kažką, ir jei admin draudimai arba sustabdo sąskaitą už jį, žurnalas gali pavadinimas sąskaitą už jį."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Šis kanalas neprašo priimti jo taisyklių."
@@ -18254,6 +18658,10 @@ msgstr "Šis turinys jau paskelbtas"
 msgid "This copy is no longer kept."
 msgstr "Ši kopija nebesaugoma."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "To dabar negalima pakeisti."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Tai sukuria naują, nepriklausomą postą, kad gild su savo balsais ir komentarais. Pavadinimas sukurtas iš komentaro teksto. Nuoroda į pradinį komentarą bus rodoma naujajame poste."
@@ -18281,6 +18689,22 @@ msgstr "Tai varškės pašarų kaltės ir sąskaitos"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Šitos šėrimo taisyklės užtruko per ilgai. Jo savininkas gali padaryti juos siauresni."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Šio sprendimo negalima apskųsti."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Šis sprendimas jau panaikintas."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Šis sprendimas dėl tavęs. Jei manote, kad tai buvo neteisinga, galite jį apskųsti."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18326,6 +18750,14 @@ msgstr "Ši gildija privati. Turinys paskelbtas prieš gildijos nustatomas priva
 msgid "This guild's channels are closed."
 msgstr "Šios gildijos kanalai uždaryti."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Tai yra legalaus lygio rekordas, kurio negalima nurodyti."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Tai buvo išbraukta."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "Į šį kvietimą jau atsakyta."
@@ -18346,6 +18778,10 @@ msgstr "Tai erdvė: jos šeimininkas ir bendrašeimininkai rašyti savo atnaujin
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Tai moderatoriaus veiksmų žurnalas, atliktas +%(guild)sTie, kurie visi gali skaityti, taip pat yra visoje svetainėje <a href=\"%(url)s\">Žurnalas</a>. Kas nariai ištrinti save nėra skelbiamas."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Tai jau anonimiška."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "Tai jau jūsų kalba."
@@ -18363,6 +18799,10 @@ msgstr "Tai skirta rato gildijos nariams."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "Tai skirta žmonėms <a href=\"%(url)s\">@%(name)s</a>- Tai apskritimai."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Tai yra privačioje vietoje, ir privatus produktas negali būti cituojamas viešajame žurnale."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Tai gildijos naudotojo CSS failas."
@@ -18375,6 +18815,10 @@ msgstr "Tai per daug, kad tai buvo paskelbtas automatiškai šiandien."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Tai nėra prieinama, kol jūsų paskyra yra yra riboto amžiaus. Jūs galite patvirtinti savo amžių Parametrai > Turinys."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Tai nėra vienas iš sąskaitos pranešimų ar komentarų."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Tai nėra rodoma jūsų dabartinio žodžio filtro lygyje. Galite peržiūrėti savo žodžių filtrą turinio nustatymuose."
@@ -18386,6 +18830,10 @@ msgstr "Tai nėra parodyta, kur esate, kol jūsų amžius nėra patvirtintas. Pr
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Tai nerodoma, kol jūsų paskyra yra apribota."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Tai ne tavo, kad pasikeistum, arba jis jau dingo."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18493,6 +18941,10 @@ msgstr "Šis pranešimas neturi komentarų apie savo profilį dabar. Jos pastabo
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "Šis pranešimas neturi gyvų siūlas."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Šis pranešimas yra anoniminis, todėl jūsų kreditas bus per daug: kiti nariai matys jį kaip \"Anoniminis\" su numeriu. Adresai ir posto autorius vis dar gali pamatyti tai jūs."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18611,6 +19063,10 @@ msgstr[2] "Šis balso kanalas pilnas (%(num)s žmonių)."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "Šio balso kanalo dabar nėra."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Tai buvo ištrinta per penkias minutes nuo priėmimo, todėl ji neturi jokių viešųjų įrašų pridėti prie."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18819,6 +19275,10 @@ msgstr "Jūsų tinkle jau yra per daug kalčių (daugiausia %(limit)s). Dabar ne
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Per daug gyvų upelių atidaryta. Uždarykite skirtuką ir bandykite dar kartą."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Šiandien per daug pranešimų"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "Per daug šlamšto!"
@@ -18925,6 +19385,10 @@ msgstr "Tikrasis nusikaltimas"
 msgid "Try again"
 msgstr "Bandyti dar kartą"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Bandykite rytoj."
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18933,10 +19397,6 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Išjunk"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -19156,6 +19616,10 @@ msgstr "Panaikinti išskyrimą"
 msgid "Undo"
 msgstr "Anuliuoti"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Atšaukti sprendimą"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19363,6 +19827,10 @@ msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Vienu metu iki %(num)s. Jūsų sąskaita turi būti 30 dienų senumo."
 msgstr[1] "Vienu metu iki %(num)s. Jūsų sąskaita turi būti 30 dienų senumo."
 msgstr[2] "Vienu metu iki %(num)s. Jūsų sąskaita turi būti 30 dienų senumo."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Iki %(num)s simbolių. Galite vieną kartą apskųsti sprendimą ir per dieną pateikti tris apeliacinius skundus."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -20081,13 +20549,21 @@ msgstr "Ką jis rodo"
 msgid "What it posts:"
 msgstr "Ką rodo:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Tai, ką jis pasakė, čia nėra parodyta."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "Kokia erdvė?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Tai, ką nariai patys ištrina, čia neskelbiama."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Ką nariai išbraukė, visų pirma, su žodžiais, kuriuos jis turėjo, kaip anonimas: nėra pavadinimo ir jokios nuorodos. Kažkas ištrintas per penkias minutes nuo parašymo yra ištrintas ir čia nėra. Pranešimo mygtukas prašo svetainės administratorių pašalinti žodžius."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Ką nariai redagavo, naujausia pirma: kas (anoniminis pranešimas ar komentaras), kada ir užrašą jie davė. Išredagavimo į vieną elementą paleisti yra viena eilutė. Per pirmąsias penkias minutes po to, kai kažkas buvo parašyta, redagavimas neįrašytas. Versijos yra ant elemento istorijos puslapyje."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -20101,6 +20577,18 @@ msgstr "Ką gauna abonentai"
 msgid "What the guildmasters did"
 msgstr "Ką guild moderatoriai padarė"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Ką daryti su jais"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Ką daryti su savo komentaru"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Ką daryti su savo paštu"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "Ką pasakyti"
@@ -20112,6 +20600,14 @@ msgstr "Ko ieškoti"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "Kas veikia programėlėse"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Ką jūs ištrinti lieka žurnalo kaip Anoniminis, be pavadinimo, nebent jūs ištrinti per penkias minutes."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Tai, ką pats ištrynei. Kažkas ištrintas po pirmųjų penkių minučių kopija lieka žurnale kaip anoniminis, be pavadinimo. Ko nors kopija ištrinta per penkias minutes yra privati ir eina po 90 dienų."
 
 #, machine, plain1
 msgid "What you do"
@@ -20166,6 +20662,10 @@ msgstr "Kur eina failai"
 #, machine, plain1
 msgid "Where it is"
 msgstr "Kur jis yra"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Kur jis buvo aptartas"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -20325,6 +20825,10 @@ msgstr "Kas ką parašė"
 msgid "Who you follow"
 msgstr "Kas jus seka"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Kas, kada, kur, kuris valdo ir kodėl. Jame niekada nerodomas pavadinimas ar tekstas to, kas buvo paslėpta ar pašalinta."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Tas, kas tai pradėjo, pranešė apie naršyklę ir vietą, taigi jie nieko neįrodo."
@@ -20354,6 +20858,14 @@ msgstr "Kodėl ne"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "Kodėl ne (jiems sakoma)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Kodėl jis turėtų nusileisti?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Kodėl tai buvo neteisinga?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20410,10 +20922,6 @@ msgstr "Su Premium gaunate vieną vietą viskam, ką gaminate ir uždirbate %(si
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Su Premium jūs matote, kaip kiekvienas iš jūsų pranešimų daro: peržiūros per dieną, kiek signed- žmonių atėjo, balsai, komentarai, žymelės, pirmyn ir perrašymai, kaip ji daro kiekvienoje guild ji buvo perduota, ir savo apklausos rezultatus."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Su privačiu parašu, apskritimas gali tik laikyti žmones, kurie seka jus ir kuriuos jūs sekti."
 
 #, machine, plain1
 msgid "With a link"
@@ -20766,6 +21274,10 @@ msgstr[2] "Jūs jau vedate maksimumą %(num)s gudrybių."
 msgid "You already made that comment: %(link)s"
 msgstr "Jūs jau pateikėte šią pastabą: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Jūs jau pranešėte apie tai"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "Jūs jau pranešėte apie šią paskyrą."
@@ -20797,6 +21309,10 @@ msgstr "Jūs jau balsavote dėl šio posto pirminiame poste. Išbraukti šį bal
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Jūs ir iki 3 pagalbininkai rašyti; nariai skaityti ir reaguoti. Dėl kitų ratą, kad tai <a href=\"%(url)s\">Jūsų kanalų puslapis</a>Jūs galite turėti iki 3 kanalų."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Jūs apskundėte šį sprendimą."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20875,10 +21391,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Jūs paprašėte savo tėvų ar globėjų paleisti savo sąskaitą. Jie dar neatsakė."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Jūs paprašėte savo tėvų ar globėjų tai išjungti. Jie dar neatsakė."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Galite pridėti nuotraukų 500 Reputacija, arba anksčiau su Premium"
 
@@ -20913,6 +21425,10 @@ msgstr "Galite pakeisti tai kiekvienam vaizdo įrašui, kai jį pridėsite. Vaiz
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Galite tai pakeisti, kai tik jie priims jūsų užklausą."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Galite pakeisti į %(max)s daiktų vienu metu."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -21042,6 +21558,10 @@ msgstr[2] "Jūs galite padaryti %(num)s wiki redaguoja per dieną gildijos. Paba
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Jūs galite padaryti vaiko sąskaitą, kai jūsų paties sąskaita yra patvirtinta kaip 18 ar daugiau. Tai galite pasakyti Parametrai > Turinys."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Galite pateikti tris apeliacinius skundus per dieną. Pabandyk dar kartą rytoj."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21390,6 +21910,10 @@ msgstr[0] "Jūs turite %(num)s moneta."
 msgstr[1] "Jūs turite %(num)s monetas."
 msgstr[2] "Jūs turite %(num)s monetų."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Jūs jau apskundėte šį sprendimą."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Jūs jau užblokavote @ %(name)s."
@@ -21431,6 +21955,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -21529,6 +22062,10 @@ msgstr "Nesakei, kad turi savo atkūrimo kodą."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Dar nesakei."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Jūs priėmėte šį sprendimą, todėl dar vienas gildijos vedėjas nusprendžia dėl jo."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21635,6 +22172,14 @@ msgstr "Jūs pasirašėte su QR kodu. Įveskite slaptažodį, jei norite naudoti
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Sakėte, kad norite pakeisti savo %(site)s paskyros el. laišką. Norėdami baigti šį procesą, prašome patikrinti savo naują el. pašto adresą:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Jūs buvote pakviesti pasidalinti šiuo anoniminiu paštu. Jei sutinkate, jūsų kreditas yra anoniminis, ir postas nėra įtrauktas į jūsų profilį. Balsai, komentarai ir pirmyn likti bendra, ir tik jos autorius redaguoja arba ištrina jį."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -22021,6 +22566,10 @@ msgstr "Jūsų paskyra turi būti bent 30 dienų, kad galėtumėte paleisti bot�
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Jūsų paskyra nebeveikia automatiškai. Jo postai lieka."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Jūsų paskyra skaito tik dabar, todėl ji negali komentuoti. Jūs vis dar galite balsuoti, sekti ir žymelės."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "Jūsų sąskaitos iš šių pašarų nuo šiol."
@@ -22056,6 +22605,53 @@ msgstr "Jūsų amžius buvo patvirtintas %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "Jūsų atsakymas"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Jūsų apeliacija laukia, kol bus perskaityta."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Jūsų apeliacinis skundas buvo priimtas ir sprendimas buvo atšauktas."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Jūsų apeliacinis skundas buvo išnagrinėtas ir sprendimas yra priimtas."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Jūsų skundas nebuvo toliau nagrinėjamas."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Jūsų skundas buvo išsiųstas."
 
 #, machine, plain1
 msgid "Your apps"
@@ -22140,12 +22736,12 @@ msgid "Your circles - %(site)s"
 msgstr "Jūsų apskritimai - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Jūsų komentaras bus pašalintas iš svetainės puslapių. Svetainė saugo asmeninę kopiją 90 dienų, kurią gali atidaryti tik jūs ir svetainės administratoriai. To negalima panaikinti."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "Jūsų komentaras istorija parodys čia."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Jūsų kreditas yra anoniminis: kiti nariai jį laiko \"Anonimišku #N\". Administratoriai ir posto autorius vis dar mato, kad jis tavo. To negalima panaikinti."
 
 #, machine, plain1
 msgid "Your curations"
@@ -22292,14 +22888,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "Jūsų tėvų ar globėjų buvo paprašyta paleisti jūsų sąskaitą. Niekas nepasikeis, kol jie neatsakys."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "Jūsų tėvų ar globėjų buvo paprašyta išjungti privatų komandiravimą."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Jūsų tėvas ar globėjas turi sutikti, kad privatus komandiravimas būtų išjungtas."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Jūsų tėvas ar globėjas išjungė šią sąskaitą."
 
@@ -22314,14 +22902,6 @@ msgstr "Jūsų tėvas ar globėjas nustatė naują slaptažodį jūsų paskyrai 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Jūsų tėvas ar globėjas nustojo tvarkyti jūsų paskyrą. Jis saugo vaiko užraktą, kol patvirtinsite savo amžių Parametrai > Turinys. Jie pasirinko slaptažodį: pakeiskite jį [Parametrai > Saugumas] (/settings/security) arba vis dar galite prisijungti kaip jūs."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Jūsų tėvas ar globėjas atjungė Privatus komandiravimas jūsų sąskaitą."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Jūsų tėvas ar globėjas nori, kad privatus komandiravimas liktų."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22354,10 +22934,6 @@ msgstr "Tavo telefonas pasakė \"ne\", taigi niekas nebuvo prisijungęs."
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Jūsų postas yra nurodytas jūsų profilyje bet kuriuo atveju. Pasirinkite Mano profilis turėti savo komentarus ten taip pat, ir pridėti kaltės rašyti jį tiesiai į juos: kiekvienas gild gauna savo kopiją su savo balsus ir komentarus."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Jūsų postas bus paimtas iš jūsų profilio, pašarų ir gudrybių. Svetainė saugo asmeninę kopiją 90 dienų, kurią gali atidaryti tik jūs ir svetainės administratoriai. To negalima panaikinti."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -22476,6 +23052,10 @@ msgstr "Jūsų pavadinimas yra klausimas. %(min)s į %(max)s variantų, po vien�
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Jūsų vardas yra klausimas. Pateikite %(min)s parinktis %(max)s. Žmonės gali balsuoti iš kiekvieno į priekį ir atgal šio posto, kartą kiekvienas."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "Jūsų dviejų faktorių kodas"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Jūsų naudotojo vardas yra jūsų unikalus <code>@handle</code>Jūsų profilio adresas, ką žmonės mini ir ko ieško. Pakeisti tai kainuoja 20 Monetos ir gali būti padaryta kartą per 7 dienas. Norėdami pakeisti, kaip jūsų vardas skaityti be to, naudokite savo ekrano pavadinimą viršuje."
@@ -22539,6 +23119,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Giild Takeover pretenzija] (/help/siege)"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[Kaip saikingai registruojama] (/help/moderation)"
 
 #, machine, plain1
 msgid "[Legal Policies](/help/legal)"
@@ -22608,6 +23192,61 @@ msgstr "[Paslaugų teikimo sąlygos] (/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Pavadinimas] (/help/titles)"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[uždrausta]"
@@ -22658,6 +23297,10 @@ msgstr "[garsas]"
 msgid "a day"
 msgstr "dieną"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "panaikinta pareigybė"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "gildija arba postas, pavadintas nebeegzistuoja."
@@ -22697,6 +23340,12 @@ msgstr "aktyvumas"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "pridėjo bot feed %(target)s į kanalą"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "pridėta bendruomenės pastaba į %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22784,12 +23433,16 @@ msgstr "botai"
 msgid "by %(author)s"
 msgstr "paskelbė %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "atlieka %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "atlieka %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "pagal <a href=\"%(link)s\">@%(name)s</a>"
@@ -22874,6 +23527,12 @@ msgstr "pasikeitė, ar iš anksto reikia etiketės"
 msgid "changed who may edit a wiki page"
 msgstr "pasikeitė kas gali redaguoti wiki puslapį"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chatwards %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22893,6 +23552,10 @@ msgstr "monetos"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "komentaras"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "komentaras # %(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22981,6 +23644,12 @@ msgstr "pvz., <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>: m�
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "pvz., <span class=\"font-weight-bold\">%(score)s</span> yra %(up)s ir %(down)s žemyn"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "redaguota %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22991,10 +23660,21 @@ msgstr "redaguotas wiki puslapis"
 msgid "edited an event"
 msgstr "redaguotas įvykis"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "redaguotas įrašas %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "baigėsi"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "baigė kosmoso %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -23020,6 +23700,12 @@ msgstr "viskas jame"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "viskas, ką įrašote, yra jums įskaityta"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "exiled %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23102,6 +23788,11 @@ msgstr "paryškino jų %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "paryškino jų postą %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "paslėpti %(target)s savo poste"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -23165,6 +23856,10 @@ msgid_plural "in %(num)s minutes"
 msgstr[0] "per %(num)s minutę"
 msgstr[1] "po %(num)s minučių"
 msgstr[2] "po %(num)s minučių"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "šioje versijoje"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -23329,6 +24024,11 @@ msgstr "seni"
 msgid "only guildmasters write here"
 msgstr "čia rašo tik gild moderatoriai"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "atidaryta + %(guild)s visiems"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "išorinis serveris"
@@ -23385,6 +24085,10 @@ msgstr "pranešimas kanale"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "sukabintuvas %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "post # %(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23459,6 +24163,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "pašalino %(target)s pranešimą iš kanalo"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "pašalino pranešimą iš viešojo kanalo"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "pašalino pranešimą iš kosmoso lentos %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "pašalino gildijos wiki modifikaciją"
@@ -23481,6 +24195,12 @@ msgstr "pašalintas gild moderatorius %(target)s"
 msgid "removed post %(target)s"
 msgstr "pašalinti po %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "pašalino bendruomenės notą %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -23489,6 +24209,12 @@ msgstr "pervadinta kanalo kategorija"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "atnaujinti %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "pakeitė bendruomenės notą %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23533,6 +24259,11 @@ msgid_plural "shares. Only the author can share this post."
 msgstr[0] "dalis. Tik autorius gali pasidalinti šį postą."
 msgstr[1] "akcijos. Tik autorius gali pasidalinti šį postą."
 msgstr[2] "akcijos. Tik autorius gali pasidalinti šį postą."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "vėl parodė %(target)s po jo postu"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -23654,11 +24385,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "geriausi"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "un-chatisold %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "ne-chatuždraustas naudotojas %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "neišspaustas %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23719,6 +24462,14 @@ msgstr "pašalinti %(target)s šioje gildoje"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "unhid post %(target)s šioje guild"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "iki %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "iki %(max)s vienu metu"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

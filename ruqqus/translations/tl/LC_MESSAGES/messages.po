@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fil\n"
@@ -59,9 +59,9 @@ msgstr "#%(channel)s ay inalis."
 msgid "#%(channel)s was made."
 msgstr "#%(channel)s ay ginawa."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "#%(channel)s was saved."
-msgstr "naligtas ang #i%(channel)s."
+msgstr ""
 
 #. a post's rank among the posts made in a guild that day, such as "#3 of 41
 #. posts in +photography on
@@ -513,6 +513,12 @@ msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s character limit para sa mga pamagat."
 msgstr[1] "%(num)s limitasyon ng karakter para sa mga pamagat."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s pinili"
+msgstr[1] "%(num)s pinili"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -580,6 +586,12 @@ msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s araw ang natitira"
 msgstr[1] "%(num)s araw na natitira"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s isaayos nang sunud - sunod"
+msgstr[1] "%(num)s mga edit sa isang hanay"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -651,6 +663,18 @@ msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s interesado"
 msgstr[1] "%(num)s interesado"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s bagay na binago"
+msgstr[1] "%(num)s bagay na binago"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s bagay na hindi mababago:"
+msgstr[1] "%(num)s bagay ay hindi mababago:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1297,6 +1321,10 @@ msgstr "%(who)s ay tumanggap ng imbitasyon para sa mga manggagawa"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "ang %(who)s ay nagdagdag ng %(target)s sa isang channel"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "idinagdag ni %(who)s ang isang tala sa komunidad"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "idinagdag ni %(who)s ang isang tatak"
@@ -1361,6 +1389,10 @@ msgstr "binago ni %(who)s kung ang mga forward ay nangangailangan ng label"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "binago ni %(who)s kung sino ang maaaring mag - edit ng wiki page"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chatbanned %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s chatbanned user %(name)s"
@@ -1409,6 +1441,10 @@ msgstr "inalis ng %(who)s ang isang pahinang wiki"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s Tinatanggal na post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "isinaayos ni %(who)s ang isang komento"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "isinaayos ni %(who)s ang isang pahinang wiki"
@@ -1416,6 +1452,18 @@ msgstr "isinaayos ni %(who)s ang isang pahinang wiki"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "isinaayos ni %(who)s ang isang pangyayari"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s edited post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "Tinapos ng %(who)s ang Isang Kalawakan"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "si %(who)s ay ipinatapon ang %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1436,6 +1484,10 @@ msgstr "%(who)s ang kanilang atas %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s ang isang komento mula sa samahang ito"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s ang isang komento sa ilalim ng kanilang sariling post"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1485,6 +1537,10 @@ msgstr "ang %(who)s ay nagmarka ng komento bilang sensitibong nilalaman"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s Namarkang koreo %(title)s gaya ng sensitibong nilalaman"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s bukas +%(guild)s sa lahat"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "ang %(who)s ay permanenteng pumawi sa isang komento"
@@ -1525,6 +1581,18 @@ msgstr "%(who)s naibalik pagkatapos ng %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "inalis ni %(who)s ang mensaheng channel"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "inalis ng %(who)s ang isang tala sa komunidad"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "Inalis ni %(who)s ang isang mensahe sa isang lupon sa Kalawakan"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "inalis ni %(who)s ang mensahe sa isang pampublikong channel"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "inalis ng %(who)s ang isang rebisyon ng wiki ng guild"
@@ -1549,6 +1617,10 @@ msgstr "%(who)s ang nagtanggal sa gumagamit ng %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s ang pangalan ng isang kategorya ng channel"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "pinalitan ng %(who)s ang talahulugang pampamayananan"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "ang %(who)s ay muling nag-record ng guild guild moderator na imbitasyon sa @i%(name)s"
@@ -1564,6 +1636,10 @@ msgstr "ang %(who)s ay naglagay ng nsfw sa post %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "ang %(who)s ang nagbigay ng tatak ng post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "muling nagpakita si %(who)s ng komento"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1589,9 +1665,17 @@ msgstr "kinuha ni %(who)s ang mensahe sa channel"
 msgid "%(who)s took a role from %(target)s"
 msgstr "si %(who)s ay kumuha ng papel mula sa %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s di-chatbanned %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s di-chatbanted na gumagamit %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s hindi tapos %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1677,6 +1761,10 @@ msgstr "(mula sa orihinal)"
 msgid "(in a private place)"
 msgstr "(sa isang pribadong lugar)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(walang teksto)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(walang pamagat)"
@@ -1748,6 +1836,10 @@ msgstr "**Pahayag**"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Magdagdag ng opsyon"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+%(guild)s Mga Pang - akit"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2261,10 +2353,6 @@ msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [O
 msgstr "@i%(name)s ay humiling na maglathala ka ng isang share draft na sinulat mo: ang iyong boto ay mahalaga. [Open the draft](%(link)s)"
 
 #, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@i%(name)s ay nag-utos sa iyo na patayin ang Private posting para sa kanilang account. Masasagot mo ito sa [Settings > Children](/settings/children)."
-
-#, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@%(name)s barado."
 
@@ -2611,6 +2699,10 @@ msgstr "Ang isang Kalawakan ay hindi maaaring hindi makilala."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Ang isang Kalawakan ay hindi maaaring maging tuluyan sa isang guild ng Circle."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Hindi matanggal ang pangalan ng isang Kalawakan."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "Ang isang kalawakan ay hindi maaaring magsimula sa nakaraan."
@@ -2638,6 +2730,10 @@ msgstr "Isang subscriber badge na katabi ng iyong pangalan sa @%(name)s' profile
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "Isang translate button ay nagpapakita sa ilalim ng mga post at comments sa wala sa inyong mga wika. Walang anumang isinasalin maliban sa pagdiin nito."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Maaaring banggitin ng isang pagbabawal ang %(max)s."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2825,9 +2921,25 @@ msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "Ang pangalan ng bilog ay maaaring %(num)s sa karamihan."
 msgstr[1] "Maaaring maging %(num)s karakter ang pangalan ng isang bilog sa karamihan."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "Ang isang co-authored post ay hindi maaaring hindi makilala."
+#, machine, plain2
+msgid "A comment"
+msgstr "Isang komento"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Isang komento sa isang ulat na hinarangan mo o na naharangan ka."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Isang komento na nakatago ng isang tagapamagitan ng samahan."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Isang komentong nakatago ng iyong salita ang salain."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Isang komento ang inalis ng awtor nito. Ang sinabi nito ay hindi ipinapalabas dito."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2836,6 +2948,10 @@ msgstr "Ang komento sa isang post para sa isang Circle ay hindi maaaring ipadala
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "Ang isang komento sa isang poste para sa isang Circle ay hindi maaaring baguhin."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "Isang komento na tinanggal ng mga admin sa site."
 
 #, machine, plain1, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2853,6 +2969,14 @@ msgstr "Ang kulot na pagkain sa buong lugar ay nangangailangan ng edad na isang 
 msgid "A day"
 msgstr "Isang araw"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "Isang desisyon sa Log"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Isang tinanggal na poste at kung ano ang sinabi sa ilalim nito"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2864,6 +2988,10 @@ msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "Ang isang paglalarawan ay nasa halos %(num)s karakter."
 msgstr[1] "Isang paglalarawan ang nasa karamihan ng %(num)s karakter."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Kailangang patunayan ng ibang admin ang isang pagsisiwalat."
 
 #, machine, plain1, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2968,6 +3096,10 @@ msgstr "Ang pangalan ng grupo ay hindi maaaring maglaman ng @: ito ay mababasa b
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "Ang isang pangalan ng grupo ay hindi maaaring maglaman ng kontrol o hindi nakikitang mga karakter."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Ang pagbabawal sa samahan ay nangangailangan ng isang pangmadlang dahilan, kaya masasabi ng pahina ng samahan at ng Log kung bakit."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3088,6 +3220,10 @@ msgstr "Isang buwanang badyet ang ibinahagi sa mga miyembro na ang mga post at m
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Nakababasa pa rin ang isang taong pipi, ngunit hindi makapagsusulat sa alinman sa mga +i%(guild)s. Sila'y sinasabihan kapag sila'y sumusubok."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Isang nota sa taong iyon"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3151,6 +3287,10 @@ msgstr[1] "Ang isang opsiyon ng poll ay maaaring maging %(num)s character (Chine
 msgid "A poll option can't hold control characters."
 msgstr "Hindi maaaring kontrolin ng isang opsyon sa surbey ang mga karakter."
 
+#, machine, plain2
+msgid "A post"
+msgstr "Isang koreo"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3174,6 +3314,10 @@ msgstr "Ang isang poste para sa isang Circle ay hindi maaaring ibalik."
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "Ang isang post para sa isang Circle ay hindi maaaring magkaroon ng mga co-author."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Ang isang post para sa isang Circle ay hindi matanggal ang pangalan nito."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3203,6 +3347,10 @@ msgstr "Ang isang post ay nawawalan ng kalahati ng bigat nito"
 msgid "A post needs a title."
 msgstr "Kailangan ng post ang isang titulo."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "Hindi matanggal ang pangalan ng isang poste na may tip, dahil napunta sa iyo ang mga barya."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Isang post na hindi kayang gamitin ng publiko ang larawang ito na naka-upload: ang mga file nito ay maaaring buksan ng sinuman na may adres. Idagdag ang larawan mula sa iyong kaugnay na imbakan sa halip (Settings > Media)."
@@ -3211,9 +3359,17 @@ msgstr "Isang post na hindi kayang gamitin ng publiko ang larawang ito na naka-u
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Ang isang post na may mga co-author ay hindi maaaring ilipat sa mga bilog. Ang paglilipat ng isang pampublikong puwesto sa mga bilog ay kumukuha ng mga kopya na ipinadala mo; ang mga kopya ng ibang tao ay ipinadala sa kanilang samahan."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Ang isang post na isinulat nang sama-sama ay publiko at hindi maaaring hindi makilala, ibahagi sa mga bilog, o magkaroon ng isang survey. Ang mga may akda nito ang mga co-author nito. Ang mga mapagpipiliang ito ay ibinabahagi ng bawat awtor at ginagamit sa tuwing maglalathala ka."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Ang isang koreo na isinulat na magkakasama ay inaalis lamang kapag ang mga awtor nito ay sumasang - ayon, sa kabahaging burador nito."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Ang isang post na isinulat nang magkakasama ay publiko at hindi maaaring ibahagi sa mga bilog o magkaroon ng isang survey. Ang mga may akda nito ang mga co-author nito. Ang mga mapagpipiliang ito ay ibinabahagi ng bawat awtor at ginagamit sa tuwing maglalathala ka."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Ang isang post na isinulat kasama ng iba ay hindi pa matanggal dito ang pangalan nito."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3556,6 +3712,10 @@ msgstr "Tanggapin ang Paanyaya"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Tanggapin ang paanyaya ng tagapamagitan"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Tanggapin kung wala ang aking pangalan (ang mga admin at ang awtor ng post ay maaari pa ring makakita nito sa akin)"
 
 #, machine, plain1
 msgid "Account"
@@ -4176,6 +4336,10 @@ msgstr "Isang awtor ang huminto sa pagbilang pagkatapos na ito'y matagal nang ma
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Isang awtor na hindi aktibo sa site para sa %(time)s ay hindi nabibilang."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Ang isang de - makinang post ay hindi matanggal ang pangalan nito."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Hindi maaaring hilingin ng isang encrypted channel na tanggapin ang mga tuntunin nito: hindi maaaring tingnan ng site kung sino ang sumulat."
@@ -4288,9 +4452,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonymous"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Walang - sawang paglalagay at pagpapasimula ng mga samahan"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Anonymous #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4375,6 +4539,26 @@ msgstr "Makikita ng sinuman kung sino ang iyong sinusunod, kung sino ang sumusun
 #, machine, plain1
 msgid "App Name"
 msgstr "Pangalan ng App"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Hingin ang desisyon"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Mag - apela ng isang pasiya - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Pag - isipan ang desisyong ito"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Mga Pang - akit"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Mga pang - akit ng mga pasiyang ginawa ng samahang ito. Ang isang apela ay pribado: ang samahan lamang na maaaring magpasiyang basahin ito. Pinawawalang-bisa ito ng pagpapasya at nagsusulat ng bagong entry sa Log, na inuugnay sa una; isinasalaysay sa taong iyon kung paano ito natapos. Hindi ka makapagpapasiya kung ano ang iyong sariling pasiya samantalang ang isa pang tagapamagitan ng samahan ay maaari."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4514,10 +4698,6 @@ msgstr "Mga Highland ng Aryan"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Bilang isang awtor, inaayos mo ang draft live na kasama nila, at ang bawat katangian na uri mo ang kinikilala mong mahalaga sa iyo. Minsang mailathala ang koreo, makikita ng sinumang makakita nito kung sino ang sumulat ng kung ano ang isinulat. Ang mga awtor ay nagpapasiyang magkasama:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Hilingin sa aking magulang na patayin ito"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5383,6 +5563,10 @@ msgstr "Palitan ang mga tuntunin"
 msgid "Change the two-factor settings for your account."
 msgstr "Palitan ang dalawang-factor settings para sa iyong account."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Palitan ang mga ito"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "Palitan ang password ng account mo."
@@ -5654,6 +5838,10 @@ msgstr "Pumili ng kahit isang bilog."
 msgid "Choose at least one of your circles."
 msgstr "Pumili ng isa sa iyong mga bilog."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Pumili ng kahit isang post o comment."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "Pumili ng kahit isang kuwento."
@@ -5709,6 +5897,10 @@ msgstr "Piliin kung anong uri ng bot ito."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Piliin kung anong uri ng impormasyon ito."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Piliin kung ano ang gagawin sa kanila."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -5982,6 +6174,10 @@ msgstr "Comics & Cartoons"
 msgid "Coming up"
 msgstr "Paglitaw"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Komento"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5991,9 +6187,13 @@ msgstr "Magkomento"
 msgid "Comment %(id)s has been removed"
 msgstr "Naalis ang %(id)s"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Hindi nagpapakilala: ang ibang gumagamit ay hindi makakakita ng iyong pangalan"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Sabihin nang walang pangalan: hindi makikita ng ibang gumagamit ang iyong pangalan. Kapag ipinagbawal o ipinatigil ng isang admin ang ulat tungkol dito, maaaring tawagin ng Log ang ulat para sa komentong ito."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Magkomento na gaya ng iyong sarili: Ipinakikita ng iyong pangalan ang komentong ito"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -6002,10 +6202,6 @@ msgstr "Ang aklat ng komento ay may tanda."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Na-post ang komento!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Pagkukomento"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6597,6 +6793,10 @@ msgstr "Ang mapanlinlang na mga URL ay hindi pinapayagan."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Hindi pinahihintulutan ang mapanlinlang na mga tagaikli ng URL."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Pagpapasiya"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6660,6 +6860,10 @@ msgstr "Malabong komento?"
 msgid "Delete folder"
 msgstr "Delete folder"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Itapon ito"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "Isulat ang aking account"
@@ -6683,6 +6887,14 @@ msgstr "Alisin ang account"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "Itapon ang inilathalang post"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Itapon ang mga ito"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Itapon ang mga bagay na ito?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6727,6 +6939,10 @@ msgstr "Burahin ang iyong %(site)s na account"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "Itapon ang iyong mga post at comment"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Tinanggal"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -6921,6 +7137,14 @@ msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "Tinalakay sa %(num)s iba pang lugar"
 msgstr[1] "Tinalakay sa %(num)s iba pang lugar"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Tinatalakay sa +%(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Tinatalakay sa isang profile"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "Talakayin"
@@ -7003,6 +7227,10 @@ msgstr "Tapos na"
 #, machine, plain1
 msgid "Done to"
 msgstr "Tapos"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Tapos na."
 
 #, machine, plain1
 msgid "Download"
@@ -7199,6 +7427,10 @@ msgstr "Baguhin ang iyong mga post at comment"
 msgid "Edited %(when)s"
 msgstr "Na-edit %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Binago"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "Ginanyak ng %(who)s"
@@ -7214,6 +7446,10 @@ msgstr "Ini-update rin ng Editing ang mga kopya ng post na ito sa mga guild."
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Inia - update ang post na ito sa lahat ng lugar."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Mga Edit"
 
 #, machine, plain1
 msgid "Education"
@@ -7556,13 +7792,13 @@ msgstr "Nakikita ng lahat ang mga pagbabago ng bawat isa habang sila ay nagmakin
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Lahat ng bagay mula sa inyong mga samahan at mga kuwenta, una muna'y bago."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Lahat ng kanilang ipinadadala ay para lamang sa kanilang mga Kaibigan. Patayin mo na sila sa publiko."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Walang binabanggit na ebidensiya"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Lahat ng inilalagay mo sa koreo ay para lamang sa iyong mga Kaibigan, ang mga taong sinusundan mo ay sumusunod sa iyo pabalik, kaya walang di - sinasadyang nakikita ng publiko. Ang iyong mga bilog ay maaari lamang maghawak ng gayong mga tao, at hindi mo maaaring isulong, baguhin o isulat ang isang kabahaging burador. Ang mga komento sa mga post ng ibang tao ay publiko pa rin."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Ebidensiya:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7609,6 +7845,10 @@ msgstr "Halimbawa: mga pusa aso · walang \"mga aso\" ni mga \"dog\""
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Halimbawa: maligayang oras · may eksaktong pariralang \"maligayang oras\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Ipatapon %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9009,6 +9249,10 @@ msgstr "Gaano katagal"
 msgid "How long it runs"
 msgstr "Gaano katagal ito tumatakbo"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Kung paano iniuulat ang pagiging katamtaman"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Ilang taon ka na?"
@@ -9202,6 +9446,10 @@ msgstr "Sa %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "Sa guild"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "Nasa Log Bilang Walang - Galang"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9497,6 +9745,14 @@ msgstr "Nagtatapos ito sa ganang sarili pagkatapos nito. Maaari mo itong wakasan
 msgid "It is reviewed with the bot."
 msgstr "Nirerepaso ito gamit ang bit."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Iniiwan nito ang mga pahina ng site. Kung wala pang limang minuto ang gulang nito at walang sinuman ang nagkomento tungkol dito, ito ay nabura: ikaw lamang at ang mga admin ng site ang makapagbubukas ng isang pribadong kopya, sa loob ng 90 araw. Kung hindi, ang sinabi nito ay nananatili sa Log bilang Anonymous, na walang pangalan at walang ugnay, at maaaring mabasa ito ng sinuman doon."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Iniiwan nito ang iyong katangian, pagkain at mga samahan. Kung wala pang limang minuto ang gulang nito at walang sinuman ang nagkomento, ito'y binura: ikaw lamang at ang mga admin sa lugar na iyon ang makapagbubukas ng isang pribadong kopya, sa loob ng 90 araw. Kung hindi, ang sinabi nito ay nananatili sa Log bilang Anonymous, na walang pangalan at walang ugnay, at maaaring mabasa ito ng sinuman doon."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Nabubuhay ito sa iyong profile, sa ilalim ng Spaces. Ipinakikita ng isang samahan ang kard nito, na may mga boto at kabahagi, at binubuksan ang Kalawakan."
@@ -9513,13 +9769,13 @@ msgstr "Ipinakikita nito, nang buo, ang bawat salita at parirala na hinahanap ng
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Nananatili itong isang salaysay sa bata na nakakandado, subalit hindi mo na ito makita o mababago ang magagawa nito, at hindi mo na ito muling mapag - uugnay."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin. Ang isang salaysay ng bata ay kababasahan lamang: hindi ito maaaring magpaskil o magkomento, subalit maaari ka pa ring bumoto, sumunod, sumali sa guilds, bookmark at ulat."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin. Ang Chat, Spaces, mga barya, di - kilalang paglalagay at pagpapasimula ng isang samahan ay wala na, at ang iba ay hindi makapagsisimula ng isang chat o tip sa iyo. Ang iyong mga post ay nagtutungo lamang sa iyong mga Kaibigan malibang patayin mo ang Private posting."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Ito'y nananatili sa salitang Bata na pansala, na nagtatago ng kalaswaan at anumang bagay na kakikitaan ng sensitibong damdamin. Ang Chat, Spaces, mga barya at ang pagpapasimula ng isang guild ay wala na, at ang iba ay hindi makapagpasimula ng isang chat o tip sa iyo. Ang isang salaysay ng bata ay kababasahan lamang: hindi ito maaaring magpaskil o magkomento, subalit maaari ka pa ring bumoto, sumunod, sumali sa guilds, bookmark at ulat."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9685,10 +9941,6 @@ msgstr "Hunyo solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Ipagpatuloy ito"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9947,6 +10199,10 @@ msgstr "Kaliwa"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "Kaliwa +%(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "Palibhasa'y hindi naasiwa, ang inyong mga komento ay nananatili sa ilalim ng inyong pangalan, at iyan ay nagsasabi sa mga mambabasa na sumulat ng sulat."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10741,6 +10997,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "I-mute"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "I-mute si %(alias)s sa mga channel"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Mute +%(guild)s"
@@ -11090,6 +11350,10 @@ msgstr "Wala pang idinaragdag na mga ulat."
 msgid "No ads"
 msgstr "Walang anunsiyo"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Walang mga pagsamo na naghihintay."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "Walang naharangang mga kuwenta"
@@ -11345,6 +11609,10 @@ msgstr "Walang sinumang maaaring magbayad upang sumali ngayon: ang samahan ay sa
 msgid "Nobody can sign in to your account with a code."
 msgstr "Walang sinuman ang maaaring pumirma sa iyong ulat sa pamamagitan ng isang kodigo."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Walang nagkomento tungkol dito."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Walang sinuman ang nakakakuha ng mahigit sa %(share)s%% ng isang buwang badyet. Ang mga bahagi ay bilog hanggang sa buong mga barya."
@@ -11510,6 +11778,10 @@ msgstr "Hindi nakaulat"
 msgid "Not slowed by slow mode"
 msgstr "Hindi bumabagal ng mabagal na paraan"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Hindi na nagpatuloy"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "Hindi tumatanggap ng mga subscriber"
@@ -11657,6 +11929,10 @@ msgstr "Wala pang nakasulat."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Wala pa."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Wala kang inaalis dito."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11928,6 +12204,10 @@ msgstr "Mga ulat lamang @%(name)s Ang sumusunod ay maaaring magkomento sa post n
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Mga ulat lamang na sinusunod mo ang magkukomento tungkol sa atas na ito ngayon."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Tanging ang isang admin lamang ang magpapatunay ng isang pagsisiwalat."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "Tanging ang isang admin lamang ang muling makapagsisimula nito."
@@ -12196,6 +12476,10 @@ msgstr "Ikaw lamang"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Ikaw lamang ang makakakita nito. Ito ang mga mahalaga: Walang sinumang tumingin, bumoto o sumagot sa isang surbey ang pinangalanan."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Ang iyong kredito lamang ang nagbabago: ang iba pang awtor ay nananatiling may pangalan. Makikita pa rin ito ni Admins at ng awtor ng post."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12264,6 +12548,10 @@ msgstr "Buksan sa umpisa"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "Buksan hanggang %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Buksan ang inyong kopya"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12404,17 +12692,17 @@ msgstr "Iba o hindi alam"
 msgid "Other spellings:"
 msgstr "Ibang baybay:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Nakikita ng ibang gumagamit ang Anonymous sa halip na ang iyong pangalan. Ikaw at ang mga site admin ay maaari pa ring makakita nito, ito ay sumusunod sa parehong mga tuntunin gaya ng anumang post, at hindi ito maaaring ayusin pagkatapos ng posting. Ipinakikita pa rin ng isang pansala sa rehiyon kung saang rehiyon ito nanggaling. Hindi ito nakatala sa iyong paglalarawan: masusumpungan mo ito sa Kasaysayan, sa ilalim ng Anonymous."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Nakikita ng ibang gumagamit ang Anonymous sa halip na ang iyong pangalan. Ikaw at ang mga site admin ay maaari pa ring makakita nito, ito ay sumusunod sa parehong mga tuntunin gaya ng anumang post, at hindi ito maaaring ayusin pagkatapos ng posting. Ipinakikita pa rin ng isang pansala sa rehiyon kung saang rehiyon ito nanggaling. Hindi ito nakatala sa iyong paglalarawan: masusumpungan mo ito sa Kasaysayan, sa ilalim ng Anonymous. Kapag ipinagbawal o ipinatigil ng isang admin ang ulat para dito, maaaring banggitin ng Log ang dahilan nito."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Itinuturing ito ng ibang gumagamit bilang Anonymous. Ikaw lamang at ang site admins ang nakakakita ng pangalan mo."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Nakikita naman ng iba ang Anonymous sa halip na ang iyong pangalan; nakikita mo pa rin ito at ng mga site admin. Ipinakikita pa rin ng isang pansala sa rehiyon kung saang rehiyon ito nanggaling. Hindi ito mababago pagkatapos ng posting."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Nakikita naman ng iba ang Anonymous sa halip na ang iyong pangalan; nakikita mo pa rin ito at ng mga site admin. Ipinakikita pa rin ng isang pansala sa rehiyon kung saang rehiyon ito nanggaling. Hindi ito mababago pagkatapos ng posting. Kapag ipinagbawal o ipinatigil ng isang admin ang ulat para dito, maaaring banggitin ng Log ang dahilan nito."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12423,6 +12711,10 @@ msgstr "Ang aming tugon sa inyong pagbibigay - alam \"%(excerpt)s\": %(response)
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Ang aming mga kandadong panseguridad ay naglagay ng di - maarok na pagbabaybay ng kalasag sa pahinang ito."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Resulta"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -13105,6 +13397,10 @@ msgid "Popular this week"
 msgstr "Popular sa linggong ito"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "I-post"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "I-post"
@@ -13125,6 +13421,10 @@ msgstr "Maglagay ng update"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Mag-post nang anonymous"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Post ay walang pangalan: minamalas ng ibang miyembro ang bawat awtor bilang walang - pangalan na may bilang. Laging nakikita ng mga Admin kung sino sila. Hindi ito mababago minsang mailathala ang post."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -13202,10 +13502,6 @@ msgid "Posted on that day."
 msgstr "Natapos noong araw na iyon."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "Pagpaskil"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Paglamig"
 
@@ -13233,6 +13529,10 @@ msgstr "Mga Post"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Naglalagay ng isang samahan na may ganitong tatak. Kasama ang:+guild, ang tatak ng samahang iyon."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Mga Post at komento"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13323,6 +13623,10 @@ msgstr "Mga poster sa isang guild. sa: Ang #gaming ay mga guild ng isang paksa a
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Posts sa isang wika: isang kodigo (en) o ang pangalan nito (english)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Mga Post o komento"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13516,6 +13820,10 @@ msgstr "Pribadong nilalaman, nakikita dahil ikaw ay isang guild moderator ng +i%
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Lihim na nilalaman, nakikita sapagkat ikaw ay isang sinang - ayunang nag - aabuloy sa +%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Pribadong kopya"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Pribadong mode."
@@ -13575,26 +13883,6 @@ msgstr "Pribadong puwesto, nakikita mo sapagkat ikaw ay miyembro ng samahang ito
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Pribadong post, nakikita sa iyo dahil ikaw ay isang sinang - ayunang taga-ambag sa +i%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Pribadong paglalagay"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Wala na ang pribadong paglalagay."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "May pribadong paglalagay, kaya ito ay maaari lamang magtungo sa iyong mga Kaibigan. Maaari mong baguhin iyan sa settings > Content."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "May pribadong paglalagay, kaya ito'y para lamang sa iyong mga Kaibigan. Maaari mong baguhin iyan sa settings > Content."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "May pribadong paglalagay."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14158,6 +14446,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Alisin ang \"moderator \""
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Alisin ang aking pangalan"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Alisin ang pangalan ko sa post na ito"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "Alisin ang opsyon %(number)s"
@@ -14222,6 +14518,14 @@ msgstr "Alisin ang server"
 msgid "Remove this topic"
 msgstr "Alisin ang paksang ito"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Alisin ang iyong pangalan sa mga bagay na ito?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Alisin ang iyong pangalan sa iyong kredito sa koreong ito? Makikita ng ibang miyembro ang \"Anonymous\" na may bilang. Hindi ito maaaring baguhin."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14262,6 +14566,10 @@ msgstr "Tinanggal. Hindi na binabasa ng bot ang pagkaing iyon."
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "Ang pag - aalis sa isa ay kaagad na nagkakaroon ng epekto."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "Ang pag - aalis ng iyong pangalan ay ginagawa mismo sa site."
 
 #, machine, plain1
 msgctxt "button"
@@ -14323,6 +14631,10 @@ msgstr "I-report ang komento"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "I-report ang post"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Iulat ito"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -14821,6 +15133,18 @@ msgstr "Sabihin kung ano ang ilalagay ng bit at kung saan ito nagmula (hindi bab
 msgid "Say who it's from"
 msgstr "Sabihin kung sino ito mula sa"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Sabihin kung bakit ito bababa, sa ilang salita."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Sabihin kung bakit ka kaakit - akit."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Sabihin mo kung bakit inaakala mong ito'y mali. Ang mga tao lamang na nagpapasiyang mag - apela ang bumasa ng iyong isinulat, at sasabihin sa iyo kung paano ito natapos."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Scan itong barcode (o pumasok sa kodigo) gamit ang dalawang-factor realation app tulad ng Google Di - totoo o Autuy."
@@ -14986,6 +15310,10 @@ msgstr "Tingnan lahat sa Lahat"
 msgid "See everything live"
 msgstr "Tingnan ang lahat ng nabubuhay"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Tingnan ito sa Log"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "Tingnan ang kasalukuyang pahina"
@@ -15009,6 +15337,10 @@ msgstr "Tingnan kung ano ang uso"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Tingnan kung ano ang ginagawa nila"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Tingnan ang iyong pang - akit"
 
 #, machine, plain1
 msgid "See your username"
@@ -15063,6 +15395,10 @@ msgstr "Magpadala ng Tip"
 msgid "Send a tip"
 msgstr "Magpadala ng tip"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Magpadala ng apela"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Magpadala ng impormasyon"
@@ -15095,6 +15431,10 @@ msgstr "Nasisiyahan Ka Ba?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Sensitibong nilalaman"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Sensitibong nilalaman: ipakita ito"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15173,10 +15513,6 @@ msgstr "Unahin ang pagiging timbang."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "I-setup ang two-scap login"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "Pagtatalik sa mga Minorya"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -15922,6 +16258,10 @@ msgstr "Magsimula sa Kalawakan"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Paandarin mo ang iyong pagkain. Ang lahat ng hiniling mo sa pamamagitan ng \"Ipakita ang mas kaunting mga post na tulad nito\" ay nakalimutan, kaya ang mga post na iyon at ang kanilang mga guild at kategorya ay bumabalik. Ang petsa ng inyong tirahan ay natitipid dahil sa inyo, subalit hindi ninyo ito ginagamit sa inyong mga samahan at samahan."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Pagsisimula ng mga samahan"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "Nagsimula agad"
@@ -16257,6 +16597,10 @@ msgstr "Mga ulong balita ng teknolohiya mula sa BBC News. Hindi pinapatakbo ng B
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Sabihin sa komunidad ng %(site)s ang ilang bagay tungkol sa iyong sarili."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Sabihin sa kanila kung bakit, sa isang linya"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Sabihin mo sa amin kung ano ang nangyari, kung ano ang hitsura, o kung ano ang gusto mo. Para sa isang bug, sabihin ang ginawa mo at ang inaasahan mo."
@@ -16324,6 +16668,10 @@ msgstr "Mga text post"
 msgid "Text size"
 msgstr "Laki ng teksto"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Salamat"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "Salamat sa inyong pag - uulat ng komentong ito!"
@@ -16385,9 +16733,9 @@ msgstr "Salamat. Malapit nang tingnan ng isang admin ang bot; magkakaroon ka ng 
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Salamat. Malapit nang tingnan ng isang admin ang bot; magkakaroon ka ng nota. Ang larawan ay hindi maaaring itago; subukan muli mula sa pahina ng bot."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Salamat. Hindi na naikandado ng inyong account ang bata, at wala na ang pribadong paglalagay. Mga Post na ginawa mo noon: Gamitin Kung sino ang makakita nito sa isang poste upang baguhin kung sino ang nakakakita nito."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Salamat. Ang inyong account ay hindi na naikandado ng bata."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16727,6 +17075,10 @@ msgstr "Ang pangalang iyan ay kinuha."
 msgid "That password isn't right."
 msgstr "Hindi tama ang password na iyon."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Hindi tama ang password na iyon. Walang nabago."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "Ang anyong iyon ng kontra - ayos ng password ay tapos na."
@@ -17054,6 +17406,10 @@ msgstr "Ang mga barya ay napupunta sa tagapagtatag, <a href=\"%(url)s\">@%(name)
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Ang mga baryang kinikita mo mula sa mga tip, ang binabayarang mga bilog at ang pondo ng manlilikha, sa nakalipas na 30 araw at sa lahat ng panahon."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Ang komento ay nananatili sa kinaroroonan nito, na ang iyong pangalan ay inalis dito. Alam ka pa rin ng lahat ng nakakita nito sa pangalan mo."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17070,6 +17426,10 @@ msgstr[1] "Ang mga kopya na ipinadala ninyo sa %(guilds)s ay kukunin."
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "Ang mga petsa ay hindi nag - iiwan ng mga araw."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "Ang pasiya ay nakatayo"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17286,6 +17646,10 @@ msgstr "Ang pangalang %(host)s ay hindi matagpuan."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Ang pinakabago sa kanilang nagawa. Mga pangalan lamang ng kung sino ang kausap nila ang ipinapakita, hindi kailanman ang sinasabi ng chat: Ang mga chat ay end-to-end encrypted."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Ang bilang ng mga bagay na nakumpirma mo ay hindi tumutugma sa napili. Walang nabago."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Ang mga numero ay laging ipinakikita sa iyong profile. Ito ang nagpapasiya kung sino ang makapagbubukas ng bawat listahan at makikita ang mga ulat dito. Nakatala lamang ang isang salaysay kung saan nagpapahintulot din dito ang sarili nitong kapaligiran."
@@ -17334,9 +17698,25 @@ msgstr "Ang post ay lumilitaw sa profile ng sinumang unang naglalathala nito. Ma
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "Taglay ng post ang iyong pangalan at nakatala sa iyong profile. Ang mga Votes, komento at mga pagsulong ay ibinabahagi sa awtor nito, na nag - aayos at nag - aayos nito. Maaari kang bumaba anumang oras: ang post ay nananatili, nang walang pangalan."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "Ang post ay hindi nakatala sa iyong profile. Ang mga Votes, komento at mga pagsulong ay ibinabahagi sa awtor nito, na nag - aayos at nag - aayos nito. Maaari kang bumaba anumang oras: ang post ay nananatili, nang walang kredito."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "Ang post ay tumanggi sa pagbabago."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "Ang post ay nananatili kung nasaan ito, na ang pangalan mo ay kinuha rito, at iniiwan ang iyong profile. Ang Reputasyon nito ay nag-iiwan din sa iyo. Alam ka pa rin ng lahat ng nakakita nito sa pangalan mo."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "Ang awtor ng koreo"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "Inalis ito ng awtor ng koreo, kaya ito ay ipinakikita bilang Anonymous: walang pangalan at walang kawing. Ang mga komento sa ilalim nito ay nananatili na gaya ng dati; ang isa na inalis ng awtor nito ay ipinakikita rin bilang Anonymous."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17407,9 +17787,17 @@ msgstr "Iniisip ng server na may hinihiling kang isang bagay na hangal. Baka mas
 msgid "The site refused the bot's session."
 msgstr "Tinanggihan ng site ang sesyon ng bit."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Ang mga admin ng site ay mayroon na nito."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Ang mga admin ng site ang nagmarka sa guild na ito na sensitibo, kaya ang isang admin lamang ang maaaring magbago nito."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Mababasa ito ng admins ng site. Sila'y hindi kailanman sinasabihan kung sino ang iniuulat."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17575,9 +17963,17 @@ msgstr "Walang mga poste dito."
 msgid "There is no account named @%(name)s."
 msgstr "Walang ulat na nagngangalang @i%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Walang anumang makaaakit dito."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "Wala pang anumang makapagliligtas."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Walang anumang naghihintay sa pagbabawal na ito."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17672,36 +18068,24 @@ msgid "They aren't muted here."
 msgstr "Hindi sila pipi rito."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Hiniling nila sa iyo na patayin mo ang pribadong koreo."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Maaari silang bumili at gumastos ng mga barya, tip, bumili ng Premium at sumali o tumakbo ng mga binabayarang bilog."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Maaari silang magkomento."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Ang mga ito ay maaaring maging host at sumali sa Spaces at tumakbo ng mga live na sinulid. Ang mga tawag sa tinig sa isang Kalawakan ay nangangailangan din ng Chat upang gawin."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Maaari silang gumawa ng mga poste."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "Maaari silang makinig sa mga tao, sumali sa mga usapan ng grupo at tumawag. Hindi kailanman ipinakikita sa iyo ng site kung ano ang sinasabi ng chat: Ang mga chat ay end-to-end encrypted. Sinumang nakaaalam ng kanilang password ay maaari pa ring pumirma at basahin ang mga ito."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Maaari silang magpaskil nang hindi nagpapakilala at magsimula ng isang samahan. Makikita mo pa rin kung sino ang sumulat ng isang di - kilalang poste."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Makikita nila kung ano ang ginagawa mo sa site: ang iyong mga post, comments, boto, bookmark, sumusunod, guilds, sino ang kausap mo, na iniulat ang account mo, at ang mga sign-in mo kamakailan. Hindi kailanman ipinapakita sa kanila ng site ang sinasabi ng iyong mga chat, dahil ang mga chat ay end-to-end encrypted. Subalit ang sinumang nakaaalam ng iyong password, isang magulang na pumili nito, ay maaaring pumirma bilang ikaw: baguhin ito sa Seguridad upang ikaw lamang ang makaalam nito. Kanilang pinipili kung alin sa mga ito ang dahil sa iyo:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Maaari silang magsimula ng isang samahan. Hindi pa rin sila makapagpo - post o makapagkomento: isang account ng bata na binabasa lamang."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17719,6 +18103,10 @@ msgstr "Ang mga ito ay diretso sa iyong timbangan."
 msgid "They haven't asked for that."
 msgstr "Hindi nila hiniling iyon."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Umalis sila sa site. Ang kanilang sinabi ay nananatili sa Log bilang Anonymous, maliban sa anumang ginawa sa nakaraang limang minuto na walang sinuman ang nagkomento, na nabura. Hindi ito maaaring baguhin."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Kailangan nilang mapabilang sa samahan, at hindi ipatapon mula rito."
@@ -17730,6 +18118,14 @@ msgstr "Kailangan muna nilang sumama sa channel."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "Sinasabi nilang sila'y 18 o mahigit pa at hiniling sa iyo na ilabas mo ang kanilang kuwenta. Kung gagawin mo ito, magiging sarili nila ito at hindi mo na ito makita."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Sila'y nanatili sa kinaroroonan nila, na ang pangalan mo'y inalis sa kanila. Hindi ito maaaring baguhin. Ang mga Post na nangangailangan ng iyong pangalan (para sa isang Circle, o may mga tip) ay nakatala pagkatapos na hindi na babaguhin."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Sila'y sumulat: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17904,6 +18300,10 @@ msgstr[1] "Ang tawag na ito ay buo (%(num)s katao)."
 msgid "This can't be translated right now."
 msgstr "Hindi ito maaaring isalin ngayon."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Hindi ito maaaring baguhin. Ang admins ng site ay palaging nakakakita kung sino ang sumulat ng isang bagay, at kung ang isang admin ay nagbabawal o itigil ang account para dito, maaaring ang Log ang magbigay ng pangalan para dito."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Hindi hinihiling ng channel na ito na tanggapin ang mga tuntunin nito."
@@ -17988,6 +18388,10 @@ msgstr "Ang nilalamang ito ay nakapaskil na"
 msgid "This copy is no longer kept."
 msgstr "Hindi na itinatago ang kopyang ito."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Hindi ito mababago ngayon."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Lumilikha ito ng bago at independiyenteng puwesto sa samahang iyon na may sariling boto at komento. Ang pamagat ay mula sa teksto ng komento. Ang isang link pabalik sa orihinal na komento ay ipapalabas sa bagong post."
@@ -18015,6 +18419,22 @@ msgstr "Ito'y tungkol sa samahan at mga kuwenta ng pagkain"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Ang kulot na mga tuntuning ito ng pagpapakain ay napakatagal tumakbo. Maaari itong gawing mas makitid ng may - ari nito."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Ang desisyong ito ay hindi maaaring iapela."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Ang pasiyang ito ay inalis na."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Ang pasiyang ito ay tungkol sa iyo. Kung inaakala mong ito'y mali, maaari mo itong akitin."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18060,6 +18480,14 @@ msgstr "Ang samahang ito ay pribado. Nakikita ng lahat ang kasiyahang nakapaskil
 msgid "This guild's channels are closed."
 msgstr "Ang mga alulod ng samahang ito ay nakasara."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Ito ay may legal-level record, na hindi mababanggit."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Inalis na ito."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "Sinagot na ang paanyayang ito."
@@ -18080,6 +18508,10 @@ msgstr "Ito ay isang Kalawakan: ang host at co-hosts nito ay nagpaskil ng mga up
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Ito ay isang logo ng mga aksiyong tagapamagitan na isinasagawa sa +%(guild)s. Ang mga maaaring mabasa ng lahat ay nasa site-wide din <a href=\"%(url)s\">Log</a>. Hindi inilalathala kung anong mga miyembro ang mismong nag - aalis ng kulay."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Ito ay hindi na kilala."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "Ito'y nasa inyong wika na."
@@ -18097,6 +18529,10 @@ msgstr "Ito ay para sa mga miyembro ng isang samahan sa Circle."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "Ito ay para sa mga tao sa isa sa <a href=\"%(url)s\">@%(name)s</a>' Mga bilog."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Ito ay nasa isang pribadong lugar, at ang isang pribadong bagay ay hindi maaaring banggitin sa publikong Log."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Ito ang kaugalian ng samahan na CSS."
@@ -18109,6 +18545,10 @@ msgstr "Ito ay labis na katulad ng naipaskil nang kusa sa ngayon."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Ito ay hindi makukuha habang ang account mo ay age-fiund. Maaari mong tiyakin ang edad mo sa pagtatakda > Kontento."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Ito ay hindi isa sa mga sariling post o komento ng account."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Hindi ito ipinapakita sa kasalukuyang antas ng iyong salitang filter. Maaari mong repasuhin ang iyong salita sa iyong nilalaman."
@@ -18120,6 +18560,10 @@ msgstr "Ito'y hindi ipinakikita kung nasaan ka hanggang sa ang iyong edad ay map
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Ito ay hindi ipinapakita habang ang account mo ay age-fiund."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Hindi mo ito dapat baguhin, o wala na ito."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18226,6 +18670,10 @@ msgstr "Walang komento ang post na ito sa profile mo ngayon. Ang mga komento nit
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "Walang live na sinulid ang post na ito."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Ang post na ito ay hindi kilala, kaya ang iyong kredito ay magiging rin: makikita ito ng ibang miyembro bilang \"Anonymous\" na may numero. Makikita pa rin ito ni Admins at ng awtor ng post."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18343,6 +18791,10 @@ msgstr[1] "Ang voice channel na ito ay punô (%(num)s katao)."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "Ang voice channel na ito ay hindi makukuha ngayon."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Ito ay binura sa loob ng limang minuto ng pagkakagawa, kaya wala itong pampublikong rekord na ikinakabit."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18547,6 +18999,10 @@ msgstr "Ang napakaraming samahan ay pinangungunahan na mula sa iyong network (sa
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Napakaraming buháy na sapa ang bukas. Isara ang isang tab at subukan muli."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Napakaraming ulat sa ngayon"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "Labis na spam!"
@@ -18653,6 +19109,10 @@ msgstr "Tunay na Krimen"
 msgid "Try again"
 msgstr "Subukan muli"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Subukan ulit bukas."
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18661,10 +19121,6 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Patayin ito"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18884,6 +19340,10 @@ msgstr "Alisin ang pagiging opisyal"
 msgid "Undo"
 msgstr "I-undo"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Huwag magdesisyon"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19090,6 +19550,10 @@ msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Hanggang %(num)s sa isang panahon. Ang iyong ulat ay malamang na 30 araw na ang edad."
 msgstr[1] "Hanggang %(num)s sa isang panahon. Ang iyong ulat ay malamang na 30 araw na ang edad."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Hanggang %(num)s. Maaari kang mag - apela minsan ng isang pasiya, at gumawa ng tatlong apela sa isang araw."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -19805,13 +20269,21 @@ msgstr "Kung ano ang inilalagay nito"
 msgid "What it posts:"
 msgstr "Ang inilalagay nito:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Ang sinabi nito ay hindi ipinapalabas dito."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "Anong uri ng Kalawakan?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Hindi inilalathala rito ang mismong mga miyembro nito."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Ang inalis ng mga miyembro, una muna'y bago, sa mga salitang taglay nito, bilang Anonymous: walang pangalan at walang kaugnayan. Isang bagay na inalis sa loob ng limang minuto pagkatapos isulat ay nabura at wala rito. Hinihiling ng Report button sa admins ng site na ibaba ang mga salita."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Ang inayos ng mga miyembro, pinakabago: sino (Anonymous para sa isang hindi kilalang post o komento), kailan at ang nota na kanilang ibinigay. Ang isang linya ay may mga edit sa isang bagay. Ang isang pagsasaayos sa unang limang minuto pagkatapos isulat ang isang bagay ay hindi iniuulat. Ang mga bersiyon ay nasa sariling pahina ng kasaysayan ng balita."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19825,6 +20297,18 @@ msgstr "Kung ano ang nakukuha ng mga umaayon"
 msgid "What the guildmasters did"
 msgstr "Kung ano ang ginawa ng mga tagapamagitan ng samahan"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Kung ano ang gagawin sa kanila"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Kung ano ang gagawin sa iyong komento"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Kung ano ang gagawin sa iyong post"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "Kung ano ang sasabihin"
@@ -19836,6 +20320,14 @@ msgstr "Ano ang hahanapin"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "Kung ano ang gumagana sa mga app"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Ang inilulunsad mo ay nananatili sa Log bilang Anonymous, na walang pangalan, maliban na lamang kung i-delew mo ito sa loob ng limang minuto."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Kung ano ang inalis mo sa iyong sarili. Isang kopya ng isang bagay na inalis pagkatapos ng unang limang minuto nito ay nananatili sa Log bilang Anonymous, na walang pangalan. Ang isang kopya ng isang bagay na nabura sa loob ng limang minuto ay pribado, at nagpapatuloy pagkaraan ng 90 araw."
 
 #, machine, plain1
 msgid "What you do"
@@ -19890,6 +20382,10 @@ msgstr "Kung saan pumupunta ang talaksan"
 #, machine, plain1
 msgid "Where it is"
 msgstr "Kung nasaan ito"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Kung saan ito tinalakay"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -20049,6 +20545,10 @@ msgstr "Sino ang sumulat ng ano"
 msgid "Who you follow"
 msgstr "Kung sino ang iyong sinusunod"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Sino, kailan, saan, saan, ang namamahala at bakit. Hindi nito kailanman ipinakikita ang pamagat o ang teksto ng itinago o inalis."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Ang sinumang nagsimula nito ay nag - ulat na sila'y nanginginain at naglalagay ng kanilang sarili, kaya't sila'y walang anumang pinatutunayan."
@@ -20078,6 +20578,14 @@ msgstr "Bakit hindi"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "Bakit hindi (sinabi sa kanila)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Bakit ito bababa?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Bakit ito mali?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20134,10 +20642,6 @@ msgstr "Sa pamamagitan ng Premium magkakaroon ka ng isang lugar para sa lahat ng
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Sa pamamagitan ng Premium nakikita mo kung ano ang ginagawa ng bawat isa sa iyong mga post: mga pananaw araw-araw, kung gaano karaming mga pirmadong-in na tao ang dumating, boto, komento, pananda ng aklat, forwards at reposts, kung paano ito ginagawa sa bawat guild ito ay pasulong, at ang mga resulta ng poll nito."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Sa pamamagitan ng pribadong paglalagay, ang isang bilog ay maaari lamang maghawak sa mga taong sumusunod sa iyo at kung sino ang iyong sinusunod."
 
 #, machine, plain1
 msgid "With a link"
@@ -20487,6 +20991,10 @@ msgstr[1] "Ikaw ang nangunguna sa pinakamataas na %(num)s guild."
 msgid "You already made that comment: %(link)s"
 msgstr "Ganito na ang komento mo: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Iniulat na ninyo ito"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "Iniulat na ninyo ang ulat na ito."
@@ -20518,6 +21026,10 @@ msgstr "Ikaw ay bumoto na sa post na ito, sa orihinal na post. Alisin ang botong
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Ikaw at hanggang 3 katulong ang sumusulat; ang mga miyembro ay nagbabasa at tumutugon. Para sa ibang bilog, gawin ito <a href=\"%(url)s\">iyong mga channel page</a>. Mayroon kang hanggang 3 channels."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Inapela ninyo ang pasiyang ito."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20596,10 +21108,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Hiniling mo sa iyong magulang o tagapangalaga na ilabas ang iyong kuwenta. Hindi pa sila sumasagot."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Hiniling mo sa iyong magulang o tagapangalaga na patayin ito. Hindi pa sila sumasagot."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Maaari kang magdagdag ng mga larawan sa 500 Reputasyon, o mas maaga rito sa pamamagitan ng Premium"
 
@@ -20634,6 +21142,10 @@ msgstr "Maaari mo itong baguhin sa bawat video kapag idinagdag mo ito. Ang mga v
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Maaari mo itong baguhin minsang tanggapin nila ang iyong kahilingan sa mensahe."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Maaari kang magbago tungo sa %(max)s nang sabay - sabay."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20748,6 +21260,10 @@ msgstr[1] "Makagagawa ka ng %(num)s wiki edites isang araw sa isang guild. Subuk
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Maaari kang gumawa ng isang salaysay sa bata minsang ang iyong sariling salaysay ay mapatunayan na 18 o mahigit pa. Masasabi mo iyan sa settings > Content."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Maaari kang gumawa ng tatlong pagsamo sa isang araw. Subukan muli bukas."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21087,6 +21603,10 @@ msgid_plural "You have %(num)s coins."
 msgstr[0] "Mayroon kang %(num)s barya."
 msgstr[1] "Mayroon kang %(num)s barya."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Inapela mo na ang pasiyang ito."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Naharang mo na ang @i%(name)s."
@@ -21128,6 +21648,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -21226,6 +21755,10 @@ msgstr "Hindi mo sinasabing sinusunod mo ang iyong kodigo sa paggaling."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Hindi mo pa sinasabi sa amin."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Ginawa ninyo ang pasiyang ito, kaya isa pang tagapamagitan ng samahan ang nagpapasiya sa pang - akit nito."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21330,6 +21863,14 @@ msgstr "Pumasok ka sa pamamagitan ng QR code. Ipasok ang inyong password upang g
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Sinabi mo sa amin na nais mong baguhin ang iyong %(site)s account email. Upang matapos ang prosesong ito, pakisuyong tiyakin ang inyong bagong adres sa email:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Ikaw ay inanyayahang makibahagi sa di - kilalang posisyong ito. Kung tatanggapin mo ito, ang iyong kredito ay hindi rin kilala, at ang post ay hindi nakatala sa iyong profile. Ang mga Votes, mga komento at mga pagsulong ay nananatiling magkasama, at tanging ang awtor lamang nito ang nagsasaayos o nag - aalis nito."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -21713,6 +22254,10 @@ msgstr "Ang inyong ulat ay kailangang di - kukulangin sa 30 araw ang edad upang 
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Ang iyong ulat ay hindi na awtomatikong nakapaskil. Nananatili ang mga poste nito."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Ang iyong ulat ay binabasa mo lamang ngayon, kaya hindi ito makapagkomento. Maaari ka pa ring bumoto, sumunod at magmarka ng aklat."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "Ang iyong mga account post mula sa mga ito ay kumakain mula ngayon."
@@ -21748,6 +22293,68 @@ msgstr "Kinumpirma ang edad mo sa %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "Ang sagot mo"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Ang iyong pang - akit ay naghihintay na basahin."
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Ang iyong pag-aalsa ng [itong desisyon](%(log)s) ay tinanggap, at ang desisyon ay binaligtad.\n"
+"\n"
+"````\n"
+"%(note)s\n"
+"````"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Ang iyong pag-aalsa ng [itong desisyon](%(log)s) ay tiningnan, at ang desisyon ay nakatayo.\n"
+"\n"
+"````\n"
+"%(note)s\n"
+"````"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Ang iyong pag-aalsa ng [itong desisyon](%(log)s) ay hindi higit pang kinuha.\n"
+"\n"
+"````\n"
+"%(note)s\n"
+"````"
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Tinanggap ang inyong apelasyon, at binaligtad ang pasiya."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Ang iyong apela ay tiningnan, at ang pasiya ay nananatili."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Ang iyong pagsamo ay hindi higit pa."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Ipinadala ang inyong apelasyon."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21832,12 +22439,12 @@ msgid "Your circles - %(site)s"
 msgstr "Ang iyong mga bilog - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Ang iyong komento ay aalisin sa mga pahina ng site. Ang lugar ay nag - iingat ng isang pribadong kopya sa loob ng 90 araw, na ikaw lamang at ang mga administrador ng site ang maaaring magbukas. Hindi ito maaaring baguhin."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "Makikita rito ang iyong komento."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Ang iyong kredito sa post na ito ay hindi kilala: nakikita ito ng ibang miyembro bilang \"Anonymous #N\". Makikita pa rin ito ng mga Admin at ng awtor ng koreo. Hindi ito maaaring baguhin."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21982,14 +22589,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "Ang iyong magulang o tagapag - alaga ay hinilingang ilabas ang iyong kuwenta. Walang anumang pagbabago hanggang sa sumagot sila."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "Ang iyong magulang o ang tagapag - alaga ay hinilingang patayin ang pribadong paglalagay."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Ang iyong magulang o tagapag - alaga ay kailangang sumang - ayon bago ang pribadong paglalagay ay maaaring patayin."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Pinatay ito ng iyong magulang o tagapag - alaga para sa iyong kuwenta."
 
@@ -22004,14 +22603,6 @@ msgstr "Ang iyong magulang o tagapag - alaga ay nagtakda ng isang bagong passwor
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Ang iyong magulang o tagapag - alaga ay huminto ng pangangasiwa sa iyong kuwenta. Pinananatili nitong nakakandado ang bata hanggang sa matiyak mo ang iyong edad sa mga setting > Kontento. Pinili nila ang inyong password: palitan ito sa [Settings > Security](/settings/security), o maaari pa rin silang pumirma bilang ikaw."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Tinanggihan ng iyong magulang o ng tagapag - alaga ang pribadong paglalagay ng pangalan para sa iyong kuwenta."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Nais ng iyong magulang o tagapag - alaga na manatili ang pribadong koreo."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22044,10 +22635,6 @@ msgstr "Ang inyong telepono ay nagsabi na hindi, kaya walang sinuman ang nilagda
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Ang iyong post ay nakatala sa iyong profile sa alinmang paraan. Pumili Inilarawan ko rin ang pagkakaroon ng mga komento roon, at magdagdag ng mga guild upang ipaskil ito sa kanila: ang bawat samahan ay tumatanggap ng sarili nitong kopya na may sarili nitong mga boto at komento."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Ang iyong post ay aalisin sa iyong profile, pagkain at samahan. Ang lugar ay nag - iingat ng isang pribadong kopya sa loob ng 90 araw, na ikaw lamang at ang mga administrador ng site ang maaaring magbukas. Hindi ito maaaring baguhin."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -22166,6 +22753,10 @@ msgstr "Ang inyong titulo ang tanong. %(min)s to %(max)s opsyon, isang boto bawa
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Ang inyong titulo ang tanong. Magbigay ng %(min)s sa mga pagpipiliang %(max)s. Ang mga tao ay maaaring bumoto mula sa bawat pasulong at repost ng post na ito, minsan ang bawat isa."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "Ang iyong dalawang-factor code"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Ang inyong username ang inyong kakaibang pangalan <code>@handle</code>: ang direksiyon ng iyong profile, at ang binabanggit at hinahanap ng mga tao. Ang pagpapalit nito ay nagkakahalaga ng 20 Barya at maaaring gawin minsan sa bawat 7 araw. Para mabago ang iyong pangalan, gamitin ang pangalan mo sa itaas."
@@ -22228,6 +22819,9 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Guild Takeover inaangkin](/help/siege)"
+
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr ""
 
 #, machine, plain1
 msgid "[Legal Policies](/help/legal)"
@@ -22295,6 +22889,61 @@ msgstr "[Terms of service](/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Titles](/help/titles)"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[ipinatapon]"
@@ -22345,6 +22994,10 @@ msgstr "[sound]"
 msgid "a day"
 msgstr "isang araw"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "tinanggal na poste"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "isang samahan o post na hindi na ito umiiral."
@@ -22384,6 +23037,12 @@ msgstr "aktibidad"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "ay nagdagdag ng %(target)s sa isang channel"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "ang sabi pa ng isang community note sa %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22470,12 +23129,16 @@ msgstr "mga bit"
 msgid "by %(author)s"
 msgstr "ni %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "sa pamamagitan ng %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "sa pamamagitan ng %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "sunod <a href=\"%(link)s\">@%(name)s</a>"
@@ -22560,6 +23223,12 @@ msgstr "palitan kung kailangan ng label"
 msgid "changed who may edit a wiki page"
 msgstr "binago kung sino ang maaaring mag - edit ng wiki page"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "\" chatbanned %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22579,6 +23248,10 @@ msgstr "barya"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "komento"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "komento #%(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22667,6 +23340,12 @@ msgstr "e.g. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>: asu
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "e.g. <span class=\"font-weight-bold\">%(score)s</span> para sa %(up)s pataas at %(down)s bumaba"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "edit na %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22677,10 +23356,21 @@ msgstr "edite ng wiki"
 msgid "edited an event"
 msgstr "ang isang pangyayari"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "edit na post %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "tapos"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "ang wakas ng Space %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -22706,6 +23396,12 @@ msgstr "lahat ng naririto"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "lahat ng uri ng damit na ipinakikita sa iyo"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "ipinatapon %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22786,6 +23482,11 @@ msgstr "ang kanilang %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "ang kanilang post %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "nakatagong %(target)s sa ilalim ng kanilang sariling post"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22846,6 +23547,10 @@ msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "%(num)s minuto"
 msgstr[1] "sa loob ng %(num)s minuto"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "sa sinulid na ito"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -23010,6 +23715,11 @@ msgstr "luma"
 msgid "only guildmasters write here"
 msgstr "tanging ang samahan lamang ang sumusulat dito"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "bukas +%(guild)s sa lahat"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "panlabas na server"
@@ -23066,6 +23776,10 @@ msgstr "naglagay ng mensahe sa isang channel"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "naipit na post %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "post #%(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23140,6 +23854,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "ang isang mensahe sa pamamagitan ng %(target)s mula sa isang alulod"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "ang isang mensahe mula sa isang pampublikong channel"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "ang isang mensahe mula sa lupon ng space %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "tanggalin ang isang rebisyon ng wiki ng isang guild"
@@ -23162,6 +23886,12 @@ msgstr "tanggalin ang guild moderator %(target)s"
 msgid "removed post %(target)s"
 msgstr "tinanggal na post %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "ang sabi ng komunidad tungkol sa %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -23170,6 +23900,12 @@ msgstr "pangalan ng kategoryang channel"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "mga pagbabago %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "pinalitan ang community note sa %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23213,6 +23949,11 @@ msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "makibahagi. Tanging ang awtor lamang ang makababahagi sa puwestong ito."
 msgstr[1] "makibahagi. Tanging ang awtor lamang ang makababahagi sa puwestong ito."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "na %(target)s sa ilalim ng tungkulin nito"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -23334,11 +24075,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "nangunguna"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "di-chatbanned %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "di-chatbanned user %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "hindi tapos na %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23399,6 +24152,14 @@ msgstr "%(target)s sa samahang ito"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "walanghid na post %(target)s sa samahang ito"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "hanggang %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "hanggang %(max)s sa isang panahon"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

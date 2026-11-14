@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -467,6 +467,11 @@ msgid "%(num)s character limit for titles."
 msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s karakter başlıkları için sınır."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s seçilmiş"
+
 #, machine, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -523,6 +528,11 @@ msgstr[0] "%(num)s günler kaldı"
 msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s günler kaldı"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s bir satırda düzenler"
 
 #, machine, python-format
 msgid "%(num)s follower"
@@ -583,6 +593,16 @@ msgstr[0] "%(num)s çağrıda"
 msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s ilgilenen"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s öğeleri değişti"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s öğeleri değiştirilemez:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, python-format
@@ -1178,6 +1198,10 @@ msgstr "%(who)s kabul edildi guild modeerator davet"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s bir bot besleme ekledi %(target)s bir kanala"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s bir topluluk not ekledi"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s bir etiket ekledi"
@@ -1242,6 +1266,10 @@ msgstr "%(who)s forwardların bir etikete ihtiyacı olup olmadığını değişt
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)sbir wiki sayfasını kim düzenleyebilir"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chatbanned %(target)s"
+
 #, machine, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s chatbanned kullanıcı %(name)s"
@@ -1290,6 +1318,10 @@ msgstr "%(who)s bir wiki sayfasını silindi"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s silinmiş post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s bir yorum düzenledi"
+
 #, machine, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s bir wiki sayfasını düzenledi"
@@ -1297,6 +1329,18 @@ msgstr "%(who)s bir wiki sayfasını düzenledi"
 #, machine, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s bir olay düzenledi"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)sdüzenlenen yazı %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s bir Uzay sona erdi"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s sürgün edildi %(target)s"
 
 #, machine, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1317,6 +1361,10 @@ msgstr "%(who)sonların yayınını vurguladı %(title)s"
 #, machine, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s bu guild'den bir yorum sakladı"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s kendi yazılarının altında bir yorum sakladı"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1366,6 +1414,10 @@ msgstr "%(who)s hassas içerik olarak bir yorum işaret etti"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s işaretli posta %(title)s hassas içerik olarak"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s herkese +%(guild)s"
+
 #, machine, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s sürekli bir yoruma maruz kaldı"
@@ -1406,6 +1458,18 @@ msgstr "%(who)s yeniden yayınlandı %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s bir kanal mesajı kaldırıldı"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)sbir topluluk notunu kaldırdı"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)sBir Uzay Kurulundan bir mesaj çıkardı"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s halka açık bir kanaldan bir mesaj çıkardı"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s bir guild'in wikisinin revizyonunu kaldırdı"
@@ -1430,6 +1494,10 @@ msgstr "%(who)s kaldırıldı kullanıcı %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s bir kanal kategorisini değiştirdi"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s bir topluluk notunu değiştirdi"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)srescinded guild modeerator davet @%(name)s"
@@ -1445,6 +1513,10 @@ msgstr "%(who)s nsfw post %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s post etiketi belirledi %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s tekrar bir yorum gösterdi"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1470,9 +1542,17 @@ msgstr "%(who)s bir kanal mesajı çıkardı"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s %(target)s bir rol aldı"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s Hiç konuşmadı %(target)s"
+
 #, machine, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s sohbet edilmemiş kullanıcı %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s Hayırlı olmayan %(target)s"
 
 #, machine, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1558,6 +1638,10 @@ msgstr "(the original)"
 msgid "(in a private place)"
 msgstr "(özel bir yer)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(no text)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(hayır adı)"
@@ -1629,6 +1713,10 @@ msgstr "**Basın**"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Seçenek ekle"
+
+#, python-format
+msgid "+%(guild)s Appeals"
+msgstr ""
 
 #, machine, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2128,10 +2216,6 @@ msgstr "@%(name)s %(curation)s. eklendi."
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
 
-#, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@%(name)s, hesapları için özel yayın açmanızı istedi. [Settings > Çocuklar] (/settings/children) cevap verebilirsiniz."
-
 #, machine, python-format
 msgid "@%(name)s blocked."
 msgstr "@%(name)s bloke edildi."
@@ -2474,6 +2558,10 @@ msgstr "Bir Uzay anonim olamaz."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Bir Uzay bir Circle guild'de barındırılamaz."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Bir Uzay ismini kaldıramaz."
+
 #, machine
 msgid "A Space can't start in the past."
 msgstr "Bir Uzay geçmişte başlamaz."
@@ -2501,6 +2589,10 @@ msgstr "@ A Subscriber badge next to your name on @%(name)s“ profili ve mesajl
 #, machine
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "Bir çeviri düğmesi, dillerinizin hiçbirinde yazı ve yorum altında gösterir. Hiçbir şey baskı yapmadan tercüme edilmez."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Bir yasak %(max)s eşyalarını silebilir."
 
 #, machine, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2672,9 +2764,25 @@ msgid "A circle's name can be %(num)s character at most."
 msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "Bir çemberin adı en çok %(num)s karakterleri olabilir."
 
-#, machine
-msgid "A co-authored post can't be anonymous."
-msgstr "Bir ortak yazar mesajı anonim olamaz."
+#, machine, plain2
+msgid "A comment"
+msgstr "Bir yorum"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Bloke ettiğiniz bir hesapla ilgili bir yorum veya sizi engelledi."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Bir guild modeerator tarafından gizlenmiş bir yorum."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Kelime filtreniz tarafından gizlenmiş bir yorum."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Yazarını silinmiş bir yorum. Ne dedi burada gösterilmez."
 
 #, machine
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2683,6 +2791,10 @@ msgstr "Bir Çember için bir yazı hakkında bir yorum bir guild için sabırs�
 #, machine
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "Bir Çember için bir yazı üzerine bir yorum yeniden başlatılamaz."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "Sitenin yöneticileri tarafından çıkarılan bir yorum."
 
 #, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2700,6 +2812,14 @@ msgstr "Tüm sitenin tedavi edilmiş bir beslemesi bir ay veya daha az bir yaş 
 msgid "A day"
 msgstr "Bir gün"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "Log'de bir karar"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Silinmiş bir yazı ve bunun altında ne söylendi"
+
 #, machine, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2709,6 +2829,10 @@ msgstr[0] "Bir açıklama en çok %(num)s karakterleri olabilir."
 msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "Bir açıklama çoğu %(num)s karakterdir."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Farklı bir yönetici bir açıklama onaylamalıdır."
 
 #, machine, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2807,6 +2931,10 @@ msgstr "Bir grup adı @ içerebilir: bir iş olarak okuyacaktır."
 #, machine
 msgid "A group name can't contain control or invisible characters."
 msgstr "Bir grup adı kontrol veya görünmez karakterler içerebilir."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Bir guild yasağının kamuya ihtiyacı var, bu yüzden guild'in sayfası ve Log nedenini söyleyebilir."
 
 #, machine, python-format
 msgid "A guild can have at most %(num)s category."
@@ -2916,6 +3044,10 @@ msgstr "Aylık bir bütçe, insanların çoğuna değer verdiği üyelerin aras�
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Bir muted kişi hala okuyabilir, ancak +%(guild)s kanallarında yazamaz. Ne zaman çalıştıklarını söylüyorlar."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Kişiye bir not"
+
 #, machine, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -2972,6 +3104,10 @@ msgstr[0] "Bir anket seçeneği %(num)s karakterleri (Çin, Japon ve Kore karakt
 msgid "A poll option can't hold control characters."
 msgstr "Bir anket seçeneği kontrol karakterleri tutamaz."
 
+#, machine, plain2
+msgid "A post"
+msgstr "Bir posta"
+
 #, machine, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -2993,6 +3129,10 @@ msgstr "Bir Çember için bir yazı yeniden başlatılamaz."
 #, machine
 msgid "A post for a Circle can't have co-authors."
 msgstr "Bir Çember için bir yazı ortak yazara sahip olamaz."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Bir Circle için bir yazı, ismini kaldıramaz."
 
 #, machine
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3022,6 +3162,10 @@ msgstr "Bir post ağırlığının yarısını kaybeder"
 msgid "A post needs a title."
 msgstr "Bir yazının bir adı vardır."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "Bahsedilen bir yazı, ismini kaldıramaz, çünkü paralar size gitti."
+
 #, machine
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Halk bu resmi yüklemeyi kullanamayan bir yazı: dosyaları adresle herkes tarafından açılabilir. Resminizi yerine (Settings > Media) ekleyin."
@@ -3030,9 +3174,17 @@ msgstr "Halk bu resmi yüklemeyi kullanamayan bir yazı: dosyaları adresle herk
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Ortak yazarlarla bir yazı çevrelere taşınamaz. Halkalar için bir halka açık bir yayın, ileriye dönük kopyaları alır; diğer insanların guilds'te kalmasını sağlar."
 
-#, machine
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Birlikte yazılmış bir yazı kamudur ve çevrelerle paylaşılan veya bir ankete sahip olamaz. Yazarlar onun ortak yazarlarıdır. Bu seçenekler her yazar tarafından paylaşılır ve yayınladığınız her seferinde kullanılır."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Birlikte yazılmış bir yazı sadece yazarları kabul ettiğinde, paylaşılan taslağında silinir."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Birlikte yazılmış bir yazı kamudur ve çevrelerle paylaşılamaz veya bir ankete sahip olabilir. Yazarlar onun ortak yazarlarıdır. Bu seçenekler her yazar tarafından paylaşılır ve yayınladığınız her seferinde kullanılır."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Başkalarıyla yazılmış bir yazı, adını henüz kaldıramaz."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3362,6 +3514,10 @@ msgstr "Kabul"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Kabul moderatörü davet"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Benim adım olmadan kabul edin (admins and the post's author can still see it is me)"
 
 #, machine
 msgid "Account"
@@ -3978,6 +4134,10 @@ msgstr "Bir yazar bu siteden uzun süre sonra sayılıyor"
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Sitede aktif olmayan bir yazar %(time)s sayılmıyor."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Otomatik bir gönderinin adı kaldırılamaz."
+
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Şifreli bir kanal kurallarının kabul edilmesi için soramaz: site kimin yazdığını kontrol edemez."
@@ -4086,9 +4246,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonim"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Anonim yayın ve guilds başlatır"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Anonim #%(num)s"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4172,6 +4332,26 @@ msgstr "Herkes sizi ve Circle'ın abonelerini takip eden kişiyi görebilir. Her
 #, machine
 msgid "App Name"
 msgstr "App Name Name"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Bir karar vermek"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Bir karar verin - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Bu karar"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "S"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Bu guild'in guild moderatörlerin kararlarına itiraz edin. Bir temyiz özeldir: sadece okumasına karar veren guild moderatörler. Bir kararın geri çekilmesi ve Log'de yeni bir giriş yazılması, ilk olarak bağlantılı; kişi nasıl sona erdiğini anlatıyor. Başka bir guild moderatörün yapabileceği bir karara karar veremezsiniz."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4311,10 +4491,6 @@ msgstr "Aryan Highlands"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Bir yazar olarak, taslakları onlarla birlikte düzenlersiniz ve türüniz her karakter size verilir. Posta yayınlandıktan sonra, kimlerin ne yazdıklarını görebilir. Yazarlar birlikte karar verir:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Ailemin onu kapatmasını isteyin"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5169,6 +5345,10 @@ msgstr "Kuralları Değiştirin"
 msgid "Change the two-factor settings for your account."
 msgstr "Hesabınız için iki faktörlü ayarları değiştirin."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Onları Değiştirin"
+
 #, machine
 msgid "Change your account password."
 msgstr "Hesap şifrenizi değiştirin."
@@ -5438,6 +5618,10 @@ msgstr "En az bir çember seçin veya halka yapın."
 msgid "Choose at least one of your circles."
 msgstr "En azından çevrenizden birini seçin."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "En az bir yazı veya yorum seçin."
+
 #, machine
 msgid "Choose at least one story."
 msgstr "En az bir hikaye seçin."
@@ -5493,6 +5677,10 @@ msgstr "Ne tür bir bot olduğunu seçin."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Bunun ne tür bir geri bildirim olduğunu seçin."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Onlarla ne yapacağını seçin."
 
 #, machine
 msgid "Choose what to propose."
@@ -5765,6 +5953,10 @@ msgstr "Comics & Cartoons"
 msgid "Coming up"
 msgstr "Geliyor"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Yorum bırakın"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5774,9 +5966,13 @@ msgstr "Yorum yap"
 msgid "Comment %(id)s has been removed"
 msgstr "Yorum %(id)s kaldırıldı"
 
-#, machine
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Anonim bir şekilde Yorum yapın: diğer kullanıcılar adınızı görmeyecek"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Anonim bir şekilde yorum yapın: diğer kullanıcılar adınızı göremeyecek. Bir yönetici bunun için hesabı yasaklarsa, Log bu yorum için hesabı adlandırabilir."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Yorum kendiniz olarak: Adınız bu yorumu gösteriyor"
 
 #, machine
 msgid "Comment bookmarked."
@@ -5785,10 +5981,6 @@ msgstr "Yorum bırakın."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Yorum gönderildi!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Yorum bırakın"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6376,6 +6568,10 @@ msgstr "Deceptive URL kısaltmalar izin verilmez."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Deceptive URL kısaltmalar izin verilmez."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Karara"
+
 #, machine
 msgctxt "button"
 msgid "Decline"
@@ -6439,6 +6635,10 @@ msgstr "Delete comment?"
 msgid "Delete folder"
 msgstr "Delete klasörü"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Bunu"
+
 #, machine
 msgid "Delete my account"
 msgstr "Hesabımı"
@@ -6462,6 +6662,14 @@ msgstr "Hesabım"
 #, machine
 msgid "Delete the published post"
 msgstr "Delete the published post post"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Onları"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Bu eşyaları mı al?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6506,6 +6714,10 @@ msgstr "Delete your %(site)s account"
 #, machine
 msgid "Delete your posts and comments"
 msgstr "Yazılarınızı ve yorumlarınızı deneyin"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Deleted"
 
 #, machine
 msgid "Deleted account"
@@ -6697,6 +6909,14 @@ msgid "Discussed in %(num)s other place"
 msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "%(num)s diğer yerlerde tartışılmıştır"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Tartışma:%(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Bir profilde tartıştı"
+
 #, machine
 msgid "Discussion"
 msgstr "Tartışma"
@@ -6778,6 +6998,10 @@ msgstr "Done Tarafından"
 
 msgid "Done to"
 msgstr ""
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Tamam."
 
 #, machine, plain1
 msgid "Download"
@@ -6973,6 +7197,10 @@ msgstr "Yazılarınızı ve yorumlarınızı Düzenle"
 msgid "Edited %(when)s"
 msgstr "%(when)s düzenlendi"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Edited by Tarafından"
+
 #, machine, python-format
 msgid "Edited by %(who)s"
 msgstr "Edited by Tarafından %(who)s"
@@ -6988,6 +7216,10 @@ msgstr "Ayrıca bu postanın kopyalarını guilds için de günceller."
 #, machine
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Bu yazıyı her yerde güncelledi."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Edits"
 
 #, machine, plain1
 msgid "Education"
@@ -7326,13 +7558,13 @@ msgstr "Herkes birbirlerinin değişimlerini türü olarak görür ve her karakt
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Hayilds ve hesaplarınızdan her şey, ilk önce."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Her şey sadece arkadaşları çemberine gider. Onları halka göndermelerine izin vermek için bırakın."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Kanıt belirtilemez"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Gönderi gönderdiğiniz her şey sadece arkadaşlarınıza gider, sizi takip eden insanları takip eder, bu yüzden hiçbir şey kazayla halk değildir. Çevreleriniz sadece insanlar gibi tutabilir ve ileri gidemez, yenidenpost veya paylaşılan bir taslak yazabilirsiniz. Diğer insanların yazıları hakkında yorumlar hala kamuoyudur."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Kanıt:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7379,6 +7611,10 @@ msgstr "Örnek: kediler köpekler · “köpekler” veya “köpekler” yok"
 #, machine
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Örnek: Mutlu saat · tam cümle \"mutlu saat\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Sürgün et %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -8768,6 +9004,10 @@ msgstr "Ne kadar uzun zamandır"
 msgid "How long it runs"
 msgstr "Ne kadar süre çalışır"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Nasıl modrasyon kaydedildi"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Ne kadar yaşlısın?"
@@ -8960,6 +9200,10 @@ msgstr ""
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "Lonca içinde"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "Girişte Anonim olarak"
 
 #, machine, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9254,6 +9498,14 @@ msgstr "Bundan sonra kendi başına biter. Daha erken bitirebilirsiniz."
 msgid "It is reviewed with the bot."
 msgstr "Bot ile incelenmiştir."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Sitenin sayfalarını terk eder. Beş dakikadan daha az eskiyse ve başka kimse bunu yorumlamışsa: sadece siz ve site yöneticisi 90 gün boyunca özel bir kopya açabilir. Aksi takdirde Log'de Anonim olarak ne olduğunu, hiçbir isim ve bağlantı olmadığını ve herkes orada okuyabiliyor."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Profilinizi terk eder, besler ve guilds. Beş dakikadan daha az eski ve başka kimse yorumlamışsa, silinir: sadece siz ve site yöneticisi 90 gün boyunca özel bir kopya açabilir. Aksi takdirde Log'de Anonim olarak ne olduğunu, hiçbir isim ve bağlantı olmadığını ve herkes orada okuyabiliyor."
+
 #, machine
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Profilinizde, Spaces altında yaşıyor. Bir guild kartını, oy ve hisselerle gösterir ve Space'i açar."
@@ -9270,13 +9522,13 @@ msgstr "Tam olarak, kelime filtrenin her kelimesini ve cümlesini gösterir, her
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Çocuk kilidi ile bir çocuk hesabı kalır, ancak artık ne yapabileceğini veya değiştiremezsiniz ve tekrar bağlantı kuramazsınız."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey. Bir çocuk hesabı sadece okur: posta veya yorum yapamaz, ancak yine de oy kullanabilirsiniz, takip edebilir, guilds, Bookmark ve rapora katılabilirsiniz."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey. Chat, Uzaylar, paralar, anonim bir yayın ve bir guild çıkıyor ve diğerleri bir sohbet veya ipucu başlatamaz. Yazılarınız sadece Özel yayınını açmadığınız sürece arkadaşlarınıza gider."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Çocuk kelime filtresinde kalır, bu da profanity'yi gizler ve işaretli hassas bir şey. Chat, Uzaylar, paralar ve bir guild başlıyor ve diğerleri bir sohbet veya ipucu başlatamaz. Bir çocuk hesabı sadece okur: posta veya yorum yapamaz, ancak yine de oy kullanabilirsiniz, takip edebilir, guilds, Bookmark ve rapora katılabilirsiniz."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9437,10 +9689,6 @@ msgstr "Haziran Solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Keep it on"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9691,6 +9939,10 @@ msgstr ""
 #, machine, python-format
 msgid "Left +%(guild)s"
 msgstr "Sol +%(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "Left unticked, yorumlarınız adınızın altında kalıyor ve bu, postu yazan okuyuculara anlatıyor."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10473,6 +10725,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Sesi kes"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "Kanallarda sessize al: %(alias)s"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Mute +%(guild)s"
@@ -10816,6 +11072,10 @@ msgstr "Henüz hesap yok."
 msgid "No ads"
 msgstr "Hiçbir reklam yok"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Hiçbir itiraz bekliyor."
+
 #, machine
 msgid "No blocked accounts"
 msgstr "Hiçbir bloke hesabı yok"
@@ -11070,6 +11330,10 @@ msgstr "Şimdi katılmak için kimse ödeme yapamaz: guild sadece davetle. Şu a
 msgid "Nobody can sign in to your account with a code."
 msgstr "Kimse hesabınıza bir kodla işaret edemez."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Kimse buna yorum yapmadı."
+
 #, machine, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Kimse bir ayın bütçesinin %(share)s%%'den daha fazlasını alamaz. Paylaşlar tüm paralara yuvarlanır."
@@ -11235,6 +11499,10 @@ msgstr "Kayıt Değil"
 msgid "Not slowed by slow mode"
 msgstr "Yavaş mod tarafından yavaşlanmadı"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Daha fazla alınmadı"
+
 #, machine
 msgid "Not taking subscribers"
 msgstr "Abone olun"
@@ -11381,6 +11649,10 @@ msgstr "Henüz yazılmadı."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Henüz bir şey yok."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Hiçbir şey silinmedi burada."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11650,6 +11922,10 @@ msgstr "Sadece @%(name)s bu yazı hakkında yorum yapılabilir."
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Takip edebileceğiniz sadece hesaplar şu anda bu yazıyı yorumlayabilir."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Sadece bir yönetici bir açığa onaylayabilir."
+
 #, machine
 msgid "Only an admin can start it again."
 msgstr "Sadece bir yönetici tekrar başlayabilir."
@@ -11915,6 +12191,10 @@ msgstr ""
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Sadece bunu görebilirsiniz. Bunlar sayılıyor: Kimse baktı, oy verdi ya da bir ankete cevap verdi."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Sadece kredi değişiklikleriniz: diğer yazarların adı verilir. Adminler ve post'un yazarı hala bunu görebilirsiniz."
+
 #, machine
 msgctxt "button"
 msgid "Open"
@@ -11983,6 +12263,10 @@ msgstr "Açık başlamak için"
 #, machine, python-format
 msgid "Open until %(time)s"
 msgstr "Açık olana kadar %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Kopyasını açın"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12122,17 +12406,17 @@ msgstr "Diğer veya bilinmeyen"
 msgid "Other spellings:"
 msgstr "Diğer yazılışlar:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Diğer kullanıcılar isim yerine Anonim görüyorlar. Siz ve site yöneticileri hala görebilir, herhangi bir posta olarak aynı kuralları takip eder ve yayından sonra geri alınamaz. Bir bölge filtre hala hangi bölgenin geldiğini gösteriyor. Profilinizde listelenmez: Bunu Tarihte, Anonim altında bulabilirsiniz."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Diğer kullanıcılar isim yerine Anonim görüyorlar. Siz ve site yöneticileri hala görebilir, herhangi bir posta olarak aynı kuralları takip eder ve yayından sonra geri alınamaz. Bir bölge filtre hala hangi bölgenin geldiğini gösteriyor. Profilinizde listelenmez: Bunu Tarihte, Anonim altında bulabilirsiniz. Bir yönetici bunun için hesabı yasaklar veya askıya alırsa, Log bu kişi için hesabı adlandırabilir."
 
 #, machine
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Diğer kullanıcılar bunu Anonim olarak görüyor. Sadece sen ve site yöneticileri senin adını görüyor."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Diğerleri isim yerine Anonim görüyor; sen ve site yöneticileri hala görüyor. Bir bölge filtre hala hangi bölgenin geldiğini gösteriyor. Postadan sonra değiştirilemez."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Diğerleri isim yerine Anonim görüyor; sen ve site yöneticileri hala görüyor. Bir bölge filtre hala hangi bölgenin geldiğini gösteriyor. Postadan sonra değiştirilemez. Bir yönetici bunun için hesabı yasaklar veya askıya alırsa, Log bu kişi için hesabı adlandırabilir."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12141,6 +12425,10 @@ msgstr "Geri bildiriminize cevabımız \"%(excerpt)s\": %(response)s"
 #, machine
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Güvenlik savaş kilitlerimiz bu sayfanın etrafında kusursuz bir kalkan büyüsünü attı."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Outcome"
 
 #, machine
 msgid "Outdoors"
@@ -12819,6 +13107,10 @@ msgid "Popular this week"
 msgstr "Popüler bu hafta"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Gönder"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Gönder"
@@ -12839,6 +13131,10 @@ msgstr "Bir güncelleştirme"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Anonim olarak gönder"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Anonim olarak: diğer üyeler her yazarı bir numara ile Anonim olarak görürler. Yöneticiler her zaman kim olduklarını görebilirler. Posta yayınlandığında değiştirilemez."
 
 #, machine
 msgid "Post automatically from your own account"
@@ -12915,10 +13211,6 @@ msgstr "O gün ya da geç."
 msgid "Posted on that day."
 msgstr "Posted on this day."
 
-#, machine, plain1
-msgid "Posting"
-msgstr "Posting"
-
 #, machine
 msgid "Posting cooldown"
 msgstr "Hazırlanma"
@@ -12947,6 +13239,10 @@ msgstr "Gönderiler"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Bu etiketle bir guild. İçinde:+guild, bu guild'in etiketi."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Yazı ve yorumlar"
 
 #, machine
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13036,6 +13332,10 @@ msgstr "Bir guild'de yazılar. #gaming bir konu ve içinde guilds:&news kamu kı
 #, machine
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Bir dilde yazı: bir kod (en) veya adı (english)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Yazı veya yorum"
 
 #, machine
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13229,6 +13529,10 @@ msgstr "Özel içerik, görünür çünkü +%(guild)s."
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Özel içerik, görünür çünkü +%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Özel kopya"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Gizli mod."
@@ -13288,26 +13592,6 @@ msgstr "Özel posta, size görünür çünkü bu Circle guild üyesisiniz."
 #, machine, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Özel posta, size görünür çünkü +%(guild)s.'de onaylanmış bir katılımcısınız."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Özel yayın"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Özel yayın kapalıdır."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "Özel yayın bitti, bu yüzden sadece arkadaşlarınıza gidebilir. Bunu Ayarlar > Content'da değiştirebilirsiniz."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "Özel yayın bitti, bu yüzden sadece arkadaşlarınıza gider. Bunu Ayarlar > Content'da değiştirebilirsiniz."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "Özel yayın devam ediyor."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -13866,6 +14150,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Moderator"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Adımı Kaldırın"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Adımı bu yazıdan Çıkarın"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "%(number)s. seçeneği kaldır"
@@ -13930,6 +14222,14 @@ msgstr "Sunucuyu Kaldırın"
 msgid "Remove this topic"
 msgstr "Bu konuyu kaldır"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Adınızı bu öğelerden çıkarın?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Adınızı bu yazıdaki kredinizden çıkarın? Diğer üyeler bir numara ile \"Anonymous\" görecek. Bu geri alınabilir."
+
 #, machine
 msgctxt "diff line"
 msgid "Removed"
@@ -13970,6 +14270,10 @@ msgstr "Kaldırın. Bot artık bu beslemeyi okumuyor."
 #, machine
 msgid "Removing one takes effect at once."
 msgstr "Birinin yeniden çekilmesi bir anda etki alır."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "Adınızı yeniden kurmak, sitenin kendisi üzerinde yapılır."
 
 #, machine
 msgctxt "button"
@@ -14031,6 +14335,10 @@ msgstr "Yorumu bildir"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Gönderiyi bildir"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Raporu bu rapora rapor"
 
 #, machine, python-format
 msgid "Reported Posts - %(site)s"
@@ -14527,6 +14835,18 @@ msgstr "Botun ne yayınlayacağını ve nereden geldiğini söyle (en azından 1
 msgid "Say who it's from"
 msgstr "Kimden olduğunu söyle"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Neden aşağı inmesi gerektiğini söyle, birkaç kelime."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Neden çekici olduğunu söyle."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Neden yanlış olduğunu düşünüyorsun. Sadece yazdıklarınızı okumaya karar veren insanlar ve nasıl sona erdiğini anlatacaksınız."
+
 #, machine
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Bu barkodu (veya kodu girin) Google gibi iki faktörlü kimlik doğrulama uygulamasını kullanarak Authenticator veya Authy."
@@ -14689,6 +15009,10 @@ msgstr "Tümü akışında her şeyi gör"
 msgid "See everything live"
 msgstr "Her canlı canlıyı gör"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Log'de görün"
+
 #, machine
 msgid "See the current page"
 msgstr "Mevcut sayfayı görün"
@@ -14712,6 +15036,10 @@ msgstr "Ne eğilimi olduğunu görün"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Ne yaptıklarını görün"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Appeal"
 
 #, machine
 msgid "See your username"
@@ -14766,6 +15094,10 @@ msgstr "Bahşiş Gönder"
 msgid "Send a tip"
 msgstr "Bir ipucu gönder"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Gönder"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Geri bildirimler gönder"
@@ -14798,6 +15130,10 @@ msgstr "Hassas İçerik?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Hassas içerik"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Hassas içerik: göster"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -14876,10 +15212,6 @@ msgstr "İlk önce bakiyenizi kullanın."
 #, machine
 msgid "Setup two-step login"
 msgstr "İki adımlı giriş"
-
-#, machine
-msgid "Sexualizing Minors"
-msgstr "Azınlıkların Cinselleştirilmesi"
 
 #, machine
 msgid "Sexualizing minors"
@@ -15595,6 +15927,10 @@ msgstr "Uzaya Başlayın"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "For You feed over. “Bu gibi daha az yazı göster” diye sorduğunuz her şey unutuluyor, bu yüzden bu yazılar ve onların guilds ve kategorileri geri döndü. Sıfırlama tarihiniz hesabınızda kurtarılır, ancak For You does not use it for your upvotes and guilds yet."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Koilds Başlangıç"
+
 #, machine
 msgid "Starting soon"
 msgstr "Yakında başlayın"
@@ -15927,6 +16263,10 @@ msgstr "BBC News'ten teknoloji manşetleri. BBC tarafından çalıştırmayın."
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "%(site)s topluluğunu kendiniz hakkında biraz söyleyin."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Onlara neden, bir çizgide"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Bize ne olduğunu söyle, ne görünüyor, ya da neye benzeyeceksiniz. Bir boğa için ne yaptığını ve ne beklediğinizi söyleyin."
@@ -15994,6 +16334,9 @@ msgstr "Metin mesajları"
 msgid "Text size"
 msgstr "Metin boyutu"
 
+msgid "Thank you"
+msgstr ""
+
 #, machine
 msgid "Thank you for reporting this comment!"
 msgstr "Bu yorumu raporlamanız için teşekkür ederiz!"
@@ -16055,9 +16398,9 @@ msgstr "Teşekkürler. Bir yönetici yakında bota bakacaktır; bir bildirim ala
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Teşekkürler. Bir yönetici yakında bota bakacaktır; bir bildirim alacaksınız. Resim depolanamaz; botun sayfasından tekrar deneyin."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Teşekkürler. Hesabınız artık çocuk kilidine sahip değil ve Özel yayın kapalıdır. Onlar olduğu gibi kalmadan önce yaptığınız yazı: Bunu gören bir değişim için kim görebilir."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Teşekkürler. Hesabınız artık çocuk kilidine sahip değil."
 
 #, machine
 msgid "That Discord account is already in use by another user."
@@ -16396,6 +16739,10 @@ msgstr "Bu isim alınır."
 msgid "That password isn't right."
 msgstr "Bu şifre doğru değil."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Bu şifre doğru değil. Hiçbir şey değişmedi."
+
 #, machine
 msgid "That password reset form has expired."
 msgstr "Bu şifre sıfırlama formu sona erdi."
@@ -16722,6 +17069,10 @@ msgstr ""
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Ipuçları, ücretli çevreler ve yaratıcı fondan aldığınız paralar, son 30 gün ve her zaman için."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Yorum nerede olduğunu kalır, adınız onu alır. Bunu isminizle gören herkes hala sizin olduğunu biliyor."
+
 #, machine, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -16736,6 +17087,10 @@ msgstr[0] "%(guilds)s'ye giden kopyalar aşağıya alınır."
 #, machine
 msgid "The dates leave no days."
 msgstr "Tarihler hiçbir gün bırakmaz."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "Karar duruyor"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -16949,6 +17304,10 @@ msgstr "Adı %(host)s bulunamadı."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Yaptıklarının en yeni olanı. Sadece kiminle sohbet ettikleri isimleri, asla bir sohbet ne diyor: sohbetler son şifredir."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Onayladığınız öğelerin sayısı, seçilenleri eşleştirmez. Hiçbir şey değişmedi."
+
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Sayılar her zaman profilinizde gösterilir. Bu, her listeyi kimin açabileceğine karar verir ve üzerindeki hesapları görmeye karar verir. Bir hesap sadece kendi ayarının da izin verdiği yerdir."
@@ -16997,9 +17356,25 @@ msgstr "Yazı ilk olarak yayınlayan kişinin profilinde görünür. Seçmeli ol
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "Posta adınızı taşır ve profilinizde listelenir. Oylar, yorumlar ve ileriler yazarla paylaşılır, kim onu düzenler ve silir. Herhangi bir zamanda adım atabilirsiniz: posta sizin adınız olmadan kalır."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "Posta profilinizde listelenmez. Oylar, yorumlar ve ileriler yazarla paylaşılır, kim onu düzenler ve silir. Herhangi bir zamanda adım atabilirsiniz: posta krediniz olmadan kalır."
+
 #, machine
 msgid "The post refused the change."
 msgstr "Posta değişikliği reddetti."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "Posta nerede kalır, adınız onu alır ve profilinizi terk eder. Reputasyon sizi de terk eder. Bunu isminizle gören herkes hala sizin olduğunu biliyor."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "Postanın yazarı"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "Postanın yazarı onu silindi, bu yüzden Anonim olarak gösterilir: isim ve bağlantı yoktur. Onun altındaki yorumlar olduğu gibi kalır; bir yazar da Anonim olarak gösterilir."
 
 #, machine, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17068,9 +17443,17 @@ msgstr "Sunucu aptalca bir şey sorduğunu düşünüyor. Seni daha ciddiye alab
 msgid "The site refused the bot's session."
 msgstr "Site botun seansını reddetti."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Sitenin yöneticileri zaten var."
+
 #, machine
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Site yöneticisi bu guild hassas işaret etti, bu yüzden sadece bir yönetici bunu değiştirebilir."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Sitenin yöneticileri bunu okuyacak. Kimin kim olduğunu asla söylemediler."
 
 #, machine, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17232,9 +17615,17 @@ msgstr "Burada yazı yok."
 msgid "There is no account named @%(name)s."
 msgstr "@%(name)s. adında bir hesap yok."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Burada çağrılması gereken bir şey yok."
+
 #, machine
 msgid "There is nothing to save yet."
 msgstr "Henüz kurtarmak için hiçbir şey yok."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Bu yasağı bekleyen bir şey yok."
 
 #, machine
 msgid "There was a problem. Please try again."
@@ -17329,36 +17720,24 @@ msgid "They aren't muted here."
 msgstr "Burada çamur yok değiller."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Özel yayınlamanızı istediler."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Paraları satın alabilir ve harcayabilirler, Premium satın alabilir ve ücretli çevrelere katılabilirler."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Yorum yapabilirler."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Ev sahibi olabilirler ve Uzaylara katılabilirler ve canlı iplikleri çalıştırabilirler. Bir Uzaydaki ses aramaları da Chat'a ihtiyaç duyuyor."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Yazıları yapabilirler."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "İnsanlara mesaj verebilirler, grup sohbetlerine katılabilirler ve arama yapabilirler. Site asla size bir sohbetin ne söylediğini göstermez: sohbetler son şifredir. Şifrelerini bilen herkes hala imzalayabilir ve onları okuyabilirsiniz."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Anonim olarak gönderebilirler ve bir guild başlatabilirler. Hala anonim bir yazı kimin yazdığını görebilirsiniz."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Sitede ne yaptığınızı görebilirler: mesajlarınız, yorumlarınız, oylar, kitap işaretleriniz, aşağıdakiler, sohbet ettiğiniz, hesabınızın rapor edildiği ve son işaretlerinizi. Site asla sohbetlerinizin söylediklerini göstermez, çünkü sohbetler son şifredir. Ancak şifrenizi bilen herkes, dahil ettiği bir ebeveyn, Güvenlik'te bunu değiştirebilir, böylece sadece bunu biliyorsunuz. Bunlardan hangisinin sizin hesabınız için olduğunu seçerler:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Bir guild başlayabilirler. Hala yazıp yorum yapamazlar: bir çocuk hesabı sadece okur."
 
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17376,6 +17755,10 @@ msgstr "Doğrudan para bakiyenize giderler."
 msgid "They haven't asked for that."
 msgstr "Bunu istemediler."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Siteyi terk ederler. Söyledikleri şey Log'de Anonim olarak kalıyor, son beş dakikada kimsenin yorumladığı bir şey hariç, bu silinmiş. Bu geri alınabilir."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Onlar guild'de olmalı ve ondan sürgün edilmemelidir."
@@ -17387,6 +17770,14 @@ msgstr "İlk önce kanala katılmaları gerekiyor."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "18 ya da üstü olduklarını söylüyorlar ve hesabınızı serbest bırakmanızı istediler. Eğer yaparsan, kendi olur ve artık göremezsiniz."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Nerede olduklarını kalıyorlar, adınız onları çıkardı. Bu geri alınabilir. Adınıza ihtiyacı olan mesajlar (bir çember için veya ipuçları ile) daha sonra değiştirilmemiş olarak listelenir."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Onlar yazdılar: %(note)s"
 
 #, machine
 msgid "They're already a helper."
@@ -17557,6 +17948,10 @@ msgstr[0] "Bu çağrı tamdır (%(num)s insanlar)."
 msgid "This can't be translated right now."
 msgstr "Bu şu anda tercüme edilemez."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Bu geri alınabilir. Sitenin yöneticileri her zaman bir şeyi kimin yazdığını görebilir ve bir yönetici yasakları varsa veya bunun için hesabı askıya alabilirse, Log bunun için hesabı adlandırabilir."
+
 #, machine
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Bu kanal kurallarının kabul edilmesi için sormaz."
@@ -17641,6 +18036,10 @@ msgstr "Bu içerik zaten yayınlandı"
 msgid "This copy is no longer kept."
 msgstr "Bu kopya artık korunmuyor."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Bu şu anda değiştirilemezdi."
+
 #, machine
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Bu, kendi oyları ve yorumları ile bu guild'de yeni, bağımsız bir yazı yaratıyor. Başlık, yorum metninden oluşturulur. Orijinal yoruma geri bir bağlantı yeni gönderide gösterilecektir."
@@ -17668,6 +18067,22 @@ msgstr "Bu curated feed's guilds ve hesaplar"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Bu tedavi edilen yem kuralları çok uzun sürdü. Sahibi onları dar yapabilir."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Bu karar itiraz edilemez."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Bu karar zaten kaldırıldı."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Bu karar sizin hakkınızda. Eğer yanlış olduğunu düşünüyorsanız, bunu temyiz edebilirsiniz."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -17712,6 +18127,14 @@ msgstr "Bu guild özeldir. Özel olarak ayarlanmış olan guild'den önce yayın
 msgid "This guild's channels are closed."
 msgstr "Bu guild kanalları kapalıdır."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Bu, belirtilmeyen yasal bir kayıt vardır."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Bu silindi."
+
 #, machine
 msgid "This invitation was already answered."
 msgstr "Bu davet zaten cevaplandı."
@@ -17732,6 +18155,10 @@ msgstr "Bu bir Uzay: ev sahibi ve co-hosts, uzaydan güncellemelerini yayınlar.
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr ""
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Bu zaten anonim."
+
 #, machine
 msgid "This is already in your language."
 msgstr "Bu zaten dilinizde."
@@ -17749,6 +18176,10 @@ msgstr "Bu bir Circle guild üyeleri içindir."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr ""
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Bu özel bir yerdedir ve özel bir eşya kamu Girişinde belirtilemez."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Bu, guild'in özel CSS dosyası."
@@ -17761,6 +18192,10 @@ msgstr "Bu bugün otomatik olarak yayınlanan şey çok fazla."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Bu, hesabınız yaşlanmışken mevcut değildir. Yaşınızı Ayarlar > İçerik."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Bu, hesabın kendi yazılarından veya yorumlarından biri değildir."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Bu, mevcut filtre seviyesinde gösterilmez. Kelime filtrenizi içerik ayarlarınızda inceleyebilirsiniz."
@@ -17772,6 +18207,10 @@ msgstr "Bu, yaşınız doğrulanana kadar nerede olduğunuzu göstermez. Bunu i�
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Bu, hesabınız yaşlanmışken gösterilmez."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Bu değişmek için sizin değil ya da çoktan gitti."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17877,6 +18316,10 @@ msgstr "Bu yazı şimdi profilinizde yorum yok. Onun yorumları gerillalardadır
 #, machine
 msgid "This post has no live thread."
 msgstr "Bu yazının canlı bir parçası yoktur."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Bu yazı anonimdir, bu yüzden krediniz de olacaktır: diğer üyeler bunu bir numarayla \"Anonymous\" olarak görecekler. Adminler ve post'un yazarı hala bunu görebilirsiniz."
 
 #, machine
 msgid "This post is from an account you muted."
@@ -17992,6 +18435,10 @@ msgstr[0] "Bu ses kanalı tam (%(num)s insanlar)."
 #, machine
 msgid "This voice channel isn't available right now."
 msgstr "Bu ses kanalı şu anda mevcut değil."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Bu, beş dakika içinde silindi, bu yüzden eklemek için kamu kaydı yok."
 
 #, machine
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18192,6 +18639,10 @@ msgstr "Çok fazla guilds zaten ağınızdan (en azından %(limit)s) geçiyor. �
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Çok fazla canlı akış açık. Bir sekmeyi kapatın ve tekrar deneyin."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Bugün çok fazla rapor"
+
 #, machine
 msgid "Too much spam!"
 msgstr "Çok fazla spam!"
@@ -18298,6 +18749,10 @@ msgstr "True Crime"
 msgid "Try again"
 msgstr "Tekrar tekrar deneyin"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Yarın tekrar dene."
+
 #, machine
 msgctxt "weekday"
 msgid "Tue"
@@ -18306,10 +18761,6 @@ msgstr "Tue"
 #, machine
 msgid "Turanian Steppe"
 msgstr "Turanian Steppe"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Turn it off"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18527,6 +18978,10 @@ msgstr "Resmi işareti kaldır"
 msgid "Undo"
 msgstr "Geri al"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Undo kararı"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -18732,6 +19187,10 @@ msgstr "Untitled draft"
 msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Bir seferde %(num)s'e kadar. Hesabınız 30 gün eski olmalıdır."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "%(num)s karakterlere kadar. Bir kez karar verebilir ve günde üç çağrı yapabilirsiniz."
 
 #, machine, python-format
 msgid "Up to %(num)s day ahead."
@@ -19443,13 +19902,21 @@ msgstr "What it posts"
 msgid "What it posts:"
 msgstr "What it posts:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Ne dedi burada gösterilmez."
+
 #, machine
 msgid "What kind of Space?"
 msgstr "Ne tür bir Uzay?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Hangi üyeler kendilerini siliyorlar burada yayınlanmaz."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Hangi üyeler silindi, en yeni, sahip olduğu kelimelerle, Anonim olarak: isim ve bağlantı yok. Yazılı olmanın beş dakika içinde silinen bir şey siliniyor ve burada değil. Rapor düğmesi, siteyin yöneticilerinin kelimeleri aşağıya çekmesini ister."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Hangi üyeler ilk olarak düzenlenmişti: kim ( anonim bir yazı veya yorum için anonim), ne zaman ve verdikleri not. Bir öğeye yapılan düzenlemelerin bir listesi bir çizgidir. Bir şeyden sonra ilk beş dakikada bir düzenleme kaydedilmemektedir. Sürümler öğenin kendi tarihi sayfasındadır."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19462,6 +19929,18 @@ msgstr ""
 msgid "What the guildmasters did"
 msgstr "Hayild moderatörler ne yaptı"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Onlarla ne yapmalı"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Yorumunuzla ne yapmalı"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Posta ile ne yapmalı"
+
 #, machine
 msgid "What to say"
 msgstr "Ne söyleyeceği"
@@ -19473,6 +19952,14 @@ msgstr "Ne aranacak"
 #, machine
 msgid "What works in apps"
 msgstr "Uygulamalarda hangi işler çalışır"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "What you delete stay in the Log as Anonim, with no name, not you delete it within five minutes."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Kendinizi sildiğiniz şey. İlk beş dakika sonra silinen bir şeyin bir kopyası Log'de Anonim olarak kalır, adı yoktur. Beş dakika içinde silinen bir şeyin bir kopyası özeldir ve 90 gün sonra gider."
 
 #, machine
 msgid "What you do"
@@ -19526,6 +20013,10 @@ msgstr "Dosyaları nereye gider"
 #, machine
 msgid "Where it is"
 msgstr "Nerede olduğu"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Nerede tartışılmıştır"
 
 #, machine
 msgid "Where posts come from"
@@ -19685,6 +20176,10 @@ msgstr "Kim ne yazdı"
 msgid "Who you follow"
 msgstr "Kim takip ediyorsun"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Kim, nerede, hangi kural ve neden. Hiçbir zaman adı veya neyin gizli olduğunu veya kaldırıldığının metnini göstermez."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Kim bu tarayıcıyı başlattı ve kendilerini yerine getirdi, bu yüzden hiçbir şey kanıtlamıyorlar."
@@ -19714,6 +20209,14 @@ msgstr "Neden olmasın"
 #, machine
 msgid "Why not (they are told)"
 msgstr "Neden hayır (onlar söylendi)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Neden aşağı inmeli?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Neden yanlıştı?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -19768,10 +20271,6 @@ msgstr "Premium ile, yaptığınız her şey için bir yer elde edersiniz ve %(s
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "PremiumHer yazınızın nasıl yapıldığını görüyorsunuz: günde kaç kişi geldi, oy, yorum, kitap işaretleri, forwards ve reposts, her bir guild'de nasıl olduğunu ve anket sonuçlarını."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Özel yayınla, bir çember sadece sizi takip eden ve takip eden insanları tutabilir."
 
 #, machine
 msgid "With a link"
@@ -20116,6 +20615,10 @@ msgstr[0] "Zaten en fazla %(num)s guilds'ı yönetiyorsunuz."
 msgid "You already made that comment: %(link)s"
 msgstr "Bu yorumu zaten yaptınız: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Bunu zaten bildirdin"
+
 #, machine
 msgid "You already reported this account."
 msgstr "Zaten bu hesabı bildirdin."
@@ -20147,6 +20650,10 @@ msgstr "Bu yazıya zaten oy verdin, orijinal yazıda. Bu oylamayı buraya oy ver
 #, machine, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Siz ve 3 yardımcı yazara kadar; üyeler okuyor ve tepki veriyor. Diğer çevreler için, bunu yapın <a href=\"%(url)s\">kanallarınızın sayfası sayfası</a>3 kanala sahip olabilirsiniz."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Bu karara itiraz ettin."
 
 #, machine, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20225,10 +20732,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Ebeveynleriniz veya koruyucunuzdan hesabınızı serbest bırakmasını istediniz. Henüz cevap vermediler."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Ebeveynleriniz veya koruyucunuzdan bunu geri çevirmesini istediniz. Henüz cevap vermediler."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "500 Reputasyonda veya daha önce Premium resimler ekleyebilirsiniz"
 
@@ -20263,6 +20766,10 @@ msgstr "Bunu eklediğinizde her video için değiştirebilirsiniz. Videolar çoc
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Mesaj isteğinizi kabul ettiklerinde bunu değiştirebilirsiniz."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "%(max)s'a kadar değiştirebilirsiniz. Bir seferde öğeler."
 
 #, machine
 msgid "You can close this window."
@@ -20362,6 +20869,10 @@ msgstr[0] "Bir gün bir guild'de %(num)s wiki düzenlemeleri yapabilirsiniz. Yar
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Kendi hesabınız 18 veya üstü olarak onaylandığında bir çocuk hesabı yapabilirsiniz. Bunu Ayarlar > Content'da söyleyebilirsiniz."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Günde üç çağrı yapabilirsiniz. Yarın tekrar deneyin."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20692,6 +21203,10 @@ msgid "You have %(num)s coin."
 msgid_plural "You have %(num)s coins."
 msgstr[0] "%(num)s paralarınız var."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Bu kararı zaten itiraz ettin."
+
 #, machine, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "You have already blocked @%(name)s."
@@ -20733,6 +21248,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -20831,6 +21355,10 @@ msgstr "Kurtarma kodunuzu sakladığınızı söylemediniz."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Henüz bize söylemedin."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Bu kararı verdiniz, bu yüzden başka bir guild moderatörü temyizine karar verir."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -20933,6 +21461,14 @@ msgstr "Bir QR kodu ile imzaladınız. Bu formu kullanmak için parolanızı gir
 #, machine, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Bize %(site)s hesap e-postanızı değiştirmek istediğini söylediniz. Bu süreci bitirmek için lütfen yeni e-posta adresinizi doğrulayın:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Bu anonim yazıyı paylaşmaya davet edildiniz. Kabul ederseniz, krediniz de anonimdir ve posta profilinizde listelenmez. Oylar, yorumlar ve ileriye dönükler paylaşılır ve sadece yazar onu düzenler veya silir."
 
 #, machine
 msgid "You won't be notified of comments on this post."
@@ -21313,6 +21849,10 @@ msgstr "Hesabınız bir bot çalıştırmak için en az 30 gün eski olması ger
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Hesabınız artık otomatik olarak yayınlamıyor. Onun mesajları kalıyor."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Hesabınız sadece şimdilik okur, bu yüzden yorum yapamaz. Hala oy kullanabilirsiniz, takip edebilir ve kitap işareti."
+
 #, machine
 msgid "Your account posts from these feeds from now on."
 msgstr "Bu yemlerden hesap mesajlarınız şu andan itibaren."
@@ -21348,6 +21888,53 @@ msgstr "Yaşınız %(date)s. üzerinde doğrulandı."
 #, machine
 msgid "Your answer"
 msgstr "Cevabınız Cevabınız"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Çağrınız okumak için bekliyor."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Uyarınız kabul edildi ve karar ters alındı."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Uyarınız baktı ve karar duruyor."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Uyarınız daha fazla alınmadı."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Uyarınız gönderildi."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21431,13 +22018,13 @@ msgstr "Çevrelerin"
 msgid "Your circles - %(site)s"
 msgstr "Çevreleriniz - %(site)s"
 
-#, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Yorumunuz sitenin sayfalarından çıkarılacak. Site 90 gün boyunca özel bir kopya tutar, sadece siz ve sitenin yöneticileri açık olabilir. Bu geri alınabilir."
-
 #, machine
 msgid "Your commenting history will show here."
 msgstr "Tarihiniz burada gösterecektir."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Bu yazıdaki krediniz anonimdir: diğer üyeler bunu \"Anonymous #N olarak görürler. Adminler ve post'un yazarı hala sizindir. Bu geri alınabilir."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21579,14 +22166,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "Ebeveynleriniz veya koruyucunuz hesabınızı serbest bırakmak için sorulmuştu. Cevap verene kadar hiçbir değişiklik yok."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "Annen ya da koruyucunuz Özel posta göndermesini istedi."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Anneniz veya koruyucunuz Özel yayından önce kabul etmek zorundadır."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Ebeveynleriniz veya koruyucunuz bunu hesabınız için bıraktı."
 
@@ -21600,14 +22179,6 @@ msgstr "Ebeveyniniz veya vasiniz hesabınız için yeni bir şifre belirledi ve 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Ebeveynleriniz veya koruyucunuz hesabınızı yönetmeyi bıraktı. Bu, yaşınızı Ayarlarda onaylayana kadar çocuk kilit tutar > İçerik. Şifrenizi seçtiler: [Settings > Security] (/settings/security) veya hala sizin gibi imzalayabilirler."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Ebeveynleriniz veya koruyucunuz hesabınız için özel bir yayın çıkardı."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Ebeveynleriniz veya koruyucunuz, kalmak için özel bir yayın istiyor."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -21639,10 +22210,6 @@ msgstr "Telefonunuz hayır dedi, bu yüzden kimse imzalanmadı."
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Postanız profilinizde de listelenir. seçin Profilim de yorumlarına sahip olmak ve doğrudan onlara göndermek için guilds eklemek: Her guild kendi oy ve yorumlarıyla kendi kopyasını alır."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Postanız profilinizden, feeds ve guilds'tan çıkarılacaktır. Site 90 gün boyunca özel bir kopya tutar, sadece siz ve sitenin yöneticileri açık olabilir. Bu geri alınabilir."
 
 #, machine
 msgid "Your posting history will show here."
@@ -21761,6 +22328,10 @@ msgstr "Adınız sorudur. %(min)s %(max)s seçenekleri, her biri oy verir. Anket
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Adınız sorudur. %(min)s %(max)s seçenekleri verin. İnsanlar bu yazının her ileri ve yenidenpostundan oy verebilir, her seferinde."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "İki faktörlü kod"
+
 #, machine
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Kullanıcınız eşsizdir <code>@handle</code>Profilinizin adresi ve insanların bahsettiği ve aradığı şey. 20 Coin'i değiştirmek ve her 7 günde bir kez yapılabilir. Adınızın bu olmadan nasıl okuduğunu değiştirmek için, yukarıdaki ekran adınızı kullanın."
@@ -21820,6 +22391,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Guild Takeover iddia](/help/siege)"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[How moderasyon kaydedildi](/help/moderation)"
 
 msgid "[Legal Policies](/help/legal)"
 msgstr ""
@@ -21886,6 +22461,61 @@ msgstr ""
 msgid "[Titles](/help/titles)"
 msgstr ""
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "[banned]"
 msgstr "[geçmiş)"
@@ -21936,6 +22566,10 @@ msgstr "[sound]"
 msgid "a day"
 msgstr "bir gün"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "silinmiş bir posta"
+
 #, machine
 msgid "a guild or post it named no longer exists."
 msgstr "bir guild ya da artık mevcut olmadığını post."
@@ -21975,6 +22609,12 @@ msgstr "aktivite"
 #, machine, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "bir kanal için bir bot beslemesi ekledi %(target)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "bir topluluk notu %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22060,12 +22700,16 @@ msgstr "bots"
 msgid "by %(author)s"
 msgstr "%(author)s tarafından"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "Yemin ederim %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, python-format
 msgid "by %(owner)s"
 msgstr "Yemin ederim %(owner)s"
 
-#. the post's author, under its title
 #, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr ""
@@ -22150,6 +22794,12 @@ msgstr "hedeflerin bir etikete ihtiyacı olup olmadığını değiştirdi"
 msgid "changed who may edit a wiki page"
 msgstr "bir wiki sayfasını kim düzenleyebilirdi"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chatbanned %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -22169,6 +22819,10 @@ msgstr "para"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "yorum"
+
+#, python-format
+msgid "comment #%(id)s"
+msgstr ""
 
 #, machine
 msgid "commercial promotion"
@@ -22257,6 +22911,12 @@ msgstr "E.g. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>: En 
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr ""
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "bir %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "edited a wiki page"
@@ -22267,9 +22927,20 @@ msgstr "bir wiki sayfasını editör"
 msgid "edited an event"
 msgstr "bir olay düzenledi"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "Düzenlenen yazı %(target)s"
+
 #. a story that is no longer up
 msgid "ended"
 msgstr ""
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "uzay sona erdi %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, python-format
@@ -22295,6 +22966,12 @@ msgstr "her şey onun içinde"
 #, machine
 msgid "everything you type is credited to you"
 msgstr "türünüz size kredi edilir"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "sürgün edildi %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22373,6 +23050,11 @@ msgstr "onların %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "yazılarını vurguladı %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "%(target)s kendi yazılarının altında"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -22430,6 +23112,10 @@ msgstr[0] "%(num)s saatler"
 msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "%(num)s dakika"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "bu thread içinde"
 
 #. "in:" is a search operator and stays as it is
 #, machine
@@ -22593,6 +23279,11 @@ msgstr "eski"
 msgid "only guildmasters write here"
 msgstr "sadece guild moderatörler burada yazıyor"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "açıldı +%(guild)s herkese"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "harici sunucu"
@@ -22649,6 +23340,10 @@ msgstr "bir kanalda bir mesaj kilitledi"
 #, machine, python-format
 msgid "pinned post %(target)s"
 msgstr "pinned post %(target)s"
+
+#, python-format
+msgid "post #%(id)s"
+msgstr ""
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -22723,6 +23418,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "bir kanaldan %(target)s"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "bir halk kanalından bir mesaj çıkardı"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "uzay Kurulu'ndan bir mesaj çıkardı %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "bir guild'in wikisinin revizyonunu kaldırdı"
@@ -22745,6 +23450,12 @@ msgstr "kaldırılmış guild modeerator %(target)s"
 msgid "removed post %(target)s"
 msgstr "Kaldırılmış posta %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "topluluğun notunu %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "renamed a channel category"
@@ -22753,6 +23464,12 @@ msgstr "bir kanal kategorisi yeniden adlandırılmış"
 #, machine, python-format
 msgid "renews %(date)s"
 msgstr "Yeniliyorlar %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "topluluk notunu %(target)s olarak değiştirdi"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -22795,6 +23512,11 @@ msgstr "posta etiketini ayarlayın %(target)s"
 msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "hisseler. Sadece yazar bu yazıyı paylaşabilir."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "%(target)s tekrar onun posta altında"
 
 #. the date someone was added to the circle
 #, python-format
@@ -22916,11 +23638,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "en iyi"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "Hiç konuşmadı %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "şakalanmamış kullanıcı %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "Hayırlı olmayan %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22981,6 +23715,14 @@ msgstr "bir %(target)s bu guild"
 #, machine, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "%(target)s bu guild"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "zamana kadar %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "%(max)s bir seferde"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, python-format

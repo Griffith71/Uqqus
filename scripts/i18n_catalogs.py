@@ -182,6 +182,11 @@ def problems(msgid, msgstr):
         found.append("much longer than the English")
     if _SUBTITLE_CODES.search(msgstr or "") and not _SUBTITLE_CODES.search(msgid or ""):
         found.append("subtitle codes")
+    # a mark written straight before a value ("Anonymous #%(num)s", "post #%(id)s") is kept: machines turned it into "Anonyme%(num)s" and "Anonimo!%(num)s"
+    for name in sorted(set(re.findall(r"#%\((\w+)\)[sd]", msgid or ""))):
+        if not re.search(r"#\s?%\(" + name + r"\)[sd]", msgstr or ""):
+            found.append("a # before a value is dropped")
+            break
     stray = re.sub(r"%\(\w+\)[sd]|%%", "", msgstr or "")
     if "%" in stray and "%" not in re.sub(r"%\(\w+\)[sd]|%%", "", msgid or ""):
         found.append("a lone % (write %%)")

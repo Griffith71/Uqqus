@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nb\n"
@@ -55,9 +55,9 @@ msgstr "\" Kontoer du følger\" kan ikke velges for et anonymt innlegg: det vil 
 msgid "#%(channel)s was deleted."
 msgstr "#%(channel)s ble slettet."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "#%(channel)s was made."
-msgstr "%(channel)s ble laget."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "#%(channel)s was saved."
@@ -513,6 +513,12 @@ msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s tegngrense for titler."
 msgstr[1] "%(num)s tegngrense for titler."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s valgt"
+msgstr[1] "%(num)s valgt"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -580,6 +586,12 @@ msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s dag igjen"
 msgstr[1] "%(num)s dager igjen"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s rediger på rad"
+msgstr[1] "%(num)s redigeringer på rad"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -651,6 +663,18 @@ msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s interessert"
 msgstr[1] "%(num)s interessert"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s element endret"
+msgstr[1] "%(num)s elementer endret"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s element kan ikke endres:"
+msgstr[1] "%(num)s elementer kan ikke endres:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1297,6 +1321,10 @@ msgstr "%(who)s akseptert guild moderator invitasjon"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s la til en bot feed %(target)s til en kanal"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s la til et fellesbrev"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s la til en etikett"
@@ -1361,6 +1389,10 @@ msgstr "%(who)s endret hvorvidt forwards trenger en etikett"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s endret hvem som kan redigere en wikiside"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chatbannet %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s chatbannert bruker %(name)s"
@@ -1409,6 +1441,10 @@ msgstr "%(who)s slettet en wikiside"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s slettet post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s redigert en kommentar"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s redigert en wikiside"
@@ -1416,6 +1452,18 @@ msgstr "%(who)s redigert en wikiside"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s redigerte en hendelse"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s redigert innlegg %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s avsluttet et rom"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s i eksil %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1436,6 +1484,10 @@ msgstr "%(who)s fremhevet sin post %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s skjult en kommentar fra denne guild"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s skjult en kommentar under sitt eget innlegg"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1485,6 +1537,10 @@ msgstr "%(who)s merket en kommentar som følsomt innhold"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s merket post %(title)s som sensitive innhold"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s åpnet + %(guild)s til alle"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s permanent utgitt en kommentar"
@@ -1525,6 +1581,18 @@ msgstr "%(who)s gjeninnført innlegg %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s fjernet en kanalmelding"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s fjernet et fellesbrev"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s fjernet en melding fra et rombrett"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s fjernet en melding fra en offentlig kanal"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s fjernet en revisjon av en guilds wiki"
@@ -1549,6 +1617,10 @@ msgstr "%(who)s fjernet bruker %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s omdøpte en kanalkategori"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s erstattet et fellesbrev"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s rescinded guild moderator invitasjon til @ %(name)s"
@@ -1564,6 +1636,10 @@ msgstr "%(who)s sett nsfw på innlegget %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s angi etiketten på post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s viste en kommentar igjen"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1589,9 +1665,17 @@ msgstr "%(who)s tok en pinn av en kanalmelding"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s tok en rolle fra %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s ikke-chatbannet %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s ikke-chatbannet bruker %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s ueksistert %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1677,6 +1761,10 @@ msgstr "(fra originalen)"
 msgid "(in a private place)"
 msgstr "(på et privat sted)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(ingen tekst)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(ingen tittel)"
@@ -1748,6 +1836,10 @@ msgstr "**Press**"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Legg til valg"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+%(guild)s Appeller"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2261,10 +2353,6 @@ msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [O
 msgstr "@ %(name)s ba om å publisere et delt utkast du skriver: stemmer. [Åpne utkastet](%(link)s)"
 
 #, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@%(name)s ba deg om å slå av privat innlegg for deres konto. Du kan svare i [Innstillinger > Barn](/settings/children)."
-
-#, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@%(name)s blokkert."
 
@@ -2617,6 +2705,10 @@ msgstr "Et rom kan ikke være anonymt."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "En plass kan ikke være i en sirkel."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Et rom kan ikke ha navnet fjernet."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "Et rom kan ikke begynne tidligere."
@@ -2644,6 +2736,10 @@ msgstr "En abonnentmerke ved siden av navnet ditt på @%(name)sprofil og innlegg
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "En Oversett knapp viser under innlegg og kommentarer på ingen av språkene. Ingenting oversettes med mindre du trykker på det."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Et forbud kan sitere opp til %(max)s elementer."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2831,9 +2927,25 @@ msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "En sirkels navn kan være %(num)s tegn på det meste."
 msgstr[1] "En sirkels navn kan være %(num)s tegn på det meste."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "En medforfatter kan ikke være anonym."
+#, machine, plain2
+msgid "A comment"
+msgstr "En kommentar"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "En kommentar fra en konto du blokkerte eller som blokkerte deg."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "En kommentar skjult av en guild moderator."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "En kommentar skjult av ditt ordfilter."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "En kommentar forfatteren slettet. Det den sa er ikke vist her."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2842,6 +2954,10 @@ msgstr "En kommentar til et innlegg for en sirkel kan ikke videresendes til en g
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "En kommentar til et innlegg til en sirkel kan ikke skrives om."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "En kommentar fjernet av nettstedets administratorer."
 
 #, machine, plain1, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2859,6 +2975,14 @@ msgstr "Et kurert fôr av hele nettstedet trenger en aldersgrense på en måned 
 msgid "A day"
 msgstr "En dag"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "En beslutning i loggen"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "En slettet post og det som ble sagt under det"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2870,6 +2994,10 @@ msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "En beskrivelse er på det meste %(num)s tegn."
 msgstr[1] "En beskrivelse er på de fleste %(num)s tegn."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "En annen administrator må bekrefte en åpenbaring."
 
 #, machine, plain1, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2974,6 +3102,10 @@ msgstr "Et gruppenavn kan ikke inneholde @: det vil leses som et håndtak."
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "Et gruppenavn kan ikke inneholde kontroll eller usynlige tegn."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Et guildforbud trenger en offentlig grunn, så guildens side og loggen kan si hvorfor."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3094,6 +3226,10 @@ msgstr "Et månedlig budsjett delt blant medlemmene hvis innlegg og kommentarer 
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "En dempet person kan fortsatt lese, men kan ikke skrive i noen av +%(guild)ss kanaler. De blir fortalt når de prøver."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "En note til personen"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3157,6 +3293,10 @@ msgstr[1] "En meningsmåling alternativ kan være %(num)s tegn (kinesisk, japans
 msgid "A poll option can't hold control characters."
 msgstr "En meningsmåling alternativ kan ikke holde kontroll tegn."
 
+#, machine, plain2
+msgid "A post"
+msgstr "En post"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3180,6 +3320,10 @@ msgstr "En post til en sirkel kan ikke ompostes."
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "En artikkel til en sirkel kan ikke ha medforfattere."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Et innlegg til en sirkel kan ikke få navnet fjernet."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3209,6 +3353,10 @@ msgstr "Et innlegg mister halvparten av vekten i"
 msgid "A post needs a title."
 msgstr "En post trenger tittel."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "En post som har blitt tippet kan ikke få navnet fjernet, fordi myntene gikk til deg."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Et innlegg som ikke er offentlig kan ikke bruke dette bildet opplasting: filene kan åpnes av alle med adressen. Legg til bildet fra lenket lagring i stedet (Innstillinger > Medier)."
@@ -3217,9 +3365,17 @@ msgstr "Et innlegg som ikke er offentlig kan ikke bruke dette bildet opplasting:
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "En post med medforfattere kan ikke flyttes til sirkler. Flytte et offentlig innlegg til sirkler tar ned kopiene du sendte; kopiere andre videresendte opphold i sine goilds."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Et innlegg skrevet sammen er offentlig og kan ikke være anonymt, delt med sirkler eller ha en meningsmåling. Forfatterne er medforfattere. Disse alternativene deles av hver forfatter og brukes hver gang du publiserer."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Et innlegg skrevet sammen slettes kun når dets forfattere er enige i dets felles utkast."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Et innlegg skrevet sammen er offentlig og kan ikke deles med sirkler eller ha en meningsmåling. Forfatterne er medforfattere. Disse alternativene deles av hver forfatter og brukes hver gang du publiserer."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Et innlegg skrevet med andre kan ikke få navnet fjernet her ennå."
 
 #, machine, plain1, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3562,6 +3718,10 @@ msgstr "Ta imot invitasjon"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Accepter moderator invitere"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Accepter uten mitt navn (adminer og postens forfatter kan fortsatt se det er meg)"
 
 #, machine, plain1
 msgid "Account"
@@ -4182,6 +4342,10 @@ msgstr "En forfatter slutter å bli regnet etter så lang avstand fra nettstedet
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "En forfatter som ikke har vært aktiv på nettstedet for %(time)s Det er ikke talt."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "En automatisert post kan ikke få navnet fjernet."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "En kryptert kanal kan ikke be om at reglene skal godtas: nettstedet kan ikke sjekke hvem som skrev."
@@ -4294,9 +4458,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonym"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Anonymt innlegg og starter guilds"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Anonym #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4381,6 +4545,26 @@ msgstr "Alle kan se hvem du følger, som følger deg og din sirkels abonnenter. 
 #, machine, plain1
 msgid "App Name"
 msgstr "App Navn"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Anke en beslutning"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Anke en beslutning - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Anke denne avgjørelsen"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Anke"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Anke om avgjørelser denne guildens guild moderators gjort. En appell er privat: bare guild moderators som kan bestemme det lese det. Rulle en beslutning angrer den og skriver en ny oppføring i loggen, knyttet til den første; personen blir fortalt hvordan den endte. Du kan ikke bestemme en appell om din egen beslutning mens en annen guild moderator kan."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4520,10 +4704,6 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Som forfatter redigerer du utkastet live med dem, og alle tegn du skriver er kreditert til deg. Når innlegget er publisert, kan alle som kan se det se hvem som skrev hva. Forfatterne bestemmer sammen:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Be foreldrene min om å slå det av"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5389,6 +5569,10 @@ msgstr "Endre reglene"
 msgid "Change the two-factor settings for your account."
 msgstr "Endre tofaktorinnstillingene for kontoen din."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Endre dem"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "Endre passord for kontoen din."
@@ -5660,6 +5844,10 @@ msgstr "Velg minst én sirkel, eller gjør den offentlig."
 msgid "Choose at least one of your circles."
 msgstr "Velg minst én av sirklene."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Velg minst ett innlegg eller kommentar."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "Velg minst én historie."
@@ -5715,6 +5903,10 @@ msgstr "Velg hvilken type bot det er."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Velg hvilken type tilbakemelding dette er."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Velg hva du skal gjøre med dem."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -5988,6 +6180,10 @@ msgstr "Tegneserier og tegneserier"
 msgid "Coming up"
 msgstr "Kommer opp"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Kommentar"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5997,9 +6193,13 @@ msgstr "Kommenter"
 msgid "Comment %(id)s has been removed"
 msgstr "Kommentar %(id)s er fjernet"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Kommentar anonymt: Andre brukere vil ikke se ditt navn"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Kommentar anonymt: Andre brukere vil ikke se ditt navn. Hvis en administrator forbyr eller avbryter kontoen, kan loggen nevne kontoen for denne kommentaren."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Kommentar som deg selv: ditt navn viser på denne kommentaren"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -6008,10 +6208,6 @@ msgstr "Kommentar bokmerket."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Kommentar publisert!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Kommentarer"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6603,6 +6799,10 @@ msgstr "Deceptive URL-forkortere er ikke tillatt."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Deceptive URL-forkortere er ikke tillatt."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Avgjørelse"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6666,6 +6866,10 @@ msgstr "Slett kommentar?"
 msgid "Delete folder"
 msgstr "Slett mappe"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Slett den"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "Slett min konto"
@@ -6689,6 +6893,14 @@ msgstr "Slett kontoen"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "Slett det publiserte innlegget"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Slett dem"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Slette disse elementene?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6733,6 +6945,10 @@ msgstr "Slett din %(site)s-konto"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "Slett dine innlegg og kommentarer"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Slettet"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -6927,6 +7143,14 @@ msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "Diskutert på et annet sted"
 msgstr[1] "Diskutert på %(num)s andre steder"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Diskutert i +%(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Diskutert om en profil"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "Diskusjon"
@@ -7009,6 +7233,10 @@ msgstr "Ferdig av"
 #, machine, plain1
 msgid "Done to"
 msgstr "Ferdig til"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Ferdig."
 
 #, machine, plain1
 msgid "Download"
@@ -7205,6 +7433,10 @@ msgstr "Redigere dine innlegg og kommentarer"
 msgid "Edited %(when)s"
 msgstr "Redigert %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Redigert av"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "Redigert av %(who)s"
@@ -7220,6 +7452,10 @@ msgstr "Redigering oppdaterer også kopiene av dette innlegget videresendt til g
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Redigerer oppdateringer av dette innlegget overalt det er videresendt."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Redigerer"
 
 #, machine, plain1
 msgid "Education"
@@ -7562,13 +7798,13 @@ msgstr "Alle ser hverandres endringer som de skriver, og alle tegn er kreditert 
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Alt fra din guilds og kontoer, nyeste først."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Alt de skriver, går bare til vennekretsen. Slå det av for å la dem poste i offentlighet."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Bevis kan ikke nevnes"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Alt du legger ut går bare til Vennersirkelen din, menneskene du følger som følger deg tilbake, så ingenting er offentlig ved et uhell. Dine sirkler kan bare holde folk som det, og du kan ikke videre, omposte eller skrive et delt utkast. Kommentarer til andres innlegg er fortsatt offentlige."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Bevis:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7615,6 +7851,10 @@ msgstr "Eksempel: katter · har verken katter eller hunder"
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Eksempel: happy hour · har den nøyaktige frasen - lykkelig time -"
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Utvis %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9015,6 +9255,10 @@ msgstr "Hvor lenge"
 msgid "How long it runs"
 msgstr "Hvor lenge det går"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Hvordan moderasjon registreres"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Hvor gammel er du?"
@@ -9208,6 +9452,10 @@ msgstr "I %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "I laug"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "Logg som anonym"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9503,6 +9751,14 @@ msgstr "Det ender av seg selv etter dette. Du kan avslutte det før."
 msgid "It is reviewed with the bot."
 msgstr "Det er gjennomgått med bot."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Den forlater sidens sider. Hvis det er mindre enn fem minutter gammelt og ingen andre har kommentert på det, er det slettet: bare du og nettstedets administratorer kan åpne en privat kopi, i 90 dager. Ellers er det det som står i loggen som anonymt, uten navn og ingen link, og alle kan lese den der."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Det etterlater din profil, feeds og guilds. Hvis det er mindre enn fem minutter gammelt og ingen andre har kommentert, slettes det: Bare du og nettstedets administratorer kan åpne en privat kopi, i 90 dager. Ellers er det det som står i loggen som anonymt, uten navn og ingen link, og alle kan lese den der."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Det lever på din profil, under rom. En guild viser sitt kort, med stemmer og aksjer, og åpner rommet."
@@ -9519,13 +9775,13 @@ msgstr "Det viser i sin helhet hvert ord og uttrykk ordet filter ser etter, på 
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Det forblir en barnekonto med barnelåsen, men du kan ikke lenger se det eller endre hva det kan gjøre, og du kan ikke koble det igjen."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Det forblir på barnets ordfilter, som skjuler avsky og alt merket sensitive."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Det forblir på barnets ordfilter, som skjuler avsky og alt merket sensitive. En barnekonto leser bare: det kan ikke poste eller kommentere, men du kan fortsatt stemme, følge, bli med i guilds, bokmerke og rapportere."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Det forblir på barnets ordfilter, som skjuler avsky og alt merket sensitive. Chat, mellomrom, mynter, anonym innlegg og starter en guild er av, og andre kan ikke starte en chat eller tip deg. Dine innlegg går til Venner sirkelen kun med mindre du slår Private innlegg av."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Det forblir på barnets ordfilter, som skjuler avsky og alt merket sensitive. Chat, rom, mynter og start en guild er av, og andre kan ikke starte en chat eller tip deg. En barnekonto leser bare: det kan ikke poste eller kommentere, men du kan fortsatt stemme, følge, bli med i guilds, bokmerke og rapportere."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9691,10 +9947,6 @@ msgstr "Junisolaritet"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Hold det på"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9953,6 +10205,10 @@ msgstr "Venstre"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "Venstre +%(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "Left Unicked, dine kommentarer bli under ditt navn, og det forteller lesere som skrev innlegget."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10747,6 +11003,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Demp"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "Demp %(alias)s i kanalene"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Mute +%(guild)s"
@@ -11096,6 +11356,10 @@ msgstr "Ingen kontoer lagt til enda."
 msgid "No ads"
 msgstr "Ingen annonser"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Ingen appeller venter."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "Ingen blokkerte kontoer"
@@ -11351,6 +11615,10 @@ msgstr "Ingen kan betale for å bli med nå: Guild er kun ved invitasjon. Nåvæ
 msgid "Nobody can sign in to your account with a code."
 msgstr "Ingen kan logge på kontoen din med kode."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Ingen kommenterte det."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Ingen får mer enn %(share)s %% av en måneds budsjett. Aktier avrundes til hele mynter."
@@ -11516,6 +11784,10 @@ msgstr "Ikke registrert"
 msgid "Not slowed by slow mode"
 msgstr "Ikke bremset av langsom modus"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Ikke tatt videre"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "Ikke ta abonnenter"
@@ -11663,6 +11935,10 @@ msgstr "Ingenting skrevet enda."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Ingenting ennå."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Ingenting du slettet blir holdt her."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11934,6 +12210,10 @@ msgstr "Kun kontoer @%(name)s følger kan kommentere dette innlegget."
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Bare kontoer du følger kan kommentere dette innlegget nå."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Bare en administrator kan bekrefte en åpenbaring."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "Bare en administrator kan starte den igjen."
@@ -12202,6 +12482,10 @@ msgstr "Bare du"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Bare du kan se dette. Dette er tall: Ingen som så, stemte eller svarte på en meningsmåling heter."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Bare dine kredittendringer: de andre forfatterne blir navngitt. Admins og postens forfatter kan fortsatt se at det er deg."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12270,6 +12554,10 @@ msgstr "Åpne for å starte"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "Åpne til %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Åpne kopien din"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12410,17 +12698,17 @@ msgstr "Andre eller ukjente"
 msgid "Other spellings:"
 msgstr "Andre stavemåter:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Andre brukere ser anonym i stedet for ditt navn. Du og nettstedsadministratorer kan fortsatt se det, det følger de samme reglene som ethvert innlegg, og det kan ikke angres etter innlegg. Et regionfilter viser fortsatt hvilken region det kommer fra. Det er ikke oppført på din profil: du finner det i historie, under Anonym."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Andre brukere ser anonym i stedet for ditt navn. Du og nettstedsadministratorer kan fortsatt se det, det følger de samme reglene som ethvert innlegg, og det kan ikke angres etter innlegg. Et regionfilter viser fortsatt hvilken region det kommer fra. Det er ikke oppført på din profil: du finner det i historie, under Anonym. Hvis en administrator forbyr eller avbryter kontoen for den, kan loggen navngi kontoen for denne."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Andre brukere ser dette som anonymt. Bare du og nettstedsadministratorer ser navnet ditt."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Andre ser Anonymt i stedet for ditt navn; du og nettstedet administratorer fortsatt se det. Et regionfilter viser fortsatt hvilken region det kommer fra. Det kan ikke endres etter posting."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Andre ser Anonymt i stedet for ditt navn; du og nettstedet administratorer fortsatt se det. Et regionfilter viser fortsatt hvilken region det kommer fra. Det kan ikke endres etter posting. Hvis en administrator forbyr eller avbryter kontoen for den, kan loggen navngi kontoen for denne."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12429,6 +12717,10 @@ msgstr "Vårt svar på din tilbakemelding \"%(excerpt)s \": %(response)s"
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Våre sikkerhetskrigslåser har kastet en ugjennomtrengelig skjoldformel rundt denne siden."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Utfall"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -13111,6 +13403,10 @@ msgid "Popular this week"
 msgstr "Populær denne uken"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Publiser"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Publiser"
@@ -13131,6 +13427,10 @@ msgstr "Legg inn en oppdatering"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Publiser anonymt"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Post anonymt: andre medlemmer ser alle forfattere som Anonymt med et nummer. Admins kan alltid se hvem de er. Det kan ikke endres når posten er publisert."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -13208,10 +13508,6 @@ msgid "Posted on that day."
 msgstr "Publisert den dagen."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "Posting"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Posting avkjøling"
 
@@ -13239,6 +13535,10 @@ msgstr "Innlegg"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Posts a guild tagged with this label. Med i: +guild, den guild's etikett."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Innlegg og kommentarer"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13329,6 +13629,10 @@ msgstr "Posts i en guild. i:#gaming er guilds av et emne og i: &news er et offen
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Poster på et språk: en kode (en) eller dens navn (engelsk)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Poster eller kommentarer"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13522,6 +13826,10 @@ msgstr "Privat innhold, synlig fordi du er en guild moderator på +%(guild)s."
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Privat innhold, synlig fordi du er en godkjent bidragsyter i +%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Privat kopi"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Privat modus."
@@ -13581,26 +13889,6 @@ msgstr "Privat post, synlig for deg fordi du er medlem av denne sirkelen."
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Privat post, synlig for deg fordi du er en godkjent bidragsyter i +%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Privat innlegg"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Privat posting er avslått."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "Privat innlegg er på, så dette kan bare gå til din Venner sirkel. Du kan endre det i innstillinger > Innhold."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "Privat innlegg er på, så dette går bare til din venn sirkel. Du kan endre det i innstillinger > Innhold."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "Privat posting er på."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14164,6 +14452,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Fjern moderator"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Fjern mitt navn"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Fjern mitt navn fra dette innlegget"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "Fjern valg %(number)s"
@@ -14228,6 +14524,14 @@ msgstr "Fjern serveren"
 msgid "Remove this topic"
 msgstr "Fjern dette emnet"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Fjerne ditt navn fra disse elementene?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Fjerne ditt navn fra kreditt på dette innlegget? Andre medlemmer vil se - anonymt - med et tall. Dette kan ikke angres."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14268,6 +14572,10 @@ msgstr "Fjernet. Botten leser ikke lenger det fôret."
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "Fjerning av en virker samtidig."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "Fjerning av navnet ditt gjøres på selve siden."
 
 #, machine, plain1
 msgctxt "button"
@@ -14329,6 +14637,10 @@ msgstr "Rapporter kommentar"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Rapporter innlegg"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Rapporter dette"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -14827,6 +15139,18 @@ msgstr "Si hva boten vil poste og hvor den kommer fra (minst 10 tegn)."
 msgid "Say who it's from"
 msgstr "Si hvem det er fra"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Si hvorfor det skulle komme ned, med noen ord."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Si hvorfor du er tiltalende."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Si hvorfor du tror det var galt. Bare de som bestemmer seg for å lese hva du skriver, og du vil bli fortalt hvordan det endte."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Skann denne strekkoden (eller skriv inn koden) ved hjelp av et tofaktorgodkjenningsprogram som Google Authenticator eller Authy."
@@ -14992,6 +15316,10 @@ msgstr "Se alt i Alt"
 msgid "See everything live"
 msgstr "Se alt levende"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Se det i loggen"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "Se den aktuelle siden"
@@ -15015,6 +15343,10 @@ msgstr "Se hva som er trending"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Se hva de gjør"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Se appellen din"
 
 #, machine, plain1
 msgid "See your username"
@@ -15069,6 +15401,10 @@ msgstr "Send tips"
 msgid "Send a tip"
 msgstr "Send et tips"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Send appell"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Send tilbakemelding"
@@ -15101,6 +15437,10 @@ msgstr "Følsom innhold?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Sensitivt innhold"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Sensitive innhold: Vis det"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15179,10 +15519,6 @@ msgstr "Sett balansen først."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "Konfigurer to-trinns innlogging"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "Seksualisering av mindreårige"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -15925,6 +16261,10 @@ msgstr "Start rommet"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Start din For Du mate over. Alt du ba om med \"Vis færre innlegg som dette\" er glemt, så de postene og deres guilds og kategorier kommer tilbake. Din tilbakestillingsdato lagres på kontoen din, men for deg bruker den ikke til opptak og laug ennå."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Starter guilds"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "Starter snart"
@@ -16260,6 +16600,10 @@ msgstr "Teknologioverskrifter fra BBC News. Ikke drevet av BBC."
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Fortell %(site)s-samfunnet litt om deg selv."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Fortell hvorfor i en linje"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Fortell oss hva som skjedde, hva som ser ut eller hva du vil. For en bug, si hva du gjorde og hva du forventet."
@@ -16327,6 +16671,10 @@ msgstr "Tekstinnlegg"
 msgid "Text size"
 msgstr "Tekststørrelse"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Takk"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "Takk for at du sender inn en endring!"
@@ -16388,9 +16736,9 @@ msgstr "Takk. En administrator vil se på bot snart; du vil få et varsel."
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Takk. En administrator vil se på bot snart; du vil få et varsel. Bildet kunne ikke lagres; prøv igjen fra bots side."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Takk. Kontoen din har ikke lenger barnelåsen, og den private postingen er av. Innlegg du gjorde før opphold som de var: bruk Hvem kan se dette på et innlegg for å endre hvem som ser det."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Takk. Kontoen din har ikke lenger barnelåsen."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16730,6 +17078,10 @@ msgstr "Det navnet er tatt."
 msgid "That password isn't right."
 msgstr "Det passordet er ikke riktig."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Det passordet er ikke riktig. Ingenting ble endret."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "Dette skjemaet for tilbakestilling av passord er utløpt."
@@ -17057,6 +17409,10 @@ msgstr "myntene går til grunnleggeren, <a href=\"%(url)s\">@%(name)s</a>."
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Myntene du tjener fra tips, betalte sirkler og skaperfondet, de siste 30 dagene og hele tiden."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Kommentaren forblir der det er, med ditt navn tatt av det. Alle som så den med navnet ditt vet fortsatt at det var deg."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17073,6 +17429,10 @@ msgstr[1] "De kopiene du sender til %(guilds)s vil bli tatt ned."
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "Datoene går ingen dager."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "Beslutningen står"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17289,6 +17649,10 @@ msgstr "Navnet %(host)s ble ikke funnet."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Det nyeste av det de har gjort. Bare navnene på hvem de prater med er vist, aldri hva en chat sier: chatter er slutt-til-end kryptert."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Antall elementer du bekreftet samsvarer ikke med det som ble valgt. Ingenting ble endret."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Tallene vises alltid på profilen din. Dette bestemmer hvem som kan åpne hver liste og se kontoene på den. En konto er bare oppført der sin egen innstilling tillater det også."
@@ -17337,9 +17701,25 @@ msgstr "Posten vises på profilen til hvem som publiserer den først. Valgfritt 
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "Posten bærer navnet ditt og er oppført på profilen din. Stemninger, kommentarer og videresendinger deles med forfatteren, som redigerer og sletter det. Du kan gå av når som helst: innlegget blir, uten navnet ditt."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "Posten er ikke oppført på din profil. Stemninger, kommentarer og videresendinger deles med forfatteren, som redigerer og sletter det. Du kan gå av når som helst: innlegget forblir uten kreditt."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "Posten nektet å endre."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "Posten blir der det er, med navnet ditt tatt av den, og forlater profilen din. Reputasjonen forlater deg også. Alle som så den med navnet ditt vet fortsatt at det var deg."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "Postens forfatter"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "Postens forfatter slettet det, så det er vist som Anonym: Ingen navn og ingen link. Kommentarer under det blir som de var, en forfatter slettes også vises som Anonym."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17410,9 +17790,17 @@ msgstr "Serveren mener du spør noe dumt. Det kan ta deg mer alvorlig hvis du ta
 msgid "The site refused the bot's session."
 msgstr "Nettstedet nektet bots sesjon."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Nettstedets administratorer har det allerede."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Nettstedets admins markerte denne følsomheten, så bare en administrator kan endre dette."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Nettstedets administratorer vil lese det. De blir aldri fortalt hvem som rapporterte."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17578,9 +17966,17 @@ msgstr "Det er ingen innlegg her."
 msgid "There is no account named @%(name)s."
 msgstr "Det er ingen konto som heter @%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Det er ikke noe å appellere til."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "Det er ingenting å redde enda."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Det er ingenting som venter på dette forbudet."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17675,36 +18071,24 @@ msgid "They aren't muted here."
 msgstr "De er ikke dempet her."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "De ba deg om å slå av privat posting."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "De kan kjøpe og bruke mynter, tip, kjøpe Premium og bli med eller kjøre betalte sirkler."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "De kan kommentere."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "De kan være vert og bli med i Spaces og kjøre live tråder. Voice calls in a space trenger også å være på."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "De kan gjøre innlegg."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "De kan melde folk, bli med i gruppechatter og ringe. Nettstedet viser deg aldri hva en chat sier: chatter er end-to-end kryptert. Den som vet passordet kan fortsatt logge på og lese dem."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "De kan skrive anonymt og starte en guild. Du kan fortsatt se hvem som skrev et anonymt innlegg."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "De kan se hva du gjør på nettstedet: innlegg, kommentarer, stemmer, bokmerker, følger, guilds, hvem du chatter med, at kontoen din ble rapportert, og dine nylige innlogginger. Siden viser dem aldri hva chatter sier, fordi chatter er slutt-til-ende kryptert. Men alle som vet passordet ditt, en forelder som valgte det inkludert, kan logge på som deg: Endre det i sikkerhet slik at bare du vet det. De velger hvilke av disse som er på for kontoen din:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "De kan starte en guild. De kan ikke skrive eller kommentere: en barnekonto bare leser."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17722,6 +18106,10 @@ msgstr "De går rett til myntbalansen."
 msgid "They haven't asked for that."
 msgstr "De har ikke bedt om det."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "De forlater siden. Det de sa holder seg i loggen som anonymt, bortsett fra alt som er gjort i de siste fem minuttene som ingen har kommentert, som er slettet. Dette kan ikke angres."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "De trenger å være i guddommen, og ikke i eksil fra den."
@@ -17733,6 +18121,14 @@ msgstr "De må først slutte seg til kanalen."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "De sier de er 18 år eller eldre og ba deg om å frigi sin konto. Hvis du gjør det, blir det deres egen og du kan ikke lenger se det."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "De blir der de er, med navnet ditt tatt av dem. Dette kan ikke angres. Poster som trenger ditt navn (for en sirkel eller med tips) er oppført etterpå som ikke endret."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "De skrev: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17907,6 +18303,10 @@ msgstr[1] "Dette er fullt (%(num)s personer)."
 msgid "This can't be translated right now."
 msgstr "Dette kan ikke oversettes akkurat nå."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Dette kan ikke angres. Nettstedets administratorer kan alltid se hvem som har skrevet noe, og hvis en administrator forbyr eller suspenderer kontoen for det, kan loggen navngi kontoen for det."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Denne kanalen ber ikke om at reglene skal godtas."
@@ -17991,6 +18391,10 @@ msgstr "Dette innholdet er allerede lagt ut"
 msgid "This copy is no longer kept."
 msgstr "Denne kopien holdes ikke lenger."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Dette kan ikke endres akkurat nå."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Dette skaper et nytt, uavhengig innlegg i den gylden med egne stemmer og kommentarer. Tittelen genereres fra kommentarens tekst. En link tilbake til den opprinnelige kommentaren vil vises på det nye innlegget."
@@ -18018,6 +18422,22 @@ msgstr "Denne kurerte fôrets guilds og kontoer"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Dette kurerte fôrets regler tok for lang tid å løpe. Eieren kan gjøre dem smalere."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Denne avgjørelsen kan ikke appelleres."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Denne avgjørelsen er allerede fjernet."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Denne avgjørelsen handler om deg. Hvis du tror det var galt, kan du appellere det."
+
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr "Denne avgjørelsen er i loggen, og du kan appellere den: [Se den i loggen](%(log)s) · [Besøk denne avgjørelsen](%(appeal)s)"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18063,6 +18483,14 @@ msgstr "Denne guilden er privat. Innhold som er lagt inn før guilden blir satt 
 msgid "This guild's channels are closed."
 msgstr "Denne guildens kanaler er stengt."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Dette har en lovlig rekord, som ikke kan nevnes."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Dette er slettet."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "Denne invitasjonen ble allerede besvart."
@@ -18083,6 +18511,10 @@ msgstr "Dette er et rom: verten og co-vertene legger ut sine oppdateringer fra r
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Dette er en logg av moderatorhandlinger utført i +%(guild)s. De som alle kan lese er også i hele nettstedet <a href=\"%(url)s\">Logg</a>Det medlemmene sletter seg selv, er ikke publisert."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Dette er allerede anonymt."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "Dette er allerede på ditt språk."
@@ -18100,6 +18532,10 @@ msgstr "Dette er til medlemmene av en sirkel."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "Dette er for folket i en av <a href=\"%(url)s\">@%(name)s</a>sirkler."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Dette er på et privat sted, og en privat vare kan ikke siteres i offentlig logg."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Dette er Guilds egendefinerte CSS-fil."
@@ -18112,6 +18548,10 @@ msgstr "Dette er for mye som det som ble lagt ut i dag."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Dette er ikke tilgjengelig mens kontoen din er aldersbegrenset. Du kan bekrefte din alder i innstillinger > Innhold."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Dette er ikke en av kontoens egne innlegg eller kommentarer."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Dette vises ikke på ditt nåværende ordfilternivå. Du kan gjennomlese ordfilteret i innholdsinnstillingene."
@@ -18123,6 +18563,10 @@ msgstr "Dette er ikke vist hvor du er før din alder er bekreftet. Logg på for 
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Dette vises ikke mens kontoen din er aldersbegrenset."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Dette er ikke ditt å endre, eller det er allerede borte."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18229,6 +18673,10 @@ msgstr "Dette innlegget har ingen kommentarer til profilen din nå. Dess komment
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "Denne artikkelen har ingen levende tråd."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Dette innlegget er anonymt, så kreditten din vil også være: andre medlemmer vil se det som \" anonymt\" med et tall. Admins og postens forfatter kan fortsatt se at det er deg."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18346,6 +18794,10 @@ msgstr[1] "Denne stemmekanalen er full (%(num)s personer)."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "Denne stemmekanalen er ikke tilgjengelig akkurat nå."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Dette ble slettet innen fem minutter etter at det ble gjort, så det har ingen offentlig rekord å knytte seg til."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18550,6 +19002,10 @@ msgstr "For mange guilds er allerede ledet fra nettverket ditt (minst %(limit)s)
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "For mange levende bekker er åpne. Lukk en fane og prøv igjen."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "For mange rapporter i dag"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "For mye spam!"
@@ -18656,6 +19112,10 @@ msgstr "Sann kriminalitet"
 msgid "Try again"
 msgstr "Prøv igjen"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Prøv igjen i morgen."
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18664,10 +19124,6 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanisk Steppe"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Slå det av"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18887,6 +19343,10 @@ msgstr "Fjern utheving"
 msgid "Undo"
 msgstr "Angre"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Angre avgjørelsen"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19093,6 +19553,10 @@ msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Opp til %(num)s om gangen. Din konto må være 30 dager gammel."
 msgstr[1] "Opp til %(num)s om gangen. Din konto må være 30 dager gammel."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Opp til %(num)s tegn. Du kan anke en beslutning én gang, og ta tre appeller om dagen."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -19808,13 +20272,21 @@ msgstr "Hva det legger inn"
 msgid "What it posts:"
 msgstr "Hva den legger inn:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Det den sa er ikke vist her."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "Hva slags rom?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Det medlemmene sletter seg selv, er ikke publisert her."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Det medlemmene slettet, nyeste først, med ordene det hadde, som Anonymous: ingen navn og ingen lenke. Noe som slettes innen fem minutter etter å ha blitt skrevet er slettet og er ikke her. Rapportknappen ber nettstedets administratorer om å ta ned ordene."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Hvilke medlemmer redigerte, nyeste først: hvem (anonymt for et anonymt innlegg eller kommentar), når og notat de ga. En kjøring av endringer til ett element er én linje. En redigering i de første fem minuttene etter at noe er skrevet er ikke registrert. Versjonene er på elementets egen historieside."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19828,6 +20300,18 @@ msgstr "Hvilke abonnenter får"
 msgid "What the guildmasters did"
 msgstr "Hva guild moderatorene gjorde"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Hva å gjøre med dem"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Hva du skal gjøre med din kommentar"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Hva du skal gjøre med posten din"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "Hva å si"
@@ -19839,6 +20323,14 @@ msgstr "Hva skal søkes"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "Hva fungerer i apps"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Hva du sletter forblir i loggen som anonymt, uten navn, med mindre du sletter det innen fem minutter."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Hva du slettet deg selv. En kopi av noe slettet etter de første fem minuttene blir i loggen som Anonym, uten navn. En kopi av noe som slettes i løpet av fem minutter er privat og går etter 90 dager."
 
 #, machine, plain1
 msgid "What you do"
@@ -19893,6 +20385,10 @@ msgstr "Hvor filer går"
 #, machine, plain1
 msgid "Where it is"
 msgstr "Hvor den er"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Hvor det ble diskutert"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -20052,6 +20548,10 @@ msgstr "Hvem skrev hva"
 msgid "Who you follow"
 msgstr "Hvem du følger"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Hvem, når, hvor, hvilken regel og hvorfor. Den viser aldri tittelen eller teksten til det som var skjult eller fjernet."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Den som startet dette rapporterte at nettleseren og plassere seg selv, så de bevise ingenting."
@@ -20081,6 +20581,14 @@ msgstr "Hvorfor ikke"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "Hvorfor ikke"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Hvorfor skulle det komme ned?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Hvorfor tok det feil?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20137,10 +20645,6 @@ msgstr "Med Premium får du ett sted for alt du gjør og tjener på %(site)s:"
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Med Premium ser du hvordan hvert av innleggene dine gjør: visninger per dag, hvor mange som er logget inn kom, stemmer, kommentarer, bokmerker, forwards og reposts, hvordan det gjør i hver guild den ble sendt til, og resultatene av sin meningsmåling."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Med privat innlegg på kan en sirkel bare holde folk som følger deg og hvem du følger."
 
 #, machine, plain1
 msgid "With a link"
@@ -20490,6 +20994,10 @@ msgstr[1] "Du leder allerede maksimalt %(num)s guilds."
 msgid "You already made that comment: %(link)s"
 msgstr "Du har allerede skrevet denne kommentaren: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Du har allerede rapportert dette"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "Du har allerede rapportert denne kontoen."
@@ -20521,6 +21029,10 @@ msgstr "Du har allerede stemt på denne posten i originalposten. Fjern stemmen h
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Du og opp til 3 hjelpere skriver; medlemmer leser og reagerer. For andre sirkler, gjør det på <a href=\"%(url)s\">Din kanalside</a>Du kan ha opptil 3 kanaler."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Du appellerte denne avgjørelsen."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20599,10 +21111,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Du ba foreldre eller verge om å frigi kontoen din. De har ikke svart enda."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Du ba foreldre eller verge om å slå av dette. De har ikke svart enda."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Du kan legge til bilder på 500 Reputation, eller tidligere med Premium"
 
@@ -20637,6 +21145,10 @@ msgstr "Du kan endre dette for hver video når du legger til det. Videoer lastes
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Du kan endre dette når de har akseptert meldingsforespørselen din."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Du kan endre opp til %(max)s Varene på et tidspunkt."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20751,6 +21263,10 @@ msgstr[1] "Du kan gjøre %(num)s wiki redigeringer om dagen i en guild. Prøv ig
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Du kan gjøre en barnekonto når din egen konto er bekreftet som 18 eller over. Det kan du si i Innstillinger > Innhold."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Du kan gjøre tre appeller om dagen. Prøv igjen i morgen."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21090,6 +21606,10 @@ msgid_plural "You have %(num)s coins."
 msgstr[0] "Du har %(num)s mynt."
 msgstr[1] "Du har %(num)s mynter."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Du har allerede appellert denne avgjørelsen."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Du har allerede blokkert @%(name)s."
@@ -21131,6 +21651,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -21229,6 +21758,10 @@ msgstr "Du har ikke sagt at du holdt gjenopprettingskoden din."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Du har ikke fortalt oss det enda."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Du tok denne avgjørelsen, så en annen guild moderator bestemmer sin appell."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21333,6 +21866,14 @@ msgstr "Du logget på med en QR-kode. Skriv inn passordet ditt for å bruke dett
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Du fortalte oss at du ville endre din %(site)s-konto e-post. Bekreft din nye e-postadresse for å fullføre denne prosessen:"
+
+#, machine, plain2, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr "Du ble invitert til medforfatter. [Se invitasjonen](%(link)s)"
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Du ble invitert til å dele dette anonyme innlegget. Hvis du godtar, er kreditten din også anonym, og innlegget er ikke oppført på profilen din. Stemninger, kommentarer og videresendinger blir delt, og kun forfatteren redigerer eller sletter det."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -21716,6 +22257,10 @@ msgstr "Kontoen din må være minst 30 dager gammel for å kjøre en bot."
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Din konto poster ikke lenger automatisk. Innleggene blir."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Kontoen din leser bare nå, så det kan ikke kommentere. Du kan fortsatt stemme, følge og bokmerke."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "Dine kontoinnlegg fra disse feeds fra nå av."
@@ -21751,6 +22296,68 @@ msgstr "Din alder ble bekreftet på %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "Ditt svar"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Din appell venter på å bli lest."
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Din appell fra [denne avgjørelsen](%(log)s) ble akseptert, og beslutningen ble snudd.\n"
+"\n"
+"««»\n"
+"%(note)s\n"
+"««»"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Din appell av [denne avgjørelsen](%(log)s) ble sett på, og beslutningen står.\n"
+"\n"
+"««»\n"
+"%(note)s\n"
+"««»"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Din appell om [denne avgjørelsen](%(log)s) ble ikke tatt videre.\n"
+"\n"
+"««»\n"
+"%(note)s\n"
+"««»"
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Din appell ble akseptert, og beslutningen ble snudd."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Din appell ble sett på, og beslutningen står."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Deres appell ble ikke tatt videre."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Din appell ble sendt."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21835,12 +22442,12 @@ msgid "Your circles - %(site)s"
 msgstr "Ringene dine - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Din kommentar vil bli fjernet fra nettstedets sider. Nettstedet holder en privat kopi i 90 dager, som bare du og nettstedets administratorer kan åpne. Dette kan ikke angres."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "Din kommentarhistorie vil vise her."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Din kreditt på dette innlegget er anonym: andre medlemmer ser det som \" anonymt #N\". Admins og postens forfatter kan fortsatt se at det er din. Dette kan ikke angres."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21985,14 +22592,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "Foreldre eller verge har blitt bedt om å frigjøre kontoen din. Ingenting endres før de svarer."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "Foreldre eller verge har blitt bedt om å slå av privat posting."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Foreldre eller verge må være enige før privat innlegg kan slås av."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Foreldre eller verge har slått av dette for kontoen din."
 
@@ -22007,14 +22606,6 @@ msgstr "Foreldre eller verge setter et nytt passord for kontoen og du ble frakob
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Foreldre eller verge sluttet å administrere kontoen din. Den holder barnelåsen til du bekrefter alderen i innstillinger > Innhold. De valgte passordet ditt: Endre det i [Innstillinger > Sikkerhet](/settings/security), eller de kan fortsatt logge inn som deg."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Foreldrene eller foresatte har slått av privat innlegg for kontoen din."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Foreldre eller verge ønsker privat posting for å bli på."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22047,10 +22638,6 @@ msgstr "Telefonen din sa nei, så ingen ble logget på."
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Innlegget ditt er oppført på din profil uansett. Velg Min profil til å ha sine kommentarer der også, og legge til guilds for å poste det rett i dem: hver guild får sin egen kopi med egne stemmer og kommentarer."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Ditt innlegg vil bli tatt av din profil, feeds og guilds. Nettstedet holder en privat kopi i 90 dager, som bare du og nettstedets administratorer kan åpne. Dette kan ikke angres."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -22169,6 +22756,10 @@ msgstr "Din tittel er spørsmålet. %(min)s til %(max)s alternativer, én stemme
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Tittelen din er spørsmålet. Gi %(min)s til %(max)s alternativer. Folk kan stemme fra alle framover og repost av dette innlegget, én gang hver."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "Din tofaktorkode"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Ditt brukernavn er ditt unike <code>@handle</code>Adressen til profilen din, og det folk nevner og søker etter. Å endre det koster 20 mynter og kan gjøres én gang hver 7. dag. Hvis du vil endre hvordan navnet ditt leser uten det, bruk visningsnavnet ditt ovenfor."
@@ -22231,6 +22822,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Guild Takeover Reading](/help/siege)"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[Hvordan moderasjon er registrert](/help/moderation)"
 
 #, machine, plain1
 msgid "[Legal Policies](/help/legal)"
@@ -22300,6 +22895,61 @@ msgstr "[Tjenesterettighet](/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Tittler](/help/titles)"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[forbudt]"
@@ -22350,6 +23000,10 @@ msgstr "[lyd]"
 msgid "a day"
 msgstr "en dag"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "et slettet innlegg"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "en guild eller post den heter ikke lenger eksisterer."
@@ -22389,6 +23043,12 @@ msgstr "aktivitet"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "lagt til en bot feed %(target)s til en kanal"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "lagt til et fellesbrev til %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22475,12 +23135,16 @@ msgstr "bots"
 msgid "by %(author)s"
 msgstr "av %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "av %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "av %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "ved <a href=\"%(link)s\">@%(name)s</a>"
@@ -22565,6 +23229,12 @@ msgstr "endret om forover trenger en etikett"
 msgid "changed who may edit a wiki page"
 msgstr "endret hvem som kan redigere en wiki-side"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chatbannet %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22584,6 +23254,10 @@ msgstr "mynter"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "kommentar"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "kommentar #%(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22672,6 +23346,12 @@ msgstr "f.eks. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>bl�
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "f.eks. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s Opp og %(down)s ned"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "redigert %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22682,10 +23362,21 @@ msgstr "redigert en wikiside"
 msgid "edited an event"
 msgstr "redigerte en hendelse"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "redigert innlegg %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "avsluttet"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "slutt på plassen %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -22711,6 +23402,12 @@ msgstr "alt i den"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "alt du skriver er kreditert deg"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "i eksil %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22791,6 +23488,11 @@ msgstr "uthevet deres %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "uthevet sin post %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "skjult %(target)s under eget innlegg"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22851,6 +23553,10 @@ msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "på %(num)s minutt"
 msgstr[1] "på %(num)s minutter"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "i denne tråden"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -23015,6 +23721,11 @@ msgstr "gamle"
 msgid "only guildmasters write here"
 msgstr "bare guild moderatorer skriver her"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "åpnet +%(guild)s til alle"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "ekstern server"
@@ -23071,6 +23782,10 @@ msgstr "festet en melding i en kanal"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "festet post %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "Post #%(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23145,6 +23860,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "fjernet en melding av %(target)s fra en kanal"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "fjernet en melding fra en offentlig kanal"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "fjernet en melding fra styret i rommet %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "fjernet en revisjon av en guilds wiki"
@@ -23167,6 +23892,12 @@ msgstr "fjerne guild moderator %(target)s"
 msgid "removed post %(target)s"
 msgstr "fjernet post %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "fjernet fellesskapets notat på %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -23175,6 +23906,12 @@ msgstr "endre navn på en kanalkategori"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "fornyelser %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "erstattet fellesskapets notat på %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23218,6 +23955,11 @@ msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "del. Bare forfatteren kan dele dette innlegget."
 msgstr[1] "aksjer. Bare forfatteren kan dele dette innlegget."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "%(target)s igjen under sin post"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -23339,11 +24081,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "topp"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "ikke-chatbannet %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "bruker ikke-chatbannet %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "ueksistert %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23404,6 +24158,14 @@ msgstr "%(target)s i denne kløften"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "uhid post %(target)s i denne guild"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "til %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "opp til %(max)s om gangen"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

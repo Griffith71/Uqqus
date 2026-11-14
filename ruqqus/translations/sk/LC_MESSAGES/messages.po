@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sk\n"
@@ -559,6 +559,13 @@ msgstr[0] "%(num)s znak limit titulov."
 msgstr[1] "%(num)s znak limit titulov."
 msgstr[2] "%(num)s znakový limit titulov."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s vybraný"
+msgstr[1] "%(num)s vybrané"
+msgstr[2] "%(num)s vybraných"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -637,6 +644,13 @@ msgid_plural "%(num)s days remaining"
 msgstr[0] "zostávajúcich %(num)s dní"
 msgstr[1] "zostávajúce %(num)s dni"
 msgstr[2] "%(num)s dní"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s úprava v riadku"
+msgstr[1] "%(num)s úpravy za sebou"
+msgstr[2] "%(num)s úprav v riadku"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -719,6 +733,20 @@ msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s záujem"
 msgstr[1] "%(num)s záujem"
 msgstr[2] "%(num)s záujem"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s zmenená položka"
+msgstr[1] "%(num)s položky zmenené"
+msgstr[2] "%(num)s zmenených položiek"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s položka nemohla byť zmenená:"
+msgstr[1] "%(num)s položky nemohli byť zmenené:"
+msgstr[2] "%(num)s položiek nebolo možné zmeniť:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1416,6 +1444,10 @@ msgstr "%(who)s prijaté pozvanie moderátora cechu"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s pridal bot krmivo %(target)s na kanál"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s pridaný odkaz na komunitu"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s pridaný štítok"
@@ -1480,6 +1512,10 @@ msgstr "%(who)s sa zmenilo, či útočníci potrebujú štítok"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s zmenené, kto môže upravovať wiki stránku"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chatbanned %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s chatbaned user %(name)s"
@@ -1528,6 +1564,10 @@ msgstr "%(who)s vymazal stránku wiki"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s vymazané miesto %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s editoval komentár"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s editoval wiki stránku"
@@ -1535,6 +1575,18 @@ msgstr "%(who)s editoval wiki stránku"
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s editoval udalosť"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s upravený post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s skončil priestor"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s exilovaný %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1555,6 +1607,10 @@ msgstr "%(who)s zvýraznil ich post %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s skryl komentár pred týmto cechom"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s schoval komentár pod ich vlastnou poštou"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1604,6 +1660,10 @@ msgstr "%(who)s označil komentár za citlivý obsah"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s označené miesto %(title)s ako citlivý obsah"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s otvorené + %(guild)s každému"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s permanentne vymazal komentár"
@@ -1644,6 +1704,18 @@ msgstr "%(who)s obnovená po %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s odstránil správu o kanáli"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s odstránila komunitnú poznámku"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s odstránil správu z vesmírnej dosky"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s odstránil správu z verejného kanála"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s odstránila revíziu cechu"
@@ -1668,6 +1740,10 @@ msgstr "%(who)s odstránený užívateľ %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s premenovaný na kategóriu kanálov"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s nahradil poznámku spoločenstva"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s rescinovaný cechový moderátor pozvánky na @ %(name)s"
@@ -1683,6 +1759,10 @@ msgstr "%(who)s set nsfw on post %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s nastavte štítok po %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s znova ukázal komentár"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1708,9 +1788,17 @@ msgstr "%(who)s vzal špendlík zo správy kanála"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s prevzal úlohu od %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s bez chatácie %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s neupravený užívateľ %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s nevystavený %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1796,6 +1884,10 @@ msgstr "(z originálu)"
 msgid "(in a private place)"
 msgstr "(na súkromnom mieste)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(žiadny text)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(bez názvu)"
@@ -1867,6 +1959,10 @@ msgstr "**Press **"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Pridať možnosť"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+ %(guild)s Odvolania"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2386,10 +2482,6 @@ msgstr "@%(name)s doplnené do %(curation)s."
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
 
-#, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr ""
-
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@%(name)s Zablokované."
@@ -2652,9 +2744,9 @@ msgstr "@%(name)s bol utlmený v%(guild)s's kanály."
 msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
 msgstr "@ %(name)s vek bol potvrdený ako 18 alebo viac, takže ich účet je teraz ich vlastný a už ho nemôžete vidieť."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
-msgstr "@%(name)s's new posts will go into%(channel)s."
+msgstr ""
 
 #. an account's @handle, then why it can't be given the role (a whole sentence
 #. of its own)
@@ -2740,6 +2832,10 @@ msgstr "Priestor nemôže byť anonymný."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Vesmír nemôže byť hostovaný v cechu Circle."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Vesmír nemôže dať odstrániť jeho meno."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "Vesmír nemôže začať v minulosti."
@@ -2767,6 +2863,10 @@ msgstr "Odpisovač odznaku vedľa vášho mena na @%(name)s's profil a príspevk
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "Preložiť tlačidlo ukazuje pod príspevky a komentáre v žiadnom z vašich jazykov. Nič nie je preložené, pokiaľ to nestlačíte."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Zákaz môže uvádzať až %(max)s položky."
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2970,9 +3070,25 @@ msgstr[0] "Meno kruhu môže byť najviac %(num)s znak."
 msgstr[1] "Meno kruhu môže byť maximálne %(num)s znaky."
 msgstr[2] "Meno kruhu môže byť maximálne %(num)s znakov."
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "Spoluautorská pozícia nemôže byť anonymná."
+#, machine, plain2
+msgid "A comment"
+msgstr "Poznámka"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Komentár účtu, ktorý ste zablokovali alebo ktorý vás zablokoval."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Komentár skrytý cechovým moderátorom."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Komentár skrytý filtrom vášho slova."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Komentár jeho autor vymazal. To, čo sa tam píše, sa tu neukazuje."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2981,6 +3097,10 @@ msgstr "Komentár na príspevok pre Circle nemôže byť odoslaný do cechu."
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "Komentár na príspevok pre Circle nemožno repostovať."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "Komentár odstránený admins stránky."
 
 #, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2998,6 +3118,14 @@ msgstr "Vyliečený krmivo z celého webu potrebuje vekovú hranicu najviac jedn
 msgid "A day"
 msgstr "Deň"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "Rozhodnutie v protokole"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Vymazaný príspevok a to, čo bolo povedané pod ním"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -3011,6 +3139,10 @@ msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "Opis je najviac %(num)s znak."
 msgstr[1] "Opis je najviac %(num)s znaky."
 msgstr[2] "Opis je najviac %(num)s znakov."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Iný administrátor musí potvrdiť odhalenie."
 
 #, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -3121,6 +3253,10 @@ msgstr "Názov skupiny nemôže obsahovať @: bude čítať ako rukoväť."
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "Názov skupiny nemôže obsahovať ovládacie alebo neviditeľné znaky."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Zákaz cechu potrebuje verejný dôvod, takže stránka cechu a denník môžu povedať prečo."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3252,6 +3388,10 @@ msgstr "Mesačný rozpočet rozdelený medzi členov, ktorých pracovné miesta 
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Muted osoba môže stále čítať, ale nemôže písať v žiadnom z +%(guild)s's kanály. Je im povedané, kedy sa pokúsia."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Poznámka pre osobu"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3322,6 +3462,10 @@ msgstr[2] ""
 msgid "A poll option can't hold control characters."
 msgstr "Voľba hlasovania nemôže držať kontrolné znaky."
 
+#, machine, plain2
+msgid "A post"
+msgstr "A post"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3347,6 +3491,10 @@ msgstr "Pošta pre kruh nemôže byť reposted."
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "Pošta pre Circle nemôže mať spoluautorov."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Pošta pre kruh nemôže dať odstrániť jeho meno."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3376,6 +3524,10 @@ msgstr "Príspevok stráca polovicu svojej hmotnosti"
 msgid "A post needs a title."
 msgstr "Pošta potrebuje titul."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "Príspevok, ktorý bol sprepitné nemôže mať jeho meno odstránené, pretože mince išiel k vám."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Príspevok, ktorý nie je verejný nemôže použiť tento obrázok nahrať: jeho súbory môže otvoriť ktokoľvek s adresou. Namiesto toho pridajte obrázok zo svojho prepojeného úložiska (Nastavenie > Media)."
@@ -3384,9 +3536,17 @@ msgstr "Príspevok, ktorý nie je verejný nemôže použiť tento obrázok nahr
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Pošta so spoluautormi nemôže byť presunutá do kruhov. Presun verejnej pošty do kruhov stiahne kópie, ktoré ste odoslali; kópie ďalších ľudí, ktoré ste poslali, zostanú vo svojich cechoch."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Pošta napísaná spoločne je verejná a nemôže byť anonymná, zdieľaná s kruhmi, alebo mať prieskum. Jej autormi sú jej spoluautori. Tieto možnosti zdieľa každý autor a používajú sa pri každom zverejnení."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Napísaný príspevok sa vymaže len vtedy, keď jeho autori súhlasia so spoločným návrhom."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Pošta napísaná spoločne je verejná a nemôže byť zdieľaný s kruhmi alebo mať prieskum. Jej autormi sú jej spoluautori. Tieto možnosti zdieľa každý autor a používajú sa pri každom zverejnení."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Pošta napísaná s ostatnými tu ešte nemôže byť odstránená."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3742,6 +3902,10 @@ msgstr "Prijmi pozvanie"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Prijať pozvanie moderátora"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Prijmite bez môjho mena (admins a autor príspevku stále vidí, že som to ja)"
 
 #, machine, plain1
 msgid "Account"
@@ -4365,6 +4529,10 @@ msgstr "Autor prestane byť počítaný po tomto ďaleko od webu"
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Autor, ktorý nebol aktívny na stránke pre %(time)s sa nepočíta."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Automatizovaný post nemôže dať odstrániť svoje meno."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Zašifrovaný kanál nemôže žiadať o prijatie jeho pravidiel: stránka nemôže skontrolovať, kto napísal."
@@ -4481,9 +4649,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonymne"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Anonymné vysielanie a štartovanie cechov"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Anonym #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4569,6 +4737,26 @@ msgstr "Každý môže vidieť, koho sledujete, kto sleduje vás a vašich predp
 #, machine, plain1
 msgid "App Name"
 msgstr "Názov aplikácie"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Odvolanie rozhodnutia"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Odvolanie rozhodnutia - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Odvolanie sa proti tomuto rozhodnutiu"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Odvolania"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Odvolania sa na rozhodnutia, ktoré urobili cechári tohto cechu. Odvolanie je súkromné: iba cech moderátori, ktorí môžu rozhodnúť o jeho prečítaní. Reverzácia rozhodnutia ju zruší a napíše novú položku v denníku, prepojenú s prvou; osobe je povedané, ako sa skončila. Nemôžete rozhodnúť o odvolaní vlastného rozhodnutia, kým iný cechový moderátor by mohol."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4708,10 +4896,6 @@ msgstr "Árijské vysočiny"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Ako autor editujete návrh naživo s nimi, a každý znak, ktorý napíšete, vám pripíše. Akonáhle bude príspevok zverejnený, každý, kto to vidí, môže vidieť, kto napísal čo. Autori spoločne rozhodujú:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Požiadaj rodiča, aby to vypol"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5587,6 +5771,10 @@ msgstr "Zmena pravidiel"
 msgid "Change the two-factor settings for your account."
 msgstr "Zmeňte nastavenie dvojfaktora pre váš účet."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Zmeniť"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "Zmeniť heslo účtu."
@@ -5858,6 +6046,10 @@ msgstr "Vyberte si aspoň jeden kruh, alebo ho zverejniť."
 msgid "Choose at least one of your circles."
 msgstr "Vyberte si aspoň jeden z vašich kruhov."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Vyberte aspoň jeden príspevok alebo komentár."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "Vyber si aspoň jeden príbeh."
@@ -5913,6 +6105,10 @@ msgstr "Vyberte si, aký je to typ robota."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Vyberte si, čo je to za spätnú väzbu."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Vyberte si, čo s nimi."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -6186,6 +6382,10 @@ msgstr "Komiksy a karikatúry"
 msgid "Coming up"
 msgstr "Už idem"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Poznámka"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -6195,9 +6395,13 @@ msgstr "Komentovať"
 msgid "Comment %(id)s has been removed"
 msgstr "Komentár %(id)s bol odstránený"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Komentovať anonymne: ostatní používatelia nebudú vidieť vaše meno"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Komentovať anonymne: ostatní používatelia nebudú vidieť vaše meno. Ak admin zakáže alebo pozastaví účet pre neho, Log môže pomenovať účet pre tento komentár."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Komentovať ako sám: vaše meno ukazuje na tento komentár"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -6206,10 +6410,6 @@ msgstr "Komentovať záložky."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Komentár bol uverejnený!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Komentár"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6804,6 +7004,10 @@ msgstr "Klamné skrátenie URL nie je povolené."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Klamné skrátenie URL nie je povolené."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Rozhodnúť"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6867,6 +7071,10 @@ msgstr "Vymazať komentár?"
 msgid "Delete folder"
 msgstr "Odstrániť priečinok"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Vymazať"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "Odstrániť môj účet"
@@ -6890,6 +7098,14 @@ msgstr "Odstrániť účet"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "Odstrániť zverejnené miesto"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Odstrániť"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Odstrániť tieto položky?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6934,6 +7150,10 @@ msgstr "Vymazať účet %(site)s"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "Odstrániť svoje príspevky a komentáre"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Zrušené"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -7130,6 +7350,14 @@ msgstr[0] "Prediskutované na jednom inom mieste"
 msgstr[1] "Prediskutované na %(num)s ďalších miestach"
 msgstr[2] "Diskusia na %(num)s iných miestach"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "diskutované v +%(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Prediskutované na profile"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "Diskusia"
@@ -7212,6 +7440,10 @@ msgstr "Do:"
 #, machine, plain1
 msgid "Done to"
 msgstr "Hotovo"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "Hotovo."
 
 #, machine, plain1
 msgid "Download"
@@ -7409,6 +7641,10 @@ msgstr "Upraviť svoje príspevky a komentáre"
 msgid "Edited %(when)s"
 msgstr "Upravené %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Edited by"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "Edited by %(who)s"
@@ -7424,6 +7660,10 @@ msgstr "Editácia tiež aktualizuje kópie tohto príspevku zaslané cechom."
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Úprava aktualizácie tohto príspevku všade, kde bol odoslaný."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Upravuje"
 
 #, machine, plain1
 msgid "Education"
@@ -7768,13 +8008,13 @@ msgstr "Každý vidí zmeny jeden druhého pri písaní a každý znak je pripí
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Všetko z vašich cechov a účtov, najnovšie ako prvé."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Všetko, čo píšu, ide len do kruhu ich priateľov. Vypni to, aby to mohli zverejniť."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "Dôkazy nemožno uviesť"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Všetko, čo zverejníte, ide len do kruhu priateľov, ľudí, ktorých sledujete, ktorí vás nasledujú, takže nič nie je náhodou verejné. Vaše kruhy môžu držať ľudí len tak, a nemôžete dopredu, repost alebo napísať zdieľaný návrh. Pripomienky k pozíciám iných ľudí sú stále verejné."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Dôkaz:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7821,6 +8061,10 @@ msgstr "Príklad: mačky psy · nemá \"mačky\" ani \"psy\""
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Príklad: šťastná hodina · má presnú frázu \"šťastná hodina\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Vyhostiť %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9229,6 +9473,10 @@ msgstr "Ako dlho"
 msgid "How long it runs"
 msgstr "Ako dlho to trvá"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Ako sa zaznamenáva umiernenie"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Koľko máš rokov?"
@@ -9423,6 +9671,10 @@ msgstr "V %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "V cechu"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "V zázname ako Anonymný"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9719,6 +9971,14 @@ msgstr "Po tomto to skončí samo. Môžeš to ukončiť skôr."
 msgid "It is reviewed with the bot."
 msgstr "Je hodnotená s bot."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Opúšťa stránky webu. Ak je to menej ako päť minút staré a nikto iný k tomu komentoval, to je vymazané: len vy a admini stránky môžu otvoriť súkromné kópie, 90 dní. Inak to, čo bolo povedané zostáva v denníku ako Anonymous, bez mena a bez odkazu, a každý môže prečítať tam."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Zanecháva váš profil, krmivo a cechy. Ak je to menej ako päť minút staré a nikto iný komentoval, to je vymazané: iba vy a admini stránky môžu otvoriť súkromné kópie, 90 dní. Inak to, čo bolo povedané zostáva v denníku ako Anonymous, bez mena a bez odkazu, a každý môže prečítať tam."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Žije na vašom profile, pod priestormi. Guild ukazuje svoju kartu, s hlasmi a podielmi, a otvára priestor."
@@ -9735,13 +9995,13 @@ msgstr "Ukazuje v plnom rozsahu každé slovo a frázy, ktoré hľadá slovo fil
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Zostáva to detský účet s detským zámkom, ale už ho nemôžete vidieť ani zmeniť, čo dokáže, a nemôžete ho znova prepojiť."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Zostáva na detskom Word filtere, ktorý skrýva vulgárne a všetko označené citlivé."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Zostáva na detskom Word filtere, ktorý skrýva vulgárne a všetko označené citlivé. Detský účet len číta: nemôže písať ani komentovať, ale stále môžete voliť, nasledovať, pripojiť sa k cechom, záložke a správe."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Zostáva na detskom Word filtere, ktorý skrýva vulgárne a všetko označené citlivé. Rozhovor, Priestory, mince, anonymné vysielanie a štartovanie cechu sú preč, a iní nemôžu začať chat alebo tip vás. Vaše príspevky ísť do kruhu priateľov iba ak vypnete Súkromné vysielanie."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Zostáva na detskom Word filtere, ktorý skrýva vulgárne a všetko označené citlivé. Rozhovor, Priestory, mince a štartovanie cechu sú preč, a iní nemôžu začať chat alebo tip vás. Detský účet len číta: nemôže písať ani komentovať, ale stále môžete voliť, nasledovať, pripojiť sa k cechom, záložke a správe."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9911,10 +10171,6 @@ msgstr "Júnový slnovrat"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Nechaj si to"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -10178,6 +10434,10 @@ msgstr "Vľavo"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "Vľavo + %(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "Vaše komentáre zostávajú pod vaším menom, a to hovorí čitateľom, ktorí napísali príspevok."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10982,6 +11242,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Stlmiť"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "Stlmiť %(alias)s v kanáloch"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Stlmiť + %(guild)s"
@@ -11335,6 +11599,10 @@ msgstr "Zatiaľ nepridané žiadne účty."
 msgid "No ads"
 msgstr "Žiadne reklamy"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Žiadne odvolania nečaká."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "Žiadne blokované účty"
@@ -11591,6 +11859,10 @@ msgstr "Nikto nemôže zaplatiť, aby sa pripojil: cech je len na pozvanie. Sú�
 msgid "Nobody can sign in to your account with a code."
 msgstr "Nikto sa nemôže prihlásiť na váš účet s kódom."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Nikto sa k tomu nevyjadril."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Nikto nedostane viac ako %(share)s%% mesačného rozpočtu. Podiely sú zaokrúhlené nadol na celé mince."
@@ -11756,6 +12028,10 @@ msgstr "Nezaznamenané"
 msgid "Not slowed by slow mode"
 msgstr "Nie spomalený pomalým režimom"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Neprijaté ďalej"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "Nebrať predplatiteľov"
@@ -11903,6 +12179,10 @@ msgstr "Zatiaľ nič nenapísal."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Zatiaľ nič."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Nič, čo by si zmazal, tu nie je."
 
 #, machine, plain1
 msgid "Notification types"
@@ -12176,6 +12456,10 @@ msgstr "Iba účty @%(name)s follows can comment on this post."
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Len účty, ktoré sledujete, môžu komentovať tento príspevok teraz."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Iba administrátor môže potvrdiť odhalenie."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "Len admin môže začať znova."
@@ -12446,6 +12730,10 @@ msgstr "Iba ty"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Len ty to vidíš. Toto sú hodnoty: nikto, kto sa pozrel, hlasoval alebo odpovedal na prieskum, nie je menovaný."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Iba zmeny vášho kreditu: ostatní autori zostávajú menovaní. Administrátori a autor postu môžete stále vidieť, že ste to vy."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12514,6 +12802,10 @@ msgstr "Spustiť"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "Otvoriť do %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Otvorte si kópiu"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12654,17 +12946,17 @@ msgstr "Iné alebo neznáme"
 msgid "Other spellings:"
 msgstr "Iné zápisy:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "Ostatní používatelia vidieť Anonymous miesto vášho mena. Vy a web admins môžete stále vidieť, to sa riadi rovnakými pravidlami ako každý príspevok, a to nemôže byť odstránená po vyslaní. Regiónový filter stále ukazuje, z ktorej oblasti pochádza. Nie je uvedené vo vašom profile: nájdete ho v histórii, pod Anonymous."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Ostatní používatelia vidieť Anonymous miesto vášho mena. Vy a web admins môžete stále vidieť, to sa riadi rovnakými pravidlami ako každý príspevok, a to nemôže byť odstránená po vyslaní. Regiónový filter stále ukazuje, z ktorej oblasti pochádza. Nie je uvedené vo vašom profile: nájdete ho v histórii, pod Anonymous. Ak administrátor zakáže alebo pozastaví účet pre neho, Log môže pomenovať účet pre tento jeden."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "Ostatní používatelia to vidia ako Anonymous. Len vy a admini stránky vidieť svoje meno."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "Iní vidia Anonymous namiesto vášho mena; vy a správcovia stránok ho stále vidíte. Regiónový filter stále ukazuje, z ktorej oblasti pochádza. Nemôže sa zmeniť po vysielaní."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "Iní vidia Anonymous namiesto vášho mena; vy a správcovia stránok ho stále vidíte. Regiónový filter stále ukazuje, z ktorej oblasti pochádza. Nemôže sa zmeniť po vysielaní. Ak administrátor zakáže alebo pozastaví účet pre neho, Log môže pomenovať účet pre tento jeden."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12673,6 +12965,10 @@ msgstr "Naša odpoveď na vašu spätnú väzbu \"%(excerpt)s: %(response)s"
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Naši ochrankári vrhli nepreniknuteľné kúzlo štítu okolo tejto stránky."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Výsledok"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -13357,6 +13653,10 @@ msgid "Popular this week"
 msgstr "Populárna tento týždeň"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Uverejniť"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Uverejniť"
@@ -13377,6 +13677,10 @@ msgstr "Poslať aktualizáciu"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Uverejniť anonymne"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Príspevok anonymne: ostatní členovia vidia každého autora ako Anonymous s číslom. Administrátori vždy vidia, kto sú. Nemôže sa zmeniť po zverejnení príspevku."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -13454,10 +13758,6 @@ msgid "Posted on that day."
 msgstr "Uverejnené v ten deň."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "Vyslanie"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "Vytváranie chladu"
 
@@ -13485,6 +13785,10 @@ msgstr "Príspevky"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Píše cech označený týmto štítkom. V:+guildTen cech."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Príspevky a komentáre"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13576,6 +13880,10 @@ msgstr "Pošty v cechu. v: #gaming je cechy témy a v: &news je verejne kurovan�
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Príspevky v jazyku: kód (en) alebo jeho názov (anglický)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Príspevky alebo komentáre"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13769,6 +14077,10 @@ msgstr "Súkromný obsah, viditeľný, pretože ste cech moderátor +%(guild)s."
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Súkromný obsah, viditeľný, pretože ste schválený prispievateľ v +%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Súkromná kópia"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Súkromný režim."
@@ -13828,26 +14140,6 @@ msgstr "Súkromný príspevok, viditeľný pre vás, pretože ste členom tohto 
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Súkromný príspevok, viditeľné pre vás, pretože ste schválený prispievateľ v +%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Súkromné vysielanie"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Súkromné vysielanie je vypnuté."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "Súkromné vysielanie je zapnuté, takže to môže ísť len do kruhu priateľov. To môžete zmeniť v Nastaveniach > Obsah."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "Súkromné vysielanie je zapnuté, takže to ide len do kruhu vašich priateľov. To môžete zmeniť v Nastaveniach > Obsah."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "Súkromné vysielanie je zapnuté."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14415,6 +14707,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Odstrániť moderátor"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Odstrániť moje meno"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Odstrániť moje meno z tohto príspevku"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "Odstrániť možnosť %(number)s"
@@ -14479,6 +14779,14 @@ msgstr "Odstrániť server"
 msgid "Remove this topic"
 msgstr "Odstrániť túto tému"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Odstrániť svoje meno z týchto položiek?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Odstrániť svoje meno z kreditu na tomto príspevku? Ostatní členovia budú vidieť \"Anonymný\" s číslom. Toto sa nedá odstrániť."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -14519,6 +14827,10 @@ msgstr "Odstránené. Ten robot už viac nečíta."
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "Odstránenie jedného naraz zasiahne."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "Odstránenie vášho mena sa vykonáva na samotnej stránke."
 
 #, machine, plain1
 msgctxt "button"
@@ -14580,6 +14892,10 @@ msgstr "Nahlásiť komentár"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Nahlásiť príspevok"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Správa:"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -15078,6 +15394,18 @@ msgstr "Povedzte, čo robot bude písať a odkiaľ pochádza (najmenej 10 znakov
 msgid "Say who it's from"
 msgstr "Povedz od koho je"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Povedz, prečo by to malo zísť dole, niekoľkými slovami."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Povedz, prečo si príťažlivý."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Povedz, prečo si myslíš, že to bolo nesprávne. Iba ľudia, ktorí sa rozhodnú pre odvolanie, čítajú, čo píšete, a vám bude povedané, ako to skončilo."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Skenovanie tohto čiarového kódu (alebo zadajte kód) pomocou dvojfaktorovej autentifikačnej aplikácie, ako je Google Overovateľ alebo Authy."
@@ -15244,6 +15572,10 @@ msgstr "Zobraziť všetko v kanáli Všetko"
 msgid "See everything live"
 msgstr "Zobraziť všetko živé"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Pozrite si to v denníku"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "Pozri aktuálnu stránku"
@@ -15267,6 +15599,10 @@ msgstr "Pozrite sa, čo je trendy"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Zisti, čo robia"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Pozri svoje odvolanie"
 
 #, machine, plain1
 msgid "See your username"
@@ -15321,6 +15657,10 @@ msgstr "Poslať tip"
 msgid "Send a tip"
 msgstr "Pošlite tip"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Odoslať odvolanie"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Poslať spätnú väzbu"
@@ -15353,6 +15693,10 @@ msgstr "Citlivý obsah?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Citlivý obsah"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Citlivý obsah: zobraziť"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15431,10 +15775,6 @@ msgstr "Najprv si urovnajte rovnováhu."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "Nastavenie dvojstupňového prihlásenia"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "Sexualizačné neplnoleté osoby"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -16168,6 +16508,10 @@ msgstr "Spustiť priestor"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Začni sa kŕmiť kvôli tebe. Všetko, čo ste žiadali s \"Ukážte menej príspevkov, ako je tento\" je zabudnuté, takže tieto príspevky a ich cechy a kategórie vrátiť. Dátum resetu je uložený na vašom účte, ale pre vás ešte nepoužíva pre vaše hlasy a cechy."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Začiatočné cecky"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "Čoskoro začneme"
@@ -16505,6 +16849,10 @@ msgstr "Technologické titulky z BBC News. Nie je vedená BBC."
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Povedz %(site)s Komunita trochu o sebe."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Povedz im prečo, v rade"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Povedzte nám, čo sa stalo, čo sa na vás pozerá, alebo čo by ste chceli. Pre chrobáka, povedz čo si urobil a čo si čakal."
@@ -16572,6 +16920,10 @@ msgstr "Textové príspevky"
 msgid "Text size"
 msgstr "Veľkosť textu"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Ďakujem"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "Ďakujeme za správu tohto komentára!"
@@ -16633,9 +16985,9 @@ msgstr "Ďakujem. Admin sa pozrie na robot čoskoro; dostanete oznámenie."
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "Ďakujem. Admin sa pozrie na robot čoskoro; dostanete oznámenie. Obrázok nemohol byť uložený; skúste to znova zo stránky robota."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "Ďakujem. Váš účet už nemá detský zámok a súkromné vysielanie je vypnuté. Príspevky, ktoré ste urobili pred pobytom, ako boli: použitie Kto môže vidieť to na post zmeniť, kto vidí."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "Ďakujem. Váš účet už nemá detský zámok."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16975,6 +17327,10 @@ msgstr "To meno je obsadené."
 msgid "That password isn't right."
 msgstr "To heslo nie je správne."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "To heslo nie je správne. Nič sa nezmenilo."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "Ten formulár na obnovenie hesla vypršal."
@@ -17303,6 +17659,10 @@ msgstr "Mince idú zakladateľovi, <a href=\"%(url)s\">@%(name)s</a>."
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Mince, ktoré získate z tipov, platených kruhov a fondu tvorcov, za posledných 30 dní a po celý čas."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Komentár zostáva tam, kde je, s vaším menom odstránená. Každý, kto to videl s tvojím menom, stále vie, že si to ty."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17321,6 +17681,10 @@ msgstr[2] "Kópie, ktoré ste poslali %(guilds)s budú stiahnuté."
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "Dátumy neopúšťajú žiadne dni."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "Rozhodnutie platí"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17540,6 +17904,10 @@ msgstr "Meno %(host)s sa nepodarilo nájsť."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Najnovší z toho, čo urobili. Zobrazujú sa len mená toho, s kým sa rozprávajú, nikdy to, čo hovorí chat: chaty sú end-to-end šifrované."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Počet položiek, ktoré ste potvrdili nezodpovedá tomu, čo bolo vybrané. Nič sa nezmenilo."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Čísla sú vždy zobrazené na vašom profile. To rozhodne, kto môže otvoriť každý zoznam a vidieť účty na ňom. Účet je uvedený len tam, kde to umožňuje aj jeho vlastné nastavenie."
@@ -17588,9 +17956,25 @@ msgstr "Príspevok sa objavuje na profile toho, kto ho zverejní ako prvý. Voli
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "Príspevok nesie vaše meno a je uvedený vo vašom profile. Hlasy, komentáre a dopredu sú zdieľané s autorom, ktorý ich edituje a vymaže. Môžete vystúpiť kedykoľvek: príspevok zostáva, bez vášho mena."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "Príspevok nie je uvedený vo vašom profile. Hlasy, komentáre a dopredu sú zdieľané s autorom, ktorý ich edituje a vymaže. Môžete vystúpiť kedykoľvek: príspevok zostáva, bez vášho úveru."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "Pošta odmietla zmenu."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "Pošta zostáva tam, kde je, s Vaším menom odstránená, a zanechá váš profil. Jeho reputácia opúšťa aj teba. Každý, kto to videl s tvojím menom, stále vie, že si to ty."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "Autor príspevku"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "Autor príspevku ho vymazal, takže je zobrazený ako Anonymous: žiadne meno a žiadny odkaz. Komentáre pod ním zostávajú také, aké boli; jeden jej autor vymazal je zobrazený ako Anonymous príliš."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17663,9 +18047,17 @@ msgstr "Server si myslí, že sa pýtaš na niečo hlúpe. Mohlo by ťa to brať
 msgid "The site refused the bot's session."
 msgstr "Stránka odmietla sedenie robota."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Administrátori stránky ho už majú."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Administrátori stránky označili tento cech citlivý, takže to môže zmeniť iba admin."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Administrátori si ju prečítajú. Nikdy im nie je povedané, kto hlásil."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17835,9 +18227,17 @@ msgstr "Nie sú tu žiadne príspevky."
 msgid "There is no account named @%(name)s."
 msgstr "Neexistuje žiadny účet s názvom @%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Nie je tu čo odvolať."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "Ešte nie je čo zachrániť."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Na tento zákaz nič nečaká."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17932,36 +18332,24 @@ msgid "They aren't muted here."
 msgstr "Nie sú tu tlmené."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Požiadali ťa, aby si vypol súkromné vysielanie."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Môžu kúpiť a minúť mince, tip, kúpiť Premium a pripojiť alebo spustiť platené kruhy."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Môžu to komentovať."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Môžu hostiť a pripojiť Spaces a spustiť živé vlákna. Hlasové hovory vo vesmíre tiež potrebujú rozhovor."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Môžu robiť príspevky."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "Môžu ľudí informovať, pripojiť sa k skupinovým chatom a volať. Stránka vám nikdy neukazuje, čo hovorí chat: chaty sú end-to-end šifrované. Ktokoľvek pozná svoje heslo, stále sa môže prihlásiť a prečítať si ho."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Môžu poslať anonymne a začať so cechom. Stále môžete vidieť, kto napísal anonymnú poštu."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Môžu vidieť, čo robíte na webe: vaše príspevky, komentáre, hlasy, záložky, nasledujúce, cechy, s kým ste chatovať, že váš účet bol hlásený, a vaše nedávne prihlásenie. Stránka im nikdy neukazuje, čo hovoria vaše rozhovory, pretože chaty sú end-to-end šifrované. Ale každý, kto pozná vaše heslo, rodič, ktorý si ho vybral, sa môže prihlásiť ako vy: zmeniť ho v bezpečnosti, aby ste ho poznali len vy. Vyberajú si, ktoré z nich sú na vašom účte:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Môžu založiť cech. Stále nemôžu písať alebo komentovať: detský účet len číta."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17979,6 +18367,10 @@ msgstr "Idú rovno k vašej minci."
 msgid "They haven't asked for that."
 msgstr "Nežiadali o to."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Opúšťajú stránku. To, čo povedali, zostáva v denníku ako Anonymous, okrem toho, čo bolo vyrobené za posledných päť minút, ktoré nikto nekomentoval, čo je vymazané. Toto sa nedá odstrániť."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Musia byť v cechu a nie vyhnaní z neho."
@@ -17990,6 +18382,14 @@ msgstr "Najprv sa musia pripojiť k kanálu."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "Hovoria, že majú 18 alebo viac rokov a žiadajú vás, aby ste zverejnili ich účet. Ak to urobíš, stane sa to ich vlastné a už to viac neuvidíš."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Zostanú tam, kde sú, s vaším menom odstránená z nich. Toto sa nedá odstrániť. Posts that need your name (for a Circle, or with tips) are following as not changed."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Napísali: %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -18166,6 +18566,10 @@ msgstr[2] "Tento hovor je plný (%(num)s ľudí)."
 msgid "This can't be translated right now."
 msgstr "Toto teraz nemožno preložiť."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Toto sa nedá odstrániť. Administrátori stránky môžu vždy vidieť, kto niečo napísal, a ak admin zákazy alebo pozastavenie účtu pre neho, Log môže pomenovať účet pre neho."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Tento kanál nežiada o prijatie jeho pravidiel."
@@ -18249,6 +18653,10 @@ msgstr "Tento obsah už bol zaslaný"
 msgid "This copy is no longer kept."
 msgstr "Táto kópia už nie je uchovávaná."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Toto sa teraz nemôže zmeniť."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "To vytvára nové, nezávislé miesto v tomto cechu s vlastnými hlasmi a komentármi. Názov je vytvorený z textu komentára. Odkaz späť na pôvodný komentár bude zobrazený na novom príspevku."
@@ -18276,6 +18684,22 @@ msgstr "Tento vyliečený cechy a účty"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Tieto vyliečené pravidlá krmiva trvalo príliš dlho. Jeho majiteľ ich môže zúžiť."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Toto rozhodnutie nemožno odvolať."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Toto rozhodnutie už bolo zrušené."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Toto rozhodnutie je o tebe. Ak si myslíte, že to bolo nesprávne, môžete to odvolať."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18321,6 +18745,14 @@ msgstr "Tento cech je súkromný. Obsah zverejnený pred nastavením cechu do s�
 msgid "This guild's channels are closed."
 msgstr "Tento cech je uzavretý."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Toto má legálny rekord, ktorý nemožno citovať."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Toto bolo vymazané."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "Toto pozvanie už bolo zodpovedané."
@@ -18341,6 +18773,10 @@ msgstr "Toto je priestor: jeho hostiteľ a spoluhostitelia dávajú svoje aktual
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Toto je log akcií moderátora vykonávaných v +%(guild)s. Tie, ktoré si každý môže prečítať, sú tiež v webe-široko <a href=\"%(url)s\">Log</a>. Čo členovia vymazať sami nie je zverejnený."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "Toto je už anonymné."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "Toto je už vo vašom jazyku."
@@ -18358,6 +18794,10 @@ msgstr "Toto je pre členov Circle cechu."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "To je pre ľudí v jednom z <a href=\"%(url)s\">@%(name)s</a>Kruhy."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "Toto je na súkromnom mieste a súkromný predmet nemôže byť citovaný vo verejnom denníku."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "Toto je cechov zvyk. CSS súbor."
@@ -18370,6 +18810,10 @@ msgstr "To je príliš podobné tomu, čo bolo dnes automaticky zverejnené."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Toto nie je k dispozícii, kým je váš účet obmedzený na vek. Môžete potvrdiť svoj vek v Nastaveniach > Obsah."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Toto nie je jeden z vlastných príspevkov alebo komentárov."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Toto nie je zobrazené na vašej aktuálnej úrovni filtra slov. V nastaveniach obsahu si môžete prezrieť textový filter."
@@ -18381,6 +18825,10 @@ msgstr "Toto nie je ukázané, kde ste, kým váš vek bol potvrdený. Prihlást
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Toto nie je zobrazené, kým je váš účet obmedzený na vek."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Toto nie je tvoja zmena, inak je už preč."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18488,6 +18936,10 @@ msgstr "Tento príspevok nemá žiadne komentáre k vášmu profilu teraz. Jej p
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "Tento post nemá žiadne živé vlákno."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Tento príspevok je anonymný, takže váš kredit bude príliš: ostatní členovia budú vidieť ako \"Anonymný\" s číslom. Administrátori a autor postu môžete stále vidieť, že ste to vy."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18606,6 +19058,10 @@ msgstr[2] "Tento hlasový kanál je plný (%(num)s ľudí)."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "Tento hlasový kanál teraz nie je dostupný."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "To bolo vymazané do piatich minút od výroby, takže nemá žiadny verejný záznam pripojiť."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18814,6 +19270,10 @@ msgstr "Príliš veľa cechov je už vedených z vašej siete (nanajvýš %(limi
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Príliš veľa živých prúdov je otvorených. Zatvorte kartu a skúste to znova."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Príliš veľa správ dnes"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "Príliš veľa spamu!"
@@ -18920,6 +19380,10 @@ msgstr "Skutočný zločin"
 msgid "Try again"
 msgstr "Skús to znova"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Skúste to zajtra."
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18928,10 +19392,6 @@ msgstr "Ut"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "Turanský step"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Vypni to"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -19151,6 +19611,10 @@ msgstr "Zrušiť oficiálne označenie"
 msgid "Undo"
 msgstr "Späť"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Zrušiť rozhodnutie"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19358,6 +19822,10 @@ msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Až do %(num)s znakov. Môžete sa odvolať proti rozhodnutiu raz a podať tri odvolania denne."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -20066,13 +20534,21 @@ msgstr "Čo to znamená"
 msgid "What it posts:"
 msgstr "Čo to znamená:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "To, čo sa tam píše, sa tu neukazuje."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "Aký druh vesmíru?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "To, čo členovia vymažú samé, tu nie je publikované."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "To, čo členovia vymazané, najnovšie prvý, so slovami, ktoré mal, ako Anonymous: žiadne meno a žiadny odkaz. Niečo vymazané do piatich minút od napísania je vymazané a nie je tu. Tlačidlo správy žiada správcu stránky, aby sa slová dole."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Čo členovia editoval, najnovšie ako prvý: kto (Anonymný pre anonymné príspevok alebo komentár), kedy a poznámku dali. Spustenie úprav na jednu položku je jeden riadok. Editácia v prvých piatich minútach po niečom napísanom nie je zaznamenaná. Verzie sú na vlastnej stránke histórie položky."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -20086,6 +20562,18 @@ msgstr "Čo predplatitelia dostanú"
 msgid "What the guildmasters did"
 msgstr "Čo urobili cechári"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Čo s nimi robiť"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Čo robiť s vaším komentárom"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Čo robiť s vaším príspevkom"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "Čo povedať"
@@ -20097,6 +20585,14 @@ msgstr "Čo hľadať"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "Čo funguje v apps"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Čo odstránite zostane v denníku ako Anonymous, bez mena, pokiaľ ho nevymažete do piatich minút."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Čo si vymazal. Kópia niečoho vymazaného po prvých piatich minútach zostáva v denníku ako Anonymous, bez mena. Kópia niečoho vymazaného za päť minút je súkromná a ide po 90 dňoch."
 
 #, machine, plain1
 msgid "What you do"
@@ -20151,6 +20647,10 @@ msgstr "Kde súbory idú"
 #, machine, plain1
 msgid "Where it is"
 msgstr "Kde to je"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Kde sa o tom diskutovalo"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -20310,6 +20810,10 @@ msgstr "Kto čo napísal"
 msgid "Who you follow"
 msgstr "Koho sleduješ"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Kto, kedy, kde, ktoré pravidlo a prečo. Nikdy neukazuje názov alebo text toho, čo bolo skryté alebo odstránené."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Ktokoľvek to začal, nahlásil ten prehliadač a umiestnil sa, takže nič nedokázal."
@@ -20339,6 +20843,14 @@ msgstr "Prečo nie"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "Prečo nie (povedia sa im)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Prečo by to malo ísť dole?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Prečo to bolo nesprávne?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20395,10 +20907,6 @@ msgstr "S Premium dostaneš jedno miesto na všetko, čo zarobíš %(site)s:"
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "S Premium vidíte, ako každý z vašich príspevkov robí: pohľady za deň, koľko prihlásených ľudí prišiel, hlasy, komentáre, záložky, dopredu a reposty, ako to robí v každom cechu to bolo postúpené, a výsledky svojho prieskumu."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "S súkromné vysielanie na, kruh môže držať len ľudí, ktorí sledujú vás a koho nasledujete."
 
 #, machine, plain1
 msgid "With a link"
@@ -20751,6 +21259,10 @@ msgstr[2] "Ty už vedieš maximálne %(num)s cechov."
 msgid "You already made that comment: %(link)s"
 msgstr "Už si to povedal: %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Už si to nahlásil"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "Už ste nahlásili tento účet."
@@ -20782,6 +21294,10 @@ msgstr "O tomto príspevku ste už hlasovali v pôvodnom príspevku. Odstrániť
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Vy a 3 pomocníci píšete; členovia čítajú a reagujú. Pre ostatné kruhy, nech je zapnuté <a href=\"%(url)s\">Vaša stránka kanálov</a>Môžete mať až 3 kanály."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Odvolali ste sa na toto rozhodnutie."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20860,10 +21376,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Požiadali ste svojho rodiča alebo opatrovníka, aby uvoľnil váš účet. Ešte neodpovedali."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Požiadal si svojho rodiča alebo opatrovníka, aby to vypli. Ešte neodpovedali."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Môžete pridať obrázky na 500 reputácii, alebo skôr s Premium"
 
@@ -20898,6 +21410,10 @@ msgstr "Toto môžete zmeniť pre každé video, keď ho pridáte. Videá sú up
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Môžete to zmeniť, keď prijmú vašu žiadosť o správu."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Môžete zmeniť až na %(max)s predmety naraz."
 
 #, machine, plain1
 msgid "You can close this window."
@@ -21027,6 +21543,10 @@ msgstr[2] "Môžete urobiť %(num)s wiki úpravy denne v cechu. Skús to zajtra.
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Keď sa potvrdí, že váš vlastný účet je 18 alebo viac, môžete si vytvoriť detský účet. Môžete to povedať v Nastaveniach > Obsah."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Môžete urobiť tri odvolania denne. Skús to zajtra."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21375,6 +21895,10 @@ msgstr[0] "Máš %(num)s mincu."
 msgstr[1] "Máte %(num)s mince."
 msgstr[2] "Máte %(num)s mincí."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Toto rozhodnutie ste už odvolali."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Už ste zablokovali @%(name)s."
@@ -21416,6 +21940,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -21514,6 +22047,10 @@ msgstr "Nepovedala si, že si si nechala svoj záchranný kód."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Ešte si nám to nepovedal."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Vy ste urobili toto rozhodnutie, takže ďalší cechový moderátor rozhodne o odvolaní."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21620,6 +22157,14 @@ msgstr "Podpísal si sa s QR kód. Zadajte heslo pre použitie tohto formulára.
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Povedal si nám, že chceš zmeniť %(site)s e-mailom z účtu. Ak chcete dokončiť tento proces, overte si prosím vašu novú e-mailovú adresu:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Boli ste pozvaní zdieľať túto anonymnú poštu. Ak prijmete, váš kredit je tiež anonymný a príspevok nie je uvedený vo vašom profile. Hlasy, komentáre a dopredu zostávajú zdieľané a iba jeho autor ich edituje alebo vymaže."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -22006,6 +22551,10 @@ msgstr "Vaše konto musí mať aspoň 30 dní na vedenie robota."
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Vaše konto už nie je automaticky. Jej príspevky zostávajú."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Váš účet zatiaľ len číta, takže nemôže komentovať. Stále môžete voliť, nasledovať a záložku."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "Vaše príspevky z týchto kanálov odteraz."
@@ -22041,6 +22590,53 @@ msgstr "Váš vek bol potvrdený %(date)s."
 #, machine, plain1
 msgid "Your answer"
 msgstr "Vaša odpoveď"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Vaša žiadosť čaká na prečítanie."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Vaše odvolanie bolo prijaté a rozhodnutie bolo zrušené."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Vaše odvolanie bolo preskúmané a rozhodnutie platí."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Vaše odvolanie nebolo prijaté ďalej."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Vaše odvolanie bolo zaslané."
 
 #, machine, plain1
 msgid "Your apps"
@@ -22125,12 +22721,12 @@ msgid "Your circles - %(site)s"
 msgstr "Vaše kruhy - %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Váš komentár bude stiahnutý zo stránok stránky. Stránka má vlastnú kópiu 90 dní, ktorú môžete otvoriť len vy a administrátori stránky. Toto sa nedá odstrániť."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "Váš komentár histórie sa ukáže tu."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Váš kredit na tomto príspevku je anonymný: ostatní členovia to považujú za \"Anonymný #N.\" Administrátori a autor príspevku stále vidia, že je to vaše. Toto sa nedá odstrániť."
 
 #, machine, plain1
 msgid "Your curations"
@@ -22277,14 +22873,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "Vášho rodiča alebo opatrovníka požiadali, aby váš účet zverejnil. Nič sa nezmení, kým neodpovedia."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "Vášho rodiča alebo opatrovníka požiadali, aby vypol súkromné vysielanie."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Váš rodič alebo opatrovník musí súhlasiť, kým súkromné vysielanie bude vypnuté."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Váš rodič alebo opatrovník to vypol kvôli vášmu účtu."
 
@@ -22299,14 +22887,6 @@ msgstr "Váš rodič alebo opatrovník nastavil nové heslo pre váš účet a b
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Váš rodič alebo opatrovník prestal spravovať váš účet. Udrží to detský zámok, kým nepotvrdíte svoj vek v Nastaveniach > Obsah. Vybrali si vaše heslo: zmeňte ho [Nastavenia > Security] (/settings/security), alebo sa môžu stále prihlásiť ako vy."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Váš rodič alebo opatrovník vypol súkromné vysielanie pre váš účet."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Váš rodič alebo opatrovník chce, aby súkromné vysielanie zostalo."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22339,10 +22919,6 @@ msgstr "Váš telefón povedal nie, takže nikto nebol prihlásený."
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Váš príspevok je uvedený v profile tak či onak. Vybrať Môj profil, aby mal svoje komentáre tam taky, a pridať cecky, aby ju priamo do nich: každý cech dostane svoju vlastnú kópiu s vlastnými hlasmi a komentármi."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Váš príspevok bude odstránený z vášho profilu, kanály a cechy. Stránka má vlastnú kópiu 90 dní, ktorú môžete otvoriť len vy a administrátori stránky. Toto sa nedá odstrániť."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -22458,6 +23034,10 @@ msgstr "Otázkou je váš titul. %(min)s do %(max)s možnosti, každý jeden hla
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Otázkou je váš titul. Dať %(min)s do %(max)s možnosti. Ľudia môžu hlasovať z každého dopredu a repost tohto príspevku, raz každý."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "Váš dvojfaktorový kód"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Vaše užívateľské meno je vaše jedinečné <code>@handle</code>: adresa vášho profilu, a čo ľudia spomenúť a hľadať. Zmena stojí 20 mincí a môže byť vykonaná raz za 7 dní. Ak chcete zmeniť, ako sa vaše meno číta bez toho, použite vyššie uvedené zobrazovacie meno."
@@ -22521,6 +23101,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Požiadavka na prevzatie licencie] (/help/siege)"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[Ako sa zaznamenáva umiernenie] (/help/moderation)"
 
 #, machine, plain1
 msgid "[Legal Policies](/help/legal)"
@@ -22590,6 +23174,61 @@ msgstr "[Odpovede] (/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Hlavy] (/help/titles)"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[banned]"
@@ -22640,6 +23279,10 @@ msgstr "[zvuk]"
 msgid "a day"
 msgstr "denne"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "vymazané miesto"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "cech alebo pomenovaný už neexistuje."
@@ -22679,6 +23322,12 @@ msgstr "aktivita"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "Pridané krmivo pre robotov %(target)s na kanál"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "pridaný odkaz na %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22766,12 +23415,16 @@ msgstr "roboty"
 msgid "by %(author)s"
 msgstr "od %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "do %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "do %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "podľa <a href=\"%(link)s\">@%(name)s</a>"
@@ -22856,6 +23509,12 @@ msgstr "zmena, či útočníci potrebujú štítok"
 msgid "changed who may edit a wiki page"
 msgstr "zmenené, kto môže upravovať stránku wiki"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chatbaned %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22875,6 +23534,10 @@ msgstr "mince"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "komentár"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "komentár # %(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22963,6 +23626,12 @@ msgstr "napr. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</span>: mo
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "napr. <span class=\"font-weight-bold\">%(score)s</span> namiesto %(up)s hore a hore %(down)s dole"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "upravený %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22973,10 +23642,21 @@ msgstr "editovaná wiki stránka"
 msgid "edited an event"
 msgstr "editovaná udalosť"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "editovaný post %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "koniec"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "skončil priestor %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -23002,6 +23682,12 @@ msgstr "všetko v ňom"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "všetko, čo píšete, je pripísané vám"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "exilovaný %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23084,6 +23770,11 @@ msgstr "zvýraznila ich %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "zvýraznil ich post %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "schovaný %(target)s pod ich vlastnou poštou"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -23147,6 +23838,10 @@ msgid_plural "in %(num)s minutes"
 msgstr[0] "za %(num)s minútu"
 msgstr[1] "za %(num)s minúty"
 msgstr[2] "za %(num)s minút"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "v tomto vlákne"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -23311,6 +24006,11 @@ msgstr "staré"
 msgid "only guildmasters write here"
 msgstr "len cech moderátori tu"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "otvorené + %(guild)s každému"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "externý server"
@@ -23367,6 +24067,10 @@ msgstr "pripnúť správu do kanála"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "pripnutý post %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "post # %(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23441,6 +24145,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "odstrániť správu %(target)s z kanála"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "odstránenie správy z verejného kanála"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "odstrániť správu z rady priestoru %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "odstrániť revíziu cechu"
@@ -23463,6 +24177,12 @@ msgstr "odstrániť cech moderátor %(target)s"
 msgid "removed post %(target)s"
 msgstr "odstránené post %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "odstrániť poznámku o spoločenstve dňa %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -23471,6 +24191,12 @@ msgstr "premenovaná kategória kanála"
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "obnovuje %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "nahradil poznámku spoločenstva %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23515,6 +24241,11 @@ msgid_plural "shares. Only the author can share this post."
 msgstr[0] "podiel. Iba autor môže zdieľať tento príspevok."
 msgstr[1] "akcie. Iba autor môže zdieľať tento príspevok."
 msgstr[2] "akcie. Iba autor môže zdieľať tento príspevok."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "%(target)s opäť pod jeho funkciou"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -23636,11 +24367,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "najlepšie"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "nevypočuté %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "neupravený užívateľ %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "nevystavený %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23701,6 +24444,14 @@ msgstr "unhid a %(target)s in this ceild"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "%(target)s v tomto cechu"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "do %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "do %(max)s naraz"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

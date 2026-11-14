@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: th\n"
@@ -467,6 +467,11 @@ msgid "%(num)s character limit for titles."
 msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s จํากัดตัวอักษรสําหรับชื่อเพลง"
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s เลือก"
+
 #, machine, plain1, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -523,6 +528,11 @@ msgstr[0] "%(num)s วันที่เหลือ"
 msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s วันที่เหลือ"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s แก้ไขในแถว"
 
 #, machine, plain1, python-format
 msgid "%(num)s follower"
@@ -583,6 +593,16 @@ msgstr[0] "%(num)s ในสาย"
 msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s สนใจ"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s รายการที่มีการเปลี่ยนแปลง"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s ไม่สามารถเปลี่ยนแปลงรายการได้:"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, plain1, python-format
@@ -1178,6 +1198,10 @@ msgstr "%(who)s ยอมรับการเชื้อเชิญแบบ 
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s เพิ่มแหล่งป้อนอุปกรณ์ %(target)s ไปยังช่อง"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s เพิ่มบันทึกของชุมชน"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s เพิ่มป้าย"
@@ -1242,6 +1266,10 @@ msgstr "%(who)s มีการเปลี่ยนแปลงว่าไป�
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s มีการเปลี่ยนแปลงที่อาจจะแก้ไขหน้าของ wiki"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s การสนทนา %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s ผู้ใช้ที่ถูกขัดจังหวะ %(name)s"
@@ -1290,6 +1318,10 @@ msgstr "%(who)s ลบหน้าของวิกิพีเดีย"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s ลบเมื่อ: %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s แก้ไขหมายเหตุ"
+
 #, machine, plain1, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s แก้ไขหน้าของวิกิพีเดีย"
@@ -1297,6 +1329,18 @@ msgstr "%(who)s แก้ไขหน้าของวิกิพีเดี�
 #, machine, plain1, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s แก้ไขเหตุการณ์"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s แก้ไขเมื่อ %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s จบช่องว่าง"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s ส่ง %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1317,6 +1361,10 @@ msgstr "%(who)s เน้นตําแหน่งของพวกเขา 
 #, machine, plain1, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s ซ่อนความคิดเห็นจากสมาคมนี้"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s ซ่อนความคิดเห็นภายใต้โพสต์ของตัวเอง"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1366,6 +1414,10 @@ msgstr "%(who)s ทําเครื่องหมายหมายเหต�
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s ทําเครื่องหมาย โพสต์ %(title)s ว่าเป็นเนื้อหาที่อ่อนไหว"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s เปิด +%(guild)s แด่ทุกคน"
+
 #, machine, plain1, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s ลบความคิดเห็นอย่างถาวร"
@@ -1406,6 +1458,18 @@ msgstr "%(who)s คืนค่าตําแหน่งเดิม %(title)s
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s ลบข้อความแสดงช่อง"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s ลบบันทึกย่อของชุมชน"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s ลบข้อความออกจากบอร์ดอวกาศ"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s ลบข้อความจากช่องสาธารณะ"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s ลบข้อมูลเพิ่มเติมของวิกิพีเดีย"
@@ -1430,6 +1494,10 @@ msgstr "%(who)s เอาผู้ใช้ออก %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s เปลี่ยนชื่อหมวดหมู่ของช่อง"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s แทนที่บันทึกย่อของชุมชน"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s การเชื้อเชิญเครื่องมือฟอร์แมตของ February ไปยัง%(name)s"
@@ -1445,6 +1513,10 @@ msgstr "%(who)s ตั้งค่า nsfw บนโพสต์ %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s ตั้งค่าชื่อของไปรษณีย์ %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s แสดงความคิดเห็นอีกครั้ง"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1470,9 +1542,17 @@ msgstr "%(who)s เอาเข็มออกจากข้อความท�
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s รับบทจาก %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s ไม่รวม %(target)s"
+
 #, machine, plain1, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s ผู้ใช้ที่ไม่รวม %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s ยังไม่หมดอายุ %(target)s"
 
 #, machine, plain1, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1558,6 +1638,10 @@ msgstr "(จากต้นฉบับ)"
 msgid "(in a private place)"
 msgstr "ในสถานที่ส่วนตัว"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(ไม่มีข้อความ)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(ไม่มีชื่อ)"
@@ -1629,6 +1713,10 @@ msgstr "~Pres~"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ เพิ่มตัวเลือก"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+%(guild)s การเรียกดู"
 
 #, machine, plain1, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2134,10 +2222,6 @@ msgstr "@%(name)s เพิ่มไปยัง %(curation)s."
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr ""
 
-#, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr ""
-
 #, machine, plain1, python-format
 msgid "@%(name)s blocked."
 msgstr "@%(name)s บล็อก"
@@ -2400,9 +2484,9 @@ msgstr "@ %(name)s ถูกทําให้เงียบในช่อง 
 msgid "@%(name)s's age was confirmed as 18 or over, so their account is their own now and you can no longer see it."
 msgstr "@ %(name)sอายุได้รับการรับรองเป็น 18 หรือมากกว่า ดังนั้นบัญชีของพวกเขาเป็นของพวกเขาตอนนี้และคุณไม่สามารถเห็นมันได้."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s's new posts will go into #%(channel)s."
-msgstr "@%(name)sโพสต์ใหม่จะเข้าสู่%(channel)s."
+msgstr ""
 
 #. an account's @handle, then why it can't be given the role (a whole sentence
 #. of its own)
@@ -2482,6 +2566,10 @@ msgstr "พื้นที่ไม่ใช่นิรนาม."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "พื้นที่ไม่สามารถถูกบรรจุใน วงกลมสโมสร."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "พื้นที่ไม่สามารถลบชื่อได้."
+
 #, machine, plain1
 msgid "A Space can't start in the past."
 msgstr "พื้นที่เริ่มต้นในอดีตไม่ได้."
@@ -2509,6 +2597,10 @@ msgstr "ตราผู้ประกาศข่าว ถัดจากช�
 #, machine, plain1
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "ปุ่มแปล แสดงภายใต้โพสต์และคอมเม้นท์ในภาษาของคุณ ไม่มีอะไรแปลได้ นอกจากคุณกดมัน."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "คํา สั่ง ห้าม อาจ อ้าง ถึง %(max)s ของ"
 
 #, machine, plain1, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2680,9 +2772,25 @@ msgid "A circle's name can be %(num)s character at most."
 msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "ชื่อวงกลมนี้ %(num)s ตัวละครมากที่สุด"
 
-#, machine, plain1
-msgid "A co-authored post can't be anonymous."
-msgstr "ผู้เขียนร่วมไม่สามารถนิรนามได้."
+#, machine, plain2
+msgid "A comment"
+msgstr "หมายเหตุ"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "ความคิดเห็นจากบัญชีที่คุณบล็อก หรือที่บล็อกคุณ."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "ความคิดเห็นที่ซ่อนโดยเครื่องจัดอันดับของสมาคม."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "ความคิดเห็นที่ซ่อนโดยตัวกรองคําของคุณ."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "ความคิดเห็นของผู้เขียนถูกลบ ที่มันบอก มันไม่ได้อยู่ที่นี่."
 
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2691,6 +2799,10 @@ msgstr "ความคิดเห็นเกี่ยวกับโพสต
 #, machine, plain1
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "ความคิดเห็นเกี่ยวกับโพสต์สําหรับเซอร์เคิลไม่สามารถเผยแพร่ได้."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "ความคิดเห็นที่ถูกลบออกไปโดยโฆษณาของเว็บไซต์."
 
 #, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2708,6 +2820,14 @@ msgstr "อาหารที่ตัดแล้วของทั้งเว
 msgid "A day"
 msgstr "วัน"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "การตัดสินใจในปูมบันทึก"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "โพสต์ที่ถูกลบทิ้ง และเรื่องที่พูดใต้มัน"
+
 #, machine, plain1, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2717,6 +2837,10 @@ msgstr[0] "คําบรรยายสามารถ %(num)s ตัวละ
 msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "รายละเอียดส่วนใหญ่ %(num)s ตัวละคร"
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "โฆษณาอื่นต้องยืนยันการเปิดเผย."
 
 #, machine, plain1, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2814,6 +2938,10 @@ msgstr "ชื่อกลุ่มไม่สามารถบรรจุไ
 #, machine, plain1
 msgid "A group name can't contain control or invisible characters."
 msgstr "ชื่อกลุ่มไม่สามารถมีตัวควบคุมหรือตัวอักษรที่มองไม่เห็นได้."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "การแบนสมาคมต้องการเหตุผลของประชาชน ดังนั้นหน้าของสมาคมและล็อกสามารถบอกว่าทําไม."
 
 #, machine, plain1, python-format
 msgid "A guild can have at most %(num)s category."
@@ -2922,6 +3050,10 @@ msgstr "งบ ประมาณ ประจํา เดือน แบ่�
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "คนใบ้ยังสามารถอ่าน แต่ไม่สามารถเขียนใด ๆ%(guild)sช่องสัญญาณ พวกเขาบอกเมื่อพวกเขาพยายาม"
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "โน้ตถึงบุคคล"
+
 #, machine, plain1, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -2978,6 +3110,10 @@ msgstr[0] "ตัวเลือกการสํารวจสามารถ
 msgid "A poll option can't hold control characters."
 msgstr "ตัวเลือกในโพลไม่สามารถควบคุมตัวละครได้."
 
+#, machine, plain2
+msgid "A post"
+msgstr "โพสต์"
+
 #, machine, plain1, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -2999,6 +3135,10 @@ msgstr "โพสต์สําหรับวงกลมไม่สามา
 #, machine, plain1
 msgid "A post for a Circle can't have co-authors."
 msgstr "โพสต์สําหรับเซอร์เคิลไม่มีผู้เขียนร่วม."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "โพสต์สําหรับวงกลมไม่สามารถลบชื่อของตน."
 
 #, machine, plain1
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3028,6 +3168,10 @@ msgstr "โพสต์เสียครึ่งน้ําหนักใน
 msgid "A post needs a title."
 msgstr "โพสต์ต้องการชื่อ."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "โพสต์ที่ถูกแจ้ง ไม่สามารถลบชื่อออกได้ เพราะเหรียญนั้นอยู่กับคุณ."
+
 #, machine, plain1
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "โพสต์ที่ไม่ได้เผยแพร่ต่อสาธารณชน ไม่สามารถใช้การอัปโหลดภาพได้: แฟ้มของมันสามารถเปิดได้โดยใครก็ตามที่มีที่อยู่อยู่ เพิ่มรูปภาพจากคลังจดหมายของคุณแทน (ตั้งค่า > สื่อ)."
@@ -3036,9 +3180,17 @@ msgstr "โพสต์ที่ไม่ได้เผยแพร่ต่อ
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "โพสต์ที่มีผู้เขียนร่วมไม่สามารถย้ายไปยังวงกลม การ ย้าย เสา สาธารณะ ไป อยู่ รอบ ๆ ทํา ให้ สําเนา ที่ คุณ ส่ง ไป นั้น ตก ลง มา; คน อื่น ๆ ที่ ส่ง มา ก็ คัด ลอก อยู่ ที่ สมาคม."
 
-#, machine, plain1
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "โพสต์ที่เขียนร่วมกันเป็นสาธารณะ และไม่สามารถไม่ระบุชื่อ แบ่งปันกับวงกลม หรือสํารวจ ผู้เขียนคือผู้ร่วมเขียน ทาง เลือก เหล่า นี้ มี ผู้ เขียน ทุก คน ใช้ กัน และ ใช้ กัน ทุก ครั้ง ที่ คุณ พิมพ์."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "จดหมาย ที่ เขียน ด้วย กัน จะ ถูก ลบ ออก ก็ ต่อ เมื่อ ผู้ ประพันธ์ เห็น พ้อง กัน ใน การ คัด ลอก ด้วย กัน."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "โพสต์ที่เขียนร่วมกันเป็นสาธารณะ และไม่สามารถแบ่งปันกับวงกลมหรือสํารวจ ผู้เขียนคือผู้ร่วมเขียน ทาง เลือก เหล่า นี้ มี ผู้ เขียน ทุก คน ใช้ กัน และ ใช้ กัน ทุก ครั้ง ที่ คุณ พิมพ์."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "โพสต์ที่เขียนร่วมกับคนอื่นยังไม่สามารถลบชื่อที่นี่ได้."
 
 #, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3368,6 +3520,10 @@ msgstr "ยอมรับการเชื้อเชิญ"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "ยอมรับการเชิญแบบโหมด"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "ยอมรับเมื่อไม่มีชื่อของฉัน (Admins และผู้เขียนโพสต์ยังคงสามารถเห็นได้ว่าเป็นฉัน)"
 
 #, machine, plain1
 msgid "Account"
@@ -3985,6 +4141,10 @@ msgstr "ผู้เขียนจะหยุดถูกนับ หลั�
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "นักเขียนที่ไม่ได้รับการทํางานในเว็บไซต์สําหรับ %(time)s ไม่ได้นับ"
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "โพสต์อัตโนมัติไม่สามารถลบชื่อได้."
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "ช่องทางที่เข้ารหัสไว้ ไม่สามารถร้องขอให้ยอมรับกฏได้ เว็บไซต์ไม่สามารถตรวจสอบได้ว่าใครเป็นคนเขียน."
@@ -4093,9 +4253,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "ไม่ระบุตัวตน"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "การ ลง นาม และ การ เริ่ม สมาคม"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "ไม่ระบุตัวตน #%(num)s"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4179,6 +4339,26 @@ msgstr "ทุกคนมองเห็นคนที่คุณติดต
 #, machine, plain1
 msgid "App Name"
 msgstr "ชื่อแอป"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "เรียกร้องการตัดสินใจ"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "เรียกร้องการตัดสินใจ %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "เรียกร้องการตัดสินใจนี้"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "การเรียกดู"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "การเรียกร้องของการตัดสินใจนี้ นักจัดอันดับของสมาคมทํา การ อุทธรณ์ เป็น เรื่อง ส่วน ตัว: เฉพาะ คน ที่ คิด จะ อ่าน หนังสือ นั้น. การทบทวนการตัดสินใจยกเลิก และเขียนรายการใหม่ในบันทึก เชื่อมต่อกับรายการแรก คุณไม่สามารถตัดสินใจ อุทธรณ์ในการตัดสินใจของคุณเอง ในขณะที่คนอื่น ๆ ที่โหมดสมาคมสามารถ."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4318,10 +4498,6 @@ msgstr "อารยัน ไฮแลนด์"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "ในฐานะนักเขียนที่คุณแก้ไขโครงร่างนี้ อยู่กับตัวหนังสือ และทุกตัวอักษรที่คุณพิมพ์ ก็ได้รับการยกย่อง เมื่อ โพสต์ ถูก จัด พิมพ์ ขึ้น ใคร ก็ ตาม ที่ เห็น ได้ จะ เห็น ว่า ใคร เขียน อะไร. ผู้เขียนตัดสินใจร่วมกันว่า"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "ขอ พ่อ แม่ ให้ ปิด การ ประชุม"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5177,6 +5353,10 @@ msgstr "เปลี่ยนกฏ"
 msgid "Change the two-factor settings for your account."
 msgstr "เปลี่ยนการตั้งค่าสองปัจจัยสําหรับบัญชีของคุณ."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "เปลี่ยนพวกเขา"
+
 #, machine, plain1
 msgid "Change your account password."
 msgstr "เปลี่ยนรหัสผ่านของบัญชีผู้ใช้."
@@ -5448,6 +5628,10 @@ msgstr "เลือกอย่างน้อยหนึ่งวงกลม
 msgid "Choose at least one of your circles."
 msgstr "เลือกอย่างน้อยหนึ่งในวงกลมของคุณ."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "เลือกอย่างน้อยหนึ่งโพสต์หรือหมายเหตุ."
+
 #, machine, plain1
 msgid "Choose at least one story."
 msgstr "เลือกอย่างน้อยหนึ่งเรื่อง."
@@ -5503,6 +5687,10 @@ msgstr "เลือกสิ่งที่ชนิดของหุ่นย
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "เลือกประเภทของการตอบรับ."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "เลือกว่าจะทําอะไรกับพวกเขา."
 
 #, machine, plain1
 msgid "Choose what to propose."
@@ -5776,6 +5964,10 @@ msgstr "การ์ตูนและการ์ตูน"
 msgid "Coming up"
 msgstr "มาแล้ว"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "หมายเหตุ"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5785,9 +5977,13 @@ msgstr "แสดงความคิดเห็น"
 msgid "Comment %(id)s has been removed"
 msgstr "หมายเหตุ %(id)s ได้ถูกลบแล้ว"
 
-#, machine, plain1
-msgid "Comment anonymously: other users will not see your name"
-msgstr "หมายเหตุไม่ทราบชื่อ: ผู้ใช้อื่น ๆ จะไม่เห็นชื่อของคุณ"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "หมายเหตุไม่ทราบชื่อ: ผู้ใช้อื่น ๆ จะไม่เห็นชื่อของคุณ หาก โฆษณา สั่ง ห้าม หรือ ระงับ บัญชี นั้น ล็อก อาจ ใช้ ชื่อ บัญชี สําหรับ คํา อธิบาย นี้."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "หมายเหตุเป็นของคุณเอง: ชื่อของคุณแสดงบนหมายเหตุนี้"
 
 #, machine, plain1
 msgid "Comment bookmarked."
@@ -5796,10 +5992,6 @@ msgstr "ทําคั่นหน้าหมายเหตุ."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "โพสต์ความคิดเห็นแล้ว!"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "หมายเหตุ"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6387,6 +6579,10 @@ msgstr "ล่อใจ URL ไม่ อนุญาต ให้ หด ตั
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "ล่อใจ URL ไม่ อนุญาต ให้ สั้น ลง."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "ตัดสินใจ"
+
 #, machine, plain1
 msgctxt "button"
 msgid "Decline"
@@ -6450,6 +6646,10 @@ msgstr "ลบหมายเหตุหรือไม่?"
 msgid "Delete folder"
 msgstr "ลบโฟลเดอร์"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "ลบ"
+
 #, machine, plain1
 msgid "Delete my account"
 msgstr "ลบบัญชีผู้ใช้ของฉัน"
@@ -6473,6 +6673,14 @@ msgstr "ลบบัญชีผู้ใช้"
 #, machine, plain1
 msgid "Delete the published post"
 msgstr "ลบโพสต์ที่เผยแพร่"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "ลบพวกเขา"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "ลบรายการเหล่านี้หรือไม่?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6517,6 +6725,10 @@ msgstr "ลบของคุณ %(site)s บัญชี"
 #, machine, plain1
 msgid "Delete your posts and comments"
 msgstr "ลบโพสต์และหมายเหตุของคุณ"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "ลบแล้ว"
 
 #, machine, plain1
 msgid "Deleted account"
@@ -6709,6 +6921,14 @@ msgid "Discussed in %(num)s other place"
 msgid_plural "Discussed in %(num)s other places"
 msgstr[0] "พิจารณาใน %(num)s ที่อื่น ๆ"
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "พิจารณาใน + %(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "พิจารณาในโพรไฟล์"
+
 #, machine, plain1
 msgid "Discussion"
 msgstr "การสนทนา"
@@ -6790,6 +7010,10 @@ msgstr "ทําโดย"
 
 #, machine, plain1
 msgid "Done to"
+msgstr "เสร็จแล้ว"
+
+#, glossary, machine, plain2
+msgid "Done."
 msgstr "เสร็จแล้ว"
 
 #, machine, plain1
@@ -6986,6 +7210,10 @@ msgstr "แก้ไขโพสต์และหมายเหตุของ
 msgid "Edited %(when)s"
 msgstr "แก้ไข %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "แก้ไขโดย"
+
 #, machine, plain1, python-format
 msgid "Edited by %(who)s"
 msgstr "แก้ไขโดย %(who)s"
@@ -7001,6 +7229,10 @@ msgstr "การ แก้ไข ยัง ทํา ให้ มี การ
 #, machine, plain1
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "แก้ไขการปรับปรุงโพสต์นี้ทุกที่ที่มีการส่งต่อ."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "แก้ไข"
 
 #, machine, plain1
 msgid "Education"
@@ -7341,13 +7573,13 @@ msgstr "ทุกคนเห็นการเปลี่ยนแปลงข
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "ทุกอย่างจากสมาคมของคุณ และบัญชีใหม่ล่าสุด."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "ทุกสิ่งที่พวกเขาโพสต์ไป แค่วงกลมเพื่อนของพวกเขา ปิดมันเพื่อให้พวกเขาโพสต์ในที่สาธารณะ."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "หลักฐานไม่สามารถอ้างอิงได้"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "ทุกอย่างที่คุณโพสต์ จะไปเฉพาะกับ วงกลมเพื่อนของคุณ คนที่คุณติดตามกลับมา วงกลมของคุณเท่านั้นที่สามารถถือคนเช่นนั้น และคุณไม่สามารถไปข้างหน้า, โพสต์หรือเขียนร่างร่วม ความเห็นบนโพสต์ของคนอื่นๆ ยังคงเป็นที่สาธารณะ."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "หลักฐาน:"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7394,6 +7626,10 @@ msgstr "ตัวอย่าง: แมว สุนัข ไม่มีแ�
 #, machine, plain1
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "ตัวอย่าง: ชั่วโมงแห่งความสุข มีคําว่า \"ชั่วโมงแห่งความสุข\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "เนรเทศ %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -8785,6 +9021,10 @@ msgstr "นานแค่ไหน"
 msgid "How long it runs"
 msgstr "นานแค่ไหนที่มันวิ่ง"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "มี การ บันทึก การ รู้ จัก ประมาณ ตน อย่าง ไร"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "คุณอายุเท่าไหร่?"
@@ -8977,6 +9217,10 @@ msgstr "ใน %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "ในกิลด์"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "ในปูมบันทึกแบบนิรนาม"
 
 #, machine, plain1, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9271,6 +9515,14 @@ msgstr "มันจะจบลงเองหลังจากนี้ ค�
 msgid "It is reviewed with the bot."
 msgstr "มันได้รับการทบทวนกับหุ่น."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "มันออกจากเว็บไซต์ของ ถ้ามันมีอายุน้อยกว่า 5 นาที และไม่มีใครให้ความเห็นกับมัน ก็จะถูกลบออกไป มีเพียงคุณและโฆษณาของเว็บไซต์เท่านั้นที่สามารถเปิดสําเนาส่วนตัวได้ 90 วัน มิฉะนั้นสิ่งที่มันกล่าวว่าอยู่ในบันทึกเป็นนิรนามไม่มีชื่อและไม่มีลิงก์และทุกคนที่สามารถอ่านได้มี."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "มันทิ้งประวัติไว้ ทั้งอาหาร และสมาคม ถ้าอายุน้อยกว่า 5 นาที และไม่มีใครให้ความเห็น ก็จะถูกลบออก มีเพียงคุณและโฆษณาของเว็บไซต์เท่านั้น มิฉะนั้นสิ่งที่มันกล่าวว่าอยู่ในบันทึกเป็นนิรนามไม่มีชื่อและไม่มีลิงก์และทุกคนที่สามารถอ่านได้มี."
+
 #, machine, plain1
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "มันอยู่ในประวัติของคุณ ภายใต้อวกาศ สมาคม แสดง บัตร ของ ตน ด้วย การ ลง คะแนน เสียง และ หุ้น และ เปิด ฉาก."
@@ -9287,13 +9539,13 @@ msgstr "คํา นี้ แสดง ให้ เห็น คํา แล
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "มันยังคงเก็บบัญชีเด็กไว้กับลูกล็อค แต่คุณไม่สามารถเห็นมัน หรือเปลี่ยนแปลงสิ่งที่มันทําได้."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "มันอยู่บนตัวกรองคําเด็ก ซึ่งซ่อนความไม่สุภาพและอะไรที่โดดเด่น."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "มันอยู่บนตัวกรองคําเด็ก ซึ่งซ่อนความไม่สุภาพและอะไรที่โดดเด่น บัญชีเด็กเท่านั้นอ่าน: ไม่สามารถโพสต์หรือออกความเห็นได้ แต่คุณก็ยังสามารถลงคะแนนตาม เข้าร่วมสมาคม, ที่คั่นหน้าและรายงานได้."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "มันอยู่บนตัวกรองคําเด็ก ซึ่งซ่อนความไม่สุภาพและอะไรที่โดดเด่น Chart, Spaces, เหรียญ, โพสต์นิรนามและเริ่มต้นสมาคมปิด และคนอื่นไม่สามารถเริ่มต้นการสนทนาหรือเคล็ดลับที่คุณ โพสต์ของคุณไปที่ วงกลมเพื่อนของคุณ จนกว่าคุณจะปิด โพสต์ส่วนตัว."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "มันอยู่บนตัวกรองคําเด็ก ซึ่งซ่อนความไม่สุภาพและอะไรที่โดดเด่น Chart, Spaces, เหรียญและการเริ่มต้นสมาคมปิด และคนอื่นไม่สามารถเริ่มต้นการสนทนาหรือเคล็ดลับที่คุณ บัญชีเด็กเท่านั้นอ่าน: ไม่สามารถโพสต์หรือออกความเห็นได้ แต่คุณก็ยังสามารถลงคะแนนตาม เข้าร่วมสมาคม, ที่คั่นหน้าและรายงานได้."
 
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9455,10 +9707,6 @@ msgstr "1 มิถุนายน พ.ศ"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "KPop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "เก็บมันไว้"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9712,6 +9960,10 @@ msgstr "ซ้าย"
 #, machine, plain1, python-format
 msgid "Left +%(guild)s"
 msgstr "ด้านซ้าย + %(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "ถ้า ไม่ มี การ ควบคุม ความ คิด เห็น ของ คุณ ก็ จะ อยู่ ใต้ ชื่อ ของ คุณ เสมอ และ นั่น จะ บอก ผู้ อ่าน ที่ เขียน จดหมาย."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10496,6 +10748,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "ปิดไมค์"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "ปิดเสียง %(alias)s ในช่อง"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "ตัดเสียง +%(guild)s"
@@ -10841,6 +11097,10 @@ msgstr "ยังไม่ได้เพิ่มบัญชีผู้ใช
 msgid "No ads"
 msgstr "ไม่มีโฆษณา"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "ไม่มีคําอุทธรณ์ให้รอ."
+
 #, machine, plain1
 msgid "No blocked accounts"
 msgstr "ไม่มีบัญชีผู้ใช้ที่ถูกบล็อค"
@@ -11095,6 +11355,10 @@ msgstr "ไม่มีใครสามารถจ่ายเพื่อเ
 msgid "Nobody can sign in to your account with a code."
 msgstr "ไม่มีใครสามารถลงชื่อในบัญชีของคุณด้วยรหัส."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "ไม่มีใครให้ความเห็นกับมัน."
+
 #, machine, plain1, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "ไม่มีใครได้มากกว่า %(share)s%% ของงบประมาณ 1 เดือน ส่วนแบ่งจะถูกแบ่งออกเป็นเหรียญทั้งเหรียญ"
@@ -11260,6 +11524,10 @@ msgstr "ยังไม่ได้บันทึก"
 msgid "Not slowed by slow mode"
 msgstr "ไม่ช้าด้วยโหมดช้า"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "ไม่ใช้เพิ่มเติม"
+
 #, machine, plain1
 msgid "Not taking subscribers"
 msgstr "ไม่รับสมาชิก"
@@ -11407,6 +11675,10 @@ msgstr "ยังไม่ได้เขียนอะไรเลย."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "ยังเลย."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "ไม่มีอะไรที่คุณลบ ถูกเก็บไว้ที่นี่."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11676,6 +11948,10 @@ msgstr "บัญชีผู้ใช้เท่านั้น%(name)s ต่
 msgid "Only accounts you follow can comment on this post now."
 msgstr "มี แต่ บัญชี ที่ คุณ ติด ตาม อยู่ เท่า นั้น ที่ สามารถ ให้ ความ เห็น ใน เรื่อง นี้ ได้ ใน ตอน นี้."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "แค่โฆษณาเท่านั้นที่ยืนยันได้."
+
 #, machine, plain1
 msgid "Only an admin can start it again."
 msgstr "แค่โฆษณาเท่านั้นที่สามารถเริ่มต้นมันได้อีกครั้ง."
@@ -11942,6 +12218,10 @@ msgstr "มีเพียงเธอเท่านั้น"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "คุณมองเห็นแต่สิ่งนี้ นี่นับว่าไม่มีใครมอง โหวต หรือตอบโพลมีชื่อ."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "เฉพาะ แต่ การ เปลี่ยน แปลง ของ คุณ เท่า นั้น: ผู้ ประพันธ์ คน อื่น ๆ ยัง คง มี ชื่อ อยู่. แอดมินและนักเขียนไปรษณีย์ ยังเห็นอยู่ว่าเป็นคุณ."
+
 #, machine, plain1
 msgctxt "button"
 msgid "Open"
@@ -12010,6 +12290,10 @@ msgstr "เปิดให้เริ่ม"
 #, machine, plain1, python-format
 msgid "Open until %(time)s"
 msgstr "เปิดจนกระทั่ง %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "เปิดสําเนาของคุณ"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12150,17 +12434,17 @@ msgstr "อื่น ๆ หรือไม่ทราบ"
 msgid "Other spellings:"
 msgstr "การสะกดแบบอื่น:"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "ผู้ใช้คนอื่น ๆ เห็นนิรนามแทนชื่อของคุณ คุณและเว็บไซต์ admins ยังคงสามารถเห็นมัน มันทําตามกฎเดียวกันเป็นโพสต์ใด ๆ และมันไม่สามารถยกเลิกได้หลังจากโพสต์ ตัวกรองพื้นที่ยังคงแสดงขอบเขตที่มันมาจากไหน มันไม่ได้อยู่ในประวัติของคุณ คุณพบมันในประวัติศาสตร์ ภายใต้ชื่อ."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "ผู้ใช้คนอื่น ๆ เห็นนิรนามแทนชื่อของคุณ คุณและเว็บไซต์ admins ยังคงสามารถเห็นมัน มันทําตามกฎเดียวกันเป็นโพสต์ใด ๆ และมันไม่สามารถยกเลิกได้หลังจากโพสต์ ตัวกรองพื้นที่ยังคงแสดงขอบเขตที่มันมาจากไหน มันไม่ได้อยู่ในประวัติของคุณ คุณพบมันในประวัติศาสตร์ ภายใต้ชื่อ หาก แอคเค้าท์ สั่ง ห้าม หรือ ระงับ บัญชี นั้น ล็อก อาจ ตั้ง ชื่อ บัญชี สําหรับ บัญชี นี้."
 
 #, machine, plain1
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "ผู้ใช้คนอื่น ๆ เห็นว่านี่เป็นนิรนาม มีแค่คุณและเอดิมินเท่านั้น ที่เห็นชื่อคุณ."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "คน อื่น ๆ เห็น ชื่อ ของ คุณ แทน ที่ จะ รู้ จัก ชื่อ ของ คุณ คุณ และ ผู้ คน ใน เว็บไซต์ ยัง คง เห็น. ตัวกรองพื้นที่ยังคงแสดงขอบเขตที่มันมาจากไหน มันเปลี่ยนไม่ได้หลังจากโพสต์แล้ว."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "คน อื่น ๆ เห็น ชื่อ ของ คุณ แทน ที่ จะ รู้ จัก ชื่อ ของ คุณ คุณ และ ผู้ คน ใน เว็บไซต์ ยัง คง เห็น. ตัวกรองพื้นที่ยังคงแสดงขอบเขตที่มันมาจากไหน มันเปลี่ยนไม่ได้หลังจากโพสต์แล้ว หาก แอคเค้าท์ สั่ง ห้าม หรือ ระงับ บัญชี นั้น ล็อก อาจ ตั้ง ชื่อ บัญชี สําหรับ บัญชี นี้."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12169,6 +12453,10 @@ msgstr "การตอบสนองของเราต่อผลตอบ
 #, machine, plain1
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "พ่อมดรักษาความปลอดภัยของเรา ได้ร่ายคาถาป้องกัน ที่ไม่สามารถป้องกันได้ รอบหน้านี้."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "ข้อมูลออก"
 
 #, machine, plain1
 msgid "Outdoors"
@@ -12849,6 +13137,10 @@ msgid "Popular this week"
 msgstr "ความนิยมในสัปดาห์นี้"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "โพสต์"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "โพสต์"
@@ -12869,6 +13161,10 @@ msgstr "โพสต์อัพเดต"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "โพสต์แบบไม่ระบุตัวตน"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "โพสต์ นิรนาม: สมาชิกคนอื่น ๆ เห็นนักเขียนทุกคน เป็นนิรนามที่มีหมายเลข พวกแอดมินมักจะมองเห็นตัวเองเสมอ มันเปลี่ยนไม่ได้เมื่อโพสต์ถูกตีพิมพ์."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -12946,10 +13242,6 @@ msgid "Posted on that day."
 msgstr "โพสต์ในวันนั้น."
 
 #, machine, plain1
-msgid "Posting"
-msgstr "โพสต์"
-
-#, machine, plain1
 msgid "Posting cooldown"
 msgstr "การ ทํา ให้ เย็น ลง"
 
@@ -12977,6 +13269,10 @@ msgstr "โพสต์"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "โพสต์บิลบอร์ดติดป้ายนี้ ด้วย:+guildบัตรของสมาคมนั่น"
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "โพสต์และความคิดเห็น"
 
 #, machine, plain1
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13066,6 +13362,10 @@ msgstr "โพสต์ในสมาคม ใน:#gaming เป็นสม�
 #, machine, plain1
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "โพสต์ในภาษา: รหัส (en) หรือชื่อ (อังกฤษ)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "โพสต์หรือหมายเหตุ"
 
 #, machine, plain1
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13259,6 +13559,10 @@ msgstr "เนื้อหาส่วนตัว, มองเห็นได�
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "เนื้อหาส่วนตัว, เห็นได้ เพราะคุณเป็นผู้มีส่วนร่วมที่อนุมัติใน +%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "ทําสําเนาส่วนตัว"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "โหมดส่วนตัว"
@@ -13318,26 +13622,6 @@ msgstr "โพสต์ส่วนตัวที่มองเห็นได
 #, machine, plain1, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "โพสต์ส่วนตัวที่มองเห็นได้ให้คุณ เพราะคุณเป็นผู้มีส่วนร่วมที่อนุมัติใน +%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "โพสต์ส่วนตัว"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "การโพสต์ส่วนตัวยกเลิก."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "การโพสต์ส่วนตัวเปิดขึ้น ดังนั้นนี้สามารถไปเฉพาะ วงกลมเพื่อนของคุณ คุณสามารถเปลี่ยนมันได้ในการตั้งค่า > เนื้อหา."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "การโพสต์ส่วนตัวเป็นไปดังนั้นนี้จะไปเฉพาะ วงกลมเพื่อนของคุณ คุณสามารถเปลี่ยนมันได้ในการตั้งค่า > เนื้อหา."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "การโพสต์ส่วนตัวเป็นบน."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -13895,6 +14179,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "ลบรูปแบบ"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "ลบชื่อผม"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "ลบชื่อผมออกจากตําแหน่งนี้"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "ลบตัวเลือก %(number)s"
@@ -13959,6 +14251,14 @@ msgstr "เอาแม่ข่ายออก"
 msgid "Remove this topic"
 msgstr "นำหัวข้อนี้ออก"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "ลบชื่อของคุณออกจากรายการเหล่านี้หรือไม่?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "เอาชื่อคุณออกจากตําแหน่งนี้ สมาชิกคนอื่นจะเห็น \"นิรนาม\" ด้วยตัวเลข มันแก้ไขไม่ได้."
+
 #, machine, plain1
 msgctxt "diff line"
 msgid "Removed"
@@ -13999,6 +14299,10 @@ msgstr "เอาออกไป เจ้าหุ่นนั่นไม่�
 #, machine, plain1
 msgid "Removing one takes effect at once."
 msgstr "การเอาออกอันนึงมีผลทันที."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "ลบชื่อคุณออกจากเว็บไซต์เอง."
 
 #, machine, plain1
 msgctxt "button"
@@ -14060,6 +14364,10 @@ msgstr "รายงานความคิดเห็น"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "รายงานโพสต์"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "รายงานนี้"
 
 #, machine, plain1, python-format
 msgid "Reported Posts - %(site)s"
@@ -14557,6 +14865,18 @@ msgstr "พูดสิ่งที่หุ่นจะโพสต์และ
 msgid "Say who it's from"
 msgstr "บอกว่ามันมาจากใคร"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "บอกว่ามันควรลงมาในไม่กี่คํา."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "พูด ว่า ทําไม คุณ จึง น่า ดึงดูด ใจ."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "พูดว่าทําไมคุณคิดว่ามันผิด เฉพาะ คน ที่ ตัดสิน ใจ ยื่น อุทธรณ์ เท่า นั้น จึง จะ อ่าน สิ่ง ที่ คุณ เขียน และ คุณ จะ ได้ รับ การ แจ้ง ว่า เรื่อง นี้ จบ ลง อย่าง ไร."
+
 #, machine, plain1
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "สแกนรหัสบาร์โค้ดนี้ (หรือป้อนรหัส) โดยใช้โปรแกรมการตรวจสอบสิทธิ์สองปัจจัย เช่น Google ผู้รับรองหรือออธี"
@@ -14721,6 +15041,10 @@ msgstr "ดูทุกอย่างในทั้งหมด"
 msgid "See everything live"
 msgstr "เห็นทุกอย่างมีชีวิต"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "ดูในบันทึก"
+
 #, machine, plain1
 msgid "See the current page"
 msgstr "ดูหน้าปัจจุบัน"
@@ -14744,6 +15068,10 @@ msgstr "ดูที่แนวโน้ม"
 #, machine, plain1
 msgid "See what they do"
 msgstr "ดูสิว่าพวกเขาทําอะไร"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "ดูการอุทธรณ์ของคุณ"
 
 #, machine, plain1
 msgid "See your username"
@@ -14798,6 +15126,10 @@ msgstr "ส่งทิป"
 msgid "Send a tip"
 msgstr "ส่งทิป"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "ส่งอุทธรณ์"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "ส่งการตอบกลับ"
@@ -14830,6 +15162,10 @@ msgstr "ความอ่อนไหว?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "เนื้อหาละเอียดอ่อน"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "เนื้อหาเชิงเปรียบเทียบ: แสดงมัน"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -14908,10 +15244,6 @@ msgstr "ทําให้สมดุลของคุณก่อน."
 #, machine, plain1
 msgid "Setup two-step login"
 msgstr "ตั้งค่าการล็อกอินสองขั้น"
-
-#, machine, plain1
-msgid "Sexualizing Minors"
-msgstr "คน กลุ่ม น้อย ที่ มี เพศ สัมพันธ์"
 
 #, machine, plain1
 msgid "Sexualizing minors"
@@ -15625,6 +15957,10 @@ msgstr "เริ่มพื้นที่"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "เริ่มกินซะ ทุกสิ่งที่คุณขอกับ \"โชว์โพสต์น้อยเช่นนี้\" จะถูกลืม ดังนั้นโพสต์เหล่านั้นและสมาคมของพวกเขา และการจัดหมวดหมู่กลับมา วันเริ่มต้นของคุณมีการบันทึกในบัญชีของคุณ แต่สําหรับคุณไม่ได้ใช้มันสําหรับการอัพวอตส์ของคุณและสมาคมยัง."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "กําลังเริ่มคลังสื่อ"
+
 #, machine, plain1
 msgid "Starting soon"
 msgstr "เริ่มทํางานเร็ว ๆ นี้"
@@ -15958,6 +16294,10 @@ msgstr "ข่าวเกี่ยวกับเทคโนโลยีจา
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "บอก %(site)s สังคมเกี่ยวกับตัวเองนิดหน่อย"
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "บอกพวกเขาว่าทําไม ในสาย"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "บอกเรามาว่าเกิดอะไรขึ้น อะไรดูเด่น หรือคุณต้องการอะไร สําหรับแมลง พูดสิ่งที่ทํา และสิ่งที่คุณคาดหวัง."
@@ -16025,6 +16365,10 @@ msgstr "โพสต์ข้อความ"
 msgid "Text size"
 msgstr "ขนาดตัวอักษร"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "ขอบคุณ"
+
 #, machine, plain1
 msgid "Thank you for reporting this comment!"
 msgstr "ขอบคุณที่รายงานเรื่องนี้!"
@@ -16086,9 +16430,9 @@ msgstr "ขอบคุณ admin จะมองไปที่หุ่นเ�
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "ขอบคุณ admin จะมองไปที่หุ่นเร็ว ๆ นี้คุณจะได้รับการแจ้งเตือน ไม่สามารถจัดเก็บภาพได้ โปรดลองใหม่อีกครั้งจากหน้าของหุ่น."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "ขอบคุณ บัญชีของคุณไม่ได้ล็อคเด็กอีกต่อไป และการโพสต์ส่วนตัวถูกปิด โพสต์ที่คุณทําก่อนที่จะอยู่เป็นพวกเขา: ใช้ที่สามารถเห็นนี้ในโพสต์เพื่อเปลี่ยนที่ใครเห็นมัน."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "ขอบคุณ บัญชีของคุณไม่ได้ล็อคเด็ก."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -16428,6 +16772,10 @@ msgstr "ชื่อนี้ใช้."
 msgid "That password isn't right."
 msgstr "รหัสผ่านนั่นไม่ถูกต้อง."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "รหัสผ่านนั่นไม่ถูกต้อง ไม่มีอะไรเปลี่ยนแปลง."
+
 #, machine, plain1
 msgid "That password reset form has expired."
 msgstr "รูปแบบรหัสผ่านที่ตั้งค่าได้หมดอายุแล้ว."
@@ -16754,6 +17102,10 @@ msgstr "เหรียญนั้นไปที่ผู้ก่อตั้
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "เหรียญที่คุณได้จากทิป จ่ายเป็นวงกลม และกองทุนผู้สร้าง ตลอด 30 วันที่ผ่านมา."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "ความคิดเห็นยังคงอยู่ที่มันอยู่ ด้วยชื่อของคุณถอดออก ทุกคนที่เห็นมันชื่อคุณ ยังคงรู้ว่าเป็นคุณ."
+
 #, machine, plain1, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -16768,6 +17120,10 @@ msgstr[0] "สําเนาที่คุณส่งถึง %(guilds)s จ
 #, machine, plain1
 msgid "The dates leave no days."
 msgstr "วัน ที่ เหลือ ไม่ มี วัน."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "การตัดสินใจยังคงอยู่"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -16980,6 +17336,10 @@ msgstr "ชื่อ %(host)s ไม่พบ"
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "สิ่งใหม่ของสิ่งที่พวกเขาทํา มีเฉพาะชื่อที่พวกเขาคุยด้วยเท่านั้น ที่จะถูกแสดง ไม่เคยมีการแชท: การสนทนามีการเข้ารหัสไว้ตอนจบ."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "จํานวนของที่คุณยืนยันไม่ตรงกับที่เลือก ไม่มีอะไรเปลี่ยนแปลง."
+
 #, machine, plain1
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "ตัวเลขแสดงในประวัติของคุณ นี่ เป็น การ ตัดสิน ใจ ว่า ใคร สามารถ เปิด รายการ แต่ ละ รายการ และ ดู เรื่อง ราว ได้. บัญชีมีรายการเฉพาะที่ที่ตั้งของมันเองเท่านั้น."
@@ -17028,9 +17388,25 @@ msgstr "โพสต์นี้ปรากฏในประวัติ ข�
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "โพสต์นี้มีชื่อของคุณ และอยู่ในประวัติของคุณ มี การ ให้ ความ เห็น และ การ ส่ง ข้อ ความ ต่อ ไป นี้ แก่ ผู้ เขียน ผู้ ซึ่ง แก้ไข และ ลบ ออก. คุณ สามารถ ก้าว ออก ไป ใน เวลา ใด ก็ ได้: โพสต์ อยู่ โดย ไม่ มี ชื่อ ของ คุณ."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "โพสต์ไม่ได้อยู่บนประวัติของคุณ มี การ ให้ ความ เห็น และ การ ส่ง ข้อ ความ ต่อ ไป นี้ แก่ ผู้ เขียน ผู้ ซึ่ง แก้ไข และ ลบ ออก. คุณ สามารถ ก้าว ออก ไป ใน เวลา ใด ก็ ได้: โพสต์ อยู่ โดย ไม่ ได้ รับ ความ รู้."
+
 #, machine, plain1
 msgid "The post refused the change."
 msgstr "โพสต์ปฏิเสธการเปลี่ยนแปลง."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "โพสต์อยู่ที่เดิม พร้อมกับชื่อของคุณ และทิ้งประวัติไว้ มันทิ้งคุณเหมือนกัน ทุกคนที่เห็นมันชื่อคุณ ยังคงรู้ว่าเป็นคุณ."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "ผู้เขียนไปรษณีย์"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "ผู้เขียนไปรษณีย์ลบมัน ดังนั้นมันจะถูกแสดงเป็นนิรนาม: ไม่มีชื่อและไม่มีส่วนเชื่อมโยง ข้อ คิด เห็น ข้าง ล่าง ยัง คง เป็น อยู่ ผู้ เขียน ที่ ถูก ลบ ออก ไป คน หนึ่ง ก็ ได้ รับ การ แสดง ว่า เป็น ผู้ ไม่ มี ชื่อ เช่น กัน."
 
 #, machine, plain1, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17099,9 +17475,17 @@ msgstr "เซิร์ฟเวอร์คิดว่าคุณขออะ
 msgid "The site refused the bot's session."
 msgstr "เว็บไซต์ปฏิเสธการประชุมของหุ่น."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "เว็บไซต์ของ admins มีแล้ว."
+
 #, machine, plain1
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "เว็บไซต์ของ admins ทําเครื่องหมายความไวของสมาคมนี้ ดังนั้นมีเพียงโฆษณาเท่านั้นที่สามารถเปลี่ยนแปลงนี้."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Admins เว็บไซต์จะอ่านมัน ไม่มีใครบอกหรอกว่าใครรายงาน."
 
 #, machine, plain1, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17263,9 +17647,17 @@ msgstr "ไม่มีโพสต์ที่นี่."
 msgid "There is no account named @%(name)s."
 msgstr "ไม่มีชื่อบัญชีผู้ใช้%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "ไม่มีอะไรที่นี่ที่จะอุทธรณ์."
+
 #, machine, plain1
 msgid "There is nothing to save yet."
 msgstr "ยังไม่มีอะไรต้องช่วย."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "ไม่มีอะไรรอการห้ามนี้."
 
 #, machine, plain1
 msgid "There was a problem. Please try again."
@@ -17360,36 +17752,24 @@ msgid "They aren't muted here."
 msgstr "มันไม่เงียบตรงนี้."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "พวกเขาขอให้คุณปิดการโพสต์ส่วนตัว."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "พวกเขาสามารถซื้อและใช้เหรียญ ทิป ซื้อ Premium และเข้าร่วมหรือวิ่งวงกลมจ่าย"
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "พวกเขาสามารถออกความเห็นได้."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "พวกเขาสามารถเป็นเจ้าภาพและเข้าร่วมอวกาศ และวิ่งเป็นๆ เสียงเรียกในพื้นที่ยังต้องการแชตที่จะอยู่บน."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "พวกเขาสามารถโพสต์ได้."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "พวกเขาสามารถส่งข้อความให้คน เข้าร่วมการสนทนาของกลุ่มและโทร เว็บไซต์ไม่เคยแสดงให้คุณเห็นสิ่งที่การสนทนากล่าวว่า การสนทนามีการเข้ารหัสสิ้นสุด ใครก็ตามที่รู้ว่ารหัสผ่านของพวกเขา ยังคงลงนามและอ่านได้."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "พวกเขาสามารถโพสต์โดยไม่ระบุชื่อ และเริ่มต้นสมาคม คุณยังคงเห็นคนที่เขียน โพสต์นิรนาม."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "พวกเขาจะเห็นสิ่งที่คุณทําในเว็บไซต์: โพสต์ของคุณ, ความเห็น, การลงคะแนนเสียง, ที่คั่นหน้า, ต่อไปนี้, สมาคมที่คุณพูดคุยกับ ที่บัญชีของคุณถูกรายงานและเครื่องหมายล่าสุดของคุณ เว็บไซต์ไม่เคยแสดงให้พวกเขาเห็นว่าการสนทนาของคุณพูดอย่างไร เพราะการสนทนามีการเข้ารหัสการสิ้นสุด แต่ ใคร ก็ ตาม ที่ รู้ จัก รหัส ผ่าน ของ คุณ บิดา มารดา ที่ เลือก รหัส นั้น ก็ สามารถ เซ็น ชื่อ ใน ฐานะ คุณ: เปลี่ยน รหัส นี้ ด้วย ความ ปลอด ภัย เพื่อ คุณ จะ รู้ เพียง คน เดียว. พวกเขาจะเลือกว่าอันไหนอยู่ในบัญชีของคุณ"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "พวกเขาตั้งสมาคมได้ พวกเขายังคงไม่สามารถโพสต์หรือให้ความเห็นได้ แอคเค้าท์เด็กมีแต่การอ่าน."
 
 #, machine, plain1
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17407,6 +17787,10 @@ msgstr "มันตรงเข้าบัญชีเลย."
 msgid "They haven't asked for that."
 msgstr "พวกเขาไม่ได้ขอแบบนั้น."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "พวกเขาออกจากเว็บไซต์ สิ่งที่เขาพูดอยู่ในบันทึกเป็นนิรนามยกเว้นสําหรับสิ่งที่ทําในห้านาทีที่ผ่านมา ที่ไม่มีใครมีความคิดเห็นในเรื่องซึ่งถูกลบ มันแก้ไขไม่ได้."
+
 #, machine, plain1
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "พวกเขาต้องอยู่ในสมาคม และไม่ถูกเนรเทศจากบริษัท."
@@ -17418,6 +17802,14 @@ msgstr "พวกเขาต้องเข้าทางช่องก่อ
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "พวกเขาบอกว่าพวกเขาอายุ 18 หรือมากกว่า และขอให้คุณปล่อยบัญชี ถ้าคุณรู้ มันจะกลายเป็นของพวกเขา และคุณมองไม่เห็นมัน."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "พวกเขาอยู่ในที่ที่พวกเขาอยู่ โดยชื่อของคุณถอดออกจากพวกเขา มันแก้ไขไม่ได้ โพสต์ ที่ ต้องการ ชื่อ ของ คุณ (สําหรับ วง กลม หรือ ด้วย ทิป) ถูก จัด รายการ ไว้ หลัง จาก นั้น ไม่ เปลี่ยน."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "พวกเขาเขียนว่า %(note)s"
 
 #, machine, plain1
 msgid "They're already a helper."
@@ -17590,6 +17982,10 @@ msgstr[0] "เสียงเรียกเต็มแล้ว%(num)s คน)
 msgid "This can't be translated right now."
 msgstr "นี้ไม่สามารถแปลได้ในขณะนี้."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "มันแก้ไขไม่ได้ admins เว็บไซต์สามารถดูได้เสมอว่าใครเขียนบางสิ่งบางอย่าง และถ้าโฆษณาแบนหรือระงับบัญชีสําหรับมัน ปูมบันทึกอาจจะชื่อบัญชีสําหรับมัน."
+
 #, machine, plain1
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "ช่องนี้ไม่ได้ร้องขอ ให้ยอมรับกฎ."
@@ -17674,6 +18070,10 @@ msgstr "เนื้อหานี้ถูกโพสต์แล้ว"
 msgid "This copy is no longer kept."
 msgstr "สําเนานี้ไม่ได้เก็บไว้แล้ว."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "นี้ไม่สามารถเปลี่ยนแปลงได้ในขณะนี้."
+
 #, machine, plain1
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "นี่สร้างตําแหน่งใหม่ที่อิสระในสมาคม พร้อมเสียงและความคิดเห็นของตนเอง ชื่อเรื่องถูกสร้างจากข้อความของความคิดเห็น จะแสดงลิงก์กลับไปที่หมายเหตุเดิมบนโพสต์ใหม่."
@@ -17701,6 +18101,22 @@ msgstr "การปรุงอาหารและบัญชี"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "กฎการบํารุงรักษานี้ต้องใช้เวลามาก เจ้าของมันทําให้มันแคบลงได้."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "การตัดสินใจครั้งนี้ไม่สามารถเรียกร้องได้."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "การตัดสินใจครั้งนี้ถูกยกเลิกแล้ว."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "การตัดสินใจนี้เกี่ยวกับคุณ ถ้า คุณ คิด ว่า เป็น เรื่อง ผิด คุณ อาจ อุทธรณ์ ได้."
+
+#, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -17746,6 +18162,14 @@ msgstr "สมาคมนี้เป็นส่วนตัว เนื้�
 msgid "This guild's channels are closed."
 msgstr "ช่องของสมาคมนี้ถูกปิด."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "นี่เป็นประวัติระดับกฎหมาย ซึ่งไม่สามารถอ้างอิงได้."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "มันถูกลบไปแล้ว."
+
 #, machine, plain1
 msgid "This invitation was already answered."
 msgstr "คํา เชิญ นี้ ได้ รับ คํา ตอบ แล้ว."
@@ -17766,6 +18190,10 @@ msgstr "นี่คืออวกาศ โฮสต์และเครื�
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "นี่เป็นปูมบันทึกของการแสดงใน +%(guild)s.ซึ่งทุกคนอาจอ่านได้ ก็อยู่ในเว็บไซต์ <a href=\"%(url)s\">บันทึกการทํางาน</a>สิ่ง ที่ สมาชิก ลบ ล้าง ตัว เอง ไม่ ได้ รับ การ ตี พิมพ์."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "นี่มันไม่ระบุชื่อแล้ว."
+
 #, machine, plain1
 msgid "This is already in your language."
 msgstr "นี่เป็นภาษาของคุณอยู่แล้ว."
@@ -17783,6 +18211,10 @@ msgstr "นี่สําหรับสมาชิกของสโมสร
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "นี่สําหรับคนที่ <a href=\"%(url)s\">@%(name)s</a>วงกลม"
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "นี่เป็นสถานที่ส่วนบุคคล และของส่วนตัว ไม่สามารถอ้างอิงได้ในบันทึกสาธารณะ."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "นี่เป็นธรรมเนียมของสมาคม CSS แฟ้ม"
@@ -17795,6 +18227,10 @@ msgstr "นี่มันเหมือนกับ โพสต์อัต�
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "นี้ไม่ได้อยู่ในขณะที่บัญชีของคุณถูกจํากัดอายุ คุณสามารถยืนยันอายุของคุณในการตั้งค่า > เนื้อหา."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "นี่ไม่ใช่หนึ่งในโพสต์หรือความคิดเห็นของบัญชี."
+
 #, machine, plain1
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "นี่ไม่ได้แสดงในระดับตัวกรองคําปัจจุบันของคุณ คุณสามารถทบทวนตัวกรองคําของคุณ ในการตั้งค่าเนื้อหาของคุณ."
@@ -17806,6 +18242,10 @@ msgstr "นี้ไม่ได้แสดงให้เห็นว่าค
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "นี่ไม่ได้แสดงในขณะที่ บัญชีของคุณถูกจํากัดอายุ."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "นี่ไม่ใช่การเปลี่ยนแปลงของคุณ หรือมันหายไปแล้ว."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -17911,6 +18351,10 @@ msgstr "โพสต์นี้ไม่มีความคิดเห็น
 #, machine, plain1
 msgid "This post has no live thread."
 msgstr "ตําแหน่งนี้ไม่มีด้ายมีชีวิต."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "โพสต์นี้ไม่เปิดเผยชื่อ ดังนั้นเครดิตของคุณจะเป็นเกินไป สมาชิกอื่น ๆ จะเห็นว่ามันเป็น \"นิรนาม\" กับตัวเลข แอดมินและนักเขียนไปรษณีย์ ยังเห็นอยู่ว่าเป็นคุณ."
 
 #, machine, plain1
 msgid "This post is from an account you muted."
@@ -18027,6 +18471,10 @@ msgstr[0] "ช่องเสียงเต็มแล้ว%(num)s คน)."
 #, machine, plain1
 msgid "This voice channel isn't available right now."
 msgstr "ตอนนี้ไม่มีช่องเสียง."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "มันถูกลบออกไปภายในห้านาที จึงไม่มีบันทึกสาธารณะที่จะแนบมาด้วย."
 
 #, machine, plain1
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18227,6 +18675,10 @@ msgstr "มีมัลติมีเดียมากเกินไปที
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "มีลําธารที่เปิดมากเกินไป ปิดแท็บแล้วลองใหม่อีกครั้ง."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "วันนี้มีรายงานมากเกินไป"
+
 #, machine, plain1
 msgid "Too much spam!"
 msgstr "สแปมมากเกินไป!"
@@ -18333,6 +18785,10 @@ msgstr "อาชญากรรม แท้"
 msgid "Try again"
 msgstr "ลองอีกครั้ง"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "โปรดลองอีกครั้งพรุ่งนี้"
+
 #, machine, plain1
 msgctxt "weekday"
 msgid "Tue"
@@ -18341,10 +18797,6 @@ msgstr "Tue"
 #, machine, plain1
 msgid "Turanian Steppe"
 msgstr "ทัวเรียนสเตป"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "ปิดมันซะ"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18564,6 +19016,10 @@ msgstr "ยกเลิกการระบุเป็นทางการ"
 msgid "Undo"
 msgstr "เลิกทำ"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "ยกเลิกการตัดสินใจ"
+
 #, machine, plain1
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -18769,6 +19225,10 @@ msgstr "ไม่มีชื่อฉบับร่าง"
 msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "ถึง %(num)s ในเวลาเดียวกัน บัญชีของคุณต้องเก่า 30 วัน"
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "ถึง %(num)s ตัวละคร คุณ สามารถ ตัดสิน ใจ ได้ ครั้ง หนึ่ง และ ร้อง ขอ วัน ละ สาม ครั้ง."
 
 #, machine, plain1, python-format
 msgid "Up to %(num)s day ahead."
@@ -19470,13 +19930,21 @@ msgstr "มันโพสต์อะไร"
 msgid "What it posts:"
 msgstr "สิ่งที่มันโพสต์:"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "ที่มันบอก มันไม่ได้อยู่ที่นี่."
+
 #, machine, plain1
 msgid "What kind of Space?"
 msgstr "พื้นที่แบบไหน?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "สิ่งที่สมาชิกลบทิ้ง ไม่ได้ตีพิมพ์ที่นี่."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "สิ่งที่สมาชิกลบออก, ใหม่ที่สุด, ด้วยคําที่มี, เป็นนิรนาม: ไม่มีชื่อและไม่มีลิงก์ บางอย่างที่ถูกลบไปภายใน 5 นาทีของการเขียน ถูกลบทิ้ง และไม่ได้อยู่ที่นี่ ปุ่มรายงานขอ admins เว็บไซต์ที่จะใช้คําลง."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "สิ่ง ที่ สมาชิก เรียบ เรียง ใหม่ ที่ ใหม่ ที่ สุด คือ: ใคร (ไม่ มี ชื่อ เสียง สําหรับ โพสต์ หรือ ความ เห็น) เมื่อ และ จดหมาย ที่ พวก เขา ให้. การทําการแก้ไขรายการหนึ่งรายการเป็นบรรทัดเดียว การแก้ไขใน 5 นาทีแรก หลังจากบางอย่างถูกเขียนขึ้น ไม่ได้ถูกบันทึกไว้ รุ่นนี้อยู่ในหน้าประวัติศาสตร์ของรายการเอง."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19490,6 +19958,18 @@ msgstr "สิ่งที่สมาชิกได้รับ"
 msgid "What the guildmasters did"
 msgstr "สิ่งที่นักจัดอันดับสมาคมทํา"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "จะทํายังไงกับพวกมันดี"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "จะทํายังไงกับความเห็นของคุณ"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "จะทํายังไงกับตําแหน่งของคุณ"
+
 #, machine, plain1
 msgid "What to say"
 msgstr "จะพูดอะไร"
@@ -19501,6 +19981,14 @@ msgstr "ค้นหาอะไร"
 #, machine, plain1
 msgid "What works in apps"
 msgstr "สิ่งที่ใช้ได้ในโปรแกรม"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "สิ่งที่คุณลบจะต้องอยู่ในปูมบันทึกแบบไม่ระบุชื่อ ไม่มีชื่อ เว้นแต่คุณลบมันภายในห้านาที."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "สิ่งที่คุณลบตัวเอง สําเนาของอะไรสักอย่างที่ถูกลบออกไป หลังจาก 5 นาทีแรกของมันยังอยู่ในปูมบันทึก โดยไม่มีชื่อ สําเนา ของ สิ่ง ที่ ถูก ลบ ออก ภาย ใน ห้า นาที เป็น เรื่อง ส่วน ตัว และ ผ่าน ไป 90 วัน."
 
 #, machine, plain1
 msgid "What you do"
@@ -19555,6 +20043,10 @@ msgstr "ที่แฟ้มไป"
 #, machine, plain1
 msgid "Where it is"
 msgstr "มันอยู่ที่ไหน"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "ที่ที่คุยกัน"
 
 #, machine, plain1
 msgid "Where posts come from"
@@ -19714,6 +20206,10 @@ msgstr "ใครเขียนส่วนไหน"
 msgid "Who you follow"
 msgstr "ใครที่คุณตาม"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "ใคร, เมื่อไหร่, ที่ไหน, การปกครองและทําไม ไม่ เคย แสดง ชื่อ หรือ ข้อ ความ ของ สิ่ง ที่ ซ่อน หรือ เอา ออก."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "ใครก็ตามที่เริ่มทําข่าวนี้ รายงานว่าบราวเซอร์เป็นคนลงมือเอง ดังนั้นพวกเขาไม่พิสูจน์อะไร."
@@ -19743,6 +20239,14 @@ msgstr "ทําไมล่ะ"
 #, machine, plain1
 msgid "Why not (they are told)"
 msgstr "ทําไมจะไม่เล่า"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "ทําไมต้องลงมาด้วย?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "ทําไมมันผิดล่ะ?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -19799,10 +20303,6 @@ msgstr "ด้วย Premium คุณได้ที่หนึ่งสํา
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "ด้วย Premium คุณจะเห็นวิธีการของแต่ละโพสต์ของคุณทํา: มุมมองต่อวันจํานวนคนที่ลงนามในมา ลงคะแนน, ความเห็น, ที่คั่นหน้า, ไปข้างหน้าและโพสต์, วิธีการทําในแต่ละสมาคม"
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "เมื่อมีการโพสต์ส่วนตัวบนวงกลมเท่านั้นที่สามารถถือ คนที่ตามคุณและคนที่คุณปฏิบัติตาม."
 
 #, machine, plain1
 msgid "With a link"
@@ -20149,6 +20649,10 @@ msgstr[0] "คุณนําสูงสุดอยู่แล้ว %(num)s 
 msgid "You already made that comment: %(link)s"
 msgstr "คุณออกความเห็นไปแล้ว %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "คุณรายงานเรื่องนี้ไปแล้ว"
+
 #, machine, plain1
 msgid "You already reported this account."
 msgstr "คุณรายงานเรื่องนี้ไปแล้ว."
@@ -20180,6 +20684,10 @@ msgstr "คุณลงมติแล้วในโพสต์นี้ใน
 #, machine, plain1, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "คุณ และ ผู้ ช่วย ถึง 3 คน เขียน; สมาชิก อ่าน และ ตอบ รับ. สําหรับวงกลมอื่น ๆ ทําให้มันบน <a href=\"%(url)s\">หน้าช่องของคุณ</a>คุณสามารถมี 3 ช่อง"
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "คุณเรียกร้องการตัดสินใจนี้."
 
 #, machine, plain1, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20258,10 +20766,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "คุณขอให้ผู้ปกครองหรือผู้ปกครองของคุณ ออกบัญชีของคุณ พวกเขายังไม่ได้ตอบ."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "คุณขอให้ผู้ปกครองหรือผู้ปกครอง ปิดมันซะ พวกเขายังไม่ได้ตอบ."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "คุณสามารถเพิ่มรูปภาพได้ที่ 500 Reutation หรือก่อนหน้านี้ด้วย Premium"
 
@@ -20296,6 +20800,10 @@ msgstr "คุณสามารถเปลี่ยนอันนี้สํ
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "คุณสามารถเปลี่ยนมันได้ เมื่อพวกเขายอมรับคําขอของคุณ."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "คุณสามารถเปลี่ยนเป็น %(max)s ทีละอย่าง"
 
 #, machine, plain1
 msgid "You can close this window."
@@ -20395,6 +20903,10 @@ msgstr[0] "คุณทําได้ %(num)s Wiki แก้ไขวันใ�
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "คุณสามารถทําบัญชีเด็กได้ ครั้งหนึ่ง บัญชีของคุณเองได้รับการยืนยันเป็น 18 หรือมากกว่า คุณ อาจ พูด ได้ เช่น นั้น ใน วารสาร ตั้งค่า > เนื้อหา."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "คุณสามารถอุทธรณ์วันละ 3 ครั้ง พรุ่งนี้ลองใหม่."
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -20725,6 +21237,10 @@ msgid "You have %(num)s coin."
 msgid_plural "You have %(num)s coins."
 msgstr[0] "คุณมี %(num)s เหรียญ"
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "คุณได้เรียกร้องการตัดสินใจนี้แล้ว."
+
 #, machine, plain1, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "คุณได้บล็อคแล้ว@ info: whatsthis%(name)s."
@@ -20766,6 +21282,15 @@ msgid ""
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
 "You were exiled for [this comment](%(link)s)."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -20864,6 +21389,10 @@ msgstr "คุณยังไม่ได้พูดว่าคุณเก็
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "คุณยังไม่ได้บอกเราเลย."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "คุณตัดสินใจไปแล้ว ดังนั้นนักจัดอันดับของสมาคมคนอื่น จึงตัดสินใจยื่นอุทธรณ์."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -20966,6 +21495,14 @@ msgstr "คุณเซ็นสัญญากับ QR รหัส ใส่�
 #, machine, plain1, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "คุณบอกเราว่าคุณอยากเปลี่ยน %(site)s อีเมล์บัญชี เพื่อจบโพรเซสนี้ โปรดตรวจสอบที่อยู่อีเมลใหม่ของคุณ:"
+
+#, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr ""
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "คุณได้รับเชิญให้ไปร่วมโพสต์นิรนามนี้ ถ้า คุณ ยอม รับ บัตร เครดิต ของ คุณ ก็ ไม่ เป็น ที่ รู้ จัก เช่น กัน และ ไม่ มี การ ลง โพสต์ ใน ประวัติ ของ คุณ. การ ส่ง ข้อ ความ, การ ให้ ความ เห็น และ การ ส่ง ข้อ ความ ต่อ ไป ยัง คง มี อยู่ และ เฉพาะ ผู้ เขียน เท่า นั้น ที่ แก้ไข หรือ ลบ ข้อ ความ นั้น."
 
 #, machine, plain1
 msgid "You won't be notified of comments on this post."
@@ -21340,6 +21877,10 @@ msgstr "บัญชีของคุณต้องมีอายุอย่
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "บัญชีของคุณไม่ได้โพสต์โดยอัตโนมัติ โพสต์อยู่."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "บัญชีของคุณเท่านั้นอ่านสําหรับตอนนี้จึงไม่สามารถแสดงความเห็น คุณยังสามารถลงคะแนน ตามและทําที่คั่นหน้า."
+
 #, machine, plain1
 msgid "Your account posts from these feeds from now on."
 msgstr "โพสต์บัญชีของคุณจากอาหารเหล่านี้จากนี้ต่อไป."
@@ -21374,6 +21915,53 @@ msgstr "อายุของคุณได้รับการยืนยั
 #, machine, plain1
 msgid "Your answer"
 msgstr "คําตอบของคุณ"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "อุทธรณ์ของคุณกําลังรอที่จะอ่าน."
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "คํา อุทธรณ์ ของ คุณ ได้ รับ การ ยอม รับ และ การ ตัดสิน นั้น กลับ คืน มา."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "การอุทธรณ์ของคุณถูกมอง และการตัดสินใจก็ยืนอยู่."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "การอุทธรณ์ของคุณไม่ได้รับเพิ่มเติม."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "คําอุทธรณ์ของคุณถูกส่งไป."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21457,12 +22045,12 @@ msgid "Your circles - %(site)s"
 msgstr "วงกลมของคุณ %(site)s"
 
 #, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "ความคิดเห็นของคุณจะถูกถอดออกจากเว็บไซต์ เว็บไซต์เก็บสําเนาส่วนตัวเป็นเวลา 90 วัน ซึ่งเฉพาะคุณและผู้บริหารเว็บไซต์สามารถเปิดได้ มันแก้ไขไม่ได้."
-
-#, machine, plain1
 msgid "Your commenting history will show here."
 msgstr "ประวัติการให้ความเห็นของคุณ จะแสดงที่นี่."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "เครดิตของคุณในโพสต์นี้ไม่ระบุชื่อ : สมาชิกอื่น ๆ เห็นว่ามันเป็น \"นิรนาม #N\"Admins และนักเขียนของโพสต์ยังคงสามารถเห็นว่ามันเป็นของคุณ มันแก้ไขไม่ได้"
 
 #, machine, plain1
 msgid "Your curations"
@@ -21605,14 +22193,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "ผู้ปกครองหรือผู้ปกครองของคุณ ได้รับการขอให้ปล่อยบัญชีของคุณ ไม่มีอะไรเปลี่ยนแปลง จนกว่าพวกเขาจะตอบ."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "พ่อแม่หรือผู้ปกครองของคุณ ถูกขอให้ปิดการโพสต์ส่วนตัว."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "พ่อแม่หรือผู้ปกครองของคุณต้องเห็นด้วย ก่อนที่การโพสต์ส่วนตัวจะถูกปิด."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "พ่อแม่หรือผู้ปกครองของคุณปิดบัญชีนี้."
 
@@ -21624,14 +22204,6 @@ msgstr ""
 
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr ""
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "พ่อแม่หรือผู้ปกครองของคุณปิดการโพสต์ส่วนตัวสําหรับบัญชีของคุณ."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "พ่อแม่หรือผู้ปกครองของคุณ ต้องการให้โพสต์ส่วนตัวต่อไป."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -21664,10 +22236,6 @@ msgstr "โทรศัพท์นายบอกว่าไม่ ไม่�
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "โพสต์ของคุณอยู่ในประวัติของคุณ เลือก โปรไฟล์ของผมก็มีความคิดเห็นที่นั่นเหมือนกัน และเพิ่มสมาคมเพื่อโพสต์มันโดยตรงเข้าไป: แต่ละสมาคมได้สําเนาของตัวเอง."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "โพสต์ของคุณจะถูกถอดออกจากประวัติ เลี้ยงดู และสมาคม เว็บไซต์เก็บสําเนาส่วนตัวเป็นเวลา 90 วัน ซึ่งเฉพาะคุณและผู้บริหารเว็บไซต์สามารถเปิดได้ มันแก้ไขไม่ได้."
 
 #, machine, plain1
 msgid "Your posting history will show here."
@@ -21783,6 +22351,10 @@ msgstr "ชื่อของคุณคือคําถาม %(min)s ถึ
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "ชื่อของคุณคือคําถาม ให้ %(min)s ถึง %(max)s ทางเลือก ผู้คนสามารถโหวตจากทุก ๆ ข้างหน้า และกลับมาโพสต์นี้อีกครั้ง"
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "รหัสสองปัจจัย"
+
 #, machine, plain1
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "ชื่อผู้ใช้ของคุณเป็นเอกลักษณ์ของคุณ <code>@handle</code>ที่อยู่โปรไฟล์ของคุณ และสิ่งที่ผู้คนพูดถึงและค้นหา การ เปลี่ยน ค่า ใช้ จ่าย 20 เหรียญ และ อาจ ทํา ได้ หนึ่ง ครั้ง ทุก ๆ 7 วัน. เพื่อเปลี่ยนวิธีการอ่านชื่อของคุณโดยไม่ต้องที่ ใช้ชื่อแสดงของคุณด้านบน"
@@ -21842,6 +22414,9 @@ msgstr "[FAQ](/help/faq)"
 msgid "[Guild Siege](/help/siege)"
 msgstr ""
 
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr ""
+
 msgid "[Legal Policies](/help/legal)"
 msgstr ""
 
@@ -21896,6 +22471,61 @@ msgstr ""
 msgid "[Titles](/help/titles)"
 msgstr ""
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "[banned]"
 msgstr "[แบนดั"
@@ -21946,6 +22576,10 @@ msgstr "[เสียงร้อ"
 msgid "a day"
 msgstr "วัน"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "จดหมายที่ถูกลบแล้ว"
+
 #, machine, plain1
 msgid "a guild or post it named no longer exists."
 msgstr "สมาคม หรือ โพสต์ ชื่อ นี้ ไม่ มี อีก ต่อ ไป."
@@ -21985,6 +22619,12 @@ msgstr "กิจกรรม"
 #, machine, plain1, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "เพิ่มแหล่งป้อนอุปกรณ์ %(target)s ไปยังช่อง"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "เพิ่มบันทึกของชุมชน %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22070,12 +22710,16 @@ msgstr "หุ่น"
 msgid "by %(author)s"
 msgstr "โดย %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "โดย %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, plain1, python-format
 msgid "by %(owner)s"
 msgstr "โดย %(owner)s"
 
-#. the post's author, under its title
 #, machine, plain1, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr "โดย <a href=\"%(link)s\">@%(name)s</a>"
@@ -22160,6 +22804,12 @@ msgstr "มีการเปลี่ยนแปลงว่าไปข้า
 msgid "changed who may edit a wiki page"
 msgstr "มีการเปลี่ยนแปลงที่อาจจะแก้ไขหน้าของ wiki"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "การสนทนา %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22179,6 +22829,10 @@ msgstr "เหรียญ"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "ความคิดเห็น"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "หมายเหตุ #%(id)s"
 
 #, machine, plain1
 msgid "commercial promotion"
@@ -22267,6 +22921,12 @@ msgstr "อี.จี. <span class=\"font-weight-bold vote-ratio-9\">%(score)s</
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "อี.จี. <span class=\"font-weight-bold\">%(score)s</span> สําหรับ %(up)s ขึ้นและ %(down)s ลง"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "แก้ไขค่า %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "edited a wiki page"
@@ -22277,10 +22937,21 @@ msgstr "แก้ไขหน้าของวิกิพีเดีย"
 msgid "edited an event"
 msgstr "แก้ไขเหตุการณ์"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "แก้ไขโพสต์ %(target)s"
+
 #. a story that is no longer up
 #, machine, plain1
 msgid "ended"
 msgstr "จบ"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "จบพื้นที่ %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, plain1, python-format
@@ -22306,6 +22977,12 @@ msgstr "ทุกอย่างในนั้น"
 #, machine, plain1
 msgid "everything you type is credited to you"
 msgstr "ทุกสิ่งที่คุณพิมพ์ได้รับการรับรองให้คุณ"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "ส่ง %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22384,6 +23061,11 @@ msgstr "เน้น %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "เน้นตําแหน่งของพวกเขา %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "ซ่อน %(target)s ภายใต้ตําแหน่งของตัวเอง"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
@@ -22441,6 +23123,10 @@ msgstr[0] "ใน %(num)s ชั่วโมง"
 msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "ใน %(num)s นาที"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "ในเธรดนี้"
 
 #. "in:" is a search operator and stays as it is
 #, machine, plain1
@@ -22605,6 +23291,11 @@ msgstr "เก่าสุด"
 msgid "only guildmasters write here"
 msgstr "เครื่องมือเขียนรูปแบบมัลติมีเดียเท่านั้น"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "เปิด +%(guild)s แด่ทุกคน"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "เซิร์ฟเวอร์ภายนอก"
@@ -22661,6 +23352,10 @@ msgstr "ติดข้อความไว้ในช่อง"
 #, machine, plain1, python-format
 msgid "pinned post %(target)s"
 msgstr "อยู่ระหว่างดําเนินการ %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "โพสต์ #%(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -22735,6 +23430,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "ลบจดหมายโดย %(target)s จากช่อง"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "ลบข้อความจากช่องสาธารณะ"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "ลบข้อความออกจากคณะกรรมการของอวกาศ %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "ลบข้อมูลเพิ่มเติมของวิกิพีเดีย"
@@ -22757,6 +23462,12 @@ msgstr "ตัวแปลงรูปแบบมัลติมีเดีย
 msgid "removed post %(target)s"
 msgstr "ลบออกหลังจาก %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "เอาบันทึกของชุมชนออกไป %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
 msgid "renamed a channel category"
@@ -22765,6 +23476,12 @@ msgstr "เปลี่ยนชื่อหมวดหมู่ของช่
 #, machine, plain1, python-format
 msgid "renews %(date)s"
 msgstr "สร้างใหม่ %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "แทนที่บันทึกย่อของชุมชน %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -22807,6 +23524,11 @@ msgstr "ตั้งค่าชื่อของไปรษณีย์ %(tar
 msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "หุ้น เฉพาะผู้เขียนเท่านั้นที่สามารถร่วมโพสต์นี้."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "แสดง %(target)s อีกครั้งภายใต้โพสต์ของ"
 
 #. the date someone was added to the circle
 #, machine, plain1, python-format
@@ -22928,11 +23650,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "ยอดนิยม"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "ไม่รวม %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, plain1, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "ผู้ใช้ที่ไม่รวม %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "ยังไม่หมดอายุ %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22993,6 +23727,14 @@ msgstr "ไม่ถือสา %(target)s ในสมาคมนี้"
 #, machine, plain1, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "โพสต์ที่ยังไม่ได้ตั้ง %(target)s ในสมาคมนี้"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "ถึง %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "ถึง %(max)s ทีละครั้ง"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, plain1, python-format

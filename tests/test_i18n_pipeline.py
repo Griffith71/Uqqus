@@ -378,6 +378,18 @@ def test_signing_out_is_said_as_signing_out_in_every_language():
                     assert not any(WRONG_SIGN_OUT.search(t) for t in texts), (key, domain, msgid, texts)
 
 
+def test_a_hash_before_a_value_is_kept():
+    # the label an anonymous person is drawn with in a thread: machines wrote "Anonyme3", "Anonimo!3", "Anonymous # 3" (2026-11-14)
+    assert "a # before a value is dropped" in cat.problems("Anonymous #%(num)s", "Anonyme%(num)s")
+    assert "a # before a value is dropped" in cat.problems("Anonymous #%(num)s", "Anonimo!%(num)s")
+    assert "a # before a value is dropped" in cat.problems("post #%(id)s", "%(id)s nº")
+    # one space between the mark and the value is a language's own spelling; the mark itself is the rule
+    assert cat.problems("Anonymous #%(num)s", "Анонимен # %(num)s") == []
+    assert cat.problems("Anonymous #%(num)s", "Anonyme #%(num)s") == []
+    assert cat.problems("#%(channel)s was made.", "#%(channel)s wurde erstellt.") == []
+    assert cat.problems("Save #1 first", "Zuerst #1 speichern") == [], "a number is not a value"
+
+
 # --- a machine's loops and padding ---------------------------------------------------------------------------------------
 
 def test_a_translation_that_loops_or_pads_is_refused():

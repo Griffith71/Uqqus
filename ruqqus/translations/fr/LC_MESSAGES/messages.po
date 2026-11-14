@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:56+1100\n"
+"POT-Creation-Date: 2026-11-14 16:26+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -513,6 +513,12 @@ msgid_plural "%(num)s character limit for titles."
 msgstr[0] "%(num)s limite de caractères pour les titres."
 msgstr[1] "limite de %(num)s caractères pour les titres."
 
+#, machine, plain2, python-format
+msgid "%(num)s chosen"
+msgid_plural "%(num)s chosen"
+msgstr[0] "%(num)s choisi"
+msgstr[1] "%(num)s choisis"
+
 #, machine, python-format
 msgid "%(num)s coin a month"
 msgid_plural "%(num)s coins a month"
@@ -580,6 +586,12 @@ msgid "%(num)s days remaining"
 msgid_plural "%(num)s days remaining"
 msgstr[0] "%(num)s jour restant"
 msgstr[1] "%(num)s jours restants"
+
+#, machine, plain2, python-format
+msgid "%(num)s edit in a row"
+msgid_plural "%(num)s edits in a row"
+msgstr[0] "%(num)s édition en ligne"
+msgstr[1] "%(num)s éditions en ligne"
 
 #, machine, python-format
 msgid "%(num)s follower"
@@ -651,6 +663,18 @@ msgid "%(num)s interested"
 msgid_plural "%(num)s interested"
 msgstr[0] "%(num)s intéressé"
 msgstr[1] "%(num)s intéressés"
+
+#, machine, plain2, python-format
+msgid "%(num)s item changed"
+msgid_plural "%(num)s items changed"
+msgstr[0] "%(num)s éléments changés"
+msgstr[1] "%(num)s éléments modifiés"
+
+#, machine, plain2, python-format
+msgid "%(num)s item couldn't be changed:"
+msgid_plural "%(num)s items couldn't be changed:"
+msgstr[0] "%(num)s items n'ont pas pu être changés :"
+msgstr[1] "%(num)s articles n'ont pas pu être modifiés :"
 
 #. how many people joined and left the guild in the chosen time
 #, machine, python-format
@@ -1297,6 +1321,10 @@ msgstr "%(who)s invitation acceptée de la guilde modérateur"
 msgid "%(who)s added a bot feed %(target)s to a channel"
 msgstr "%(who)s a ajouté un flux bot %(target)s à un canal"
 
+#, machine, plain2, python-format
+msgid "%(who)s added a community note"
+msgstr "%(who)s ajouté une note communautaire"
+
 #, machine, plain1, python-format
 msgid "%(who)s added a flair"
 msgstr "%(who)s ajouté une étiquette"
@@ -1361,6 +1389,10 @@ msgstr "%(who)s a changé si l'expéditeur a besoin d'une étiquette"
 msgid "%(who)s changed who may edit a wiki page"
 msgstr "%(who)s a changé qui peut modifier une page wiki"
 
+#, machine, plain2, python-format
+msgid "%(who)s chatbanned %(target)s"
+msgstr "%(who)s chatinterné %(target)s"
+
 #, machine, python-format
 msgid "%(who)s chatbanned user %(name)s"
 msgstr "%(who)s utilisateur interdit de chat %(name)s"
@@ -1409,6 +1441,10 @@ msgstr "%(who)s supprimé une page wiki"
 msgid "%(who)s deleted post %(title)s"
 msgstr "%(who)s poste supprimé %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s edited a comment"
+msgstr "%(who)s a édité un commentaire"
+
 #, machine, python-format
 msgid "%(who)s edited a wiki page"
 msgstr "%(who)s a édité une page wiki"
@@ -1416,6 +1452,18 @@ msgstr "%(who)s a édité une page wiki"
 #, machine, python-format
 msgid "%(who)s edited an event"
 msgstr "%(who)s a édité un événement"
+
+#, machine, plain2, python-format
+msgid "%(who)s edited post %(title)s"
+msgstr "%(who)s poste édité %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s ended a Space"
+msgstr "%(who)s a terminé un espace"
+
+#, machine, plain2, python-format
+msgid "%(who)s exiled %(target)s"
+msgstr "%(who)s exilé %(target)s"
 
 #, machine, python-format
 msgid "%(who)s exiled user %(name)s"
@@ -1436,6 +1484,10 @@ msgstr "%(who)s a souligné leur message %(title)s"
 #, machine, python-format
 msgid "%(who)s hid a comment from this guild"
 msgstr "%(who)s a caché un commentaire à cette guilde"
+
+#, machine, plain2, python-format
+msgid "%(who)s hid a comment under their own post"
+msgstr "%(who)s a caché un commentaire sous leur propre post"
 
 #, machine, plain1, python-format
 msgid "%(who)s hid a revision of %(title)s"
@@ -1485,6 +1537,10 @@ msgstr "%(who)s a marqué un commentaire comme un contenu sensible"
 msgid "%(who)s marked post %(title)s as sensitive content"
 msgstr "%(who)s poste marqué %(title)s comme contenu sensible"
 
+#, machine, plain2, python-format
+msgid "%(who)s opened +%(guild)s to everyone"
+msgstr "%(who)s ouvert +%(guild)s à tous"
+
 #, machine, python-format
 msgid "%(who)s permanently obliterated a comment"
 msgstr "%(who)s a définitivement effacé un commentaire"
@@ -1525,6 +1581,18 @@ msgstr "%(who)s poste rétabli %(title)s"
 msgid "%(who)s removed a channel message"
 msgstr "%(who)s a supprimé un message de canal"
 
+#, machine, plain2, python-format
+msgid "%(who)s removed a community note"
+msgstr "%(who)s a retiré une note communautaire"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a Space's board"
+msgstr "%(who)s a supprimé un message de la carte d'un espace"
+
+#, machine, plain2, python-format
+msgid "%(who)s removed a message from a public channel"
+msgstr "%(who)s a supprimé un message d'un canal public"
+
 #, machine, plain1, python-format
 msgid "%(who)s removed a revision of a guild's wiki"
 msgstr "%(who)s a supprimé une révision du wiki d'une guilde"
@@ -1549,6 +1617,10 @@ msgstr "%(who)s utilisateur supprimé %(name)s"
 msgid "%(who)s renamed a channel category"
 msgstr "%(who)s rebaptisé catégorie de canaux"
 
+#, machine, plain2, python-format
+msgid "%(who)s replaced a community note"
+msgstr "%(who)s a remplacé une note communautaire"
+
 #, machine, plain1, python-format
 msgid "%(who)s rescinded guildmaster invitation to @%(name)s"
 msgstr "%(who)s invitation du modérateur de guilde annulée à @%(name)s"
@@ -1564,6 +1636,10 @@ msgstr "%(who)s définir nsfw sur la poste %(title)s"
 #, machine, plain1, python-format
 msgid "%(who)s set the flair of post %(title)s"
 msgstr "%(who)s définir l'étiquette du message %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s showed a comment again"
+msgstr "%(who)s a de nouveau montré un commentaire"
 
 #, machine, plain1, python-format
 msgid "%(who)s stepped down as guildmaster"
@@ -1589,9 +1665,17 @@ msgstr "%(who)s a enlevé une broche d'un message de canal"
 msgid "%(who)s took a role from %(target)s"
 msgstr "%(who)s a pris un rôle de %(target)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s un-chatbanned %(target)s"
+msgstr "%(who)s non discuté %(target)s"
+
 #, machine, python-format
 msgid "%(who)s un-chatbanned user %(name)s"
 msgstr "%(who)s utilisateur non autorisé %(name)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s un-exiled %(target)s"
+msgstr "%(who)s nonexilé %(target)s"
 
 #, machine, python-format
 msgid "%(who)s un-exiled user %(name)s"
@@ -1677,6 +1761,10 @@ msgstr "(de l'original)"
 msgid "(in a private place)"
 msgstr "(dans un lieu privé)"
 
+#, machine, plain2
+msgid "(no text)"
+msgstr "(pas de texte)"
+
 #, machine, plain1
 msgid "(no title)"
 msgstr "(sans titre)"
@@ -1748,6 +1836,10 @@ msgstr "**Presse**"
 #, glossary, machine, plain2
 msgid "+ Add option"
 msgstr "+ Ajouter une option"
+
+#, machine, plain2, python-format
+msgid "+%(guild)s Appeals"
+msgstr "+%(guild)s Appels"
 
 #, machine, python-format
 msgid "+%(guild)s Approved Contributors"
@@ -2260,10 +2352,6 @@ msgstr "@%(name)s ajouté à %(curation)s."
 msgid "@%(name)s asked to publish a shared draft you write: your vote counts. [Open the draft](%(link)s)"
 msgstr "@%(name)s a demandé de publier un projet partagé que vous écrivez : votre vote compte. [Ouvrir le projet](%(link)s)"
 
-#, machine, plain1, python-format
-msgid "@%(name)s asked you to turn Private posting off for their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@%(name)s vous a demandé d'éteindre l'affichage privé pour leur compte. Vous pouvez répondre dans [Paramètres > Enfants](/settings/children)."
-
 #, machine, python-format
 msgid "@%(name)s blocked."
 msgstr "@%(name)s bloqué."
@@ -2617,6 +2705,10 @@ msgstr "Un espace ne peut pas être anonyme."
 msgid "A Space can't be hosted in a Circle guild."
 msgstr "Un espace ne peut pas être hébergé dans une guilde du cercle."
 
+#, machine, plain2
+msgid "A Space can't have its name removed."
+msgstr "Un Espace ne peut pas faire enlever son nom."
+
 #, machine
 msgid "A Space can't start in the past."
 msgstr "Un espace ne peut pas commencer par le passé."
@@ -2644,6 +2736,10 @@ msgstr "Un badge d'abonné à côté de votre nom sur @%(name)sLe profil et les 
 #, machine
 msgid "A Translate button shows under posts and comments in none of your languages. Nothing is translated unless you press it."
 msgstr "Un bouton Translate affiche sous les messages et commentaires dans aucune de vos langues. Rien n'est traduit sauf si vous appuyez dessus."
+
+#, machine, plain2, python-format
+msgid "A ban can cite up to %(max)s items."
+msgstr "Une interdiction peut citer jusqu'à %(max)s articles."
 
 #, machine, python-format
 msgid "A bio can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2831,9 +2927,25 @@ msgid_plural "A circle's name can be %(num)s characters at most."
 msgstr[0] "Le nom d'un cercle peut être %(num)s caractères au maximum."
 msgstr[1] "Le nom d'un cercle peut être %(num)s caractères au maximum."
 
-#, machine
-msgid "A co-authored post can't be anonymous."
-msgstr "Un poste co-auteur ne peut pas être anonyme."
+#, machine, plain2
+msgid "A comment"
+msgstr "Un commentaire"
+
+#, machine, plain2
+msgid "A comment by an account you blocked or that blocked you."
+msgstr "Un commentaire par un compte que vous avez bloqué ou qui vous a bloqué."
+
+#, machine, plain2
+msgid "A comment hidden by a guildmaster."
+msgstr "Un commentaire caché par un modérateur de guilde."
+
+#, machine, plain2
+msgid "A comment hidden by your word filter."
+msgstr "Un commentaire caché par votre filtre à mots."
+
+#, machine, plain2
+msgid "A comment its author deleted. What it said isn't shown here."
+msgstr "Un commentaire son auteur supprimé. Ce qu'il a dit n'est pas montré ici."
 
 #, machine
 msgid "A comment on a post for a Circle can't be forwarded to a guild."
@@ -2842,6 +2954,10 @@ msgstr "Un commentaire sur un post pour un Cercle ne peut pas être envoyé à u
 #, machine
 msgid "A comment on a post for a Circle can't be reposted."
 msgstr "Un commentaire sur un post pour un Cercle ne peut pas être posté."
+
+#, machine, plain2
+msgid "A comment removed by the site's admins."
+msgstr "Un commentaire supprimé par les administrateurs du site."
 
 #, machine, python-format
 msgid "A community note was added to a comment you asked about: [view it](%(link)s)"
@@ -2859,6 +2975,14 @@ msgstr "Une alimentation soignée de l'ensemble du site nécessite une limite d'
 msgid "A day"
 msgstr "Un jour"
 
+#, machine, plain2
+msgid "A decision in the Log"
+msgstr "Une décision dans le journal"
+
+#, machine, plain2
+msgid "A deleted post and what was said under it"
+msgstr "Un message supprimé et ce qui a été dit en dessous"
+
 #, machine, python-format
 msgid "A description can be %(num)s character at most."
 msgid_plural "A description can be %(num)s characters at most."
@@ -2870,6 +2994,10 @@ msgid "A description is at most %(num)s character."
 msgid_plural "A description is at most %(num)s characters."
 msgstr[0] "Une description est au plus %(num)s caractères."
 msgstr[1] "Une description est au maximum %(num)s caractères."
+
+#, machine, plain2
+msgid "A different admin has to confirm a reveal."
+msgstr "Un administrateur différent doit confirmer une révélation."
 
 #, python-format
 msgid "A display name can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
@@ -2974,6 +3102,10 @@ msgstr "Un nom de groupe ne peut pas contenir @: il se lirait comme une poignée
 #, machine
 msgid "A group name can't contain control or invisible characters."
 msgstr "Un nom de groupe ne peut contenir des caractères de contrôle ou invisibles."
+
+#, machine, plain2
+msgid "A guild ban needs a public reason, so the guild's page and the Log can say why."
+msgstr "Une interdiction de guilde a besoin d'une raison publique, donc la page de la guilde et le journal peuvent dire pourquoi."
 
 #, machine, python-format
 msgid "A guild can have at most %(num)s category."
@@ -3094,6 +3226,10 @@ msgstr "Un budget mensuel partagé entre les membres dont les postes et les comm
 msgid "A muted person can still read, but can't write in any of +%(guild)s's channels. They are told when they try."
 msgstr "Une personne muette peut encore lire, mais ne peut écrire dans aucun des canaux de +%(guild)s. On leur dit quand ils essaient."
 
+#, machine, plain2
+msgid "A note to the person"
+msgstr "Une note à la personne"
+
 #, machine, python-format
 msgid "A page can be at most %(num)s character."
 msgid_plural "A page can be at most %(num)s characters."
@@ -3157,6 +3293,10 @@ msgstr[1] ""
 msgid "A poll option can't hold control characters."
 msgstr "Une option de sondage ne peut pas tenir les caractères de contrôle."
 
+#, machine, plain2
+msgid "A post"
+msgstr "Un poste"
+
 #, machine, python-format
 msgid "A post can have %(num)s co-author at most."
 msgid_plural "A post can have %(num)s co-authors at most."
@@ -3180,6 +3320,10 @@ msgstr "Un poste pour un Cercle ne peut pas être repositionné."
 #, machine
 msgid "A post for a Circle can't have co-authors."
 msgstr "Un post pour un cercle ne peut pas avoir de co-auteurs."
+
+#, machine, plain2
+msgid "A post for a Circle can't have its name removed."
+msgstr "Un post pour un cercle ne peut pas faire enlever son nom."
 
 #, machine
 msgid "A post for your circles can't be anonymous: the people in them already know who you are."
@@ -3209,6 +3353,10 @@ msgstr "Un post perd la moitié de son poids en"
 msgid "A post needs a title."
 msgstr "Un poste a besoin d'un titre."
 
+#, machine, plain2
+msgid "A post that has been tipped can't have its name removed, because the coins went to you."
+msgstr "Un post qui a été renversé ne peut pas avoir son nom enlevé, parce que les pièces sont allés à vous."
+
 #, machine
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Un message qui n'est pas public ne peut pas utiliser ce téléchargement d'image : ses fichiers peuvent être ouverts par n'importe qui avec l'adresse. Ajoutez plutôt l'image de votre stockage lié (Paramètres > Médias)."
@@ -3217,9 +3365,17 @@ msgstr "Un message qui n'est pas public ne peut pas utiliser ce téléchargement
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Un post avec des co-auteurs ne peut pas être déplacé vers des cercles. Déplacement d'un message public dans des cercles enlève les copies que vous avez envoyées ; copie d'autres personnes envoyées restent dans leurs guildes."
 
-#, machine
-msgid "A post written together is public and can't be anonymous, shared with circles, or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
-msgstr "Un post écrit ensemble est public et ne peut être anonyme, partagé avec des cercles, ou avoir un sondage. Ses auteurs sont ses co-auteurs. Ces options sont partagées par chaque auteur et utilisées chaque fois que vous publiez."
+#, machine, plain2
+msgid "A post written together is deleted only when its authors agree, in its shared draft."
+msgstr "Un message écrit ensemble n'est supprimé que lorsque ses auteurs sont d'accord, dans son projet partagé."
+
+#, machine, plain2
+msgid "A post written together is public and can't be shared with circles or have a poll. Its authors are its co-authors. These options are shared by every author and used each time you publish."
+msgstr "Un article rédigé ensemble est public et ne peut pas être partagé avec des cercles ou avoir un sondage. Ses auteurs sont ses co-auteurs. Ces options sont partagées par chaque auteur et utilisées chaque fois que vous publiez."
+
+#, machine, plain2
+msgid "A post written with others can't have its name removed here yet."
+msgstr "Un post écrit avec d'autres ne peut pas encore faire supprimer son nom ici."
 
 #, machine, python-format
 msgid "A post you follow is live: [see the updates](%(link)s)"
@@ -3562,6 +3718,10 @@ msgstr "Accepter l'invitation"
 msgctxt "guildmaster action"
 msgid "Accept mod invite"
 msgstr "Accepter l'invitation du modérateur"
+
+#, machine, plain2
+msgid "Accept without my name (admins and the post's author can still see it is me)"
+msgstr "Accepter sans mon nom (les administrateurs et l'auteur du message peuvent encore voir que c'est moi)"
 
 #, machine
 msgid "Account"
@@ -4182,6 +4342,10 @@ msgstr "Un auteur cesse d'être compté après cette longue distance du site"
 msgid "An author who hasn't been active on the site for %(time)s isn't counted."
 msgstr "Un auteur qui n'a pas été actif sur le site pour %(time)s n'est pas compté."
 
+#, machine, plain2
+msgid "An automated post can't have its name removed."
+msgstr "Un poste automatisé ne peut pas faire enlever son nom."
+
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Un canal chiffré ne peut pas demander que ses règles soient acceptées : le site ne peut pas vérifier qui a écrit."
@@ -4294,9 +4458,9 @@ msgctxt "label"
 msgid "Anonymous"
 msgstr "Anonyme"
 
-#, machine, plain1
-msgid "Anonymous posting and starting guilds"
-msgstr "Affichage anonyme et guildes de départ"
+#, glossary, machine, plain2, python-format
+msgid "Anonymous #%(num)s"
+msgstr "Anonyme #%(num)s"
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4381,6 +4545,26 @@ msgstr "N'importe qui peut voir qui vous suivez, qui vous suit et les abonnés d
 #, machine
 msgid "App Name"
 msgstr "Nom de l'application"
+
+#, machine, plain2
+msgid "Appeal a decision"
+msgstr "Appel d'une décision"
+
+#, machine, plain2, python-format
+msgid "Appeal a decision - %(site)s"
+msgstr "Appel d'une décision - %(site)s"
+
+#, machine, plain2
+msgid "Appeal this decision"
+msgstr "Appel de cette décision"
+
+#, machine, plain2
+msgid "Appeals"
+msgstr "Recours"
+
+#, machine, plain2
+msgid "Appeals of decisions this guild's guildmasters made. An appeal is private: only the guildmasters who may decide it read it. Reversing a decision undoes it and writes a new entry in the Log, linked to the first; the person is told how it ended. You can't decide an appeal of your own decision while another guildmaster could."
+msgstr "Appels de décisions des modérateurs de la guilde. Un appel est privé: seuls les modérateurs de la guilde qui peuvent décider de le lire. La révocation d'une décision l'annule et écrit une nouvelle entrée dans le journal, liée à la première; on dit à la personne comment elle s'est terminée. Vous ne pouvez pas décider d'un appel de votre propre décision alors qu'un autre modérateur de guilde pourrait."
 
 #, glossary, machine, plain2
 msgid "Appearance"
@@ -4520,10 +4704,6 @@ msgstr "Hauts plateaux aryens"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "En tant qu'auteur, vous modifiez le projet en direct avec eux, et chaque caractère que vous tapez vous est crédité. Une fois le post publié, quiconque peut le voir peut voir qui a écrit quoi. Les auteurs décident ensemble:"
-
-#, machine, plain1
-msgid "Ask my parent to turn it off"
-msgstr "Demandez à mon parent de l'éteindre"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5389,6 +5569,10 @@ msgstr "Modifier les règles"
 msgid "Change the two-factor settings for your account."
 msgstr "Modifier les paramètres à deux facteurs pour votre compte."
 
+#, machine, plain2
+msgid "Change them"
+msgstr "Les changer"
+
 #, machine
 msgid "Change your account password."
 msgstr "Changez votre mot de passe de compte."
@@ -5660,6 +5844,10 @@ msgstr "Choisissez au moins un cercle, ou le rendre public."
 msgid "Choose at least one of your circles."
 msgstr "Choisissez au moins un de vos cercles."
 
+#, machine, plain2
+msgid "Choose at least one post or comment."
+msgstr "Choisissez au moins un post ou un commentaire."
+
 #, machine
 msgid "Choose at least one story."
 msgstr "Choisissez au moins une histoire."
@@ -5715,6 +5903,10 @@ msgstr "Choisissez quel genre de robot c'est."
 #, machine, plain1
 msgid "Choose what kind of feedback this is."
 msgstr "Choisissez quel genre de rétroaction il s'agit."
+
+#, machine, plain2
+msgid "Choose what to do with them."
+msgstr "Choisissez quoi faire avec eux."
 
 #, machine
 msgid "Choose what to propose."
@@ -5988,6 +6180,10 @@ msgstr "BD & Caricatures"
 msgid "Coming up"
 msgstr "À venir"
 
+#, machine, plain2
+msgid "Comment"
+msgstr "Commentaire"
+
 #, glossary, machine, plain2
 msgctxt "button"
 msgid "Comment"
@@ -5997,9 +6193,13 @@ msgstr "Commenter"
 msgid "Comment %(id)s has been removed"
 msgstr "Le commentaire %(id)s a été supprimé"
 
-#, machine
-msgid "Comment anonymously: other users will not see your name"
-msgstr "Commentaire anonyme: d'autres utilisateurs ne verront pas votre nom"
+#, machine, plain2
+msgid "Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment."
+msgstr "Commentaire anonyme : les autres utilisateurs ne verront pas votre nom. Si un administrateur interdit ou suspend le compte pour lui, le journal peut nommer le compte pour ce commentaire."
+
+#, machine, plain2
+msgid "Comment as yourself: your name shows on this comment"
+msgstr "Commentez vous-même : votre nom apparaît sur ce commentaire"
 
 #, machine
 msgid "Comment bookmarked."
@@ -6008,10 +6208,6 @@ msgstr "Commentaire marqué."
 #, glossary, machine, plain2
 msgid "Comment posted!"
 msgstr "Commentaire publié !"
-
-#, machine, plain1
-msgid "Commenting"
-msgstr "Commentaires"
 
 #, glossary, machine, plain2
 msgid "Comments"
@@ -6603,6 +6799,10 @@ msgstr "Les raccourcisseurs trompeurs URL ne sont pas autorisés."
 msgid "Deceptive URL shorteners are not permitted."
 msgstr "Les raccourcisseurs trompeurs URL ne sont pas autorisés."
 
+#, machine, plain2
+msgid "Decide"
+msgstr "Décider"
+
 #, machine
 msgctxt "button"
 msgid "Decline"
@@ -6666,6 +6866,10 @@ msgstr "Supprimer le commentaire?"
 msgid "Delete folder"
 msgstr "Supprimer le dossier"
 
+#, machine, plain2
+msgid "Delete it"
+msgstr "Supprimer"
+
 #, machine
 msgid "Delete my account"
 msgstr "Supprimer mon compte"
@@ -6689,6 +6893,14 @@ msgstr "Supprimer le compte"
 #, machine
 msgid "Delete the published post"
 msgstr "Supprimer l'article publié"
+
+#, machine, plain2
+msgid "Delete them"
+msgstr "Supprimer les"
+
+#, machine, plain2
+msgid "Delete these items?"
+msgstr "Supprimer ces éléments ?"
 
 #, machine, plain1
 msgid "Delete this account"
@@ -6733,6 +6945,10 @@ msgstr "Supprimer votre compte %(site)s"
 #, machine
 msgid "Delete your posts and comments"
 msgstr "Supprimer vos messages et commentaires"
+
+#, machine, plain2
+msgid "Deleted"
+msgstr "Supprimé"
 
 #, machine
 msgid "Deleted account"
@@ -6927,6 +7143,14 @@ msgid_plural "Discussed in %(num)s other places"
 msgstr[0] ""
 msgstr[1] ""
 
+#, machine, plain2, python-format
+msgid "Discussed in +%(guild)s"
+msgstr "Discuté dans +%(guild)s"
+
+#, machine, plain2
+msgid "Discussed on a profile"
+msgstr "Examen d'un profil"
+
 #, machine
 msgid "Discussion"
 msgstr "Débat"
@@ -7009,6 +7233,10 @@ msgstr "Fait par"
 #, machine, plain1
 msgid "Done to"
 msgstr "Fait à"
+
+#, glossary, machine, plain2
+msgid "Done."
+msgstr "C'est fait."
 
 #, machine, plain1
 msgid "Download"
@@ -7205,6 +7433,10 @@ msgstr "Modifier vos messages et commentaires"
 msgid "Edited %(when)s"
 msgstr "Modifié %(when)s"
 
+#, machine, plain2
+msgid "Edited by"
+msgstr "Édité par"
+
 #, machine, python-format
 msgid "Edited by %(who)s"
 msgstr "Modifié par %(who)s"
@@ -7220,6 +7452,10 @@ msgstr "Modifier également la mise à jour des copies de ce message transmis au
 #, machine
 msgid "Editing updates this post everywhere it has been forwarded."
 msgstr "Modifier les mises à jour de ce message partout où il a été transmis."
+
+#, machine, plain2
+msgid "Edits"
+msgstr "Éditions"
 
 #, machine, plain1
 msgid "Education"
@@ -7562,13 +7798,13 @@ msgstr "Tout le monde voit les changements les uns des autres comme ils tapent, 
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Tout de vos guildes et de vos comptes, les plus récents d'abord."
 
-#, machine, plain1
-msgid "Everything they post goes only to their Friends circle. Turn it off to let them post in public."
-msgstr "Tout ce qu'ils postent va seulement à leur cercle d'amis. Éteignez-le pour qu'ils postent en public."
+#, machine, plain2
+msgid "Evidence can't be cited"
+msgstr "La preuve ne peut pas être citée"
 
-#, machine, plain1
-msgid "Everything you post goes only to your Friends circle, the people you follow who follow you back, so nothing is public by accident. Your circles can only hold people like that, and you can't forward, repost or write a shared draft. Comments on other people's posts are still public."
-msgstr "Tout ce que vous postez va seulement à votre cercle d'amis, les gens que vous suivez qui vous suivent, donc rien n'est public par accident. Vos cercles ne peuvent retenir que des gens comme ça, et vous ne pouvez pas faire avancer, reafficher ou écrire un projet partagé. Les commentaires sur les postes d'autres personnes sont toujours publics."
+#, machine, plain2
+msgid "Evidence:"
+msgstr "Preuve :"
 
 #. %(typed)s is exactly what a reader types into the field; it stays as it is
 #, machine, plain1, python-format
@@ -7615,6 +7851,10 @@ msgstr "Exemple : les chiens de chats · n'ont ni « chats » ni « chiens »"
 #, machine
 msgid "Example: happy hour · has the exact phrase \"happy hour\""
 msgstr "Exemple : happy hour · a l'expression exacte \"happy hour\""
+
+#, glossary, machine, plain2, python-format
+msgid "Exile %(alias)s"
+msgstr "Exiler %(alias)s"
 
 #, glossary, machine, plain2, python-format
 msgid "Exile @%(name)s"
@@ -9015,6 +9255,10 @@ msgstr "Combien de temps"
 msgid "How long it runs"
 msgstr "Combien de temps ça dure"
 
+#, machine, plain2
+msgid "How moderation is recorded"
+msgstr "Comment la modération est enregistrée"
+
 #, machine, plain1
 msgid "How old are you?"
 msgstr "Quel âge avez-vous ?"
@@ -9208,6 +9452,10 @@ msgstr "Dans %(place)s"
 #, glossary, machine, plain2
 msgid "In guild"
 msgstr "Dans la guilde"
+
+#, machine, plain2
+msgid "In the Log as Anonymous"
+msgstr "Dans le journal comme anonyme"
 
 #, machine, python-format
 msgid "In the app, choose to sign in to another server and type <code id=\"chat-apps-server\">%(site_address)s</code>. If it asks for the server's full address, it is <code>%(homeserver)s</code>."
@@ -9503,6 +9751,14 @@ msgstr "Il se termine par lui-même après cela. Tu peux y mettre fin plus tôt.
 msgid "It is reviewed with the bot."
 msgstr "Il est examiné avec le robot."
 
+#, machine, plain2
+msgid "It leaves the site's pages. If it is less than five minutes old and nobody else has commented on it, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Il laisse les pages du site. Si elle a moins de cinq minutes et que personne d'autre n'a commenté, elle est effacée : seuls vous et les administrateurs du site pouvez ouvrir une copie privée, pendant 90 jours. Sinon ce qu'il a dit reste dans le Log en tant qu'Anonyme, sans nom et sans lien, et n'importe qui peut le lire là."
+
+#, machine, plain2
+msgid "It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there."
+msgstr "Il laisse votre profil, se nourrit et guildes. Si elle a moins de cinq minutes et que personne d'autre n'a commenté, elle est effacée : seuls vous et les administrateurs du site pouvez ouvrir une copie privée pendant 90 jours. Sinon ce qu'il a dit reste dans le Log en tant qu'Anonyme, sans nom et sans lien, et n'importe qui peut le lire là."
+
 #, machine
 msgid "It lives on your profile, under Spaces. A guild shows its card, with votes and shares, and opens the Space."
 msgstr "Il vit sur votre profil, sous Spaces. Une guilde montre sa carte, avec des votes et des actions, et ouvre l'Espace."
@@ -9519,13 +9775,13 @@ msgstr "Il montre, en entier, chaque mot et phrase que le filtre de mot recherch
 msgid "It stays a child account with the child lock, but you can no longer see it or change what it can do, and you can't link it again."
 msgstr "Il reste un compte d'enfant avec le verrou d'enfant, mais vous ne pouvez plus le voir ou changer ce qu'il peut faire, et vous ne pouvez pas le lier à nouveau."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive."
-msgstr "Il reste sur le filtre de mot enfant, qui cache la profanité et tout ce qui est marqué sensible."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Il reste sur le filtre de mot enfant, qui cache la profanité et tout ce qui est marqué sensible. Un compte enfant lit seulement : il ne peut pas poster ou commenter, mais vous pouvez toujours voter, suivre, rejoindre guildes, signet et rapport."
 
-#, machine, plain1
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins, anonymous posting and starting a guild are off, and others can't start a chat or tip you. Your posts go to your Friends circle only unless you turn Private posting off."
-msgstr "Il reste sur le filtre de mot enfant, qui cache la profanité et tout ce qui est marqué sensible. Chat, Espaces, pièces, affichage anonyme et démarrage d'une guilde sont éteints, et d'autres ne peuvent pas commencer un chat ou un conseil. Vos messages vont dans votre cercle d'amis seulement à moins que vous éteignez l'affichage privé."
+#, machine, plain2
+msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Il reste sur le filtre de mot enfant, qui cache la profanité et tout ce qui est marqué sensible. Chat, Espaces, pièces et démarrage d'une guilde sont éteints, et d'autres ne peuvent pas commencer un chat ou un conseil. Un compte enfant lit seulement : il ne peut pas poster ou commenter, mais vous pouvez toujours voter, suivre, rejoindre guildes, signet et rapport."
 
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
@@ -9691,10 +9947,6 @@ msgstr "Juin solstice"
 #, machine, plain1
 msgid "K-Pop"
 msgstr "K-Pop"
-
-#, machine, plain1
-msgid "Keep it on"
-msgstr "Gardez-le"
 
 #, machine, plain1
 msgid "Keep my posts out of All"
@@ -9953,6 +10205,10 @@ msgstr "Gauche"
 #, machine, python-format
 msgid "Left +%(guild)s"
 msgstr "Gauche +%(guild)s"
+
+#, machine, plain2
+msgid "Left unticked, your comments stay under your name, and that tells readers who wrote the post."
+msgstr "A gauche, vos commentaires restent sous votre nom, et cela dit aux lecteurs qui ont écrit le post."
 
 #, glossary, machine, plain2
 msgid "Legal"
@@ -10747,6 +11003,10 @@ msgctxt "microphone"
 msgid "Mute"
 msgstr "Muet"
 
+#, glossary, machine, plain2, python-format
+msgid "Mute %(alias)s in the channels"
+msgstr "Rendre %(alias)s muet dans les canaux"
+
 #, machine, plain1, python-format
 msgid "Mute +%(guild)s"
 msgstr "Mute +%(guild)s"
@@ -11096,6 +11356,10 @@ msgstr "Pas encore de comptes."
 msgid "No ads"
 msgstr "Pas de publicité"
 
+#, machine, plain2
+msgid "No appeals are waiting."
+msgstr "Aucun appel n'attend."
+
 #, machine
 msgid "No blocked accounts"
 msgstr "Pas de comptes bloqués"
@@ -11351,6 +11615,10 @@ msgstr "Personne ne peut payer pour rejoindre maintenant : la guilde n'est que s
 msgid "Nobody can sign in to your account with a code."
 msgstr "Personne ne peut se connecter à votre compte avec un code."
 
+#, machine, plain2
+msgid "Nobody commented on it."
+msgstr "Personne n'en a parlé."
+
 #, machine, python-format
 msgid "Nobody gets more than %(share)s%% of a month's budget. Shares are rounded down to whole coins."
 msgstr "Personne n'a plus que %(share)s%% d'un mois de budget. Les actions sont arrondies à des pièces entières."
@@ -11516,6 +11784,10 @@ msgstr "Non enregistré"
 msgid "Not slowed by slow mode"
 msgstr "Pas ralenti par le mode lent"
 
+#, machine, plain2
+msgid "Not taken further"
+msgstr "Non repris"
+
 #, machine
 msgid "Not taking subscribers"
 msgstr "Ne pas prendre les abonnés"
@@ -11663,6 +11935,10 @@ msgstr "Rien encore écrit."
 #, machine, plain1
 msgid "Nothing yet."
 msgstr "Rien encore."
+
+#, machine, plain2
+msgid "Nothing you deleted is kept here."
+msgstr "Vous n'avez rien supprimé ici."
 
 #, machine, plain1
 msgid "Notification types"
@@ -11934,6 +12210,10 @@ msgstr "Seuls les comptes @%(name)s suivants peuvent commenter ce post."
 msgid "Only accounts you follow can comment on this post now."
 msgstr "Seuls les comptes que vous suivez peuvent commenter ce post maintenant."
 
+#, machine, plain2
+msgid "Only an admin can confirm a reveal."
+msgstr "Seul un administrateur peut confirmer une révélation."
+
 #, machine
 msgid "Only an admin can start it again."
 msgstr "Seul un administrateur peut recommencer."
@@ -12202,6 +12482,10 @@ msgstr "Seulement toi"
 msgid "Only you can see this. These are counts: nobody who looked, voted or answered a poll is named."
 msgstr "Vous seul pouvez voir ça. Ce sont des comptes : personne qui a regardé, voté ou répondu à un sondage n'est nommé."
 
+#, machine, plain2
+msgid "Only your credit changes: the other authors stay named. Admins and the post's author can still see it is you."
+msgstr "Seul votre crédit change : les autres auteurs restent nommés. Les administrateurs et l'auteur du billet peuvent encore voir que c'est vous."
+
 #, machine
 msgctxt "button"
 msgid "Open"
@@ -12270,6 +12554,10 @@ msgstr "Ouvrir pour démarrer"
 #, machine, python-format
 msgid "Open until %(time)s"
 msgstr "Ouvrir jusqu'à %(time)s"
+
+#, machine, plain2
+msgid "Open your copy"
+msgstr "Ouvrez votre copie"
 
 #, machine, plain1
 msgid "Opens the source in a new tab"
@@ -12410,17 +12698,17 @@ msgstr "Autre ou inconnu"
 msgid "Other spellings:"
 msgstr "Autres graphies :"
 
-#, machine, plain1
-msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous."
-msgstr "D'autres utilisateurs voient Anonymous au lieu de votre nom. Vous et les administrateurs de site pouvez toujours le voir, il suit les mêmes règles que n'importe quel post, et il ne peut pas être annulé après l'affichage. Un filtre régional indique encore de quelle région il provient. Il n'est pas listé sur votre profil : vous le trouvez dans Histoire, sous Anonyme."
+#, machine, plain2
+msgid "Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "D'autres utilisateurs voient Anonymous au lieu de votre nom. Vous et les administrateurs de site pouvez toujours le voir, il suit les mêmes règles que n'importe quel post, et il ne peut pas être annulé après l'affichage. Un filtre régional indique encore de quelle région il provient. Il n'est pas listé sur votre profil : vous le trouvez dans Histoire, sous Anonyme. Si un administrateur interdit ou suspend le compte pour celui-ci, le journal peut nommer le compte pour celui-ci."
 
 #, machine
 msgid "Other users see this as Anonymous. Only you and site admins see your name."
 msgstr "D'autres utilisateurs voient cela comme anonyme. Seuls vous et les administrateurs du site voyez votre nom."
 
-#, machine, plain1
-msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting."
-msgstr "D'autres voient Anonymous au lieu de votre nom; vous et les administrateurs de site le voyez encore. Un filtre régional indique encore de quelle région il provient. Il ne peut pas être changé après l'affichage."
+#, machine, plain2
+msgid "Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one."
+msgstr "D'autres voient Anonymous au lieu de votre nom; vous et les administrateurs de site le voyez encore. Un filtre régional indique encore de quelle région il provient. Il ne peut pas être changé après l'affichage. Si un administrateur interdit ou suspend le compte pour celui-ci, le journal peut nommer le compte pour celui-ci."
 
 #, machine, plain1, python-format
 msgid "Our response to your feedback \"%(excerpt)s\": %(response)s"
@@ -12429,6 +12717,10 @@ msgstr "Notre réponse à vos commentaires « %(excerpt)s » : %(response)s"
 #, machine
 msgid "Our security warlocks have cast an impenetrable shield spell around this page."
 msgstr "Nos sorciers de sécurité ont jeté un sort de bouclier impénétrable autour de cette page."
+
+#, machine, plain2
+msgid "Outcome"
+msgstr "Résultat"
 
 #, machine
 msgid "Outdoors"
@@ -13111,6 +13403,10 @@ msgid "Popular this week"
 msgstr "Populaire cette semaine"
 
 #, glossary, machine, plain2
+msgid "Post"
+msgstr "Publier"
+
+#, glossary, machine, plain2
 msgctxt "button"
 msgid "Post"
 msgstr "Publier"
@@ -13131,6 +13427,10 @@ msgstr "Poster une mise à jour"
 #, glossary, machine, plain2
 msgid "Post anonymously"
 msgstr "Publier anonymement"
+
+#, machine, plain2
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
+msgstr "Poster anonymement: d'autres membres voient chaque auteur comme anonyme avec un numéro. Les administrateurs peuvent toujours voir qui ils sont. Il ne peut pas être changé une fois le post publié."
 
 #, machine
 msgid "Post automatically from your own account"
@@ -13207,10 +13507,6 @@ msgstr "Posté ce jour-là ou plus tard."
 msgid "Posted on that day."
 msgstr "Posté ce jour-là."
 
-#, machine, plain1
-msgid "Posting"
-msgstr "Affectation"
-
 #, machine
 msgid "Posting cooldown"
 msgstr "Refroidissement de l'affichage"
@@ -13239,6 +13535,10 @@ msgstr "Publications"
 #, machine, plain1
 msgid "Posts a guild tagged with this flair. With in:+guild, that guild's flair."
 msgstr "Poste une guilde marquée avec cette étiquette. Avec : +guild, l'étiquette de cette guilde."
+
+#, machine, plain2
+msgid "Posts and comments"
+msgstr "Postes et commentaires"
 
 #, machine
 msgid "Posts and comments that contain filtered words are hidden from you entirely - they are not removed for anyone else. Content from a user or guild whose name contains a filtered word is hidden too. Your own posts and comments are always shown to you. Turning the Child filter down again needs your account password."
@@ -13329,6 +13629,10 @@ msgstr "Postes dans une guilde. dans:#gaming est la guilde d'un sujet et dans:&n
 #, machine
 msgid "Posts in a language: a code (en) or its name (english)."
 msgstr "Postes dans une langue: un code (en) ou son nom (français)."
+
+#, machine, plain2
+msgid "Posts or comments"
+msgstr "Postes ou commentaires"
 
 #, machine
 msgid "Posts that link to a site, or to one of its subdomains."
@@ -13522,6 +13826,10 @@ msgstr "Contenu privé, visible parce que vous êtes un modérateur de guilde de
 msgid "Private content, visible because you are an approved contributor in +%(guild)s."
 msgstr "Contenu privé, visible parce que vous êtes un contributeur approuvé dans +%(guild)s."
 
+#, machine, plain2
+msgid "Private copy"
+msgstr "Copie privée"
+
 #, glossary, machine, plain2
 msgid "Private mode."
 msgstr "Mode privé."
@@ -13581,26 +13889,6 @@ msgstr "Poste privé, visible pour vous parce que vous êtes membre de cette gui
 #, machine, python-format
 msgid "Private post, visible to you because you are an approved contributor in +%(guild)s."
 msgstr "Poste privé, visible pour vous parce que vous êtes un contributeur approuvé dans +%(guild)s."
-
-#, machine, plain1
-msgid "Private posting"
-msgstr "Affichage privé"
-
-#, machine, plain1
-msgid "Private posting is off."
-msgstr "Le poste privé est annulé."
-
-#, machine, plain1
-msgid "Private posting is on, so this can only go to your Friends circle. You can change that in Settings > Content."
-msgstr "L'affichage privé est sur, donc cela ne peut aller que dans votre cercle d'amis. Vous pouvez modifier cela dans Paramètres > Contenu."
-
-#, machine, plain1
-msgid "Private posting is on, so this goes only to your Friends circle. You can change that in Settings > Content."
-msgstr "L'affichage privé est en cours, donc ceci va seulement à votre cercle d'amis. Vous pouvez modifier cela dans Paramètres > Contenu."
-
-#, machine, plain1
-msgid "Private posting is on."
-msgstr "L'affichage privé est en cours."
 
 #, machine, plain1
 msgid "Pro Wrestling"
@@ -14164,6 +14452,14 @@ msgctxt "guildmaster action"
 msgid "Remove mod"
 msgstr "Supprimer le modérateur"
 
+#, machine, plain2
+msgid "Remove my name"
+msgstr "Supprimer mon nom"
+
+#, machine, plain2
+msgid "Remove my name from this post"
+msgstr "Supprimer mon nom de ce post"
+
 #, glossary, machine, plain2, python-format
 msgid "Remove option %(number)s"
 msgstr "Supprimer l'option %(number)s"
@@ -14228,6 +14524,14 @@ msgstr "Supprimer le serveur"
 msgid "Remove this topic"
 msgstr "Retirer ce sujet"
 
+#, machine, plain2
+msgid "Remove your name from these items?"
+msgstr "Enlevez votre nom de ces éléments ?"
+
+#, machine, plain2
+msgid "Remove your name from your credit on this post? Other members will see \"Anonymous\" with a number. This can't be undone."
+msgstr "Enlevez votre nom de votre crédit sur ce billet? D'autres membres verront \"Anonymous\" avec un numéro. Ça ne peut pas être annulé."
+
 #, machine
 msgctxt "diff line"
 msgid "Removed"
@@ -14268,6 +14572,10 @@ msgstr "Supprimé. Le bot ne lit plus ce flux."
 #, machine
 msgid "Removing one takes effect at once."
 msgstr "L'enlèvement prend effet immédiatement."
+
+#, machine, plain2
+msgid "Removing your name is done on the site itself."
+msgstr "La suppression de votre nom se fait sur le site lui-même."
 
 #, machine
 msgctxt "button"
@@ -14329,6 +14637,10 @@ msgstr "Signaler le commentaire"
 #, glossary, machine, plain2
 msgid "Report post"
 msgstr "Signaler la publication"
+
+#, machine, plain2
+msgid "Report this"
+msgstr "Signaler"
 
 #, machine, python-format
 msgid "Reported Posts - %(site)s"
@@ -14827,6 +15139,18 @@ msgstr "Dites ce que le bot affichera et d'où il vient (au moins 10 caractères
 msgid "Say who it's from"
 msgstr "Dis de qui ça vient"
 
+#, machine, plain2
+msgid "Say why it should come down, in a few words."
+msgstr "Dis pourquoi ça devrait tomber, en quelques mots."
+
+#, machine, plain2
+msgid "Say why you are appealing."
+msgstr "Dites pourquoi vous êtes attirant."
+
+#, machine, plain2
+msgid "Say why you think it was wrong. Only the people who decide appeals read what you write, and you will be told how it ended."
+msgstr "Dites pourquoi vous pensez que c'était mal. Seuls les gens qui décident des appels lisent ce que vous écrivez, et on vous dira comment cela s'est terminé."
+
 #, machine
 msgid "Scan this barcode (or enter the code) using a two-factor authentication app such as Google Authenticator or Authy."
 msgstr "Scanner ce code-barres (ou entrer le code) en utilisant une application d'authentification à deux facteurs comme Google Authentificateur ou Authy."
@@ -14992,6 +15316,10 @@ msgstr "Tout voir dans le fil Tout"
 msgid "See everything live"
 msgstr "Voir tout vivre"
 
+#, machine, plain2
+msgid "See it in the Log"
+msgstr "Voir dans le journal"
+
 #, machine
 msgid "See the current page"
 msgstr "Voir la page actuelle"
@@ -15015,6 +15343,10 @@ msgstr "Voir ce qui est tendance"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Voir ce qu'ils font"
+
+#, machine, plain2
+msgid "See your appeal"
+msgstr "Voir votre recours"
 
 #, machine
 msgid "See your username"
@@ -15069,6 +15401,10 @@ msgstr "Conseil d'envoi"
 msgid "Send a tip"
 msgstr "Envoyer un conseil"
 
+#, machine, plain2
+msgid "Send appeal"
+msgstr "Envoyer un appel"
+
 #, machine, plain1
 msgid "Send feedback"
 msgstr "Envoyer des commentaires"
@@ -15101,6 +15437,10 @@ msgstr "Contenu sensible ?"
 #, glossary, machine, plain2
 msgid "Sensitive content"
 msgstr "Contenu sensible"
+
+#, machine, plain2
+msgid "Sensitive content: show it"
+msgstr "Contenu sensible : le montrer"
 
 #. on a card quoting a post from another site, said instead of a picture the
 #. site hides behind a warning
@@ -15179,10 +15519,6 @@ msgstr "Réglez d'abord votre équilibre."
 #, machine
 msgid "Setup two-step login"
 msgstr "Configuration d'une connexion en deux étapes"
-
-#, machine
-msgid "Sexualizing Minors"
-msgstr "Sexualisation des mineurs"
 
 #, machine
 msgid "Sexualizing minors"
@@ -15928,6 +16264,10 @@ msgstr "Démarrer l'espace"
 msgid "Start your For You feed over. Everything you asked for with \"Show fewer posts like this\" is forgotten, so those posts and their guilds and categories come back. Your reset date is saved on your account, but For You does not use it for your upvotes and guilds yet."
 msgstr "Commencez votre alimentation pour vous. Tout ce que vous avez demandé avec \"Afficher moins de messages comme celui-ci\" est oublié, donc ces messages et leurs guildes et catégories reviennent. Votre date de réinitialisation est enregistrée sur votre compte, mais vous ne l'utilisez pas encore pour vos upvotes et guildes."
 
+#, machine, plain2
+msgid "Starting guilds"
+msgstr "Les guildes de départ"
+
 #, machine
 msgid "Starting soon"
 msgstr "À partir de bientôt"
@@ -16263,6 +16603,10 @@ msgstr "Les manchettes technologiques de BBC News. Pas dirigé par la BBC."
 msgid "Tell the %(site)s community a bit about yourself."
 msgstr "Parlez un peu de vous à la communauté %(site)s."
 
+#, machine, plain2
+msgid "Tell them why, in a line"
+msgstr "Dites-leur pourquoi, dans une file"
+
 #, machine, plain1
 msgid "Tell us what happened, what looks off, or what you would like. For a bug, say what you did and what you expected."
 msgstr "Dites-nous ce qu'il s'est passé, ce que vous voulez. Pour un bug, dites ce que vous avez fait et ce que vous attendiez."
@@ -16330,6 +16674,10 @@ msgstr "Postes textuels"
 msgid "Text size"
 msgstr "Taille du texte"
 
+#, machine, plain2
+msgid "Thank you"
+msgstr "Je vous remercie"
+
 #, machine
 msgid "Thank you for reporting this comment!"
 msgstr "Merci de nous faire part de ce commentaire!"
@@ -16391,9 +16739,9 @@ msgstr "C'est gentil. Un administrateur va bientôt regarder le robot ; vous rec
 msgid "Thanks. An admin will look at the bot soon; you will get a notification. The picture could not be stored; try again from the bot's page."
 msgstr "C'est gentil. Un administrateur va bientôt regarder le robot ; vous recevrez une notification. L'image n'a pas pu être stockée ; essayez à nouveau à partir de la page du robot."
 
-#, machine, plain1
-msgid "Thanks. Your account no longer has the child lock, and Private posting is off. Posts you made before stay as they were: use Who can see this on a post to change who sees it."
-msgstr "C'est gentil. Votre compte n'a plus le verrou à enfant, et l'affichage privé est éteint. Posts que vous avez fait avant de rester comme ils étaient : utilisez Qui peut voir cela sur un post pour changer qui le voit."
+#, machine, plain2
+msgid "Thanks. Your account no longer has the child lock."
+msgstr "C'est gentil. Votre compte n'a plus le verrou."
 
 #, machine
 msgid "That Discord account is already in use by another user."
@@ -16733,6 +17081,10 @@ msgstr "Ce nom est pris."
 msgid "That password isn't right."
 msgstr "Ce mot de passe n'est pas juste."
 
+#, machine, plain2
+msgid "That password isn't right. Nothing was changed."
+msgstr "Ce mot de passe n'est pas juste. Rien n'a changé."
+
 #, machine
 msgid "That password reset form has expired."
 msgstr "Ce formulaire de réinitialisation du mot de passe a expiré."
@@ -17060,6 +17412,10 @@ msgstr "Les pièces vont au fondateur, <a href=\"%(url)s\">À l'annexe I du règ
 msgid "The coins you earn from tips, paid circles and the creator fund, for the last 30 days and all time."
 msgstr "Les pièces que vous gagnez de conseils, les cercles payés et le fonds créateur, pour les 30 derniers jours et tout le temps."
 
+#, machine, plain2
+msgid "The comment stays where it is, with your name taken off it. Everyone who saw it with your name still knows it was you."
+msgstr "Le commentaire reste là où il est, avec votre nom enlevé. Tous ceux qui l'ont vu avec votre nom savent toujours que c'était vous."
+
 #, machine, python-format
 msgid "The copy other people forwarded to guilds will stay there."
 msgid_plural "The %(num)s copies other people forwarded to guilds will stay there."
@@ -17076,6 +17432,10 @@ msgstr[1] "Les copies que vous avez envoyées à %(guilds)s seront retirées."
 #, machine
 msgid "The dates leave no days."
 msgstr "Les dates ne laissent pas de jours."
+
+#, machine, plain2
+msgid "The decision stands"
+msgstr "La décision est maintenue"
 
 #, machine, plain1
 msgid "The decisions made about it, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
@@ -17292,6 +17652,10 @@ msgstr "Le nom %(host)s n'a pas pu être trouvé."
 msgid "The newest of what they have done. Only the names of who they chat with are shown, never what a chat says: chats are end-to-end encrypted."
 msgstr "Le dernier de ce qu'ils ont fait. Seuls les noms de ceux avec qui ils discutent sont affichés, jamais ce qu'un chat dit : les conversations sont cryptées de bout en bout."
 
+#, machine, plain2
+msgid "The number of items you confirmed doesn't match what was chosen. Nothing was changed."
+msgstr "Le nombre d'éléments que vous avez confirmés ne correspond pas à ce qui a été choisi. Rien n'a changé."
+
 #, machine
 msgid "The numbers are always shown on your profile. This decides who can open each list and see the accounts on it. An account is only listed where its own setting allows it too."
 msgstr "Les chiffres sont toujours affichés sur votre profil. Cela décide qui peut ouvrir chaque liste et voir les comptes sur elle. Un compte n'est répertorié que lorsque son propre réglage le permet aussi."
@@ -17340,9 +17704,25 @@ msgstr "Le post apparaît sur le profil de celui qui le publie en premier. Facul
 msgid "The post carries your name and is listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your name."
 msgstr "Le message porte votre nom et figure sur votre profil. Les votes, commentaires et renvois sont partagés avec son auteur, qui les modifie et les supprime. Vous pouvez vous retirer à tout moment : le post reste, sans votre nom."
 
+#, machine, plain2
+msgid "The post is not listed on your profile. Votes, comments and forwards are shared with its author, who edits and deletes it. You can step off at any time: the post stays, without your credit."
+msgstr "Le post n'est pas listé sur votre profil. Les votes, commentaires et renvois sont partagés avec son auteur, qui les modifie et les supprime. Vous pouvez vous retirer à tout moment: le poste reste, sans votre crédit."
+
 #, machine
 msgid "The post refused the change."
 msgstr "Le poste a refusé le changement."
+
+#, machine, plain2
+msgid "The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you."
+msgstr "Le post reste là où il est, avec votre nom enlevé, et laisse votre profil. Sa réputation vous laisse aussi. Tous ceux qui l'ont vu avec votre nom savent toujours que c'était vous."
+
+#, machine, plain2
+msgid "The post's author"
+msgstr "L'auteur du billet"
+
+#, machine, plain2
+msgid "The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too."
+msgstr "L'auteur du message l'a supprimé, donc il est affiché comme Anonyme: aucun nom et aucun lien. Les commentaires sous-jacents restent tels qu'ils étaient; l'un de ses auteurs supprimés est également affiché comme anonyme."
 
 #, machine, python-format
 msgid "The promo code `%(code)s` is not currently valid. Please begin a new transaction."
@@ -17413,9 +17793,17 @@ msgstr "Le serveur pense que tu demandes quelque chose de stupide. Ça te prendr
 msgid "The site refused the bot's session."
 msgstr "Le site a refusé la session du bot."
 
+#, machine, plain2
+msgid "The site's admins have it already."
+msgstr "Les administrateurs du site l'ont déjà."
+
 #, machine
 msgid "The site's admins marked this guild sensitive, so only an admin can change this."
 msgstr "Les administrateurs du site ont marqué cette guilde sensible, donc seul un administrateur peut changer cela."
+
+#, machine, plain2
+msgid "The site's admins will read it. They are never told who reported."
+msgstr "Les administrateurs du site le liront. On ne leur dit jamais qui a rapporté."
 
 #, machine, python-format
 msgid "The stage is full (%(num)s person)."
@@ -17581,9 +17969,17 @@ msgstr "Il n'y a pas de poste ici."
 msgid "There is no account named @%(name)s."
 msgstr "Il n'y a aucun compte nommé @%(name)s."
 
+#, machine, plain2
+msgid "There is nothing here to appeal."
+msgstr "Il n'y a rien ici pour faire appel."
+
 #, machine
 msgid "There is nothing to save yet."
 msgstr "Il n'y a rien à sauver."
+
+#, machine, plain2
+msgid "There is nothing waiting for this ban."
+msgstr "Rien n'attend cette interdiction."
 
 #, machine
 msgid "There was a problem. Please try again."
@@ -17678,36 +18074,24 @@ msgid "They aren't muted here."
 msgstr "Ils ne sont pas mutés ici."
 
 #, machine, plain1
-msgid "They asked you to turn Private posting off."
-msgstr "Ils t'ont demandé d'éteindre la poste privée."
-
-#, machine, plain1
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Ils peuvent acheter et dépenser des pièces, pourboire, acheter Premium et rejoindre ou exécuter des cercles payés."
-
-#, machine, plain1
-msgid "They can comment."
-msgstr "Ils peuvent commenter."
 
 #, machine, plain1
 msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
 msgstr "Ils peuvent accueillir et rejoindre Espaces et exécuter des fils en direct. Les appels téléphoniques dans un espace ont également besoin de Chat pour être allumés."
 
 #, machine, plain1
-msgid "They can make posts."
-msgstr "Ils peuvent faire des poteaux."
-
-#, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
 msgstr "Ils peuvent envoyer des messages aux gens, participer à des discussions de groupe et passer des appels. Le site ne vous montre jamais ce qu'une conversation dit : les conversations sont cryptées de bout en bout. Celui qui connaît son mot de passe peut encore le lire."
 
 #, machine, plain1
-msgid "They can post anonymously and start a guild. You can still see who wrote an anonymous post."
-msgstr "Ils peuvent poster anonymement et commencer une guilde. Vous pouvez toujours voir qui a écrit un message anonyme."
-
-#, machine, plain1
 msgid "They can see what you do on the site: your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported, and your recent sign-ins. The site never shows them what your chats say, because chats are end-to-end encrypted. But anyone who knows your password, a parent who chose it included, can sign in as you: change it in Security so that only you know it. They choose which of these are on for your account:"
 msgstr "Ils peuvent voir ce que vous faites sur le site: vos messages, commentaires, votes, signets, suivants, guildes, avec qui vous parlez, que votre compte a été signalé, et vos récentes inscriptions. Le site ne leur montre jamais ce que disent vos conversations, car les conversations sont cryptées de bout en bout. Mais quiconque connaît votre mot de passe, un parent qui l'a choisi inclus, peut se connecter comme vous : changez-le dans Sécurité pour que vous le sachiez seulement. Ils choisissent lequel de ceux-ci sont sur votre compte:"
+
+#, machine, plain2
+msgid "They can start a guild. They still can't post or comment: a child account only reads."
+msgstr "Ils peuvent démarrer une guilde. Ils ne peuvent toujours pas poster ou commenter: un compte enfant lit seulement."
 
 #, machine
 msgid "They can't comment on your posts or comments, chat with you or notify you by mentioning you. They are not told, but they may work it out if they try to comment on something of yours."
@@ -17725,6 +18109,10 @@ msgstr "Ils vont directement à votre solde de pièce."
 msgid "They haven't asked for that."
 msgstr "Ils n'ont pas demandé ça."
 
+#, machine, plain2
+msgid "They leave the site. What they said stays in the Log as Anonymous, except for anything made in the last five minutes that nobody has commented on, which is erased. This can't be undone."
+msgstr "Ils quittent le site. Ce qu'ils ont dit reste dans le Log en tant qu'Anonyme, sauf pour tout ce qui a été fait dans les cinq dernières minutes que personne n'a commenté, qui est effacé. Ça ne peut pas être annulé."
+
 #, machine
 msgid "They need to be in the guild, and not exiled from it."
 msgstr "Ils doivent être dans la guilde, et non pas exilés."
@@ -17736,6 +18124,14 @@ msgstr "Ils doivent d'abord rejoindre la chaîne."
 #, machine, plain1
 msgid "They say they are 18 or over and asked you to release their account. If you do, it becomes their own and you can no longer see it."
 msgstr "Ils disent avoir 18 ans ou plus et vous ont demandé de libérer leur compte. Si vous le faites, il devient leur propre et vous ne pouvez plus le voir."
+
+#, machine, plain2
+msgid "They stay where they are, with your name taken off them. This can't be undone. Posts that need your name (for a Circle, or with tips) are listed afterwards as not changed."
+msgstr "Ils restent où ils sont, avec votre nom enlevé. Ça ne peut pas être annulé. Les messages qui ont besoin de votre nom (pour un cercle, ou avec des conseils) sont listés par la suite comme non modifiés."
+
+#, machine, plain2, python-format
+msgid "They wrote: %(note)s"
+msgstr "Ils ont écrit : %(note)s"
 
 #, machine
 msgid "They're already a helper."
@@ -17910,6 +18306,10 @@ msgstr[1] "Cet appel est complet (%(num)s personnes)."
 msgid "This can't be translated right now."
 msgstr "Ça ne peut pas être traduit en ce moment."
 
+#, machine, plain2
+msgid "This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it."
+msgstr "Ça ne peut pas être annulé. Les administrateurs du site peuvent toujours voir qui a écrit quelque chose, et si un administrateur interdit ou suspend le compte pour lui, le journal peut le nommer."
+
 #, machine
 msgid "This channel doesn't ask for its rules to be accepted."
 msgstr "Ce canal ne demande pas que ses règles soient acceptées."
@@ -17994,6 +18394,10 @@ msgstr "Ce contenu a déjà été publié"
 msgid "This copy is no longer kept."
 msgstr "Cette copie n'est plus conservée."
 
+#, machine, plain2
+msgid "This couldn't be changed right now."
+msgstr "Ça n'a pas pu être changé."
+
 #, machine
 msgid "This creates a new, independent post in that guild with its own votes and comments. The title is generated from the comment's text. A link back to the original comment will be shown on the new post."
 msgstr "Cela crée un nouveau poste indépendant dans cette guilde avec ses propres votes et commentaires. Le titre est généré à partir du texte du commentaire. Un lien vers le commentaire original sera affiché sur le nouveau post."
@@ -18021,6 +18425,22 @@ msgstr "Les guildes et les comptes de cet aliment curé"
 #, machine, plain1
 msgid "This curation's rules took too long to run. Its owner can make them narrower."
 msgstr "Les règles de cet aliment ont pris trop de temps à courir. Son propriétaire peut les réduire."
+
+#, machine, plain2
+msgid "This decision can't be appealed."
+msgstr "Cette décision ne peut être portée en appel."
+
+#, machine, plain2
+msgid "This decision has already been lifted."
+msgstr "Cette décision a déjà été levée."
+
+#, machine, plain2
+msgid "This decision is about you. If you think it was wrong, you can appeal it."
+msgstr "Cette décision concerne vous. Si vous pensez que c'était mal, vous pouvez faire appel."
+
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr "Cette décision est dans le journal, et vous pouvez la faire appel : [Voyez dans le journal](%(log)s) · [Appeler cette décision](%(appeal)s)"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -18066,6 +18486,14 @@ msgstr "Cette guilde est privée. Le contenu affiché avant que la guilde ne soi
 msgid "This guild's channels are closed."
 msgstr "Les canaux de cette guilde sont fermés."
 
+#, machine, plain2
+msgid "This has a legal-level record, which can't be cited."
+msgstr "Il s'agit d'un dossier juridique qui ne peut être cité."
+
+#, machine, plain2
+msgid "This has been deleted."
+msgstr "Ceci a été supprimé."
+
 #, machine
 msgid "This invitation was already answered."
 msgstr "Cette invitation a déjà été répondue."
@@ -18086,6 +18514,10 @@ msgstr "C'est un Espace : son hôte et ses co-animateurs publient ses mises à j
 msgid "This is a log of moderator actions performed in +%(guild)s. The ones everyone may read are also in the site-wide <a href=\"%(url)s\">Log</a>. What members delete themselves is not published."
 msgstr "Il s'agit d'un journal des actions du modérateur réalisées en +%(guild)s. Ceux que tout le monde peut lire sont également dans l'ensemble du site <a href=\"%(url)s\">Journal</a>. Ce que les membres se suppriment eux-mêmes n'est pas publié."
 
+#, machine, plain2
+msgid "This is already anonymous."
+msgstr "C'est déjà anonyme."
+
 #, machine
 msgid "This is already in your language."
 msgstr "C'est déjà dans votre langue."
@@ -18103,6 +18535,10 @@ msgstr "Ceci est pour les membres d'une guilde du Cercle."
 msgid "This is for the people in one of <a href=\"%(url)s\">@%(name)s</a>'s circles."
 msgstr "C'est pour le peuple dans l'un des <a href=\"%(url)s\">À l'annexe I du règlement (UE) no 1308/2013%(name)s</a>Les cercles."
 
+#, machine, plain2
+msgid "This is in a private place, and a private item can't be cited in the public Log."
+msgstr "C'est dans un endroit privé, et un article privé ne peut pas être cité dans le journal public."
+
 #, machine, plain1
 msgid "This is the guild's custom CSS file."
 msgstr "C'est le fichier personnalisé CSS de la guilde."
@@ -18115,6 +18551,10 @@ msgstr "C'est trop comme ce qui a été affiché automatiquement aujourd'hui."
 msgid "This isn't available while your account is age-restricted. You can confirm your age in Settings > Content."
 msgstr "Ce n'est pas disponible pendant que votre compte est limité par l'âge. Vous pouvez confirmer votre âge dans Paramètres > Contenu."
 
+#, machine, plain2
+msgid "This isn't one of the account's own posts or comments."
+msgstr "Ce n'est pas un des messages ou commentaires du compte."
+
 #, machine
 msgid "This isn't shown at your current word filter level. You can review your word filter in your content settings."
 msgstr "Ceci n'est pas affiché à votre niveau de filtre de mot actuel. Vous pouvez revoir votre filtre de mots dans vos paramètres de contenu."
@@ -18126,6 +18566,10 @@ msgstr "Ce n'est pas montré où vous êtes jusqu'à ce que votre âge ait été
 #, machine, plain1
 msgid "This isn't shown while your account is age-restricted."
 msgstr "Ce n'est pas indiqué alors que votre compte est limité par l'âge."
+
+#, machine, plain2
+msgid "This isn't yours to change, or it is already gone."
+msgstr "Ce n'est pas à vous de changer, ou il est déjà parti."
 
 #, machine, plain1, python-format
 msgid "This live thread ended a moment ago. It can go live again in %(num)s min."
@@ -18232,6 +18676,10 @@ msgstr "Ce post n'a aucun commentaire sur votre profil maintenant. Ses commentai
 #, machine
 msgid "This post has no live thread."
 msgstr "Ce post n'a pas de fil en direct."
+
+#, machine, plain2
+msgid "This post is anonymous, so your credit will be too: other members will see it as \"Anonymous\" with a number. Admins and the post's author can still see it is you."
+msgstr "Ce billet est anonyme, donc votre crédit sera trop: d'autres membres le verront comme \"Anonymous\" avec un numéro. Les administrateurs et l'auteur du billet peuvent encore voir que c'est vous."
 
 #, machine
 msgid "This post is from an account you muted."
@@ -18349,6 +18797,10 @@ msgstr[1] "Cette chaîne vocale est pleine (%(num)s personnes)."
 #, machine
 msgid "This voice channel isn't available right now."
 msgstr "Cette chaîne vocale n'est pas disponible."
+
+#, machine, plain2
+msgid "This was erased within five minutes of being made, so it has no public record to attach to."
+msgstr "Cela a été effacé dans les cinq minutes qui ont suivi, donc il n'a aucun dossier public à joindre."
 
 #, machine
 msgid "This will also invalidate any existing recovery links associated with this account."
@@ -18553,6 +19005,10 @@ msgstr "Trop de guildes sont déjà conduites depuis votre réseau (au plus %(li
 msgid "Too many live streams are open. Close a tab and try again."
 msgstr "Trop de ruisseaux vivants sont ouverts. Fermez un onglet et essayez encore."
 
+#, machine, plain2
+msgid "Too many reports today"
+msgstr "Trop de rapports aujourd'hui"
+
 #, machine
 msgid "Too much spam!"
 msgstr "Trop de spam !"
@@ -18659,6 +19115,10 @@ msgstr "Criminalité"
 msgid "Try again"
 msgstr "Essaie encore"
 
+#, glossary, machine, plain2
+msgid "Try again tomorrow."
+msgstr "Réessayez demain."
+
 #, machine
 msgctxt "weekday"
 msgid "Tue"
@@ -18667,10 +19127,6 @@ msgstr "Tu es"
 #, machine
 msgid "Turanian Steppe"
 msgstr "Steppe turanienne"
-
-#, machine, plain1
-msgid "Turn it off"
-msgstr "Éteins ça"
 
 #, machine, plain1
 msgid "Turn it off if you'll never use it: your password keeps working as it does now."
@@ -18890,6 +19346,10 @@ msgstr "Retirer la distinction"
 msgid "Undo"
 msgstr "Annuler"
 
+#, machine, plain2
+msgid "Undo the decision"
+msgstr "Annuler la décision"
+
 #, machine
 msgctxt "guildmaster action"
 msgid "Unexile user"
@@ -19096,6 +19556,10 @@ msgid "Up to %(num)s at a time. Your account must be 30 days old."
 msgid_plural "Up to %(num)s at a time. Your account must be 30 days old."
 msgstr[0] "Jusqu'à %(num)s à la fois. Votre compte doit avoir 30 jours."
 msgstr[1] "Jusqu'à %(num)s à la fois. Votre compte doit avoir 30 jours."
+
+#, machine, plain2, python-format
+msgid "Up to %(num)s characters. You can appeal a decision once, and make three appeals a day."
+msgstr "Jusqu'à %(num)s caractères. Vous pouvez interjeter appel une fois et faire trois appels par jour."
 
 #, machine, python-format
 msgid "Up to %(num)s day ahead."
@@ -19811,13 +20275,21 @@ msgstr "Ce qu'il affiche"
 msgid "What it posts:"
 msgstr "Ce qu'il affiche :"
 
+#, machine, plain2
+msgid "What it said isn't shown here."
+msgstr "Ce qu'il a dit n'est pas montré ici."
+
 #, machine
 msgid "What kind of Space?"
 msgstr "Quel genre d'espace ?"
 
-#, machine, plain1
-msgid "What members delete themselves is not published here."
-msgstr "Ce que les membres se suppriment eux-mêmes n'est pas publié ici."
+#, machine, plain2
+msgid "What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down."
+msgstr "Ce que les membres ont supprimé, le plus récent d'abord, avec les mots qu'il avait, en tant qu'Anonyme: aucun nom et aucun lien. Quelque chose supprimé dans les cinq minutes suivant l'écriture est effacé et n'est pas ici. Le bouton Rapport demande aux administrateurs du site de prendre les mots en bas."
+
+#, machine, plain2
+msgid "What members edited, newest first: who (Anonymous for an anonymous post or comment), when and the note they gave. A run of edits to one item is one line. An edit in the first five minutes after something was written isn't recorded. The versions are on the item's own history page."
+msgstr "Ce que les membres ont édité, le plus récent d'abord: qui (Anonymous pour un message anonyme ou un commentaire), quand et la note qu'ils ont donné. Une série de modifications à un élément est une ligne. Une édition dans les cinq premières minutes après que quelque chose ait été écrit n'est pas enregistrée. Les versions sont sur la page d'historique de l'article."
 
 #, machine, plain1
 msgid "What people are talking about, what is on now, and what is coming up, in one place."
@@ -19831,6 +20303,18 @@ msgstr "Ce que les abonnés obtiennent"
 msgid "What the guildmasters did"
 msgstr "Ce que les modérateurs de la guilde ont fait"
 
+#, machine, plain2
+msgid "What to do with them"
+msgstr "Que faire avec eux"
+
+#, machine, plain2
+msgid "What to do with your comment"
+msgstr "Que faire avec votre commentaire"
+
+#, machine, plain2
+msgid "What to do with your post"
+msgstr "Que faire avec votre poste"
+
 #, machine
 msgid "What to say"
 msgstr "Quoi dire"
@@ -19842,6 +20326,14 @@ msgstr "Type de recherche"
 #, machine
 msgid "What works in apps"
 msgstr "Ce qui fonctionne dans les applications"
+
+#, machine, plain2
+msgid "What you delete stays in the Log as Anonymous, with no name, unless you delete it within five minutes."
+msgstr "Ce que vous supprimez reste dans le Log en tant qu'Anonyme, sans nom, sauf si vous le supprimez dans les cinq minutes."
+
+#, machine, plain2
+msgid "What you deleted yourself. A copy of something deleted after its first five minutes stays in the Log as Anonymous, with no name. A copy of something erased inside five minutes is private, and goes after 90 days."
+msgstr "Ce que vous avez vous-même supprimé. Une copie de quelque chose supprimé après ses cinq premières minutes reste dans le Log en tant qu'Anonyme, sans nom. Une copie de quelque chose effacé en cinq minutes est privée, et va après 90 jours."
 
 #, machine
 msgid "What you do"
@@ -19896,6 +20388,10 @@ msgstr "Où les fichiers vont"
 #, machine
 msgid "Where it is"
 msgstr "Où il est"
+
+#, machine, plain2
+msgid "Where it was discussed"
+msgstr "Où cela a été discuté"
 
 #, machine
 msgid "Where posts come from"
@@ -20055,6 +20551,10 @@ msgstr "Qui a écrit quoi"
 msgid "Who you follow"
 msgstr "Qui vous suivez"
 
+#, machine, plain2
+msgid "Who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed."
+msgstr "Qui, quand, où, quelle règle et pourquoi. Il ne montre jamais le titre ou le texte de ce qui a été caché ou enlevé."
+
 #, machine, plain1
 msgid "Whoever started this reported that browser and place themselves, so they prove nothing."
 msgstr "Celui qui a commencé ça a signalé ce navigateur et se placent, donc ils ne prouvent rien."
@@ -20084,6 +20584,14 @@ msgstr "Pourquoi pas"
 #, machine
 msgid "Why not (they are told)"
 msgstr "Pourquoi pas (on leur dit)"
+
+#, machine, plain2
+msgid "Why should it come down?"
+msgstr "Pourquoi ?"
+
+#, machine, plain2
+msgid "Why was it wrong?"
+msgstr "Pourquoi c'était mal ?"
 
 #. the guild's wiki is switched off
 #, glossary, machine, plain2
@@ -20140,10 +20648,6 @@ msgstr "Avec Premium vous obtenez un endroit pour tout ce que vous faites et gag
 #, machine, plain1
 msgid "With Premium you see how each of your posts is doing: views per day, how many signed-in people came, votes, comments, bookmarks, forwards and reposts, how it does in each guild it was forwarded to, and the results of its poll."
 msgstr "Avec Premium vous voyez comment chacun de vos messages se déroule : les vues par jour, combien de personnes sign-in sont venues, votes, commentaires, signets, reports et reposts, comment il se fait dans chaque guilde il a été transmis, et les résultats de son sondage."
-
-#, machine, plain1
-msgid "With Private posting on, a circle can only hold people who follow you and whom you follow."
-msgstr "Avec l'affichage privé sur, un cercle ne peut contenir que les personnes qui vous suivent et que vous suivez."
 
 #, machine
 msgid "With a link"
@@ -20493,6 +20997,10 @@ msgstr[1] "Vous dirigez déjà le maximum de %(num)s guildes."
 msgid "You already made that comment: %(link)s"
 msgstr "Vous avez déjà fait ce commentaire : %(link)s"
 
+#, machine, plain2
+msgid "You already reported this"
+msgstr "Vous l'avez déjà signalé"
+
 #, machine
 msgid "You already reported this account."
 msgstr "Vous avez déjà signalé ce compte."
@@ -20524,6 +21032,10 @@ msgstr "Vous avez déjà voté sur ce poste, dans le post original. Supprimez ce
 #, machine, python-format
 msgid "You and up to 3 helpers write; members read and react. For other circles, make it on <a href=\"%(url)s\">your channels page</a>. You can have up to 3 channels."
 msgstr "Vous et jusqu'à 3 assistants écrivez; les membres lisent et réagissent. Pour les autres cercles, faites-le sur <a href=\"%(url)s\">votre page canaux</a>. Vous pouvez avoir jusqu'à 3 canaux."
+
+#, machine, plain2
+msgid "You appealed this decision."
+msgstr "Vous avez fait appel de cette décision."
 
 #, machine, python-format
 msgid "You are already a member of +%(guild)s"
@@ -20602,10 +21114,6 @@ msgid "You asked your parent or guardian to release your account. They haven't a
 msgstr "Vous avez demandé à votre parent ou tuteur de libérer votre compte. Ils ne répondent pas encore."
 
 #, machine, plain1
-msgid "You asked your parent or guardian to turn this off. They haven't answered yet."
-msgstr "Vous avez demandé à votre parent ou tuteur d'éteindre ça. Ils ne répondent pas encore."
-
-#, machine, plain1
 msgid "You can add pictures at 500 Rep, or earlier with Premium"
 msgstr "Vous pouvez ajouter des images à 500 Réputation, ou plus tôt avec Premium"
 
@@ -20640,6 +21148,10 @@ msgstr "Vous pouvez changer cela pour chaque vidéo lorsque vous l'ajoutez. Les 
 #, machine, plain2
 msgid "You can change this once they've accepted your message request."
 msgstr "Vous pouvez changer cela une fois qu'ils ont accepté votre demande de message."
+
+#, machine, plain2, python-format
+msgid "You can change up to %(max)s items at a time."
+msgstr "Vous pouvez passer à %(max)s articles à la fois."
 
 #, machine
 msgid "You can close this window."
@@ -20754,6 +21266,10 @@ msgstr[1] "Vous pouvez faire %(num)s modifications wiki par jour dans une guilde
 #, machine, plain1
 msgid "You can make a child account once your own account is confirmed as 18 or over. You can say so in Settings > Content."
 msgstr "Vous pouvez faire un compte d'enfant une fois votre propre compte confirmé comme 18 ou plus. Vous pouvez le dire dans Paramètres > Contenu."
+
+#, machine, plain2
+msgid "You can make three appeals a day. Try again tomorrow."
+msgstr "Vous pouvez faire trois appels par jour. Essaie encore demain."
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21093,6 +21609,10 @@ msgid_plural "You have %(num)s coins."
 msgstr[0] "Vous avez %(num)s pièce."
 msgstr[1] "Vous avez %(num)s pièces."
 
+#, machine, plain2
+msgid "You have already appealed this decision."
+msgstr "Vous avez déjà fait appel de cette décision."
+
 #, machine, python-format
 msgid "You have already blocked @%(name)s."
 msgstr "Vous avez déjà bloqué @%(name)s."
@@ -21140,6 +21660,20 @@ msgstr ""
 "Aucun de vos messages ou commentaires existants n'a été supprimé, cependant, vous ne serez pas en mesure d'envoyer des messages à +%(guild)s ou de les commenter.\n"
 "\n"
 "Vous avez été exilé pour [ce commentaire](%(link)s."
+
+#, machine, plain2, python-format
+msgid ""
+"You have been exiled from +%(guild)s.\n"
+"\n"
+"None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
+"\n"
+"You were exiled for [this item](%(link)s)."
+msgstr ""
+"Vous avez été exilé du +%(guild)s.\n"
+"\n"
+"Aucun de vos messages ou commentaires existants n'a été supprimé, cependant, vous ne serez pas en mesure d'envoyer des messages à +%(guild)s ou de les commenter.\n"
+"\n"
+"Vous avez été exilé pour [ce point](%(link)s."
 
 #, machine, python-format
 msgid ""
@@ -21242,6 +21776,10 @@ msgstr "Tu n'as pas dit que tu avais gardé ton code de récupération."
 #, machine, plain1
 msgid "You haven't told us yet."
 msgstr "Tu ne nous l'as pas encore dit."
+
+#, machine, plain2
+msgid "You made this decision, so another guildmaster decides its appeal."
+msgstr "Vous avez pris cette décision, donc un autre modérateur de guilde décide de son appel."
 
 #, machine, plain1, python-format
 msgid "You may be able to <a href=\"%(url)s\">siege</a> this community and become guildmaster."
@@ -21346,6 +21884,14 @@ msgstr "Vous avez signé avec un code QR. Saisissez votre mot de passe pour util
 #, machine, python-format
 msgid "You told us you wanted to change your %(site)s account email. To finish this process, please verify your new email address:"
 msgstr "Vous nous avez dit que vous vouliez changer votre email de compte %(site)s. Pour terminer ce processus, veuillez vérifier votre nouvelle adresse email:"
+
+#, machine, plain2, python-format
+msgid "You were invited to co-author an anonymous post. [See the invitation](%(link)s)"
+msgstr "Vous avez été invité à co-écrire un billet anonyme. [Voir l'invitation](%(link)s)"
+
+#, machine, plain2
+msgid "You were invited to share this anonymous post. If you accept, your credit is anonymous too, and the post is not listed on your profile. Votes, comments and forwards stay shared, and only its author edits or deletes it."
+msgstr "Vous avez été invités à partager ce billet anonyme. Si vous acceptez, votre crédit est anonyme aussi, et le message n'est pas listé sur votre profil. Les votes, les commentaires et les renvois restent partagés, et seul son auteur les modifie ou les supprime."
 
 #, machine
 msgid "You won't be notified of comments on this post."
@@ -21729,6 +22275,10 @@ msgstr "Votre compte doit avoir au moins 30 jours pour lancer un robot."
 msgid "Your account no longer posts automatically. Its posts stay."
 msgstr "Votre compte n'affiche plus automatiquement. Ses postes restent."
 
+#, machine, plain2
+msgid "Your account only reads for now, so it can't comment. You can still vote, follow and bookmark."
+msgstr "Votre compte ne lit que pour le moment, donc il ne peut pas commenter. Vous pouvez toujours voter, suivre et signet."
+
 #, machine
 msgid "Your account posts from these feeds from now on."
 msgstr "Votre compte affiche à partir de ces flux à partir de maintenant."
@@ -21764,6 +22314,68 @@ msgstr "Votre âge a été confirmé sur %(date)s."
 #, machine
 msgid "Your answer"
 msgstr "Votre réponse"
+
+#, machine, plain2
+msgid "Your appeal is waiting to be read."
+msgstr "Votre appel attend d'être lu."
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Votre appel de [cette décision](%(log)s) a été accepté, et la décision a été annulée.\n"
+"\n"
+"«»\n"
+"%(note)s\n"
+"«»"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Votre appel de [cette décision](%(log)s) a été examiné, et la décision demeure.\n"
+"\n"
+"«»\n"
+"%(note)s\n"
+"«»"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"Votre appel de [cette décision](%(log)s) n'a pas été poursuivi.\n"
+"\n"
+"«»\n"
+"%(note)s\n"
+"«»"
+
+#, machine, plain2
+msgid "Your appeal was accepted, and the decision was reversed."
+msgstr "Votre appel a été accepté, et la décision a été annulée."
+
+#, machine, plain2
+msgid "Your appeal was looked at, and the decision stands."
+msgstr "Votre appel a été examiné, et la décision est valable."
+
+#, machine, plain2
+msgid "Your appeal was not taken further."
+msgstr "Votre appel n'a pas été poursuivi."
+
+#, machine, plain2
+msgid "Your appeal was sent."
+msgstr "Votre appel a été envoyé."
 
 #, machine, plain1
 msgid "Your apps"
@@ -21847,13 +22459,13 @@ msgstr "Vos cercles"
 msgid "Your circles - %(site)s"
 msgstr "Vos cercles - %(site)s"
 
-#, machine, plain1
-msgid "Your comment will be taken off the site's pages. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Votre commentaire sera retiré des pages du site. Le site conserve une copie privée pendant 90 jours, que seuls vous et les administrateurs du site pouvez ouvrir. Ça ne peut pas être annulé."
-
 #, machine
 msgid "Your commenting history will show here."
 msgstr "Votre historique de commentaires sera affiché ici."
+
+#, machine, plain2
+msgid "Your credit on this post is anonymous: other members see it as \"Anonymous #N\". Admins and the post's author can still see it is yours. This can't be undone."
+msgstr "Votre crédit sur ce post est anonyme: d'autres membres le voient comme \"Anonymous #N\". Les administrateurs et l'auteur du billet peuvent encore voir qu'il est à vous. Ça ne peut pas être annulé."
 
 #, machine, plain1
 msgid "Your curations"
@@ -21998,14 +22610,6 @@ msgid "Your parent or guardian has been asked to release your account. Nothing c
 msgstr "On a demandé à votre parent ou tuteur de libérer votre compte. Rien ne change tant qu'ils ne répondent pas."
 
 #, machine, plain1
-msgid "Your parent or guardian has been asked to turn Private posting off."
-msgstr "On a demandé à vos parents ou tuteurs d'éteindre les affectations privées."
-
-#, machine, plain1
-msgid "Your parent or guardian has to agree before Private posting can be turned off."
-msgstr "Votre parent ou tuteur doit convenir avant que l'affectation privée puisse être désactivée."
-
-#, machine, plain1
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Votre parent ou tuteur l'a désactivé pour votre compte."
 
@@ -22020,14 +22624,6 @@ msgstr "Votre parent ou tuteur a défini un nouveau mot de passe pour votre comp
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
 msgstr "Votre parent ou tuteur a cessé de gérer votre compte. Il maintient l'enfant verrouillé jusqu'à ce que vous confirmiez votre âge dans Paramètres > Contenu. Ils ont choisi votre mot de passe : changez-le dans [Paramètres > Sécurité](/settings/security), ou ils peuvent toujours se connecter comme vous."
-
-#, machine, plain1
-msgid "Your parent or guardian turned Private posting off for your account."
-msgstr "Votre parent ou tuteur a désactivé l'affichage privé pour votre compte."
-
-#, machine, plain1
-msgid "Your parent or guardian wants Private posting to stay on."
-msgstr "Votre parent ou tuteur veut que l'affectation privée reste."
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22060,10 +22656,6 @@ msgstr "Votre téléphone a dit non, donc personne n'a été enregistré."
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Votre poste est listé sur votre profil de toute façon. Choisir Mon profil pour avoir ses commentaires là aussi, et ajouter des guildes pour les poster directement dans eux: chaque guilde obtient sa propre copie avec ses propres votes et commentaires."
-
-#, machine, plain1
-msgid "Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone."
-msgstr "Votre poste sera retiré de votre profil, flux et guildes. Le site conserve une copie privée pendant 90 jours, que seuls vous et les administrateurs du site pouvez ouvrir. Ça ne peut pas être annulé."
 
 #, machine
 msgid "Your posting history will show here."
@@ -22182,6 +22774,10 @@ msgstr "Votre titre est la question. %(min)s à %(max)s options, une voix chacun
 msgid "Your title is the question. Give %(min)s to %(max)s options. People can vote from every forward and repost of this post, once each."
 msgstr "Votre titre est la question. Donnez %(min)s à %(max)s options. Les gens peuvent voter à partir de chaque avant et de chaque repost de ce poste, une fois chacun."
 
+#, machine, plain2
+msgid "Your two-factor code"
+msgstr "Votre code à deux facteurs"
+
 #, machine
 msgid "Your username is your unique <code>@handle</code>: the address of your profile, and what people mention and search for. Changing it costs 20 Coins and may be done once every 7 days. To change how your name reads without that, use your display name above."
 msgstr "Votre nom d'utilisateur est votre unique <code>@handle</code>: l'adresse de votre profil, et ce que les gens mentionnent et recherchent. Changer cela coûte 20 pièces et peut être fait une fois tous les 7 jours. Pour modifier la lecture de votre nom sans cela, utilisez votre nom d'affichage ci-dessus."
@@ -22245,6 +22841,10 @@ msgstr "[FAQ](/help/faq)"
 #, machine, plain1
 msgid "[Guild Siege](/help/siege)"
 msgstr "[Demande de prise en charge par des personnes morales](/help/siege)"
+
+#, machine, plain2
+msgid "[How moderation is recorded](/help/moderation)"
+msgstr "[Comment la modération est enregistrée](/help/moderation)"
 
 #, machine
 msgid "[Legal Policies](/help/legal)"
@@ -22314,6 +22914,61 @@ msgstr "[Termes de service](/help/terms)"
 msgid "[Titles](/help/titles)"
 msgstr "[Titres](/help/titles)"
 
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your comment](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"[Your post](%(item)s) was removed.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "[banned]"
 msgstr "[branlé]"
@@ -22364,6 +23019,10 @@ msgstr "[sonne]"
 msgid "a day"
 msgstr "une journée"
 
+#, machine, plain2
+msgid "a deleted post"
+msgstr "un poste supprimé"
+
 #, machine
 msgid "a guild or post it named no longer exists."
 msgstr "une guilde ou un poste qu'elle nomme n'existe plus."
@@ -22403,6 +23062,12 @@ msgstr "activité"
 #, machine, python-format
 msgid "added a bot feed %(target)s to a channel"
 msgstr "ajout d'un flux boot %(target)s à un canal"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "added a community note to %(target)s"
+msgstr "ajouté une note communautaire à %(target)s"
 
 #. after the moderator's name in a guild's moderation log
 #, machine, plain1
@@ -22489,12 +23154,16 @@ msgstr "boots"
 msgid "by %(author)s"
 msgstr "par %(author)s"
 
+#. the post's author, under its title
+#, machine, plain2, python-format
+msgid "by %(name)s"
+msgstr "par %(name)s"
+
 #. who made the curation, a link to their @handle
 #, machine, python-format
 msgid "by %(owner)s"
 msgstr "par %(owner)s"
 
-#. the post's author, under its title
 #, python-format
 msgid "by <a href=\"%(link)s\">@%(name)s</a>"
 msgstr ""
@@ -22579,6 +23248,12 @@ msgstr "changé si les expéditeurs ont besoin d'une étiquette"
 msgid "changed who may edit a wiki page"
 msgstr "changé qui peut modifier une page wiki"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "chatbanned %(target)s"
+msgstr "chatinterné %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -22598,6 +23273,10 @@ msgstr "pièces"
 #, glossary, machine, plain2
 msgid "comment"
 msgstr "commentaire"
+
+#, machine, plain2, python-format
+msgid "comment #%(id)s"
+msgstr "commentaire #%(id)s"
 
 #, machine
 msgid "commercial promotion"
@@ -22686,6 +23365,12 @@ msgstr "Par exemple <span class=\"font-weight-bold vote-ratio-9\">%(score)s</spa
 msgid "e.g. <span class=\"font-weight-bold\">%(score)s</span> for %(up)s up and %(down)s down"
 msgstr "Par exemple <span class=\"font-weight-bold\">%(score)s</span> pour %(up)s et %(down)s baisse"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a comment
+#, machine, plain2, python-format
+msgid "edited a %(target)s"
+msgstr "a édité un %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "edited a wiki page"
@@ -22696,10 +23381,21 @@ msgstr "a édité une page wiki"
 msgid "edited an event"
 msgstr "a édité un événement"
 
+#. follows the editor's name in the Log (or "Anonymous"); %(target)s is a link
+#. to a post
+#, machine, plain2, python-format
+msgid "edited post %(target)s"
+msgstr "poste édité %(target)s"
+
 #. a story that is no longer up
 #, machine
 msgid "ended"
 msgstr "clos"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "ended the Space %(target)s"
+msgstr "terminé l'espace %(target)s"
 
 #. when a subscription ends (cancelled) or renews; %(date)s is a date
 #, machine, python-format
@@ -22725,6 +23421,12 @@ msgstr "tout ce qu'il contient"
 #, machine
 msgid "everything you type is credited to you"
 msgstr "tout ce que vous tapez vous est crédité"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "exiled %(target)s"
+msgstr "exilé %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -22805,6 +23507,11 @@ msgstr "a souligné leur %(target)s"
 msgid "heralded their post %(target)s"
 msgstr "a souligné leur message %(target)s"
 
+#. follows "The post's author" in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "hid %(target)s under their own post"
+msgstr "caché %(target)s sous leur propre poste"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
@@ -22865,6 +23572,10 @@ msgid "in %(num)s minute"
 msgid_plural "in %(num)s minutes"
 msgstr[0] "en %(num)s minutes"
 msgstr[1] "dans %(num)s minutes"
+
+#, machine, plain2
+msgid "in this thread"
+msgstr "dans ce fil"
 
 #. "in:" is a search operator and stays as it is
 #, machine
@@ -23029,6 +23740,11 @@ msgstr "anciens"
 msgid "only guildmasters write here"
 msgstr "seulement les modérateurs de guilde écrire ici"
 
+#. follows the site's name in the Log; %(guild)s is a guild's name
+#, machine, plain2, python-format
+msgid "opened +%(guild)s to everyone"
+msgstr "ouvert +%(guild)s à tous"
+
 #, glossary, machine, plain2
 msgid "outside server"
 msgstr "serveur externe"
@@ -23085,6 +23801,10 @@ msgstr "un message dans un canal"
 #, machine, python-format
 msgid "pinned post %(target)s"
 msgstr "poste coincé %(target)s"
+
+#, machine, plain2, python-format
+msgid "post #%(id)s"
+msgstr "poste #%(id)s"
 
 #, glossary, machine, plain2
 msgid "post image"
@@ -23159,6 +23879,16 @@ msgid "removed a message by %(target)s from a channel"
 msgstr "supprimé un message par %(target)s d'un canal"
 
 #. follows the moderator's name in the Log
+#, machine, plain2
+msgid "removed a message from a public channel"
+msgstr "supprimé un message d'une chaîne publique"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post
+#, machine, plain2, python-format
+msgid "removed a message from the board of the Space %(target)s"
+msgstr "supprimé un message de la carte de l'Espace %(target)s"
+
+#. follows the moderator's name in the Log
 #, machine, plain1
 msgid "removed a revision of a guild's wiki"
 msgstr "supprimé une révision du wiki d'une guilde"
@@ -23181,6 +23911,12 @@ msgstr "modérateur de guilde supprimé %(target)s"
 msgid "removed post %(target)s"
 msgstr "poste supprimé %(target)s"
 
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "removed the community note on %(target)s"
+msgstr "supprimé la note communautaire sur %(target)s"
+
 #. after the moderator's name in a guild's moderation log
 #, machine
 msgid "renamed a channel category"
@@ -23189,6 +23925,12 @@ msgstr "rebaptisé catégorie canal"
 #, machine, python-format
 msgid "renews %(date)s"
 msgstr "renouvelle %(date)s"
+
+#. follows the moderator's name in the Log; %(target)s is a link to a post or a
+#. comment
+#, machine, plain2, python-format
+msgid "replaced the community note on %(target)s"
+msgstr "a remplacé la note communautaire sur %(target)s"
 
 #, glossary, machine, plain2
 msgctxt "noun"
@@ -23232,6 +23974,11 @@ msgid "share. Only the author can share this post."
 msgid_plural "shares. Only the author can share this post."
 msgstr[0] "des actions. Seul l'auteur peut partager ce post."
 msgstr[1] "des actions. Seul l'auteur peut partager ce post."
+
+#. follows the moderator's name in the Log; %(target)s is a link to a comment
+#, machine, plain2, python-format
+msgid "showed %(target)s again under its post"
+msgstr "montré %(target)s à nouveau sous son poste"
 
 #. the date someone was added to the circle
 #, machine, python-format
@@ -23353,11 +24100,23 @@ msgctxt "sort, lowercase"
 msgid "top"
 msgstr "top"
 
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-chatbanned %(target)s"
+msgstr "non discuté %(target)s"
+
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
 #, machine, python-format
 msgid "un-chatbanned user %(target)s"
 msgstr "utilisateur non-chatbanné %(target)s"
+
+#. follows the moderator's name in a guild's moderation log; %(target)s is
+#. "Anonymous" and a number
+#, machine, plain2, python-format
+msgid "un-exiled %(target)s"
+msgstr "nonexilé %(target)s"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -23418,6 +24177,14 @@ msgstr "unhid un %(target)s dans cette guilde"
 #, machine, python-format
 msgid "unhid post %(target)s in this guild"
 msgstr "unhid post %(target)s dans cette guilde"
+
+#, machine, plain2, python-format
+msgid "until %(date)s"
+msgstr "jusqu'à %(date)s"
+
+#, machine, plain2, python-format
+msgid "up to %(max)s at a time"
+msgstr "jusqu'à %(max)s à la fois"
 
 #. %(people)s is the largest number of people a call may have for video
 #, machine, python-format
