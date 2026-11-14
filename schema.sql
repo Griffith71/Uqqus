@@ -7202,6 +7202,9 @@ CREATE TABLE public.log_snapshots (
     scrubbed_utc bigint DEFAULT 0 NOT NULL,
     kind character varying(12) NOT NULL,
     hider_id integer,
+    public boolean DEFAULT false NOT NULL,
+    word_severity smallint DEFAULT 0 NOT NULL,
+    is_sensitive boolean DEFAULT false NOT NULL,
     CONSTRAINT log_snapshots_kind CHECK (kind IN ('hide', 'author_hide', 'grace', 'delete', 'legal'))
 );
 
@@ -7233,7 +7236,7 @@ CREATE TABLE public.log_entries (
     legacy_modaction_id bigint,
     until_utc bigint DEFAULT 0 NOT NULL,
     linked_entry_id bigint,
-    CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression')),
+    CONSTRAINT log_entries_type CHECK (log_type IN ('content', 'sanction', 'guild', 'suppression', 'deletion')),
     CONSTRAINT log_entries_role CHECK (actor_role IN ('guildmaster', 'admin', 'system', 'author')),
     CONSTRAINT log_entries_audience CHECK (audience BETWEEN 0 AND 3)
 );
@@ -7244,6 +7247,7 @@ CREATE INDEX log_entries_target_user_idx ON public.log_entries (target_user_id);
 CREATE INDEX log_entries_actor_idx ON public.log_entries (actor_id);
 CREATE INDEX log_entries_created_idx ON public.log_entries (created_utc);
 CREATE INDEX log_entries_order_idx ON public.log_entries (created_utc DESC, id DESC);
+CREATE INDEX log_entries_type_order_idx ON public.log_entries (log_type, created_utc DESC, id DESC);
 CREATE INDEX log_entries_post_idx ON public.log_entries (target_submission_id) WHERE target_submission_id IS NOT NULL;
 CREATE INDEX log_entries_comment_idx ON public.log_entries (target_comment_id) WHERE target_comment_id IS NOT NULL;
 CREATE UNIQUE INDEX log_entries_legacy_idx ON public.log_entries (legacy_modaction_id) WHERE legacy_modaction_id IS NOT NULL;
@@ -7279,6 +7283,22 @@ CREATE TABLE public.log_appeals (
 CREATE UNIQUE INDEX log_appeals_once_idx ON public.log_appeals (entry_id, user_id);
 CREATE INDEX log_appeals_open_idx ON public.log_appeals (board_id, id) WHERE status = 'open';
 CREATE INDEX log_appeals_user_idx ON public.log_appeals (user_id, created_utc);
+
+-- A person's report of a Log entry that shows someone's words (2027-01-01_log_deletes.sql; helpers/log_reports.py)
+CREATE TABLE public.log_reports (
+    id bigserial PRIMARY KEY,
+    entry_id bigint NOT NULL,
+    reporter_id integer NOT NULL,
+    reason character varying(200) DEFAULT '' NOT NULL,
+    created_utc bigint DEFAULT 0 NOT NULL,
+    status character varying(10) DEFAULT 'open' NOT NULL,
+    decided_by integer,
+    decided_utc bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT log_reports_status CHECK (status IN ('open', 'purged', 'redacted', 'dismissed'))
+);
+
+CREATE UNIQUE INDEX log_reports_once_idx ON public.log_reports (entry_id, reporter_id);
+CREATE INDEX log_reports_open_idx ON public.log_reports (entry_id) WHERE status = 'open';
 
 -- parent and child accounts (helpers/child_store.py; 2026-12-18_parent_accounts.sql)
 CREATE TABLE public.account_links (
@@ -7471,4 +7491,5 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2026-12-28_channel_pictures.sql'),
     ('2026-12-29_chat_extras.sql'),
     ('2026-12-30_log_paper_trail.sql'),
-    ('2026-12-31_log_d4.sql');
+    ('2026-12-31_log_d4.sql'),
+    ('2027-01-01_log_deletes.sql');

@@ -22,9 +22,21 @@
 
         <div class="h4 d-md-none">{{ _("Delete post?") }}</div>
 
-        <p class="d-none d-md-block">{{ _("Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone.") }}</p>
-
-        <p class="text-muted d-md-none">{{ _("Your post will be taken off your profile, feeds and guilds. The site keeps a private copy for 90 days, which only you and the site's administrators can open. This can't be undone.") }}</p>
+        {# two ways to take a post off your name (helpers/deletion.py): delete it, which keeps its words in the Log as Anonymous (or erases it, inside five minutes and with nobody else having commented), or keep it with your name taken off #}
+        <fieldset class="text-left mb-3" id="deletePostChoice">
+          <legend class="sr-only">{{ _("What to do with your post") }}</legend>
+          <div class="custom-control custom-radio mb-3">
+            <input type="radio" class="custom-control-input" name="delete-post-how" id="delete-post-how-delete" value="delete" checked>
+            <label class="custom-control-label font-weight-bold" for="delete-post-how-delete">{{ _("Delete it") }}</label>
+            <div class="text-small text-muted">{{ _("It leaves your profile, feeds and guilds. If it is less than five minutes old and nobody else has commented, it is erased: only you and the site's admins can open a private copy, for 90 days. Otherwise what it said stays in the Log as Anonymous, with no name and no link, and anyone can read it there.") }}</div>
+          </div>
+          <div class="custom-control custom-radio" id="deletePostUnlinkOption">
+            <input type="radio" class="custom-control-input" name="delete-post-how" id="delete-post-how-unlink" value="unlink">
+            <label class="custom-control-label font-weight-bold" for="delete-post-how-unlink">{{ _("Remove my name") }}</label>
+            <div class="text-small text-muted">{{ _("The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you.") }}</div>
+          </div>
+        </fieldset>
+        <p class="text-small text-muted">{{ _("This can't be undone. The site's admins can always see who wrote something.") }}</p>
 
         <div class="d-md-none">
 

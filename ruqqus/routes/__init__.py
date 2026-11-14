@@ -56,6 +56,7 @@ from .insights import *
 from .voters import *
 from .log_pages import *
 from .log_appeal_pages import *
+from .log_report_pages import *
 from .circles import *
 from .post_commenting import *
 from .post_spaces import *

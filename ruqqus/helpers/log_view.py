@@ -3,7 +3,9 @@ with no I/O (helpers/action_log.py holds the entries and who may read them).
 
 The public Log shows, for a hide or a removal, **who (by role), when, where, which rule and the written reason, never the
 title or the text** of what was hidden (the owner, 2026-10-31). A sentence names its subject by id ("post #a1b2c"), so
-nothing the author wrote reaches it. What an author deleted themselves is not in the Log at all.
+nothing the author wrote reaches it. **What an author deleted themselves** (the Deleted tab, from slice D3a: the owner's decision of
+2026-11-05) **stays here as Anonymous, with its words** under the word-filter, sensitive and Child-level rules of any member text, and
+without a clickable link or a picture (`without_links`, `without_media`); inside the five-minute grace window a delete leaves nothing.
 
 A guild's own log keeps its filters (`SHOW`): the owner can narrow it to one kind of action.
 """
@@ -18,13 +20,16 @@ PER_PAGE = 25
 MAX_PAGE = 1000
 
 # the public Log's tabs: the entries' `log_type`s a visitor may read (suppressions are level 4, in /admin/log)
-CONTENT, SANCTION, GUILD_CHANGE = "content", "sanction", "guild"
-TABS = (CONTENT, SANCTION, GUILD_CHANGE)
+CONTENT, SANCTION, GUILD_CHANGE, DELETED = "content", "sanction", "guild", "deletion"
+TABS = (CONTENT, SANCTION, GUILD_CHANGE, DELETED)
 TAB_LABELS = {
     CONTENT: N_("Moderation"),
     SANCTION: N_("Sanctions"),
     GUILD_CHANGE: N_("Guild changes"),
+    DELETED: N_("Deleted"),
 }
+# the Deleted tab's one extra filter: posts or comments (the actions its entries are written with)
+WHAT = {"post": "author_delete_post", "comment": "author_delete_comment"}
 
 # the guild log's own filters: what to show of the ModAction kinds
 SHOW = {
@@ -52,8 +57,13 @@ _SOUND = re.compile(r"<audio\b.*?</audio>", re.I | re.S)
 
 
 def parse_tab(raw):
-    """content (the default), sanction or guild."""
+    """content (the default), sanction, guild or deletion."""
     return raw if raw in TABS else CONTENT
+
+
+def parse_what(raw):
+    """The Deleted tab's filter: `post`, `comment` or None for both."""
+    return raw if raw in WHAT else None
 
 
 def parse_show(raw):
@@ -92,6 +102,11 @@ def site_account(site_name):
     return Markup('<a href="/@{0}" class="font-weight-bold text-black">@{0}</a>').format(site_name)
 
 
+def anonymous_actor():
+    """Who deleted it, on the Deleted tab: nobody is named, whoever looks (the item is anonymous from the moment it is deleted)."""
+    return Markup(escape(tr("Anonymous")))
+
+
 def post_author():
     """A post's author hiding a comment under it: who is not drawn by name (the post may be anonymous), only the role."""
     return Markup(escape(tr("The post's author")))
@@ -119,6 +134,17 @@ def sentence(action, templates, who, target="", guild=""):
     except (KeyError, ValueError, TypeError):
         body = Markup(escape(entry["str"]))
     return Markup("{} {}").format(who, body)
+
+
+def without_links(html):
+    """The stored text of a deleted item with its links taken off, the words kept: a link in text that stays public after its author is gone is
+    not a door to anywhere the site vouches for (it may lead to a domain banned since), and a mention names an account. Only tags are removed, so
+    what comes out is as safe as what went in."""
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html or "", "html.parser")
+    for link in soup.find_all("a"):
+        link.unwrap()
+    return str(soup)
 
 
 def without_media(html):

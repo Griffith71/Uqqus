@@ -29,6 +29,7 @@ from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import age_declaration, anonymity
 from ruqqus.helpers import action_log, log_notices
+from ruqqus.helpers import anonymise, deletion, deletion_store
 from ruqqus.classes import *
 from flask import *
 from ruqqus.helpers import sharing
@@ -104,6 +105,10 @@ Optional query parameters:
                 'api': lambda: {'error': tr('+%(guild)s is banned.', guild=board.name)}
 
                 }
+
+    # a comment on a deleted post is read in the Log's thread of that post (slice D3a), where the post is Anonymous and the comment is as it was
+    if (post.deleted_utc or 0) > 0 and not request.path.startswith("/api/") and not (post.is_space or cperm.is_space(post)):
+        return redirect(f"/log/post/{post.base36id}#comment-{comment.base36id}")
 
     moved = canonical_redirect(comment)
     if moved:
@@ -809,10 +814,17 @@ Optional form data (left out: unchanged):
 @api("delete")
 def delete_comment(cid, v):
     """
-Delete your comment.
+Delete your comment, or (on the site only) take your name off it.
+
+What you delete leaves the site, and what it said stays in the public Log as Anonymous, like every contribution on Wikipedia. A
+comment less than five minutes old is erased with no public trace instead, unless someone else has commented on it. A comment
+on a post that was not public keeps its copy with that post's own audience only.
 
 URL path parameters:
 * `cid` - The base 36 id of the comment to delete
+
+Form field (the site only; an API app always deletes):
+* `how` - `delete` (the default) or `unlink`: keep the comment, remove your name from it, for good.
 """
 
 
@@ -828,22 +840,52 @@ URL path parameters:
     if c.deleted_utc > 0:
         abort(404)
 
+    if deletion.parse_how(request.form.get("how")) == deletion.UNLINK:
+        if request.path.startswith(("/api/v1", "/api/v2")):
+            return jsonify({"error": msg(UNLINK_SITE_ONLY)}), 400
+        return unlink_comment(c, v)
+
     now = int(time.time())
+    author = c.author
+    post = c.post
+    board = post.board
+    child = age_declaration.is_locked(author)
+    what = deletion.plan(created_utc=c.created_utc, now=now, erased_today=deletion_store.erased_today(g.db, c.author_id, now),
+                         others_replied=deletion_store.others_replied_to_comment(g.db, c.id, c.author_id), child=child)
+    if what != deletion.ERASE and getattr(v, "qr_limited", False):
+        return qr_limited_answer(v)          # it publishes, for good: only a full sign-in does that
+
+    circle = bool(post.audience) or bool(getattr(board, "is_circle", False))
+    published = deletion.text_published(child=child, removed=bool(c.is_banned), hidden_by_guild=bool(c.hidden_by_guild or c.author_hidden),
+                                        board_banned=bool(board.is_banned))
+
     c.deleted_utc = now
 
     g.db.add(c)
     media_cdn.purge(media_attach.attached_paths(g.db, comment_id=c.id))
 
-    # an author's own delete is not public (the owner, 2026-10-31): the text is a private copy, kept 90 days
     g.db.add(ContentEditHistory(
         actor_id=v.id,
         target_comment_id=c.id,
-        board_id=c.post.board_id,
+        board_id=post.board_id,
         action="delete"
     ))
-    # a private copy for its author and the admins only: it carries the guild's board id, but a guild's guildmasters have
-    # no business reading what an author deleted (kind GRACE, the audit's H2)
-    action_log.keep_snapshot(g.db, action_log.snapshot_of(c, c.post.board_id, comment=True, kind=action_log.GRACE))
+    if what == deletion.ERASE:
+        # a private copy for its author and the admins only: it carries the guild's board id, but a guild's guildmasters have
+        # no business reading what an author deleted (kind GRACE, the audit's H2)
+        action_log.keep_snapshot(g.db, action_log.snapshot_of(c, post.board_id, comment=True, kind=action_log.GRACE))
+    else:
+        keep = None
+        if what == deletion.LINE:
+            keep = action_log.snapshot_of(c, post.board_id, comment=True, kind=action_log.GRACE)
+        elif published:
+            keep = action_log.snapshot_of(c, post.board_id, comment=True, kind=action_log.DELETE, public=True,
+                                          sensitive=bool(post.is_sensitive or board.is_sensitive))
+        entry = action_log.record_quietly(g.db, "author_delete_comment", v.id, role=action_log.AUTHOR, board_id=post.board_id, comment_id=c.id,
+                                          floor=deletion.entry_floor(circle=circle), snapshot=keep, now=now)
+        if entry is None and keep is not None:
+            action_log.keep_snapshot(g.db, action_log.snapshot_of(c, post.board_id, comment=True, kind=action_log.GRACE))
+        anonymise.anonymise_comment(g.db, c)
 
     for forward_copy in c.forwarded_posts:
         if forward_copy.is_deleted:
@@ -860,6 +902,24 @@ URL path parameters:
 
     return {"html": lambda: ("", 204),
             "api": lambda: ("", 204)}
+
+
+UNLINK_SITE_ONLY = N_("Removing your name is done on the site itself.")
+
+
+def unlink_comment(c, v):
+    """Remove the author's name from a comment and the posts it was forwarded as, for good ("Remove my name"). Refused for what needs the name (a
+    comment on a Circle post, a tipped one, a bot's); the dialog doesn't offer it there, and this says why if a request comes anyway."""
+    if getattr(v, "qr_limited", False):
+        return qr_limited_answer(v)
+    post = c.post
+    refusal = deletion.unlink_refusal(
+        circle=bool(post.audience) or bool(getattr(post.board, "is_circle", False)), tipped=deletion_store.comment_tipped(g.db, c.id),
+        shared=False, space=bool(post.is_space), already=bool(c.is_anonymous), deleted=False, bot=bool(c.is_bot))
+    if refusal:
+        return jsonify({"error": msg(refusal)}), 409
+    anonymise.anonymise_comment(g.db, c)
+    return "", 204
 
 
 @app.route("/comment/<cid>/history", methods=["GET"])

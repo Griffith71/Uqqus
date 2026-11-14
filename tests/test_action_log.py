@@ -502,18 +502,6 @@ def test_a_page_of_it_can_start_part_way_through(db, items):
     assert [r["id"] for r in rows] == [ids[2], ids[1]] and more
 
 
-def test_an_authors_own_deletes_are_dates_with_no_words(db, items):
-    for post, comment, actor, when in ((100, 0, 30, NOW), (0, 200, 30, NOW + 5), (104, 0, 31, NOW + 9), (103, 0, 30, NOW + 11)):
-        db.execute(text("INSERT INTO content_edit_history (actor_id, target_submission_id, target_comment_id, action, created_utc) "
-                        "VALUES (:a, :p, :c, 'delete', :t)"), {"a": actor, "p": post, "c": comment, "t": when})
-    db.execute(text("INSERT INTO content_edit_history (actor_id, target_submission_id, action, created_utc) VALUES (30, 100, 'edit', 1)"))
-    mine = log.author_deletes(db, actor_id=30)
-    assert [(d["target_submission_id"], d["target_comment_id"]) for d in mine] == [(0, 200), (100, 0)]          # newest first; an anonymous one is left out
-    assert all(set(d) == {"id", "created_utc", "actor_id", "target_submission_id", "target_comment_id"} for d in mine)   # no title, no body
-    assert len(log.author_deletes(db, actor_id=30, include_anonymous=True)) == 3
-    assert [d["target_submission_id"] for d in log.author_deletes(db, post_ids=[100, 101])] == [100]
-    assert log.author_deletes(db) == [] and [d["target_comment_id"] for d in log.author_deletes(db, comment_ids=[200])] == [200]
-
 
 # --- the first slice of the audit (2026-11-05): what a private copy is, who acted, and no pairing with an anonymous item ----------
 

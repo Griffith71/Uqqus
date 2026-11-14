@@ -40,7 +40,8 @@ def test_the_public_log_is_the_same_page_for_a_visitor_a_member_and_an_admin():
 
 
 def test_a_line_of_the_log_never_carries_a_title_or_text_and_never_names_an_admin():
-    rows = body(LOG_PAGES, "_rows")
+    rows = body(LOG_PAGES, "_rows").split("\n\n\ndef _deleted_words")[0]
+    # a moderation line carries no words of the item: the only words a line draws are a deleted item's public copy (`_deleted_words`, slice D3a)
     assert ".title" not in rows and "body" not in rows and "body_html" not in rows
     assert "log_view.site_account(site)" in rows and "role != action_log.GUILDMASTER" in rows
     assert "board_hidden(board, v)" in rows and "user_hidden(" in rows        # the reader's own word filter still applies
@@ -74,7 +75,7 @@ def test_the_deletion_log_is_gone_and_its_address_only_redirects():
         assert not ROOT.joinpath(*path).exists(), path
     assert "from .deletion_log import *" not in read("ruqqus", "routes", "__init__.py")
     route = body(LOG_PAGES, "deletion_log_retired").split("\n\n\n")[0]
-    assert 'redirect("/log", code=301)' in route and "render_template" not in route and "g.db" not in route
+    assert 'redirect("/log?type=deletion", code=301)' in route and "render_template" not in route and "g.db" not in route
 
 
 def test_nothing_links_to_or_names_the_deletion_log_any_more():
@@ -88,21 +89,29 @@ def test_nothing_links_to_or_names_the_deletion_log_any_more():
 
 def test_the_delete_dialogs_and_the_privacy_page_say_what_is_kept_and_for_whom():
     for name in ("delete_post_modal.html", "delete_comment_modal.html"):
-        assert "keeps a private copy for 90 days" in read("ruqqus", "templates", name), name
+        text = read("ruqqus", "templates", name)
+        # both ways, and the five minutes: it can't promise the outcome (the server decides, and an erase needs that nobody has replied)
+        assert "Delete it" in text and "Remove my name" in text and "less than five minutes old" in text and "private copy" in text and "stays in the Log as Anonymous" in text, name
     privacy = read("ruqqus", "templates", "help", "privacy.html")
     assert "private copy of what it said for 90 days" in privacy and "never the title or the text" in privacy
+    assert "stays in the [Log](/log) as Anonymous" in privacy and "five minutes" in privacy and "Remove my name" in privacy
     assert "private guild is visible only to that guild's members" in privacy
+    assert "the Log keeps the words of a deleted post or comment" in read("ruqqus", "templates", "help", "terms.html")
 
 
 # --- an author's own delete, and a hide, keep their text privately ------------------------------------------------------------------------
 
-def test_an_authors_delete_keeps_its_text_as_a_private_copy_and_not_in_the_public_history_row():
-    for src, fn, kw in ((POSTS, "delete_post_as", "snapshot_of(post, kind=action_log.GRACE)"),
-                    (COMMENTS, "delete_comment", "snapshot_of(c, c.post.board_id, comment=True, kind=action_log.GRACE)")):
+def test_an_authors_delete_is_an_erase_inside_the_grace_window_and_a_public_entry_after_it_and_never_puts_text_in_the_history_row():
+    for src, fn, grace, action in ((POSTS, "delete_post_as", "snapshot_of(post, kind=action_log.GRACE)", "author_delete_post"),
+                                   (COMMENTS, "delete_comment", "snapshot_of(c, post.board_id, comment=True, kind=action_log.GRACE)", "author_delete_comment")):
         part = body(src, fn)
         row = part.split('action="delete"')[1].split("))")[0]
-        assert "previous_" not in row, fn
-        assert f"action_log.keep_snapshot(g.db, action_log.{kw})" in part, fn
+        assert "previous_" not in row, fn                                           # the history row says it happened; the words are a copy in the Log
+        assert "deletion.plan(" in part and "deletion.ERASE" in part, fn
+        assert f"action_log.keep_snapshot(g.db, action_log.{grace})" in part, fn   # an erase keeps a private copy for the author and the admins, no entry
+        assert f'"{action}"' in part and "role=action_log.AUTHOR" in part and "kind=action_log.DELETE" in part and "public=True" in part, fn
+        assert "anonymise.anonymise_" in part, fn                                   # after the window the item is anonymous before it leaves
+        assert "qr_limited_answer(v)" in part, fn                                   # a delete that publishes needs a full sign-in
 
 
 def test_a_hide_keeps_the_text_as_a_private_copy_tied_to_its_entry_and_cites_a_rule():
@@ -260,10 +269,11 @@ def test_a_posts_comments_and_accounts_log_are_the_public_entries_about_it_and_n
 
 
 def test_nothing_about_a_post_or_comment_reaches_the_page_but_its_id():
-    for fn in ("post_log", "comment_log", "profile_log", "_about_page", "_delete_rows"):
+    for fn in ("post_log", "comment_log", "profile_log", "_about_page"):
         src = body(LOG_PAGES, fn)
         assert ".title" not in src and "body_html" not in src and ".body" not in src, fn
-    assert not re.search(r"\.(title|body|body_html|url)\b", ABOUT_PAGE + ROWS)          # no attribute of a post or comment is ever drawn
+    # no attribute of a post or comment is ever drawn: the one words a line may draw are a deleted item's public copy, a plain dict (`e.deleted`)
+    assert not re.search(r"\.(title|body|body_html|url)\b", (ABOUT_PAGE + ROWS).replace("e.deleted.", ""))
     assert "| safe" not in ABOUT_PAGE and "| safe" not in ROWS and "|safe" not in ROWS
     assert '{% include "partials/log_rows.html" %}' in LOG_PAGE and '{% include "partials/log_rows.html" %}' in ABOUT_PAGE
     assert 'name="robots" content="noindex"' in ABOUT_PAGE
@@ -274,18 +284,16 @@ def test_an_anonymous_item_is_left_out_of_a_profiles_log_unless_the_reader_is_an
     assert "NOT COALESCE(s.is_anonymous, false)" in scope and "NOT COALESCE(c.is_anonymous, false)" in scope
     route = body(LOG_PAGES, "profile_log")
     assert "staff = bool(v and v.admin_level >= 3)" in route and "include_anonymous=staff" in route
-    assert route.count("include_anonymous=staff") + route.count('"include_anonymous": staff') == 2     # the entries and the author's own deletes
+    assert route.count("include_anonymous=staff") == 1                      # an author's own delete is an entry now, as Anonymous: no list of its own
 
 
-def test_an_authors_own_deletes_are_for_the_author_and_the_admins_and_carry_no_words():
-    rule = body(LOG_PAGES, "_may_see_deletes")
-    assert "v.admin_level >= 3" in rule and "v.id == author_id" in rule
-    for fn in ("post_log", "comment_log", "profile_log"):
-        assert "_may_see_deletes(v," in body(LOG_PAGES, fn), fn
-        assert "else None" in body(LOG_PAGES, fn), fn                                    # anyone else is handed no deletes at all
-    reader = body(ACTION_LOG, "author_deletes")
-    assert "previous_" not in reader and "SELECT h.id, h.created_utc, h.actor_id, h.target_submission_id, h.target_comment_id" in reader
-    assert "h.action = 'delete'" in reader
+def test_an_authors_own_delete_is_an_entry_drawn_as_anonymous_with_words_only_from_a_public_copy():
+    rows = body(LOG_PAGES, "_rows")
+    assert "log_view.anonymous_actor()" in rows and "action_log.deleted_texts(" in rows        # who: nobody named; the words: only a public `delete` copy
+    assert "_may_see_deletes" not in LOG_PAGES and "_delete_rows" not in LOG_PAGES and "author_deletes" not in ACTION_LOG
+    words = LOG_PAGES.split("def _deleted_words(")[1].split("\n\n\n")[0]
+    assert "deletion.text_view(" in words and "log_view.without_links(log_view.without_media(" in words      # the rules, and no link or picture
+    assert "_clean_wo_links.clean(" in words                                                                  # cleaned again with the site's own cleaner
 
 
 def test_the_logs_are_linked_from_where_you_would_look_for_them():

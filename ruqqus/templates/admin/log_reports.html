@@ -1,0 +1,46 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>Reports of words in the Log - {{ 'SITE_NAME' | app_config }} Admin</title>
+<meta name="description" content="{{ 'SITE_NAME' | app_config }} Admin">
+{% endblock %}
+
+{% block content %}
+<h1>Reports of words in the Log</h1>
+<p>Members can report a Log entry that shows someone's words: what a member deleted, which the Log keeps as Anonymous, or a reason written for a decision.
+You are never told who reported. <strong>Purge</strong> erases the words everywhere through the same path as the purge button, the Log's copies included
+(irreversible). <strong>Hide the reason</strong> (level 4) hides a reason from everyone below staff and writes a new entry that says so. <strong>Dismiss</strong>
+closes the report. One decision closes every open report of an entry. Guildmasters have no tool for deleted items.</p>
+{% if msg %}<div class="alert alert-info" role="status">{{ msg }}</div>{% endif %}
+
+{% for q in queue %}
+<div class="card p-3 mb-3" id="log-report-{{ q.entry_id }}">
+  <div>{% if q.line %}{{ q.line.sentence }} {% endif %}<a href="/log/{{ q.entry_id }}">(entry {{ q.entry_id }})</a></div>
+  <div class="text-small text-muted">{{ q.reports }} report{{ '' if q.reports == 1 else 's' }}, the latest {{ datetime_text(q.latest_utc, "%d %b %Y %H:%M") }} (UTC){% if q.line and q.line.rule in LOG_RULES %} &middot; {{ LOG_RULES[q.line.rule] }}{% endif %}</div>
+  {% if q.entry.reason %}<div class="text-small mt-1">Reason in the entry: {{ q.entry.reason }}{% if q.entry.redacted_utc %} <em>(already hidden from the public)</em>{% endif %}</div>{% endif %}
+  {% if q.words %}
+  <div class="mt-2 p-2 border rounded text-small" dir="auto">
+    {% if q.words.scrubbed %}<em>The words were erased.</em>{% else %}
+    {% if q.words.title %}<div class="font-weight-bold">{{ q.words.title | e }}</div>{% endif %}
+    {% if q.words.url %}<div class="text-muted" style="overflow-wrap: anywhere;">{{ q.words.url }}</div>{% endif %}
+    {% if q.words.body_html %}<div>{{ words(q.words.body_html) }}</div>{% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+  {% if q.reasons %}
+  <ul class="text-small mt-2 mb-2">{% for r in q.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+  {% endif %}
+  <form method="post" action="/admin/log_reports/{{ q.entry_id }}" class="form-inline">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    {% if q.can_purge and not (q.words and q.words.scrubbed) %}<button class="btn btn-danger btn-sm mr-2 mb-2" type="submit" name="decision" value="purged">Purge the words</button>{% endif %}
+    {% if q.can_redact and level >= 4 %}<button class="btn btn-warning btn-sm mr-2 mb-2" type="submit" name="decision" value="redacted">Hide the reason</button>{% endif %}
+    <button class="btn btn-outline-secondary btn-sm mb-2" type="submit" name="decision" value="dismissed">Dismiss</button>
+  </form>
+</div>
+{% else %}
+<p class="text-muted">No reports are waiting.</p>
+{% endfor %}
+{% endblock %}

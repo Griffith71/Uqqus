@@ -1,0 +1,56 @@
+{% extends "docs_default.html" %}
+
+{# How the Log works for a member: what is recorded, who sees it, what happens to what you delete, and how to ask for words to come down. #}
+
+{% block title %}
+<title>{{ _("How moderation is recorded - %(site)s") }}</title>
+<meta name="description" content="{{ _("What the Log is, who can read it, what happens to what you delete, and how to ask for words to come down.") }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ _("How moderation is recorded") }}</h1>
+
+<p>{{ _("The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log.") }}</p>
+
+<h2>{{ _("What the Log shows") }}</h2>
+
+<ul>
+  <li>{{ _("<b>Moderation</b>: a post or comment hidden or removed, restored, or hidden in a version. For each one: who (a guildmaster by name; the site's admins as \"Site admin\", never by name), when, where, which rule, and the reason written for it. It never shows the title or the text of what was hidden.") }}</li>
+  <li>{{ _("<b>Sanctions</b>: exiles, chat mutes, suspensions and bans, with the rule and the reason.") }}</li>
+  <li>{{ _("<b>Guild changes</b>: what a guild's guildmasters changed in how it is run.") }}</li>
+  <li>{{ _("<b>Deleted</b>: what members deleted, as Anonymous (below).") }}</li>
+</ul>
+
+<p>{{ _("A private guild's decisions are read only by its own members and the site's admins, and the guild is never named in the public Log. What the site does to run itself (its defences, its lists, its bots) is read by the admins only. The site's automatic checks write generic lines: \"Automatic spam check\", \"Automatic image check\".") }}</p>
+
+<h2>{{ _("When you delete something") }}</h2>
+
+<p>{{ _("Deleting a post or comment has two ways, and you choose in the dialog:") }}</p>
+
+<ul>
+  <li>{{ _("<b>Delete it.</b> It leaves the site. What it said (the title, the link and the text) stays in the Log as <b>Anonymous</b>: no name, no profile and no link, and a link in it is shown as plain text. Anyone can read it there, under the same word filter, sensitive-content and Child-level rules as any member's words. It is how a record of the site stays honest: like Wikipedia, every contribution remains.") }}</li>
+  <li>{{ _("<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others.") }}</li>
+</ul>
+
+<p>{{ _("<b>The first five minutes.</b> If you delete something less than five minutes after you made it, and nobody else has commented on it, it is really erased: nothing is published and nothing is in the Log. The site keeps a private copy for 90 days, which only you and the site's admins can open. This is for a typo, a wrong picture or a post made in anger. It can be used 20 times a day; after that, and after five minutes, a delete is published as above.") }}</p>
+
+<p>{{ _("<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too.") }}</p>
+
+<p>{{ _("<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only.") }}</p>
+
+<p>{{ _("The site's admins can always see who wrote something: anonymity is toward other members, not toward the site.") }}</p>
+
+<h2>{{ _("Asking for words to come down") }}</h2>
+
+<p>{{ _("Every Log entry that shows someone's words, whether a deleted item's text or a reason, has a <b>Report this</b> button. The site's admins read it, and they are never told who reported. They can erase the words everywhere, including every copy kept in the Log, or hide a reason. Use it for harassment, someone's personal details, text you own the copyright of, or a request to have your own words removed. Guildmasters have no tool for deleted items; a rule-breaking comment is reported and an admin decides.") }}</p>
+
+<h2>{{ _("Private copies") }}</h2>
+
+<p>{{ _("When something is hidden, removed or erased, the site keeps a private copy of its text for 90 days (a year for illegal content, which the law requires). Who may open it depends on what it is a copy of: its author and the admins, and for a guild's hide that guild's guildmasters. Then the text is emptied; the Log's line stays.") }}</p>
+
+<h2>{{ _("If a decision was wrong") }}</h2>
+
+<p>{{ _("When a hide, a removal, an exile, a suspension or a ban is about you, you are sent the rule, the reason and a link to its line in the Log, with an <b>Appeal</b> button. You can appeal each decision once. The guild's guildmasters decide an appeal against a guild's decision; the site's admins decide the rest. If it is reversed, a new line in the Log says so.") }}</p>
+
+{% endblock %}

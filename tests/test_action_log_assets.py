@@ -87,15 +87,20 @@ def test_the_spam_path_no_longer_passes_an_argument_user_ban_does_not_take():
 # --- what an admin decides is kept with the entry ------------------------------------------------------------------------------------
 
 def test_the_removal_routes_put_the_rule_and_reason_on_the_entry():
-    for name in ("ban_post", "unban_post", "purge_post", "api_ban_comment", "api_unban_comment", "purge_comment"):
+    for name in ("ban_post", "unban_post", "api_ban_comment", "api_unban_comment"):
         assert '_decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))' in body(ADMIN_API, name), name
+    # a purge is one function the button and the Log's report queue both call (`purge_post_text`, `purge_comment_text`)
+    for route, helper_name, call in (("purge_post", "purge_post_text", "purge_post_text(post, v, rule=request.form.get("),
+                                     ("purge_comment", "purge_comment_text", "purge_comment_text(comment, v, rule=request.form.get(")):
+        assert call in body(ADMIN_API, route).split(f"def {helper_name}(")[0], route
+        assert "_decided(ma, rule=rule, reason=reason)" in body(ADMIN_API, helper_name), helper_name
     helper = body(ADMIN_API, "_decided")
     assert "g.db.flush()" in helper and "action_log.annotate(g.db, ma.id, rule=rule, reason=reason)" in helper
 
 
 def test_a_purge_or_an_obliteration_erases_the_private_copies_too():
-    assert "action_log.scrub_for(g.db, post_ids=[post.id])" in body(ADMIN_API, "purge_post")
-    assert "action_log.scrub_for(g.db, comment_ids=[comment.id])" in body(ADMIN_API, "purge_comment")
+    assert "action_log.scrub_for(g.db, post_ids=[post.id])" in body(ADMIN_API, "purge_post_text")
+    assert "action_log.scrub_for(g.db, comment_ids=[comment.id])" in body(ADMIN_API, "purge_comment_text")
     assert "action_log.scrub_for(g.db, target_ids, comment_ids)" in body(ADMIN_API, "admin_obliterate_post")
     assert "action_log.scrub_for(g.db, comment_ids=[comment.id])" in body(ADMIN_API, "admin_obliterate_comment")
 

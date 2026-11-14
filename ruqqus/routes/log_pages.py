@@ -14,15 +14,21 @@ the legal ones), filtered by type, action, rule, guild, who did it and who it wa
 stay in English. A guild's own log (`/+guild/mod/log`) reads the same table through `action_log.not_hidden_from`.
 
 Not `log.py` / `action_log.py`: the star import of a routes package would put a module of that name over the helper."""
+import html
+
 from flask import abort, g, redirect, render_template, request
-from sqlalchemy import text
+from markupsafe import Markup
+from sqlalchemy import or_, text
 from sqlalchemy.orm import lazyload
 
-from ruqqus.classes import Board, User
+from ruqqus.classes import Board, Comment, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
-from ruqqus.helpers import action_log, log_view
+from ruqqus.helpers import action_log, deletion, deletion_store, log_view, sensitive as sensitive_rules
+from ruqqus.helpers import sanitize as sanitize_rules
+from ruqqus.helpers import anonymity
 from ruqqus.helpers.base36 import base36decode, base36encode
 from ruqqus.helpers.get import get_comment, get_guild, get_post, get_user
+from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.visibility import board_hidden, comment_hidden, hidden_notice, post_hidden, user_hidden, viewer_level
 from ruqqus.helpers.wordfilter import is_hidden
 from ruqqus.helpers.wrappers import admin_level_required, auth_desired, validate_formkey
@@ -129,17 +135,22 @@ def _rows(entries, v):
     mine = action_log.led_boards(v)
     site = app.config["SITE_NAME"]
     words = viewer_level(v)                 # the reader's own word filter: a reason is a person's words (the audit's M8)
+    shows_sensitive = sensitive_rules.shows_sensitive(v)
+    texts = action_log.deleted_texts(g.db, [e["id"] for e in entries if e["log_type"] == action_log.DELETION])
+    post_languages, comment_languages = deletion_store.languages(
+        g.db, [t["post_id"] for t in texts.values()], [t["comment_id"] for t in texts.values()])
     rows = []
     for e in entries:
         board = guilds.get(e["board_id"]) if e["board_id"] else None
         if board is not None and board_hidden(board, v):
             continue
+        board_row = board
         if board is not None and board.id in action_log.SITE_BOARDS:
             board = None                    # a profile post's board is the site's own, not a guild to name (L1)
         role = e["actor_role"]
         actor = people.get(e["actor_id"])
         if role == action_log.AUTHOR:
-            who = log_view.post_author()
+            who = log_view.anonymous_actor() if e["log_type"] == action_log.DELETION else log_view.post_author()
         elif role != action_log.GUILDMASTER or e["actor_id"] is None:
             who = log_view.site_account(site)
         else:
@@ -167,49 +178,40 @@ def _rows(entries, v):
             "rule": e["rule_key"], "reason": "" if is_hidden(words, e.get("reason_severity")) else e["reason"],
             "can_open": can_open, "type": e["log_type"],                                                          # not "copy": a dict has that method
             "until": e.get("until_utc") or 0})
+        if e["log_type"] == action_log.DELETION:
+            rows[-1]["deleted"] = _deleted_words(texts.get(e["id"]), board_row, words, shows_sensitive, post_languages, comment_languages)
+        # the Report button is on an entry that shows a person's words (a deleted item's, or a reason): a signed-in member asks the admins to take
+        # them down (`log_reports`, helpers/log_reports.py)
+        rows[-1]["can_report"] = bool(v is not None and (rows[-1].get("deleted") or rows[-1]["reason"]))
     return rows
 
 
-def _delete_rows(lines, v):
-    """The lines for the times authors deleted their own posts and comments: who, when and which item, no words. Only the author's
-    own page and the admins are ever given these (the routes below decide), so the author is named."""
-    people = _people([l["actor_id"] for l in lines])
-    rows = []
-    for l in lines:
-        actor = people.get(l["actor_id"])
-        who = log_view.person(getattr(actor, "username", ""), deleted=actor is None or actor.is_deleted, hidden=user_hidden(actor, v))
-        post = bool(l["target_submission_id"])
-        target = (log_view.item_link("post", base36encode(l["target_submission_id"])) if post
-                  else log_view.item_link("comment", base36encode(l["target_comment_id"])))
-        kind = ACTIONTYPES["author_delete_post" if post else "author_delete_comment"]
-        rows.append({"id": f"d{l['id']}", "created_utc": l["created_utc"], "guild": "", "type": "content", "rule": "", "reason": "",
-                     "sentence": log_view.sentence("author_delete_post" if post else "author_delete_comment", ACTIONTYPES, who, target),
-                     "icon": kind["icon"], "color": kind["color"], "can_open": False})
-    return rows
+def _deleted_words(copy, board, level, shows_sensitive, post_languages, comment_languages):
+    """What a reader is shown of a deleted item's words (None: the line alone): its title, its link as plain text and its text with every link and
+    picture taken out, under the reader's word filter, the sensitive rule and the guild's state now (`helpers/deletion.py text_view`)."""
+    view = deletion.text_view(copy, board_banned=bool(board is not None and board.is_banned), level=level, shows_sensitive=shows_sensitive)
+    if view == deletion.LINE_ONLY:
+        return None
+    html_ = log_view.without_links(log_view.without_media(copy["body_html"]))
+    return {"view": view, "title": html.unescape(copy["title"] or ""), "url": copy["url"] or "",
+            "body": Markup(sanitize_rules._clean_wo_links.clean(html_)),
+            "lang": post_languages.get(copy["post_id"]) or comment_languages.get(copy["comment_id"]) or ""}
 
 
 ABOUT_MAX_PAGE = 40         # a page of these merges two lists, so how far back it reads is bounded: 1,000 lines
 
 
-def _about_page(v, *, heading, back, scope, deletes, page):
-    """One page of the log of an item or an account: the entries ABOUT it (the same public ones `/log` has, nothing more) and,
-    when `deletes` is given (the author's own page, an admin's), the times its author deleted something."""
+def _about_page(v, *, heading, back, scope, page):
+    """One page of the log of an item or an account: the entries ABOUT it (the same public ones `/log` has, nothing more). An author's own delete
+    is one of them since slice D3a (as Anonymous, by the Deleted tab's rules): it is not a separate list for its author and the admins any more."""
     page = min(page, ABOUT_MAX_PAGE)
     want = page * log_view.PER_PAGE
-    entries, _ = action_log.fetch(g.db, level=0, scope=scope, limit=want)
+    entries, more = action_log.fetch(g.db, level=0, scope=scope, limit=want)
     rows = _rows(entries, v)
-    if deletes is not None:
-        rows += _delete_rows(action_log.author_deletes(g.db, limit=want, **deletes), v)
-    rows.sort(key=lambda r: (r["created_utc"], str(r["id"]).startswith("d"), int(str(r["id"]).lstrip("d"))), reverse=True)
     start = (page - 1) * log_view.PER_PAGE
     shown = rows[start:start + log_view.PER_PAGE]
     return _noindex(render_template("log_about.html", v=v, heading=heading, back=back, rows=shown, tab="content", page=page,
                                     more=len(rows) > start + log_view.PER_PAGE and page < ABOUT_MAX_PAGE))
-
-
-def _may_see_deletes(v, author_id):
-    """The author, and the admins: a self-delete is no decision and is not public (the owner, 2026-10-31)."""
-    return bool(v and (v.admin_level >= 3 or (author_id is not None and v.id == author_id)))
 
 
 @app.route("/post/<pid>/log", methods=["GET"])
@@ -224,9 +226,8 @@ def post_log(pid, v):
     if post_hidden(post, v):
         return hidden_notice(v)["html"]()
     family = action_log.family_ids(g.db, post.id)
-    deletes = ({"post_ids": family, "include_anonymous": True} if _may_see_deletes(v, post.author_id) else None)
     return _about_page(v, heading=("post", post.base36id), back=f"/post/{post.base36id}/history",
-                       scope=action_log.about_scope(post_ids=family), deletes=deletes, page=log_view.parse_page(request.args.get("page")))
+                       scope=action_log.about_scope(post_ids=family), page=log_view.parse_page(request.args.get("page")))
 
 
 @app.route("/comment/<cid>/log", methods=["GET"])
@@ -238,10 +239,8 @@ def comment_log(cid, v):
         abort(404)
     if comment_hidden(comment, v) or (comment.post and post_hidden(comment.post, v)):
         return hidden_notice(v)["html"]()
-    deletes = ({"comment_ids": [comment.id], "include_anonymous": True} if _may_see_deletes(v, comment.author_id) else None)
     return _about_page(v, heading=("comment", comment.base36id), back=f"/comment/{comment.base36id}/history",
-                       scope=action_log.about_scope(comment_ids=[comment.id]), deletes=deletes,
-                       page=log_view.parse_page(request.args.get("page")))
+                       scope=action_log.about_scope(comment_ids=[comment.id]), page=log_view.parse_page(request.args.get("page")))
 
 
 @app.route("/@<username>/log", methods=["GET"])
@@ -255,10 +254,158 @@ def profile_log(username, v):
     from ruqqus.routes.profile_lists import _profile_or_404
     user = _profile_or_404(username, v)
     staff = bool(v and v.admin_level >= 3)
-    deletes = {"actor_id": user.id, "include_anonymous": staff} if _may_see_deletes(v, user.id) else None
     return _about_page(v, heading=("user", user.username), back=user.permalink,
-                       scope=action_log.about_scope(user_id=user.id, include_anonymous=staff), deletes=deletes,
+                       scope=action_log.about_scope(user_id=user.id, include_anonymous=staff),
                        page=log_view.parse_page(request.args.get("page")))
+
+
+def deleted_post_context(post, v):
+    """What a comment's context line may say of its post when the post was deleted (the owner's decision 25): the title and a link to the Log's thread
+    only under the Deleted tab's own rules for this reader; a post erased inside the grace window, a Circle post's or one the reader may not read says
+    "a deleted post", with no title and no link. None when the post is not deleted (the line is as it always was)."""
+    if post is None or not (post.deleted_utc or 0) > 0:
+        return None
+    memo = g.__dict__.setdefault("_deleted_context", {})
+    key = (post.id, v.id if v is not None else 0)
+    if key in memo:
+        return memo[key]
+    result = {"title": None, "link": None}
+    entry_id = deletion_store.post_entry(g.db, [post.id, post.repost_id or 0])
+    if entry_id is not None:
+        level = action_log.staff_level(v.admin_level if v else 0)
+        member = action_log.member_board_ids(g.db, v.id) if v else []
+        entries, _ = action_log.fetch(g.db, level=level, member_boards=member, scope=("id = :one", {"one": int(entry_id)}), limit=1)
+        if entries:
+            result["link"] = f"/log/post/{base36encode(post.id)}"
+            copy = action_log.deleted_texts(g.db, [entry_id]).get(entry_id)
+            view = deletion.text_view(copy, board_banned=bool(post.board.is_banned), level=viewer_level(v),
+                                      shows_sensitive=sensitive_rules.shows_sensitive(v))
+            if view != deletion.LINE_ONLY:
+                result["title"] = html.unescape(copy["title"] or "")
+    memo[key] = result
+    return result
+
+
+def may_unlink_post(post):
+    """Offer "Remove my name" in a post's delete dialog? Only where the route will do it (`deletion.unlink_refusal`): not a Circle post, a tipped one, one
+    written with others, a Space, a bot's, or one that is already anonymous. The cheap checks only (the route asks the database too)."""
+    from ruqqus.helpers import coauthors, collab_view, comment_permission as cperm
+    return not (post.is_anonymous or post.audience or getattr(post.board, "is_circle", False) or (post.tip_coins or 0) > 0 or post.is_space
+                or cperm.is_space(post) or post.is_bot or collab_view.is_collab(post) or coauthors.accepted_of(post, None))
+
+
+def may_unlink_comment(comment):
+    """The same for a comment: not on a Circle post, not on a Space, not a bot's, not already anonymous (a tip is checked by the route)."""
+    post = comment.post
+    return not (comment.is_anonymous or comment.is_bot or post is None or post.audience or getattr(post.board, "is_circle", False) or post.is_space)
+
+
+app.jinja_env.globals.update(deleted_post_context=deleted_post_context, may_unlink_post=may_unlink_post, may_unlink_comment=may_unlink_comment)
+
+
+THREAD_PER_PAGE = 25            # top-level comments a page of a deleted post's thread
+THREAD_MAX = 2000               # comments read for one page: a thread is a record, not a feed
+
+
+def _comment_line(kind):
+    """The line a comment is drawn as when its words are not shown: every one is a plain sentence, never its text or its author."""
+    return {"removed": tr("A comment removed by the site's admins."),
+            "hidden": tr("A comment hidden by a guildmaster."),
+            "filtered": tr("A comment hidden by your word filter."),
+            "blocked": tr("A comment by an account you blocked or that blocked you."),
+            "deleted": tr("A comment its author deleted. What it said isn't shown here.")}[kind]
+
+
+@app.route("/log/post/<pid>", methods=["GET"])
+@limiter.limit(LOG_RATE)
+@auth_desired
+def log_thread(pid, v):
+    """What a deleted post said and what was said under it (the owner's decision 25): the post as Anonymous, by the Deleted tab's rules, and its
+    comments as a read-only tree. Open only where the post's deletion is in the Log for this reader (a delete inside the grace window leaves no
+    entry, and a Circle post's or a private guild's is for its audience only): the same 404 as for a post that never existed. No vote, comment, tip or
+    share control and no ad: it is a record."""
+    post = get_post(pid, v=v, graceful=True)
+    if post is None:
+        abort(404)
+    if not (post.deleted_utc or 0) > 0:
+        return redirect(post.permalink)                     # not deleted: its own page is the page
+    primary_id = post.repost_id or post.id
+    entry_id = deletion_store.post_entry(g.db, [post.id, primary_id])
+    if entry_id is None:
+        abort(404)
+    level = action_log.staff_level(v.admin_level if v else 0)
+    member = action_log.member_board_ids(g.db, v.id) if v else []
+    entries, _ = action_log.fetch(g.db, level=level, member_boards=member, scope=("id = :one", {"one": int(entry_id)}), limit=1)
+    if not entries:
+        abort(404)
+    head = _rows(entries, v)
+    if not head:
+        abort(404)
+
+    # the deleted copies the thread has a tab for: this post's own, and the guilds it was forwarded to that are open to the reader
+    copies = g.db.query(Submission).filter(or_(Submission.id == primary_id, Submission.repost_id == primary_id),
+                                           Submission.deleted_utc > 0).all()
+    tabs = [{"id": base36encode(c.id), "name": None if c.board_id in action_log.SITE_BOARDS else c.board.name, "current": c.id == post.id}
+            for c in copies if not board_hidden(c.board, v) and not c.board.is_private and not c.board.is_banned]
+    tabs = tabs if len(tabs) > 1 else []
+
+    page = log_view.parse_page(request.args.get("page"))
+    rows = g.db.query(Comment).options(lazyload("*")).filter(Comment.parent_submission == post.id).order_by(Comment.created_utc.asc(), Comment.id.asc()) \
+        .limit(THREAD_MAX).all()
+    children, top = {}, []
+    for c in rows:
+        if c.parent_comment_id:
+            children.setdefault(c.parent_comment_id, []).append(c)
+        else:
+            top.append(c)
+    shown_top = top[(page - 1) * THREAD_PER_PAGE:page * THREAD_PER_PAGE]
+    in_page = []
+
+    def walk(c, depth):
+        in_page.append(c)
+        return {"c": c, "depth": depth, "children": [walk(k, depth + 1) for k in children.get(c.id, ())] if depth < 8 else []}
+
+    tree = [walk(c, 0) for c in shown_top]
+    people = _people([c.author_id for c in in_page])
+    deleted_ids = [c.id for c in in_page if (c.deleted_utc or 0) > 0]
+    entry_of = deletion_store.comment_entries(g.db, deleted_ids)
+    visible_entries, _ = action_log.fetch(g.db, level=level, member_boards=member, limit=len(entry_of) or 1,
+                                          scope=(f"id IN ({', '.join(str(int(i)) for i in entry_of.values()) or '0'})", {}))
+    visible_ids = {e["id"] for e in visible_entries}
+    texts = action_log.deleted_texts(g.db, list(visible_ids))
+    words, shows = viewer_level(v), sensitive_rules.shows_sensitive(v)
+    post_languages, comment_languages = deletion_store.languages(g.db, (), [t["comment_id"] for t in texts.values()])
+
+    def draw(node):
+        c = node["c"]
+        out = {"id": base36encode(c.id), "depth": node["depth"], "created_utc": c.created_utc, "kind": "live", "line": "", "who": "", "words": None,
+               "children": [draw(k) for k in node["children"]]}
+        if c.purged_utc or c.is_banned:
+            out["kind"], out["line"] = "line", _comment_line("removed")
+        elif c.hidden_by_guild or c.author_hidden:
+            out["kind"], out["line"] = "line", _comment_line("hidden")
+        elif (c.deleted_utc or 0) > 0:
+            entry = entry_of.get(c.id)
+            copy = texts.get(entry) if entry in visible_ids else None
+            board = c.post.board if c.post else None
+            shown = _deleted_words(copy, board, words, shows, post_languages, comment_languages) if copy else None
+            out["kind"], out["who"] = ("deleted" if shown else "line"), log_view.anonymous_actor()
+            out["words"] = shown
+            out["line"] = "" if shown else _comment_line("deleted")
+        elif comment_hidden(c, v):
+            out["kind"], out["line"] = "line", _comment_line("filtered")
+        elif v is not None and not c.is_anonymous and v.any_block_exists(people.get(c.author_id) or c.author):
+            out["kind"], out["line"] = "line", _comment_line("blocked")
+        else:
+            author = anonymity.author_of(c, v)
+            out["who"] = (log_view.anonymous_actor() if c.is_anonymous and author is anonymity.ANONYMOUS else
+                          log_view.person(author.username, deleted=bool(author.is_deleted), hidden=user_hidden(author, v)))
+            out["words"] = {"view": "text", "title": "", "url": "", "body": Markup(c.body_html or ""), "lang": c.language_code or ""}
+        return out
+
+    return _noindex(render_template("log_thread.html", v=v, head=head, tree=[draw(n) for n in tree], tabs=tabs, page=page,
+                                    more=len(top) > page * THREAD_PER_PAGE, post_id=post.base36id,
+                                    total=len(top)))
 
 
 @app.route("/log", methods=["GET"])
@@ -269,14 +416,17 @@ def public_log(v):
     tab = log_view.parse_tab(args.get("type"))
     rule = action_log.parse_rule(args.get("rule"))
     before = log_view.parse_cursor(args.get("before"))
+    what = log_view.parse_what(args.get("what")) if tab == log_view.DELETED else None
+    # the Deleted tab has no "by" and no "to": every delete is Anonymous, so filtering by a person would list exactly one person's anonymous deletes (M11)
+    by = None if tab == log_view.DELETED else _id_of(get_user, args.get("by"))
+    to = None if tab == log_view.DELETED else _id_of(get_user, args.get("to"))
     entries, more = action_log.fetch(
-        g.db, level=0, log_type=tab, rule=rule or None, before_id=before, limit=log_view.PER_PAGE,
-        board_id=_id_of(get_guild, args.get("guild")), actor_id=_id_of(get_user, args.get("by")),
-        target_user_id=_id_of(get_user, args.get("to")))
+        g.db, level=0, log_type=tab, rule=rule or None, before_id=before, limit=log_view.PER_PAGE, action=log_view.WHAT.get(what),
+        board_id=_id_of(get_guild, args.get("guild")), actor_id=by, target_user_id=to)
     rows = _rows(entries, v)
     return _noindex(render_template(
         "log.html", v=v, tab=tab, rows=rows, more=more, next_before=entries[-1]["id"] if entries else None,
-        tabs=log_view.TABS, tab_labels=log_view.TAB_LABELS, rule=rule,
+        tabs=log_view.TABS, tab_labels=log_view.TAB_LABELS, rule=rule, what=what,
         filters={k: (args.get(k) or "").strip().lstrip("@+")[:40] for k in ("guild", "by", "to")}))
 
 
@@ -305,8 +455,8 @@ def log_copy(entry_id, v):
 
 @app.route("/log/deleted", methods=["GET"])
 def deletion_log_retired():
-    """The public deletion log is gone (the owner, 2026-10-31): what an author deletes is not published. Old links land on the Log."""
-    return redirect("/log", code=301)
+    """The old deletion log's address: what authors delete is the Log's Deleted tab now (the owner, 2026-11-05)."""
+    return redirect("/log?type=deletion", code=301)
 
 
 def _item_copy(v, post_id=None, comment_id=None):

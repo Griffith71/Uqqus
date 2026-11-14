@@ -263,6 +263,13 @@ nothing that references it breaks; only the text itself is gone.
     if not post:
         abort(400)
 
+    purge_post_text(post, v, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    return (redirect(post.permalink), post)
+
+
+def purge_post_text(post, v, rule=None, reason=None):
+    """Erase a post's text now and everywhere: the row, the translations and every copy of it in the Log (`scrub_for`), with the mod-log entry that
+    says an admin did it. The one path: the purge button and the Log's report queue (`routes/log_report_pages.py`) both come here."""
     post.purged_utc = int(time.time())
     post.is_pinned = False
     post.stickied = False
@@ -284,8 +291,8 @@ nothing that references it breaks; only the text itself is gone.
         board_id=post.board_id,
         note="admin action"
         )
-    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
-    return (redirect(post.permalink), post)
+    _decided(ma, rule=rule, reason=reason)
+    return ma
 
 
 @app.route("/api/distinguish/<post_id>", methods=["POST"])
@@ -420,6 +427,12 @@ nothing that references it breaks; only the text itself is gone.
     if not comment:
         abort(404)
 
+    purge_comment_text(comment, v, rule=request.form.get("rule"), reason=request.form.get("reason"))
+    return "", 204
+
+
+def purge_comment_text(comment, v, rule=None, reason=None):
+    """Erase a comment's text now and everywhere, as `purge_post_text` does for a post."""
     comment.purged_utc = int(time.time())
     comment.body = ""
     comment.body_html = ""
@@ -434,8 +447,8 @@ nothing that references it breaks; only the text itself is gone.
         board_id=comment.post.board_id,
         note="admin action"
         )
-    _decided(ma, rule=request.form.get("rule"), reason=request.form.get("reason"))
-    return "", 204
+    _decided(ma, rule=rule, reason=reason)
+    return ma
 
 
 @app.route("/admin/obliterate_post/<pid>", methods=["POST"])

@@ -86,7 +86,8 @@ NO_ENTRY = {
     "admin_dump_cache": "empties a cache: changes nothing a member can see",
     "admin_sig_generate": "makes a signature for the admin's own use: changes nothing",
 }
-LOGGED = ("action_log.", "ModAction(", ".ban(", ".unban(", "_decided(", "_obliterated(", "_ban_addresses(", "_act(", "_settle(")
+LOGGED = ("action_log.", "ModAction(", ".ban(", ".unban(", "_decided(", "_obliterated(", "_ban_addresses(", "_act(", "_settle(",
+          "purge_post_text(", "purge_comment_text(")
 
 
 def _admin_routes():

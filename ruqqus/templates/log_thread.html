@@ -1,0 +1,66 @@
+{% extends "default.html" %}
+
+{% block title %}
+<title>{{ _("Log - %(site)s") }}</title>
+<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block leftSidebarBlock %}
+{% include "sidebar-left.html" %}
+{% endblock %}
+
+{% block content %}
+{# What a deleted post said and what was said under it: a record, read-only. No vote, comment, tip or share control and no ad slot on this page. #}
+{% macro comment(c) %}
+<div class="log-thread-comment mt-3" id="comment-{{ c.id }}" style="margin-left: {{ [c.depth, 6] | min * 1.25 }}rem;">
+  {% if c.kind == "line" %}
+  <div class="text-small text-muted border-left pl-3">{{ c.line }}</div>
+  {% else %}
+  <div class="border-left pl-3">
+    <div class="text-small text-muted"><span class="font-weight-bold text-black">{{ c.who }}</span> &middot; {{ date_text(c.created_utc, "%d %B %Y") }}</div>
+    {% if c.words %}
+    <div class="text-small" lang="{{ c.words.lang }}" dir="auto">
+      {% if c.words.view == 'covered' %}<details><summary class="text-muted">{{ _('Sensitive content: show it') }}</summary>{{ c.words.body }}</details>{% else %}{{ c.words.body }}{% endif %}
+    </div>
+    {% else %}
+    <div class="text-small text-muted">{{ c.line }}</div>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% for k in c.children %}{{ comment(k) }}{% endfor %}
+</div>
+{% endmacro %}
+
+<div class="col px-md-4 py-4" id="site-log-thread">
+
+  <h1 class="h4 mb-1">{{ _('A deleted post and what was said under it') }}</h1>
+  <p class="text-muted text-small mb-3">
+    {{ _("The post's author deleted it, so it is shown as Anonymous: no name and no link. The comments under it stay as they were; one its author deleted is shown as Anonymous too.") }}
+    <a href="/log?type=deletion">{{ _('Log') }}</a> &middot; <a href="/help/moderation">{{ _("How moderation is recorded") }}</a>
+  </p>
+
+  {% if tabs %}
+  <div class="btn-group btn-group-sm mb-3" role="group" aria-label="{{ _('Where it was discussed') }}">
+    {% for t in tabs %}
+    <a href="/log/post/{{ t.id }}" class="btn btn-sm {% if t.current %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if t.current %} aria-current="page"{% endif %}>{% if t.name %}{{ _('Discussed in +%(guild)s', guild=t.name) }}{% else %}{{ _('Discussed on a profile') }}{% endif %}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% set rows = head %}
+  {% include "partials/log_rows.html" %}
+
+  <h2 class="h5 mt-4">{{ ngettext('%(num)s comment', '%(num)s comments', total) }}</h2>
+  {% for c in tree %}{{ comment(c) }}{% else %}<p class="text-muted">{{ _('Nobody commented on it.') }}</p>{% endfor %}
+
+  {% if more or page > 1 %}
+  <nav aria-label="{{ _('Page navigation') }}" class="mt-4 mb-5">
+    <ul class="pagination pagination-sm mb-0">
+      {% if page > 1 %}<li class="page-item"><small><a class="page-link" href="?page={{ page - 1 }}" rel="prev">{{ pgettext("previous page", "Prev") }}</a></small></li>{% endif %}
+      {% if more %}<li class="page-item"><small><a class="page-link" href="?page={{ page + 1 }}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>{% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
+{% endblock %}

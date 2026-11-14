@@ -13,7 +13,28 @@
             {% if e.rule in LOG_RULES %}&middot; {{ msg_text(LOG_RULES[e.rule]) }}{% endif %}
           </div>
           {% if e.reason %}<div class="text-small mt-1">{{ _('Reason: %(reason)s', reason=e.reason) }}</div>{% endif %}
+          {% if e.deleted %}
+          {# what a member deleted, as Anonymous: its words are plain (no link, no picture), under the reader's word filter and the sensitive rule #}
+          <div class="log-deleted mt-2 p-2 border rounded text-small" lang="{{ e.deleted.lang }}" dir="auto">
+            {% macro words() %}
+            {% if e.deleted.title %}<div class="font-weight-bold">{{ e.deleted.title }}</div>{% endif %}
+            {% if e.deleted.url %}<div class="text-muted" style="overflow-wrap: anywhere;">{{ e.deleted.url }}</div>{% endif %}
+            {% if e.deleted.body %}<div>{{ e.deleted.body }}</div>{% endif %}
+            {% endmacro %}
+            {% if e.deleted.view == 'covered' %}<details><summary class="text-muted">{{ _('Sensitive content: show it') }}</summary>{{ words() }}</details>{% else %}{{ words() }}{% endif %}
+          </div>
+          {% elif e.type == 'deletion' %}<div class="text-small text-muted mt-1">{{ _("What it said isn't shown here.") }}</div>{% endif %}
           {% if e.can_open %}<div class="text-small mt-1"><a href="/log/{{ e.id }}/copy" rel="nofollow">{{ _('Open the preserved copy') }}</a></div>{% endif %}
+          {% if e.can_report and v %}
+          <details class="text-small mt-1">
+            <summary class="text-muted">{{ _('Report this') }}</summary>
+            <form method="post" action="/log/{{ e.id }}/report" class="mt-1">
+              <input type="hidden" name="formkey" value="{{ v.formkey }}">
+              <input class="form-control form-control-sm mb-1" name="reason" maxlength="200" required aria-label="{{ _('Why should it come down?') }}" placeholder="{{ _('Why should it come down?') }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">{{ _('Send report') }}</button>
+            </form>
+          </details>
+          {% endif %}
         </div>
       </div>
     </div>

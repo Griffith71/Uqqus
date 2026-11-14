@@ -1115,10 +1115,15 @@ function fill_late_box(slot, html) {
 
 // Delete Post
 
-function delete_postModal(id) {
+function delete_postModal(id, canUnlink) {
 
   // Passed data for modal. onclick, not addEventListener: the buttons are shared by every post on the page, and
   // a listener added per opening stayed after Cancel, so confirming deleted every post opened before too.
+  // "Remove my name" is offered only where the server will do it (a Circle post, a tipped one, one written with others or a Space isn't:
+  // helpers/deletion.py unlink_refusal); the dialog opens on "Delete" every time.
+
+  document.getElementById("deletePostUnlinkOption").hidden = !canUnlink;
+  document.getElementById("delete-post-how-delete").checked = true;
 
   document.getElementById("deletePostButton-mobile").onclick = delete_post;
 
@@ -1126,13 +1131,15 @@ function delete_postModal(id) {
 
   function delete_post(){
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Deleting post'));  
+    var how = (canUnlink && document.getElementById("delete-post-how-unlink").checked) ? "unlink" : "delete";
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(how == "unlink" ? tr('Removing your name') : tr('Deleting post'));
     this.disabled = true; 
     post('/delete_post/' + id,
       callback = function() {
 
         location.reload();
-      }
+      },
+      undefined, {how: how}
       )
   }
 
@@ -1140,19 +1147,24 @@ function delete_postModal(id) {
 
 // Delete Comment
 
-function delete_commentModal(id) {
+function delete_commentModal(id, canUnlink) {
 
-  // Passed data for modal
+  // Passed data for modal (see delete_postModal: "Remove my name" only where the server will do it)
+
+  document.getElementById("deleteCommentUnlinkOption").hidden = !canUnlink;
+  document.getElementById("delete-comment-how-delete").checked = true;
 
   document.getElementById("deleteCommentButton").onclick = function() {  
 
-    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(tr('Deleting comment'));  
+    var how = (canUnlink && document.getElementById("delete-comment-how-unlink").checked) ? "unlink" : "delete";
+    this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(how == "unlink" ? tr('Removing your name') : tr('Deleting comment'));
     this.disabled = true; 
     post('/delete/comment/' + id,
       callback = function() {
 
         location.reload();
-      }
+      },
+      undefined, {how: how}
       )
   }
 

@@ -337,12 +337,13 @@ def test_admin_answers_keep_their_status():
 
 # --- docs and config -----------------------------------------------------------------------------------------
 
-def test_delete_dialogs_say_the_text_is_kept_privately_not_published():
-    # owner's rule (2026-10-31, reversing 2026-10-09): an author's delete is not public; a private copy is kept 90 days
+def test_delete_dialogs_say_what_a_delete_leaves_and_what_the_first_five_minutes_erase():
+    # the owner's rule of 2026-11-05 (reversing 2026-10-31): a delete stays in the Log as Anonymous; inside five minutes, with nobody else having
+    # commented, it is erased and a private copy is kept for 90 days. The dialog says both, and the choice to remove only your name
     for name in ("delete_post_modal.html", "delete_comment_modal.html"):
         page = read("templates", name)
         assert "removed everywhere" not in page and "/log/deleted" not in page, name
-        assert "The site keeps a private copy for 90 days" in page, name
+        assert "stays in the Log as Anonymous" in page and "a private copy" in page and "five minutes" in page and "Remove my name" in page, name
     privacy = read("templates", "help", "privacy.html")
     assert "### Deleting and editing" in privacy and "(/log/deleted)" not in privacy and "[Log](/log)" in privacy
 

@@ -45,6 +45,7 @@ from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
 from ruqqus.helpers import text_length
 from ruqqus.helpers import sharing
+from ruqqus.helpers import anonymise, deletion, deletion_store
 from ruqqus.helpers import bell as bell_rules
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session
@@ -163,6 +164,11 @@ Optional query parameters:
                                v=v,
                                b=board,
                                p=True)
+
+    # a post its author deleted is read in the Log's thread (slice D3a): Anonymous, with its comments, read-only. Not the API's, not a Space's. Asked
+    # before the canonical address, so an old address makes one hop and not two
+    if (post.deleted_utc or 0) > 0 and not request.path.startswith("/api/") and not (post.is_space or cperm.is_space(post)):
+        return redirect(f"/log/post/{post.base36id}")
 
     moved = canonical_redirect(post)
     if moved:
@@ -1984,10 +1990,18 @@ Required form data:
 @validate_formkey
 def delete_post_pid(pid, v):
     """
-Delete your post.
+Delete your post, or (on the site only) take your name off it.
+
+What you delete leaves the site, and what it said stays in the public Log as Anonymous (title, link and text), like
+every contribution on Wikipedia. A post less than five minutes old is erased with no public trace instead, unless
+someone else has commented under it. Posts that were not public (a Circle's, a private guild's) keep their copy with their
+own audience only.
 
 URL path parameters:
 * `pid` - The base 36 id of the post being deleted
+
+Form field (the site only; an API app always deletes):
+* `how` - `delete` (the default) or `unlink`: keep the post, remove your name from it, for good.
 """
 
     post = get_post(pid)
@@ -2001,17 +2015,64 @@ URL path parameters:
     if collab_store.open_doc_for_post(g.db, post.repost_id or post.id) is not None and not post.is_repost:
         return jsonify({"error": COLLAB_DELETE_REFUSAL}), 403
 
+    if deletion.parse_how(request.form.get("how")) == deletion.UNLINK:
+        if request.path.startswith(("/api/v1", "/api/v2")):
+            return jsonify({"error": msg(UNLINK_SITE_ONLY)}), 400       # an app's `delete` scope deletes: taking a name off is the site's own
+        return unlink_post(post, v)
+
     return delete_post_as(post, v)
 
 
 COLLAB_DELETE_REFUSAL = tr_lazy("Deleting a collaborative post needs its authors' agreement: propose it in its shared "
                                 "draft.")
+UNLINK_SITE_ONLY = N_("Removing your name is done on the site itself.")
+
+
+def _is_circle_item(post):
+    """A post for circles, or one in a Circle guild: it is the staff's alone in the Log and can't have its name removed."""
+    return bool(post.audience) or bool(getattr(post.board, "is_circle", False))
+
+
+def unlink_post(post, v):
+    """Remove the author's name from a post and its copies, for good ("Remove my name"). Refused for what needs the name (a Circle post, a tipped
+    one, one written with others, a Space); the delete dialog doesn't offer it there, and this says why if a request comes anyway."""
+    if getattr(v, "qr_limited", False):
+        return qr_limited_answer(v)          # irreversible, and a relayed code's: it needs the password (the owner's decision 22)
+    family = anonymise.family_of(g.db, post)
+    refusal = deletion.unlink_refusal(
+        circle=_is_circle_item(post), tipped=deletion_store.post_tipped(g.db, [r.id for r in family]),
+        shared=deletion_store.is_shared(g.db, post.repost_id or post.id), space=bool(post.is_space or cperm.is_space(post)),
+        already=bool(post.is_anonymous), deleted=False, bot=bool(post.is_bot))
+    if refusal:
+        return jsonify({"error": msg(refusal)}), 409
+    anonymise.anonymise_post(g.db, post)
+    return "", 204
 
 
 def delete_post_as(post, v):
     """Deletes `post` (and, for a primary post, its forwarded copies) with `v` as the one who deleted it: for
-    delete_post_pid, and for a collaborative post whose authors agreed to delete it (routes/collab.py)."""
+    delete_post_pid, and for a collaborative post whose authors agreed to delete it (routes/collab.py).
+
+    **What it leaves** (helpers/deletion.py): inside the grace window an erase (a private copy for the author and the admins, no entry); after
+    it the post and its copies are made anonymous, the author's own comments under them too, and the words stay in the Log as Anonymous (the entry
+    and its public copy). A child account's leaves the line only, an item a moderator removed or a banned guild's too."""
     now = int(time.time())
+    author = post.author
+    primary_scope = not post.is_repost
+    forwards = [f for f in g.db.query(Submission).filter_by(repost_id=post.id).all() if not f.is_deleted] if primary_scope else []
+    rows = [post] + forwards
+
+    child = age_declaration.is_locked(author)
+    what = deletion.plan(created_utc=post.created_utc, now=now, erased_today=deletion_store.erased_today(g.db, post.author_id, now),
+                         others_replied=deletion_store.others_replied_to_posts(g.db, [r.id for r in rows], post.author_id), child=child)
+    if what != deletion.ERASE and getattr(v, "qr_limited", False):
+        return qr_limited_answer(v)          # it publishes, for good: only a full sign-in does that (inside the grace window an erase leaves nothing)
+
+    # what the Log needs to say, worked out before the item changes
+    circle = _is_circle_item(post)
+    board = post.board
+    published = deletion.text_published(child=child, removed=bool(post.is_banned), hidden_by_guild=bool(post.hidden_by_guild),
+                                        board_banned=bool(board.is_banned))
 
     post.deleted_utc = now
     post.is_pinned = False
@@ -2020,15 +2081,32 @@ def delete_post_as(post, v):
     g.db.add(post)
     media_cdn.purge(media_attach.attached_paths(g.db, submission_id=post.id))
 
-    # an author's own delete is not public (the owner, 2026-10-31): the row says it happened, the text is a private copy
-    # that the author and the admins can open for 90 days (helpers/action_log.py)
+    # the row says it happened (the history page of a deleted item is its author's and the admins')
     g.db.add(ContentEditHistory(
         actor_id=v.id,
         target_submission_id=post.id,
         board_id=post.board_id,
         action="delete"
     ))
-    action_log.keep_snapshot(g.db, action_log.snapshot_of(post, kind=action_log.GRACE))
+
+    if what == deletion.ERASE:
+        # erased inside the grace window: no entry, no public text; a private copy for the author and the admins for 90 days
+        action_log.keep_snapshot(g.db, action_log.snapshot_of(post, kind=action_log.GRACE))
+    else:
+        # a child account's delete keeps a private copy and its line; a public item's keeps its words in the Log; an item a moderator had removed, one a
+        # guild had hidden and one in a banned guild keep the line alone (the item itself stays on its row until a purge)
+        keep = None
+        if what == deletion.LINE:
+            keep = action_log.snapshot_of(post, kind=action_log.GRACE)
+        elif published:
+            keep = action_log.snapshot_of(post, kind=action_log.DELETE, public=True, sensitive=bool(board.is_sensitive))
+        entry = action_log.record_quietly(g.db, "author_delete_post", v.id, role=action_log.AUTHOR, board_id=post.board_id, post_id=post.id,
+                                          floor=deletion.entry_floor(circle=circle), snapshot=keep, now=now)
+        if entry is None and keep is not None:
+            action_log.keep_snapshot(g.db, action_log.snapshot_of(post, kind=action_log.GRACE))      # the Log couldn't be written: the words are not lost
+        # the post and its copies leave the site as Anonymous, and the author's own comments under them with it
+        anonymise.anonymise_post(g.db, post, scope="family" if primary_scope else "row")
+        anonymise.anonymise_replies(g.db, [r.id for r in rows], post.author_id)
 
     # clear cache
     cache.delete_memoized(User.userpagelisting, post.author, sort="new")
@@ -2053,18 +2131,14 @@ def delete_post_as(post, v):
     # deleting a primary post cascades to every guild it was forwarded to -
     # deleting one specific forward copy (post.is_repost==True) stays scoped
     # to just that row and doesn't touch the primary or its other forwards
-    if not post.is_repost:
-        forwards = g.db.query(Submission).filter_by(repost_id=post.id).all()
-        for forward in forwards:
-            if forward.is_deleted:
-                continue
-            forward.deleted_utc = now
-            forward.is_pinned = False
-            forward.stickied = False
-            g.db.add(forward)
-            cache.delete_memoized(Board.idlist, forward.board)
-            if forward.age >= 3600 * 6:
-                cache.delete_memoized(Board.idlist, forward.board, sort="new")
+    for forward in forwards:
+        forward.deleted_utc = now
+        forward.is_pinned = False
+        forward.stickied = False
+        g.db.add(forward)
+        cache.delete_memoized(Board.idlist, forward.board)
+        if forward.age >= 3600 * 6:
+            cache.delete_memoized(Board.idlist, forward.board, sort="new")
 
     return "", 204
 

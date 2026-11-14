@@ -21,13 +21,17 @@
 {% endblock %}
 
 {% block content %}
-{% set keep %}{% if filters.guild %}&guild={{ filters.guild | urlencode }}{% endif %}{% if filters.by %}&by={{ filters.by | urlencode }}{% endif %}{% if filters.to %}&to={{ filters.to | urlencode }}{% endif %}{% if rule %}&rule={{ rule }}{% endif %}{% endset %}
+{% set keep %}{% if filters.guild %}&guild={{ filters.guild | urlencode }}{% endif %}{% if filters.by %}&by={{ filters.by | urlencode }}{% endif %}{% if filters.to %}&to={{ filters.to | urlencode }}{% endif %}{% if rule %}&rule={{ rule }}{% endif %}{% if what %}&what={{ what }}{% endif %}{% endset %}
 <div class="col px-md-4 py-4" id="site-log">
 
   <h1 class="h4 mb-1 d-md-none">{{ _('Log') }}</h1>
   <p class="text-muted text-small mb-3">
+    {% if tab == 'deletion' %}
+    {{ _("What members deleted, newest first, with the words it had, as Anonymous: no name and no link. Something deleted within five minutes of being written is erased and isn't here. The Report button asks the site's admins to take the words down.") }}
+    {% else %}
     {{ _("What guildmasters and the site decided, newest first: who, when, where, which rule and why. It never shows the title or the text of what was hidden or removed.") }}
-    {{ _("What members delete themselves is not published here.") }}
+    {% endif %}
+    <a href="/help/moderation">{{ _("How moderation is recorded") }}</a>
   </p>
 
   <div class="d-flex flex-wrap align-items-center mb-3">
@@ -41,12 +45,21 @@
   <form method="get" class="form-inline mb-3" id="log-filter">
     <input type="hidden" name="type" value="{{ tab }}">
     <input name="guild" value="{{ filters.guild }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="+ {{ _('Guild') }}" aria-label="{{ _('Guild') }}">
+    {% if tab == 'deletion' %}
+    {# every delete is Anonymous, so there is no "by" and no "to" here: filtering by a person would list exactly one person's anonymous deletes #}
+    <select name="what" class="form-control form-control-sm mr-2 mb-2" aria-label="{{ _('Posts or comments') }}">
+      <option value="">{{ _('Posts and comments') }}</option>
+      <option value="post"{% if what == 'post' %} selected{% endif %}>{{ _('Posts') }}</option>
+      <option value="comment"{% if what == 'comment' %} selected{% endif %}>{{ _('Comments') }}</option>
+    </select>
+    {% else %}
     <input name="by" value="{{ filters.by }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="@ {{ _('Done by') }}" aria-label="{{ _('Done by') }}">
     <input name="to" value="{{ filters.to }}" class="form-control form-control-sm mr-2 mb-2" maxlength="40" placeholder="@ {{ _('Done to') }}" aria-label="{{ _('Done to') }}">
     <select name="rule" class="form-control form-control-sm mr-2 mb-2" aria-label="{{ _('Rule') }}">
       <option value="">{{ _('Rule') }}</option>
       {% for key, label in LOG_RULES.items() %}<option value="{{ key }}"{% if rule == key %} selected{% endif %}>{{ msg_text(label) }}</option>{% endfor %}
     </select>
+    {% endif %}
     <button class="btn btn-primary btn-sm mb-2" type="submit">{{ _('Filter') }}</button>
   </form>
 

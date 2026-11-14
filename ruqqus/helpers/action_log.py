@@ -34,8 +34,8 @@ from ruqqus.helpers.wordfilter import is_hidden
 
 PUBLIC, GUILD, STAFF, LEGAL = 0, 1, 2, 3
 
-CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION = "content", "sanction", "guild", "suppression"
-TYPES = (CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION)
+CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION, DELETION = "content", "sanction", "guild", "suppression", "deletion"
+TYPES = (CONTENT, SANCTION, GUILD_CHANGE, SUPPRESSION, DELETION)
 
 GUILDMASTER, ADMIN, SYSTEM, AUTHOR = "guildmaster", "admin", "system", "author"
 ROLES = (GUILDMASTER, ADMIN, SYSTEM, AUTHOR)
@@ -43,7 +43,8 @@ SITE_ACCOUNT_ID = 1                 # the site's own account: what an automatic 
 SITE_BOARDS = (1, 2)                # +general and +systemprofile (where every profile post lives): the site's own, not guilds anyone can name
 
 # What a private copy is a copy OF, which decides who may open it (`snapshot_visible`), for how long it is kept and whether it
-# is public. D1 writes the first three and `legal`; `delete` is written by the delete model of slice D3a.
+# is public. `delete` is the copy of an item its author deleted after the grace window (helpers/deletion.py): it never expires, and its
+# text is drawn through the Log to whoever the ENTRY's audience allows (`log_snapshots.public`: not for a child account's or a removed item's).
 HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND = "hide", "author_hide", "grace", "delete", "legal"
 SNAPSHOT_KINDS = (HIDE, AUTHOR_HIDE, GRACE, DELETE, LEGAL_KIND)
 
@@ -81,6 +82,7 @@ _SANCTION = {
     "child_removed_with_parent",
 } | _STAFF_SANCTIONS
 _SUPPRESSION = {"suppress_content"}
+_DELETION = {"author_delete_post", "author_delete_comment"}      # a member's own delete after the grace window (helpers/deletion.py)
 
 # What can't be a guild's or the public's business: always these audiences, whatever the guild.
 ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}      # public: no guild, post or comment in them
@@ -128,6 +130,8 @@ class ReasonRequired(ValueError):
 def type_of(action):
     if action in _SUPPRESSION:
         return SUPPRESSION
+    if action in _DELETION:
+        return DELETION
     if action in _SANCTION:
         return SANCTION
     if action in _CONTENT:
@@ -212,10 +216,12 @@ def _is_anonymous(db, post_id=None, comment_id=None):
     return False
 
 
-def snapshot_of(item, board_id=None, legal_hold=False, comment=False, kind=None, hider_id=None):
+def snapshot_of(item, board_id=None, legal_hold=False, comment=False, kind=None, hider_id=None, public=False, sensitive=False):
     """What to keep of a post or comment (a Submission or a Comment, or a stand-in with the same attributes). `kind` says what
     the copy is of (`SNAPSHOT_KINDS`; a legal hold is `legal`, anything else a guild's `hide` unless the caller says);
-    `hider_id` is the account that hid it where that is not a guild (a post's author hiding a comment may open it too)."""
+    `hider_id` is the account that hid it where that is not a guild (a post's author hiding a comment may open it too). `public` says
+    the copy's text may be drawn through the Log (a `delete` copy of an item that was public); its word-filter rating and whether
+    it was `sensitive` are kept with it, so a reader's filter hides it as it hid the live item."""
     return {
         "kind": LEGAL_KIND if legal_hold else (kind or HIDE),
         "hider_id": hider_id,
@@ -228,6 +234,9 @@ def snapshot_of(item, board_id=None, legal_hold=False, comment=False, kind=None,
         "body": getattr(item, "body", None),
         "body_html": getattr(item, "body_html", None),
         "legal_hold": legal_hold,
+        "public": bool(public) and not legal_hold,
+        "word_severity": int(getattr(item, "word_severity", 0) or 0),
+        "is_sensitive": bool(sensitive or getattr(item, "is_sensitive", False)),
     }
 
 
@@ -236,17 +245,20 @@ def _keep(db, snapshot, entry_id, now):
     kind = LEGAL_KIND if snapshot.get("legal_hold") else snapshot.get("kind")
     if kind not in SNAPSHOT_KINDS:
         raise ValueError(f"a private copy needs a kind: {kind!r}")     # no default: who may open it depends on it
+    expires = 0 if kind == DELETE else now + days * DAY               # a delete copy never expires: only an admin's scrub empties it
     row = db.execute(text(
         "INSERT INTO log_snapshots (entry_id, author_id, board_id, target_submission_id, target_comment_id, legal_hold, kind, "
-        "hider_id, title, url, body, body_html, created_utc, expires_utc) "
-        "VALUES (:entry, :author, :board, :post, :comment, :hold, :kind, :hider, :title, :url, :body, :html, :now, :expires) "
-        "RETURNING id"),
+        "hider_id, title, url, body, body_html, created_utc, expires_utc, public, word_severity, is_sensitive) "
+        "VALUES (:entry, :author, :board, :post, :comment, :hold, :kind, :hider, :title, :url, :body, :html, :now, :expires, "
+        ":public, :severity, :sensitive) RETURNING id"),
         {"entry": entry_id, "author": snapshot.get("author_id"), "board": snapshot.get("board_id"),
          "kind": kind, "hider": snapshot.get("hider_id") or None,
          "post": snapshot.get("post_id"), "comment": snapshot.get("comment_id"),
          "hold": bool(snapshot.get("legal_hold")), "title": (snapshot.get("title") or None),
          "url": (snapshot.get("url") or "")[:500] or None, "body": (snapshot.get("body") or None),
-         "html": (snapshot.get("body_html") or None), "now": now, "expires": now + days * DAY}).first()
+         "html": (snapshot.get("body_html") or None), "now": now, "expires": expires,
+         "public": bool(snapshot.get("public")), "severity": int(snapshot.get("word_severity") or 0),
+         "sensitive": bool(snapshot.get("is_sensitive"))}).first()
     return row[0]
 
 
@@ -594,34 +606,6 @@ def about_scope(*, post_ids=(), comment_ids=(), user_id=None, include_anonymous=
     return ("(" + " OR ".join(parts) + ")", params) if parts else ("1 = 0", {})
 
 
-def author_deletes(db, *, post_ids=(), comment_ids=(), actor_id=None, include_anonymous=False, limit=26):
-    """The times authors deleted their own posts and comments, newest first (a date, who and which item: **never the words**,
-    which are a private copy). A self-delete is no decision, so it has no entry in the Log; this reads the history row that
-    records it. Only the author's own page and the admins may be shown these: the caller decides, this never filters by reader."""
-    parts, params = [], {"limit": int(limit)}
-    if post_ids:
-        marks, names = _numbered("dp", post_ids)
-        parts.append(f"h.target_submission_id IN ({marks})")
-        params.update(names)
-    if comment_ids:
-        marks, names = _numbered("dc", comment_ids)
-        parts.append(f"h.target_comment_id IN ({marks})")
-        params.update(names)
-    if actor_id:
-        parts.append("h.actor_id = :actor")
-        params["actor"] = int(actor_id)
-    if not parts:
-        return []
-    anonymous = "" if include_anonymous else (
-        " AND NOT EXISTS (SELECT 1 FROM submissions s WHERE s.id = h.target_submission_id AND COALESCE(s.is_anonymous, false))"
-        " AND NOT EXISTS (SELECT 1 FROM comments c WHERE c.id = h.target_comment_id AND COALESCE(c.is_anonymous, false))")
-    rows = db.execute(text(
-        f"SELECT h.id, h.created_utc, h.actor_id, h.target_submission_id, h.target_comment_id FROM content_edit_history h "
-        f"WHERE h.action = 'delete' AND ({' OR '.join(parts)}){anonymous} ORDER BY h.created_utc DESC, h.id DESC LIMIT :limit"),
-        params)
-    return [dict(r._mapping) for r in rows]
-
-
 def family_ids(db, post_id):
     """A post's own id and its forwarded copies', which carry the same author (a repost by someone else is another person's post
     and is not part of this one's log)."""
@@ -648,6 +632,23 @@ def copies_for(db, entry_ids):
         f"JOIN log_snapshots s ON s.id = e.snapshot_id WHERE e.id IN ({marks})"), names)
     return {r[0]: {"author_id": r[1], "board_id": r[2], "legal_hold": bool(r[3]), "scrubbed_utc": r[4], "kind": r[5],
                    "hider_id": r[6]} for r in rows}
+
+
+def deleted_texts(db, entry_ids):
+    """{entry id: the text a deleted item's `delete` copy may show} for a page of `deletion` entries: only a copy marked public, and
+    only while an admin has not scrubbed it (a scrub empties the text and sets `scrubbed_utc`). The caller applies the reader's word
+    filter, the sensitive rule and the guild's state (`helpers/deletion.py text_view`); the entry's audience has already decided who
+    reads the line at all."""
+    ids = sorted({int(i) for i in entry_ids or () if i})
+    if not ids:
+        return {}
+    names = {f"t{n}": i for n, i in enumerate(ids)}
+    marks = ", ".join(f":{n}" for n in names)
+    rows = db.execute(text(
+        f"SELECT entry_id, title, url, body_html, word_severity, is_sensitive, public, scrubbed_utc, board_id, target_submission_id, "
+        f"target_comment_id FROM log_snapshots WHERE kind = 'delete' AND entry_id IN ({marks})"), names)
+    return {r[0]: {"title": r[1], "url": r[2], "body_html": r[3], "word_severity": r[4], "is_sensitive": bool(r[5]),
+                   "public": bool(r[6]), "scrubbed": bool(r[7]), "board_id": r[8], "post_id": r[9], "comment_id": r[10]} for r in rows}
 
 
 def entry_with_copy(db, entry_id, level, member_boards=()):
