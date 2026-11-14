@@ -36,6 +36,16 @@
     <button type="submit" class="btn btn-sm btn-secondary mb-1"><i class="fas fa-user-plus fa-fw" aria-hidden="true"></i>{{ _("Propose adding") }}</button>
     <div class="text-danger small w-100" role="alert" hidden></div>
   </form>
+  {% if doc[7] %}
+  {# an author whose credit on the published post is anonymous can be proposed for removal by the number the post draws it with (routes/collab.py _credit_by_alias); if the vote passes, the authors know who it was #}
+  <form class="form-inline mt-2" action="/api/collab/{{ doc_id }}/propose" data-guild-form data-confirm="{{ _("Propose removing this anonymous author? If the other authors agree, they are removed, and so you will all know who it was. What they wrote stays credited to them, by the same number.") }}">
+    <input type="hidden" name="kind" value="remove_author">
+    <label class="sr-only" for="collab-remove-alias">{{ _("The number of an anonymous author") }}</label>
+    <input type="number" class="form-control form-control-sm mr-2 mb-1" id="collab-remove-alias" name="alias" placeholder="{{ _('Anonymous #') }}" min="1" max="999999" required>
+    <button type="submit" class="btn btn-sm btn-secondary mb-1"><i class="fas fa-user-minus fa-fw" aria-hidden="true"></i>{{ _("Propose removing by number") }}</button>
+    <div class="text-danger small w-100" role="alert" hidden></div>
+  </form>
+  {% endif %}
   <button type="button" class="btn btn-sm btn-link text-danger px-0 mt-1" data-guild-post="/api/collab/{{ doc_id }}/leave"
     data-confirm="{% if authors | length == 1 %}{{ _("Leave this draft? You stop being an author; what you wrote stays credited to you. You're the last author, so the draft closes: its published post stays, as an ordinary post of the profile it's on.") }}{% else %}{{ _("Leave this draft? You stop being an author; what you wrote stays credited to you.") }}{% endif %}">{{ _("Leave the draft") }}</button>
 </section>
@@ -48,7 +58,7 @@
       <div>
         <strong>
           {% if p.kind == 'add_author' %}{% if p.subject %}{{ _("Add %(name)s", name=p.subject.name) }}{% else %}{{ _("Add an account") }}{% endif %}
-          {% elif p.kind == 'remove_author' %}{% if p.subject %}{{ _("Remove %(name)s", name=p.subject.name) }}{% else %}{{ _("Remove an author") }}{% endif %}
+          {% elif p.kind == 'remove_author' %}{% if p.is_subject and p.by_alias %}{{ _("Remove you as an author") }}{% elif p.subject %}{{ _("Remove %(name)s", name=p.subject.name) }}{% else %}{{ _("Remove an author") }}{% endif %}
           {% elif p.kind == 'change_rules' %}{{ _("Change the rules") }}
           {% elif p.kind == 'delete_post' %}{{ _("Delete the published post") }}
           {% else %}{{ _("Publish the draft as it was") }}{% endif %}
@@ -64,7 +74,7 @@
       {% set until %}<span title="{{ p.closes_utc | timestamp_label }}">{{ p.closes_utc | timestamp_label }}</span>{% endset %}
       <div class="text-small-extra text-muted">{{ _("Open until %(time)s", time=until) }}{% if p.mine is not none %} · {% if p.mine %}{{ _("you voted yes") }}{% else %}{{ _("you voted no") }}{% endif %}{% endif %}</div>
       <div class="d-flex flex-wrap mt-1" style="gap: 0.25rem;">
-        {% if not (p.kind == 'remove_author' and p.subject and p.subject.handle == v.username) %}
+        {% if not p.is_subject %}
         <button type="button" class="btn btn-sm {{ 'btn-primary' if p.mine == true else 'btn-secondary' }}" data-guild-post="/api/collab/{{ doc_id }}/proposals/{{ p.id }}/vote?vote=yes"><i class="fas fa-check fa-fw" aria-hidden="true"></i>{{ pgettext("vote", "Yes") }}</button>
         <button type="button" class="btn btn-sm {{ 'btn-danger' if p.mine == false else 'btn-secondary' }}" data-guild-post="/api/collab/{{ doc_id }}/proposals/{{ p.id }}/vote?vote=no"><i class="fas fa-xmark fa-fw" aria-hidden="true"></i>{{ pgettext("vote", "No") }}</button>
         {% endif %}

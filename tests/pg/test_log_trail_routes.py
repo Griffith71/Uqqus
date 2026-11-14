@@ -452,7 +452,7 @@ def test_a_timed_suspension_says_when_it_ran_out_once(make_member, real_app):
     (lapse,) = entries(real_app, linked_entry_id=entry["id"])
     assert (lapse["action"], lapse["actor_role"], lapse["audience"], lapse["target_user_id"]) == ("unsuspend_user", "system", 0, victim.id)
     assert action_log.lapse_due(db) == 0
-    assert "lifted the suspension" in get(real_app[0].test_client(), "/log?type=sanction").get_data(as_text=True)
+    assert "lifted the suspension" in get(real_app[0].test_client(), f"/log?type=sanction&to={victim.username}").get_data(as_text=True)
 
 
 def test_a_level_4_admin_can_hide_an_entrys_reason_and_it_is_a_new_linked_entry_not_an_edit(make_member, real_app):

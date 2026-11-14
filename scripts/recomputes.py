@@ -362,10 +362,15 @@ def recompute():
         # failed when it was made is copied now, with a count of what could not be (shown on /admin and /admin/log)
         try:
             from ruqqus.helpers import action_log
-            lapsed = action_log.lapse_due(db, int(time.time()))
+            ended = []
+            lapsed = action_log.lapse_due(db, int(time.time()), told=ended)
             copied, not_copied = action_log.reconcile(db, int(time.time()))
             db.commit()
             print_(f"the Log: {lapsed} suspensions lapsed, {copied} mod-log rows copied, {not_copied} could not be")
+            if ended:
+                # a suspension that ran out is told to the account, once, after its lapse entry is committed (a second run finds the entry and writes nothing)
+                from ruqqus.helpers import log_notices
+                print_(f"told {log_notices.tell_lapsed(db_session, ended)} accounts their suspension ended")
         except Exception as e:
             db.rollback()
             print_(f"the Log's upkeep failed: {e}")

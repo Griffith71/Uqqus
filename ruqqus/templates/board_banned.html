@@ -24,6 +24,8 @@
 
 			<h1 class="h5">{{ _("+%(guild)s is banned.", guild=b.name) }}</h1>
 			{% if b.ban_reason and not hide_reason %}<p class="text-muted mb-5">{{ _("Reason: %(reason)s", reason=msg_text(b.ban_reason)) }}</p>{% endif %}
+			{% set appeal_url = appeal_for_guild(b, v) if v else "" %}
+			{% if appeal_url %}<p class="mb-4"><a href="{{ appeal_url }}">{{ _("Appeal this decision") }}</a></p>{% endif %}
 			<div><a href="/" class="btn btn-primary">{{ _("Go to frontpage") }}</a></div>
 		</div>
 	</div>

@@ -1403,6 +1403,7 @@ URL path parameters:
     if comment.post.board_id != board.id:
         abort(400)
 
+    was_hidden = bool(comment.hidden_by_guild)
     comment.hidden_by_guild = False
     g.db.add(comment)
 
@@ -1421,6 +1422,8 @@ URL path parameters:
     )
     g.db.add(ma)
     g.db.commit()
+    if was_hidden:
+        log_notices.tell_item_lifted(g.db, log_notices.COMMENT_SHOWN, comment=comment, guild=board.name, actor_id=v.id)
 
     html=render_template(
                 "comments.html",
@@ -1521,6 +1524,7 @@ URL path parameters:
     if not anonymity.is_author(comment.post, v):
         abort(403)
 
+    was_hidden = bool(comment.author_hidden)
     comment.author_hidden = False
     g.db.add(comment)
 
@@ -1532,6 +1536,8 @@ URL path parameters:
     action_log.record_quietly(g.db, "author_unhide_comment", v.id, role=action_log.AUTHOR, board_id=comment.post.board_id,
                               comment_id=comment.id)
     g.db.commit()
+    if was_hidden:
+        log_notices.tell_item_lifted(g.db, log_notices.COMMENT_SHOWN_AGAIN, comment=comment, actor_id=v.id)       # the comment's author, unless they are the one who did it
 
     html=render_template(
                 "comments.html",

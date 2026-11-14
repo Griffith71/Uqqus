@@ -32,6 +32,7 @@ CORE = (
     "strong sexual content",     # inside the one Sensitive definition (helpers/sensitive.py DEFINITION), word for word in both places
     "identify themselves as bots",
     "not from",                  # anonymity hides the author from users, not from the site
+    "unfair exposure",           # trying to unmask an anonymous author is a bannable offense (the owner, 2026-11-14), in both places
     "ban",
     "hacking",
     "votes",

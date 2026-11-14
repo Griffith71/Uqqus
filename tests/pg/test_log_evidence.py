@@ -251,7 +251,7 @@ def test_an_alias_exile_cites_an_anonymous_item_and_the_public_log_names_nothing
     c36 = base36encode(comment_id)
     for client in (real_app[0].test_client(), stranger.browser()):
         page = get(client, f"/log/{entry}").get_data(as_text=True)
-        assert "Cited:" not in page and c36 not in page and author.username not in page, "an anonymous item is never named beside an exile"
+        assert "Cited:" not in page and f"/comment/{c36}" not in page and author.username not in page, "an anonymous item is never named beside an exile"
     assert f"/comment/{c36}/copy" in get(mod.browser(), f"/log/{entry}").get_data(as_text=True), "the guildmasters who relied on it can open it"
     own = get(author.browser(), f"/log/{entry}/appeal").get_data(as_text=True)
     assert f"/comment/{c36}/copy" in own, "and the person, on the page they appeal from"

@@ -1,7 +1,7 @@
 /*
  * A guild's Wiki, Events and Resources pages (templates/guild/*.html; routes/guild_wiki.py, routes/guild_events.py).
  * Every change is a POST with the form key:
- *   <form data-guild-form action="...">     sends its fields; an error shows in the form's [role=alert]
+ *   <form data-guild-form action="...">     sends its fields (asks first when it has data-confirm); an error shows in the form's [role=alert]
  *   <button data-guild-post="url" data-confirm="...">   asks first when it has data-confirm; data-ask-reason="question" asks for the reason a takedown must give
  *   <input type="checkbox" data-guild-toggle="url">     sends setting=true|false
  *   <form data-new-wiki-page="/+guild/wiki/">           opens the editor of a new page's address
@@ -49,6 +49,8 @@
     }
     if (!form.hasAttribute('data-guild-form')) return;
     event.preventDefault();
+    var question = form.getAttribute('data-confirm');             // a form that can't be taken back asks first, as a button does
+    if (question && !window.confirm(question)) return;
     var box = form.querySelector('[role=alert]');
     if (box) box.hidden = true;
     var button = form.querySelector('[type=submit]');

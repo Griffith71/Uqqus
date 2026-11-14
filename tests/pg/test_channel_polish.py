@@ -108,7 +108,7 @@ def test_a_channels_picture_is_public_while_its_message_is_up_and_an_admin_takes
 
     pid = fresh(owner).execute(text("SELECT id FROM broadcast_posts WHERE broadcast_id = :b"), {"b": bid}).scalar()
     desk = admin.browser()
-    assert post(desk, f"/admin/broadcast_reports/{pid}/remove", {"formkey": admin.formkey(desk)}).status_code == 302
+    assert post(desk, f"/admin/broadcast_reports/{pid}/remove", {"formkey": admin.formkey(desk), "reason": "Not allowed in a channel"}).status_code == 302
     assert redacted and fresh(owner).execute(text("SELECT status FROM media_assets WHERE id = :i"),
                                              {"i": int(asset_id, 36)}).scalar() == "removed"
     assert visitor.get(path, base_url="http://localhost").status_code == 410          # removed: gone for good

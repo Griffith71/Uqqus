@@ -29,13 +29,13 @@ def db():
         conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE forwardrels (id INTEGER PRIMARY KEY, forward_submission_id INTEGER, forwarded_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE comment_forwardrels (id INTEGER PRIMARY KEY, promoted_submission_id INTEGER, promoted_by_id INTEGER)"))
-        conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0, creator_id INTEGER)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0, is_banned INTEGER DEFAULT 0, "
                           "unban_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE mods (id INTEGER PRIMARY KEY, user_id INTEGER, board_id INTEGER, accepted BOOLEAN DEFAULT 1, "
                           "invite_rescinded BOOLEAN DEFAULT 0, perm_full BOOLEAN DEFAULT 0, perm_content BOOLEAN DEFAULT 0, "
                           "perm_access BOOLEAN DEFAULT 0)"))
-        conn.execute(text("INSERT INTO boards VALUES (1, 0, 0), (3, 0, 0)"))
+        conn.execute(text("INSERT INTO boards VALUES (1, 0, 0, NULL), (3, 0, 0, 12)"))
         # 10 and 11 are guildmasters of +3 (10: content, 11: access), 20 and 21 admins, 30 a member, 31 the forwarder
         conn.execute(text("INSERT INTO users (id, admin_level) VALUES (1, 0), (10, 0), (11, 0), (12, 0), (20, 3), (21, 3), (30, 0), (31, 0), (32, 0)"))
         conn.execute(text("INSERT INTO mods (user_id, board_id, perm_content) VALUES (10, 3, 1)"))
@@ -198,4 +198,53 @@ def test_an_exile_that_cited_an_item_is_undone_by_the_lifting_of_that_person_in_
     log.record(db, "unexile_user", 11, board_id=3, target_user_id=31, now=NOW + 2)                     # another person
     assert appeals.is_undone(db, entry) is False
     log.record(db, "unexile_user", 11, board_id=3, target_user_id=30, now=NOW + 3)
+    assert appeals.is_undone(db, entry) is True
+
+
+# --- a chat mute and a guild's ban -------------------------------------------------------------------------------------------------------
+
+def test_a_chat_mute_is_the_persons_to_appeal_and_the_guilds_content_guildmasters_decide_it(db):
+    mute = log.record(db, "chatban_user", 10, board_id=3, target_user_id=30, reason="Flooding", now=NOW)
+    entry = appeals.entry_of(db, mute)
+    assert appeals.is_subject(db, entry, 30) and not any(appeals.is_subject(db, entry, u) for u in (10, 11, 31, 20))
+    assert appeals.can_appeal(db, entry, 30, NOW) is None and appeals.can_appeal(db, entry, 31, NOW) is not None
+    assert appeals.board_for(db, entry) == 3 and appeals.permission_for(entry) == "content"
+    assert appeals.is_undone(db, entry) is False
+    log.record(db, "unchatban_user", 11, board_id=3, target_user_id=30, now=NOW + 1)
+    assert appeals.is_undone(db, entry) is True and "lifted" in str(appeals.can_appeal(db, entry, 30, NOW))
+
+
+def mute_by_alias(db, kind, actor, subject, number=2, now=NOW):
+    """The entry of a mute (or its lifting) by alias, written the way the route writes it: a mod-log row, then `annotate` (helpers/alias_actions.py)."""
+    db.execute(text("INSERT INTO modactions (user_id, board_id, kind, _note, created_utc) VALUES (:a, 3, :k, :n, :t)"),
+               {"a": actor, "k": kind, "n": f"Anonymous #{number}", "t": now})
+    return log.annotate(db, db.execute(text("SELECT MAX(id) FROM modactions")).scalar(), reason="Flooding", alias_n=number, subject_user_id=subject)
+
+
+def test_a_mute_by_alias_names_no_account_and_is_matched_on_the_account_the_staff_know(db):
+    entry = appeals.entry_of(db, mute_by_alias(db, "chatban_alias", 10, 30))
+    assert entry["action"] == "chatban_alias" and entry["target_user_id"] is None
+    assert appeals.is_subject(db, entry, 30) and not appeals.is_subject(db, entry, 31)
+    assert appeals.is_undone(db, entry) is False
+    mute_by_alias(db, "unchatban_alias", 11, 31, now=NOW + 1)                                  # another account in this guild
+    assert appeals.is_undone(db, entry) is False
+    mute_by_alias(db, "unchatban_alias", 11, 30, now=NOW + 2)
+    assert appeals.is_undone(db, entry) is True
+
+
+def test_a_guilds_ban_is_each_heads_to_appeal_once_and_the_sites_admins_decide_it(db):
+    db.execute(text("INSERT INTO users (id, admin_level) VALUES (40, 0), (41, 0)"))
+    db.execute(text("INSERT INTO mods (user_id, board_id, perm_full) VALUES (40, 3, 1)"))
+    db.execute(text("INSERT INTO mods (user_id, board_id, accepted, perm_full) VALUES (41, 3, 0, 1)"))          # an invitation not accepted is no head
+    entry = appeals.entry_of(db, log.record(db, "ban_guild", 20, board_id=3, reason="Hosting content that breaks the rules", role="admin", now=NOW))
+    assert appeals.heads_of(db, 3) == [12, 40], "the founder and the accepted full guildmasters, never the site's own account"
+    assert appeals.is_subject(db, entry, 12) and appeals.is_subject(db, entry, 40)
+    assert not any(appeals.is_subject(db, entry, u) for u in (10, 11, 30, 41, 20))        # a guildmaster with one permission doesn't answer for the guild
+    assert appeals.board_for(db, entry) is None, "an admin's decision: the site's admins decide it"
+    for head in (12, 40):
+        assert appeals.can_appeal(db, entry, head, NOW) is None
+    appeals.file_appeal(db, entry["id"], 12, "We removed it", NOW)
+    assert "already appealed" in str(appeals.can_appeal(db, entry, 12, NOW)) and appeals.can_appeal(db, entry, 40, NOW) is None
+    assert appeals.is_undone(db, entry) is False
+    log.record(db, "unban_guild", 20, board_id=3, role="admin", now=NOW + 1)
     assert appeals.is_undone(db, entry) is True

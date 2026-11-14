@@ -78,7 +78,7 @@ _CONTENT = {
     "remove_story", "hide_revision",
 }
 # staff-only entries about a person: sanctions in kind, never public
-_STAFF_SANCTIONS = {"admin_alt_link", "admin_ip_ban", "admin_signup", "automatic_hold", "age_lock"}
+_STAFF_SANCTIONS = {"admin_alt_link", "admin_ip_ban", "admin_signup", "automatic_hold", "age_lock", "possible_probing", "collab_alias_removal"}
 # an action on an alias ("Anonymous #3", helpers/alias_actions.py): an exile or a chat mute whose subject is a number in a thread, never an account. Its entry
 # carries the number (`alias_n`, public: it is on the item already) and, for the staff and the appeal alone, the account (`subject_user_id`)
 ALIAS_ACTIONS = ("exile_alias", "unexile_alias", "chatban_alias", "unchatban_alias")
@@ -108,7 +108,7 @@ RUNNING_ACTIONS = {
     "remove_chat_message",
 }
 STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
-                 "remove_story", "age_declaration"} | RUNNING_ACTIONS
+                 "remove_story", "age_declaration", "possible_probing", "collab_alias_removal"} | RUNNING_ACTIONS
 LEGAL_ACTIONS = {"suppress_content"}
 
 # Actions that must say why (Wikipedia's reason): **every one is refused with no reason by the route that makes it** (a reason box the person
@@ -986,11 +986,13 @@ def record_staff(db, action, admin, what, *, target_user_id=None, post_id=None, 
                           comment_id=comment_id, board_id=board_id, staff_note=what, reason=reason, floor=STAFF)
 
 
-def lapse_due(db, now=None, limit=200):
+def lapse_due(db, now=None, limit=200, told=None):
     """Write the entry for every timed suspension that has run out: a system `unsuspend_user`, linked to the suspension and as
     private as it was (a staff-only suspension of an alt lapses in staff-only words too). One per suspension, so a second run writes
     nothing; none when a later sanction on the same account stands in its place (an unban, a new suspension or a ban) or the
-    account is suspended still (a longer end was set meanwhile, as when a parent's suspension is extended). Returns how many."""
+    account is suspended still (a longer end was set meanwhile, as when a parent's suspension is extended). Returns how many. A list passed as `told`
+    gets the id of each account whose suspension was a public one and is now over, for the caller to tell (a staff-only suspension of an alt was never
+    told, and its end isn't either)."""
     now = int(now if now is not None else time.time())
     rows = db.execute(text(
         "SELECT e.id, e.target_user_id, e.audience, e.until_utc FROM log_entries e WHERE e.action = 'suspend_user' "
@@ -1008,6 +1010,8 @@ def lapse_due(db, now=None, limit=200):
                               reason="The suspension ended.", floor=audience, linked_entry_id=entry_id, created_utc=until)
         if made:
             written += 1
+            if told is not None and not audience:
+                told.append(user_id)
     return written
 
 

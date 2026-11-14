@@ -3,8 +3,8 @@ work"). Rules and SQL only (plain `text()`, tested on SQLite from the migration:
 that a reversal runs are `routes/log_appeal_pages.py`.
 
 What can be appealed (`APPEALABLE`): a guild's hide of a post or comment, an admin's removal (also the site's own spam and image
-checks, which are removals by the system), a post author's hide of a comment under it, a guild's exile, and an account's suspension
-or ban. **Only the person the decision is about** (`subject_of`: the account that was exiled, suspended or banned, the comment's
+checks, which are removals by the system), a post author's hide of a comment under it, a guild's exile or chat mute (by name or by alias), an
+account's suspension or ban, and a guild's ban from the site (the owner, 2026-11-14: its founder and full guildmasters, each once). **Only the person the decision is about** (`subject_of`: the account that was exiled, suspended or banned, the comment's
 author, the person responsible for a post: its forwarder for a guild's copy, else its author) **and only once per entry** (a unique
 index), a reason of up to 500 characters, three a day. An appeal is private: its text is read by the people who decide it.
 
@@ -38,11 +38,16 @@ APPEALABLE = {
     "author_hide_comment": ("author_unhide_comment", None),
     "exile_user": ("unexile_user", "access"),
     "exile_alias": ("unexile_alias", "access"),
+    "chatban_user": ("unchatban_user", "content"),
+    "chatban_alias": ("unchatban_alias", "content"),
+    "ban_guild": ("unban_guild", None),
     "suspend_user": ("unban_user", None),
     "ban_user": ("unban_user", None),
 }
 # a person is the subject of these; everything else is about an item
-ABOUT_A_PERSON = {"exile_user", "exile_alias", "suspend_user", "ban_user"}
+ABOUT_A_PERSON = {"exile_user", "exile_alias", "chatban_user", "chatban_alias", "suspend_user", "ban_user"}
+# an action made by alias names no account in the Log: the account is the staff's and the appeal's to know (`subject_user_id`)
+BY_ALIAS = ("exile_alias", "chatban_alias")
 # the actions that put a suspension or ban back
 LIFTS = ("unban_user", "unsuspend_user")
 
@@ -74,8 +79,10 @@ def entry_of(db, entry_id):
 def subject_of(db, entry):
     """The account the decision is about, or None: the person for an exile, a suspension or a ban; for an item, the comment's author, or
     for a post the account responsible for it (its forwarder when it is a guild's copy, else its author)."""
-    if entry["action"] == "exile_alias":
-        return entry.get("subject_user_id")                     # an exile by alias names no account in the Log: the person it is about is the staff's and the appeal's to know
+    if entry["action"] in BY_ALIAS:
+        return entry.get("subject_user_id")                     # an action by alias names no account in the Log: the person it is about is the staff's and the appeal's to know
+    if entry["action"] == "ban_guild":
+        return None                                             # a guild has several people who answer for it: `is_subject`
     if entry["action"] in ABOUT_A_PERSON:
         return entry["target_user_id"]
     if entry["target_comment_id"]:
@@ -102,8 +109,8 @@ def is_undone(db, entry):
     params = {f"a{n}": a for n, a in enumerate(actions)}
     params["id"] = entry["id"]
     where = [f"action IN ({marks})", "id > :id"]
-    if entry["action"] == "exile_alias":
-        # the lifting entry of an exile by alias names no account in the Log: it is matched on the account the staff and the appeal know, in this guild
+    if entry["action"] in BY_ALIAS:
+        # the lifting entry of an action by alias names no account in the Log: it is matched on the account the staff and the appeal know, in this guild
         where.append("subject_user_id = :subject")
         params["subject"] = entry.get("subject_user_id")
     else:
@@ -115,7 +122,8 @@ def is_undone(db, entry):
             if entry[key]:
                 where.append(f"{column} = :{key}")
                 params[key] = entry[key]
-    if entry["action"] in ("hide_post_from_guild", "hide_comment_from_guild", "exile_user", "exile_alias") and entry["board_id"]:
+    if entry["action"] in ("hide_post_from_guild", "hide_comment_from_guild", "exile_user", "exile_alias", "chatban_user", "chatban_alias",
+                           "ban_guild") and entry["board_id"]:
         where.append("board_id = :board")
         params["board"] = entry["board_id"]
     return db.execute(text(f"SELECT 1 FROM log_entries WHERE {' AND '.join(where)} LIMIT 1"), params).first() is not None
@@ -134,11 +142,33 @@ def permission_for(entry):
     return APPEALABLE[entry["action"]][1]
 
 
+def heads_of(db, board_id):
+    """The accounts that answer for a guild: its founder and its accepted full guildmasters (not deleted, and never the site's own account, which founds
+    its own boards): who is told a guild was banned or reinstated and
+    who may appeal the ban, each once."""
+    if not board_id:
+        return []
+    rows = db.execute(text(
+        "SELECT u.id FROM users u WHERE u.is_deleted IS NOT TRUE AND u.id <> 1 AND (u.id = (SELECT creator_id FROM boards WHERE id = :b) OR u.id IN "
+        "(SELECT m.user_id FROM mods m WHERE m.board_id = :b AND m.accepted IS TRUE AND m.invite_rescinded IS NOT TRUE AND m.perm_full IS TRUE)) "
+        "ORDER BY u.id"), {"b": int(board_id)})
+    return [r[0] for r in rows]
+
+
+def is_subject(db, entry, user_id):
+    """Whether this account is who the decision is about (`subject_of`; for a guild's ban, one of the people who answer for the guild)."""
+    if not user_id:
+        return False
+    if entry["action"] == "ban_guild":
+        return int(user_id) in heads_of(db, entry["board_id"])
+    return subject_of(db, entry) == user_id
+
+
 def can_appeal(db, entry, user_id, now=None):
     """None when this account may appeal this entry now, else the message to give. Never says who decided or why."""
     if entry is None or entry["action"] not in APPEALABLE:
         return N_("There is nothing here to appeal.")
-    if subject_of(db, entry) != user_id:
+    if not is_subject(db, entry, user_id):
         return N_("There is nothing here to appeal.")                    # the same answer for an entry that isn't theirs
     if is_undone(db, entry):
         return N_("This decision has already been lifted.")
@@ -183,7 +213,7 @@ def open_queue(db, board_id=None, limit=100):
     params["n"] = int(limit)
     return [dict(r._mapping) for r in db.execute(text(
         f"SELECT a.id, a.entry_id, a.user_id, a.board_id, a.created_utc, a.reason, e.action, e.actor_id, e.actor_role, "
-        f"e.target_submission_id, e.target_comment_id, e.target_user_id, e.reason AS entry_reason, e.rule_key "
+        f"e.target_submission_id, e.target_comment_id, e.target_user_id, e.board_id AS entry_board, e.reason AS entry_reason, e.rule_key "
         f"FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE a.status = 'open' AND {where} "
         f"ORDER BY a.id LIMIT :n"), params)]
 

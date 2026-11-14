@@ -35,7 +35,7 @@ from ruqqus.helpers import guild_channel_access
 from ruqqus.helpers import guild_insights_store
 from ruqqus.routes import guild_insights_pages
 from ruqqus.helpers import log_view as log_rules
-from ruqqus.helpers import action_log, log_notices, sanction_evidence
+from ruqqus.helpers import action_log, exposure, log_notices, sanction_evidence
 from ruqqus.helpers import guild_flair, guild_flair_store
 from ruqqus.helpers import category_filter
 from ruqqus.helpers import bell as bell_rules
@@ -656,6 +656,7 @@ URL path parameters:
     if not post.board_id == board.id:
         abort(400)
 
+    was_hidden = bool(post.hidden_by_guild)
     post.hidden_by_guild = False
     g.db.add(post)
 
@@ -676,6 +677,8 @@ URL path parameters:
         )
     g.db.add(ma)
     g.db.commit()
+    if was_hidden:
+        log_notices.tell_item_lifted(g.db, log_notices.POST_SHOWN, post=post, guild=board.name, actor_id=v.id)
 
     # the card a guild's feed draws (b: no guild name on it), so it can replace the old one in place
     return jsonify({
@@ -793,6 +796,7 @@ Optional form data:
     active = g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first()
     if active and active.alias_n:
         # exiled by alias already: "already exiled" would confirm to a guildmaster who guessed the name that this account is the alias they exiled (helpers/alias_actions.py)
+        exposure.note(g.db, board.id, v.id, user.id, exposure.EXILED_BY_NAME, by_id=active.banning_mod_id)       # the staff are told it was tried: a signal, never a verdict
         return (jsonify({"message": tr("@%(name)s was exiled from +%(guild)s", name=user.username, guild=board.name)})
                 if request.args.get("toast") else ("", 204))
     if active:
@@ -940,6 +944,8 @@ URL path parameters:
         board_id=board.id
         )
     g.db.add(ma)
+    g.db.commit()
+    log_notices.tell_lifted(g.db, user.id, log_notices.EXILE_LIFTED, actor_id=v.id, guild=board.name)       # told it is over, after it committed
 
     return "", 204
 
@@ -2677,6 +2683,7 @@ def mod_unchatban_bid_user(bid, board, v):
     g.db.add(ma)
 
     g.db.commit()
+    log_notices.tell_lifted(g.db, user.id, log_notices.MUTE_LIFTED, actor_id=v.id, guild=board.name)
 
     return "", 204
 

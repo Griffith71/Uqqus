@@ -618,7 +618,9 @@ def test_an_exile_never_pairs_an_account_with_an_anonymous_item_and_reads_as_the
     visitor = real_app[0].test_client()
     log = get(visitor, f"/log?type=sanction&guild={name}").get_data(as_text=True)
     assert f"@{author.username}" in log and f"@{visible_author.username}" in log               # the line is about the person
-    assert not names_post(log, anon36) and not names_post(log, named36)                         # an exile is about the person, not the item
+    assert not names_post(log, anon36)                                                          # an exile is about the person, never an anonymous item
+    assert "Cited:" in log and f"/post/{named36}/log" in log                                    # a named item it cited is listed by id, apart from the sentence
+    assert f"exiled user <a" in log and not re.search(rf"exiled #{re.escape(named36)}", log)    # and the sentence is still about the person
     assert f"@{visible_author.username}" in get(visitor, f"/post/{named36}/log").get_data(as_text=True)
     assert get(visitor, f"/log?type=sanction&to={visible_author.username}").get_data(as_text=True).count("exiled user") == 1
     # the post is made anonymous AFTER the exile cited it: the item's own log and the filters stop pairing the two

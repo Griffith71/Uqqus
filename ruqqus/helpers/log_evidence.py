@@ -147,6 +147,19 @@ def items_of(db, target_id, page=1):
     return rows, more, private
 
 
+def anonymous_among(db, items):
+    """The cited `(kind, id)` that are anonymous now: what the banned account is told the ban relies on and an approval could name it for."""
+    out = []
+    for kind, table in (("post", "submissions"), ("comment", "comments")):
+        ids = sorted({int(i) for k, i in items if k == kind})
+        if not ids:
+            continue
+        marks, names = _marks("i", ids)
+        found = {r[0] for r in db.execute(text(f"SELECT id FROM {table} WHERE id IN ({marks}) AND COALESCE(is_anonymous, false)"), names)}
+        out += [(kind, i) for i in ids if i in found]
+    return out
+
+
 # --- proposing, deciding, withdrawing -----------------------------------------------------------------------------------------------------
 
 def propose(db, entry_id, target_id, proposer_id, items, now):

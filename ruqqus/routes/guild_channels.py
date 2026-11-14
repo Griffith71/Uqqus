@@ -22,7 +22,7 @@ from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, r, limiter
 
-from ruqqus.helpers import action_log
+from ruqqus.helpers import action_log, exposure, log_notices
 from ruqqus.helpers import guild_channels as rules
 from ruqqus.helpers import guild_channel_store as store
 from ruqqus.helpers import age_declaration
@@ -922,13 +922,14 @@ def guild_channel_mute(guildname, board, v):
     if target.id == v.id or board.has_mod(target):
         return _manage_page(board, v, error=tr("You can't mute a guildmaster, or yourself."), status=409)
     if store.alias_muted(g.db, board.id, target.id):
+        exposure.note(g.db, board.id, v.id, target.id, exposure.MUTED_BY_NAME)      # the staff are told it was tried: a signal, never a verdict
         # muted by alias already: "already muted" would confirm to a guildmaster who guessed the name that this account is the alias they muted
         return _manage_page(board, v, notice=tr("@%(name)s was muted in +%(guild)s's channels.", name=target.username, guild=board.name))[0]
     if not store.mute(g.db, board.id, target.id, v.id, _now()):
         return _manage_page(board, v, error=tr("@%(name)s is already muted here.", name=target.username), status=409)
     ma = _log(board, v, "chatban_user", "", target_user_id=target.id)
     g.db.flush()
-    action_log.annotate(g.db, ma.id, rule=request.values.get("rule"), reason=reason)
+    ma_entry = action_log.annotate(g.db, ma.id, rule=request.values.get("rule"), reason=reason)
     for cid, room in store.encrypted_rooms_of(g.db, board.id, target.id):      # the site can't stop them writing there
         try:
             matrix.kick_as_bot(room, matrix.mxid_for(target.id), "Muted in the guild's channels")
@@ -936,6 +937,8 @@ def guild_channel_mute(guildname, board, v):
         except matrix.MatrixError:
             pass                                                                # the sync step does it within minutes
     g.db.commit()
+    log_notices.tell_imposed(g.db, target.id, log_notices.MUTED, ma_entry, guild=board.name, rule_key=action_log.parse_rule(request.values.get("rule")),
+                             reason=reason, actor_id=v.id)
     return _manage_page(board, v, notice=tr("@%(name)s was muted in +%(guild)s's channels.", name=target.username,
                                                 guild=board.name))[0]
 
@@ -950,6 +953,7 @@ def guild_channel_unmute(guildname, board, v):
         return _manage_page(board, v, error=tr("They aren't muted here."), status=404)
     _log(board, v, "unchatban_user", "", target_user_id=target.id)
     g.db.commit()
+    log_notices.tell_lifted(g.db, target.id, log_notices.MUTE_LIFTED, actor_id=v.id, guild=board.name)
     return _manage_page(board, v, notice=tr("@%(name)s can write in the channels again.", name=target.username))[0]
 
 

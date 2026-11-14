@@ -13,7 +13,7 @@ from flask import abort, g, redirect, render_template, request
 from sqlalchemy import text
 
 from ruqqus.__main__ import app, cache, limiter
-from ruqqus.classes import BanRelationship, Board, Comment, ContentEditHistory, ModAction, Submission, User
+from ruqqus.classes import BanRelationship, Board, ChatBan, Comment, ContentEditHistory, ModAction, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
 from ruqqus.helpers import action_log, alias_actions, log_appeals, log_notices, log_view
 from ruqqus.helpers.base36 import base36encode
@@ -71,7 +71,7 @@ def log_entry(entry_id, v):
     entry = log_appeals.entry_of(g.db, entry_id)
     appeal = None
     if v is not None and not getattr(v, "qr_limited", False) and entry is not None and entry["action"] in log_appeals.APPEALABLE \
-            and log_appeals.subject_of(g.db, entry) == v.id:
+            and log_appeals.is_subject(g.db, entry, v.id):
         appeal = {"mine": _my_appeal(entry_id, v.id), "can": log_appeals.can_appeal(g.db, entry, v.id) is None}
     return _noindex(render_template("log_entry.html", v=v, rows=lines, entry_id=entry_id, appeal=appeal))
 
@@ -86,7 +86,7 @@ def _my_appeal(entry_id, user_id):
 
 def _appealable_or_404(entry_id, v):
     entry = log_appeals.entry_of(g.db, entry_id)
-    if entry is None or entry["action"] not in log_appeals.APPEALABLE or log_appeals.subject_of(g.db, entry) != v.id:
+    if entry is None or entry["action"] not in log_appeals.APPEALABLE or not log_appeals.is_subject(g.db, entry, v.id):
         abort(404)                               # the same page for an entry that isn't theirs, one that can't be appealed and none
     return entry
 
@@ -157,9 +157,10 @@ def _queue_rows(appeals, staff):
         who = log_view.site_account(app.config["SITE_NAME"]) if a["actor_role"] != action_log.GUILDMASTER else log_view.person(
             _name(a["actor_id"]))
         appellant = users.get(a["user_id"])
+        guild = _guild_name(a.get("entry_board")) if staff and a["action"] == "ban_guild" else ""        # a guild's ban is the site's admins' to read, by name
         rows.append({
             "id": a["id"], "entry_id": a["entry_id"], "created_utc": a["created_utc"], "reason": a["reason"],
-            "sentence": log_view.sentence(a["action"], ACTIONTYPES, who, target),
+            "sentence": log_view.sentence(a["action"], ACTIONTYPES, who, target, guild),
             "icon": kind.get("icon", "fa-gavel"), "color": kind.get("color", "bg-info"),
             "entry_reason": a["entry_reason"], "rule": a["rule_key"],
             "who": "" if (anonymous and not staff) else (appellant.username if appellant else ""),
@@ -167,6 +168,11 @@ def _queue_rows(appeals, staff):
             "conflicted": False,
         })
     return rows
+
+
+def _guild_name(board_id):
+    found = g.db.execute(text("SELECT name FROM boards WHERE id = :i"), {"i": board_id}).first() if board_id else None
+    return found[0] if found else ""
 
 
 def _name(user_id):
@@ -285,6 +291,33 @@ def _undo(entry, decider):
         g.db.flush()
         return action_log.annotate(g.db, ma.id, reason=UNDO_REASON, linked_entry_id=entry["id"], alias_n=entry["alias_n"],
                                    subject_user_id=entry["subject_user_id"])
+    elif action == "chatban_user":
+        ban = g.db.query(ChatBan).filter(ChatBan.board_id == entry["board_id"], ChatBan.user_id == entry["target_user_id"],
+                                         ChatBan.alias_n.is_(None)).first()
+        if ban is None:
+            return None
+        g.db.delete(ban)
+        ma = ModAction(kind="unchatban_user", user_id=decider.id, target_user_id=entry["target_user_id"], board_id=entry["board_id"])
+    elif action == "chatban_alias":
+        ban = g.db.query(ChatBan).filter(ChatBan.board_id == entry["board_id"], ChatBan.user_id == entry["subject_user_id"],
+                                         ChatBan.alias_n.isnot(None)).first()
+        if ban is None:
+            return None
+        g.db.delete(ban)
+        ma = ModAction(kind="unchatban_alias", user_id=decider.id, board_id=entry["board_id"], note=alias_actions.label(entry["alias_n"]))
+        g.db.add(ma)
+        g.db.flush()
+        return action_log.annotate(g.db, ma.id, reason=UNDO_REASON, linked_entry_id=entry["id"], alias_n=entry["alias_n"],
+                                   subject_user_id=entry["subject_user_id"])
+    elif action == "ban_guild":
+        board = g.db.query(Board).filter_by(id=entry["board_id"]).first()
+        if board is None or not board.is_banned:
+            return None
+        board.is_banned = False
+        board.ban_reason = ""
+        g.db.add(board)
+        return action_log.record_quietly(g.db, "unban_guild", decider.id, board_id=board.id, reason=UNDO_REASON, role=action_log.ADMIN,
+                                         linked_entry_id=entry["id"])
     elif action in ("suspend_user", "ban_user"):
         user = g.db.query(User).filter_by(id=entry["target_user_id"]).first()
         if user is None:
@@ -381,7 +414,15 @@ def appeal_for_item(item, v):
     return _appeal_url(row[0] if row else None, v.id)
 
 
-app.jinja_env.globals.update(appeal_for_account=appeal_for_account, appeal_for_item=appeal_for_item)
+def appeal_for_guild(board, v):
+    """Jinja global: the appeal address of the ban of a guild, for the founder and the full guildmasters who answer for it (on the banned guild's page), else ''."""
+    if v is None or board is None or not getattr(board, "is_banned", False) or getattr(v, "qr_limited", False):
+        return ""
+    row = g.db.execute(text("SELECT id FROM log_entries WHERE board_id = :b AND action = 'ban_guild' ORDER BY id DESC LIMIT 1"), {"b": board.id}).first()
+    return _appeal_url(row[0] if row else None, v.id)
+
+
+app.jinja_env.globals.update(appeal_for_account=appeal_for_account, appeal_for_item=appeal_for_item, appeal_for_guild=appeal_for_guild)
 
 
 def waiting_for_admins():
@@ -395,4 +436,10 @@ def log_problems():
     return action_log.failure_count(g.db) + action_log.unmirrored_count(g.db)
 
 
-app.jinja_env.globals.update(appeals_waiting=waiting_for_admins, log_problems=log_problems)
+def probing_noted():
+    """The count beside the admin page's link to the notes of guesses tested against an alias (helpers/exposure.py)."""
+    from ruqqus.helpers import exposure
+    return exposure.waiting(g.db)
+
+
+app.jinja_env.globals.update(appeals_waiting=waiting_for_admins, log_problems=log_problems, probing_noted=probing_noted)

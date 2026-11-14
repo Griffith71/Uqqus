@@ -266,8 +266,8 @@ def test_the_admin_route():
     assert "target.is_bot" in route and "v.admin_level <= (target.admin_level or 0)" in route
     assert 'action_log.record_quietly(g.db, "age_declaration"' in route
     assert "notify(target, age_declaration.ADMIN_NOTICES[notice])" in route
-    log = read("ruqqus", "helpers", "action_log.py")
-    assert '"remove_story", "age_declaration"}' in log, "what a member said about their age is the staff's to read, never the public's"
+    from ruqqus.helpers import action_log
+    assert "age_declaration" in action_log.STAFF_ACTIONS, "what a member said about their age is the staff's to read, never the public's"
     assert set(age.ADMIN_NOTICES) == {age.ADULT, age.CHILD, None, age.CONFIRMED} == set(age.LABELS)
 
 

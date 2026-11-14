@@ -34,7 +34,7 @@ from ruqqus.helpers import collab_authorship as authorship
 from ruqqus.helpers import collab_ot as ot
 from ruqqus.helpers import collab_rules as rules
 from ruqqus.helpers import collab_store as store
-from ruqqus.helpers import age_declaration, anon_aliases, anonymity, collab_view, coauthors, live_bus
+from ruqqus.helpers import action_log, age_declaration, anon_aliases, anonymity, collab_view, coauthors, live_bus
 from ruqqus.helpers.visibility import user_hidden
 from ruqqus.helpers.i18n_runtime import ENVIRON_KEY as UI_LOCALE_KEY, N_, msg, tr, trn, trp
 
@@ -90,6 +90,29 @@ def _hidden_credits(post, v):
     numbers = anon_aliases.numbers_cached(g.db, anon_aliases.scope_key(post)) if flagged else {}
     return {uid: (anonymity.alias_name(numbers[uid]) if numbers.get(uid) else anonymity.shown())
             for uid in flagged if not (v is not None and ((getattr(v, "admin_level", 0) or 0) >= 3 or (v.id == uid and not getattr(v, "qr_limited", False))))}
+
+
+def _credit_by_alias(doc, raw):
+    """`(account, number)` of the current author whose ANONYMOUS CREDIT on this draft's published post carries the number `raw` ("Anonymous #3"), or `(None, None)`.
+    Only a credit counts: a number held by an author whose credit is named (they wrote anonymous comments in the thread) finds nothing, so a removal could not
+    name who wrote an anonymous comment, and a number nobody holds, one whose holder has left and one held by a named author all read the same ("That account
+    isn't an author."). The draft must be published: the numbers are the post's thread's."""
+    text_ = str(raw or "").strip().lstrip("#")
+    if not (text_.isascii() and text_.isdigit() and 0 < len(text_) <= 6) or not doc[7]:
+        return None, None
+    number = int(text_)
+    post = g.db.query(Submission).filter_by(id=doc[7]).first()
+    if post is None:
+        return None, None
+    PostCoauthor = coauthors._classes()[0]
+    flagged = {r_.user_id for r_ in g.db.query(PostCoauthor).filter_by(post_id=post.id, is_anonymous=True).all()}
+    if post.is_anonymous:
+        flagged.add(post.author_id)
+    numbers = anon_aliases.numbers_in(g.db, anon_aliases.scope_key(post))
+    holders = [uid for uid in sorted(flagged) if numbers.get(uid) == number and store.is_author(g.db, doc[0], uid)]
+    if not holders:
+        return None, None
+    return _users(holders).get(holders[0]), number
 
 
 def _name_of(user, v, hidden=None):
@@ -180,8 +203,14 @@ def _panel_context(doc, v):
     for p in rows:
         votes = store.votes(g.db, p[0])
         payload = store.payload_of(p)
+        by_alias = p[2] == rules.REMOVE and bool(payload.get("alias_n"))
+        subject_out = _name_of(subjects.get(p[3]), v) if p[3] else None
+        if by_alias and p[9] != rules.PASSED and p[3] != v.id:
+            # a removal asked for by number: until it passes the other authors are shown the number, never the account (passed, the person is out, and known)
+            subject_out = {"name": anonymity.alias_name(payload["alias_n"]), "handle": "", "link": None}
         proposals_out.append({
-            "id": p[0], "kind": p[2], "subject": _name_of(subjects.get(p[3]), v) if p[3] else None,
+            "id": p[0], "kind": p[2], "subject": subject_out, "is_subject": bool(p[2] == rules.REMOVE and p[3] == v.id),
+            "by_alias": by_alias,
             "by": _name_of(subjects.get(p[5]), v), "created_utc": p[6], "closes_utc": p[7], "outcome": p[9],
             "invitee_answer": p[10], "yes": sum(1 for x in votes.values() if x), "no": sum(1 for x in votes.values() if not x),
             "mine": votes.get(v.id), "rules": rules.describe(payload.get("rules")) if p[2] == rules.RULES else None,
@@ -377,12 +406,19 @@ def _settle(doc, proposal, actor, now):
             _tell([proposal[3]], N_("You're invited to write a shared draft with others. [See the invitation](%(link)s)"),
                   link=f"/collab/invite/{proposal[0]}")
         elif kind == rules.REMOVE:
+            was_author = store.is_author(g.db, doc_id, proposal[3])      # a second proposal about the same person finds them gone already
             store.remove_author(g.db, doc_id, proposal[3], now)
             live_bus.revoke(r, proposal[3], f"collab:{doc_id}")       # their open pages stop hearing it (C-07)
             _sync_coauthors(store.doc(g.db, doc_id))
+            if was_author and payload.get("alias_n"):
+                # a removal asked for by number exposes the account to the authors, by the vote: the staff are told which account and which number
+                action_log.record_quietly(g.db, "collab_alias_removal", proposal[5], role=action_log.AUTHOR, target_user_id=proposal[3], post_id=doc[7] or None,
+                                          staff_note=f"removed by vote from a shared draft as Anonymous #{int(payload['alias_n'])} (asked by user {proposal[5]})",
+                                          floor=action_log.STAFF)
             g.db.commit()
-            _tell([proposal[3]], N_("The other authors of a shared draft removed you as an author. What you wrote stays "
-                                    "credited to you."))
+            if was_author:
+                _tell([proposal[3]], N_("The other authors of a shared draft removed you as an author. What you wrote stays "
+                                        "credited to you."))
         elif kind == rules.RULES:
             store.set_rules(g.db, doc_id, payload.get("rules"), now)
         elif kind == rules.DELETE:
@@ -477,8 +513,15 @@ def collab_propose(doc_id, v):
                 return _error(msg(refusal))
             subject = candidate.id
         elif kind == rules.REMOVE:
-            name = rules.parse_name(request.values.get("username"))
-            candidate = get_user(name, graceful=True)
+            alias = request.values.get("alias")
+            if alias not in (None, ""):
+                # by the number an anonymous credit carries (the owner, 2026-11-14): the SERVER finds the account, and a number that finds none is refused
+                # exactly as a name that isn't an author is. If the vote passes the person is out, and so the authors know who it was.
+                candidate, number = _credit_by_alias(doc, alias)
+                payload = {"alias_n": number} if candidate else {}
+            else:
+                name = rules.parse_name(request.values.get("username"))
+                candidate = get_user(name, graceful=True)
             refusal = rules.remove_refusal(subject_is_author=bool(candidate and store.is_author(g.db, doc_id, candidate.id)),
                                            subject_is_me=bool(candidate and candidate.id == v.id))
             if refusal:
@@ -496,7 +539,14 @@ def collab_propose(doc_id, v):
             return _error(tr("Choose what to propose."))
     except rules.Refused as e:
         return _error(msg(str(e)))
-    if store.open_like(g.db, doc_id, kind, subject):
+    if payload.get("alias_n"):
+        # a proposal by number is "like" another by the same number only: matching on the account would tell a proposer that the number is the person an open
+        # proposal by name is about
+        duplicate = any(store.payload_of(row).get("alias_n") == payload["alias_n"]
+                        for row in store.proposals(g.db, doc_id, open_only=True) if row[2] == rules.REMOVE)
+    else:
+        duplicate = store.open_like(g.db, doc_id, kind, subject)
+    if duplicate:
         return _error(tr("There's already an open proposal like this one."), 409)
     pid = store.propose(g.db, doc_id, kind, v.id, now, rules.closes_at(doc_rules, now), subject=subject, payload=payload)
     store.vote(g.db, pid, v.id, True, now)

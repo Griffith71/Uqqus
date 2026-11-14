@@ -14,7 +14,7 @@ from flask import abort, g, jsonify, redirect, request
 
 from ruqqus.__main__ import app, limiter, member_limit_key
 from ruqqus.classes import BanRelationship, ChatBan, Comment, ModAction, Submission, User
-from ruqqus.helpers import action_log, alias_actions, log_notices, sanction_evidence
+from ruqqus.helpers import action_log, alias_actions, exposure, log_notices, sanction_evidence
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.get import get_from_fullname
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
@@ -79,7 +79,10 @@ def mod_exile_alias(guildname, board, v):
     if found is None:
         return _accepted()
     user, item, thread, number = found
-    if g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first():
+    active = g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=True).first()
+    if active:
+        if not active.alias_n and active.banning_mod_id == v.id:
+            exposure.note(g.db, board.id, v.id, user.id, exposure.ALIAS_AFTER_EXILE)     # the same guildmaster exiled this account by name: a guess tested the other way round
         return _accepted()                                      # already exiled, by name or by alias: nothing changes, and nothing is said
     existing = g.db.query(BanRelationship).filter_by(user_id=user.id, board_id=board.id, is_active=False).first()
     now = int(time.time())
@@ -121,6 +124,7 @@ def mod_unexile_alias(guildname, ban_id, board, v):
     user = g.db.query(User).filter_by(id=ban.user_id).first()
     _logged(alias_actions.UNEXILE, board, v, None, ban.alias_n, user, with_item=False)
     g.db.commit()
+    log_notices.tell_lifted(g.db, user.id, log_notices.EXILE_LIFTED, actor_id=v.id, guild=board.name)       # to the account: it says what it can do again, never the number
     return "", 204
 
 
@@ -138,11 +142,16 @@ def mod_chatban_alias(guildname, board, v):
     if found is None:
         return _accepted()
     user, item, thread, number = found
-    if g.db.query(ChatBan).filter_by(user_id=user.id, board_id=board.id).first():
+    muted = g.db.query(ChatBan).filter_by(user_id=user.id, board_id=board.id).first()
+    if muted:
+        if not muted.alias_n and muted.banning_mod_id == v.id:
+            exposure.note(g.db, board.id, v.id, user.id, exposure.ALIAS_AFTER_MUTE)
         return _accepted()
     g.db.add(ChatBan(user_id=user.id, board_id=board.id, banning_mod_id=v.id, alias_post_id=thread, alias_n=number))
-    _logged(alias_actions.CHATBAN, board, v, item, number, user, with_item=True)
+    entry = _logged(alias_actions.CHATBAN, board, v, item, number, user, with_item=True)
     g.db.commit()
+    log_notices.tell_imposed(g.db, user.id, log_notices.MUTED, entry, guild=board.name, rule_key=action_log.parse_rule(request.form.get("rule")),
+                             reason=request.form.get("reason"), actor_id=v.id)
     _leave_encrypted_rooms(board, user)
     return _accepted()
 
@@ -172,6 +181,7 @@ def mod_unchatban_alias(guildname, ban_id, board, v):
     g.db.delete(ban)
     _logged(alias_actions.UNCHATBAN, board, v, None, number, user, with_item=False)
     g.db.commit()
+    log_notices.tell_lifted(g.db, user.id, log_notices.MUTE_LIFTED, actor_id=v.id, guild=board.name)
     if request.args.get("back") == "channels":
         return redirect(f"/+{board.name}/mod/channels")             # from the channel manager's own list (a form, not a script)
     return "", 204

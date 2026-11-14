@@ -157,6 +157,9 @@ def ban_user(user_id, v):
 
 
     notify(user, notice[0], **notice[1])
+    if entry and cited:
+        # the account is told which of ITS anonymous items the ban relies on, and that a second administrator's approval would name it beside them
+        log_notices.tell_ban_cites(g.db, entry, user.id, log_evidence.anonymous_among(g.db, cited))
     if entry:
         log_notices.tell_appeal_way(g.db, entry, user)      # beside the notice above: the Log and the Appeal link
 
@@ -241,7 +244,8 @@ def unban_post(post_id, v):
     if not post:
         abort(400)
 
-    if post.is_banned:
+    was_removed = bool(post.is_banned)
+    if was_removed:
         ma=ModAction(
             kind="unban_post",
             user_id=v.id,
@@ -256,6 +260,9 @@ def unban_post(post_id, v):
     post.approved_utc = int(time.time())
 
     g.db.add(post)
+    if was_removed:
+        g.db.commit()
+        log_notices.tell_item_lifted(g.db, log_notices.POST_RESTORED, post=post, actor_id=v.id)       # the person it was removed from is told it is back
 
     return (redirect(post.permalink), post)
 
@@ -411,7 +418,8 @@ def api_unban_comment(c_id, v):
         abort(404)
     g.db.add(comment)
 
-    if comment.is_banned:
+    was_removed = bool(comment.is_banned)
+    if was_removed:
         ma=ModAction(
             kind="unban_comment",
             user_id=v.id,
@@ -425,6 +433,9 @@ def api_unban_comment(c_id, v):
     comment.is_approved = v.id
     comment.approved_utc = int(time.time())
 
+    if was_removed:
+        g.db.commit()
+        log_notices.tell_item_lifted(g.db, log_notices.COMMENT_RESTORED, comment=comment, actor_id=v.id)
 
     return "", 204
 
@@ -713,8 +724,13 @@ def api_ban_guild(v, bid):
     g.db.add(board)
 
     # a guild's ban reason is public on its page; the entry is public too unless the guild is private (action_log decides)
-    action_log.record_quietly(g.db, "ban_guild", v.id, board_id=board.id, rule=request.form.get("rule"),
-                              reason=board.ban_reason, role=action_log.ADMIN)
+    entry = action_log.record_quietly(g.db, "ban_guild", v.id, board_id=board.id, rule=request.form.get("rule"),
+                                      reason=board.ban_reason, role=action_log.ADMIN)
+    g.db.commit()
+    # the people who answer for the guild are told, with the rule, the reason, the Log and the way to appeal
+    if entry:
+        log_notices.tell_heads(g.db, board.id, log_notices.GUILD_BANNED, entry_id=entry, actor_id=v.id, guild=board.name,
+                               rule_key=action_log.parse_rule(request.form.get("rule")), reason=board.ban_reason)
 
     return redirect(board.permalink)
 
@@ -726,6 +742,7 @@ def api_unban_guild(v, bid):
 
     board = get_board(bid, v=v)
 
+    was_banned = bool(board.is_banned)
     board.is_banned = False
     board.ban_reason = ""
 
@@ -733,6 +750,9 @@ def api_unban_guild(v, bid):
 
     action_log.record_quietly(g.db, "unban_guild", v.id, board_id=board.id, reason=request.form.get("reason", ""),
                               role=action_log.ADMIN)
+    if was_banned:
+        g.db.commit()
+        log_notices.tell_heads(g.db, board.id, log_notices.GUILD_REINSTATED, actor_id=v.id, guild=board.name)
 
     return redirect(board.permalink)
 
