@@ -53,7 +53,7 @@ def test_the_migration_the_schema_and_the_ledger():
 
 
 def test_the_setting_is_only_drawn_and_only_answers_while_the_site_offers_it():
-    section = PAGE.split("{% if qr_login_offered() %}", 1)[1].split("{% endif %}\n\n  <h2 class=\"h5\">", 1)[0]
+    section = PAGE.split("{% if qr_login_offered() and not child_locked(v) %}", 1)[1].split("{% endif %}\n\n  <h2 class=\"h5\">", 1)[0]
     assert 'id="qr-login"' in section and PAGE.count('name="qr_login_form"') == 1 and 'name="qr_login_form"' in section
     assert 'request.form.get("qr_login_form", "") and qr_login_offered():' in SETTINGS
     assert "QR_LOGIN_ENABLED" not in PAGE and "QR_LOGIN_ENABLED" not in SETTINGS, "one helper decides"
@@ -69,7 +69,7 @@ def test_only_turning_it_back_on_asks_the_password_and_tells_the_member():
 
 
 def test_the_password_box_is_drawn_only_for_turning_it_on():
-    section = PAGE.split("{% if qr_login_offered() %}", 1)[1].split('<h2 class="h5">', 1)[0]
+    section = PAGE.split("{% if qr_login_offered() and not child_locked(v) %}", 1)[1].split('<h2 class="h5">', 1)[0]
     on, off = section.split("{% else %}", 1)
     assert 'value="on"' in on and 'name="password"' in on and 'autocomplete="current-password"' in on
     assert 'value="off"' in off and 'name="password"' not in off

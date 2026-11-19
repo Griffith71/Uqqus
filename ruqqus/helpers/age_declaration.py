@@ -164,6 +164,11 @@ CONSENT_AGE = {
 }
 
 
+# places a country header names apart that take another country's age: France's overseas regions, Åland, Gibraltar and the Crown
+# dependencies (all strict and asked about cookies: helpers/consent.py REGIONS)
+AGE_OF = {"GP": "FR", "MQ": "FR", "GF": "FR", "RE": "FR", "YT": "FR", "MF": "FR", "AX": "FI", "GI": "GB", "GG": "GB", "JE": "GB", "IM": "GB"}
+
+
 def _min_age_overrides():
     found = {}
     for part in os.environ.get("AGE_MIN_AGES", "").split(","):
@@ -176,9 +181,11 @@ def _min_age_overrides():
 def min_age(country):
     """The youngest a person may be to sign up on their own from this country (13 where nothing says more)."""
     code = _country(country)
-    override = _min_age_overrides().get(code)
-    if override is not None:
-        return override
+    overrides = _min_age_overrides()
+    for each in (code, AGE_OF.get(code)):              # an override for the place itself, then for the country it follows
+        if each in overrides:
+            return overrides[each]
+    code = AGE_OF.get(code, code)
     return max(DEFAULT_MIN_AGE, FACEBOOK_MIN.get(code, 0), CONSENT_AGE.get(code, 0))
 
 

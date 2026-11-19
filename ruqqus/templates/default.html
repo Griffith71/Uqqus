@@ -413,6 +413,11 @@
     <li class="nav-item">
       <a class="nav-link" href="/help/privacy#videos" data-consent-open><i class="fas fa-cookie-bite fa-fw mr-3"></i>{{ _("Cookie choices") }}</a>
     </li>
+    {% if ads_live() %}
+    <li class="nav-item">
+      <a class="nav-link" href="/help/privacy#ads" data-ad-consent><i class="fas fa-rectangle-ad fa-fw mr-3"></i>{{ _("Privacy and cookie settings") }}</a>
+    </li>
+    {% endif %}
     {% endif %}
     {% if v %}
     <li class="nav-item border-top mt-2 pt-2">

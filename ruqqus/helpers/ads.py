@@ -7,7 +7,9 @@ script, no slot, no consent link and no /ads.txt anywhere.
 Pages are opt-in: only the feed (home.html's post list), the post page and the right sidebar of a page
 that shows posts call `ad_slot` (routes/ads.py). Even there, no ad for:
   - a Premium member (an ad-free perk), checked without renewing their Premium;
-  - a viewer on the Child word filter (which every child account is locked to: helpers/age_declaration.py);
+  - a viewer who chose the Child word filter, and every child account (locked to it: helpers/age_declaration.py). Someone browsing
+    at the Child level only because of where they are (the UK, the EU/EEA or Australia, with no confirmed age: the regional rule in helpers/visibility.py)
+    still gets the ads, non-personalised (the owner, 2026-11-19), so this goes by the account's own level (`viewer_allows`);
   - a side-panel frame (?embed=1);
   - a post that is not public (a Circle or private-guild post), removed by the site or by its guild's moderators, deleted,
     marked sensitive, or rated profane or extreme by the word filter (AdSense allows no ads beside such content);
@@ -97,10 +99,13 @@ def held_after_sign_in(until, now):
 
 def personalised_allowed(country, viewer):
     """May Google personalise the ads on this page? Never in the UK, the EEA and Switzerland or where the country isn't known
-    (`consent.needs_asking`, Google's own list), whoever is reading; elsewhere only for an account that said it is 18 or over.
-    So never for a visitor, whom nothing says is an adult, or a member who hasn't answered: a visitor's page doesn't depend on
-    the country at all, and a member's is private (`Vary: CF-IPCountry` covers every page besides)."""
-    if viewer is None or consent.needs_asking(country):
+    (`consent.needs_asking`, Google's own list), whoever is reading; never for anyone browsing at the Child level for want of a
+    confirmed age where the law asks for one (`age_declaration.region_locked`: Australia is strict but not one of the consent
+    regions, so a ticked "18 or over" there counts for nothing, as it counts for nothing in what they may read; the owner,
+    2026-11-19); elsewhere only for an account that said it is 18 or over. So never for a visitor, whom nothing says is an
+    adult, or a member who hasn't answered: a visitor's page doesn't depend on the country at all, and a member's is private
+    (`Vary: CF-IPCountry` covers every page besides)."""
+    if viewer is None or consent.needs_asking(country) or age_declaration.region_locked(viewer, country):
         return False
     return getattr(viewer, "age_declared", None) == age_declaration.ADULT
 

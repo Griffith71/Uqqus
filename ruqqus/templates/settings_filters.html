@@ -394,6 +394,9 @@
                 <div class="body w-lg-100">
 
                   <a class="btn btn-secondary" href="/help/privacy#videos" data-consent-open>{{ _("Cookie choices") }}</a>
+                  {# Google's own consent for its ads, which a phone reaches from no menu (the owner, 2026-11-19): it opens the privacy
+                     page, where the press opens Google's message, so Google's tag never loads on Settings #}
+                  {% if ads_live() %}<a class="btn btn-secondary" href="/help/privacy#ads" data-ad-consent>{{ _("Privacy and cookie settings") }}</a>{% endif %}
 
                   <span class="d-block mt-2 text-small-extra text-muted">{{ _("Whether a video site's player may load before you press play. While it may not, Automatic above has no effect.") }}</span>
 

@@ -120,6 +120,10 @@ def test_ads_follow_the_stored_lock_not_the_country():
     allows = ads.split("def viewer_allows(", 1)[1].split("\ndef ", 1)[0]
     assert "stored_level(viewer) < CHILD and not age_declaration.is_locked(viewer)" in allows
     assert "viewer_level" not in ads, "a visitor in a strict country keeps the ads they had"
+    # but never personalised ones (the owner, 2026-11-19: Australia is strict and not a consent region): the one place ads read the rule
+    personalised = ads.split("def personalised_allowed(", 1)[1].split("\ndef ", 1)[0]
+    assert "age_declaration.region_locked(viewer, country)" in personalised
+    assert ads.count("region_locked(") == ads.count("age_declaration.region_locked(viewer, country)") == 1
 
 
 def test_a_page_that_shows_a_level_shows_the_effective_one():
@@ -136,6 +140,8 @@ def test_the_regional_rule_lives_in_viewer_level_and_nowhere_else():
     for path in (ROOT / "ruqqus").rglob("*.py"):
         if path.name in ("visibility.py", "age_declaration.py", "jinja2.py", "children_pages.py"):
             continue
+        if path.name == "ads.py":
+            continue    # personalised_allowed only, pinned in test_ads_follow_the_stored_lock_not_the_country
         assert "current_region_locked(" not in path.read_text(encoding="utf-8") and "region_locked(" not in path.read_text(encoding="utf-8"), path
 
 

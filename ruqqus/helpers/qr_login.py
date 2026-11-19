@@ -15,7 +15,7 @@ The code travels only in the address's fragment, which a browser sends to nobody
 import json
 import secrets
 
-from ruqqus.helpers import oidc_provider
+from ruqqus.helpers import age_declaration, oidc_provider
 
 SWITCH = "QR_LOGIN_ENABLED"
 DEFAULT = "1"
@@ -37,7 +37,7 @@ LIMITED_KEY = "qr_limited"
 EXPIRES_KEY = "qr_expires_utc"
 
 # deleted, a bot, suspended, the member's own switch or a sign-in ended since: nobody is told which
-DELETED, BOT, SUSPENDED, SWITCHED_OFF, NONCE_MOVED = "deleted", "bot", "suspended", "switched_off", "nonce_moved"
+DELETED, BOT, SUSPENDED, SWITCHED_OFF, NONCE_MOVED, LOCKED = "deleted", "bot", "suspended", "switched_off", "nonce_moved", "locked"
 
 # Atomic: two requests for one approval can't both get it. A compare-and-delete of one key needs no compare, so GET and DEL.
 _TAKE = "local v = redis.call('GET', KEYS[1]); if v then redis.call('DEL', KEYS[1]) end; return v"
@@ -142,6 +142,10 @@ def refusal(user, nonce=None):
         return SUSPENDED
     if getattr(user, "qr_login_off", False):
         return SWITCHED_OFF
+    # a child account, a parent's sub-account or an unconfirmed sign-up from a strict country (the owner, 2026-11-19): a relayed
+    # code is the attack this can't fully stop, and a child is the likeliest to scan what someone sends them. The password still works.
+    if age_declaration.is_locked(user):
+        return LOCKED
     if nonce is not None and nonce != getattr(user, "login_nonce", None):
         return NONCE_MOVED
     return None

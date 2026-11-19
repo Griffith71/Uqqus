@@ -1,7 +1,13 @@
 """Page-view analytics from a host the site's owner runs (Plausible or a compatible script), off unless set. Pure, no
 Flask. Replaces the old Ruqqus line that named plausible.ruqqus.com (bug hunt 2026-10, H7; it had long been commented
 out, but a script on a domain this site doesn't own must never come back). The privacy page names the service while it
-is on."""
+is on.
+
+Only Plausible's manual script is accepted (its file name has a `manual` part: `script.manual.js`,
+`script.manual.outbound-links.js`): the ordinary script reports each page's full address by itself, and an address
+such as /@alice/post/<id> names an account. With the manual script the page reports only its kind (`page_kind` in
+helpers/jinja2.py, the built-in counter's own list: helpers/traffic.py ENDPOINT_KINDS), never its address (the
+owner, 2026-11-19)."""
 import re
 from urllib.parse import urlsplit
 
@@ -17,7 +23,14 @@ def script_src(value):
     parts = urlsplit(value)
     if parts.scheme != "https" or not parts.hostname or parts.username or parts.password:
         return None
+    if not is_manual(parts.path):
+        return None
     return value
+
+
+def is_manual(path):
+    """Is this Plausible's manual script, which sends nothing by itself? `script.manual.js` and its combinations."""
+    return "manual" in (path or "").rsplit("/", 1)[-1].lower().split(".")[1:-1]
 
 
 def site_domain(value, server_name):

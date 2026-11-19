@@ -39,6 +39,17 @@ def qr_login_offered():
     return qr_login_rules.offered(environ, r, app.config["READ_ONLY"])
 
 
+@app.template_global("page_kind")
+def page_kind():
+    """What the page-view statistics are told this page is ("post", "profile"...), from the built-in counter's own list
+    (helpers/traffic.py ENDPOINT_KINDS), or "" for a page that isn't counted and for a side panel's frame: never its address
+    (helpers/analytics.py, the owner 2026-11-19)."""
+    from ruqqus.helpers import traffic
+    if "embed" in request.args:
+        return ""
+    return traffic.ENDPOINT_KINDS.get(request.endpoint) or ""
+
+
 @app.template_global("video_consent")
 def video_consent():
     """<html data-video-consent>: ask, yes, no, or "" for a reader who isn't asked (helpers/consent.py). Anyone can send

@@ -19,8 +19,18 @@ def test_off_unless_a_plain_https_address_is_given():
         assert analytics.script_src(bad) is None, bad
 
 
+def test_only_the_manual_script_which_sends_no_address_by_itself():
+    for ordinary in ("https://stats.example.org/js/script.js", "https://stats.example.org/js/script.outbound-links.js",
+                     "https://stats.example.org/js/manual.js", "https://stats.example.org/manual/script.js",
+                     "https://stats.example.org/js/script.manualish.js"):
+        assert analytics.script_src(ordinary) is None, ordinary
+    for manual in ("https://stats.example.org/js/script.manual.js", "https://stats.example.org/js/script.outbound-links.manual.js",
+                   "https://stats.example.org/js/script.manual.outbound-links.js?v=2"):
+        assert analytics.script_src(manual) == manual, manual
+
+
 def test_on_with_the_sites_own_address_or_the_name_given():
-    src = "https://stats.example.org/js/script.js"
+    src = "https://stats.example.org/js/script.manual.js"
     assert analytics.settings({"PLAUSIBLE_SRC": src}, "laba.example") == (src, "laba.example")
     assert analytics.settings({"PLAUSIBLE_SRC": src}, "localhost:8000") == (None, None), "no real name to count under"
     assert analytics.settings({"PLAUSIBLE_SRC": src, "PLAUSIBLE_DOMAIN": "Laba.Example"}, "x") == (src, "laba.example")
@@ -30,9 +40,15 @@ def test_on_with_the_sites_own_address_or_the_name_given():
 
 def test_the_layouts_load_it_only_while_it_is_on_and_the_privacy_page_names_it():
     partial = (TEMPLATES / "partials" / "analytics.html").read_text(encoding="utf-8")
-    block = re.search(r"\{% if 'ANALYTICS_SRC' \| app_config %\}(.*?)\{% endif %\}", partial, re.S)
+    block = re.search(r"\{% if 'ANALYTICS_SRC' \| app_config and page_kind\(\) %\}(.*?)\{% endif %\}", partial, re.S)
     assert block and "src=\"{{ 'ANALYTICS_SRC' | app_config }}\"" in block.group(1)
-    assert partial.count("<script") == 1 and partial.index("<script") > partial.index("{% if")
+    assert partial.count("<script") == 2 and partial.index("<script") > partial.index("{% if")
+    # the page's kind, never its address: no location.href or pathname, and the one pageview is made by hand
+    assert 'window.plausible("pageview", { u: location.origin + {{ ("/" ~ page_kind()) | tojson }} })' in block.group(1)
+    for word in ("location.href", "pathname", "document.URL", "request.path", "request.url"):
+        assert word not in partial, word
+    helper = (ROOT / "ruqqus" / "helpers" / "jinja2.py").read_text(encoding="utf-8").split("def page_kind():", 1)[1].split("\n@app", 1)[0]
+    assert "traffic.ENDPOINT_KINDS.get(request.endpoint)" in helper and '"embed" in request.args' in helper
     for layout in ("default.html", "docs_default.html"):
         text = (TEMPLATES / layout).read_text(encoding="utf-8")
         assert text.count('{% include "partials/analytics.html" %}') == 1, layout

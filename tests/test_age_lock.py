@@ -56,6 +56,20 @@ def test_the_youngest_age_is_the_highest_of_the_platforms_and_the_national_age_o
     assert age.min_age(country) == expected
 
 
+@pytest.mark.parametrize("country, expected", [("GP", 15), ("MQ", 15), ("GF", 15), ("RE", 15), ("YT", 15), ("MF", 15), ("AX", 13),
+                                                ("GI", 13), ("GG", 13), ("JE", 13), ("IM", 13)])
+def test_a_place_a_header_names_apart_takes_its_countrys_age(country, expected):
+    assert age.is_strict(country), "these are all places the child lock covers"
+    assert age.min_age(country) == expected
+
+
+def test_an_override_for_the_country_reaches_its_overseas_places_and_one_for_the_place_wins(monkeypatch):
+    monkeypatch.setenv("AGE_MIN_AGES", "FR=16")
+    assert age.min_age("RE") == 16
+    monkeypatch.setenv("AGE_MIN_AGES", "FR=16,RE=14")
+    assert age.min_age("RE") == 14 and age.min_age("GP") == 16
+
+
 def test_the_minimum_can_be_overridden(monkeypatch):
     monkeypatch.setenv("AGE_MIN_AGES", "DE=14, FR=16 ,bad,XX=9,US=x")
     assert age.min_age("DE") == 14 and age.min_age("FR") == 16 and age.min_age("US") == 13

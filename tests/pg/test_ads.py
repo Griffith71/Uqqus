@@ -225,7 +225,8 @@ def test_a_visitor_and_an_ordinary_member_load_it_on_the_privacy_page(real_app, 
 
 @pytest.mark.parametrize("answer,country,personal", [(1, "US", True), (1, "JP", True), (1, "GB", False), (1, "DE", False),
                                                       (1, "CH", False), (1, None, False), (1, "T1", False), (1, "XX", False),
-                                                      (None, "US", False), (None, "GB", False)])
+                                                      (None, "US", False), (None, "GB", False),
+                                                      (1, "AU", False)])        # strict for the child lock: a ticked answer counts for nothing there
 def test_a_member_is_personalised_only_outside_the_regions_and_having_said_18(real_app, writer, make_member, ads_on, answer, country, personal):
     member = make_member()
     set_answer(member, answer)
@@ -234,6 +235,43 @@ def test_a_member_is_personalised_only_outside_the_regions_and_having_said_18(re
     page = html(get(member.browser(), f"/post/{pid}", country=country))
     assert boxes(page) >= 1
     assert (NON_PERSONAL not in page) is personal
+
+
+def test_in_australia_an_age_the_check_confirmed_is_personalised(real_app, writer, make_member, ads_on):
+    member = make_member()
+    set_answer(member, 1)
+    db = member.db_session()
+    db.execute(text("UPDATE users SET age_assured_utc = 5 WHERE id = :u"), {"u": member.id})
+    db.commit()
+    pid = add_post(writer)
+    add_comment(writer, pid)
+    assert NON_PERSONAL not in html(get(member.browser(), f"/post/{pid}", country="AU"))
+
+
+@pytest.mark.parametrize("country", ["GB", "DE", "AU"])
+def test_a_visitor_reading_at_child_level_where_they_are_still_gets_an_ad_never_personalised(real_app, writer, ads_on, country):
+    # the owner, 2026-11-19: keep the ads, and the privacy page says so
+    app, _ = real_app
+    pid = add_post(writer)
+    add_comment(writer, pid)
+    page = html(get(app.test_client(), f"/post/{pid}", country=country))
+    assert boxes(page) >= 1 and NON_PERSONAL in page
+    privacy = html(get(app.test_client(), "/help/privacy", country=country))
+    assert "reads at the Child level because of where they are; they still see ads, never personalised ones" in privacy.replace("&#39;", "'")
+
+
+def test_the_ad_choices_are_in_settings_and_a_visitors_phone_menu_while_ads_are_live(real_app, make_member, monkeypatch):
+    # the footer is hidden on a phone, and a member there had no way to Google's message (the owner, 2026-11-19)
+    app, _ = real_app
+    member = make_member()
+    link = 'href="/help/privacy#ads" data-ad-consent'
+    assert link not in html(get(member.browser(), "/settings/content")), "nothing while ads are off"
+    assert link not in html(get(app.test_client(), "/all"))
+    for key, value in ENV.items():
+        monkeypatch.setenv(key, value)
+    assert link in html(get(member.browser(), "/settings/content"))
+    menu = html(get(app.test_client(), "/all")).split('data-consent-open><i class="fas fa-cookie-bite', 1)[1]
+    assert link in menu.split("</ul>", 1)[0], "beside Cookie choices in the visitor's phone menu"
 
 
 @pytest.mark.parametrize("country", [None, "US", "GB", "T1"])

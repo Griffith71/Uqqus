@@ -367,8 +367,17 @@ def test_the_refusal_never_names_the_switch():
     pages = read("ruqqus", "routes", "qr_login_pages.py")
     words = pages.split('CANT_USE = N_("', 1)[1].split('"', 1)[0]
     assert "turn" not in words.lower() and "off" not in words.lower() and "setting" not in words.lower()
+    assert "age" not in words.lower().split() and "child" not in words.lower(), "nor that the account is locked"
     assert words in read("ruqqus", "templates", "login_qr_approve.html")
     assert pages.count("msg(CANT_USE)") == 1
+
+
+def test_a_locked_account_is_refused_and_isnt_offered_the_switch():
+    # the owner, 2026-11-19: QR sign-in is off for every locked account, which the switch in Settings could not change
+    rule = read("ruqqus", "helpers", "qr_login.py").split("def refusal(", 1)[1].split("\ndef ", 1)[0]
+    assert "if age_declaration.is_locked(user):\n        return LOCKED" in rule
+    assert rule.index("return LOCKED") < rule.index("return NONCE_MOVED"), "asked at approve and again at finish, with the rest"
+    assert "{% if qr_login_offered() and not child_locked(v) %}" in read("ruqqus", "templates", "settings_security.html")
 
 
 def test_a_signed_out_phone_has_no_way_back_to_the_page():

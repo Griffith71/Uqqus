@@ -120,6 +120,16 @@ def test_elsewhere_only_an_account_that_said_it_is_18_or_over():
     assert ads.personalised_allowed("JP", None) is ads.personalised_allowed("GB", None)
 
 
+def test_never_personalised_for_anyone_reading_at_child_level_where_they_are_australia_included():
+    # Australia is strict for the child lock but not one of the consent regions: a ticked "18 or over" counts for nothing there,
+    # in the ads as in what they may read (the owner, 2026-11-19)
+    assert ads.personalised_allowed("AU", member(age_declared=1)) is False
+    assert ads.personalised_allowed("AU", member(age_declared=1, age_assured_utc=1700000000)) is True     # an age-check service confirmed it
+    assert ads.personalised_allowed("AU", None) is False
+    assert ads.personalised_allowed("US", member(age_declared=1, age_assured_utc=1700000000)) is True
+    assert ads.personalised_allowed("GB", member(age_declared=1, age_assured_utc=1700000000)) is False    # consent region: never
+
+
 def test_the_hold_after_a_sign_in_ends():
     assert ads.held_after_sign_in(1000, 999) and not ads.held_after_sign_in(1000, 1000)
     assert not ads.held_after_sign_in(None, 5) and not ads.held_after_sign_in("9999999999", 5)

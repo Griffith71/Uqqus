@@ -8,7 +8,7 @@
 
 {% block stylesheets %}
 {{ super() }}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha384-3RT6/aAL0nKpqF8ldMoIrxz8OmRcPrKbR8MYXgvv2iKryEvn2vbfoI+FJbcpl+VW" crossorigin="anonymous">
 <style>
   #world-map { width: 100%; aspect-ratio: 2 / 1; min-height: 300px; max-height: 650px; background: transparent; }
   #world-map svg { width: 100%; height: 100%; }
@@ -106,8 +106,8 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js" integrity="sha384-dUo4VnkPwa5iJ/udOYY1SRDya6+2CVXYRfing32kyXbeB6HePV/YmJ3EPPvYz/Sb" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js" integrity="sha384-QCoiowLYPphJpiHouJIJOUCcg6AxqnLAAyEjkZnJ7RQCpC3YY1kEX0PaOant/8kx" crossorigin="anonymous"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var countryColors = {{ country_colors | tojson }};

@@ -35,10 +35,17 @@ def test_jquery_and_bootstraps_javascript_are_versions_without_known_holes():
             assert tuple(map(int, bootstrap.groups())) >= (4, 3, 1), (name, src)    # CVE-2019-8331
 
 
-def test_the_shared_libraries_are_hash_checked():
+def test_every_cdn_script_and_stylesheet_is_hash_checked():
+    # every one, not a list of names (2026-11-19: the map on /regions and the animations on About and Donate had none): a script
+    # from another host runs with a signed-in member's full powers, since the site has no script-src policy
     for name, src, tag in _cdn_scripts():
-        if re.search(r"jquery-|popper|bootstrap|clipboard|prettify", src):
-            assert 'integrity="sha' in tag and 'crossorigin="anonymous"' in tag, (name, src)
+        assert 'integrity="sha' in tag and 'crossorigin="anonymous"' in tag, (name, src)
+    # the stylesheets that come with those two (a stylesheet runs no script: Font Awesome's, on every page, has no hash yet)
+    sheet = re.compile(r"<link\b[^>]*\bhref=\"(https://[^\"]+(?:jsvectormap|aos)[^\"]*)\"[^>]*>", re.I)
+    found = [(path.name, match.group(0)) for path in TEMPLATES.rglob("*.html") for match in sheet.finditer(path.read_text(encoding="utf-8"))]
+    assert len(found) == 3
+    for name, tag in found:
+        assert 'integrity="sha' in tag and 'crossorigin="anonymous"' in tag, (name, tag)
 
 
 def test_no_template_loads_a_social_sites_script():

@@ -370,7 +370,11 @@ def test_the_page_holds_no_code_and_warns_more_if_a_link_opened_it(real_app, mak
     assert "/assets/js/qr_login.js" in plain and "adsbygoogle" not in plain and "plausible" not in plain
 
 
-@pytest.mark.parametrize("values", [{"qr_login_off": True}, {"is_banned": 1, "ban_reason": "x"}])
+CHILD = {"age_declared": 2, "age_declared_utc": 5, "filter_level": 2}       # the database's own rule: a child account is on the Child filter
+
+
+@pytest.mark.parametrize("values", [{"qr_login_off": True}, {"is_banned": 1, "ban_reason": "x"},
+                                    CHILD, {**CHILD, "age_lock": 1}, {**CHILD, "age_lock": 2}])     # every locked account (the owner, 2026-11-19)
 def test_an_account_that_may_not_is_refused_at_approve_in_one_sentence(real_app, codes, make_member, values):
     member = make_member()
     desk, code = start(real_app, codes)
@@ -385,7 +389,7 @@ def test_an_account_that_may_not_is_refused_at_approve_in_one_sentence(real_app,
     assert status(desk) == {"state": "waiting"}, "the code stands: nothing was approved"
 
 
-@pytest.mark.parametrize("change", ["switched_off", "suspended", "nonce"])
+@pytest.mark.parametrize("change", ["switched_off", "suspended", "nonce", "locked"])
 def test_what_changes_after_the_approval_stops_the_finish(real_app, codes, make_member, change):
     member = make_member()
     desk, code = start(real_app, codes)
@@ -394,6 +398,8 @@ def test_what_changes_after_the_approval_stops_the_finish(real_app, codes, make_
         set_user(member, qr_login_off=True)
     elif change == "suspended":
         set_user(member, is_banned=1, ban_reason="x")
+    elif change == "locked":
+        set_user(member, **CHILD)
     else:
         set_user(member, login_nonce=member.user().login_nonce + 1)
     assert status(desk) == {"state": "expired"}

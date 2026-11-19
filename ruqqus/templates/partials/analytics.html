@@ -1,4 +1,6 @@
-{# page-view statistics from the owner's own Plausible server (helpers/analytics.py): nothing unless PLAUSIBLE_SRC is set #}
-{% if 'ANALYTICS_SRC' | app_config %}
+{# page-view statistics from the owner's own Plausible server (helpers/analytics.py): nothing unless PLAUSIBLE_SRC is set, and then
+   only the page's kind ("post", "profile": page_kind), never its address. The manual script sends nothing by itself. #}
+{% if 'ANALYTICS_SRC' | app_config and page_kind() %}
+<script>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }; window.plausible("pageview", { u: location.origin + {{ ("/" ~ page_kind()) | tojson }} });</script>
 <script defer data-domain="{{ 'ANALYTICS_DOMAIN' | app_config }}" src="{{ 'ANALYTICS_SRC' | app_config }}"></script>
 {% endif %}

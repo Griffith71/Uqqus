@@ -260,7 +260,7 @@
     </form>
   </div>
 
-  {% if qr_login_offered() %}
+  {% if qr_login_offered() and not child_locked(v) %}
   <h2 class="h5" id="qr-login">{{ _("QR sign-in") }}</h2>
 
   <p class="text-small text-muted">{{ _("Sign in on a computer by scanning a code with a phone that is already signed in. The phone asks for your two-factor code, or your password if you don't use two-factor, before it lets the computer in.") }}</p>

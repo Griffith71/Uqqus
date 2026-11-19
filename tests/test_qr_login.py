@@ -65,9 +65,16 @@ def test_an_ordinary_account_may_and_a_held_one_too():
 @pytest.mark.parametrize("values, why", [
     ({"is_deleted": True}, qr_login.DELETED), ({"is_bot": True}, qr_login.BOT), ({"is_suspended": True}, qr_login.SUSPENDED),
     ({"qr_login_off": True}, qr_login.SWITCHED_OFF),
+    # every locked account (the owner, 2026-11-19): a child account, a parent's sub-account, an unconfirmed sign-up from a strict country
+    ({"age_declared": 2}, qr_login.LOCKED), ({"age_declared": 2, "age_lock": 1}, qr_login.LOCKED), ({"age_declared": 2, "age_lock": 2}, qr_login.LOCKED),
 ])
 def test_who_may_not(values, why):
     assert qr_login.refusal(account(**values)) == why
+
+
+def test_an_adult_is_not_locked_out():
+    assert qr_login.refusal(account(age_declared=1)) is None
+    assert qr_login.refusal(account(age_declared=1, age_assured_utc=5)) is None
 
 
 def test_no_account_and_a_nonce_that_moved_are_refused():

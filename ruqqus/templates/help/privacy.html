@@ -135,7 +135,7 @@ The site's automatic checks can put an account on hold; they never ban or suspen
 {% if 'ANALYTICS_SRC' | app_config %}
 <h2 id="analytics">Page-view statistics</h2>
 
-<p>{{ 'SITE_NAME' | app_config }} counts page views with Plausible Analytics, run on a server of our own at {{ 'ANALYTICS_HOST' | app_config }}. It sets no cookies and keeps no IP address: it records the page, the site you came from, your browser, system and country, counted together with everyone else's. We use it to see which pages are used and for nothing else.</p>
+<p>{{ 'SITE_NAME' | app_config }} counts page views with Plausible Analytics, run on a server of our own at {{ 'ANALYTICS_HOST' | app_config }}. It sets no cookies and keeps no IP address: it records the kind of page (a post, a profile), never its address, the site you came from, your browser, system and country, counted together with everyone else's. We use it to see which pages are used and for nothing else.</p>
 {% endif %}
 
 {% if translation_services().libre %}
@@ -147,15 +147,15 @@ The site's automatic checks can put an account on hold; they never ban or suspen
 {% if ads_live() %}
 <h2 id="ads">Ads</h2>
 
-<p>{{ 'SITE_NAME' | app_config }} shows ads from Google AdSense on feeds and post pages and in the right sidebar beside them. Premium members see no ads, and neither does anyone on the Child word filter, which includes every child account. Settings, chat, sign-in, search and help pages have none, and neither do a shared draft's pages.</p>
+<p>{{ 'SITE_NAME' | app_config }} shows ads from Google AdSense on feeds and post pages and in the right sidebar beside them. Premium members see no ads, and neither does a child account or anyone who chose the Child word filter. In the UK, the EEA and Australia, someone whose age hasn't been confirmed reads at the Child level because of where they are; they still see ads, never personalised ones. Settings, chat, sign-in, search and help pages have none, and neither do a shared draft's pages.</p>
 
 <p>We check what is written on a page before ads go on it. A whole page goes without ads if a post on it is private, removed, marked sensitive, rated by the word filter, by a sensitive account or in a private, Circle or sensitive guild, and a post on this site that another post quotes counts the same way when it is shown. So does a page with a comment that is marked sensitive, rated or by a sensitive account, or that holds a picture or a sound; a post page with neither text nor comments; and a post page with a live thread that is still live, or one that has ended with a rated update or summary, or a picture or sound in one. An anonymous post or comment is never judged by who wrote it.</p>
 
 <p>That is all we check. Comments that load later, when you press to see more, are not checked, and neither is what a post shows from another site (a link preview, a post quoted from elsewhere, a video), a post's own picture, a profile's bio or the other boxes in the sidebar.</p>
 
-<p>Google and its partners use cookies and similar technology to show ads and to measure them. In the UK, the EEA and Switzerland they ask for your consent first, through Google's consent banner. You can change your choice at any time with <a href="#ads" data-ad-consent>Privacy and cookie settings</a> (also in the page footer). If you see no ads, Google's script is not loaded on this page until you press that link.</p>
+<p>Google and its partners use cookies and similar technology to show ads and to measure them. In the UK, the EEA and Switzerland they ask for your consent first, through Google's consent banner. You can change your choice at any time with <a href="#ads" data-ad-consent>Privacy and cookie settings</a> (also in the page footer, in Settings &gt; Content, and in the menu on a phone when you are signed out). If you see no ads, Google's script is not loaded on this page until you press that link.</p>
 
-<p>We ask Google for non-personalised ads in the UK, the EEA and Switzerland, wherever we can't tell which country you are in, whenever you are not signed in, and for any account that hasn't told us it is 18 or over. Only an account that told us it is 18 or over, outside those places, can get personalised ads, and you can turn those off in <a href="https://adssettings.google.com" rel="noopener">Google's ad settings</a>. Non-personalised ads still use cookies, for example to limit how often an ad is shown and to stop fraud.</p>
+<p>We ask Google for non-personalised ads in the UK, the EEA and Switzerland, wherever we can't tell which country you are in, whenever you are not signed in, for any account that hasn't told us it is 18 or over, and in Australia for any account whose age an age-check service hasn't confirmed. Only an account that told us it is 18 or over, outside those places, or whose age has been confirmed, in Australia, can get personalised ads, and you can turn those off in <a href="https://adssettings.google.com" rel="noopener">Google's ad settings</a>. Non-personalised ads still use cookies, for example to limit how often an ad is shown and to stop fraud.</p>
 
 <p>How Google uses information from sites that use its services: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
 
