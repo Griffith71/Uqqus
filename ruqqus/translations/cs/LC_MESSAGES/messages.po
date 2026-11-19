@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-18 23:10+0000\n"
+"POT-Creation-Date: 2026-11-19 16:35+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: cs\n"
@@ -43,9 +43,9 @@ msgstr "\"%(name)s\" není uživatelské jméno."
 msgid "\"Accounts you follow\" can't be chosen for an anonymous post: it would show people whether you follow them."
 msgstr "\"Účty, které sledujete\" nelze vybrat pro anonymní příspěvek: ukazuje to lidem, zda je sledujete."
 
-#, python-format
+#, machine, plain2, python-format
 msgid "#%(channel)s was deleted."
-msgstr ""
+msgstr "#%(channel)s byl vymazán."
 
 #, machine, plain1, python-format
 msgid "#%(channel)s was made."
@@ -3966,6 +3966,10 @@ msgstr "Přidat účet"
 msgid "Accounts"
 msgstr "Účty"
 
+#, machine, plain2
+msgid "Accounts are for people 18 or over."
+msgstr "Účty jsou pro 18 nebo více lidí."
+
 #, machine, plain1
 msgid "Accounts you block"
 msgstr "Účty, které blokuješ"
@@ -4310,6 +4314,10 @@ msgstr "Záznamy a titulky přicházejí ze zdroje pojmenovaného na každém ř
 msgid "Algorithm"
 msgstr "Algoritmus"
 
+#, machine, plain2
+msgid "Algorithm saved."
+msgstr "Uložený algoritmus."
+
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4472,9 +4480,9 @@ msgstr "Účet s tímto uživatelským jménem nebo e-mailem již existuje."
 msgid "An admin cleared the age answer on your account. You'll be asked again."
 msgstr "Admirál z vašeho účtu vymazal věkovou odpověď. Znovu se tě zeptáme."
 
-#, machine, plain1
-msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
-msgstr "Admin potvrdil, že je vám 18 nebo více. Váš účet už nemá dětský zámek. Váš slovní filtr se nezměnil: můžete jej změnit v Nastavení > Obsah a vypnutí dětského filtru potřebuje vaše heslo."
+#, machine, plain2
+msgid "An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Admin potvrdil, že je vám 18 nebo více. Váš účet už není zamčený. Váš slovní filtr se nezměnil: můžete jej změnit v Nastavení > Obsah a vypnutí dětského filtru potřebuje vaše heslo."
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
@@ -10070,10 +10078,6 @@ msgstr "Zůstává to dětský účet s dětským zámkem, ale už to nemůžete
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
 msgstr "Zůstává na slovním filtru pro dítě, který skrývá nadávky a cokoliv citlivého. Dětský účet pouze zní: nemůže psát nebo komentovat, ale stále můžete volit, sledovat, připojit se k cechu, záložku a zprávu."
 
-#, machine, plain2
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
-msgstr "Zůstává na slovním filtru pro dítě, který skrývá nadávky a cokoliv citlivého. Chat, prostor, mince a založení cechu jsou vypnuté, a jiní nemohou začít chat nebo spropitné. Dětský účet pouze zní: nemůže psát nebo komentovat, ale stále můžete volit, sledovat, připojit se k cechu, záložku a zprávu."
-
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Minule to nebylo schváleno. Administrátoři řekli: %(note)s"
@@ -10752,9 +10756,9 @@ msgstr "Přihlaste se k hlasování"
 msgid "Log of @%(name)s"
 msgstr "Záznam @ %(name)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid "Log of post #%(id)s"
-msgstr ""
+msgstr "Deník pošty #%(id)s"
 
 #, machine, plain1
 msgid "Log of this comment"
@@ -13616,6 +13620,10 @@ msgstr "Hrajte se zvukem"
 #, machine, plain1
 msgid "Please choose one of the two answers."
 msgstr "Prosím, vyberte jednu ze dvou odpovědí."
+
+#, machine, plain2
+msgid "Please confirm that you're 18 or over."
+msgstr "Prosím potvrďte, že je vám 18 nebo více."
 
 #, machine, plain1
 msgid "Please enter a better title"
@@ -17074,8 +17082,8 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Díky. Admin se brzy podívá na bota, dostanete oznámení. Obrázek nemohl být uložen, zkuste to znovu ze stránky robota."
 
 #, machine, plain2
-msgid "Thanks. Your account no longer has the child lock."
-msgstr "Díky. Váš účet už nemá dětský zámek."
+msgid "Thanks. Your account is no longer locked."
+msgstr "Díky. Váš účet už není zamčený."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -17654,6 +17662,10 @@ msgstr "Věková kontrola zjistila, že jste mladší, než je ten nejmladší, 
 #, machine, plain1
 msgid "The age check found that you're under 18, so the child lock stays on."
 msgstr "Věková kontrola zjistila, že ti není 18, takže dětský zámek zůstává."
+
+#, machine, plain2
+msgid "The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed."
+msgstr "Kontrola věku zjistila, že ti není 18. Účty jsou zde pro 18 nebo více lidí, takže tento účet byl uzavřen."
 
 #, machine, plain1
 msgid "The author"
@@ -19351,9 +19363,9 @@ msgstr "Přestat být autorem, opustit návrh."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "Chcete-li uložit uploads, zaškrtněte políčko, které umožní této stránce spravovat soubory, které vytvoří ve Vašem Google Drive."
 
-#, machine, plain1
-msgid "To take the child lock off, confirm that you're 18 or over."
-msgstr "Aby se dítě uzamklo, potvrďte, že je vám 18 nebo více."
+#, machine, plain2
+msgid "To take the lock off, confirm that you're 18 or over."
+msgstr "Pro odstranění zámku potvrďte, že je vám 18 nebo více."
 
 #, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
@@ -19928,6 +19940,10 @@ msgstr "Do"
 #, machine, plain1, python-format
 msgid "Until %(date)s"
 msgstr "Dokud %(date)s"
+
+#, machine, plain2
+msgid "Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Do té doby to zůstane na Dětském slovním filtru, který skrývá nadávky a vše, co značí citlivost. Chat, prostor, mince a založení cechu jsou vypnuté, a jiní nemohou začít chat nebo spropitné. Zablokovaný účet je pouze: nemůže psát nebo komentovat, ale stále můžete volit, sledovat, připojit se k cechy, záložku a zprávu."
 
 #, machine, plain1
 msgid "Untitled draft"
@@ -20543,7 +20559,7 @@ msgstr "Odtud to převezmeme."
 msgid "We're sorry something here is wrong."
 msgstr "Je nám líto, že se tu něco děje."
 
-msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgid "We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you can see sensitive content. You can say that you're 18 or over in Settings > Content."
 msgstr ""
 
 #, machine, plain1
@@ -20788,13 +20804,17 @@ msgstr "Kam zveřejnit"
 msgid "Where you are, in your words"
 msgstr "Kde jsi, slovy"
 
+#, machine, plain2
+msgid "Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden."
+msgstr "Tam, kde jste, zákon znamená, že věková kontrola služba musí potvrdit, ve Vašem Nastavení po registraci. Do té doby je váš účet uzamčen: můžete číst, volit a následovat, ale nemůžete psát, komentovat nebo chatovat, a nadávky a citlivý obsah zůstat skryt."
+
 #, machine, plain1
 msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
 msgstr "Tam, kde jste, zákon znamená, že musíte potvrdit, že jste 18 nebo více s věkem-check služba, ve Vašem nastavení po registraci. Do té doby je váš účet zaměřen na dítě, které skrývá nadávky a citlivý obsah a některé funkce vypne."
 
-#, machine, plain1
-msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
-msgstr "Tam, kde jste, zákon znamená, že váš věk musí být potvrzen věkovou kontrolou, než se dětský zámek vypne."
+#, machine, plain2
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off."
+msgstr "Tam, kde jste, zákon znamená, že váš věk musí být potvrzen věkovou kontrolou, než se zámek vypne."
 
 #, machine, plain1
 msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
@@ -22609,10 +22629,6 @@ msgstr "Váš účet byl vymazán"
 msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
 msgstr "Váš účet je zaměřen na dítě, které drží váš rodič nebo opatrovník, od %(date)s."
 
-#, machine, plain1, python-format
-msgid "Your account has the child lock on, since %(date)s."
-msgstr "Váš účet je zaměřen na dítě od doby %(date)s."
-
 #, machine, plain1
 msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
 msgstr "Váš účet je časově omezený, takže jeho slovní filtr zůstane na Dítě, dokud nepotvrdíte svůj věk v Nastavení."
@@ -22628,6 +22644,10 @@ msgstr "Kontrolují váš účet"
 #, machine, plain1
 msgid "Your account is being checked."
 msgstr "Kontrolují váš účet."
+
+#, machine, plain2, python-format
+msgid "Your account is locked until your age is confirmed, since %(date)s."
+msgstr "Váš účet je uzamčen, dokud není váš věk potvrzen, protože %(date)s."
 
 #, machine, plain1
 msgid "Your account is marked sensitive."

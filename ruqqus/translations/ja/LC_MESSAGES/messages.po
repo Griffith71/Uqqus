@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-18 23:10+0000\n"
+"POT-Creation-Date: 2026-11-19 16:35+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -3598,6 +3598,10 @@ msgstr "追加するアカウント"
 msgid "Accounts"
 msgstr "アカウント"
 
+#, machine, plain2
+msgid "Accounts are for people 18 or over."
+msgstr "口座は18歳以上です."
+
 #, machine
 msgid "Accounts you block"
 msgstr "ブロックするアカウント"
@@ -3938,6 +3942,10 @@ msgstr "アラートと見出しは、各行に示されているソースから
 msgid "Algorithm"
 msgstr "アルゴリスム"
 
+#, machine, plain2
+msgid "Algorithm saved."
+msgstr "Algorithmを保存しました."
+
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4098,9 +4106,9 @@ msgstr "既に存在するユーザー名またはメールのアカウント."
 msgid "An admin cleared the age answer on your account. You'll be asked again."
 msgstr "管理者は、あなたのアカウントで年齢の回答をクリアしました。 お問い合わせ."
 
-#, machine, plain1
-msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
-msgstr "管理者は18歳以上であることを確認しました。 あなたのアカウントはもはや子供ロックを持っていません。 あなたの単語フィルタは変更されていません: 設定 > コンテンツ、チャイルドフィルタダウンの切り替えにはパスワードが必要です."
+#, machine, plain2
+msgid "An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "管理者は18歳以上であることを確認しました。 アカウントがロックされていない あなたの単語フィルタは変更されていません: 設定 > コンテンツ、チャイルドフィルタダウンの切り替えにはパスワードが必要です."
 
 #, machine, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
@@ -9610,10 +9618,6 @@ msgstr "チャイルドロックでチャイルドアカウントを留保しま
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
 msgstr "子供の単語フィルターに留まっています。これは、不敬とマークされた感度を隠します。 お子様のアカウントは、投稿やコメントをすることはできませんが、投票、フォロー、ギルド、ブックマーク、レポートに参加することができます."
 
-#, machine, plain2
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
-msgstr "子供の単語フィルターに留まっています。これは、不敬とマークされた感度を隠します。 チャット、スペース、コイン、ギルドの開始はオフであり、他の人はチャットやヒントを開始することはできません。 お子様のアカウントは、投稿やコメントをすることはできませんが、投票、フォロー、ギルド、ブックマーク、レポートに参加することができます."
-
 #, machine, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "前回は承認されていませんでした。 管理者は言いました: %(note)s"
@@ -13083,6 +13087,10 @@ msgstr "サウンドで遊ぶ"
 msgid "Please choose one of the two answers."
 msgstr "2つの回答のいずれかを選択してください."
 
+#, machine, plain2
+msgid "Please confirm that you're 18 or over."
+msgstr "18歳以上の方は必ずご確認ください."
+
 #, machine
 msgid "Please enter a better title"
 msgstr "より良いタイトルを入力してください"
@@ -16494,8 +16502,8 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "ありがとうございます。 管理者はボットをすぐに見ていきます。通知が表示されます。 写真は保存できません。ボットのページからもう一度お試しください."
 
 #, machine, plain2
-msgid "Thanks. Your account no longer has the child lock."
-msgstr "ありがとうございます。 あなたのアカウントはもはや子供ロックを持っていません."
+msgid "Thanks. Your account is no longer locked."
+msgstr "ありがとうございます。 アカウントがロックされていない."
 
 #, machine
 msgid "That Discord account is already in use by another user."
@@ -17070,6 +17078,10 @@ msgstr "年齢チェックは、あなたが最も若い年齢の下にいるこ
 #, machine, plain1
 msgid "The age check found that you're under 18, so the child lock stays on."
 msgstr "年齢チェックは18歳未満であることが判明したので、お子様のロックは滞在します."
+
+#, machine, plain2
+msgid "The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed."
+msgstr "18歳未満の年齢確認 こちらのアカウントは18歳以上の方のみです."
 
 #, machine
 msgid "The author"
@@ -18722,9 +18734,9 @@ msgstr "著者であることを停止するには、ドラフトを残します
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "アップロードを保存するには、このサイトが作成するファイルをGoogle Driveで管理できるようにするボックスをオンにします."
 
-#, machine, plain1
-msgid "To take the child lock off, confirm that you're 18 or over."
-msgstr "お子様のロックを解除するには、18歳以上であることを確認してください."
+#, machine, plain2
+msgid "To take the lock off, confirm that you're 18 or over."
+msgstr "ロックを解除するには、18歳以上であることを確認します."
 
 #, machine
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
@@ -19295,6 +19307,10 @@ msgstr "終了日"
 #, machine, python-format
 msgid "Until %(date)s"
 msgstr "%(date)sまで"
+
+#, machine, plain2
+msgid "Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "それからそれは子供の単語のフィルターにとどまるまで、それはprofanityを隠すし、そして敏感マークされたものは何でも。 チャット、スペース、コイン、ギルドの開始はオフであり、他の人はチャットやヒントを開始することはできません。 ロックされたアカウントのみ読み取り:投稿やコメントはできませんが、投票、フォロー、ギルド、ブックマーク、レポートに参加できます."
 
 #, machine
 msgid "Untitled draft"
@@ -19902,9 +19918,9 @@ msgstr "詳細はこちらから."
 msgid "We're sorry something here is wrong."
 msgstr "申し訳ございません."
 
-#, machine, plain1
-msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "[Terms](/help/terms)のエイジセクションを変更しました。 18歳未満のお子様のアカウントには、子供用ロックがあり、英国では、EUとオーストラリアの年齢は、ロックがオフになる前に、年齢チェックサービスで確認しなければならないか、機密コンテンツを見ることができます。 設定で18以上あるかどうかを言うことができます > コンテンツ."
+#, machine, plain2
+msgid "We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you can see sensitive content. You can say that you're 18 or over in Settings > Content."
+msgstr "[Terms](/help/terms)の年齢セクションを変更しました。アカウントは18歳以上です。 英国では、あなたの年齢は、あなたのアカウントのロックがオフになる前に、年齢チェックサービスで確認しなければならない、またはあなたは敏感なコンテンツを見ることができます。 あなたは18以上の設定で言うことができます > コンテンツ."
 
 #, machine, plain1
 msgid "Web Development"
@@ -20157,13 +20173,17 @@ msgstr "投稿先"
 msgid "Where you are, in your words"
 msgstr "あなたがどこにいるか、あなたの言葉で"
 
+#, machine, plain2
+msgid "Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden."
+msgstr "あなたがいるところ、法律は、あなたがサインアップした後、あなたの設定で、年齢チェックサービスがそれを確認しなければならないことを意味します。 あなたのアカウントがロックされるまで: 読むことができます, 投票し、フォロー, しかし、あなたは投稿することはできません, コメントやチャット, そして、不当と機密コンテンツが隠されている滞在."
+
 #, machine, plain1
 msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
 msgstr "あなたがいるところ、法律は、あなたがサインアップした後、あなたの設定で、あなたが18歳以上であることを確認しなければならないことを意味します。 その後、あなたのアカウントに子供ロックがあります。, 不貞と敏感なコンテンツを隠し、いくつかの機能をオフにする."
 
-#, machine, plain1
-msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
-msgstr "あなたがいるところ、法律は、子供ロックが消える前に、あなたの年齢が年齢チェックサービスで確認しなければならないことを意味します."
+#, machine, plain2
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off."
+msgstr "あなたがいるところ、法律は、ロックが消える前に、あなたの年齢が年齢チェックサービスで確認しなければならないことを意味します."
 
 #, machine, plain1
 msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
@@ -21922,10 +21942,6 @@ msgstr "アカウントが削除されました"
 msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
 msgstr "あなたのアカウントは、あなたの親または保護者が %(date)s から保持して、子供がロックオンを持っています."
 
-#, machine, plain1, python-format
-msgid "Your account has the child lock on, since %(date)s."
-msgstr "あなたのアカウントは、%(date)s 以降、子供がロックされています."
-
 #, machine, plain1
 msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
 msgstr "あなたのアカウントは年齢制限されているので、その単語フィルタは設定であなたの年齢を確認するまで子供に滞在します."
@@ -21941,6 +21957,10 @@ msgstr "あなたのアカウントがチェックされている"
 #, machine, plain1
 msgid "Your account is being checked."
 msgstr "あなたのアカウントはチェックされています."
+
+#, machine, plain2, python-format
+msgid "Your account is locked until your age is confirmed, since %(date)s."
+msgstr "年齢が確認されるまでアカウントがロックされます。 %(date)sお問い合わせ"
 
 #, machine
 msgid "Your account is marked sensitive."

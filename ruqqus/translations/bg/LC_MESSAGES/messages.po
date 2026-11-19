@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-18 23:10+0000\n"
+"POT-Creation-Date: 2026-11-19 16:35+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: bg\n"
@@ -58,11 +58,11 @@ msgstr "#%(channel)s е спасен."
 #. a post's rank among the posts made in a guild that day, such as "#3 of 41
 #. posts in +photography on
 #. 23 October"
-#, python-format
+#, machine, plain2, python-format
 msgid "#%(rank)s of %(num)s post in %(guild)s on %(date)s"
 msgid_plural "#%(rank)s of %(num)s posts in %(guild)s on %(date)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "#%(rank)s от %(num)s пост в %(guild)s на %(date)s"
+msgstr[1] "# %(rank)s на %(num)s публикации в %(guild)s на %(date)s"
 
 #, machine, plain1, python-format
 msgid "%(a)s and %(b)s commented on %(post)s"
@@ -3776,6 +3776,10 @@ msgstr "Сметка за добавяне"
 msgid "Accounts"
 msgstr "Акаунти"
 
+#, machine, plain2
+msgid "Accounts are for people 18 or over."
+msgstr "Сметките са за хора на 18 или повече."
+
 #, machine, plain1
 msgid "Accounts you block"
 msgstr "Сметки, които блокирате"
@@ -4118,6 +4122,10 @@ msgstr "Сигналите и заглавията идват от източн�
 msgid "Algorithm"
 msgstr "Алгоритъм"
 
+#, machine, plain2
+msgid "Algorithm saved."
+msgstr "Алгоритъмът е спасен."
+
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4279,9 +4287,9 @@ msgstr "Вече има сметка с това потребителско им
 msgid "An admin cleared the age answer on your account. You'll be asked again."
 msgstr "Администратор изчисти отговора за възрастта ви. Пак ще те питат."
 
-#, machine, plain1
-msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
-msgstr "Админ потвърди, че си на 18 или повече. Акаунтът ти вече не е заключен. Филтърът на думата не се е променил: можете да го промените в Настройки > Съдържанието и обръщането на филтъра на детето се нуждае от паролата ти."
+#, machine, plain2
+msgid "An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Админ потвърди, че си на 18 или повече. Сметката ти вече не е заключена. Филтърът на думата не се е променил: можете да го промените в Настройки > Съдържанието и обръщането на филтъра на детето се нуждае от паролата ти."
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
@@ -9843,10 +9851,6 @@ msgstr "Тя остава сметка на дете с ключалката н�
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
 msgstr "Остава на филтъра на Детската дума, който крие ругатни и всичко белязано чувствително. Детска сметка само гласи: не може да публикува или коментира, но все още можете да гласувате, следвате, да се присъедините към гилдията, отметките и доклада."
 
-#, machine, plain2
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
-msgstr "Остава на филтъра на Детската дума, който крие ругатни и всичко белязано чувствително. Чат, пространство, монети и започване на гилдия са изключени, а други не могат да започнат разговор или бакшиш. Детска сметка само гласи: не може да публикува или коментира, но все още можете да гласувате, следвате, да се присъедините към гилдията, отметките и доклада."
-
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Последният път не беше одобрено. Администрите казаха: %(note)s"
@@ -13360,6 +13364,10 @@ msgstr "Играйте със звука"
 msgid "Please choose one of the two answers."
 msgstr "Моля, изберете един от двата отговора."
 
+#, machine, plain2
+msgid "Please confirm that you're 18 or over."
+msgstr "Потвърдете, че сте на 18 или повече."
+
 #, machine, plain1
 msgid "Please enter a better title"
 msgstr "Моля въведете по-добро заглавие"
@@ -16797,8 +16805,8 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Благодаря. Един администратор скоро ще разгледа робота; ще получите уведомление. Снимката не може да се съхранява; опитайте отново от страницата на робота."
 
 #, machine, plain2
-msgid "Thanks. Your account no longer has the child lock."
-msgstr "Благодаря. Акаунтът ти вече не е заключен."
+msgid "Thanks. Your account is no longer locked."
+msgstr "Благодаря. Сметката ти вече не е заключена."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -17377,6 +17385,10 @@ msgstr "Възрастовата проверка установи, че сте 
 #, machine, plain1
 msgid "The age check found that you're under 18, so the child lock stays on."
 msgstr "Проверката на възрастта установи, че си под 18 години, така че заключването на детето остава."
+
+#, machine, plain2
+msgid "The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed."
+msgstr "Проверката на възрастта установи, че си под 18 години. Сметките тук са за хора на 18 или повече, така че тази сметка е затворена."
 
 #, machine, plain1
 msgid "The author"
@@ -19054,9 +19066,9 @@ msgstr "За да спреш да бъдеш автор, остави черно
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "За да съхранявате качените файлове, отбележете полето, което позволява на сайта да управлява файловете, които създава във вашия Google Drive."
 
-#, machine, plain1
-msgid "To take the child lock off, confirm that you're 18 or over."
-msgstr "За да отключиш детето, потвърди, че си на 18 или повече."
+#, machine, plain2
+msgid "To take the lock off, confirm that you're 18 or over."
+msgstr "За да свалиш ключалката, потвърди, че си на 18 или повече."
 
 #, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
@@ -19631,6 +19643,10 @@ msgstr "До"
 #, machine, plain1, python-format
 msgid "Until %(date)s"
 msgstr "До %(date)s"
+
+#, machine, plain2
+msgid "Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Дотогава тя остава на филтъра на думата Детска, който крие ругатни и всичко белязано чувствително. Чат, пространство, монети и започване на гилдия са изключени, а други не могат да започнат разговор или бакшиш. Заключена сметка само гласи: тя не може да публикува или коментира, но все още можете да гласувате, следвате, да се присъедините към гилдията, отметките и доклада."
 
 #, machine, plain1
 msgid "Untitled draft"
@@ -20242,7 +20258,7 @@ msgstr "Ние поемаме от тук."
 msgid "We're sorry something here is wrong."
 msgstr "Съжаляваме, че нещо не е наред."
 
-msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgid "We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you can see sensitive content. You can say that you're 18 or over in Settings > Content."
 msgstr ""
 
 #, machine, plain1
@@ -20487,13 +20503,17 @@ msgstr "Къде да се публикува"
 msgid "Where you are, in your words"
 msgstr "Къде си, с думите си"
 
+#, machine, plain2
+msgid "Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden."
+msgstr "Там, където сте, законът означава, че служба за проверка на възрастта трябва да го потвърди, във вашите Настройки след като се запишете. Дотогава вашият акаунт е заключен: можете да четете, гласувате и следвате, но не можете да публикувате, коментирате или чатите, и ругатните и чувствителните съдържание остават скрити."
+
 #, machine, plain1
 msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
 msgstr "Там, където се намирате, законът означава, че трябва да потвърдите, че сте на 18 години или повече с служба за проверка на възрастта, във вашите Настройки след като се запишете. До тогава вашият акаунт има дете заключване, което крие ругатни и чувствително съдържание и изключва някои функции."
 
-#, machine, plain1
-msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
-msgstr "Там, където сте, законът означава, че възрастта ви трябва да бъде потвърдена с служба за проверка на възрастта, преди да се изключи ключалката на детето."
+#, machine, plain2
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off."
+msgstr "Там, където сте, законът означава, че възрастта ви трябва да бъде потвърдена с служба за проверка на възрастта, преди ключалката да се изключи."
 
 #, machine, plain1
 msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
@@ -22276,10 +22296,6 @@ msgstr "Сметката ви е изтрита"
 msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
 msgstr "Вашият акаунт държи детето заключено, държано от вашия родител или настойник, тъй като %(date)s."
 
-#, machine, plain1, python-format
-msgid "Your account has the child lock on, since %(date)s."
-msgstr "Вашият акаунт държи детето, тъй като %(date)s."
-
 #, machine, plain1
 msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
 msgstr "Вашият акаунт е с ограничена възраст, така че думата филтър остава на детето, докато потвърдите възрастта си в Настройки."
@@ -22295,6 +22311,10 @@ msgstr "Сметката ви се проверява"
 #, machine, plain1
 msgid "Your account is being checked."
 msgstr "Сметката ви се проверява."
+
+#, machine, plain2, python-format
+msgid "Your account is locked until your age is confirmed, since %(date)s."
+msgstr "Сметката ви е заключена, докато възрастта ви не се потвърди. %(date)s."
 
 #, machine, plain1
 msgid "Your account is marked sensitive."

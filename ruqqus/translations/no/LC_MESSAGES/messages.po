@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-18 23:10+0000\n"
+"POT-Creation-Date: 2026-11-19 16:35+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nb\n"
@@ -55,9 +55,9 @@ msgstr "\" Kontoer du følger\" kan ikke velges for et anonymt innlegg: det vil 
 msgid "#%(channel)s was deleted."
 msgstr "#%(channel)s ble slettet."
 
-#, python-format
+#, machine, plain2, python-format
 msgid "#%(channel)s was made."
-msgstr ""
+msgstr "#%(channel)s ble laget."
 
 #, machine, plain1, python-format
 msgid "#%(channel)s was saved."
@@ -3790,6 +3790,10 @@ msgstr "Konto å legge til"
 msgid "Accounts"
 msgstr "Kontoer"
 
+#, machine, plain2
+msgid "Accounts are for people 18 or over."
+msgstr "Kontoer er for personer over 18 år."
+
 #, machine, plain1
 msgid "Accounts you block"
 msgstr "Kontoer du blokkerer"
@@ -4132,6 +4136,10 @@ msgstr "Varsler og overskrifter kommer fra kilden som heter på hver linje, vist
 msgid "Algorithm"
 msgstr "Algoritme"
 
+#, machine, plain2
+msgid "Algorithm saved."
+msgstr "Algoritme lagret."
+
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4293,9 +4301,9 @@ msgstr "En konto med det brukernavnet eller e-post finnes allerede."
 msgid "An admin cleared the age answer on your account. You'll be asked again."
 msgstr "En admin slettet alderssvaret på kontoen din. Du vil bli spurt igjen."
 
-#, machine, plain1
-msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
-msgstr "Admin bekreftet at du er 18 år eller eldre. Kontoen din har ikke lenger barnelåsen. Ordfilteret ditt har ikke endret seg: du kan endre det i Innstillinger > Innhold, og å slå barnefilteret ned trenger passordet ditt."
+#, machine, plain2
+msgid "An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Admin bekreftet at du er 18 år eller eldre. Kontoen er ikke lenger låst. Ordfilteret ditt har ikke endret seg: du kan endre det i Innstillinger > Innhold, og å slå barnefilteret ned trenger passordet ditt."
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
@@ -9857,10 +9865,6 @@ msgstr "Det forblir en barnekonto med barnelåsen, men du kan ikke lenger se det
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
 msgstr "Det forblir på barnets ordfilter, som skjuler avsky og alt merket sensitive. En barnekonto leser bare: det kan ikke poste eller kommentere, men du kan fortsatt stemme, følge, bli med i guilds, bokmerke og rapportere."
 
-#, machine, plain2
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
-msgstr "Det forblir på barnets ordfilter, som skjuler avsky og alt merket sensitive. Chat, rom, mynter og start en guild er av, og andre kan ikke starte en chat eller tip deg. En barnekonto leser bare: det kan ikke poste eller kommentere, men du kan fortsatt stemme, følge, bli med i guilds, bokmerke og rapportere."
-
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Den ble ikke godkjent sist. Admins sa: %(note)s"
@@ -13374,6 +13378,10 @@ msgstr "Spill med lyd"
 msgid "Please choose one of the two answers."
 msgstr "Velg ett av de to svarene."
 
+#, machine, plain2
+msgid "Please confirm that you're 18 or over."
+msgstr "Bekreft at du er 18 år eller eldre."
+
 #, machine, plain1
 msgid "Please enter a better title"
 msgstr "Vennligst skriv inn en bedre tittel"
@@ -16828,8 +16836,8 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Takk. En administrator vil se på bot snart; du vil få et varsel. Bildet kunne ikke lagres; prøv igjen fra bots side."
 
 #, machine, plain2
-msgid "Thanks. Your account no longer has the child lock."
-msgstr "Takk. Kontoen din har ikke lenger barnelåsen."
+msgid "Thanks. Your account is no longer locked."
+msgstr "Takk. Kontoen er ikke lenger låst."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -17408,6 +17416,10 @@ msgstr "Alderskontrollen viste at du er under den yngste alderen tillatt å ha e
 #, machine, plain1
 msgid "The age check found that you're under 18, so the child lock stays on."
 msgstr "Alderskontrollen viste at du er under 18 år, så barnelåsen fortsetter."
+
+#, machine, plain2
+msgid "The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed."
+msgstr "Alderskontrollen viste at du er under 18. Kontoer her er for personer 18 eller over, så denne kontoen ble stengt."
 
 #, machine, plain1
 msgid "The author"
@@ -19085,9 +19097,9 @@ msgstr "For å slutte å være forfatter, la utkastet være."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "Hvis du vil lagre opplastinger, kryss av i boksen som lar dette nettstedet administrere filene det oppretter i Google Drive."
 
-#, machine, plain1
-msgid "To take the child lock off, confirm that you're 18 or over."
-msgstr "Bekreft at du er 18 år eller eldre."
+#, machine, plain2
+msgid "To take the lock off, confirm that you're 18 or over."
+msgstr "Bekreft at du er 18 år eller over."
 
 #, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
@@ -19662,6 +19674,10 @@ msgstr "Til"
 #, machine, plain1, python-format
 msgid "Until %(date)s"
 msgstr "Inntil %(date)s"
+
+#, machine, plain2
+msgid "Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Inntil da forblir det på barnets ordfilter, som skjuler profanitet og alt merket sensitivt. Chat, rom, mynter og start en guild er av, og andre kan ikke starte en chat eller tip deg. En låst konto bare leser: det kan ikke poste eller kommentere, men du kan fortsatt stemme, følge, bli med i guilds, bokmerke og rapportere."
 
 #, machine, plain1
 msgid "Untitled draft"
@@ -20273,9 +20289,9 @@ msgstr "Vi tar det herfra."
 msgid "We're sorry something here is wrong."
 msgstr "Vi beklager at noe her er galt."
 
-#, machine, plain1
-msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "Vi har endret aldersdelen i vår [Terms](/help/terms). En konto for en under 18 år nå har en barnelås, og i Storbritannia må din alder bekreftes med en alderskontrolltjeneste før låsen kommer av eller du kan se sensitivt innhold. Du kan si om du er 18 eller eldre i Innstillinger > Innhold."
+#, machine, plain2
+msgid "We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you can see sensitive content. You can say that you're 18 or over in Settings > Content."
+msgstr "Vi har endret aldersdelen av vår [Terms](/help/terms): kontoene er for mennesker 18 eller eldre. I Storbritannia, EU og Australia din alder må bekreftes med en alderskontroll tjeneste før kontoens lås kommer av eller du kan se sensitivt innhold. Du kan si at du er 18 eller over i Innstillinger > Innhold."
 
 #, machine, plain1
 msgid "Web Development"
@@ -20519,13 +20535,17 @@ msgstr "Hvor skal det publiseres"
 msgid "Where you are, in your words"
 msgstr "Hvor du er, med dine ord"
 
+#, machine, plain2
+msgid "Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden."
+msgstr "Der du er, betyr loven at en alderskontrolltjeneste må bekrefte det, i innstillingene etter at du har meldt deg. Inntil da er din konto låst: du kan lese, stemme og følge, men du kan ikke legge inn, kommentere eller chatte, og avsky og sensitive innhold holde skjult."
+
 #, machine, plain1
 msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
 msgstr "Der du er, betyr loven at du må bekrefte at du er 18 år eller eldre med en alderskontrolltjeneste i innstillingene etter at du har registrert deg. Inntil da har kontoen din barnelåsen på, som skjuler fravær og sensitive innhold og slår av noen funksjoner."
 
-#, machine, plain1
-msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
-msgstr "Der du er, betyr loven at din alder må bekreftes med en alderskontrolltjeneste før barnelåsen kommer av."
+#, machine, plain2
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off."
+msgstr "Der du er, betyr loven at din alder må bekreftes med en alderskontroll tjeneste før låsen kommer av."
 
 #, machine, plain1
 msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
@@ -22308,10 +22328,6 @@ msgstr "Din konto er slettet"
 msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
 msgstr "Din konto har barnelås på, holdt av din foreldre eller verge, siden %(date)s."
 
-#, machine, plain1, python-format
-msgid "Your account has the child lock on, since %(date)s."
-msgstr "Din konto har barnet låse på, siden %(date)s."
-
 #, machine, plain1
 msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
 msgstr "Din konto er aldersbegrenset, så dets ordfilter forblir på Barn til du bekrefter din alder i Innstillinger."
@@ -22327,6 +22343,10 @@ msgstr "Din konto kontrolleres"
 #, machine, plain1
 msgid "Your account is being checked."
 msgstr "Kontoen din kontrolleres."
+
+#, machine, plain2, python-format
+msgid "Your account is locked until your age is confirmed, since %(date)s."
+msgstr "Din konto er låst til din alder er bekreftet, siden %(date)s."
 
 #, machine, plain1
 msgid "Your account is marked sensitive."

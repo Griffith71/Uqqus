@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-18 23:10+0000\n"
+"POT-Creation-Date: 2026-11-19 16:35+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -3776,6 +3776,10 @@ msgstr "Lisättävä tili"
 msgid "Accounts"
 msgstr "Tilit"
 
+#, machine, plain2
+msgid "Accounts are for people 18 or over."
+msgstr "Tilit ovat 18-vuotiaille ja sitä vanhemmille."
+
 #, machine, plain1
 msgid "Accounts you block"
 msgstr "Tilit, jotka estät"
@@ -4118,6 +4122,10 @@ msgstr "Hälytykset ja otsikot tulevat lähteestä, joka on nimetty jokaisella r
 msgid "Algorithm"
 msgstr "Algoritmi"
 
+#, machine, plain2
+msgid "Algorithm saved."
+msgstr "Algoritmi pelastettu."
+
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4279,9 +4287,9 @@ msgstr "Käyttäjätunnuksella tai sähköpostilla varustettu tili on jo olemass
 msgid "An admin cleared the age answer on your account. You'll be asked again."
 msgstr "Hallinnoija selvitti ikä- vastauksen tililtäsi. Sinulta kysytään uudestaan."
 
-#, machine, plain1
-msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
-msgstr "Hallintoviranomainen vahvisti, että olet 18 tai yli. Tililläsi ei ole enää lapsen lukkoa. Sanasuodatin ei ole muuttunut: voit muuttaa sitä Asetuksissa > Sisältö, ja kääntämällä lapsi suodatin alas tarvitsee salasanan."
+#, machine, plain2
+msgid "An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Hallintoviranomainen vahvisti, että olet 18 tai yli. Tilisi ei ole enää lukossa. Sanasuodatin ei ole muuttunut: voit muuttaa sitä Asetuksissa > Sisältö, ja kääntämällä lapsi suodatin alas tarvitsee salasanan."
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
@@ -9841,10 +9849,6 @@ msgstr "Se pysyy lapsen tili lasten lukko, mutta et voi enää nähdä sitä tai
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
 msgstr "Se pysyy lasten sanasuodattimessa, joka kätkee hävyttömyyden ja kaiken herkän. Lapsitili vain lukee: se ei voi lähettää tai kommentoida, mutta voit silti äänestää, seurata, liittyä killat, kirjanmerkki ja raportti."
 
-#, machine, plain2
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
-msgstr "Se pysyy lasten sanasuodattimessa, joka kätkee hävyttömyyden ja kaiken herkän. Chat, Spaces, kolikot ja killan aloittaminen ovat pois päältä, eivätkä muut voi aloittaa keskustelua tai vinkkiä. Lapsitili vain lukee: se ei voi lähettää tai kommentoida, mutta voit silti äänestää, seurata, liittyä killat, kirjanmerkki ja raportti."
-
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Sitä ei hyväksytty viimeksi. Hallintoviranomaiset sanoivat: %(note)s"
@@ -13358,6 +13362,10 @@ msgstr "Pelaa äänellä"
 msgid "Please choose one of the two answers."
 msgstr "Valitse toinen kahdesta vastauksesta."
 
+#, machine, plain2
+msgid "Please confirm that you're 18 or over."
+msgstr "Vahvista, että olet 18 tai yli."
+
 #, machine, plain1
 msgid "Please enter a better title"
 msgstr "Anna parempi nimi"
@@ -16795,8 +16803,8 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Kiitos. Hallintoviranomainen katsoo bottia pian; saat ilmoituksen. Kuvaa ei voitu tallentaa; yritä uudelleen botin sivulta."
 
 #, machine, plain2
-msgid "Thanks. Your account no longer has the child lock."
-msgstr "Kiitos. Tililläsi ei ole enää lapsen lukkoa."
+msgid "Thanks. Your account is no longer locked."
+msgstr "Kiitos. Tilisi ei ole enää lukossa."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -17375,6 +17383,10 @@ msgstr "Ikätarkastus osoitti, että olet alle nuorin ikä saa olla tili missä 
 #, machine, plain1
 msgid "The age check found that you're under 18, so the child lock stays on."
 msgstr "Ikätarkastuksen mukaan olet alle 18-vuotias, joten lapsilukko pysyy päällä."
+
+#, machine, plain2
+msgid "The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed."
+msgstr "Ikätarkistuksen mukaan olet alle 18-vuotias. Tilit ovat 18 tai sitä vanhemmille, joten tili suljettiin."
 
 #, machine, plain1
 msgid "The author"
@@ -19052,9 +19064,9 @@ msgstr "Lopettaakseen kirjoittamisen, jättäkää luonnos."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "Voit tallentaa lataukset, rasti ruutuun, jonka avulla tämä sivusto hallita tiedostoja se luo Google Drive."
 
-#, machine, plain1
-msgid "To take the child lock off, confirm that you're 18 or over."
-msgstr "Ottaaksesi lapsen lukko pois, vahvista, että olet 18 tai yli."
+#, machine, plain2
+msgid "To take the lock off, confirm that you're 18 or over."
+msgstr "Varmista, että olet 18 tai yli."
 
 #, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
@@ -19629,6 +19641,10 @@ msgstr "Päättyen"
 #, machine, plain1, python-format
 msgid "Until %(date)s"
 msgstr "%(date)s asti"
+
+#, machine, plain2
+msgid "Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Siihen asti se pysyy lapsen sanasuodattimessa, joka kätkee hävyttömyyden ja kaiken herkän. Chat, Spaces, kolikot ja killan aloittaminen ovat pois päältä, eivätkä muut voi aloittaa keskustelua tai vinkkiä. Lukittu tili vain lukee: se ei voi lähettää tai kommentoida, mutta voit silti äänestää, seurata, liittyä killat, kirjanmerkki ja mietintö."
 
 #, machine, plain1
 msgid "Untitled draft"
@@ -20240,8 +20256,9 @@ msgstr "Me jatkamme tästä."
 msgid "We're sorry something here is wrong."
 msgstr "Anteeksi, että jokin on vialla."
 
-msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr ""
+#, machine, plain2
+msgid "We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you can see sensitive content. You can say that you're 18 or over in Settings > Content."
+msgstr "Olemme muuttaneet ikäosiota [Säädöksemme](/help/terms): tilit ovat 18 tai sitä vanhemmille. Isossa-Britanniassa EU:n ja Australian ikäsi on vahvistettava iän tarkistuspalvelulla ennen kuin tilisi lukko irtoaa tai näet arkaluontoista sisältöä. Voit sanoa, että olet 18 tai yli Asetukset > Sisältö."
 
 #, machine, plain1
 msgid "Web Development"
@@ -20485,13 +20502,17 @@ msgstr "Minne julkaistaan"
 msgid "Where you are, in your words"
 msgstr "Missä olet, sanoissasi"
 
+#, machine, plain2
+msgid "Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden."
+msgstr "Missä olet, laki tarkoittaa, että ikätarkistuspalvelun on vahvistettava se, asetukset rekisteröitymisen jälkeen. Siihen asti tilisi on lukittu: voit lukea, äänestää ja seurata, mutta et voi lähettää, kommentoida tai keskustella, ja hävyttömyys ja herkkä sisältö pysyvät piilossa."
+
 #, machine, plain1
 msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
 msgstr "Missä olet, laki tarkoittaa sinun täytyy vahvistaa, että olet 18 tai yli iän tarkistus palvelu, asetukset jälkeen rekisteröityä. Siihen asti tilisi on lapsi lukittu, joka kätkee hävyttömyyttä ja herkkää sisältöä ja sammuttaa joitakin ominaisuuksia."
 
-#, machine, plain1
-msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
-msgstr "Missä olet, laki tarkoittaa, että ikäsi on vahvistettava ikätarkastuspalvelulla ennen kuin lapsilukko irtoaa."
+#, machine, plain2
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off."
+msgstr "Missä olet, laki tarkoittaa, että ikäsi on vahvistettava iän tarkistuspalvelulla ennen lukkoa."
 
 #, machine, plain1
 msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
@@ -22277,10 +22298,6 @@ msgstr "Tilisi on poistettu"
 msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
 msgstr "Tilisi on lukinnut lapsen vanhemman tai huoltajan hallussa %(date)s."
 
-#, machine, plain1, python-format
-msgid "Your account has the child lock on, since %(date)s."
-msgstr "Tilisi on lukinnut lapsen %(date)s."
-
 #, machine, plain1
 msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
 msgstr "Tilisi on ikärajoitettu, joten sen sanasuodatin pysyy Lapsella kunnes vahvistat ikäsi Asetuksissa."
@@ -22296,6 +22313,10 @@ msgstr "Tiliäsi tarkistetaan"
 #, machine, plain1
 msgid "Your account is being checked."
 msgstr "Tilisi tarkastetaan."
+
+#, machine, plain2, python-format
+msgid "Your account is locked until your age is confirmed, since %(date)s."
+msgstr "Tilisi on lukossa, kunnes ikäsi on vahvistettu, alkaen %(date)s."
 
 #, machine, plain1
 msgid "Your account is marked sensitive."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-18 23:10+0000\n"
+"POT-Creation-Date: 2026-11-19 16:35+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ro\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,6 +30,14 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
+"\n"
+"@%(admin)s ţi-a dat următoarea insignă de profil:\n"
+"\n"
+"\n"
+"[](%(path)s)\n"
+"\n"
+"\n"
+"%(badge)s\n"
 
 #, machine, plain1, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -3966,6 +3974,10 @@ msgstr "Cont de adăugat"
 msgid "Accounts"
 msgstr "Conturi"
 
+#, machine, plain2
+msgid "Accounts are for people 18 or over."
+msgstr "Conturile sunt pentru persoanele 18 sau peste."
+
 #, machine, plain1
 msgid "Accounts you block"
 msgstr "Conturi blocate"
@@ -4310,6 +4322,10 @@ msgstr "Alerte și titluri provin de la sursa numită pe fiecare linie, arătat�
 msgid "Algorithm"
 msgstr "Algoritm"
 
+#, machine, plain2
+msgid "Algorithm saved."
+msgstr "Algoritm salvat."
+
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4472,9 +4488,9 @@ msgstr "Un cont cu acel nume de utilizator sau e-mail există deja."
 msgid "An admin cleared the age answer on your account. You'll be asked again."
 msgstr "Un administrator a eliminat răspunsul la vârstă din cauza ta. Vei fi întrebat din nou."
 
-#, machine, plain1
-msgid "An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
-msgstr "Un administrator a confirmat că ai 18 ani sau peste. Contul tău nu mai are încuietoarea pentru copii. Filtrul de cuvinte nu s- a schimbat: îl puteți schimba în Setări > Conţinutul şi transformarea filtrului copilului are nevoie de parola ta."
+#, machine, plain2
+msgid "An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't changed: you can change it in Settings > Content, and turning the Child filter down needs your password."
+msgstr "Un administrator a confirmat că ai 18 ani sau peste. Contul tău nu mai este blocat. Filtrul de cuvinte nu s- a schimbat: îl puteți schimba în Setări > Conţinutul şi transformarea filtrului copilului are nevoie de parola ta."
 
 #, machine, plain1, python-format
 msgid "An admin marked +%(guild)s sensitive: its posts are left out of All and For You unless someone chooses to see sensitive content. Only an admin can change this."
@@ -10070,10 +10086,6 @@ msgstr "Acesta rămâne un cont pentru copii cu blocare pentru copii, dar nu se 
 msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
 msgstr "Rămâne pe filtrul de cuvinte pentru copii, care ascunde blasfemia și orice lucru marcat sensibil. Un cont pentru copii citeste doar: nu poate posta sau comenta, dar inca poti vota, urma, alătura bresle, semn de carte si raporta."
 
-#, machine, plain2
-msgid "It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
-msgstr "Rămâne pe filtrul de cuvinte pentru copii, care ascunde blasfemia și orice lucru marcat sensibil. Chat, Spații, monede și de a începe o breaslă sunt oprite, și alții nu pot începe un chat sau vârful. Un cont pentru copii citeste doar: nu poate posta sau comenta, dar inca poti vota, urma, alătura bresle, semn de carte si raporta."
-
 #, machine, plain1, python-format
 msgid "It was not approved last time. The admins said: %(note)s"
 msgstr "Nu a fost aprobat data trecută. Administratorii au spus: %(note)s"
@@ -13617,6 +13629,10 @@ msgstr "Joacă cu sunetul"
 msgid "Please choose one of the two answers."
 msgstr "Vă rugăm să alegeţi unul dintre cele două răspunsuri."
 
+#, machine, plain2
+msgid "Please confirm that you're 18 or over."
+msgstr "Vă rugăm să confirmați că sunteți 18 sau peste."
+
 #, machine, plain1
 msgid "Please enter a better title"
 msgstr "Introduceți un titlu mai bun"
@@ -17074,8 +17090,8 @@ msgid "Thanks. An admin will look at the bot soon; you will get a notification. 
 msgstr "Mulţumesc. Un administrator se va uita la robot în curând, vei primi o notificare. Imaginea nu a putut fi stocată; încercați din nou de pe pagina robotului."
 
 #, machine, plain2
-msgid "Thanks. Your account no longer has the child lock."
-msgstr "Mulţumesc. Contul tău nu mai are încuietoarea pentru copii."
+msgid "Thanks. Your account is no longer locked."
+msgstr "Mulţumesc. Contul tău nu mai este blocat."
 
 #, machine, plain1
 msgid "That Discord account is already in use by another user."
@@ -17654,6 +17670,10 @@ msgstr "Cecul de vârstă a constatat că sunteți sub vârsta cea mai tânără
 #, machine, plain1
 msgid "The age check found that you're under 18, so the child lock stays on."
 msgstr "Cecul de vârstă a descoperit că ai sub 18 ani, aşa că încuietoarea pentru copii rămâne deschisă."
+
+#, machine, plain2
+msgid "The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed."
+msgstr "Verificarea vârstei a descoperit că ai sub 18 ani. Conturile de aici sunt pentru oameni 18 sau peste, astfel încât acest cont a fost închis."
 
 #, machine, plain1
 msgid "The author"
@@ -19351,9 +19371,9 @@ msgstr "Pentru a nu mai fi autor, lasă proiectul."
 msgid "To store your uploads, tick the box that lets this site manage the files it creates in your Google Drive."
 msgstr "Pentru a stoca upload-uri, bifați cutia care permite acestui site să administreze fișierele pe care le creează în Google Drive dumneavoastră."
 
-#, machine, plain1
-msgid "To take the child lock off, confirm that you're 18 or over."
-msgstr "Pentru a lua copilul blocare off, confirmați că sunteți 18 sau peste."
+#, machine, plain2
+msgid "To take the lock off, confirm that you're 18 or over."
+msgstr "Pentru a scoate încuietoarea, confirmați că sunteți 18 sau peste."
 
 #, machine, plain1
 msgid "To take this site's access away at Microsoft, remove it under your Microsoft account's app permissions."
@@ -19928,6 +19948,10 @@ msgstr "Până la"
 #, machine, plain1, python-format
 msgid "Until %(date)s"
 msgstr "Până la %(date)s"
+
+#, machine, plain2
+msgid "Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report."
+msgstr "Până atunci rămâne pe filtrul de cuvinte pentru copii, care ascunde blasfemia şi orice lucru marcat sensibil. Chat, Spații, monede și de a începe o breaslă sunt oprite, și alții nu pot începe un chat sau vârful. Un cont blocat citeste doar: nu poate posta sau comenta, dar inca poti vota, urma, alatura bresle, semn de carte si raport."
 
 #, machine, plain1
 msgid "Untitled draft"
@@ -20543,7 +20567,7 @@ msgstr "Preluăm noi de aici."
 msgid "We're sorry something here is wrong."
 msgstr "Ne pare rău că s-a întâmplat ceva."
 
-msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
+msgid "We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you can see sensitive content. You can say that you're 18 or over in Settings > Content."
 msgstr ""
 
 #, machine, plain1
@@ -20788,13 +20812,17 @@ msgstr "Unde postezi"
 msgid "Where you are, in your words"
 msgstr "Unde eşti, cu cuvintele tale"
 
+#, machine, plain2
+msgid "Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden."
+msgstr "În cazul în care sunteți, legea înseamnă un serviciu de verificare a vârstei trebuie să-l confirme, în Setări după ce vă înscrieți. Până atunci contul dvs. este blocat: puteți citi, vota și urmări, dar nu puteți posta, comenta sau chat, și blasfemia și conținutul sensibil rămâne ascuns."
+
 #, machine, plain1
 msgid "Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off."
 msgstr "Unde te afli, legea înseamnă că trebuie să confirmi că ai 18 ani sau peste cu un serviciu de verificare a vârstei, în Configurările tale după ce te înscrii. Până atunci, contul dvs. are copilul fixat, care ascunde blasfemie și conținut sensibil și se stinge unele caracteristici."
 
-#, machine, plain1
-msgid "Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off."
-msgstr "În cazul în care sunteți, legea înseamnă vârsta ta trebuie să fie confirmată cu un serviciu de verificare a vârstei înainte de blocarea copilului iese."
+#, machine, plain2
+msgid "Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off."
+msgstr "În cazul în care sunteți, legea înseamnă vârsta ta trebuie să fie confirmată cu un serviciu de verificare a vârstei înainte de blocare iese."
 
 #, machine, plain1
 msgid "Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language."
@@ -22609,10 +22637,6 @@ msgstr "Contul tău a fost şters"
 msgid "Your account has the child lock on, held by your parent or guardian, since %(date)s."
 msgstr "Contul dvs. are sistemul de blocare a copilului, deţinut de către părintele sau tutorele dumneavoastră, de la %(date)s."
 
-#, machine, plain1, python-format
-msgid "Your account has the child lock on, since %(date)s."
-msgstr "Contul dvs. are copilul fixat, deoarece %(date)s."
-
 #, machine, plain1
 msgid "Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings."
 msgstr "Contul dvs. este limitat de vârstă, astfel încât filtrul de cuvânt rămâne pe copil până când confirma vârsta dumneavoastră în Setări."
@@ -22628,6 +22652,10 @@ msgstr "Contul dvs. este verificat"
 #, machine, plain1
 msgid "Your account is being checked."
 msgstr "Contul tău este verificat."
+
+#, machine, plain2, python-format
+msgid "Your account is locked until your age is confirmed, since %(date)s."
+msgstr "Contul dvs. este blocat până când vârsta dumneavoastră este confirmată, deoarece %(date)s."
 
 #, machine, plain1
 msgid "Your account is marked sensitive."
