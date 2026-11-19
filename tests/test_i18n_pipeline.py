@@ -5,6 +5,7 @@ script tables themselves."""
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -178,7 +179,7 @@ def test_every_catalogue_language_is_one_the_site_offers():
 
 
 def test_the_check_command_runs():
-    out = subprocess.run([str(ROOT / ".venv" / "bin" / "python"), "scripts/i18n_catalogs.py", "check"],
+    out = subprocess.run([sys.executable, "scripts/i18n_catalogs.py", "check"],
                          cwd=ROOT, capture_output=True, text=True, env={"PYTHONPATH": str(ROOT)}, timeout=300)
     assert out.returncode == 0, out.stdout[-2000:] + out.stderr[-2000:]
 

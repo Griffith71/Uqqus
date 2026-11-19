@@ -15,15 +15,13 @@ from .i18n_runtime import N_
 import gevent
 
 BUCKET = environ.get("S3_BUCKET_NAME", "").strip()      # no default: never another site's bucket
-CF_KEY = environ.get("CLOUDFLARE_KEY").lstrip().rstrip()
-CF_ZONE = environ.get("CLOUDFLARE_ZONE").lstrip().rstrip()
+CF_KEY = environ.get("CLOUDFLARE_KEY", "").strip()
+CF_ZONE = environ.get("CLOUDFLARE_ZONE", "").strip()
 
 # setup AWS connection
 S3 = boto3.client("s3",
-                  aws_access_key_id=environ.get(
-                      "AWS_ACCESS_KEY_ID").lstrip().rstrip(),
-                  aws_secret_access_key=environ.get(
-                      "AWS_SECRET_ACCESS_KEY").lstrip().rstrip()
+                  aws_access_key_id=environ.get("AWS_ACCESS_KEY_ID", "").strip(),
+                  aws_secret_access_key=environ.get("AWS_SECRET_ACCESS_KEY", "").strip()
                   )
 
 def check_phash(db, name):
