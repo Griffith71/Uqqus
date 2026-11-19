@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: eu\n"
@@ -1505,6 +1505,10 @@ msgstr "%(who)s-k @%(name)s moderatzailea gonbidatu zuen"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s ostikoka %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s-k berrogeialdi bat altxatu zuen kontrol automatiko bat jarrita"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s(e)k debekua altxatu zuen %(name)s(e)n"
@@ -1568,6 +1572,10 @@ msgstr "%(who)s(e)k mezua kanal batean itsatsi zuen"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s pinned post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s(e)k kontu bat jarri du berrogeialdian"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -1917,9 +1925,9 @@ msgstr "+%(guild)s ez da existitzen."
 msgid "+%(guild)s events"
 msgstr "+%(guild)s gertaerak"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "+%(guild)s has [a new event](%(link)s)."
-msgstr "+%(guild)s(%(link)s gertaera berri bat dauka."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "+%(guild)s has a flair called %(name)s already."
@@ -1986,7 +1994,7 @@ msgstr "+%(guild)s onartutako laguntzaileen aurrerakinak bakarrik onartzen ditu.
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s aldatu gabe."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
@@ -1996,13 +2004,6 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"+%(guild)s %(site)s(e)tik debekatu zuten.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -2017,9 +2018,9 @@ msgstr "+%(guild)sen moderatzaileek ez dute wikia oraindik idatzi."
 msgid "+%(guild)s: the guildmasters made [an announcement](%(link)s)."
 msgstr ""
 
-#, machine, plain1, python-format
+#, python-format
 msgid "+%(guild)s: the guildmasters pinned [a post](%(link)s)."
-msgstr "+%(guild)s: moderatzaileek [%(link)s-a itsatsi dute."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "+%(num)s more guildmaster"
@@ -2362,9 +2363,9 @@ msgstr "@%(name)s - %(site)s"
 msgid "@%(name)s - Bots - %(site)s"
 msgstr "@%(name)s - Bots - %(site)s"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s accepted your invitation to co-author [your post](%(link)s)."
-msgstr "@%(name)s(e)k zure gonbidapena onartu du egilekidearentzako(%(link)s."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "@%(name)s added to %(curation)s."
@@ -2407,15 +2408,15 @@ msgstr "@%(name)s iruzkinak +%(guild)s(e)n %(title)s(e)n"
 msgid "@%(name)s comments on \"%(title)s\""
 msgstr "@%(name)s iruzkinak \"%(title)s\"(e)n"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s forwarded [a comment](%(link)s) to +%(guild)s."
-msgstr "@%(name)s(%(link)s) +%(guild)s(e)ra bidali zuen."
+msgstr ""
 
 #. a bell notice. %(name)s is a username, %(guild)s a guild's name (shown after
 #. + and @ as here).
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s forwarded [a post](%(link)s) to +%(guild)s."
-msgstr "@%(name)s(%(link)s(e)k +%(guild)s(e)ra bidali zuen."
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "@%(name)s has a new password and is signed out everywhere."
@@ -2581,21 +2582,21 @@ msgstr "@%(name)s funtzioak %(role)s funtzioa du orain."
 msgid "@%(name)s removed."
 msgstr "@%(name)s ezabatuta."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s reposted [a comment](%(link)s)."
-msgstr "@%(name)s berriro argitaratu zen(%(link)s."
+msgstr ""
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s reposted [a post](%(link)s)."
-msgstr "@%(name)s(%(link)s(e)ra itzuli zen."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
 msgstr "@%(name)sk dio 18 urte edo gehiago dituztela eta beren kontua askatzeko eskatu dizute. Erantzun dezakezu [Ezarpenak > Haurrak](/settings/children) atalean."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
-msgstr "@%(name)s(%(link)s) partekatua."
+msgstr ""
 
 #, python-format
 msgid "@%(name)s stepped off as co-author of [your post](%(link)s)."
@@ -2732,6 +2733,10 @@ msgstr "Espazio bat ezin da iraganean hasi."
 #, machine, plain1
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Espazio bat berarentzat <span class=\"text-muted font-weight-normal\">(aukerakoa: Espazioaren postaren esteka)</span>"
+
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Espazio bat bere orrialdetik amaitzen da; ez da ezabatzen mezu bat bezala."
 
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
@@ -2982,6 +2987,10 @@ msgstr "Komunitateko ohar bat gehitu zaio zuk egindako iruzkin bati: [ikusi](%(l
 #, machine, plain1, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr "Komunitateko ohar bat gehitu zen zuk eskatutako mezu bati: [ikusi](%(link)s)"
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Horren kopia bat ezkutatu, kendu, ezabatu edo erabaki baten mende egon zenean bezala. Bere egilea bakarrik, erabaki zuen eta guneko administratzaileek ireki dezakete hemen. Kopia gehienak garbitu egiten dira pixka batean; autoreak ezabatutako zerbaiten kopia egunkari publikoan geratzen da."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3377,6 +3386,10 @@ msgstr "Eskupeko mezu batek ezin du izena kendu, txanponak zuregana joan direlak
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Publikoa ez den mezu batek ezin du irudi hau igo: bere fitxategiak helbidedun edonork ireki ditzake. Gehitu irudia estekatutako biltegitik (Settings > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Ezin da kreditu anonimoa duen mezu bat sardetu."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Autoreak dituzten mezuak ezin dira zirkuluetara eraman. Postu publiko bat zirkuluetara eramateak zuk bidalitako kopiak kentzen ditu; beste batzuk kopiak bidaltzen dituzte beren guildetan."
@@ -3402,10 +3415,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Postaren testua %(count)s karakterea izan daiteke (txinera, japoniera eta korear karaktereak eta emojiak 2 balio dute)."
 msgstr[1] "Postaren testua %(count)s karaktere izan daiteke (txinera, japoniera eta korear karaktereak eta emojiak 2 balio du)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Horren kopia pribatu bat, ezkutatu, kendu, ezabatu edo erabaki bat hartu zuenean bezala. Egileak bakarrik, erabaki zuen eta guneko administratzaileek ireki dezakete, eta ez da betiko gorde."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4117,10 +4126,6 @@ msgstr "Abisuak eta izenburuak lerro bakoitzean izendatutako iturburutik datoz, 
 msgid "Algorithm"
 msgstr "Algoritmoa"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algoritmoa gorde da."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4366,6 +4371,29 @@ msgstr "Egile bat %(time)s(r)en gunean aktibo egon ez dena Ez da kontatzen."
 msgid "An automated post can't have its name removed."
 msgstr "Postu automatiko batek ezin du izena kendu."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Kontrol automatiko batek gorde zuen kontua."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Kontrol automatiko batek zure kontua gorde du, beraz ezin duzu orain egin. Langile batek aztertuko du. Txekea gaizki dagoela uste baduzu, azterketa bat eska dezakezu."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Kontrol automatiko batek zure kontua gorde du."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Enkriptatutako kanal batek ezin ditu bere arauak onartu: webguneak ezin du egiaztatu nork idatzi duen."
@@ -4487,8 +4515,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Anonimoa #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Anonimoak ez dira anonimoak, bigarren administratzaile batek onartzen ez badu, eta gero Log-ek zure kontua izendatzen du haien ondoan."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Anonimoak ez dira anonimoak, bigarren administratzaile batek onartu ezean (edo, administratzaile bakar batekin, bere jabea), eta Log-ek zure kontua izendatzen du haien ondoan."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4732,6 +4760,10 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Idazle gisa, zirriborroa zuzenean editatzen duzu haiekin, eta idazten duzun pertsonaia bakoitza zure meritua da. Postua argitaratu ondoren, nork idatzi duen ikus dezake. Egileek elkarrekin erabakitzen dute:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Eskatu berrikuspena"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4999,14 +5031,6 @@ msgstr "Balkanak"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Ban-eko iruzkina"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Ban ihesa. Iruzkin honen jabea beste kontu batean debekatu zuten."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Ban ihesa. Baimenaren jabea beste kontu batean debekatu zuten."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6276,6 +6300,10 @@ msgstr "Iruzkinak ezkutatu edo kendu"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Zure posta anonimoaren iruzkinak anonimoak dira"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Zure posta anonimoaren iruzkinak anonimoak dira. admin batek kontua debekatu edo esekitzen badu, Log-ek kontuaren izena eman dezake."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Iruzkinak:"
@@ -6982,9 +7010,9 @@ msgstr "Ezabatu funtzio hau? Denek galtzen dute, eta kanalek ahaztu egiten dute 
 msgid "Delete your %(site)s account"
 msgstr "Ezabatu zure %(site)s kontua"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Ezabatu zure mezuak eta iruzkinak"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Ezabatu zure mezuak eta iruzkinak (idatzi eta bost minutu baino gehiago ezabatu ondoren ezabatu dena egunkari publikoan, anonimo gisa)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7610,10 +7638,6 @@ msgid "Engagement"
 msgstr "Konpromisoa"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Legez kanpoko jardueran parte hartzea"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Legez kanpoko jarduera sustatzea edo planifikatzea"
 
@@ -7716,10 +7740,6 @@ msgstr "Eta Aquariids meteoroen dutxa"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Etika"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Gune osoan debekaturik"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7837,6 +7857,10 @@ msgstr "Mundu guztiak ikusten ditu bata bestearen aldaketak, idazten duenari ego
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Dena zure koxka eta kontuetatik, lehen berriena."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Idatzi duzun guztia Anonimo gisa geratuko da eta ezin da berreskuratu. Ezabatu nahi duzuna, edo kendu zure izena hortik lehenik (Historia > Kudeatu)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9761,9 +9785,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Gonbidatu moderatzailea"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Gonbidatu jendea post hau partekatzera. Onartzen dutenean, bere izena darama eta bere profilean dago zerrendatuta. Oraindik editatu, ezabatu eta birbidaltzen duzu. Ez mezu anonimoentzat."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Gonbidatu jendea post hau partekatzera. Onartzen dutenean beren izena darama eta beren profilean agertzen da; anonimoki argitaratzen dutenean, beren kreditua ere anonimoa da. Oraindik editatu, ezabatu eta birbidaltzen duzu."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13481,8 +13505,8 @@ msgid "Post anonymously"
 msgstr "Argitaratu anonimoki"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Post anonimoa: beste kide batzuek autore guztiak anonimo gisa ikusten dituzte zenbaki batekin. Adminek beti ikusten dute nortzuk diren. Ezin da aldatu mezua argitaratu ondoren."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Post anonimoa: beste kide batzuek autore guztiak anonimo gisa ikusten dituzte zenbaki batekin. Adminek beti ikus dezakete nortzuk diren, eta administratzaile baten debekuak Log izena eduki dezake, berak aipatzen duen elementu anonimo batengatik. Ezin da aldatu mezua argitaratu ondoren."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16242,10 +16266,6 @@ msgid "Spam"
 msgstr "Spam-a"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Spamming."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Hitz egin"
@@ -17397,7 +17417,7 @@ msgid "The auto-moderation was saved."
 msgstr "Moderazio automatikoa salbatu zen."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17425,10 +17445,6 @@ msgstr "Bot @%(name)s proposatu zenuena ez zen onartu. Administratzaileek esan z
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Botilak dagoeneko irakurtzen du iturri hori."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Bot-a esekita zegoen antzeko edukia bidaltzeagatik."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17498,6 +17514,10 @@ msgstr "Zirriborroak aldatu egin du mezua oraindik ez agertzea."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Aurreko bertsioak ez dira erakusten hau ezkutatzen den bitartean."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Aurreko bertsioak ez dira erakusten: ezabatu egin da eta bere testua garbitu egin da."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17629,6 +17649,10 @@ msgstr "Gildak badu jadanik izen hori."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Guild-en arauak bere kanaletan idatzitakoarentzat, guneko hitz-iragazkiaren gainean. Guild moderatzaileek ez diete inoiz eusten. Bat hausten duen mezua ukatu egiten da, inoiz ez baitu esaten zein hitz."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Zure kontuko euskarria altxatua izan da. Bidali, komentatu eta bozkatu berriro."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18131,9 +18155,9 @@ msgstr "Hemen ez daude mutu."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Txanponak erosi eta gastatu ditzakete, eskupekoa, Premium erosi eta ordaindutako zirkuluak batu edo exekutatu."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Espazioetan sartu eta zuzeneko hariak exekuta ditzakete. Ahots-deiak espazio batean ere egin behar dira berriketak."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Espazioak entzun ditzakete. Ezin dute bata edo bestea batera bidali: ume-kontu batek bakarrik irakurtzen du. Ahots-deiak espazio batean ere egin behar dira berriketak."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18345,6 +18369,10 @@ msgstr "Bot hau ez da exekutatzen ari."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "-Botaren jabeak ezin du oraintxe bertan exekutatu."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Bot honen jabeak ezin du exekutatu bere kontua dagoen bitartean."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -21334,7 +21362,7 @@ msgstr "Kontu txiki bat egin dezakezu zure kontua 18 urte edo gehiagoz baieztatu
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Egunean hiru dei egin ditzakezu. Saiatu bihar berriro."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
@@ -21344,13 +21372,6 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"Ezin duzu +%(guild)s-ren kanaletan idatzi, baina oraindik irakur ditzakezu.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21732,7 +21753,7 @@ msgstr ""
 "\n"
 "Zure mezu edo iruzkinik ez da ezabatu, baina ezin izango dituzu mezuak +%(guild)s(e)ra bidali edo iruzkinik egin."
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
@@ -21740,11 +21761,6 @@ msgid ""
 "\n"
 "You were exiled for [this comment](%(link)s)."
 msgstr ""
-"+%(guild)s(e)tik erbesteratu zaituzte.\n"
-"\n"
-"Zure mezu edo iruzkinik ez da ezabatu, baina ezin izango dituzu mezuak +%(guild)s-ra bidali edo iruzkinik egin.\n"
-"\n"
-"%(link)s-era erbesteratu zintuzten."
 
 #, python-format
 msgid ""
@@ -22145,18 +22161,18 @@ msgstr ""
 "> %(message)s"
 
 #, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Zure %(site)s kontua behin betiko esekita egon da arrazoi honengatik:\n"
-"\n"
-"> debekatzea"
-
-#, machine, plain1, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
 msgstr "Zure %(site)s kontua berrezarri da. Mesedez, arretaz berrikusi eta bete itzazu [zerbitzu-terminoak](/help/terms) eta [arauak eta jarraibideak](/help/rules) berriro ez esekitzeko."
+
+#, machine, plain2, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
+"Zure %(site)s kontua berrezarri da. Mesedez, arretaz berrikusi eta bete itzazu [zerbitzu-terminoak](/help/terms) eta [arauak eta jarraibideak](/help/rules) berriro ez esekitzeko.\n"
+"\n"
+"Oraindik zain dago, beraz, ezin du argitaratu, iruzkindu edo beste inorengan jardun. Langile batek aztertuko du."
 
 #, machine, plain1, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -22171,16 +22187,6 @@ msgstr ""
 "Zure %(site)s kontua %(days)s egunetarako esekita egon da honako arrazoiak direla eta:\n"
 "\n"
 "> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Zure %(site)s kontua egun batez eten da arrazoi honengatik:\n"
-"\n"
-"> Spam gehiegi!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22310,6 +22316,10 @@ msgstr "Zure kontua sentikorra da."
 msgid "Your account is no longer marked sensitive."
 msgstr "Zure kontua ez da jadanik sentikorra."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Zure kontua zain dago"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Zure kontua eten egin da."
@@ -22415,6 +22425,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -22602,9 +22639,9 @@ msgstr "Zure biltegia ez dago jadanik konektatuta."
 msgid "Your media storage needs connecting again."
 msgstr "Zure multimedia biltegiak berriro konektatu behar du."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "Your membership of [+%(guild)s](/+%(guild)s) ended: you didn't have the %(coins)s coins it renews for. You can join again from its page."
-msgstr "[+%(guild)s(/+%(guild)s-eko zure kidetza amaitu zen: ez zenituen berrituko dituen %(coins)s txanponak. Bere orrialdetik berriro sar zaitezke."
+msgstr ""
 
 #, machine, plain1
 msgid "Your membership will renew again."
@@ -22810,9 +22847,9 @@ msgid "Your story is up for 24 hours."
 msgstr "Zure istorioak 24 ordu irauten du."
 
 #. %(circle)s is the name of a paid circle someone subscribed to
-#, machine, plain1, python-format
+#, python-format
 msgid "Your subscription to %(circle)s by [@%(name)s](/@%(name)s) ended: you didn't have the %(coins)s coins it renews for. You can subscribe again from their profile."
-msgstr "Zure %(circle)s(@%(name)s)(/@%(name)s-en harpidetza amaitu zen: ez zenituen berrituko dituen %(coins)s txanponak. Beren profiletik berriro harpidetu zaitezke."
+msgstr ""
 
 #, machine, plain1
 msgid "Your subscription will renew again."
@@ -22985,7 +23022,7 @@ msgstr "[Zure iruzkina](%(item)s) berriro agertzen da bere postaren azpian."
 msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
 msgstr "[Zure iruzkina](%(item)s) +%(guild)s-n agertzen da berriro."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
 "\n"
@@ -22995,15 +23032,8 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"[Zure iruzkina](%(item)s ezkutatu egin zuen azpian dagoen postaren egileak.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -23013,15 +23043,8 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"[Zure iruzkina](%(item)s +%(guild)s(e)tik ezkutatua zegoen moderatzaile landun batek.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "[Your comment](%(item)s) was removed.\n"
 "\n"
@@ -23031,13 +23054,6 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"[Zure iruzkina](%(item)s ezabatu egin da.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
 #, machine, plain2, python-format
 msgid "[Your comment](%(item)s) was restored."
@@ -23047,7 +23063,7 @@ msgstr "[Zure iruzkina](%(item)s berreskuratu zen."
 msgid "[Your post](%(item)s) is shown in +%(guild)s again."
 msgstr "[Zure postua](%(item)s) +%(guild)s(e)n agertzen da berriro."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
 "\n"
@@ -23057,15 +23073,8 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"[Zure postua](%(item)s) +%(guild)s(e)tik ezkutatua zegoen moderatzaile landun batek.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "[Your post](%(item)s) was removed.\n"
 "\n"
@@ -23075,13 +23084,6 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"[Zure postua](%(item)s kendu egin zuten.\n"
-"\n"
-"\n"
-"%(why)s\n"
-"\n"
-"\n"
-"[Ikusi egunkarian](%(log)s) · [Aplikatu erabaki hau](%(appeal)s)"
 
 #, machine, plain2, python-format
 msgid "[Your post](%(item)s) was restored."
@@ -23241,10 +23243,6 @@ msgstr "%(name)s(e)k galdetua"
 #, machine, plain1
 msgid "avatar"
 msgstr "avatarra"
-
-#, machine, plain1
-msgid "ban evasion"
-msgstr "debekua ihesa"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23737,6 +23735,12 @@ msgstr "zure biltegian erreprodukzio gisa gordea; denak elkartu aurretik kontatz
 msgid "kicked post %(target)s"
 msgstr "ostikoz bidalia %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "berrogeialdi bat jaso zuen kontrol automatiko bat jarrita"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23967,6 +23971,12 @@ msgstr "%(name)s(e)k argitaratua"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "argitaratu gabeko aldaketekin"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "kontu bat jarri berrogeialdian"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24433,9 +24443,9 @@ msgstr "deskonektatuta zeunden."
 msgid "you're invited to write it"
 msgstr "idaztera gonbidatuta zaude"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "zure kontuak ezin izan zuen une horretan argitaratu (etenaldi bat, edo lan-arau bat, aurrera eramana). Ireki eta sakatu Post zer ikusteko."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "zure kontuak ezin izan du une horretan argitaratu (egonean edo esekita dago, edo lan-arauak aurrera eraman dira). Ireki eta sakatu Post zer ikusteko."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hi\n"
@@ -1505,6 +1505,10 @@ msgstr "%(who)s ने गिल्ड मॉडरेटर @%(name)s को �
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s ने पोस्ट किया %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s ने एक क्वारेंटिन को एक स्वचालित चेक रखा था"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s ने %(name)s पर प्रतिबंध लगाया"
@@ -1568,6 +1572,10 @@ msgstr "%(who)s ने एक चैनल में एक संदेश प�
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s पिन्ड पोस्ट %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s ने क्वारेंटिन में एक खाता रखा"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2582,9 +2590,9 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@%(name)s कहते हैं कि वे 18 या उससे अधिक हैं और आपको अपने खाते को जारी करने के लिए कहा। आप [सेटिंग> चिल्ड्रन] (/settings/children) में जवाब दे सकते हैं।"
+msgstr ""
 
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
@@ -2725,6 +2733,10 @@ msgstr "एक अंतरिक्ष अतीत में शुरू न�
 #, machine, plain1
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "इसके लिए एक स्पेस <span class=\"text-muted font-weight-normal\">(वैकल्पिक: स्पेस का पोस्ट लिंक)</span>"
+
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "एक अंतरिक्ष अपने ही पृष्ठ से समाप्त हो गया है; यह एक पोस्ट की तरह नष्ट नहीं किया गया है।"
 
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
@@ -2911,9 +2923,9 @@ msgstr "एक चैनल नाम में नियंत्रण या 
 msgid "A chat app wants to sign in to your chats as <strong>@%(name)s</strong>."
 msgstr "एक चैट ऐप के रूप में अपने चैट में साइन इन करना चाहता है <strong>@%(name)s</strong>।"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
-msgstr "एक चैट ऐप आपके %(site)s खाते में हस्ताक्षर किया गया था। यदि वह आपको नहीं था, तो इसे [सेटिंग्स> चैट ऐप] (/settings/chat_apps) में साइन करें और अपना पासवर्ड बदल दें।"
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
@@ -2975,6 +2987,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "इस तरह की एक प्रति तब थी जब यह एक निर्णय के लिए छिपा हुआ, हटा दिया गया, हटा दिया गया या जवाब दिया गया। केवल इसके लेखक, गिल्ड के गिल्ड मॉडरेटर जिन्होंने फैसला किया और साइट के प्रशासक इसे यहां खोल सकते हैं। अधिकांश प्रतियों को थोड़ी देर के बाद साफ़ किया जाता है; इसके कुछ लेखक की प्रतिलिपि सार्वजनिक लॉग में रहता है।"
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3370,6 +3386,10 @@ msgstr "एक पोस्ट जिसे टैप किया गया ह
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "एक पोस्ट जो सार्वजनिक नहीं है, इस तस्वीर अपलोड का उपयोग नहीं कर सकता है: इसकी फ़ाइलों को किसी भी पते के साथ खोला जा सकता है। इसके बजाय अपने जुड़े भंडारण (सेटिंग्स > मीडिया) से चित्र जोड़ें।"
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "अनाम क्रेडिट के साथ एक पोस्ट forked नहीं किया जा सकता है।"
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "सह-लेखकों के साथ एक पोस्ट को सर्कल में नहीं ले जाया जा सकता है। हलकों के लिए एक सार्वजनिक पोस्ट को स्थानांतरित करने से आपके द्वारा अग्रेषित की गई प्रतियां कम हो जाती हैं; अन्य लोगों की प्रतियां उनके गिल्ड्स में रुक जाती हैं।"
@@ -3395,10 +3415,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "पोस्ट का टेक्स्ट %(count)s कैरेक्टर (चीनी, जापानी और कोरियाई अक्षर और इमोजी गिनती 2) हो सकता है।"
 msgstr[1] "पोस्ट का पाठ %(count)s अक्षर (चीनी, जापानी और कोरियाई अक्षर और इमोजी गिनती 2) हो सकता है।"
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "इस तरह की एक निजी प्रति तब थी जब यह एक निर्णय के लिए छिपा हुआ, हटा दिया गया, हटा दिया गया या फिर निर्भर था। केवल इसके लेखक, गिल्ड के गिल्ड मॉडरेटर जिन्होंने फैसला किया और साइट के प्रशासक इसे खोल सकते हैं, और इसे हमेशा के लिए नहीं रखा गया है।"
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4110,10 +4126,6 @@ msgstr "अलर्ट और हेडलाइन्स प्रत्ये
 msgid "Algorithm"
 msgstr "एल्गोरिथ्म"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "एल्गोरिथ्म बचाया।"
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4359,6 +4371,29 @@ msgstr "एक लेखक जो %(time)s के लिए साइट पर
 msgid "An automated post can't have its name removed."
 msgstr "एक स्वचालित पोस्ट का नाम हटाया नहीं जा सकता है।"
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "एक स्वचालित जांच खाते को पकड़ पर डाल दिया।"
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "एक स्वचालित चेक अपने खाते को पकड़ पर डाल दिया, इसलिए अब आप ऐसा नहीं कर सकते। कर्मचारियों के सदस्य इसे देख सकते हैं। यदि आपको लगता है कि चेक गलत था, तो आप एक समीक्षा के लिए पूछ सकते हैं।"
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "एक स्वचालित चेक अपने खाते को पकड़ो।"
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "एक एन्क्रिप्टेड चैनल अपने नियमों को स्वीकार करने के लिए नहीं पूछ सकता: साइट यह नहीं देख सकती कि कौन लिखा है।"
@@ -4480,8 +4515,8 @@ msgid "Anonymous #%(num)s"
 msgstr "गुमनाम #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "जब तक कोई दूसरा प्रशासक स्वीकार नहीं करता है, तब तक अनाम रहता है और फिर लॉग ने उन्हें अपने खाते का नाम दिया है।"
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "जब तक एक दूसरा प्रशासक (या, एक एकल प्रशासक, उसके मालिक के साथ एक साइट पर) को मंजूरी नहीं देता है, तब तक अनाम रहता है।"
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4725,6 +4760,10 @@ msgstr "आर्यन हाइलैंड्स"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "एक लेखक के रूप में आप ड्राफ्ट को उनके साथ जीना संपादित करते हैं, और आपके द्वारा टाइप किए गए प्रत्येक चरित्र को आपके लिए श्रेय दिया जाता है। एक बार पोस्ट प्रकाशित होने के बाद, कोई भी जो इसे देख सकता है कि कौन क्या लिखा है। लेखक एक साथ निर्णय लेते हैं:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "एक समीक्षा के लिए पूछो"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4992,14 +5031,6 @@ msgstr "बाल्कन"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "टिप्पणी बन्द"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "बन चोरी। इस टिप्पणी के मालिक को दूसरे खाते पर प्रतिबंधित कर दिया गया था।"
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "बन चोरी। यह सबमिशन के मालिक को दूसरे खाते में प्रतिबंधित कर दिया गया था।"
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6269,6 +6300,10 @@ msgstr "टिप्पणियाँ छिपा हुआ या हटा�
 msgid "Comments on your anonymous post are anonymous"
 msgstr "अपने अनाम पोस्ट पर टिप्पणियाँ अज्ञात हैं"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "आपकी गुमनाम पोस्ट पर टिप्पणियाँ अज्ञात हैं। यदि कोई व्यवस्थापक किसी के लिए खाते को प्रतिबंधित करता है, तो लॉग इसके लिए खाता नाम दे सकता है।"
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "टिप्पणियाँ:"
@@ -6975,9 +7010,9 @@ msgstr "इस भूमिका को हटा दें? हर कोई �
 msgid "Delete your %(site)s account"
 msgstr "अपने %(site)s खाते को हटा दें"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "अपनी पोस्ट और टिप्पणियों को हटा दें"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "अपनी पोस्ट और टिप्पणियों को हटा दें (लोक लॉग में रहने के बाद इसे पांच मिनट से अधिक समय तक हटा दिया जाता है)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7603,10 +7638,6 @@ msgid "Engagement"
 msgstr "सगाई"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "अवैध गतिविधि में संलग्न होना"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "गैरकानूनी गतिविधि में शामिल होना या योजना बनाना"
 
@@ -7709,10 +7740,6 @@ msgstr "Eta Aquariids उल्का बौछार"
 #, machine, plain1
 msgid "Ethics"
 msgstr "एथिक्स"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "साइट-वाइड प्रतिबंध का मूल्यांकन करना"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7830,6 +7857,10 @@ msgstr "हर कोई एक दूसरे के परिवर्तन 
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "अपने गिल्ड्स और खातों से सब कुछ, सबसे पहले।"
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "सब कुछ जो आपने साइट पर अनाम के रूप में लिखा था और वापस नहीं लिया जा सकता। आप जो चाहते हैं उसे हटा दें, या उससे अपना नाम हटा दें, पहले (History > Manage)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9754,9 +9785,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "इन्वाइट मॉडरेटर"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "इस पोस्ट को साझा करने के लिए लोगों को आमंत्रित करें। एक बार जब वे इसे स्वीकार करते हैं तो उनका नाम उनके प्रोफाइल पर सूचीबद्ध होता है। आप अभी भी इसे संपादित, हटा सकते हैं और आगे बढ़ा सकते हैं। अज्ञात पदों के लिए नहीं।"
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "इस पोस्ट को साझा करने के लिए लोगों को आमंत्रित करें। एक बार जब वे इसे स्वीकार करते हैं तो उनका नाम उनके प्रोफाइल पर सूचीबद्ध होता है; अनाम पोस्ट पर उनका क्रेडिट भी अनाम है। आप अभी भी इसे संपादित, हटा सकते हैं और आगे बढ़ा सकते हैं।"
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13474,8 +13505,8 @@ msgid "Post anonymously"
 msgstr "गुमनाम रूप से पोस्ट करें"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "अनाम रूप से पोस्ट: अन्य सदस्य प्रत्येक लेखक को एक नंबर के साथ अनाम के रूप में देखते हैं। व्यवस्थापक हमेशा देख सकते हैं कि वे कौन हैं। पोस्ट प्रकाशित होने के बाद इसे बदला नहीं जा सकता।"
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "अनाम रूप से पोस्ट: अन्य सदस्य प्रत्येक लेखक को एक नंबर के साथ अनाम के रूप में देखते हैं। व्यवस्थापक हमेशा देख सकते हैं कि वे कौन हैं, और एक प्रशासक के प्रतिबंध के पास लॉग नाम को एक अज्ञात आइटम के लिए खाता हो सकता है। पोस्ट प्रकाशित होने के बाद इसे बदला नहीं जा सकता।"
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16112,17 +16143,13 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "जब आप संपादन कर रहे थे तो किसी ने इस पृष्ठ को बचाया। आपका टेक्स्ट अभी भी यहां है: इसे कॉपी करें, पेज को फिर से लोड करें ताकि वे अपने बदलाव को देख सकें और फिर से अपना जोड़ सकें।"
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
 "\n"
 "\n"
 "If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
 msgstr ""
-"किसी ने अपने खाते में एक QR कोड के साथ हस्ताक्षर किए, जिसे आप अनुमोदित करते हैं: %(browser)s, %(place)s, %(when)s।\n"
-"\n"
-"\n"
-"यदि यह आपको नहीं था, [सभी को डिस्कनेक्ट करें] (/settings/security#log-out-everywhere) और [आपके ऐप्स](/settings/apps) और [आपके चैट ऐप्स](/settings/chat_apps): डिस्कनेक्ट उन समाप्त नहीं होता है।"
 
 #, machine, plain1
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
@@ -16237,10 +16264,6 @@ msgstr "अब स्पेस अभी जवाब नहीं दे रह
 #, machine, plain1
 msgid "Spam"
 msgstr "स्पैम"
-
-#, machine, plain1
-msgid "Spamming."
-msgstr "स्पैमिंग।"
 
 #, machine, plain1
 msgctxt "button"
@@ -17394,7 +17417,7 @@ msgid "The auto-moderation was saved."
 msgstr "ऑटो मॉडरेशन को बचाया गया था।"
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17422,10 +17445,6 @@ msgstr "आप प्रस्तावित बॉट @%(name)s को अन�
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "बॉट पहले से ही उस फीड को पढ़ता है।"
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "बहुत ही समान सामग्री पोस्ट करने के लिए बॉट को निलंबित कर दिया गया था।"
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17495,6 +17514,10 @@ msgstr "ड्राफ्ट ने पोस्ट को अभी तक न
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "पहले संस्करण नहीं दिखाया गया है जबकि यह छिपा हुआ है।"
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "पहले संस्करणों को नहीं दिखाया गया है: इसे हटा दिया गया था और इसका पाठ स्पष्ट किया गया है।"
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17626,6 +17649,10 @@ msgstr "गिल्ड पहले से ही उस नाम के स�
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "गिल्ड के अपने नियमों के लिए क्या अपने चैनलों में लिखा गया है, साइट के शब्द फिल्टर के शीर्ष पर। गिल्ड मॉडरेटर कभी उन्हें नहीं पकड़े जाते हैं। एक संदेश जो किसी को तोड़ देता है उसे एक लघु कारण से मना कर दिया जाता है जो कभी भी किस शब्द का कहना नहीं है।"
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "आपके खाते पर पकड़ उठाया गया था। आप फिर से पोस्ट, टिप्पणी और वोट कर सकते हैं।"
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18128,9 +18155,9 @@ msgstr "वे यहाँ म्यूट नहीं हैं।"
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "वे सिक्के, टिप खरीद सकते हैं, Premium खरीद सकते हैं और भुगतान किए गए हलकों को शामिल या चला सकते हैं।"
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "वे अंतरिक्ष की मेजबानी कर सकते हैं और लाइव धागे चला सकते हैं। वॉयस कॉल को स्पेस में भी चैट करने की आवश्यकता होती है।"
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "वे अंतरिक्ष में शामिल हो सकते हैं और सुन सकते हैं। वे एक में एक या पोस्ट की मेजबानी नहीं कर सकते: एक बच्चा खाता केवल पढ़ता है। वॉयस कॉल को स्पेस में भी चैट करने की आवश्यकता होती है।"
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18342,6 +18369,10 @@ msgstr "यह बॉट नहीं चल रहा है।"
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "यह अभी नहीं चल सकता है।"
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "यह बॉट का मालिक इसे तब नहीं चला सकता जब उनका खाता चालू हो।"
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -20220,9 +20251,8 @@ msgstr "हम इसे यहां से लेंगे।"
 msgid "We're sorry something here is wrong."
 msgstr "हम यहाँ कुछ गलत हैं।"
 
-#, machine, plain1
 msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "हमने हमारे [टर्म] (/help/terms) के आयु अनुभाग को बदल दिया है। 18 वर्ष से कम आयु के किसी व्यक्ति के लिए एक खाता अब एक चाइल्ड लॉक है, और यूके में, यूरोपीय संघ और ऑस्ट्रेलिया को लॉक बंद होने से पहले आयु-चेक सेवा की पुष्टि करनी होगी या आप संवेदनशील सामग्री देख सकते हैं। आप कह सकते हैं कि आप 18 या उससे अधिक सेटिंग्स में हैं > सामग्री।"
+msgstr ""
 
 #, machine, plain1
 msgid "Web Development"
@@ -20262,7 +20292,7 @@ msgstr "आपका स्वागत है %(site)s!"
 msgid "Welcome to %(site)s! These communities are currently Trending. Join some to start customizing your <a href=\"/\">home page</a>."
 msgstr "आपका स्वागत है %(site)sवर्तमान में ये समुदाय ट्रेंडिंग हैं। अपने को अनुकूलित करने के लिए कुछ में शामिल हों <a href=\"/\">होम पेज</a>।"
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Welcome to %(site)s, %(name)s. We're glad to have you here.\n"
 "\n"
@@ -20275,16 +20305,6 @@ msgid ""
 "\n"
 "-The %(site)s team"
 msgstr ""
-"%(site)s, %(name)s में आपका स्वागत है। हम यहाँ आपको खुश हैं।\n"
-"\n"
-"\n"
-"कुछ चीजें शुरू करने के लिए:\n"
-"- लोगों का पालन करें और [कुछ गिल्ड्स में शामिल हों] (/browse) तो आपके निम्नलिखित फ़ीड में कुछ है\n"
-"- [rules] (/help/rules) और [help page](/help)\n"
-"- चुनें कि आप कितना देखते हैं [सेटिंग्स > सामग्री] (/settings/content)\n"
-"\n"
-"\n"
-"%(site)s टीम"
 
 #, machine, plain1
 msgid "West Slavia"
@@ -22140,19 +22160,16 @@ msgstr ""
 "\n"
 "%(message)s"
 
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"आपके %(site)s खाते को स्थायी रूप से निम्नलिखित कारणों से निलंबित कर दिया गया है:\n"
-"\n"
-"> प्रतिबंध चोरी"
-
-#, machine, plain1, python-format
+#, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
-msgstr "आपका %(site)s खाता फिर से स्थापित किया गया है। कृपया ध्यान से समीक्षा करें और [सेवा की अवधि] (/help/terms) और [नियम और दिशानिर्देश](/help/rules) द्वारा यह सुनिश्चित करने के लिए कि आपको फिर से निलंबित नहीं होना चाहिए।"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -22167,16 +22184,6 @@ msgstr ""
 "आपके %(site)s खाते को निम्नलिखित कारणों से %(days)s दिनों के लिए निलंबित कर दिया गया है:\n"
 "\n"
 "%(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"आपके %(site)s खाते को निम्नलिखित कारणों से 1 दिन के लिए निलंबित कर दिया गया है:\n"
-"\n"
-"Too more स्पैम!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22306,6 +22313,10 @@ msgstr "आपका खाता संवेदनशील है।"
 msgid "Your account is no longer marked sensitive."
 msgstr "आपका खाता अब संवेदनशील नहीं है।"
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "आपका खाता है"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "आपका खाता निलंबित कर दिया गया है।"
@@ -22370,9 +22381,8 @@ msgstr "आपके खाते की स्वचालित पोस्�
 msgid "Your account's automated posting stopped reading %(url)s after %(fails)s failed tries: %(reason)s Start it again from Settings > Bots once it works."
 msgstr "आपके खाते की स्वचालित पोस्टिंग ने %(url)s को %(fails)s असफल कोशिशों के बाद पढ़ना बंद कर दिया: %(reason)s इसे फिर से सेटिंग से शुरू करें > एक बार यह काम करता है।"
 
-#, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
-msgstr "आपके खाते की स्वचालित पोस्टिंग को मंजूरी दे दी गई थी। आपके फीड्स के नए पोस्ट आपके प्रोफाइल पर दिखाई देते हैं, जिन्हें कुछ ही मिनटों में स्वचालित रूप से चिह्नित किया जाता है। इसे [सेटिंग> बॉट्स] (/settings/bots) में प्रबंधित करें।"
+msgstr ""
 
 #, machine, plain1
 msgid "Your age"
@@ -22416,6 +22426,48 @@ msgid ""
 "%(note)s\n"
 "```"
 msgstr ""
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"आपके खाते पर पकड़ की आपकी अपील स्वीकार की गई थी, और होल्ड को उठाया गया था। आप फिर से पोस्ट, टिप्पणी और वोट कर सकते हैं।\n"
+"\n"
+"````\n"
+"%(note)s\n"
+"````"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"आपके खाते पर पकड़ की आपकी अपील को देखा गया था, और पकड़ खड़ा है।\n"
+"\n"
+"````\n"
+"%(note)s\n"
+"````"
+
+#, machine, plain2, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+"आपके खाते पर पकड़ की आपकी अपील आगे नहीं ली गई थी।\n"
+"\n"
+"````\n"
+"%(note)s\n"
+"````"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22669,13 +22721,11 @@ msgstr "आपके माता-पिता या अभिभावक क�
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "आपके माता-पिता या अभिभावक ने इसे अपने खाते के लिए बंद कर दिया है।"
 
-#, machine, plain1
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
-msgstr "आपके माता-पिता या अभिभावक ने आपके लिए यह खाता बनाया। वे देख सकते हैं कि आप साइट पर क्या करते हैं (आपके पोस्ट, टिप्पणियां, वोट, बुकमार्क, अनुसरण करते हैं, गिल्ड्स, जिन्हें आप चैट करते हैं, कि आपका खाता रिपोर्ट किया गया था और आपका हालिया संकेत-इन; साइट उन्हें कभी नहीं दिखाती कि आपका चैट क्या कहती है) और वे चुनती हैं कि कौन सी विशेषताएं हैं। आप देख सकते हैं कि किस में [सेटिंग्स > सामग्री] (/settings/content)। उन्होंने अपना पासवर्ड चुना: इसे [सेटिंग्स > सुरक्षा](/settings/security) में बदल दें ताकि केवल आप इसे जानते हैं, क्योंकि जो लोग जानते हैं कि वह आपके साथ साइन इन कर सकता है और आपकी चैट पढ़ सकता है।"
+msgstr ""
 
-#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "आपके माता-पिता या अभिभावक ने आपके खाते के लिए एक नया पासवर्ड निर्धारित किया और आप डिस्कनेक्ट हो गए। नए पासवर्ड के साथ साइन इन करें, फिर इसे [सेटिंग्स> सिक्योरिटी] (/settings/security) में बदल दें ताकि केवल आप इसे जान सकें।"
+msgstr ""
 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
@@ -22906,9 +22956,8 @@ msgstr "[Guild टेकओवर दावा](/help/siege)"
 msgid "[How moderation is recorded](/help/moderation)"
 msgstr "[कैसे मॉडरेशन रिकॉर्ड किया गया है](/help/moderation)"
 
-#, machine, plain1
 msgid "[Legal Policies](/help/legal)"
-msgstr "[कानूनी नीतियां] (/help/legal)"
+msgstr ""
 
 #, machine, plain1
 msgid "[Meet the admins](/help/admins)"
@@ -22954,9 +23003,8 @@ msgstr "[नियम और दिशानिर्देश](/help/rules)"
 msgid "[Search tips](/help/search)"
 msgstr "[खोज सुझाव](/help/search)"
 
-#, machine, plain1
 msgid "[Submit a DMCA counter-request](/help/counter_dmca)"
-msgstr "[Submit a DMCA counter-request] (/help/counter_dmca)"
+msgstr ""
 
 #, machine, plain1
 msgid "[Submit a DMCA takedown request](/help/dmca)"
@@ -23203,10 +23251,6 @@ msgstr "पूछे %(name)s"
 #, machine, plain1
 msgid "avatar"
 msgstr "अवतार"
-
-#, machine, plain1
-msgid "ban evasion"
-msgstr "प्रतिबंध"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23699,6 +23743,12 @@ msgstr "अपने स्वयं के भंडारण में एक 
 msgid "kicked post %(target)s"
 msgstr "पोस्ट %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "एक स्वत: जाँच रखा गया था संगरोध उठाया"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23929,6 +23979,12 @@ msgstr "द्वारा प्रकाशित %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "प्रकाशित, अप्रकाशित परिवर्तन के साथ"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "संगरोध में एक खाता डालें"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24395,9 +24451,9 @@ msgstr "आप डिस्कनेक्ट हो गए थे।"
 msgid "you're invited to write it"
 msgstr "आप इसे लिखने के लिए आमंत्रित कर रहे हैं"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "आपका खाता उस समय पोस्ट नहीं कर सका (एक निलंबन, या उसके नियमों को आगे बढ़ाया गया)। इसे ओपन करें और पोस्ट प्रेस करें।"
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "आपका खाता उस समय इसे पोस्ट नहीं कर सका (यह पकड़ या निलंबित कर दिया गया है, या इसे आगे बढ़ाया गया था)। इसे ओपन करें और पोस्ट प्रेस करें।"
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

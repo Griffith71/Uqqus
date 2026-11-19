@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ar\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, machine, python-format
+#, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,14 +30,6 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
-"\n"
-"@%(admin)s أعطاك الشارة التالية:\n"
-"\n"
-"\n"
-"!%(path)s)\n"
-"\n"
-"\n"
-"%(badge)s\n"
 
 #, machine, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -1997,6 +1989,10 @@ msgstr "%(who)sمدير مهيمن مدعو %(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)sركل الوظيفة %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s رفع الحجر الصحي الذي وضع شيك آلي"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)sرفع الحظر على %(name)s"
@@ -2060,6 +2056,10 @@ msgstr "%(who)sأثبت رسالة في قناة"
 #, machine, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s وظيفة ثابتة %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s تضع حساباً في الحجر الصحي"
 
 #, machine, python-format
 msgid "%(who)s reinstated comment"
@@ -3259,6 +3259,10 @@ msgstr "الفضاء لا يمكن أن يبدأ في الماضي."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "مكان له <span class=\"text-muted font-weight-normal\">(اختياري: حلقة بريد الفضاء)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "الفضاء ينتهي من صفحته الخاصة ولا يُحذف كوظيفة."
+
 #, machine
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "الفضاء يعيش لفترة: لوحة، خيط حي أو مكالمة. يُحتفظ به لإعادة اللعب أو يختفي عندما ينتهي."
@@ -3500,9 +3504,9 @@ msgstr "اسم القناة لا يمكن أن يحتوي على السيطرة 
 msgid "A chat app wants to sign in to your chats as <strong>@%(name)s</strong>."
 msgstr "تطبيق الدردشة يريد التوقيع على الدردشة كما <strong>@%(name)s</strong>."
 
-#, machine, python-format
+#, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
-msgstr "تم التوقيع على تطبيق الدردشة في حسابك %(site)s. إذا لم يكن هذا أنت، وقّع عليه في [Settings . Chat apps] ( /settings/chat_apps) وتغيير كلمة السر الخاصة بك."
+msgstr ""
 
 #, python-format
 msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
@@ -3572,6 +3576,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "نسخة منها كما كانت عندما كانت مخبأة أو أزيلت أو حذفت أو اعتمدت على قرار ما. فقط مؤلفه، المُديرين الغاليين الذين قرروا و مديري الموقع يمكنهم فتحه هنا وتُلغى معظم النسخ بعد فترة؛ وتُلغى نسخة من شيء حذفته صاحبها الإقامة في اللوغ العام."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -4079,6 +4087,10 @@ msgstr "الوظيفة التي تم إعلامها لا يمكن إزالة ا�
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "وظيفة ليست عامة لا يمكن استخدام هذه الصورة تحميل: الملفات يمكن فتحها من قبل أي شخص يحمل العنوان. أضف الصورة من مخزنك المترابط بدلا من ذلك (Settings ). Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "لا يمكن تزوير وظيفة تحمل بطاقة ائتمان مجهولة."
+
 #, machine
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "لا يمكن نقل وظيفة مع مساعدين إلى دوائر نقل وظيفة عامة إلى دوائر تأخذ النسخ التي أرسلتها؛ نسخ أخرى من الناس تم إرسالها البقاء في ظهيرهم."
@@ -4108,10 +4120,6 @@ msgstr[2] "رسالة البريد يمكن أن تكون شخصيات %(count)s
 msgstr[3] "رسالة البريد يمكن أن تكون شخصيات %(count)s."
 msgstr[4] "رسالة البريد يمكن أن تكون شخصيات %(count)s."
 msgstr[5] "رسالة البريد يمكن أن تكون شخصيات %(count)s."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "نسخة خاصة من هذا كما كانت عندما كانت مخبأة أو أزيلت أو حذفت أو اعتمدت على قرار ما. فقط مُؤلفها، المُديرين الغاليين الذين قرروا و مديري الموقع يمكنهم فتحه، ولا يُحتفظ به للأبد."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4879,10 +4887,6 @@ msgstr "والتنبيهات والعناوين الرئيسية تأتي من �
 msgid "Algorithm"
 msgstr "Algorithm"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "تم إنقاذ (ألغوريثم)."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -5132,6 +5136,29 @@ msgstr "كاتب لم يكن يعمل في الموقع %(time)s لا يحسب."
 msgid "An automated post can't have its name removed."
 msgstr "وظيفة مؤتمتة لا يمكن إزالة اسمها."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "الشيك الآلي وضع الحساب على الانتظار."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "الشيك التلقائي وضع حسابك على الانتظار، حتى لا يمكنك القيام بذلك الآن. سينظر إليه أحد الموظفين. إذا كنت تعتقد أن الشيك كان خاطئا، يمكنك أن تطلب مراجعة."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "الشيك الآلي وضع حسابك على الانتظار."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "قناة مشفرة لا يمكن أن تطلب قواعدها أن تقبل، الموقع لا يستطيع التحقق من من كتب."
@@ -5269,8 +5296,8 @@ msgid "Anonymous #%(num)s"
 msgstr "مجهول ‎#%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "شخص مجهول يبقى مجهولاً مالم يوافق مدير ثانٍ، وبعد ذلك يسمي اللوغ حسابك بجانبهم."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "مجهولي الهوية يبقون مجهولين ما لم يوافق مدير ثان (أو في موقع مع مدير واحد، مالكه)."
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5518,6 +5545,10 @@ msgstr "آريان هايلاندز"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "كمؤلف قمت بتحرير المشروع يعيش معهم وكل شخص تطبعه يقيدك بمجرد نشر الوظيفة، أي شخص يمكنه أن يرى من كتب ما. ويقرر أصحاب البلاغ معاً ما يلي:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "طلب مراجعة"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5817,14 +5848,6 @@ msgstr "البلقان"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "التعليق"
-
-#, machine
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "حظر التهرب مالك هذا التعليق تم حظره على حساب آخر."
-
-#, machine
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "حظر التهرب مالك هذه الورقة تم حظره على حساب آخر."
 
 #, machine
 msgctxt "guildmaster action"
@@ -7098,6 +7121,10 @@ msgstr "التعليقات المخبأة أو المزالة"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "تعليقات على موقعك المجهول مجهول"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "تعليقات على موقعك المجهول مجهولة وإذا حظرت الإعلانات أو علقت الحساب لأحدها، يجوز للرقابة أن تسمي حسابها."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "التعليقات:"
@@ -7812,9 +7839,9 @@ msgstr "يحذف هذا الدور؟ الجميع يفقده، والقنوات 
 msgid "Delete your %(site)s account"
 msgstr "يحذف حسابك %(site)s"
 
-#, machine
-msgid "Delete your posts and comments"
-msgstr "تحذف وظائفكم وتعليقاتكم"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "تحذف وظائفكم وتعليقاتكم (ما يحذف أكثر من خمس دقائق بعد أن تم كتابته للإقامة في اللوغ العام، بوصفه مجهول الهوية)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -8449,10 +8476,6 @@ msgid "Engagement"
 msgstr "المشاركة"
 
 #, machine
-msgid "Engaging in illegal activity"
-msgstr "المشاركة في النشاط غير المشروع"
-
-#, machine
 msgid "Engaging in or planning unlawful activity"
 msgstr "المشاركة في النشاط غير المشروع أو التخطيط له"
 
@@ -8555,10 +8578,6 @@ msgstr "Eta Aquariids meteor shower"
 #, machine, plain1
 msgid "Ethics"
 msgstr "الأخلاقيات"
-
-#, machine
-msgid "Evading a site-wide ban"
-msgstr "رفع الحظر على نطاق الموقع"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -8684,6 +8703,10 @@ msgstr "الجميع يرى تغيرات بعضهم البعض كما يطبعو
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "كلّ شيءٍ من حساباتكِ و حساباتكِ، أوّلًا."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "كل شيء كتبته يبقى على الموقع كمجهول ولا يمكن إعادته احذفي ما تريدينه أو احذفي اسمك منه أولاً."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -10644,9 +10667,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "مدير إدارة دعوة"
 
-#, machine
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "دعوة الناس للمشاركة في هذا المنصب. بمجرد قبولهم يحملون اسمهم ويدرجون في ملفهم أنت ما زِلتَ تَتحرّرُ، إحذفْ وإرساله. ليس لمناصب مجهولة."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "دعوة الناس للمشاركة في هذا المنصب. وبمجرد قبولهم يحملون اسمهم ويدرجون في ملفهم الشخصي؛ أما في مكان مجهول فإن ائتمانهم مجهول الهوية أيضا. أنت ما زِلتَ تَتحرّرُ، إحذفْ وإرساله."
 
 #, machine
 msgid "Invite them to speak first."
@@ -14474,8 +14497,8 @@ msgid "Post anonymously"
 msgstr "النشر كمجهول"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "وبعد الكشف عن الهوية: يرى أعضاء آخرون أن كل كاتب هو مجهول العدد. الأدمان يمكنهم دائماً معرفة من هم لا يمكن تغييره بمجرد نشر الوظيفة."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "وبعد الكشف عن الهوية: يرى أعضاء آخرون أن كل كاتب هو مجهول العدد. يمكن للأدمان دائماً أن يرى من هم، وحظر المدير يمكن أن يكون اسم اللوغ حساب لصنف مجهول. لا يمكن تغييره بمجرد نشر الوظيفة."
 
 #, machine
 msgid "Post automatically from your own account"
@@ -17301,10 +17324,6 @@ msgid "Spam"
 msgstr "Spam"
 
 #, machine
-msgid "Spamming."
-msgstr "تألق."
-
-#, machine
 msgctxt "button"
 msgid "Speak"
 msgstr "تكلم"
@@ -18460,7 +18479,7 @@ msgid "The auto-moderation was saved."
 msgstr "تم إنقاذ الحركة."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -18492,10 +18511,6 @@ msgstr "The bot @%(name)s you proposed was not approved. The admins said: %(note
 #, machine
 msgid "The bot already reads that feed."
 msgstr "الجرعة تقرأ بالفعل ذلك الطعام."
-
-#, machine
-msgid "The bot was suspended for posting too much similar content."
-msgstr "The bot was suspended for posting too much similar content."
 
 #, machine, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -18573,6 +18588,10 @@ msgstr "المشروع يغير الوظيفة لا يظهر بعد."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "النسخ السابقة لم تظهر بينما هذا مخبأ."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "النسخ السابقة لم تظهر: تم حذفها وتم تطهير نصها."
 
 #, machine, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -18708,6 +18727,10 @@ msgstr "الغيلد لديه بالفعل دور بهذا الاسم."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "قواعد الغيلد الخاصة لما هو مكتوب في قنواتها، على قمة مرشح كلمة الموقع. المرشدون المذنبون لا يحتجزون أبداً الرسالة التي تكسر واحدة ترفض لسبب قصير لا يقول أي كلمة."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "التمسك على حسابك تم رفعه يمكنك أن تتقدم وتصوت مرة أخرى."
 
 #, machine
 msgid "The host stays on stage."
@@ -19242,9 +19265,9 @@ msgstr "إنهم ليسوا مذعوبين هنا."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "يمكنهم شراء وصرف العملات، بقشيش، شراء Premium\"وينضمون أو يديرون دوائر مدفوعة الأجر."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "يمكنهم أن يستضيفوا وينضموا للفضاء ويديروا خيوط حية المكالمات الصوتية في الفضاء تحتاج أيضاً لـ (تشات) أن يعمل."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "يمكنهم الانضمام والاستماع للفضاء لا يمكنهم أن يستضيفوا واحداً أو منصباً واحداً، حساب الطفل يقرأ فقط. المكالمات الصوتية في الفضاء تحتاج أيضاً لـ (تشات) أن يعمل."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -19459,6 +19482,10 @@ msgstr "هذا المضرب لا يعمل."
 #, machine
 msgid "This bot's owner can't run it right now."
 msgstr "هذا المالك لا يستطيع تشغيله الآن."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "هذا المالك لا يستطيع تشغيله بينما حسابهم على الانتظار."
 
 msgid "This browser was signed out. Sign in again to carry on."
 msgstr "تم تسجيل خروج هذا المتصفح. سجّل الدخول مرة أخرى للمتابعة."
@@ -23403,18 +23430,15 @@ msgstr ""
 "\n"
 "%(message)s"
 
-#, machine, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"حسابك %(site)s تم تعليقه بشكل دائم للأسباب التالية:\n"
-"\n"
-"حظر التهرب"
-
 #, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, machine, python-format
@@ -23430,16 +23454,6 @@ msgstr ""
 "حسابك %(site)s عُلقت لـ %(days)s أيام للسبب التالي:\n"
 "\n"
 "%(message)s"
-
-#, machine, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"حسابك %(site)s تم تعليقه لمدة يوم واحد للسبب التالي:\n"
-"\n"
-"الكثير من المسامير!"
 
 #, machine, python-format
 msgid "Your %(site)s password"
@@ -23569,6 +23583,10 @@ msgstr "حسابك حساس."
 msgid "Your account is no longer marked sensitive."
 msgstr "حسابك لم يعد حساساً."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "حسابك متوقف"
+
 #, machine
 msgid "Your account is suspended."
 msgstr "حسابك معلق."
@@ -23593,9 +23611,8 @@ msgstr ""
 "\n"
 "لتخطي الانتظار، إضافة والتحقق من عنوان بريد إلكتروني في [Settings ). Security](/settings/security)."
 
-#, machine, plain1
 msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "حسابك الخاص الآن لم يعد لديه قفل الطفل ووالدك أو الوصي لم يعد يستطيع رؤيته اختاروا كلمة السر: تغييرها في [Settings . Security] (/settings/security)، أو أنها لا تزال التوقيع في مثلك."
+msgstr ""
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -23674,6 +23691,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -23939,17 +23983,14 @@ msgstr "أبوك أو وصيّك قد طُلب منه الإفراج عن حسا
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "أبوك أو الوصي أطفأ هذا من أجل حسابك."
 
-#, machine, plain1
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
-msgstr "أبوك أو الوصي جعل هذا الحساب لك ويمكنهم أن يروا ما تفعلونه في الموقع (مناصبكم، تعليقاتكم، أصواتكم، علامات الكتاب، تليها، أحواضكم، الذين تتحدثون معهم، وأن حسابكم قد أُبلغ عنه وعلاماتكم الأخيرة؛ والموقع لا يُظهر لهم أبدا ما تقوله دردشتكم) ويختارون ما هي الملامح. يمكنك أن ترى من في [Settings ). Content] (/settings/content). اختاروا كلمة السر: تغييرها في [Settings . Security] ( /settings/security]) بحيث لا تعرف إلا ذلك، لأن أي شخص يعرف أنه يمكن أن يوقع في مثلك ويقرأ دردشاتك."
+msgstr ""
 
-#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "أبوك أو وصيّك وضعوا كلمة سر جديدة لحسابك وتم فصلك التوقيع مع كلمة السر الجديدة، ثم تغييره في [Settings . Security] (/settings/security]) حتى تعرفه فقط."
+msgstr ""
 
-#, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "أبوك أو وصيّك توقف عن إدارة حسابك يبقي الطفل مغلقا حتى تؤكد سنك في ستينغز مضمون. اختاروا كلمة السر: تغييرها في [Settings . Security] (/settings/security)، أو أنها لا تزال التوقيع في مثلك."
+msgstr ""
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -24214,9 +24255,8 @@ msgstr "[Submit a DMCA counter-request](/help/counter_dmca)"
 msgid "[Submit a DMCA takedown request](/help/dmca)"
 msgstr ""
 
-#, machine
 msgid "[Submit a Legal Request](/legal)"
-msgstr "[مقدمة طلب قانوني] (/legal)"
+msgstr ""
 
 msgid "[Terms of service](/help/terms)"
 msgstr ""
@@ -24458,10 +24498,6 @@ msgstr "طلب %(name)s"
 #, machine
 msgid "avatar"
 msgstr "أفاتار"
-
-#, machine
-msgid "ban evasion"
-msgstr "حظر التهرب"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -24974,6 +25010,12 @@ msgstr "يُقال للجميع قبل أن ينضموا"
 msgid "kicked post %(target)s"
 msgstr "ركلة البريد %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "رفع الحجر الصحي ووضع شيك آلي"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -25204,6 +25246,12 @@ msgstr "نُشرت %(name)s"
 #, machine
 msgid "published, with unpublished changes"
 msgstr "نُشرت تغييرات غير منشورة"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "وضع حساب في الحجر الصحي"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -25686,9 +25734,9 @@ msgstr "لقد تم فصلك."
 msgid "you're invited to write it"
 msgstr "أنت مدعو لكتابته"
 
-#, machine
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "حسابك لا يمكن أن ينشره في تلك اللحظة (تعليق، أو قواعد الغيمة تم إرساله إليها). افتحه واضغط على البريد لمعرفة ماذا."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "حسابك لا يمكن أن ينشره في تلك اللحظة (هو على الانتظار أو تعليق، أو قواعد الغيمة تم إرساله إلى). افتحه واضغط على البريد لمعرفة ماذا."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

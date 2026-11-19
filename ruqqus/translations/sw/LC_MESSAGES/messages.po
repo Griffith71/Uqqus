@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sw\n"
@@ -1497,6 +1497,10 @@ msgstr "%(who)s Bonyeza moderator @%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s Post ya kwanza %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s kuondolewa karantini ukaguzi moja kwa moja alikuwa kuweka"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s kuondoa marufuku ya %(name)s"
@@ -1560,6 +1564,10 @@ msgstr "%(who)s Tuma ujumbe kwenye channel"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s Ujumbe wa maandishi %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s Kuweka akaunti katika karantini"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2717,6 +2725,10 @@ msgstr "Nafasi haiwezi kuanza katika siku za nyuma."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Nafasi kwa ajili yake <span class=\"text-muted font-weight-normal\">(Elekezwa kutoka Jamii:Mkoa wa angani)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Nafasi ni kumaliza kutoka ukurasa wake mwenyewe; si kufutwa kama post."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Nafasi ni kuishi kwa muda: bodi, thread kuishi au wito. Hii ni kwa ajili ya kucheza, au kwa ajili ya mwisho."
@@ -2966,6 +2978,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Nakala ya hii kama ilivyokuwa wakati ilifichwa, kuondolewa, kufutwa au kutegemewa kwa uamuzi. Mwandishi wake tu, wasimamizi wa kikundi kilichoamua na watendaji wa tovuti wanaweza kuifungua hapa. Nakala nyingi zinaondolewa baada ya muda; nakala ya kitu ambacho mwandishi wake alifuta anakaa katika Ingia ya umma."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3360,6 +3376,10 @@ msgstr "Makala ambayo imekuwa imefungwa haiwezi kuwa na jina lake kuondolewa, kw
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Chapisho ambalo sio la umma haliwezi kutumia kupakia picha hii: faili zake zinaweza kufunguliwa na mtu yeyote aliye na anwani. Ongeza picha kutoka kwenye hifadhi yako iliyounganishwa badala yake (Settings > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Barua yenye sifa isiyojulikana haiwezi kufutwa."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Makala na waandishi wa ushirikiano haiwezi kuhamishwa kwa duru. Kusonga chapisho la umma kwa duru inachukua nakala uliyowasilisha; nakala za watu wengine waliopelekwa kukaa katika vikundi vyao."
@@ -3385,10 +3405,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Ujumbe wa maandishi unaweza kuwa %(count)s Tabia (Kichina, Kijapani na Kikorea wahusika na emoji kuhesabu kama 2)."
 msgstr[1] "Ujumbe wa maandishi unaweza kuwa %(count)s Wahusika (Kichina, Kijapani na Kikorea wahusika na emoji kuhesabu kama 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Nakala ya kibinafsi ya hii kama ilivyokuwa wakati ilifichwa, kuondolewa, kufutwa au kutegemewa kwa uamuzi. Ni mwandishi wake tu, wasimamizi wa kikundi kilichoamua na watendaji wa tovuti wanaweza kuifungua, na haihifadhiwa milele."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4097,10 +4113,6 @@ msgstr "Tahadhari na vichwa vya habari hutoka kwa chanzo kilichotajwa kwenye kil
 msgid "Algorithm"
 msgstr "Algorithm ya algorithm"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algorithm ya kuhifadhi."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4346,6 +4358,29 @@ msgstr "Mwandishi ambaye hajawahi kufanya kazi kwenye tovuti %(time)s Haikuhesab
 msgid "An automated post can't have its name removed."
 msgstr "Jina la mtumiaji haliwezi kuondolewa."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Kuangalia moja kwa moja kuweka akaunti kwenye kushikilia."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Kuangalia moja kwa moja kuweka akaunti yako kwenye kushikilia, hivyo huwezi kufanya hivyo kwa sasa. Mmoja wa wafanyakazi akiangalia jambo hilo. Ikiwa unadhani ukaguzi ulikuwa sahihi, unaweza kuomba ukaguzi."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Kuangalia moja kwa moja kuweka akaunti yako juu ya kushikilia."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Kituo kilichosimbwa hakiwezi kuuliza sheria zake kukubalika: tovuti haiwezi kuangalia nani aliandika."
@@ -4467,8 +4502,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Asiyejulikana #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Wasiojulikana hukaa bila kujulikana isipokuwa msimamizi wa pili anaidhinisha, na kisha Ingia jina la akaunti yako kando yao."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Wasiojulikana hukaa bila kujulikana isipokuwa msimamizi wa pili anaidhinisha (au, kwenye tovuti na msimamizi mmoja, mmiliki wake), na kisha Ingia majina ya akaunti yako kando yao."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4712,6 +4747,10 @@ msgstr "Visiwa vya Aryan"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kama mwandishi wewe hariri rasimu kuishi nao, na kila tabia wewe aina ni sifa kwa wewe. Mara baada ya kuchapishwa, mtu yeyote ambaye anaweza kuona ni nani aliandika nini. Waandishi wanaamua kwa pamoja:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Naomba uchunguzi"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4979,14 +5018,6 @@ msgstr "Balkani za Balkani"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Maoni ya Ban"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Kuzuia maambukizi. Mmiliki wa akaunti hiyo amepigwa marufuku katika akaunti nyingine."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Kuzuia maambukizi. Mmiliki wa akaunti hiyo amepigwa marufuku katika akaunti nyingine."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6255,6 +6286,10 @@ msgstr "Maoni yamehifadhiwa au yameondolewa"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Maoni kwenye post yako anonymous"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Maoni juu ya post yako anonymous ni anonymous. Ikiwa msimamizi anazuia au kusimamisha akaunti moja, Ingia inaweza kutaja akaunti hiyo."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Maoni:"
@@ -6961,9 +6996,9 @@ msgstr "Kuacha jukumu hili? Kila mtu anapoteza, na njia zinasahau kile kilichoru
 msgid "Delete your %(site)s account"
 msgstr "Kuondoa yako %(site)s Akaunti ya akaunti"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Unda machapisho yako na maoni"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Futa machapisho yako na maoni (kinachofutwa zaidi ya dakika tano baada ya kuandikwa hukaa kwenye Ingia ya umma, kama Anonymous)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7588,10 +7623,6 @@ msgid "Engagement"
 msgstr "Ushirikiano wa"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Kushiriki katika shughuli haramu"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Kushiriki au kupanga shughuli zisizo halali"
 
@@ -7694,10 +7725,6 @@ msgstr "Hali ya hewa ya Aquariids"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Maadili ya Maadili"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Kuzuia marufuku ya tovuti nzima"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7815,6 +7842,10 @@ msgstr "Kila mtu anaona mabadiliko ya kila mmoja kama wao ni aina, na kila tabia
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kila kitu kutoka kwa makundi yako na akaunti, mpya kwanza."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Kila kitu kilichoandikwa kinabaki kwenye tovuti kama Anonymous na haiwezi kuchukuliwa tena. Ingiza jina la kikundi, au bofya kifungo."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9738,9 +9769,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Kuwa moderator"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Wahimize watu kushiriki makala hii. Mara baada ya kukubali hubeba jina lake na limeorodheshwa kwenye wasifu wao. Bado unabadilisha, kufuta na kuendeleza. Sio kwa ajili ya matangazo ya moja kwa moja."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Wahimize watu kushiriki makala hii. Mara baada ya kukubali hubeba jina lao na limeorodheshwa kwenye wasifu wao; kwenye chapisho lisilojulikana mikopo yao haijulikani pia. Bado unabadilisha, kufuta na kuendeleza."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13448,8 +13479,8 @@ msgid "Post anonymously"
 msgstr "Chapisha bila kujulikana"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Post anonymously: wanachama wengine kuona kila mwandishi kama Anonymous na idadi. Viongozi wanaweza daima kuona ni nani. Haiwezi kubadilishwa mara baada ya kuchapishwa."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Post anonymously: wanachama wengine kuona kila mwandishi kama Anonymous na idadi. Wasimamizi wanaweza kuona daima wao ni nani, na marufuku ya msimamizi inaweza kuwa na Jina la Ingia akaunti kwa kitu kisichojulikana kinachoelezea. Haiwezi kubadilishwa mara baada ya kuchapishwa."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16204,10 +16235,6 @@ msgid "Spam"
 msgstr "Ya Spam"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Ya Spamming."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "(Sauti ya Volta)"
@@ -17359,7 +17386,7 @@ msgid "The auto-moderation was saved."
 msgstr "Usafiri wa treni uliokolewa."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17387,10 +17414,6 @@ msgstr "ya bot @%(name)s Mapendekezo yako hayakukubaliwa. Viongozi hao walisema 
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Mti huu tayari unalisha chakula."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Bot ilisimamishwa kwa kuchapisha maudhui mengi sawa."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17460,6 +17483,10 @@ msgstr "Mabadiliko ya katiba bado hayajaonekana."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Matoleo ya awali hayaonyeshwa wakati hii imefichwa."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Matoleo ya awali hayajaonyeshwa: hii ilifutwa na maandishi yake yamefutwa."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17591,6 +17618,10 @@ msgstr "Kwa sasa chama hicho kimekuwa na jina hilo."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Sheria za chama mwenyewe kwa kile kilichoandikwa katika vituo vyake, juu ya kichujio cha neno la tovuti. Viongozi wa CCM kamwe hawakubaliani nao. Ujumbe unaovunja mmoja unakataliwa kwa sababu fupi ambayo kamwe haisemi neno gani."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Akaunti yako imefutwa. Unaweza kuandika, kutoa maoni na kupiga kura tena."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18093,9 +18124,9 @@ msgstr "Hawana aibu hapa."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Unaweza kununua na kutumia sarafu, ncha, kununua Premium kujiunga au kujiunga na vyama vya ushirika."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Wanaweza kuhudhuria na kujiunga na nafasi na kukimbia nyuzi za kuishi. Sauti wito katika nafasi pia haja ya kuzungumza."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Wanaweza kushiriki na kusikiliza sauti za watu. Haiwezi kuhudhuria moja au chapisho katika moja: akaunti ya mtoto inasoma tu. Sauti wito katika nafasi pia haja ya kuzungumza."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18307,6 +18338,10 @@ msgstr "Lakini bot hii haifanyi kazi."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Mmiliki wa chombo hicho kwa sasa hawezi kufanya hivyo."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Mmiliki wa bot hii hawezi kuendesha wakati akaunti yake iko."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -22091,18 +22126,15 @@ msgstr ""
 "\n"
 ">> %(message)s"
 
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"yako %(site)s Akaunti imesimamishwa kabisa kwa sababu zifuatazo:\n"
-"\n"
-"· Kuzuia ukwepaji wa"
-
 #, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -22118,16 +22150,6 @@ msgstr ""
 "yako %(site)s Akaunti hiyo imesimamishwa kwa %(days)s Siku kwa sababu zifuatazo:\n"
 "\n"
 ">> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"yako %(site)s Akaunti imesimamishwa kwa siku moja kwa sababu zifuatazo:\n"
-"\n"
-"Kuna mengi ya spam!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22257,6 +22279,10 @@ msgstr "Akaunti yako ni nyeti sana."
 msgid "Your account is no longer marked sensitive."
 msgstr "Akaunti yako sio nyeti tena."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Akaunti yako itahifadhiwa"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Akaunti yako itaondolewa."
@@ -22360,6 +22386,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -23126,10 +23179,6 @@ msgstr "Alipoulizwa na %(name)s"
 msgid "avatar"
 msgstr "avatar"
 
-#, machine, plain1
-msgid "ban evasion"
-msgstr "kuzuia"
-
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "banned %(target)s"
@@ -23619,6 +23668,12 @@ msgstr ""
 msgid "kicked post %(target)s"
 msgstr "ukurasa wa kwanza %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "kuondolewa karantini ya moja kwa moja imewekwa"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23849,6 +23904,12 @@ msgstr "Imechapishwa na %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "imechapishwa, na mabadiliko yasiyochapishwa"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "kuweka akaunti katika karantini"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24315,9 +24376,9 @@ msgstr "wewe ni kuchanganyikiwa."
 msgid "you're invited to write it"
 msgstr "unakaribishwa kuandika"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "akaunti yako haikuweza kuichapisha wakati huo (kusimamishwa, au sheria za kikundi kilichopelekwa). Nenda kwenye magazeti na magazeti kuona nini."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "akaunti yako haikuweza kuichapisha wakati huo (inashikilia au kusimamishwa, au sheria za kikundi kilichopelekwa). Nenda kwenye magazeti na magazeti kuona nini."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

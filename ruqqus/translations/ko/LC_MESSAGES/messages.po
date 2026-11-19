@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, machine, python-format
+#, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,14 +30,6 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
-"\n"
-"·%(admin)s 다음 프로필 배지를 주셨습니다:\n"
-"\n"
-"\n"
-"·%(path)s·\n"
-"\n"
-"\n"
-"%(badge)s\n"
 
 #, machine, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -1382,6 +1374,10 @@ msgstr "%(who)s 초대 길드 모더레이터 @%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s 킥 포스트 %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s 자동 검사가 배치 한 quarantine을 해제"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s %(name)s에서 금지를 해제"
@@ -1445,6 +1441,10 @@ msgstr "%(who)s 채널에서 메시지를 핀으로"
 #, machine, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s 핀 게시물 %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s quarantine에 계정을 넣어"
 
 #, machine, python-format
 msgid "%(who)s reinstated comment"
@@ -2593,6 +2593,10 @@ msgstr "우주는 과거에 시작할 수 없습니다."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "그것을 위한 공간 <span class=\"text-muted font-weight-normal\">(선택: 공간의 포스트 연결)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "스페이스는 자체 페이지에서 종료됩니다. 게시물처럼 삭제되지 않습니다."
+
 #, machine
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "우주는 동안 살고있다 : 보드, 라이브 스레드 또는 전화. 재생을 위해 보관되거나 종료 될 때 사라집니다."
@@ -2826,6 +2830,10 @@ msgstr "커뮤니티 참고문헌에 추가되었습니다: [view it](%(link)s)"
 #, machine, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr "커뮤니티에 대해 물린 게시물에 추가되었습니다 : [view it](%(link)s)"
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "그것은 숨겨져있을 때이 사본, 삭제, 삭제 또는 결정에 의존. 그 저자만 결정하는 길드의 길드 모더레이터와 사이트 관리자는 여기에 열 수 있습니다. 대부분의 사본은 잠시 후 정리됩니다. 저자가 공개 로그에서 삭제 된 것을 복사합니다."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3193,6 +3201,10 @@ msgstr "동전이 당신에게 갔다 때문에 tipped이 이름을 제거 할 �
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "공개되지 않은 게시물은이 사진 업로드를 사용할 수 없습니다 : 그 파일은 주소로 누구나 열 수 있습니다. 대신 링크 된 저장에서 사진을 추가하십시오 (설정 > 미디어)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "익명의 크레딧으로 게시물은 위조 할 수 없습니다."
+
 #, machine
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Co-authors와 포스트는 원형으로 이동할 수 없습니다. 서클에 공개 게시물을 이동하면 사본을 전달합니다. 다른 사람들이 자신의 길드에 머물기를 복사합니다."
@@ -3217,10 +3229,6 @@ msgstr ""
 msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "게시물의 텍스트는 %(count)s 문자 (중국, 일본어 및 한국어 문자 및 이모티콘 수 2) 수 있습니다."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "그것은 숨겨져있을 때이 개인 사본, 삭제, 삭제 또는 결정에 의존. 그 저자만 결정하는 길드의 길드 모더레이터와 사이트의 관리자가 열 수 있습니다, 그리고 그것은 영원히 유지되지 않습니다."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -3918,10 +3926,6 @@ msgstr "경고와 헤드 라인은 각 라인에 이름을 붙인 소스에서 �
 msgid "Algorithm"
 msgstr "Algorithm, 그리스"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algorithm 저장."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4166,6 +4170,29 @@ msgstr "%(time)s에 대한 사이트에서 활동하지 않은 저자 계산되�
 msgid "An automated post can't have its name removed."
 msgstr "자동화된 포스트는 그 이름을 제거할 수 없습니다."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "자동 체크는 파악에 계정을 뒀습니다."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "자동 검사는 파악에 당신의 계정을 뒀습니다, 그래서 당신은 지금 이것을 할 수 없습니다. 직원의 구성원은 그것을 볼 것입니다. 체크가 잘못되었는지, 리뷰를 요청할 수 있습니다."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "자동 검사는 파악에 당신의 계정을 뒀습니다."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "암호화 된 채널은 허용 될 규칙을 요청할 수 없습니다 : 사이트는 누가 썼을 수 없습니다."
@@ -4283,8 +4310,8 @@ msgid "Anonymous #%(num)s"
 msgstr "익명 #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "익명의 하나는 두 번째 관리자가 승인하지 않는 한 익명 유지, 그리고 그 옆에 로그인 이름."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "익명의 하나는 두 번째 관리자가 승인하지 않는 한 익명 유지 (또는, 하나의 관리자와 사이트에, 그것의 소유자), 그리고 그 옆에 로그인 이름."
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4527,6 +4554,10 @@ msgstr "Aryan 고원"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "작가로서 당신은 그와 함께 초안을 편집하고, 당신이 유형이 당신에게 적립되는 모든 문자. 게시물이 게시되면 누구도 볼 수 있는지 볼 수 있습니다. 저자는 함께 결정한다 :"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "자주 묻는 질문"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4786,14 +4817,6 @@ msgstr "발코니"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "반 댓글"
-
-#, machine
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "반 증발. 이 댓글의 소유자는 다른 계정에 금지되었다."
-
-#, machine
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "반 증발. 이 제출의 소유자는 다른 계정에 금지되었다."
 
 #, machine
 msgctxt "guildmaster action"
@@ -6059,6 +6082,10 @@ msgstr "댓글 숨겨진 또는 제거"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "댓글 익명 게시물 익명"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "익명 게시물에 대한 의견은 익명입니다. 관리자가 금지되거나 계정을 중단하면 로그인이 계정에 로그인 할 수 있습니다."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "댓글:"
@@ -6763,9 +6790,9 @@ msgstr "이 역할 삭제? 모두가 그것을 잃고, 채널은 허용하거나
 msgid "Delete your %(site)s account"
 msgstr "%(site)s 계정 삭제"
 
-#, machine
-msgid "Delete your posts and comments"
-msgstr "게시물 및 의견 삭제"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "게시물 및 의견 삭제 (알 수없는 경우 5 분 이상 삭제 된 경우 공개 로그에 머물고 익명으로)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7388,10 +7415,6 @@ msgid "Engagement"
 msgstr "회사연혁"
 
 #, machine
-msgid "Engaging in illegal activity"
-msgstr "불법 활동에 참여"
-
-#, machine
 msgid "Engaging in or planning unlawful activity"
 msgstr "무법한 활동 계획"
 
@@ -7494,10 +7517,6 @@ msgstr "Eta Aquariids meteor 샤워"
 #, machine, plain1
 msgid "Ethics"
 msgstr "윤리경영"
-
-#, machine
-msgid "Evading a site-wide ban"
-msgstr "사이트 전체 금지"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7613,6 +7632,10 @@ msgstr "모두가 서로의 변화가 그들이 유형으로 볼 수 있으며, 
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "당신의 길드 및 계정에서 모두, 최신."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "당신은 Anonymous로 사이트에 머물고 돌아갈 수 없습니다. 원하는 것을 삭제하거나, 그 이름을 제거, 첫 번째 (역사 > 관리)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9526,9 +9549,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Invite 모뎀"
 
-#, machine
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "이 게시물을 공유하는 사람들. 그들이 그 이름을 들고 그들의 프로필에 나열되면. 아직 편집, 삭제 및 전달. 익명 메시지가 없습니다."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "이 게시물을 공유하는 사람들. 일단 그들이 그 이름을 운반 하 고 그들의 프로필에 나열 됩니다.; 익명 게시물 그들의 신용도 익명. 아직 편집, 삭제 및 전달."
 
 #, machine
 msgid "Invite them to speak first."
@@ -13213,8 +13236,8 @@ msgid "Post anonymously"
 msgstr "익명으로 게시"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "익명으로 포스트: 다른 회원은 숫자로 익명으로 모든 저자를 볼 수 있습니다. 관리자는 항상 그들이 누구인지 볼 수 있습니다. 게시물이 게시되면 변경할 수 없습니다."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "익명으로 포스트: 다른 회원은 숫자로 익명으로 모든 저자를 볼 수 있습니다. 관리자는 항상 그들이 누구인지 볼 수 있으며 관리자의 금지는 익명 항목에 대한 계정으로 로그인 할 수 있습니다. 게시물이 게시되면 변경할 수 없습니다."
 
 #, machine
 msgid "Post automatically from your own account"
@@ -15962,10 +15985,6 @@ msgid "Spam"
 msgstr "스낵 바"
 
 #, machine
-msgid "Spamming."
-msgstr "스파밍."
-
-#, machine
 msgctxt "button"
 msgid "Speak"
 msgstr "말"
@@ -17114,7 +17133,7 @@ msgid "The auto-moderation was saved."
 msgstr "자동 등록이 저장되었습니다."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17141,10 +17160,6 @@ msgstr "Bot @%(name)s 제안 된 것은 승인되지 않았습니다. 관리자�
 #, machine
 msgid "The bot already reads that feed."
 msgstr "봇은 이미 피드를 읽습니다."
-
-#, machine
-msgid "The bot was suspended for posting too much similar content."
-msgstr "봇은 너무 많은 유사한 콘텐츠를 게시하기 위해 중단되었습니다."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17212,6 +17227,10 @@ msgstr "초안은 게시물이 아직 표시되지 않습니다."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "이전 버전은 숨겨져 있지 않습니다."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "이전 버전은 표시되지 않았습니다: 이것은 삭제되었고 그 텍스트가 정리되었습니다."
 
 #, machine, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17342,6 +17361,10 @@ msgstr "Guild는 이미 그 이름과 역할을합니다."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Guild의 자신의 규칙에 대한 그의 채널에 기록, 사이트의 단어 필터의 상단에. 길드 모더레이터는 결코 그들을 위해 개최되지 않습니다. 어떤 단어를 말하지 않는 짧은 이유와 방해되는 메시지."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "계정의 보유는 리프트되었습니다. 당신은 포스트, 의견 및 투표를 다시 할 수 있습니다."
 
 #, machine
 msgid "The host stays on stage."
@@ -17836,9 +17859,9 @@ msgstr "그들은 여기에 무서워하지 않습니다."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "그들은 동전, 팁, Premium을 구입하고 가입하거나 유료 원을 실행 할 수 있습니다."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "그들은 공간을 호스팅하고 라이브 스레드를 실행할 수 있습니다. 스페이스에서 음성 통화는 채팅이 필요합니다."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "그들은 공간에 가입하고 듣고 수 있습니다. 그들은 하나 또는 게시물을 호스트 할 수 없습니다 : 어린이 계정 만 읽습니다. 스페이스에서 음성 통화는 채팅이 필요합니다."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18049,6 +18072,10 @@ msgstr "이 봇은 실행되지 않습니다."
 #, machine
 msgid "This bot's owner can't run it right now."
 msgstr "이 봇의 소유자는 지금 그것을 실행할 수 없습니다."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "이 봇의 소유자는 계정이 붙은 동안 실행할 수 없습니다."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -21805,18 +21832,18 @@ msgstr ""
 "· %(message)s"
 
 #, machine, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"%(site)s 계정은 다음과 같은 이유로 영구적으로 중단되었습니다.\n"
-"\n"
-"> 금지"
-
-#, machine, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
 msgstr "%(site)s 계정이 재시작되었습니다. [서비스 기간](/help/terms) 및 [rules and guidelines](/help/rules)에 의해 주의 깊게 검토하고 다시 중단하지 않도록 주의하십시오."
+
+#, machine, plain2, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
+"%(site)s 계정이 재시작되었습니다. [서비스 기간](/help/terms) 및 [rules and guidelines](/help/rules)에 의해 주의 깊게 검토하고 다시 중단하지 않도록 주의하십시오.\n"
+"\n"
+"아직도 보류에, 그래서 그것은 포스트 할 수 없습니다, 코멘트 또는 지금 다른 사람에 행동. 직원의 구성원은 그것을 볼 것입니다."
 
 #, machine, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -21831,16 +21858,6 @@ msgstr ""
 "내 계정 %(site)s 계정이 중단되었습니다. %(days)s 다음 이유를 위한 일:\n"
 "\n"
 "· %(message)s"
-
-#, machine, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"%(site)s 계정은 다음 이유에 대해 1 일 동안 중단되었습니다.\n"
-"\n"
-"> 너무 많은 스팸!"
 
 #, machine, python-format
 msgid "Your %(site)s password"
@@ -21970,6 +21987,10 @@ msgstr "당신의 계정은 민감합니다."
 msgid "Your account is no longer marked sensitive."
 msgstr "귀하의 계정은 더 이상 민감하지 않습니다."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "귀하의 계정은"
+
 #, machine
 msgid "Your account is suspended."
 msgstr "계정이 중단됩니다."
@@ -21994,9 +22015,8 @@ msgstr ""
 "\n"
 "대기를 건너뛰기 위해서는 [Settings > Security](/settings/security)의 이메일 주소를 추가하고 확인합니다."
 
-#, machine, plain1
 msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "당신의 계정은 지금 당신의 것입니다. 그것은 더 이상 아이 자물쇠 및 당신의 부모 또는 보호자는 더 이상 그것을 볼 수 없습니다. 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하거나 여전히 로그인 할 수 있습니다."
+msgstr ""
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -22075,6 +22095,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -22331,17 +22378,15 @@ msgstr "귀하의 부모 또는 보호자는 계정을 공개하도록 요청되
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "당신의 부모 또는 보호자는 당신의 계정에 이 꺼집니다."
 
-#, machine, plain1
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
-msgstr "귀하의 부모 또는 보호자는이 계정을 만들었습니다. 그들은 당신이 사이트에 무엇을 볼 수 있습니다 (당신의 게시물, 댓글, 표, 북마크, 다음과, guilds, 당신은과 채팅, 당신의 계정이보고되고 당신의 최근 로그인; 사이트 결코 당신의 채팅이 말하는 것을 보여줍니다) 그들은 어떤 기능을 선택. [설정 > 내용](/settings/content)에서 볼 수 있습니다. 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하여 당신이 그것을 알고 있기 때문에, 당신이 당신과 채팅을 읽을 때 로그인 할 수 있기 때문에."
+msgstr ""
 
 #, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
 msgstr "당신의 부모 또는 보호자는 당신의 계정에 대한 새로운 암호를 설정하고 당신은 차단되었습니다. 새로운 비밀번호로 로그인하면 [설정 > 보안](/settings/security)에서 변경할 수 있습니다."
 
-#, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "귀하의 부모 또는 보호자는 계정을 관리 중지. 설정에서 나이를 확인 할 때까지 아이 잠금을 유지 > 이름 * 그들은 암호를 선택했습니다 : [설정 > 보안] (/settings/security)에서 변경하거나 여전히 로그인 할 수 있습니다."
+msgstr ""
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22632,9 +22677,8 @@ msgstr "[법적 요구](/legal)"
 msgid "[Terms of service](/help/terms)"
 msgstr "[서비스 약관](/help/terms)"
 
-#, machine
 msgid "[Titles](/help/titles)"
-msgstr "[기타] (/help/titles)"
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "[Your comment](%(item)s) is shown again under the post it is on."
@@ -22864,10 +22908,6 @@ msgstr "에 의해 물었다. %(name)s"
 #, machine
 msgid "avatar"
 msgstr "아바타"
-
-#, machine
-msgid "ban evasion"
-msgstr "금지 사항"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23355,6 +23395,12 @@ msgstr "자신의 저장에서 재생으로 유지; 모두가 참여하기 전�
 msgid "kicked post %(target)s"
 msgstr "킥 포스트 %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "자동 검사가 배치된 quarantine를 들었습니다"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23585,6 +23631,12 @@ msgstr "%(name)s에 의해 게시 됨"
 #, machine
 msgid "published, with unpublished changes"
 msgstr "게시, unpublished 변경 사항"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "quarantine에 있는 계정을 두십시오"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24047,9 +24099,9 @@ msgstr "연결되었습니다."
 msgid "you're invited to write it"
 msgstr "당신은 그것을 쓸 초대"
 
-#, machine
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "계정은 그 순간에 게시 할 수 없습니다 (스펜션, 또는 길드의 규칙은 전달되었습니다). 그것을 열고 게시물을 누릅니다."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "귀하의 계정은 그 순간에 게시 할 수 없습니다 (그는 보유하거나 중단되거나, 또는 길드의 규칙은 전달되었습니다). 그것을 열고 게시물을 누릅니다."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

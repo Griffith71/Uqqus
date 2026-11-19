@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hu\n"
@@ -101,9 +101,9 @@ msgstr "%(site)s Sajtóforrások"
 msgid "%(site)s Signature Verification"
 msgstr "%(site)s Aláírás hitelesítése"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "%(site)s chat supports [markdown formatting](/help/formatting)."
-msgstr "%(site)s chat támogatja [markdown formatting] (/help/formatting)."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "%(site)s chooses to implement only minimal rules. Almost all First-Amendment-protected speech is permitted on %(site)s."
@@ -141,13 +141,16 @@ msgstr "* * Every Automatic post carries the robot mark * *, people who turn on 
 msgid "**Your feeds can't get your account suspended.** When a feed repeats itself, that item simply isn't posted. Your own posts are judged on their own, as before."
 msgstr "* * Your feeds can 't get your account suspended. * * Amikor egy adás ismétli önmagát, az a tétel egyszerűen nem jelenik meg. A saját beosztásaikat saját maguk ítélik meg, mint korábban."
 
-#, machine, plain1
 msgid "**Your own account** can post from feeds too, while you keep using it as yourself: see [below](#own-account)."
-msgstr "* * A saját számlád * * is posztolhat a takarmányokból, miközben továbbra is magadként használod: lásd [alább] (#own-account)."
+msgstr ""
 
 #, machine, plain1
 msgid "**Your server only orders.** Every post it names goes through the same rules as any feed before it is shown: removed posts, private guilds, each viewer's word filter and blocks. A post a viewer may not see is simply left out."
 msgstr "* * A szerver csak parancsokat. * * Minden bejegyzés, amit megnevez, ugyanazokon a szabályokon megy keresztül, mint bármely takarmány, mielőtt megjelenne: eltávolított oszlopok, magáncéhek, minden néző szószűrője és blokkjai. Egy bejegyzés, amit a nézõ nem lát, egyszerűen kimarad."
+
+#, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>Egy automatikus ellenőrzés egy fiókot félre tud tenni. Soha nem tilthatja be.</b> Az oldal ellenőrzi a spam, a linkek blokkok, a spam egy profil, hogy valaki kap kerek tilalmat, és a képek, amelyek megfelelnek a listát. Amikor az egyik kilő, a számlát leteszi (a napló szerint karantén), és a személyzet egy tagja megnézi. A következő egy személy döntése: kiadja a számlát, vagy egy admin tiltja, okkal, szabály és fellebbezés, a fent leírtak szerint."
 
 #, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
@@ -158,8 +161,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>Névtelen #3.</b> Egy menetben mindenkinek, aki anonim ott, van egy száma, abban a sorrendben, hogy lett anonim ott (amikor kifüggesztett vagy megjegyzést névtelenül, vagy ha egy törlés, \"Távolítsa el a nevem\" vagy bezárja a fiókját tette ezt). Ez ugyanaz a szám egy poszton és annak a személynek az anonim megjegyzésein, minden más menetben, és ez marad, ha egy fiókot törölnek. Elmondja az embereknek, hogy kik ők."
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>Tiltja, hogy idézze, amit valaki írt.</b> Amikor egy admin tilt vagy felfüggeszti a számlát, hivatkozhat a hozzászólásokat és megjegyzéseket, amelyek indokolják azt, még azok írt névtelenül. Amint egy második admin beleegyezik, a napló megnevezi a fiókot az említett tételek (a sor minden egyes, és a tilalom sor), így bárki ellenőrizheti a tilalom volt tisztességes. A tárgyak névtelenek maradnak mindenhol máshol az oldalon, semmi sem nevez nélkül második admin, és visszafordítja a tilalmat kiveszi a nevét."
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>Felülvizsgálatot kérek.</b> Az értesítésnek, amit küldtek, van egy <b>Felülvizsgálat kérése</b> link, amely megnyitja / fellebbezés / karantén (alá kell írni). Egyszer kérhet minden egyes tartást, akár 500 karakterrel, és a honlap administrs dönt, soha a csekket, hogy tartott téged. Ha elfogadják, a raktér feloldódik, egy új sor a naplóból azt mondja, és azt mondják, ha nem, akkor azt is. Ha egy admin később megtiltja a számlát, ez egy külön határozat, saját indokkal, uralkodással és fellebbezéssel, és mi van a fent említett tilalmak, amelyek idézik anonim pozíciók vonatkozik rá. A hold soha nem nevez meg egy fiókot, amit névtelenül írt."
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>Tiltja, hogy idézze, amit valaki írt.</b> Amikor egy admin tilt vagy felfüggeszti a számlát, hivatkozhat a hozzászólásokat és megjegyzéseket, amelyek indokolják azt, még azok írt névtelenül. Amint egy második admin egyetért (vagy, egy oldalon egyetlen adminisztrátorral, annak tulajdonosával), a napló megnevezi a fiókot az említett tételek (a sor az egyes, és a tilalom sor), így bárki ellenőrizheti a tilalom volt tisztességes. A tételek névtelenek maradnak mindenhol máshol az oldalon, semmi sem nevez nélkül a jóváhagyás, és ha a nevét marad: ha a tilalom később fordított, vagy a felfüggesztés egyszerűen csak fut ki, a napló azt is mutatja, és megtartja a nevet, így egy tilalom, hogy rosszul találtak, mint ilyen."
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +201,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>Mérsékelt</b>: posta vagy megjegyzés elrejtve vagy eltávolítva, helyreállítva vagy elrejtve egy verzióban. Mindegyikre: ki (egy céhmoderátor név szerint; az oldal adminja: \"Site admin\", soha nem név szerint), amikor, hol, melyik szabály, és az indoklás rá van írva. Soha nem mutatja a rejtett dolgok címét vagy szövegét."
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>Senki másnak nem mondják el.</b> Nincs banner a profilján, és nincs olyan oldal, ami megnevez egy függőben lévő fiókot. A számlanyilatkozatot általános indoklással (és a szabály, ahol van ilyen) ellátott hirdetmény, valamint a felülvizsgálat kérelmezésére szolgáló link kíséri."
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>Csak valaki emelhet fogást.</b> Nincs idő, és nem ellenőrzi az e-mail címet: egy admin kiadja a személyzeti sorban, vagy elfogadja a felülvizsgálati kérelmet. A \"hold the sign- up check puts on a brand- new account is different: recommending an email address lifts that one, unless an authorised check has goed on the account since."
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>Másokkal írt állások.</b> Minden szerző hitele önmagában is névtelen lehet: amikor a bejegyzés az elejétől kezdve névtelen, amikor a szerző úgy dönt, hogy \"Távolítsa el a nevem\" a hitelét, vagy amikor törli a számláját. Csak ez a hitel lesz \"Anonymous #N\"; a többi szerző neve marad. Az injekciók mindig látják, hogy kié."
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>Távolítsa el a nevem.</b> A posta vagy komment marad, ahol van, a nevét levette, és hagyja a profil. Nem lehet visszavonni, és nem ajánlják fel egy kör számára készített posztra, egy megtippelt posztra, vagy egy másokkal írt posztra."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>Távolítsa el a nevem.</b> A posta vagy komment marad, ahol van, a nevét levette, és hagyja a profil. Nem lehet visszacsinálni, és nem ajánlják fel egy kör vagy egy tipp posztra. Egy másokkal írt poszton csak a te hiteledet veszi le."
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -218,8 +233,20 @@ msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, t
 msgstr "<b>Próbálom kideríteni, ki áll egy névtelen számla mögött.</b> Feltételezni, tesztelni vagy összehasonlítani a számlákat, hogy leleplezzenek valakit, aki névtelen, igazságtalan leleplezés, és ez tiltáshoz vezethet. Az oldal láthatja, ha a guild moderator cselekszik egy számla száma és neve szerint egyaránt, és a személyzet azt mondják, így tudnak keresni."
 
 #, machine, plain2
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr "<b>Mire képes egy vezetett számla.</b> Elolvassa az oldalt, megváltoztatja saját beállításokat és profilt, törli, amit írt, könyvjelző, nem követi, hagyja cilds és küld visszajelzést. Nem tud posztolni, kommentálni, szerkeszteni, szavazni, követni valakit, belépni a céhbe, előre, áttelepíteni, tippelni, jelenteni, chat-et vagy hívásokat használni, csatornát, wiki-t vagy eseményt írni, teret, kört, rendezett takarmányt vagy történetet készíteni, vagy a guild moderátor erejét használni. A markolat maga semmit sem vesz le."
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>Amit egy automatikus csekk eltávolít, az nyilvános.</b> Amikor egy automatikus ellenőrzés eltávolít egy bejegyzést vagy megjegyzést, a Log azt mutatja a Mérsékelt lapon, mint bármilyen eltávolítás: a posta vagy komment az ID, a szabály és a generikus ok, soha nem a cím vagy a szöveg, és soha, aki írta, még akkor is, ha névtelen. Az eltávolítás önmagában nem küld külön értesítést: a személy volt, hogy megtalálja a <b>A határozat fellebbezése</b> link az eltávolított posta vagy megjegyzés, és a honlap administrs dönt a fellebbezés."
+
+#, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>Mi soha nem jelenik meg:</b> a moderátor által eltávolított vagy a guild által elrejtett tárgy, a tiltott céhben lévő tárgy, és a gyermekként lezárt számla által törölt minden: ezek egy sort mutatnak, szavak nélkül. Egy kör, vagy magáncéhben készült posztot csak a közönség számára tartanak fenn."
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>Amit a napló mutat.</b> A legtöbb birtokon van egy sor a Szankciók lapon, a helyszínen: \"tegyen egy számlát karantén\", a szabály, egy általános ok (\"Automatikus spam ellenőrzés\", \"Automatikus kapcsolat ellenőrzés\" vagy \"Automatikus képellenőrzés\") és az idő. Se számla, se posta, se céh, és semmit sem mond arról, hogy mit fogtak el. Amikor egy ilyen fogást felemelnek, a második sor azt mondja, \"feloldott egy karantént egy automatikus ellenőrzés\". A személyzet külön feljegyzést vezet, amely megnevezi a számlát, és azt mondja, amit a csekk látott, csak ők olvasták el. Néhány birtokon nincs nyilvános vonal, és csak a személyzet olvassa, mint a többi, amit az oldal fut magát."
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -298,9 +325,8 @@ msgstr "<strong>Állomás</strong> az X-en, Bluesky, MastodonSzálak, Instagram,
 msgid "<strong>Videos play in the post:</strong> YouTube, Vimeo, Dailymotion, Twitch, Kick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom and TED; Facebook videos and reels, Instagram reels and TikTok videos play when you press play."
 msgstr "<strong>Videók lejátszása a postán:</strong> YouTube, Vimeo, Dailymotion, Twitch, Kick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom és TED; Facebook Videók és tekercsek, Instagram tekercsek és TikTok A videók akkor játszanak, ha megnyomod."
 
-#, machine, plain1
 msgid "A **bot** is an account that posts by itself. The site's admins approve every one before it posts anything, and every bot follows the same posting rules, and the [rules for bots](/help/rules#bots) in the Rules and Guidelines."
-msgstr "A * * bot * * egy fiók, ami magától posztol. Az oldal igazgatói jóváhagynak mindenkit, mielőtt bármit is kiposztolna, és minden robot ugyanazt a kiküldetési szabályt követi, valamint [a robotokra vonatkozó szabályok] (/help/rules#bots) a szabályzatban és iránymutatásban."
+msgstr ""
 
 #, machine, plain1
 msgid "A **member bot** needs its member to run it: a script of their own with a **bot key** (for example for X), or a source they pay for. It stays the member's, they manage it, and its profile says **Automated by @member**. A member bot may read approved feeds too."
@@ -357,6 +383,10 @@ msgstr "A takarmányt olyan gyakran olvassák, amilyen gyakran csak lehet: legfe
 msgid "A feed that keeps failing (%(num)s times in a row) stops and the member running it is told; start it again from Settings > Bots once it works."
 msgid_plural "A feed that keeps failing (%(num)s times in a row) stops and the member running it is told; start it again from Settings > Bots once it works."
 msgstr[0] "A feed that keep fail (%(num)s szorozva egy sorban) megáll, és a tag fut azt mondják; indítsa újra a Beállítások > Botok, ha működik."
+
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "Az Ön számláján elhelyezett automatikus csekket körülbelül ugyanúgy kell kérni, minden egyes raktér esetében egyszer: lásd fent az Automatikus ellenőrzéseket."
 
 #, machine, plain1
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
@@ -471,6 +501,10 @@ msgstr "Szavakat kér, hogy lejöjjön"
 #, machine, plain1
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "Automatizált oszlopok nyilvános linket oszlopok: soha anonim, a körök vagy társszerzők. Átküldhetjük őket az általad választott céheknek, minden egyesület szabályai szerint."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "Automatikus ellenőrzések"
 
 #, machine, plain1
 msgid "Awesome online communities, without censorship"
@@ -813,9 +847,8 @@ msgstr "Először is, %(site)s 100%% az Egyesült Államokban található. Össz
 msgid "First thing"
 msgstr "Első dolog"
 
-#, machine, plain1
 msgid "For more endpoints, see documentation [here](/help/docs)"
-msgstr "További végpontokért lásd a dokumentációt [itt] (/help/docs)"
+msgstr ""
 
 #, machine, plain1
 msgid "Formatting"
@@ -1010,9 +1043,9 @@ msgstr "Annak érdekében, hogy választ kapjunk a kérdésére, kérjük, elős
 msgid "In order to successfully siege a guild you must meet the following requirements:"
 msgstr "Ahhoz, hogy sikeresen átvehesd a céheket, a következő követelményeknek kell megfelelned:"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "In the [apps tab of %(site)s settings](/settings/apps), fill in and submit the form to request new API keys. You will need:"
-msgstr "A [apps fülben a %(site)s beállítások] (/settings/apps) töltse ki, és küldje el a nyomtatványt új API Kulcsok. Szüksége lesz:"
+msgstr ""
 
 #, machine, plain1
 msgid "Inline formatting"
@@ -1301,9 +1334,8 @@ msgstr "Privát másolatok"
 msgid "Proposing a bot"
 msgstr "Bot-javaslat"
 
-#, machine, plain1
 msgid "Put it behind https (any web server or hosting service that gives you a certificate will do). Your server needs its own way to know which posts exist, for example the site's API; see the [developer help](/help/developers)."
-msgstr "Tedd a https mögé (bármely webszerver vagy hosting szolgáltatás, amely megadja a tanúsítvány megteszi). A szervernek a maga módján kell tudnia, hogy mely bejegyzések léteznek, például az oldal API; lásd a [fejlesztő segítséget] (/help/developers)."
+msgstr ""
 
 #, machine, plain1
 msgid "Python example, presuming that the application has obtained a valid `read` authorization:"
@@ -1498,9 +1530,8 @@ msgstr "Adja meg"
 msgid "Submit Inquiry"
 msgstr "Vizsgálat benyújtása"
 
-#, machine, plain1
 msgid "Submit a [DMCA takedown request.](/help/dmca)"
-msgstr "Adja meg a [DMCA átvételre vonatkozó kérelmet] (/help/dmca)"
+msgstr ""
 
 #, machine, plain1
 msgid "Superscript and subscript"
@@ -1530,9 +1561,8 @@ msgstr "Támogató címek"
 msgid "Supporting %(site)s means supporting free speech and digital discourse."
 msgstr "A %(site)s támogatás a szólásszabadság és a digitális párbeszéd támogatását jelenti."
 
-#, machine, plain1
 msgid "Sworn United States law enforcement agents and authorized United States government representatives may use our [legal requests portal](/legal) to submit legal process such as court orders, subpoenas or search warrants."
-msgstr "Esküdt Egyesült Államok bűnüldöző ügynökei és felhatalmazott amerikai kormány képviselői a [jogi kérelem portál] (/legal), hogy benyújtsák jogi eljárás, mint a bírósági végzések, idézések vagy házkutatási parancsok."
+msgstr ""
 
 #, machine, plain1
 msgid "Tabs"
@@ -1575,8 +1605,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "Az Egyesült Államok alkotmányának első módosítása kimondja:"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "A napló egy rekord arról, hogy a guild moderátorok és az oldal döntött, és amit a tagok töröltek. Soha semmi nincs szerkesztve: a korrekció egy új vonal, amely arra mutat, amit kijavít. Nyissa ki a láblécről, vagy a / log oldalon."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "A napló egy rekord arról, hogy a guild moderátorok és az oldal döntött, és amit a tagok töröltek. Amit mond, azt soha nem írják át: a korrekció egy új vonal, amely arra mutat, amit kijavít. Csak három dolgot vesznek ki egy sorból, és mindegyik elhagyja magát a sort: egy ok, amiért az adminisztrátor elrejti a jelentés után, az a tétel, amely egy sort mutat, amikor a szerző később leveszi a nevét, és a szavak valami adminisztrátor törli. Nyissa ki a láblécről, vagy a / log oldalon."
 
 #, machine, plain1, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1585,6 +1615,10 @@ msgstr "Az OAuth2 engedélyezési folyamot arra használják, hogy a felhasznál
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "A platform"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "A `delete` hatókör eltávolít egy elemet a honlapról; amit eltávolít több mint öt perccel azt követően, hogy a termék megírásra került a nyilvános napló Anonymous. Helyette leveszek egy nevet (\"Távolítsa el a nevem\"), és a History eszközök az oldal sajátjai, és nem kínálnak alkalmazásokat."
 
 #, machine, plain1
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"
@@ -1805,9 +1839,8 @@ msgstr "A %(site)s-powered beágyazott tartalom %(site)s."
 msgid "To link to %(site)s, enable sharing to %(site)s, or refer to your presence on %(site)s."
 msgstr "A %(site)s -hez való kapcsolódáshoz lehetővé kell tenni a megosztást %(site)s -ra, vagy utalni kell a %(site)s -n lévő jelenlétedre."
 
-#, machine, plain1
 msgid "To request ruqqus API keys, visit [this page](/help/apps)"
-msgstr "A ruqqus API kulcsok kéréséhez látogasson el [ez az oldal] (/help/apps)"
+msgstr ""
 
 #, machine, plain1
 msgid "To search for the words themselves, put them in quotes: <code>\"#gaming\"</code>."
@@ -2157,25 +2190,20 @@ msgstr "Az Ön támogatása segít a %(site)s csapat frissítésére szerver inf
 msgid "Your title"
 msgstr "A cím"
 
-#, machine, plain1
 msgid "[Alternate logo with wordmark](/assets/images/logo/ruqqus_text_logo_white.png)"
-msgstr "[Alternatív logó szójellel] (/assets/images/logo/ruqqus_text_logo_white.png)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Alternate logo](/assets/images/logo/ruqqus_logo_white.png)"
-msgstr "[Alternatív logó] (/assets/images/logo/ruqqus_logo_white.png)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Primary logo with wordmark](/assets/images/logo/ruqqus_text_logo.png)"
-msgstr "[Elsődleges logó szójellel] (/assets/images/logo/ruqqus_text_logo.png)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Primary logo](/assets/images/logo/ruqqus_logo_square_white_fill.png)"
-msgstr "[Elsődleges logó] (/assets/images/logo/ruqqus_logo_square_white_fill.png)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Ruqqie](/assets/images/logo/ruqqie.png)"
-msgstr "[Rugalmasság] (/assets/images/logo/ruqqie.png)"
+msgstr ""
 
 #. stands for the reader's username in front of each title when they are not
 #. signed in

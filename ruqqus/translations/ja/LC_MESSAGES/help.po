@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -121,9 +121,9 @@ msgstr "%(site)sは独立したオンラインコミュニティに電力を供�
 msgid "%(site)s is an open-source web app that lets you enjoy online communities focused around topics you love, without censorship and moderator abuse."
 msgstr "%(site)sは、検閲やモデレータの乱用なしに、好きなトピックを中心にオンラインコミュニティを楽しむことを可能にするオープンソースのwebアプリです."
 
-#, machine, python-format
+#, python-format
 msgid "%(site)s is broken into numerous smaller messaging and commenting boards focused around a variety of topics. These boards are called \"Guilds\". Guild names always start with a `+` symbol, and are usually (though not always) named after their topic of interest. For example, [+news](/+news) is a Guild focused on sharing and discussion of news and current events."
-msgstr "%(site)sは、さまざまなトピックに焦点を当てた多数の小さなメッセージングとコメントボードに壊れています。 これらのボードは「ギルド」と呼ばれます。 ギルド名は常に`+`から始まります。 シンボルは、通常(必ずしもそうではない)興味のトピックの後に名前付けられます。 たとえば、【+news】(/+news)は、ニュースやイベントの共有と議論に焦点を当てたギルドです."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "%(site)s titles are text-based, cosmetic achievements that can be displayed next to your username across the %(site)s platform. Titles may be earned through various activities on %(site)s: earning rep, inviting friends, helping staff, and more."
@@ -141,13 +141,16 @@ msgstr "**全ての自動化された投稿はロボットマーク**を運び�
 msgid "**Your feeds can't get your account suspended.** When a feed repeats itself, that item simply isn't posted. Your own posts are judged on their own, as before."
 msgstr "**あなたのフィードは、あなたのアカウントを中断することはできません。** フィードが繰り返されると、その項目は単に投稿されません。 あなたの投稿は、以前と同様に、自分自身で判断されます."
 
-#, machine
 msgid "**Your own account** can post from feeds too, while you keep using it as yourself: see [below](#own-account)."
-msgstr "**あなた自身のアカウント**は、あまりにもフィードから投稿することができます, あなたは自分自身としてそれを使用し続ける間: [below]を参照してください。(#own-account)."
+msgstr ""
 
 #, machine
 msgid "**Your server only orders.** Every post it names goes through the same rules as any feed before it is shown: removed posts, private guilds, each viewer's word filter and blocks. A post a viewer may not see is simply left out."
 msgstr "**サーバーのみ注文。** すべての投稿は、表示される前に、すべてのフィードと同じルールを通過します。投稿、プライベートギルド、各ビューアの単語フィルタとブロックを削除します。 視聴者が見ていない投稿は、単に残っているかもしれません."
+
+#, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>自動チェックは、保持時にアカウントを置くことができます。 決して禁止できません。</b> サイトはスパムをチェックします。, ブロックリンクのために, プロフィールのスパムのために, 誰が禁止を丸めるために, リストに一致する写真のために. それらの1つがアカウントをホールド(ログが検疫を呼び出します)に置くと、スタッフのメンバーはそれを見ます。 以下は、常に人の決定です: 彼らはアカウントを解放するか、または管理者は、上記のように、理由、規則および控訴で禁止します。"
 
 #, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
@@ -158,8 +161,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>ログイン #3お問い合わせ</b> 1つのスレッドでは、匿名であるすべての人は、そこに匿名になった順序で与えられた番号を持っています(彼らは無名に投稿またはコメントしたとき、または削除時、 \"私の名前を削除\" またはそのアカウントを閉じる)。 投稿とその人の匿名コメントに同じ数字で、他のスレッドごとに異なるものがあり、アカウントが削除されたときに滞在します。 それは人々を離れて伝えます。彼らは誰であるかと言うことはありません。"
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>誰かが書いたものを引用する禁止。</b> 管理者がアカウントを禁止または中断すると、匿名で書かれた投稿やコメントを正当化することができます。 2番目の管理者が同意したら、ログはそれらの項目のアカウント(各行と禁止行)の名前を、誰が禁止が公正であることを確認することができます。 アイテムは、サイト上のどこにも匿名で滞在し、その2番目の管理者なしで名付けられず、禁止を逆転させることは、名前を取り戻す。"
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>レビューを依頼する</b> 送信された通知は、 <b>レビューを依頼</b> リンクは、/appeal/quarantine (署名する必要があります) を開きます。 各ホールドに1回、最大500文字、サイトの管理者が決定し、保持しているチェックは絶対にありません。 彼らが受け入れるならば、ホールドは持ち上げられ、ログの新しいラインはそう言っており、あなたは言われています。そうでなければ、あなたはあまりにも言われています。 管理者がアカウントを禁止した場合、その理由、規則および控訴と別々の決定であり、匿名の投稿を引用する禁止について上述したものです。 匿名で書いた何かのアカウントを名前付けることはありません。"
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>誰かが書いたものを引用する禁止。</b> 管理者がアカウントを禁止または中断すると、匿名で書かれた投稿やコメントを正当化することができます。 2番目の管理者が同意する(または、単一の管理者、その所有者を持つサイト上で)、ログは、それらの項目(各行、および禁止行)のアカウントの名前を、誰が禁止が公正であることを確認することができます。 アイテムは、サイト上のどこにも匿名で滞在し、その承認なしに名前が付けられず、名前が付けられます。 禁止が後で逆転するか、またはサスペンションが単純に実行されると、ログはあまりにも表示され、名前を保持するので、誤った発見された禁止は、そのようなように見ることができます。"
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +201,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>モデレーション</b>: 投稿やコメントを隠したり、削除したり、復元したり、バージョンで隠したりします。 それぞれの人のために:誰(名前によるギルドモデレータ;サイト管理者は「サイト管理者」として、名前で決して)、いつ、ルール、およびそれのために書かれた理由。 隠されているもののタイトルやテキストは表示されません。"
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>他人に言われない。</b> プロフィールにバナーがなく、ページ名が保持されているアカウントはありません。 このアカウントは、一般的な理由(ルール、そこにある)とレビューを求めるリンクで通知を送信します。"
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>人だけが持ち株を持ち上げます。</b> 管理者は、スタッフのキューから解放したり、レビューのリクエストを受け付けたり、メールアドレスを検証したりしません。 新規アカウントにサインアップチェックを入れているのは違います。自動チェックがアカウントで発射されていない限り、メールアドレスのリフトを1つ確認します。"
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>他の人と書かれた投稿。</b> 各著者のクレジットは、その上で匿名であることができます: 投稿が開始から匿名であるとき, 著者が自分のクレジットのために「自分の名前を削除」を選択するとき, またはそれらがアカウントを削除するとき. クレジットが「匿名」になるだけ #N\"; 他の著者は名前付き滞在します。 管理者は、常にそれが誰であるかを見ることができます。"
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>自分の名前を削除します。</b> 投稿またはコメントは、名前が離脱して、あなたのプロフィールを残して、それがどこにあるかにとどまります。 それは元に戻すことができません, そして、それはサークルのために作られた投稿のために提供されていません, リッピングされた投稿, または他の人と書かれた投稿."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>自分の名前を削除します。</b> 投稿またはコメントは、名前が離脱して、あなたのプロフィールを残して、それがどこにあるかにとどまります。 それは元に戻すことができません, そして、それはサークルのために作られた投稿のために提供されていないか、またはリッピングされた投稿. 他の人と書かれている投稿では、あなた自身のクレジットのみを奪います。"
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -218,8 +233,20 @@ msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, t
 msgstr "<b>匿名アカウントの背後にある人を見つけよう。</b> 匿名であることを選択した人へのアカウントを推測、テストまたは比較することは不公平な暴露であり、禁止につながることができます。 ギルドモデレータが、番号と名前の両方でアカウントで動作し、そのスタッフは彼らが見ることができるように語ることができます。"
 
 #, machine, plain2
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr "<b>保有するアカウントはどのようなものです。</b> これは、サイトを読んだり、独自の設定とプロファイルを変更したり、書いたもの、ブックマーク、フォロー解除を削除したり、ギルドを残してフィードバックを送信したりすることができます。 投稿、コメント、編集、投票、フォロー、ギルド、フォワード、リポスト、ヒント、レポート、チャットまたはコール、チャネル、wikiまたはイベントで書き込み、スペース、サークル、キュレーションフィード、ストーリーの作成、またはギルドモデレータのパワーを使用することはできません。 ホールド自体はダウンしません。"
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>自動チェック削除が公開されていること</b> 自動チェックが投稿またはコメントを削除した場合、ログは、任意の削除のようなモデレーションタブに表示されます:そのID、ルール、一般的な理由による投稿やコメント、そのタイトルやテキストはなく、匿名であっても、それを書いた人はありません。 除去自体は別の通知を送らない:それが見つけられた人 <b>この決定を申し立てる</b> 削除された投稿またはコメントにリンクし、サイトの管理者はその魅力を決定します。"
+
+#, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>決して公開されていないもの:</b> モデレータが削除されたか、ギルドが隠されていた項目の単語、禁止されたギルドの項目、および子供がロックされたアカウントによって削除されたもの:これらは、行と単語を表示しません。 サークル、またはプライベートギルドで作られた投稿は、その聴衆のためにのみ保存されます。"
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>ログが表示されていること。</b> ほとんどのサイトから、Sanctionsタブに「検疫のアカウントを入力」、原則として、一般的な理由(「自動スパムチェック」、 \"自動リンクチェック\"、または \"自動画像チェック\")、および時間。 アカウント名、ポストなし、ギルドなし、およびキャッチされたものについて何も言わない。 そのようなホールドが2番目のラインを持ち上げると「検疫を持ち上げて自動チェックが置いた」と述べています。 スタッフは、アカウントの名前を別のメモに保ち、チェックのこぎりを述べています。 一部には公開行がなく、スタッフのみが読み込まれています。"
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -358,6 +385,10 @@ msgid "A feed that keeps failing (%(num)s times in a row) stops and the member r
 msgid_plural "A feed that keeps failing (%(num)s times in a row) stops and the member running it is told; start it again from Settings > Bots once it works."
 msgstr[0] "失敗し続けるフィード (%(num)s 行) が止まり、実行中のメンバーが指示されます。 [設定] から再び開始します。 一度は、作品が完成します."
 
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "アカウントに置いた自動チェックを保ち、それぞれのホールドに対して同じように尋ねられます。上記の自動チェックを参照してください."
+
 #, machine
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
 msgstr "メンバーボットは、メンバー自身のスクリプトから**botキー**で投稿することもできます。 これは、**X**用のボットを実行する方法です。 Xにはフィードがなく、他のサイトがスクレイピングできるようにしないので、独自のスクリプトで独自のXアクセスを使用し、各ツイートのリンクを投稿します。 このサイトでは、X の埋め込みとしてツイートへのリンクが表示されますので、ツイートテキストはコピーされません。 サイトボットにはキーがありません."
@@ -471,6 +502,10 @@ msgstr "言葉を聞き取り、"
 #, machine
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "自動投稿は公開リンク投稿です: 決して匿名で、円または共著者のために。 各ギルドのルールの下で、選択したギルドに転送することができます."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "自動チェック"
 
 #, machine
 msgid "Awesome online communities, without censorship"
@@ -1573,8 +1608,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "米国憲法状態への最初の改正:"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "ログは、ギルドモデレータとサイトが決定し、削除したメンバーの1レコードです。 決して編集されていない:修正は、それを修正する新しい行です。 フッター、または /log で開きます."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "ログは、ギルドモデレータとサイトが決定し、削除したメンバーの1レコードです。 それが言うことは決して書き換えられません:修正はそれが正しい1でポイントする新しいラインです。 行から3つだけ取り出され、それぞれが行自体を残します。管理者がレポートの後に隠す理由は、その著者が後でその名前をオフにし、管理者が消去する何かの言葉を指す項目です。 フッター、または /log で開きます."
 
 #, machine, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1583,6 +1618,10 @@ msgstr "OAuth2 認可フローを使用して、ユーザーはサードパー�
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "プラットフォーム"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "`delete` スコープは、サイトからアイテムを削除し、その項目が公開ログに匿名として滞在した後に 5 分以上削除します。 代わりに名前を消す(「名前を消す」)と歴史ツールは、サイトの所有物であり、アプリには提供されていません."
 
 #, machine
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"
@@ -2167,9 +2206,8 @@ msgstr "[代替ロゴ](/assets/images/logo/ruqqus_logo_white.png)"
 msgid "[Primary logo with wordmark](/assets/images/logo/ruqqus_text_logo.png)"
 msgstr "[ワードマーク付きプライマリロゴ](/assets/images/logo/ruqqus_text_logo.png)"
 
-#, machine
 msgid "[Primary logo](/assets/images/logo/ruqqus_logo_square_white_fill.png)"
-msgstr "【主なロゴ】(/assets/images/logo/ruqqus_logo_square_white_fill.png)"
+msgstr ""
 
 #, machine
 msgid "[Ruqqie](/assets/images/logo/ruqqie.png)"

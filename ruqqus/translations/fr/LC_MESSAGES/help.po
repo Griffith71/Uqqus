@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -150,6 +150,10 @@ msgid "**Your server only orders.** Every post it names goes through the same ru
 msgstr "**Votre serveur commande seulement.** Chaque message qu'il nomme passe par les mêmes règles que n'importe quel flux avant qu'il ne soit affiché : les messages supprimés, les guildes privées, le filtre de mot de chaque spectateur et les blocs. Un post qu'un spectateur peut ne pas voir est tout simplement omis."
 
 #, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>Un contrôle automatique peut mettre un compte en attente. Elle ne peut jamais en interdire une.</b> Le site vérifie pour le spam, pour les liens qu'il bloque, pour le spam dans un profil, pour quelqu'un obtenir autour d'une interdiction, et pour des images qui correspondent à une liste. Lorsque l'un d'eux tire, il met le compte en attente (le journal appelle la quarantaine) et un membre du personnel le regarde. Ce qui suit est toujours la décision d'une personne: ils libèrent le compte, ou un administrateur l'interdit, avec une raison, une règle et un appel, comme décrit ci-dessus."
+
+#, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
 msgstr "<b>Un exil a besoin d'une raison et de quelque chose sur lequel il compte.</b> Un modérateur de guilde qui exile quelqu'un écrit pourquoi et nomme au moins un de ses propres messages ou commentaires dans la guilde sur laquelle l'exil compte ; un chat muet a aussi besoin d'une raison, et le retrait d'un administrateur le fait toujours. Le site conserve une copie privée de chaque élément qui a été nommé, comme il l'était, pendant un an: la personne, les modérateurs de la guilde et les administrateurs peuvent l'ouvrir, de sorte qu'une modification ou suppression ultérieure ne peut pas réécrire sur quoi la décision reposait. Le journal énumère un article public nommé par son id."
 
@@ -158,8 +162,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>Anonyme #3.</b> Dans un thread, tous ceux qui sont anonymes là ont un numéro, donné dans l'ordre où ils sont devenus anonymes là (lorsqu'ils ont posté ou commenté anonymement, ou quand une suppression, \"Supprimer mon nom\" ou la fermeture de leur compte l'a fait). C'est le même numéro sur un message et sur les commentaires anonymes de cette personne, un autre dans chaque autre thread, et il reste quand un compte est supprimé. Il dit les gens à part; il ne dit jamais qui ils sont."
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>C'est interdit de citer ce qu'on a écrit.</b> Lorsqu'un administrateur interdit ou suspend un compte, il peut citer les messages et commentaires qui le justifient, même ceux qui sont écrits anonymement. Une fois qu'un second administrateur est d'accord, le journal nomme le compte pour ces éléments (la ligne sur chacun, et la ligne de l'interdiction), afin que tout le monde puisse vérifier l'interdiction était juste. Les objets restent anonymes partout ailleurs sur le site, rien n'est nommé sans ce second admin, et inverser l'interdiction reprend le nom."
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>Demander un avis.</b> L'avis que vous êtes envoyé a un <b>Demandez un avis</b> lien, qui ouvre /appeal/quarantine (vous devez être connecté). Vous pouvez demander une fois pour chaque tenue, avec jusqu'à 500 caractères, et les administrateurs du site le décident, jamais la vérification qui vous a tenu. S'ils acceptent, la cale est levée, une nouvelle ligne dans le Log le dit et on vous le dit; sinon, on vous le dit aussi. Si un administrateur interdit plus tard le compte, il s'agit d'une décision distincte avec sa propre raison, règle et appel, et ce qui est dit ci-dessus au sujet des interdictions qui citent des messages anonymes s'applique à lui. Un hold ne nomme jamais un compte pour quelque chose qu'il a écrit anonymement."
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>C'est interdit de citer ce qu'on a écrit.</b> Lorsqu'un administrateur interdit ou suspend un compte, il peut citer les messages et commentaires qui le justifient, même ceux qui sont écrits anonymement. Une fois qu'un second administrateur est d'accord (ou, sur un site avec un seul administrateur, son propriétaire), le journal nomme le compte de ces éléments (la ligne sur chacun, et la ligne de l'interdiction), afin que tout le monde puisse vérifier l'interdiction était juste. Les objets restent anonymes partout ailleurs sur le site, rien n'est nommé sans cette approbation, et une fois qu'il est nommé il reste: si l'interdiction est plus tard inversée, ou une suspension s'épuise simplement, le Log montre que trop et garde le nom, de sorte qu'une interdiction qui a été trouvée mal peut être vue comme telle."
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +202,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>Modération</b>: un message ou un commentaire caché ou enlevé, restauré ou caché dans une version. Pour chacun: qui (un modérateur de guilde par nom; les administrateurs du site comme \"Site admin\", jamais par nom), quand, où, quelle règle, et la raison écrite pour elle. Il ne montre jamais le titre ou le texte de ce qui était caché."
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>Personne d'autre n'est dit.</b> Il n'y a pas de bannière sur son profil, et aucune page ne nomme un compte en attente. Le compte est envoyé un avis avec une raison générique (et la règle, où il y en a un) et un lien pour demander un examen."
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>Seule une personne lève une cale.</b> Pas le temps, et ne pas vérifier une adresse email: un administrateur la libère de la file d'attente du personnel, ou accepte une demande de révision. Une attente le contrôle d'inscription met sur un nouveau compte est différent: la vérification d'une adresse e-mail soulève celui-ci, à moins qu'un contrôle automatique n'ait déclenché sur le compte depuis."
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>Postes écrits avec d'autres.</b> Le crédit de chaque auteur peut être anonyme à lui seul : lorsque le message est anonyme dès le début, lorsqu'un auteur choisit « Supprimer mon nom » pour son crédit, ou lorsqu'il supprime son compte. Seul ce crédit devient \"Anonyme #N\"; les autres auteurs restent nommés. Les administrateurs voient toujours qui c'est."
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>Enlevez mon nom.</b> Le message ou le commentaire reste où il est, avec votre nom retiré, et laisse votre profil. Il ne peut pas être annulé, et il n'est pas offert pour un poste fait pour un cercle, un poste qui a été renversé, ou un poste écrit avec d'autres."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>Enlevez mon nom.</b> Le message ou le commentaire reste où il est, avec votre nom retiré, et laisse votre profil. Il ne peut pas être annulé, et il n'est pas offert pour un poste fait pour un cercle ou un poste qui a été renversé. Sur un post écrit avec d'autres, il ne prend votre propre crédit que."
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -218,8 +234,20 @@ msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, t
 msgstr "<b>Essayer de trouver qui est derrière un compte anonyme.</b> Deviner, tester ou comparer des comptes à démasquer quelqu'un qui a choisi d'être anonyme est une exposition injuste, et cela peut conduire à une interdiction. Le site peut voir quand un modérateur de guilde agit sur un compte à la fois par numéro et par nom, et son personnel est informé pour qu'ils puissent regarder."
 
 #, machine, plain2
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr "<b>Ce qu'un compte détenu peut faire.</b> Il peut lire le site, modifier ses propres paramètres et profil, supprimer ce qu'il a écrit, signet, ne pas suivre, quitter guildes et envoyer des commentaires. Il ne peut pas poster, commenter, éditer, voter, suivre quelqu'un, rejoindre une guilde, avant, repost, pourboire, rapporter, utiliser le chat ou les appels, écrire dans une chaîne, un wiki ou un événement, faire un espace, un cercle, un flux curé ou une histoire, ou utiliser les pouvoirs d'une guilde modérateur. La cale elle-même n'enlève rien."
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>Ce qu'un contrôle automatique supprime est public.</b> Lorsqu'une vérification automatique supprime un message ou un commentaire, le Log l'affiche sur l'onglet Modération comme une suppression : le message ou le commentaire par son id, la règle et la raison générique, jamais son titre ou son texte et jamais qui l'a écrit, même quand il était anonyme. Le déménagement lui-même n'envoie aucun avis séparé: la personne qu'il était en trouvant une <b>Appel de cette décision</b> lien sur le post ou le commentaire supprimé, et les administrateurs du site décident que l'appel."
+
+#, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>Ce qui n'est jamais publié:</b> les mots d'un élément qu'un modérateur avait enlevé ou une guilde avait caché, d'un élément dans une guilde interdite, et de tout ce qui avait été supprimé par un compte verrouillé comme un enfant: ceux-ci montrent une ligne et aucun mot. Un post fait pour un cercle, ou dans une guilde privée, est conservé pour ce public seulement."
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>Ce que le journal montre.</b> La plupart des cales ont une ligne sur l'onglet Sanctions, du site: \"mettre un compte en quarantaine\", avec la règle, une raison générique (\"Vérification automatique de spam\", \"Vérification automatique de lien\" ou \"Vérification automatique d'image\") et l'heure. Il ne nomme aucun compte, aucun poste et aucune guilde, et ne dit rien sur ce qui a été pris. Lorsqu'une telle cale est levée, une deuxième ligne indique que « la quarantaine a été levée par un contrôle automatique ». Le personnel garde une note séparée qui nomme le compte et dit ce que le chèque a vu; seulement ils le lisent. Certaines cales n'ont pas de ligne publique et sont lues par le personnel seulement, comme le reste de ce que le site fait pour fonctionner lui-même."
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -360,6 +388,10 @@ msgid_plural "A feed that keeps failing (%(num)s times in a row) stops and the m
 msgstr[0] "Un flux qui continue à échouer (%(num)s fois dans une rangée) s'arrête et le membre en cours d'exécution est dit; redémarrez-le à partir de Paramètres > Une fois que ça marche."
 msgstr[1] "Un flux qui continue d'échouer (%(num)s fois dans une rangée) s'arrête et le membre en cours d'exécution est dit; redémarrez-le à partir de Paramètres > Une fois que ça marche."
 
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "Un contrôle automatique de la tenue de votre compte est demandé à peu près de la même façon, une fois pour chaque tenue : voir Contrôle automatique ci-dessus."
+
 #, machine
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
 msgstr "Un membre bot peut également poster à partir d'un script propre à son membre, à travers une touche **bot**. Voici comment lancer un robot pour **X**: X n'a pas de flux, et ses termes ne permettent pas à d'autres sites de le gratter, donc utilisez votre propre accès X dans votre propre script et postez le lien de chaque tweet. Le site affiche un lien vers un tweet en tant qu'intégration de X, donc aucun texte de tweet n'est copié. Les robots du site n'ont pas de clés."
@@ -473,6 +505,10 @@ msgstr "Demander des mots pour descendre"
 #, machine
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "Les messages automatisés sont des messages de liens publics : jamais anonymes, pour les cercles ou co-auteurs. Ils peuvent être transmis aux guildes que vous choisissez, selon les règles de chaque guilde."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "Contrôles automatiques"
 
 #, machine
 msgid "Awesome online communities, without censorship"
@@ -1581,8 +1617,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "Le premier amendement à la Constitution des États-Unis stipule ce qui suit :"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "Le journal est un enregistrement de ce que les modérateurs guildes et le site ont décidé, et de ce que les membres ont supprimé. Rien en elle n'est jamais édité: une correction est une nouvelle ligne qui pointe à celle qu'elle corrige. Ouvrez-le à partir du pied de page, ou à /log."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "Le journal est un enregistrement de ce que les modérateurs guildes et le site ont décidé, et de ce que les membres ont supprimé. Ce qu'il dit n'est jamais réécrit : une correction est une nouvelle ligne qui pointe à celle qu'il corrige. Seulement trois choses sont retirées d'une ligne, et chacune quitte la ligne elle-même: une raison qu'un administrateur cache après un rapport, l'élément une ligne pointée à quand son auteur enlève plus tard leur nom, et les mots de quelque chose qu'un administrateur efface. Ouvrez-le à partir du pied de page, ou à /log."
 
 #, machine, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1591,6 +1627,10 @@ msgstr "Le flux d'autorisation OAuth2 est utilisé pour permettre aux utilisateu
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "La plateforme"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "La portée `delete` supprime un article du site; ce qu'il supprime plus de cinq minutes après que l'article a été écrit reste dans le journal public comme anonyme. Prendre un nom à la place (\"Supprimer mon nom\") et les outils d'histoire sont les propres du site et ne sont pas offerts aux applications."
 
 #, machine
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"

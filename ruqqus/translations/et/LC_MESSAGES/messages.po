@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: et\n"
@@ -1505,6 +1505,10 @@ msgstr "%(who)s kutsutud gildi moderaator @%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s kick post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s tühistas karantiini, mis oli pandud automaatse kontrolli alla"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s tühistas keelu %(name)s"
@@ -1568,6 +1572,10 @@ msgstr "%(who)s kinnitas sõnumi kanalisse"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s pinned post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s pane konto karantiini"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2732,6 +2740,10 @@ msgstr "Ruum ei saa alata minevikus."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Ruum selle jaoks <span class=\"text-muted font-weight-normal\">(vabatahtlik: ruumi postilink)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Ruum lõpeb tema enda lehelt; seda ei kustutata nagu postitust."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Ruum on mõnda aega elav: laud, elav niit või kõne. Seda hoitakse korduseks või see on kadunud, kui see lõpeb."
@@ -2917,9 +2929,9 @@ msgstr "Kanali nimi ei saa sisaldada kontrolli ega nähtamatuid märke."
 msgid "A chat app wants to sign in to your chats as <strong>@%(name)s</strong>."
 msgstr "Vestlusrakendus tahab teie vestlustesse sisse logida <strong>@%(name)s</strong>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
-msgstr "Teie %(site)s kontole on sisse logitud vestlusrakendus. Kui see ei olnud sina, logige see välja [Seaded > Vestlusrakendused] (/settings/chat_apps) ja muutke oma parooli."
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
@@ -2981,6 +2993,10 @@ msgstr "Kommentaarile, mille kohta küsisite, lisati kogukonna märkus: [vaata s
 #, machine, plain1, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr "Postitusele, mille kohta küsisite: [vaata seda](%(link)s"
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Koopia sellest, nagu see oli, kui see oli peidetud, eemaldatud, kustutatud või otsuse tegemiseks tuginetud. Ainult selle autor, gildi gildi moderaatorid, kes otsustasid, ja saidi administraatorid saavad selle siin avada. Enamik koopiaid kustutatakse mõne aja pärast; koopia midagi, mille autor kustutas, jääb avalikku logisse."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3376,6 +3392,10 @@ msgstr "Postitus, mis on kallutatud ei saa oma nime eemaldada, sest mündid läk
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Postitus, mis ei ole avalik, ei saa seda pilti üles laadida: selle faile saab avada igaüks, kellel on aadress. Lisage pilt lingitud salvestusruumist (Seaded > Meedia)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Anonüümse krediidiga postitust ei saa sepistada."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Kaasautoritega postitust ei saa ringidesse liigutada. Avaliku postituse liigutamine ringidesse võtab teie edastatud koopiad maha; koopiad, mida teised inimesed edastavad, jäävad nende gildidesse."
@@ -3401,10 +3421,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Postituse tekst võib olla %(count)s märk (hiina, jaapani ja korea tähemärgid ning emotikonide arv 2)."
 msgstr[1] "Postituse tekst võib olla %(count)s tähemärgid (hiina, jaapani ja korea tähemärgid ning emotikonide arv 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Selle privaatne koopia, nagu see oli, kui see oli peidetud, eemaldatud, kustutatud või otsuse tegemiseks tuginetud. Ainult selle autor, gildi moderaatorid, kes otsustasid, ja saidi administraatorid saavad selle avada ja seda ei hoita igavesti."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4116,10 +4132,6 @@ msgstr "Hoiatused ja pealkirjad pärinevad igal real nimetatud allikast, mis on 
 msgid "Algorithm"
 msgstr "Algoritm"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algoritm salvestatud."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4365,6 +4377,29 @@ msgstr "Autor, kes ei ole olnud aktiivne saidil %(time)s ei lähe arvesse."
 msgid "An automated post can't have its name removed."
 msgstr "Automaatne postitus ei saa oma nime eemaldada."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Automaatne kontroll paneb konto ootele."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Automaatne kontroll paneb teie konto ootele, nii et te ei saa seda praegu teha. Üks töötaja vaatab selle üle. Kui arvate, et kontroll oli vale, võite küsida ülevaatust."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Automaatne kontroll paneb teie konto ootele."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Krüpteeritud kanal ei saa nõuda oma reeglite aktsepteerimist: sait ei saa kontrollida, kes kirjutas."
@@ -4486,8 +4521,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Anonüümne #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Anonüümsed jäävad anonüümseks, kui teine administraator ei kiida seda heaks, ja siis Log nimetab teie konto nende kõrval."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Anonüümsed jäävad anonüümseks, kui teine administraator ei kiida seda heaks (või ühe administraatoriga saidil selle omanik) ja seejärel logib teie konto nende kõrval."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4731,6 +4766,10 @@ msgstr "Aaria mägismaa"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Autorina redigeerite mustandit nendega koos ja iga tegelane, mida kirjutate, krediteeritakse teile. Kui postitus on avaldatud, saab igaüks, kes seda näeb, näha, kes mida kirjutas. Autorid otsustavad koos:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Küsi ülevaatust"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4998,14 +5037,6 @@ msgstr "Balkani"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Keela kommentaar"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Keela kõrvalehoidmine. Selle kommentaari omanik oli keelatud teisel kontol."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Keela kõrvalehoidmine. Selle postituse omanik oli keelatud teisel kontol."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6275,6 +6306,10 @@ msgstr "Peidetud või eemaldatud kommentaarid"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Teie anonüümse postituse kommentaarid on anonüümsed"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Teie anonüümse postituse kommentaarid on anonüümsed. Kui administraator keelab või peatab konto ühe jaoks, võib Log nimetada selle konto."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Kommentaarid:"
@@ -6981,9 +7016,9 @@ msgstr "Kustuta see roll? Kõik kaotavad selle ja kanalid unustavad, mida see lu
 msgid "Delete your %(site)s account"
 msgstr "Kustuta oma %(site)s konto"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Kustuta oma postitused ja kommentaarid"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Kustuta oma postitused ja kommentaarid (mis kustutatakse rohkem kui viis minutit pärast kirjutamist, jääb avalikku logisse anonüümseks)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7609,10 +7644,6 @@ msgid "Engagement"
 msgstr "Engagement"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Ebaseaduslikus tegevuses osalemine"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Osalemine või ebaseadusliku tegevuse kavandamine"
 
@@ -7715,10 +7746,6 @@ msgstr "Eta Veevalajate meteoorisadu"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Eetika"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Kogu tegevuskohta hõlmava keelu vältimine"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7836,6 +7863,10 @@ msgstr "Igaüks näeb üksteise muudatusi, nagu nad kirjutavad, ja iga tegelane 
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kõik oma gildid ja kontod, uusim kõigepealt."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Kõik, mida te kirjutasite, jääb saidile anonüümseks ja seda ei saa tagasi võtta. Kustuta, mida sa tahad läinud, või eemalda sellest oma nimi (Ajalugu > Halda)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9760,9 +9791,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Kutsu moderaator"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Kutsu inimesi üles seda postitust jagama. Kui nad nõustuvad, kannab see oma nime ja on loetletud nende profiilis. Sa ikka redigeerid, kustutad ja edastad seda. Mitte anonüümsete postituste jaoks."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Kutsu inimesi üles seda postitust jagama. Kui nad selle aktsepteerivad, kannavad nad oma nime ja on loetletud nende profiilis; anonüümsel postitusel on ka nende krediit anonüümne. Sa ikka redigeerid, kustutad ja edastad seda."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13480,8 +13511,8 @@ msgid "Post anonymously"
 msgstr "Postita anonüümselt"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Postitage anonüümselt: teised liikmed näevad iga autorit numbriga anonüümsena. Administraatorid näevad alati, kes nad on. Seda ei saa muuta, kui postitus on avaldatud."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Postitage anonüümselt: teised liikmed näevad iga autorit numbriga anonüümsena. Admins saavad alati näha, kes nad on, ja administraatori keelul võib olla Logi nimi anonüümse elemendi konto, mida ta tsiteerib. Seda ei saa muuta, kui postitus on avaldatud."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16263,10 +16294,6 @@ msgid "Spam"
 msgstr "Spam"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Rämpspost."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Räägi"
@@ -17418,7 +17445,7 @@ msgid "The auto-moderation was saved."
 msgstr "Automodulatsioon päästeti."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17446,10 +17473,6 @@ msgstr "Teie pakutud bot @%(name)s ei kiidetud heaks. Admins ütles: %(note)s"
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Bot juba loeb seda söötu."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Bot peatati liiga palju sarnase sisu postitamise eest."
 
 #, machine, plain1, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17519,6 +17542,10 @@ msgstr "Eelnõus on muudatusi, mida postitus veel ei näita."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Varasemaid versioone ei näidata, kui see on peidetud."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Varasemaid versioone ei näidata: see kustutati ja selle tekst on kustutatud."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17650,6 +17677,10 @@ msgstr "Gildil on selle nimega juba oma roll."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Gildi enda reeglid selle kohta, mis on kirjutatud tema kanalites, saidi sõnafiltri peal. Gildi moderaatoreid ei hoita kunagi nende eest. Sõnum, mis murrab ühe, lükatakse tagasi lühikese põhjusega, mis ei ütle kunagi millist sõna."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Teie kontol olev vangistus tühistati. Võite uuesti kirjutada, kommenteerida ja hääletada."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18152,9 +18183,9 @@ msgstr "Nad ei ole siin tummad."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Nad saavad osta ja kulutada münte, jootraha, osta Premium ja liituda või käivitada tasulisi ringe."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Nad saavad võõrustada ja liituda Spacesiga ning käivitada live-niite. Häälkõned ruumis vajavad ka vestlust."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Nad saavad liituda ja kuulata Ruume. Nad ei saa majutada ühte või postitada ühte: lapse konto loeb ainult. Häälkõned ruumis vajavad ka vestlust."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18366,6 +18397,10 @@ msgstr "See robot ei tööta."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Selle roboti omanik ei saa seda praegu juhtida."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Selle roboti omanik ei saa seda kasutada, kuni nende konto on ootel."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -20244,9 +20279,8 @@ msgstr "Me jätkame siit."
 msgid "We're sorry something here is wrong."
 msgstr "Meil on kahju, et midagi on valesti."
 
-#, machine, plain1
 msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "Me oleme muutnud meie [Tingimuste] vanuseosa (/help/terms). Alla 18-aastase isiku kontol on nüüd lapselukk ja Ühendkuningriigis, ELis ja Austraalias tuleb teie vanus kinnitada vanusekontrolli teenusega, enne kui lukk ära võetakse või näete tundlikku sisu. Võite öelda, kas olete 18 või üle Seaded Sisu."
+msgstr ""
 
 #, machine, plain1
 msgid "Web Development"
@@ -20286,7 +20320,7 @@ msgstr "Tere tulemast %(site)s!"
 msgid "Welcome to %(site)s! These communities are currently Trending. Join some to start customizing your <a href=\"/\">home page</a>."
 msgstr "Tere tulemast %(site)sNeed kogukonnad on praegu trendikad. Liituge mõnega, et alustada oma kohandamist <a href=\"/\">koduleht</a>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Welcome to %(site)s, %(name)s. We're glad to have you here.\n"
 "\n"
@@ -20299,16 +20333,6 @@ msgid ""
 "\n"
 "-The %(site)s team"
 msgstr ""
-"Tere tulemast %(site)s, %(name)s. Meil on hea meel, et sa siin oled.\n"
-"\n"
-"\n"
-"Alustuseks mõned asjad:\n"
-"- Jälgige inimesi ja [ühendage mõned gildid] (/browse), nii et teie järgneval söödal on midagi selles\n"
-"- [Reeglid](/help/rules) ja [abilehed](/help)\n"
-"- Valige, kui palju näete [Seaded > Sisu](/settings/content)\n"
-"\n"
-"\n"
-"- %(site)s meeskond"
 
 #, machine, plain1
 msgid "West Slavia"
@@ -22180,18 +22204,18 @@ msgstr ""
 "> %(message)s"
 
 #, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Teie %(site)s konto on püsivalt peatatud järgmistel põhjustel:\n"
-"\n"
-"keelustada"
-
-#, machine, plain1, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
 msgstr "Teie %(site)s konto on taastatud. Palun vaadake hoolikalt läbi ja järgige [teenusetingimused](/help/terms) ja [reeglid ja juhised](/help/rules), et teid uuesti ei peatataks."
+
+#, machine, plain2, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
+"Teie %(site)s konto on taastatud. Palun vaadake hoolikalt läbi ja järgige [teenusetingimused](/help/terms) ja [reeglid ja juhised](/help/rules), et teid uuesti ei peatataks.\n"
+"\n"
+"See on endiselt ootel, nii et ta ei saa praegu teistele postitada, kommenteerida ega tegutseda. Üks töötaja vaatab selle üle."
 
 #, machine, plain1, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -22206,16 +22230,6 @@ msgstr ""
 "Teie %(site)s konto on peatatud %(days)s päevaks järgmistel põhjustel:\n"
 "\n"
 "> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Teie %(site)s konto on peatatud 1 päeva järgmistel põhjustel:\n"
-"\n"
-"Liiga palju rämpsposti!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22345,6 +22359,10 @@ msgstr "Teie konto on märgistatud tundlikuks."
 msgid "Your account is no longer marked sensitive."
 msgstr "Teie konto ei ole enam tundlik."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Teie konto on ootel"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Sinu konto on peatatud."
@@ -22429,7 +22447,7 @@ msgstr "Vastus"
 msgid "Your appeal is waiting to be read."
 msgstr "Teie palve ootab lugemist."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
 "\n"
@@ -22437,13 +22455,8 @@ msgid ""
 "%(note)s\n"
 "```"
 msgstr ""
-"Teie kaebus [käesolev otsus](%(log)s võeti vastu ja otsus tühistati.\n"
-"\n"
-"\"\"\n"
-"%(note)s\n"
-"\"\""
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
 "\n"
@@ -22451,13 +22464,8 @@ msgid ""
 "%(note)s\n"
 "```"
 msgstr ""
-"Teie kaebus [sellele otsusele](%(log)s vaadati läbi ja otsus kehtib.\n"
-"\n"
-"\"\"\n"
-"%(note)s\n"
-"\"\""
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
 "\n"
@@ -22465,11 +22473,33 @@ msgid ""
 "%(note)s\n"
 "```"
 msgstr ""
-"Teie kaebust [käesoleva otsuse](%(log)s peale ei võetud.\n"
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"\"\"\n"
+"```\n"
 "%(note)s\n"
-"\"\""
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22723,9 +22753,8 @@ msgstr "Teie vanemal või hooldajal on palutud teie konto vabastada. Miski ei mu
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Teie vanem või hooldaja on selle teie konto jaoks välja lülitanud."
 
-#, machine, plain1
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
-msgstr "Teie vanem või hooldaja tegi selle konto teile. Nad näevad, mida teete saidil (teie postitused, kommentaarid, hääled, järjehoidjad, järgnevad, gildid, kellega vestlete, et teie kontost teatati ja teie hiljutised sisselogimised; sait ei näita neile kunagi, mida teie vestlused ütlevad) ja nad valivad, millised funktsioonid on sisse lülitatud. Näete, mida [Seaded > Sisu] (/settings/content). Nad valisid oma parooli: muuta seda [Seaded > Turvalisus](/settings/security) nii, et ainult sa tead seda, sest igaüks, kes teab seda saab sisse logida nagu sina ja lugeda oma vestlusi."
+msgstr ""
 
 #, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
@@ -23258,10 +23287,6 @@ msgstr "küsis %(name)s"
 msgid "avatar"
 msgstr "avatari"
 
-#, machine, plain1
-msgid "ban evasion"
-msgstr "keelust"
-
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "banned %(target)s"
@@ -23753,6 +23778,12 @@ msgstr "hoidke oma hoidlas kordusena; kõigile öeldakse enne liitumist"
 msgid "kicked post %(target)s"
 msgstr "kick post %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "karantiini tühistamine automaatse kontrolliga"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23983,6 +24014,12 @@ msgstr "avaldatud %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "avaldatud, avaldamata muudatustega"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "panna karantiini arve"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24449,9 +24486,9 @@ msgstr "sa olid lahti ühendatud."
 msgid "you're invited to write it"
 msgstr "sind kutsutakse seda kirjutama"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "teie konto ei saanud seda sel hetkel postitada (peatamine või gildi reeglid, millele see edastati). Avage see ja vajutage Post, et näha, mida."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "teie konto ei saanud seda sel hetkel postitada (see on ootel või peatatud või gildi reeglid, millele see edastati). Avage see ja vajutage Post, et näha, mida."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

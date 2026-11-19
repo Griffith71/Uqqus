@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sl\n"
@@ -150,6 +150,10 @@ msgid "**Your server only orders.** Every post it names goes through the same ru
 msgstr "** Vaš strežnik samo ukazuje.** Vsaka objava, ki jo ime gre skozi ista pravila kot vsak vir, preden je prikazano: odstranjene objave, zasebne guldne, vsak gledalec besedo filter in bloke. Postava, ki je gledalec morda ne vidi, je preprosto izpuščena."
 
 #, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>Avtomatsko preverjanje lahko da račun na čakanje. Nikoli ga ne more prepovedati.</b> Spletna stran preveri za neželeno pošto, za povezave blokira, za neželeno pošto v profilu, za nekoga, ki dobi prepoved, in za slike, ki se ujemajo s seznamom. Ko eden od njih izstreli, račun odloži ( Log ga imenuje karantena) in član osebja ga pogleda. To, kar sledi, je vedno odločitev osebe: objavi račun, ali admin ga prepoveduje, z razlogom, pravilom in pritožbo, kot je opisano zgoraj."
+
+#, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
 msgstr "<b>Pregnanstvo potrebuje razlog in nekaj, na kar se zanaša.</b> Guild moderator, ki izgnanci nekdo piše, zakaj in imena vsaj eno od svojih delovnih mest ali komentarjev v guild, da izgnanstvo, da se zanaša na; klepet nem potrebuje razlog preveč, in admin's shardown vedno počne. Spletna stran hrani zasebno kopijo vsakega predmeta, ki je bil imenovan, kot je bilo, za leto dni: oseba, guildovi moderatorji in administratorji ga lahko odprejo, tako da kasneje urejanje ali brisanje ne more spremeniti, na čem je odločitev počivala. Dnevnik navaja ime, javno postavko po svoji identiteti."
 
@@ -158,8 +162,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>Anonimno #3.</b> V eni nitki ima vsak, ki je anonimen tam, številko, podano v vrstnem redu, da so tam postali anonimni (ko so objavili ali komentirali anonimno, ali ko je izbris, \"izbris mojega imena\" ali zaprtje svojega računa je to naredil). To je ista številka na pošti in na anonimnih komentarjih te osebe, druga v vsaki drugi niti, in ostane, ko je račun izbrisan. Ljudem govori narazen; nikoli ne pove, kdo so."
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>Prepovedi, ki navajajo, kaj je nekdo napisal.</b> Ko administrator prepove ali začasno prekine račun, lahko navede delovna mesta in pripombe, ki ga upravičujejo, tudi tiste, ki so napisani anonimno. Ko se drugi admin strinja, Log imenuje račun za te postavke (vrstica o vsaki, in črta prepovedi), tako da lahko vsakdo preverite prepoved je pošteno. Predmeti ostanejo anonimni povsod drugje na spletni strani, nič se ne imenuje brez tega drugega admin, in vzvratno prepoved vzame ime nazaj ven."
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>Zahtevam oceno.</b> Obvestilo, ki ste ga poslali ima <b>Zahtevaj pregled</b> povezava, ki se odpre / appeal / karantena (potreben je podpis). Lahko vprašate enkrat za vsak hold, z do 500 znakov, in administracija strani odloči, nikoli ček, ki vas je držal. Če se sprijaznijo, se dvigne drža, tako pravi nova črta v Logu in ti je rečeno; če ne, se ti tudi to pove. Če admin kasneje račun prepove, to je ločena odločba z lastnim razlogom, pravilom in pritožbo, in kar je zgoraj navedeno o prepovedih, ki navajajo anonimna delovna mesta, velja zanj. Nikoli ne poimenuje računa za nekaj, kar je napisal anonimno."
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>Prepovedi, ki navajajo, kaj je nekdo napisal.</b> Ko administrator prepove ali začasno prekine račun, lahko navede delovna mesta in pripombe, ki ga upravičujejo, tudi tiste, ki so napisani anonimno. Ko se drugi admin strinja (ali na spletni strani z enim administratorjem, njegov lastnik), Log imenuje račun za te postavke (vrstica o vsaki, in črta prepovedi), tako da lahko vsakdo preverite prepoved je bilo pošteno. Predmeti ostanejo anonimni povsod drugje na spletni strani, nič se ne imenuje brez te odobritve, in ko se enkrat imenuje ostane: če se prepoved kasneje obrne, ali pa opustitev preprosto zmanjka, Log kaže, da tudi in obdrži ime, tako da se lahko prepoved, ki je bila ugotovljena narobe, vidi kot taka."
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +202,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>Zmernost</b>: post ali komentar skrit ali odstranjen, obnovljen, ali skrit v različici. Za vsakega: kdo (guild moderator po imenu; administracija strani kot \"Site admin\", nikoli po imenu), kdaj, kje, katero pravilo, in razlog, napisan za to. Nikoli ne prikazuje naslova ali besedila tistega, kar je bilo skrito."
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>Nikomur drugemu ne povedo.</b> Na njegovem profilu ni transparenta in nobenih imen strani račun, ki je na čakanju. Račun se pošlje obvestilo z splošnim razlogom (in pravilom, kjer obstaja) in povezavo za zahtevo za pregled."
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>Samo oseba dvigne držalo.</b> Ni čas, in ne preverjanje e-poštni naslov: admin ga sprosti iz čakalne vrste osebja, ali sprejme zahtevo za pregled. Hold preverjanje podpisa postavi na povsem nov račun je drugačna: preverjanje e-poštni naslov dvigne, da je eden, razen če je avtomatski pregled streljal na računu od takrat."
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>Postovi, napisani z drugimi.</b> Vsak avtorjev kredit je lahko anonimen sam: ko je objava anonimna že od začetka, ko avtor izbere \"odstrani moje ime\" za svoje zasluge, ali ko izbriše svoj račun. Samo ta kredit postane anonimen. #N\"; ostali avtorji ostanejo imenovani. Skrbniki vedno vidijo, čigav je."
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>Odstrani moje ime.</b> Objavi ali komentar ostane, kjer je, s svojim imenom off, in zapusti svoj profil. To se ne more razveljaviti, in se ne ponuja za delovno mesto, ki je bilo narejeno za krog, delovno mesto, ki je bila napitnina, ali delovno mesto, napisano z drugimi."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>Odstrani moje ime.</b> Objavi ali komentar ostane, kjer je, s svojim imenom off, in zapusti svoj profil. Ne more se popraviti in ni na voljo za delovno mesto, narejeno za krog ali delovno mesto, ki je bilo napitnino. Na pošti, ki je napisana z drugimi, si snameš samo svoje zasluge."
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -218,8 +234,20 @@ msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, t
 msgstr "<b>Poskušam ugotoviti, kdo stoji za anonimnim računom.</b> Ugibanje, testiranje ali primerjava računov, da bi razkrili nekoga, ki se je odločil za anonimnost, je nepoštena izpostavljenost in lahko privede do prepovedi. Spletna stran lahko vidi, ko guld moderator deluje na računu tako po številu kot po imenu, in njegovo osebje je povedal, da lahko iščejo."
 
 #, machine, plain2
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr "<b>To, kar lahko stori računovodja.</b> Lahko prebere spletno stran, spremeni svoje nastavitve in profil, izbriše, kar je napisal, zaznamek, nesledeče, pusti guldne in pošlje povratne informacije. Ne more objaviti, komentirati, urejati, glasovati, slediti nekomu, se pridružiti guldnu, naprej, repostu, namigu, poročanju, uporabi klepet ali klice, pisati v kanalu, wikiju ali dogodku, narediti prostor, krog, kuriran vir ali zgodbo, ali pa uporabiti moči cedenta. Sam držaj ničesar ne uniči."
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>Kaj avtomatsko preverjanje odstrani je javno.</b> Ko avtomatsko preverjanje odstrani post ali komentar, ga Log prikaže na zavihku Moderation kot vsako odstranitev: post ali komentar po svojem id, pravilo in splošni razlog, nikoli njegov naslov ali besedilo in nikoli kdo ga je napisal, tudi ko je bil anonimen. Sama odstranitev ne pošilja nobenega ločenega obvestila: oseba, ki je bil z najde <b>Pritožba za to odločitev</b> povezava na odstranjeno delovno mesto ali komentar, in uprava spletne strani odloči, da pritožba."
+
+#, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>Kaj ni nikoli objavljeno:</b> besede predmeta, ki ga je moderator odstranil ali skril, predmeta v prepovedanem cehu in vsega, kar je bilo izbrisano z računom, zaklenjenim kot otrok: tiste, ki kažejo vrstico in brez besed. Pošto, narejeno za krog, ali v zasebni guldn, se hrani samo za to občinstvo."
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>Kar kaže dnevnik.</b> Večina imetnikov ima eno vrstico na zavihku Sankcije, od strani: \"dajo račun v karanteno\", s pravilom, splošnim razlogom (\"Avtomatsko spam preverjanje\", \"Avtomatsko preverjanje povezave\" ali \"Avtomatsko preverjanje slike\") in časom. Ne omenja nobenega računa, ne pošte in ne pove ničesar o tem, kar je bilo ujeto. Ko se tak prijem dvigne, druga vrstica pravi \"dvignil karanteno avtomatsko preverjanje je bil postavljen\". Osebje vodi ločeno opombo, ki poimenuje račun in pove, kaj je ček videl; samo oni so ga prebrali. Nekatere posesti nimajo javne linije in jih bere le osebje, kot ostale stvari, ki jih stran naredi, da se sama upravlja."
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -364,6 +392,10 @@ msgstr[1] "Krmilo, ki še vedno ne deluje (%(num)s krat zapored) se ustavi in č
 msgstr[2] "Vir, ki še naprej ne deluje (%(num)s krat zapored) ustavi in član, ki teče je navedeno; začnite znova iz Nastavitve > Bots, ko bo delovalo."
 msgstr[3] "Vir, ki še naprej ne deluje (%(num)s krat zapored) se ustavi in član, ki ga upravlja, je napovedan; zaženi ga znova iz Nastavitve > Bots, ko bo delovalo."
 
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "Hold samodejno preverjanje na vašem računu se sprašuje o isti način, enkrat za vsako hold: glej Avtomatski pregledi zgoraj."
+
 #, machine, plain1
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
 msgstr "Član bot lahko objavi tudi iz scenarija svojega člana, preko **bot ključa**. Tako se zažene robot za **X**: X nima virov in njegovi pogoji ne dovoljujejo drugim spletnim mestom, da ga strgajo, zato uporabite lasten dostop X v svojem scenariju in objavite vsako povezavo tweeta. Spletna stran prikazuje povezavo do tweeta, kot je X's lastno vdelano, zato ni prepisano nobeno tweet besedilo. Stranski roboti nimajo ključev."
@@ -477,6 +509,10 @@ msgstr "Prositi za besede, da pridejo dol"
 #, machine, plain1
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "Avtomatske objave so objave javnih zvez: nikoli anonimno, za kroge ali soavtor. Lahko jih pošljete na cehe, ki jih izberete, po pravilih vsakega ceha."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "Avtomatski pregledi"
 
 #, machine, plain1
 msgid "Awesome online communities, without censorship"
@@ -1593,8 +1629,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "Prvi amandma k Ustavi Združenih držav navaja:"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "Dnevnik je en zapis o tem, kaj guld moderatorji in stran odločil, in kaj člani izbrisani. Nič v njej ni nikoli urejeno: popravek je nova vrstica, ki kaže na tisto, ki jo popravi. Odpri jo iz stopala ali pa na log."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "Dnevnik je en zapis o tem, kaj guld moderatorji in stran odločil, in kaj člani izbrisani. Kar piše, ni nikoli na novo napisano: popravek je nova vrstica, ki kaže na tisto, ki jo popravi. Samo tri stvari so snete iz vrstice, vsaka pa zapusti vrstico samo: razlog, ki ga administrator skriva za poročilom, postavka, na katero je opozoril, ko je njegov avtor kasneje snel njihovo ime, in besede nečesa, kar administrator izbriše. Odpri jo iz stopala ali pa na log."
 
 #, machine, plain1, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1603,6 +1639,10 @@ msgstr "Tok odobritve OAuth2 se uporablja za omogočanje uporabnikom, da odobrij
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "Platforma"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "Obseg `delete` odstrani predmet z mesta; kar odstrani več kot pet minut po tem, ko je bil predmet zapisan, ostane v javnem dnevniku kot Anonimno. Odstranjevanje imena (\"odstranite moje ime\") in orodja za zgodovino so lastni spletni strani in niso na voljo aplikacijam."
 
 #, machine, plain1
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"

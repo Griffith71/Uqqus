@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: az\n"
@@ -1505,6 +1505,10 @@ msgstr "%(who)s səviyyəli moduerator @%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s avtomatlaşdırılmış avtomatik çek yerləşdi"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s qazanmaq %(name)s"
@@ -1568,6 +1572,10 @@ msgstr "%(who)s kanalda bir mesaj asdı"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s pinned post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s quarantine hesabatı"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -1811,9 +1819,9 @@ msgstr "(view cari)"
 msgid "**%(site)s Policies**"
 msgstr "**%(site)s Sifariş**"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "**%(title)s** in +%(guild)s starts within the hour: [see the event](/+%(guild)s/events/%(event)s)"
-msgstr "**%(title)s** in +%(guild)s saatı daxildir: [gəyahət] (/+%(guild)s/events/%(event)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "**Account Cosmetics**"
@@ -2580,9 +2588,9 @@ msgstr ""
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr ""
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@%(name)s onlar 18 və ya üzərində deyir və öz hesablarını azad etmək istədi. [Settings > Uşaqlar] (/settings/children)."
+msgstr ""
 
 #, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
@@ -2723,6 +2731,10 @@ msgstr "A Space hazırda başlamaz."
 #, machine, plain1
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Bunun üçün bir Space <span class=\"text-muted font-weight-normal\">(optional: Space post link)</span>"
+
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Bir Space öz səhifəsindən sona çatdırılır; bir post kimi silinməz."
 
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
@@ -2909,9 +2921,9 @@ msgstr "Kanal adı nəzarət və ya gözəl simvolları ehtiva edə bilər."
 msgid "A chat app wants to sign in to your chats as <strong>@%(name)s</strong>."
 msgstr "Bir chat app sizin chats imzalamaq istəyir <strong>Bakı%(name)s</strong>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
-msgstr "%(site)s hesabınıza chat app imzalanmışdır. Siz deyil ki, [Settings > Chat apps] (/settings/chat_apps) və şifreyi dəyişdirin."
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
@@ -2973,6 +2985,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Bu gizli olduqda olduğu kimi, silindi, silindi və ya qəbul edildi. Yalnız onun yazıçısı, qeyd olunan və saytın administratorləri burada açıqla bilər. Ən çox nümunələr bir dəfə sonra təmizlənir; onun mövcuddur bir şeyin nümunəsi ictimai Girişdir."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3367,6 +3383,10 @@ msgstr "Əvvvəl çəkilmiş bir post onun adı silinmədi, çünki səfər siz�
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Ümumi olmayan bir post bu şəkil yükləməz: onun faylları ünvanı olan hər kəs tərəfindən açıqla bilər. Sizin bağlı saxlamadan şəkil əlavə edin (Settings > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Anonim kredit ilə bir post torpaq ola bilər."
+
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr ""
 
@@ -3391,10 +3411,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "%(count)s xüsusiyyəti (Çin, Yaponiya və Koreya simvolları və emoji sayı 2) ola bilər."
 msgstr[1] "%(count)s simptomları (Çin, Yaponiya və Koreya simptomları və emoji sayı 2) ola bilər."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Bu gizli olduqda olduğu kimi bu xüsusi bir nümunə, silindi və ya qəbul edildi. Yalnız onun yazıçısı, qeyd olunan və saytın administratorləri açıqlaya bilər ki, guild moderatorlar, və bu heç bir qeyd deyil."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4105,10 +4121,6 @@ msgstr "Dövlətlər və məhsullar hər bir xəritə kimi göstərir kimi göst
 msgid "Algorithm"
 msgstr "Alg"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Alqoritm qeyd."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4354,6 +4366,29 @@ msgstr "%(time)s saytında aktiv deyil bir yazar sayt deyil."
 msgid "An automated post can't have its name removed."
 msgstr "Avtomatlaşdırılmış post adı silinməz."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Heç bir avtomatik çek hesabı daxildir."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Heç bir avtomatik çek hesabınızı tutmaq, belə ki, indi bunu etmirsiniz. Həmçinin bir üzvü ona baxacaq. Siz çek yanlış olduğunu düşünürsə, bir baxış sorğu bilərsiniz."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Heç bir avtomatik çek hesabınızdan keçirilir."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Bir şifreli kanal qeyd etmək üçün onun qaydaları sorya bilər: site kim yazıb yoxdur."
@@ -4382,9 +4417,9 @@ msgstr "Sonda bir hadis başlayacaq."
 msgid "An event ends after it starts."
 msgstr "Bu başlanğıcdan sonra bir hadisə son verir."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "An event in +%(guild)s starts within the hour: [see the event](/+%(guild)s/events/%(event)s)"
-msgstr "+%(guild)s-da məlumat saatı daxildir: [gəri gör] (/+%(guild)s/events/%(event)s)"
+msgstr ""
 
 #, machine, plain1
 msgid "An idea"
@@ -4475,8 +4510,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Anonim #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Anonim olanlar ikinci administrator təsdiq etdiyi zaman anonim olaraq, və sonra Giriş adlarını onların yanında."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Anonim olanlar ikinci administrator bir administrator ilə bir saytda (ya da, bir administrator, onun sahibi ilə bir saytda) və sonra onlar üzərində giriş adları."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4720,6 +4755,10 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Müəllif olaraq, sizin ilə yaşayır, və növü kimi növü sizə qəbul edilir. Qeyd edilən əvvəl, görə görə bilər ki, kim bilir ki,. Yazarlar bir araya gəlir:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Baxış"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4987,14 +5026,6 @@ msgstr "Qarabağ"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Tarix"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Ban .  This ."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Ban . Bu göndəricinin sahibi digər hesabatda qarşılanır."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6263,6 +6294,10 @@ msgstr "Gizli və ya çıxış"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "E-poçt ünvanı"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "E-poçt ünvanı anonimdir. Bir admin bir üçün hesabı qaldırırsa, Log bunun üçün hesab ola bilər."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Şərhlər:"
@@ -6969,9 +7004,8 @@ msgstr "Bu rolu daxil edin? Hər şey itirir, və kanalları qeyd etdiyini unutu
 msgid "Delete your %(site)s account"
 msgstr "%(site)s hesabınıza daxil edin"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Daxil ol"
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr ""
 
 #, machine, plain2
 msgid "Deleted"
@@ -7596,10 +7630,6 @@ msgid "Engagement"
 msgstr "Engagement"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Xüsusi fəaliyyətdə iştirak"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Daxili fəaliyyət və ya planlaşdırılması"
 
@@ -7702,10 +7732,6 @@ msgstr "Eta Aquariids meteor duş"
 #, machine, plain1
 msgid "Ethics"
 msgstr "E-poçt"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Bir saytın ümumi çıxarılması"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7822,6 +7848,10 @@ msgstr "Hər bir digər dəyişiklikləri kimi görür və hər bir xüsusiyyət
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Sizin guilds və heç bir şey, yeni ilk."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Yadda yazdığınız hər şey Anonim kimi saytda kalır və geri alınmaz. Siz getmək istədiyiniz və ya onun adını aradan qaldırmaq, ilk (History > idarəetmə)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9746,9 +9776,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Invite moderator"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Bu post paylaşmaq üçün insanlar. Bu, onların adı keçirir və onların profildə listelenen. Siz həyata dəyişdirin, silinin və onu gözləyin. Anonim yazılardan deyil."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Bu post paylaşmaq üçün insanlar. Onlar adını qeydiyyatdan keçdikdən sonra və onların profilində listelenen; anonim post onların krediti anonim deyil. Siz həyata dəyişdirin, silinin və onu gözləyin."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13463,8 +13493,8 @@ msgid "Post anonymously"
 msgstr "Anonim paylaş"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "E-poçt ünvanı Adminlər həmçinin kim olduğunu görə bilər. Bu yazı çıxdıqda dəyişməz."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "E-poçt ünvanı Adminlər hər zaman kim olduğunu görə bilər, və administratorin banı anonim maddələr üçün giriş adı ola bilər. Bu yazı çıxdıqda dəyişməz."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -14189,9 +14219,8 @@ msgstr "QR imza-in deyil."
 msgid "QR sign-in was turned on for your %(site)s account"
 msgstr "QR imza-in %(site)s hesabınıza çevrildi"
 
-#, machine, plain1
 msgid "QR sign-in was turned on for your account. If this wasn't you, change your password in [Settings > Security](/settings/security)."
-msgstr "QR imza-in hesabınıza çevrildi. Bu siz deyil, [Settings > Security] (/settings/security)-da şəkilinizi dəyişdirin."
+msgstr ""
 
 #, machine, plain1
 msgid "Quadrantids meteor shower"
@@ -16060,15 +16089,12 @@ msgid ""
 "The coins are in your balance: keep them, tip someone, or redeem a week of [%(site)s Premium](/settings/premium) per coin."
 msgstr ""
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Someone liked [your bot's post](%(link)s) and has tipped you %(coins)s coins!\n"
 "\n"
 "The coins are in your balance: keep them, tip someone, or redeem a week of [%(site)s Premium](/settings/premium) per coin."
 msgstr ""
-"One sevdi [ Sizin botun post] (%(link)s) və siz %(coins)s parametr var!\n"
-"\n"
-"Coins sizin balans var: onları saxlayın, birini növ, və ya bir həftə edir [%(site)s Premium] (/settings/premium) hesab."
 
 #, python-format
 msgid ""
@@ -16102,17 +16128,13 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "Siz rəsmi olaraq bu səhifə qəbul. Sizin məhsul buradadır: kopyalayın, onların dəyişiklikləri görmək üçün səhifə yükləyin və bir daha əlavə edin."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
 "\n"
 "\n"
 "If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
 msgstr ""
-"Heç bir QR kodu ilə hesabınıza imzalanmışdır: %(browser)s, %(place)s, %(when)s.\n"
-"\n"
-"\n"
-"Siz deyildiyiniz zaman, [yerin hər yerdə birləşmə] (/settings/security#log-out-everywhere) və [ Sizin apps](/settings/apps) və [səs chat apps] (/settings/chat_apps): aradan qaldırma buraxmaq deyil."
 
 #, machine, plain1
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
@@ -16227,10 +16249,6 @@ msgstr "Spaces hazırda cavab deyil. Bir anda yeniləyin."
 #, machine, plain1
 msgid "Spam"
 msgstr "Spam"
-
-#, machine, plain1
-msgid "Spamming."
-msgstr "Spamming."
 
 #, machine, plain1
 msgctxt "button"
@@ -17384,7 +17402,7 @@ msgid "The auto-moderation was saved."
 msgstr "Avtomatik-moderation qeyd edildi."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17412,10 +17430,6 @@ msgstr "Avtomobil @%(name)s təklif edilmişdir. admins dedi: %(note)s"
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Bot artıq o feed oxu."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Bot çox oxu oxu hansı bir məlumat göstərdi."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17485,6 +17499,10 @@ msgstr "Proqram haqqında dəyişikliklər var."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Əvvəlki versiyalar bu gizli deyil."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Əvvəlki versiyalar göstərilməsi deyil: bu silindi və onun məhsulları silindi."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17616,6 +17634,10 @@ msgstr "Qalereya."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Gu . Lotereatorlar onlara heç bir zaman keçirilir. Birini pozan bir mesaj heç bir söz deyil deyil ki, qarşı bir səbəb ilə redaktə edilir."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Sizin hesabında saxla Siz post edə bilərsiniz, daha çox oxu."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18118,9 +18140,9 @@ msgstr "Onlar burada kömək deyil."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Onlar almaq və qazanmaq olar, tip, Premium almaq və ya qazanmaq."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Onlar ev sahibi və Spaces iştirak edə bilər və canlı iplər run. Bir Space səyahətli səyahətlər demək lazımdır Chat olmalıdır."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Onlar iştirak və Spaces dinləyə bilər. Onlar bir və ya bir post evləyir: bir uşaq hesabı yalnız oxuyur. Bir Space səyahətli səyahətlər demək lazımdır Chat olmalıdır."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18332,6 +18354,10 @@ msgstr "Bu bot çalışan deyil."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Bu botun sahibi tam indi onu run edə bilər."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Bu botun sahibi, hesabının qaldırılması zamanı işləyə bilər."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -20209,9 +20235,8 @@ msgstr "Biz buradan almaq."
 msgid "We're sorry something here is wrong."
 msgstr "Burada bir şey üzrəkkür."
 
-#, machine, plain1
 msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "Biz [Terms] Yaş bölməsini dəyişdirdik(/help/terms). 18-ci ildən birinin hesabına bir uşaq kilidi var və Böyük Britaniyada, AB və Avstraliya Sizin yaş bir yaş kontrol xidməti ilə təklif edilməlidir, və ya xüsusi content görə bilərsiniz. Siz 18 və ya Ayarlar üzərindən sonra deyə bilərsiniz >  Content."
+msgstr ""
 
 #, machine, plain1
 msgid "Web Development"
@@ -20251,7 +20276,7 @@ msgstr "%(site)s qoşul!"
 msgid "Welcome to %(site)s! These communities are currently Trending. Join some to start customizing your <a href=\"/\">home page</a>."
 msgstr "Bakı %(site)sBöyük Britaniya Sizin xüsusilə başlamaq üçün əlavə olun <a href=\"/\">home</a>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Welcome to %(site)s, %(name)s. We're glad to have you here.\n"
 "\n"
@@ -20264,16 +20289,6 @@ msgid ""
 "\n"
 "-The %(site)s team"
 msgstr ""
-"%(site)s, %(name)s. Burada sizə sevinirəm.\n"
-"\n"
-"\n"
-"Bir neçə şey ilə başlamaq:\n"
-"- İnsanları izləyin və [bir səfər guilds] (/browse) sonra yem bir şey var\n"
-"- [rules] (/help/rules) və [help pages] (/help)\n"
-"- [Settings >  Content] (/settings/content)\n"
-"\n"
-"\n"
-"- %(site)s komandası"
 
 #, machine, plain1
 msgid "West Slavia"
@@ -22128,19 +22143,16 @@ msgstr ""
 "\n"
 "%(message)s"
 
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Sizin %(site)s hesabı aşağıdakı səbəblər üçün daimi qaldırılmışdır:\n"
-"\n"
-"> qazanmaq"
-
-#, machine, plain1, python-format
+#, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
-msgstr "Sizin %(site)s hesabı yenilənmişdir. Daxili baxmaq və [həmli xidmətlər] (/help/terms) və [rules və təkliflər] (/help/rules) bir daha asmaq deyil."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
 
 #, machine, plain1, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -22155,16 +22167,6 @@ msgstr ""
 "Sizin %(site)s hesabı aşağıdakı səhifə üçün %(days)s gün qaldırılmışdır:\n"
 "\n"
 "%(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Sizin %(site)s hesabı aşağıdakı səbəb üçün 1 gün qaldırılmışdır:\n"
-"\n"
-"> çox spam!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22294,6 +22296,10 @@ msgstr "Sizin hesabınız xüsusiyyət göstərir."
 msgid "Your account is no longer marked sensitive."
 msgstr "Sizin hesabınız artıq xüsusiyyətli deyil."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Sizin hesabınız haqqında"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Sizin hesab alıb."
@@ -22306,21 +22312,15 @@ msgstr "Sizin hesabınız bu guild kanallarında yazmaq üçün çox yenidir."
 msgid "Your account is waiting for a quick check before it can do this. To skip the wait, verify an email address in Settings > Security."
 msgstr "Sizin hesab buraxa bilər ki, sürətli bir çek gözləyir. gözləyir, Ayarlarda e-poçt ünvanını doğrulayın > Elanlar."
 
-#, machine, plain1
 msgid ""
 "Your account is waiting for a quick check before you can post, comment, vote or follow. You can look around and set up your profile in the meantime.\n"
 "\n"
 "\n"
 "To skip the wait, add and verify an email address in [Settings > Security](/settings/security)."
 msgstr ""
-"Sizin hesab edə bilərsiniz əvvəl, hesab, səhifə və ya takip edə bilərsiniz. Siz haqqında baxa bilər və bu arada profilinizi dəstəyirsiniz.\n"
-"\n"
-"\n"
-"baxmaq, əlavə etmək və [Settings > Security] (/settings/security) e-poçt ünvanını doğrulamak."
 
-#, machine, plain1
 msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "Sizin hesabınız indi sizindir. Bu artıq uşaq kilidi var və uşaq və ya uşaq daha uzun görə bilər. Onlar şəkil seçdi: [Settings > Security] (/settings/security), və ya onlar həmçi kimi imzalaya bilər."
+msgstr ""
 
 #, machine, plain1
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -22358,9 +22358,8 @@ msgstr "Sizin hesabın avtomatlaşdırılması bir daha işləyir."
 msgid "Your account's automated posting stopped reading %(url)s after %(fails)s failed tries: %(reason)s Start it again from Settings > Bots once it works."
 msgstr "Sizin hesabın avtomatlaşdırılması %(url)s sonra %(fails)s başarısız çalışır: %(reason)s Ayarlardan bir daha başlayır > Bots bir neçə çalışır."
 
-#, machine, plain1
 msgid "Your account's automated posting was approved. Your feeds' new posts appear on your profile, marked as automated, within a few minutes. Manage it in [Settings > Bots](/settings/bots)."
-msgstr "Sizin hesabın avtomatlaşdırılması təsdiq edilmişdir. Sizin feeds yeni yazıları profilinizdə görünür, avtomatlaşdırılmış kimi, bir neçə dərhal. [Settings > Bots] (/settings/bots)."
+msgstr ""
 
 #, machine, plain1
 msgid "Your age"
@@ -22378,7 +22377,7 @@ msgstr "Sizin cavab"
 msgid "Your appeal is waiting to be read."
 msgstr "Sizin əlavə oxumaq oxuyun."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
 "\n"
@@ -22386,13 +22385,8 @@ msgid ""
 "%(note)s\n"
 "```"
 msgstr ""
-"Sizin [bu qəbul](%(log)s) qəbul edildi və qəbul edildi.\n"
-"\n"
-"\"\n"
-"%(note)s\n"
-"\""
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
 "\n"
@@ -22400,15 +22394,37 @@ msgid ""
 "%(note)s\n"
 "```"
 msgstr ""
-"Sizin [bu qəbul](%(log)s) baxıldı, və qəbul.\n"
-"\n"
-"\"\n"
-"%(note)s\n"
-"\""
 
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -22485,9 +22501,8 @@ msgstr "Sizin chat cihazlar"
 msgid "Your chat devices can't be listed right now."
 msgstr "Sizin chat cihazlar hazır ola bilər."
 
-#, machine, plain2
 msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
-msgstr "Sizin chat şifreleme başlayıb. Əvvəlki chat onları geri gətirdiyiniz bir browser olmadan cihazlarınızda oxuya bilmir. Bu siz deyil, [Settings > Security] (/settings/security)-da şəkilinizi dəyişdirin."
+msgstr ""
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -22667,17 +22682,14 @@ msgstr "Sizin əvvəl və ya qorunması hesabınıza qeyd edilir. Onlar cavab ve
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Sizin valideyn və ya qəbul sizin hesabınız üçün bu itirdi."
 
-#, machine, plain1
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
-msgstr "Sizin valideyn və ya qəbul sizin üçün bu hesabı etdi. Onlar saytda ne etdiyini görə bilər (səhifələr, şərhlər, qoymaq, kitabmarks, aşağıda, guilds, kim ilə söylədiyiniz, hesabınıza bildirilmiş və son imza-ins idi; saytda chats deyil ki, onlara heç bir şey deyil) və onlar xüsusiyyətlərin olduğunu seçin. [Settings >  Content] (/settings/content) Onlar sizin şəkil seçdi: [Settings > Security] (/settings/security) dəyişdirir, yalnız bilirsiniz, heç kim bilir ki, siz kimi imzalaya bilər və chats."
+msgstr ""
 
-#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "Sizin valideyn və ya qəbul sizin hesabı üçün yeni bir şəkil təklif etdi və siz qarşılaşdı. Yeni şəkil ilə imzalayın, sonra onu dəyişdirin [Settings > Security] (/settings/security) ki, yalnız bilirsiniz."
+msgstr ""
 
-#, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "Sizin valideyn və ya qəbul sizin hesabınızı idarə etdi. Siz Ayarlarda yaşını təsdiq etməyə uşaq kilidi saxlayın >  Content. Onlar şəkil seçdi: [Settings > Security] (/settings/security), və ya onlar həmçi kimi imzalaya bilər."
+msgstr ""
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -22864,17 +22876,15 @@ msgstr ""
 msgid "[@%(name)s](/@%(name)s) subscribed to your paid circle %(circle)s."
 msgstr ""
 
-#, machine, plain1
 msgid "[API Documentation](/help/docs)"
-msgstr "[API Documentation] (/help/docs)"
+msgstr ""
 
 #, machine, plain1
 msgid "[About](/help/about)"
 msgstr "[Hak](/help/about)"
 
-#, machine, plain1
 msgid "[Badges](/help/badges)"
-msgstr "[Badges] (/help/badges)"
+msgstr ""
 
 #, machine, plain1
 msgid "[CSAM](/help/csam)"
@@ -22896,40 +22906,33 @@ msgstr "[Azerbaycanlı]"
 msgid "[FAQ](/help/faq)"
 msgstr "[FAQ](/help/faq)"
 
-#, machine, plain1
 msgid "[Guild Siege](/help/siege)"
-msgstr "[Guild Takeover iddia] (/help/siege)"
+msgstr ""
 
-#, machine, plain2
 msgid "[How moderation is recorded](/help/moderation)"
-msgstr "[Neyyarət qeyd olunur] (/help/moderation)"
+msgstr ""
 
 msgid "[Legal Policies](/help/legal)"
 msgstr ""
 
-#, machine, plain1
 msgid "[Meet the admins](/help/admins)"
-msgstr "[Məhsullar] (/help/admins)"
+msgstr ""
 
-#, machine, plain1
 msgid "[OAuth2 Guide](/help/oauth)"
-msgstr "[OAuth2 Guide] (/help/oauth)"
+msgstr ""
 
 #, machine, plain1
 msgid "[Our third-party service providers](/help/services)"
 msgstr "[Bizim üçüncü müştərilərimiz](/help/services)"
 
-#, machine, plain1
 msgid "[Post Formatting](/help/formatting)"
-msgstr "[Post Formatting] (/help/formatting)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Press Resources](/help/press)"
-msgstr "[Press Resources] (/help/press)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Privacy Policy](/help/privacy)"
-msgstr "[Privacy Policy] (/help/privacy)"
+msgstr ""
 
 #, glossary, machine, plain2
 msgid "[Removed by admin]"
@@ -22943,9 +22946,8 @@ msgstr "[Proqramlar]"
 msgid "[Removed by guildmasters of +%(guild)s]"
 msgstr "[Güclü modueratorlar tərəfindən istifadə olunur +%(guild)sOxunub:"
 
-#, machine, plain1
 msgid "[Rules and Guidelines](/help/rules)"
-msgstr "[Rules and Guidelines] (/help/rules)"
+msgstr ""
 
 #, machine, plain1
 msgid "[Search tips](/help/search)"
@@ -22965,9 +22967,8 @@ msgstr "[Davamı](/legal)"
 msgid "[Terms of service](/help/terms)"
 msgstr "[Davamı](/help/terms)"
 
-#, machine, plain1
 msgid "[Titles](/help/titles)"
-msgstr "[Titles] (/help/titles)"
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "[Your comment](%(item)s) is shown again under the post it is on."
@@ -23198,10 +23199,6 @@ msgstr "asked %(name)s"
 #, machine, plain1
 msgid "avatar"
 msgstr "qeydiyyat"
-
-#, machine, plain1
-msgid "ban evasion"
-msgstr "ban"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23694,6 +23691,12 @@ msgstr "öz saxlamada replay kimi saxlamaq; onlar qoşulmadan əvvəl hər şey 
 msgid "kicked post %(target)s"
 msgstr "qeydiyyat %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "bir quarantine avtomatik çek yerləşdi"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23924,6 +23927,11 @@ msgstr "published %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "qeyd olunmuş dəyişikliklər"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+msgid "put an account in quarantine"
+msgstr ""
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24390,9 +24398,9 @@ msgstr "siz bölündü."
 msgid "you're invited to write it"
 msgstr "oxunub"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "sizin hesab o anda (a süspansiyon, və ya bir guild qaydaları ola bilər). Oxunu görə basın və basın Post."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "sizin hesab o anda buraxa bilmədi (bu, qazanmaq və ya asmaq, və ya bir guild qaydaları gözləndi). Oxunu görə basın və basın Post."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

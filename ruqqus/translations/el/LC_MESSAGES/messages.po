@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -1505,6 +1505,10 @@ msgstr "%(who)s προσκεκλημένος συντονιστής συντεχ
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s κλώτσησε τη θέση %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s άρση καραντίνας ένας αυτόματος έλεγχος είχε τοποθετηθεί"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s άρση της απαγόρευσης του %(name)s"
@@ -1568,6 +1572,10 @@ msgstr "%(who)s καθήλωσε ένα μήνυμα σε ένα κανάλι"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s καθηλωμένη θέση %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s βάλτε ένα λογαριασμό σε καραντίνα"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2732,6 +2740,10 @@ msgstr "Ένας χώρος δεν μπορεί να ξεκινήσει στο �
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Ένας χώρος για αυτό <span class=\"text-muted font-weight-normal\">(προαιρετικά: ο ταχυδρομικός σύνδεσμος του Διαστήματος)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Ένας χώρος τελειώνει από τη δική του σελίδα, δεν διαγράφεται σαν μια ανάρτηση."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Ένας χώρος είναι ζωντανός για λίγο: ένας πίνακας, μια ζωντανή κλωστή ή μια κλήση. Το φυλάνε για επανάληψη, αλλιώς χάνεται όταν τελειώνει."
@@ -2981,6 +2993,10 @@ msgstr "Ένα σημείωμα της κοινότητας προστέθηκε
 #, machine, plain1, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr "Ένα σημείωμα της κοινότητας προστέθηκε σε μια ανάρτηση που ρωτήσατε: [δείτε]( %(link)s)"
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Ένα αντίγραφο αυτού όπως ήταν όταν ήταν κρυμμένο, αφαιρέθηκε, διαγράφηκε ή στηρίχθηκε σε μια απόφαση. Μόνο ο συγγραφέας της, οι συντονιστές της συντεχνίας που αποφάσισαν και οι διαχειριστές της ιστοσελίδας μπορούν να την ανοίξουν εδώ. Τα περισσότερα αντίγραφα καθαρίζονται μετά από λίγο· το αντίγραφο κάτι που ο συγγραφέας του διέγραψε παραμένει στο δημόσιο ημερολόγιο."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3376,6 +3392,10 @@ msgstr "Μια θέση που έχει φιλοδώρημα δεν μπορεί
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Μια ανάρτηση που δεν είναι δημόσια δεν μπορεί να χρησιμοποιήσει αυτή την εικόνα αποστολής: τα αρχεία της μπορούν να ανοιχτούν από οποιονδήποτε με τη διεύθυνση. Προσθέστε την εικόνα από τη συνδεδεμένη αποθήκευσή σας (Settings > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Μια θέση με ανώνυμη πίστωση δεν μπορεί να διαγραφεί."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Μια θέση με συν-συγγραφείς δεν μπορεί να μετακινηθεί σε κύκλους. Η μετακίνηση μιας δημόσιας θέσης σε κύκλους παίρνει κάτω τα αντίγραφα που προωθήσατε? αντίγραφα άλλα άτομα προωθήθηκε διαμονή στις συντεχνίες τους."
@@ -3401,10 +3421,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Το κείμενο μιας δημοσίευσης μπορεί να είναι χαρακτήρας %(count)s (κινεζικοί, ιαπωνικοί και κορεατικοί χαρακτήρες και emoji μετρούν ως 2)."
 msgstr[1] "Το κείμενο μιας δημοσίευσης μπορεί να είναι %(count)s χαρακτήρες (κινέζοι, Ιάπωνες και Κορεάτες χαρακτήρες και emoji μετρούν ως 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Ένα ιδιωτικό αντίγραφο αυτού όπως ήταν όταν ήταν κρυμμένο, αφαιρέθηκε, διαγράφηκε ή στηρίχθηκε σε μια απόφαση. Μόνο ο συγγραφέας της, οι συντονιστές συντεχνίας της συντεχνίας που αποφάσισε και οι διαχειριστές της ιστοσελίδας μπορούν να την ανοίξουν, και δεν διατηρείται για πάντα."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4116,10 +4132,6 @@ msgstr "Οι προειδοποιήσεις και οι τίτλοι προέρ�
 msgid "Algorithm"
 msgstr "Αλγόριθμος"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Ο αλγόριθμος σώθηκε."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4365,6 +4377,29 @@ msgstr "Ένας συγγραφέας που δεν ήταν ενεργός στ
 msgid "An automated post can't have its name removed."
 msgstr "Μια αυτοματοποιημένη ανάρτηση δεν μπορεί να αφαιρέσει το όνομά της."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Μια αυτόματη επιταγή έβαλε το λογαριασμό σε αναμονή."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Μια αυτόματη επιταγή έβαλε το λογαριασμό σας σε αναμονή, οπότε δεν μπορείτε να το κάνετε αυτό προς το παρόν. Ένα μέλος του προσωπικού θα το κοιτάξει. Αν νομίζετε ότι η επιταγή ήταν λάθος, μπορείτε να ζητήσετε μια αναθεώρηση."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Μια αυτόματη επιταγή έβαλε το λογαριασμό σας σε αναμονή."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Ένα κρυπτογραφημένο κανάλι δεν μπορεί να ζητήσει την αποδοχή των κανόνων του: ο ιστότοπος δεν μπορεί να ελέγξει ποιος έγραψε."
@@ -4486,8 +4521,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Ανώνυμος #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Οι ανώνυμοι παραμένουν ανώνυμοι εκτός αν ένας δεύτερος διαχειριστής το εγκρίνει, και στη συνέχεια το ημερολόγιο ονομάζει τον λογαριασμό σας δίπλα τους."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Οι ανώνυμοι παραμένουν ανώνυμοι εκτός αν ένας δεύτερος διαχειριστής εγκρίνει (ή, σε μια ιστοσελίδα με έναν μόνο διαχειριστή, τον ιδιοκτήτη του), και στη συνέχεια το ημερολόγιο ονομάσει τον λογαριασμό σας δίπλα τους."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4731,6 +4766,10 @@ msgstr "Ορεινά υψίπεδα"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Ως συγγραφέας επεξεργάζεστε το προσχέδιο ζωντανά μαζί τους, και κάθε χαρακτήρας που πληκτρολογείτε πιστώνεται σε σας. Μόλις δημοσιευθεί το άρθρο, όποιος το δει μπορεί να δει ποιος έγραψε τι. Οι συγγραφείς αποφασίζουν από κοινού:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Ζητήστε μια ανασκόπηση"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4998,14 +5037,6 @@ msgstr "Βαλκάνια"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Απαγόρευση σχολίου"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Απαγόρευση διαφυγής. Ο ιδιοκτήτης αυτού του σχολίου απαγορεύτηκε σε άλλο λογαριασμό."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Απαγόρευση διαφυγής. Ο ιδιοκτήτης της αίτησης απαγορεύτηκε για άλλο λογαριασμό."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6275,6 +6306,10 @@ msgstr "Σχόλια κρυμμένα ή αφαιρούμενα"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Σχόλια για την ανώνυμη θέση σας είναι ανώνυμα"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Τα σχόλια για την ανώνυμη θέση σας είναι ανώνυμα. Εάν ένας διαχειριστής απαγορεύσει ή αναστείλει το λογαριασμό για ένα, το Ημερολόγιο μπορεί να ονομάσει το λογαριασμό για αυτό."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Σχόλια:"
@@ -6981,9 +7016,9 @@ msgstr "Διαγραφή αυτού του ρόλου; Ο καθένας το χ
 msgid "Delete your %(site)s account"
 msgstr "Διαγραφή του λογαριασμού σας %(site)s"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Διαγραφή δημοσιεύσεων και σχολίων"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Διαγράψτε τις δημοσιεύσεις και τα σχόλιά σας (αυτό που διαγράφεται περισσότερο από πέντε λεπτά αφού γράφτηκε παραμένει στο δημόσιο ημερολόγιο, ως Anonymous)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7609,10 +7644,6 @@ msgid "Engagement"
 msgstr "Εμπλοκή"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Συμμετοχή σε παράνομες δραστηριότητες"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Ενεργοποίηση ή προγραμματισμός παράνομης δραστηριότητας"
 
@@ -7715,10 +7746,6 @@ msgstr "Eta Aquariids βροχή μετεωριτών"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Ηθική"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Αποφυγή απαγόρευσης σε ολόκληρο το χώρο"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7836,6 +7863,10 @@ msgstr "Ο καθένας βλέπει τις αλλαγές του άλλου �
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Τα πάντα από τις συντεχνίες και τους λογαριασμούς σας, νέα πρώτα."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Ό,τι έγραψες μένει στην ιστοσελίδα ως Ανώνυμο και δεν μπορεί να το πάρει πίσω. Διαγράψτε ό, τι θέλετε φύγει, ή αφαιρέστε το όνομά σας από αυτό, πρώτα (Ιστορία > Διαχείριση)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9760,9 +9791,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Συντονιστής προσκλήσεων"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Κάλεσε τους ανθρώπους να μοιραστούν αυτή τη θέση. Μόλις το αποδεχτούν φέρει το όνομά τους και αναγράφεται στο προφίλ τους. Ακόμα το επεξεργάζεσαι, το διαγράφεις και το προωθείς. Όχι για ανώνυμες δημοσιεύσεις."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Κάλεσε τους ανθρώπους να μοιραστούν αυτή τη θέση. Μόλις το δεχτούν φέρει το όνομά τους και αναγράφεται στο προφίλ τους· σε ανώνυμη ανάρτηση η πίστωση τους είναι επίσης ανώνυμη. Ακόμα το επεξεργάζεσαι, το διαγράφεις και το προωθείς."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13480,8 +13511,8 @@ msgid "Post anonymously"
 msgstr "Ανώνυμη δημοσίευση"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Δημοσίευση ανώνυμα: άλλα μέλη βλέπουν κάθε συγγραφέα ως Ανώνυμο με έναν αριθμό. Οι διοικητές μπορούν πάντα να δουν ποιοι είναι. Δεν μπορεί να αλλάξει μόλις δημοσιευθεί η ανάρτηση."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Δημοσίευση ανώνυμα: άλλα μέλη βλέπουν κάθε συγγραφέα ως Ανώνυμο με έναν αριθμό. Οι διαχειριστές μπορούν πάντα να δουν ποιοι είναι, και η απαγόρευση ενός διαχειριστή μπορεί να έχει το όνομα καταγραφής του λογαριασμού για ένα ανώνυμο στοιχείο που αναφέρει. Δεν μπορεί να αλλάξει μόλις δημοσιευθεί η ανάρτηση."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16244,10 +16275,6 @@ msgid "Spam"
 msgstr "Σπαμ"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Σπάμινγκ."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Μίλα"
@@ -17399,7 +17426,7 @@ msgid "The auto-moderation was saved."
 msgstr "Η αυτόματη τροποποίηση σώθηκε."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17427,10 +17454,6 @@ msgstr "Το bot @%(name)s που πρότεινες δεν εγκρίθηκε. 
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Το ρομπότ το διαβάζει ήδη."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Το ρομπότ τέθηκε σε διαθεσιμότητα για την απόσπαση πάρα πολύ παρόμοιο περιεχόμενο."
 
 #, machine, plain1, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17500,6 +17523,10 @@ msgstr "Το προσχέδιο έχει αλλαγές που η θέση δε�
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Οι προηγούμενες εκδόσεις δεν εμφανίζονται ενώ αυτό είναι κρυμμένο."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Οι προηγούμενες εκδόσεις δεν εμφανίζονται: αυτό διαγράφηκε και το κείμενό του έχει εκκαθαριστεί."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17631,6 +17658,10 @@ msgstr "Η συντεχνία έχει ήδη ένα ρόλο με αυτό το
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Οι κανόνες της ίδιας της συντεχνίας για ό,τι είναι γραμμένο στα κανάλια της, πάνω στο φίλτρο λέξεων της ιστοσελίδας. Οι συντονιστές της συντεχνίας δεν τους κρατούν ποτέ. Ένα μήνυμα που σπάει κάποιον απορρίπτεται με ένα σύντομο λόγο που ποτέ δεν λέει ποια λέξη."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Η αναμονή για λογαριασμό σας άρθηκε. Μπορείτε να δημοσιεύσετε, να σχολιάσετε και να ψηφίσετε ξανά."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18133,9 +18164,9 @@ msgstr "Δεν είναι μουγκοί εδώ."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Μπορούν να αγοράσουν και να ξοδέψουν νομίσματα, φιλοδώρημα, να αγοράσουν Premium και να ενταχθούν ή να εκτελέσουν κύκλους που έχουν πληρωθεί."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Μπορούν να φιλοξενήσουν και να ενωθούν με τους Spaces και να τρέξουν ζωντανές κλωστές. Οι φωνητικές κλήσεις σε ένα Διάστημα χρειάζονται επίσης συνομιλία για να είναι on."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Μπορούν να ενωθούν και να ακούσουν το Spaces. Δεν μπορούν να φιλοξενήσουν ένα ή να δημοσιεύσουν ένα: ένας λογαριασμός παιδιού διαβάζει μόνο. Οι φωνητικές κλήσεις σε ένα Διάστημα χρειάζονται επίσης συνομιλία για να είναι on."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18347,6 +18378,10 @@ msgstr "Αυτό το ρομπότ δεν τρέχει."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Ο ιδιοκτήτης του ρομπότ δεν μπορεί να το ελέγξει τώρα."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Ο ιδιοκτήτης του ρομπότ δεν μπορεί να το τρέξει όσο ο λογαριασμός τους είναι σε αναμονή."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -22145,18 +22180,15 @@ msgstr ""
 "\n"
 "> %(message)s"
 
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Ο λογαριασμός σας %(site)s έχει ανασταλεί οριστικά για τον ακόλουθο λόγο:\n"
-"\n"
-"> απαγόρευση της φοροδιαφυγής"
-
 #, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -22172,16 +22204,6 @@ msgstr ""
 "Ο λογαριασμός σας %(site)s έχει ανασταλεί για ημέρες %(days)s για τον ακόλουθο λόγο:\n"
 "\n"
 "> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Ο λογαριασμός σας %(site)s έχει ανασταλεί για 1 ημέρα για τον ακόλουθο λόγο:\n"
-"\n"
-"> Πάρα πολύ spam!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22311,6 +22333,10 @@ msgstr "Ο λογαριασμός σας είναι ευαίσθητος."
 msgid "Your account is no longer marked sensitive."
 msgstr "Ο λογαριασμός σου δεν είναι πια ευαίσθητος."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Ο λογαριασμός σας είναι σε αναμονή"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Ο λογαριασμός σας είναι σε διαθεσιμότητα."
@@ -22416,6 +22442,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -22871,17 +22924,15 @@ msgstr "[@%(name)s](/@%(name)s) ενώθηκαν [+%(guild)s](/+%(guild)s)."
 msgid "[@%(name)s](/@%(name)s) subscribed to your paid circle %(circle)s."
 msgstr "[@%(name)s]( /@%(name)s) εγγεγραμμένος στον κύκλο που πληρώσατε %(circle)s."
 
-#, machine, plain1
 msgid "[API Documentation](/help/docs)"
-msgstr "[API Τεκμηρίωση( /help/docs)"
+msgstr ""
 
 #, machine, plain1
 msgid "[About](/help/about)"
 msgstr "[Σχετικά](/help/about)"
 
-#, machine, plain1
 msgid "[Badges](/help/badges)"
-msgstr "[Χτυπήματα] /help/badges)"
+msgstr ""
 
 #, machine, plain1
 msgid "[CSAM](/help/csam)"
@@ -22903,9 +22954,8 @@ msgstr "[Διαγράφεται από το χρήστη]"
 msgid "[FAQ](/help/faq)"
 msgstr "[FAQ](/help/faq)"
 
-#, machine, plain1
 msgid "[Guild Siege](/help/siege)"
-msgstr "[Απαίτηση ανάληψης] /help/siege"
+msgstr ""
 
 #, machine, plain2
 msgid "[How moderation is recorded](/help/moderation)"
@@ -22959,13 +23009,11 @@ msgstr "[Κανόνες και κατευθυντήριες γραμμές](/hel
 msgid "[Search tips](/help/search)"
 msgstr "[Ψάχνει συμβουλές](/help/search)"
 
-#, machine, plain1
 msgid "[Submit a DMCA counter-request](/help/counter_dmca)"
-msgstr "[ Υποβάλετε ένα αντιζήτημα DMCA( /help/counter_dmca)"
+msgstr ""
 
-#, machine, plain1
 msgid "[Submit a DMCA takedown request](/help/dmca)"
-msgstr "[Υποβάλετε μια αίτηση αφαίρεσης DMCA(/help/dmca)"
+msgstr ""
 
 #, machine, plain1
 msgid "[Submit a Legal Request](/legal)"
@@ -22975,9 +23023,8 @@ msgstr "[Υποβάλετε ένα νομικό αίτημα](/legal)"
 msgid "[Terms of service](/help/terms)"
 msgstr "[Όροι υπηρεσίας]( /help/terms)"
 
-#, machine, plain1
 msgid "[Titles](/help/titles)"
-msgstr "[Τίτλοι] /help/titles"
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "[Your comment](%(item)s) is shown again under the post it is on."
@@ -23208,10 +23255,6 @@ msgstr "ρωτήθηκε από %(name)s"
 #, machine, plain1
 msgid "avatar"
 msgstr "αβατάρη"
-
-#, machine, plain1
-msgid "ban evasion"
-msgstr "απαγόρευση της φοροδιαφυγής"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23704,6 +23747,12 @@ msgstr "που διατηρούνται ως επανάληψη στη δική 
 msgid "kicked post %(target)s"
 msgstr "κλειμένη θέση %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "ύψωσε μια καραντίνα, ένας αυτόματος έλεγχος είχε τοποθετηθεί"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23934,6 +23983,12 @@ msgstr "που δημοσιεύθηκε από %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "δημοσιευμένο, με αδημοσίευτες αλλαγές"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "βάλτε λογαριασμό σε καραντίνα"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24400,9 +24455,9 @@ msgstr "αποσυνδέθηκες."
 msgid "you're invited to write it"
 msgstr "είσαι καλεσμένος να το γράψεις"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "ο λογαριασμός σας δεν θα μπορούσε να το δημοσιεύσει εκείνη τη στιγμή (μια αναστολή, ή τους κανόνες μιας συντεχνίας που διαβιβάστηκε σε). Ανοίξτε το και πατήστε Post για να δείτε τι."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "ο λογαριασμός σας δεν μπορούσε να το δημοσιεύσει εκείνη τη στιγμή (είναι σε αναμονή ή σε αναστολή, ή τους κανόνες μιας συντεχνίας στην οποία είχε διαβιβαστεί). Ανοίξτε το και πατήστε Post για να δείτε τι."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

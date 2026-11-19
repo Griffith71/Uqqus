@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: eu\n"
@@ -150,6 +150,10 @@ msgid "**Your server only orders.** Every post it names goes through the same ru
 msgstr "**Zure zerbitzariak aginduak bakarrik.** Izendatzen duen mezu bakoitzak edozein iturriren arau berberak ditu, aurretik erakutsiak izan aurretik: kendutako mezuak, ontzi pribatuak, ikustaile bakoitzaren hitz-iragazkia eta blokeak. Ikustaile batek ikusten ez duen posta itzali besterik ez dago."
 
 #, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>Kontrol automatiko batek kontu bat gorde dezake. Ezin du inoiz debekatu.</b> Guneak spam-a kontrolatzen du, estekatzen du, profil bateko spam-a, debekua inguratzen duen norbait, eta zerrenda batekin bat datozen argazkiak. Haietako batek tiro egiten duenean, kontuari eusten dio (Egunkariak berrogeialdi deitzen dio) eta langile batek begiratzen dio. Pertsona baten erabakia da beti: kontua askatzen dute, edo administratzaileak debekatu egiten du, arrazoi batekin, arau bat eta errekurtso bat, lehen esan bezala."
+
+#, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
 msgstr "<b>Erbesteratzeak arrazoi bat behar du eta horretan oinarritzen da.</b> Moderatzaile lanbrotsu batek, norbait atzerriratzen duenak, idazten du zergatik eta gutxienez pertsona horren mezu edo iruzkinetako bat erbestealdian oinarritzen den gremioan; berriketa mutuak ere arrazoi bat behar du, eta administratzaileak beti egiten du. Guneak urte batez izendatutako elementu bakoitzaren kopia pribatu bat gordetzen du: pertsona, guild-en moderatzaile eta administratzaileek ireki dezakete, beraz, geroago editatu edo ezabatutako batek ezin du berriro idatzi zer erabaki zen. Egunkariek izendatutako elementu publiko bat zerrendatzen dute bere IDaren arabera."
 
@@ -158,8 +162,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>Anonimoa #3.</b> Hari batean, anonimo guztiek zenbaki bat dute, anonimo bihurtu ziren ordenan (modu anonimoan argitaratu edo iruzkindu zutenean, edo ezabatzean, \"Kendu nire izena\" edo kontua ixtean). Postu bateko zenbaki bera da, eta pertsona horren iruzkin anonimoetan, beste bat beste edozein haritan, eta kontu bat ezabatzen denean gelditzen da. Jendeak bereizten ditu; ez du inoiz esaten nor diren."
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>Norbaitek idatzitakoa debekatzen du.</b> Kontu bat debekatu edo esekitzen duenean, hura justifikatzen duten mezuak eta iruzkinak aipa ditzakete, baita modu anonimoan idatzitakoak ere. Bigarren administratzaile bat ados jartzen denean, egunkariek elementu horien kontua izendatzen dute (lerro bakoitza eta debekuaren lerroa), eta, beraz, edonork ikus dezake debekua bidezkoa dela. Elementuak anonimoak dira guneko beste leku guztietan, ez da ezer izendatzen bigarren administratzaile hori gabe, eta debekuari uko egiteak izena atzera botatzen du."
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>Berrikuspena eskatzen.</b> Bidalitako oharrak badu <b>Eskatu berrikuspena</b> esteka, /appeal/quarantine irekitzen duena (sinatu egin behar duzu). Behin eskatu ahal izango duzu, 500 karakterera arte, eta guneko administratzaileek erabakitzen dute, inoiz ez duzu lortu zenuen txekea. Onartzen badute, euskarria altxatzen da, egunkariko lerro berri batek esaten du eta esaten dizute; bestela, hori ere esaten dizute. Administratzaile batek gero kontua debekatzen badu, bere arrazoi, arau eta errekurtso propioa duen erabaki bereizia da, eta goian esaten dena mezu anonimoak aipatzen dituzten debekuak dira. Ez du inoiz konturik aipatzen anonimoki idatzi duen zerbaitengatik."
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>Norbaitek idatzitakoa debekatzen du.</b> Kontu bat debekatu edo esekitzen duenean, hura justifikatzen duten mezuak eta iruzkinak aipa ditzakete, baita modu anonimoan idatzitakoak ere. Bigarren administratzaile batek onartzen duenean (edo administrari bakar batekin, bere jabearekin), Log-ek elementu horien kontua izendatzen du (lerro bakoitza, eta debekuaren lerroa), edonork ikus dezan debekua bidezkoa dela. Elementuak anonimoki geratzen dira guneko beste leku guztietan, ez da ezer izendatzen onarpen hori gabe, eta behin izendatuta geratzen da: debekua atzeratzen bada, edo etendura bat amaitzen bada, Log-ek ere izena mantentzen duela erakusten du, eta, beraz, oker aurkitu den debekua horrela ikus daiteke."
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +202,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>Moderazioa</b>: mezu edo iruzkin bat ezkutatua edo ezabatua, berrezarria edo ezkutatua bertsio batean. Bakoitzarentzat: nork (izenez moderatzailea; gunearen kudeatzaileak \"Administrazioa\", inoiz ez izenez), noiz, non, nork agintzen duen, eta zergatik idazten duen. Ez du inoiz erakusten ezkutatzen zenaren titulua edo testua."
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>Beste inori ez zaio esaten.</b> Ez dago iragarkirik bere profilean, eta ez dago orrialderik kontu bati buruz. Kontuak ohar bat bidaltzen du arrazoi orokor batekin (eta araua, bat dagoen tokian) eta esteka bat berrikuspena eskatzeko."
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>Pertsona batek bakarrik eusten dio.</b> Denborarik ez, eta helbide elektronikorik ez egiaztatzea: administratzaileak langileen ilaratik askatzen du, edo berrikuspena eskatzen du. Kontu berri bati atxikitze-egiaztapena desberdina da: helbide elektroniko bat egiaztatzeak hori jasotzen du, ez bada egiaztapen automatiko bat egin ondoren."
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>Besteekin idatzitako mezuak.</b> Egile bakoitzaren kreditua anonimoa izan daiteke: mezua anonimoa denean hasieratik, autore batek \"Kendu nire izena\" aukeratzen duenean, edo kontua ezabatzen duenean. Kreditu hori bakarrik bihurtzen da \"Anonymous #N\"Beste autoreak izendatuta daude. Adminek beti ikus dezakete norena den."
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>Kendu nire izena.</b> Posta edo iruzkina non dagoen, zure izena kendu eta zure profila uzten du. Ezin da desegin, eta ez da eskaintzen Zirkulurako egindako post bat, posta bat, edo beste batzuekin idatzitakoa."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>Kendu nire izena.</b> Posta edo iruzkina non dagoen, zure izena kendu eta zure profila uzten du. Ezin da desegin, eta ez da eskaintzen Zirkulu baterako edo posta baterako. Besteekin idatzitako mezu batean zure kreditua bakarrik kentzen da."
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -217,9 +233,20 @@ msgstr "<b>Lehen bost minutuak.</b> Egin eta bost minutu baino gutxiagora zerbai
 msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, testing or comparing accounts to unmask someone who chose to be anonymous is unfair exposure, and it can lead to a ban. The site can see when a guildmaster acts on an account both by number and by name, and its staff are told so they can look."
 msgstr "<b>Kontu anonimo baten atzean nor dagoen jakin nahian.</b> Kontuak asmatzen, probatzen edo konparatzen anonimoa izatea aukeratu duen norbait desmaskaratzea bidegabeko esposizioa da, eta debekua ekar dezake. Guneak ikus dezake moderatzaile batek zenbakiz zein izenez jokatzen duenean, eta bere langileei esaten zaie begiratu ahal izateko."
 
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr ""
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>Kontrol automatiko batek kentzen duena publikoa da.</b> Kontrol automatiko batek mezu edo iruzkin bat ezabatzen duenean, Log-ak moderazio-fitxan erakusten du, edozein kenketa bezala: bere id-aren, arauaren eta arrazoi orokorraren arabera, inoiz ez titulua edo testua, eta inoiz ez idatzi, nahiz eta anonimoa izan. Kentzeak berak ez du aparteko oharrik bidaltzen: <b>Apelatu erabaki hau</b> Kendutako postaren edo iruzkinaren esteka, eta guneko administratzaileek erabakitzen dute apelazio hori."
+
 #, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>Inoiz argitaratu ez dena:</b> Moderatzaile batek kendutako edo guild batek ezkutaturiko elementu baten hitzak, gai debekatu bateko elementuak, eta ume baten kontu batek ezabatutako edozer: lerro bat eta hitzik ez. Zirkulu baterako edo guild pribatu batean egindako mezua publiko horrentzat bakarrik gordetzen da."
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>Zer erakusten du egunkariak?</b> Gehienek lerro bat dute Sanctions fitxan, gunetik: \"kontu bat berrogeialdian\" erregelarekin, arrazoi generiko batekin (\"spam check automatikoa\", \"lotura automatikoaren kontrola\" edo \"Irudiaren kontrol automatikoa\") eta denbora. Ez du ezer esaten, ez du ezer esaten, ez du ezer esaten harrapatuari buruz. Horrelako soto bat jasotzen denean, bigarren lerro batek esaten du \"kontrol automatiko bat jaso duela berrogeialdian\". Langileek beste ohar bat dute, kontua izendatzen duena eta txekeak zer ikusi zuen esaten duena; haiek bakarrik irakurtzen dute. Batzuek ez dute lerro publikorik, eta langileek bakarrik irakurtzen dituzte, gunearen gainerakoek bezala."
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -359,6 +386,10 @@ msgid_plural "A feed that keeps failing (%(num)s times in a row) stops and the m
 msgstr[0] "Huts egiten jarraitzen duen iturria (%(num)s aldiz jarraian) gelditzen da eta exekutatzen ari denari esaten zaio; hasi berriro Ezarpenak >tik. Bot-ak behin funtzionatzen duenean."
 msgstr[1] "Huts egiten jarraitzen duen iturria (%(num)s aldiz jarraian) gelditzen da eta exekutatzen ari denari esaten zaio; hasi berriro Ezarpenak >-etik. Bot-ak behin funtzionatzen duenean."
 
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "Zure kontuan jarritako kontrol automatiko bat modu berean galdetzen da, behin leihatila bakoitzean: ikusi kontrol automatikoak goian."
+
 #, machine, plain1
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
 msgstr "Bot kide batek bere kidearen script batetik ere idatz dezake, **bot gakoa** baten bidez. Hau bot bat exekutatzeko modua da **X**: X-k ez du iturririk, eta bere terminoek ez dute uzten beste guneek hura ezaba dezaten, beraz, erabili zure X sarbidea zure scriptean eta bidali txio bakoitzaren esteka. Webguneak esteka bat erakusten du txio bati X-ren kapsula gisa, beraz ez da tuit-testurik kopiatuko. Guneko botek ez dute teklarik."
@@ -472,6 +503,10 @@ msgstr "Hitzak jaisteko eskatzen"
 #, machine, plain1
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "Postu automatizatuak esteka publikoak dira: inoiz ez anonimoak, zirkuluak edo egilekideak. Zuk aukeratzen dituzun koipeak ekar diezazkieke, guild bakoitzaren arauen arabera."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "Kontrol automatikoak"
 
 #, machine, plain1
 msgid "Awesome online communities, without censorship"
@@ -815,9 +850,8 @@ msgstr "Lehenik eta behin, %(site)s 100%% Estatu Batuetan dago. Denak %(site)s D
 msgid "First thing"
 msgstr "Lehen gauza"
 
-#, machine, plain1
 msgid "For more endpoints, see documentation [here](/help/docs)"
-msgstr "Azken puntu gehiago lortzeko, ikus dokumentazioa [/help/docs]"
+msgstr ""
 
 #, machine, plain1
 msgid "Formatting"
@@ -1579,8 +1613,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "Estatu Batuetako Konstituzioaren lehen zuzenketak dio:"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "Egunkariko moderatzaileek eta gunekoek erabaki zutenaren eta ezabatu zutenaren erregistro bat da. Ez dago ezer bere baitan: zuzenketa bat zuzentzen duen lerro berri bat da. Ireki orritik edo /log-etik."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "Egunkariko moderatzaileek eta gunekoek erabaki zutenaren eta ezabatu zutenaren erregistro bat da. Esaten duena ez da inoiz berriro idazten: zuzenketa lerro berri bat da, zuzentzen duena seinalatzen duena. Lerro batetik hiru gauza bakarrik ateratzen dira, eta bakoitzak lerroa uzten du: administratzaile batek txosten baten ondoren ezkutatzen duen arrazoia, bere egileak gero izena kentzen duenean seinalatutako lerroa, eta administratzaile baten hitzak ezabatzen dira. Ireki orritik edo /log-etik."
 
 #, machine, plain1, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1589,6 +1623,10 @@ msgstr "OAuth2 baimen-fluxua erabiltzen da erabiltzaileek hirugarrenen aplikazio
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "Plataforma"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "`delete` esparruak elementu bat kentzen du gunetik; elementua idatzi eta bost minutu baino gehiago kentzen duena Egunkari Publikoan anonimo gisa geratzen da. Izen bat kendu ordez (\"Kendu nire izena\") eta Historia tresnak gunearenak dira eta ez dira aplikazioei eskaintzen."
 
 #, machine, plain1
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"

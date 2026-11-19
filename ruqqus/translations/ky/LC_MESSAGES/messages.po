@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ky\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,11 +30,6 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
-"\n"
-"@%(admin)s Сизге төмөнкү профилдик белгини берди:\n"
-"\n"
-"\n"
-"![]%(path)s%(badge)s\n"
 
 #, machine, plain1, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -1502,6 +1497,10 @@ msgstr "%(who)s Гильдия модератору%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s Түзүлгөн пост %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s Карантинди автоматтык түрдө текшерүү"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s тыюу салууну жокко чыгарды %(name)s"
@@ -1565,6 +1564,10 @@ msgstr "%(who)s каналга билдирүү тагылган"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s Түзүлгөн пост %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s Карантинге эсепке алуу"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2720,6 +2723,10 @@ msgstr "Аянт өткөн мезгилден башталышы мүмкүн �
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Ал үчүн орун <span class=\"text-muted font-weight-normal\">(опционалдык: Космостун почта байланышы)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Аянт өзүнүн баракчасынан аяктайт; ал пост сыяктуу өчүрүлбөйт."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Аянт бир азга жандуу: такта, жандуу жип же чалуу. Ал кайра ойнотуу үчүн сакталат, же ал аяктагандан кийин жок болот."
@@ -2969,6 +2976,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Анын көчүрмөсү жашырылган, алынып салынган, жок кылынган же чечим кабыл алуу үчүн колдонулган. Аны бул жерде анын автору, аны чечкен гильдиянын модераторлору жана сайттын администраторлору гана ача алышат. Көпчүлүк көчүрмөлөр бир нече убакыттан кийин тазаланат; анын автору жок кылган нерсенин көчүрмөсү коомдук журналда калат."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3364,6 +3375,10 @@ msgstr "Бир посттун атын алып салуу мүмкүн эмес
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Коомдук эмес пост бул сүрөттү колдоно албайт: анын файлдарын дареги бар ар бир адам ача алат. Анын ордуна байланышкан сактагычтан сүрөттү кошуңуз (Settings > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Анонимдүү кредит менен кызмат ордун түзүү мүмкүн эмес."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Ко-авторлор менен биргеликте жазылган билдирүүнү тегеректерге көчүрүүгө болбойт. Коомдук билдирүүнү тегерекке жылдыруу сиз жөнөткөн көчүрмөлөрдү алып салат; башка адамдар жөнөткөн көчүрмөлөр алардын гильдияларында калат."
@@ -3389,10 +3404,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Посттун тексти %(count)s белгиси болушу мүмкүн (кытай, жапон жана корей тамгалары жана эможи 2)."
 msgstr[1] "Посттун тексти %(count)s тамгалары болушу мүмкүн (кытай, жапон жана корей тамгалары жана эмоджи 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Анын жеке көчүрмөсү, ал жашырылган, алынып салынган, жок кылынган же чечим кабыл алуу үчүн колдонулган. Анын автору, чечим кабыл алган гильдиянын модераторлору жана сайттын администраторлору гана аны ача алышат, жана ал түбөлүккө сакталбайт."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4104,10 +4115,6 @@ msgstr "Эскертүүлөр жана башкы макалалар ар би�
 msgid "Algorithm"
 msgstr "Алгоритм"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Алгоритм сакталып калган."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4353,6 +4360,29 @@ msgstr "Бул сайтта активдүү болбогон автор %(time)
 msgid "An automated post can't have its name removed."
 msgstr "Автоматташтырылган почта өзүнүн атын алып сала албайт."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Автоматтык текшерүү эсепти токтотот."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Автоматтык текшерүү сиздин эсебиңизди токтотот, ошондуктан сиз муну азырынча жасай албайсыз. Аны кызматкерлердин бири карап чыгат. Эгер текшерүү туура эмес деп ойлосоңуз, кайра карап чыгууну сурансаңыз болот."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Автоматтык текшерүү сиздин эсебиңизди токтотот."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Шифрленген канал өзүнүн эрежелерин кабыл алууну сурабайт: сайт ким жазганын текшере албайт."
@@ -4474,8 +4504,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Аноним #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Анонимдер анонимдүү бойдон калат, эгерде экинчи администратор макул болбосо, анан журнал сиздин аккаунтуңузду алардын жанында атайт."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Анонимдер анонимдүү бойдон калат, эгерде экинчи администратор макул болбосо (же бир администратор менен сайтта анын ээси), анан журнал сиздин эсебиңизди алардын жанында атайт."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4719,6 +4749,10 @@ msgstr "Арий тоолуу аймактары"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Автор катары сиз долбоорду түз эфирде редакциялайсыз, жана сиз жазган ар бир каарман сизге таандык. Бул билдирүү жарыялангандан кийин, аны көргөн ар бир адам ким эмне жазганын көрө алат. Авторлор биргелешип төмөнкүлөрдү чечишет:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Кайра карап чыгууну сураныңыз"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4986,14 +5020,6 @@ msgstr "Балкан"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Басылма комментарий"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Качуудан качууну тыюу салуу. Бул комментарийдин ээси башка себептерден улам тыюу салынган."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Качуудан качууну тыюу салуу. Бул билдирүүнүн ээси башка себептерден улам тыюу салынган."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6260,6 +6286,10 @@ msgstr "Жашыруун же алынып салынган комментари
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Сиздин анонимдүү билдирүүңүзгө карата комментарийлер анонимдүү"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Сиздин анонимдүү билдирүүңүзгө карата комментарийлер анонимдүү. Эгерде администратор эсепти тыюу салса же токтотсо, анда журнал эсепти аташы мүмкүн."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Комментарийлер:"
@@ -6963,9 +6993,9 @@ msgstr "Бул ролду жокко чыгаруу? Ар бир адам аны
 msgid "Delete your %(site)s account"
 msgstr ""
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Сиздин билдирүүлөрүңүздү жана комментарийлериңизди жокко чыгаруу"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Сиздин билдирүүлөрүңүздү жана комментарийлериңизди жокко чыгаруу (жазуудан беш мүнөттөн ашык өткөндөн кийин алынып салынган нерсе коомдук журналда Anonymous катары сакталат)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7590,10 +7620,6 @@ msgid "Engagement"
 msgstr "Катышуу"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Мыйзамсыз иш-аракеттерге катышуу"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Мыйзамсыз иш-аракеттерге катышуу же пландаштыруу"
 
@@ -7696,10 +7722,6 @@ msgstr "Eta Aquariids метеор жамгыры"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Этика"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Жергиликтүү тыюу салуудан качуу"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7817,6 +7839,10 @@ msgstr "Ар бир адам бири-биринин өзгөрүүлөрүн ө
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Сиздин гильдияларыңыздан жана эсептериңизден баштап, эң жаңысы."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Сиз жазган нерселердин баары сайтта анонимдүү бойдон калууда жана аларды кайра алууга болбойт. Сиз каалаган нерсени жок кылыңыз же адегенде атыңызды алып салгыла (Тарых > Менедж)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9737,9 +9763,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Модераторду чакыруу"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Адамдарды бул кызматты бөлүшүүгө чакырыңыз. Алар кабыл алгандан кийин, ал алардын атын алып жүрөт жана алардын профилинде көрсөтүлгөн. Аны дагы деле түзөтүп, өчүрүп, жөнөтүп турасыз. Анонимдүү билдирүүлөр үчүн эмес."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Адамдарды бул кызматты бөлүшүүгө чакырыңыз. Алар кабыл алгандан кийин, ал алардын атын алып жүрөт жана алардын профилинде көрсөтүлгөн; анонимдүү постто алардын кредити да анонимдүү. Аны дагы деле түзөтүп, өчүрүп, жөнөтүп турасыз."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13454,8 +13480,8 @@ msgid "Post anonymously"
 msgstr "Анонимдүү жарыялоо"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Почта анонимдүү: башка мүчөлөр ар бир авторду анонимдүү деп эсептешет. Администраторлор ар дайым өздөрүнүн ким экенин көрө алышат. Аны билдирүү жарыялангандан кийин өзгөртүү мүмкүн эмес."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Почта анонимдүү: башка мүчөлөр ар бир авторду анонимдүү деп эсептешет. Администраторлор ар дайым алардын ким экенин көрө алышат, ал эми администратордун тыюу салуусу журналдын аталышын ал цитата кылган анонимдүү буюмдун эсеби катары көрсөтүшү мүмкүн. Аны билдирүү жарыялангандан кийин өзгөртүү мүмкүн эмес."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16214,10 +16240,6 @@ msgid "Spam"
 msgstr "Спам"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Спамминг."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Сүйлөшүү"
@@ -17368,7 +17390,7 @@ msgid "The auto-moderation was saved."
 msgstr "Автомодерация сакталып калган."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17396,10 +17418,6 @@ msgstr "Бот @%(name)s Сиз сунуштаган нерсе бекитилг
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Бот буга чейин эле ошол азык-түлүктү окуйт."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Бот өтө көп окшош мазмунду жарыялагандыгы үчүн токтотулган."
 
 #, machine, plain1, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17469,6 +17487,10 @@ msgstr "Долбоордо азырынча көрсөтүлбөгөн өзгө�
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Мурунку версиялар көрсөтүлбөйт, ал эми бул жашыруун."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Мурунку версиялар көрсөтүлбөйт: бул алынып салынды жана анын тексти такталды."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17600,6 +17622,10 @@ msgstr "Бул ысым менен гильдиянын ролу бар."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Гильдиянын өзүнүн каналдарында жазылган нерселердин эрежелери, сайттын сөз чыпкасынын үстүндө. Ал эми алтын модераторлор эч качан аларга карманбайт. Адамды бузган билдирүү эч качан кайсы сөздү айтпаган кыска себеп менен четке кагылат."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Сиздин эсебиңиздеги чектөө алынып салынды. Сиз дагы бир жолу жарыялай аласыз, комментарий бере аласыз жана добуш бере аласыз."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18101,9 +18127,9 @@ msgstr "Алар бул жерде үнсүз эмес."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Алар монеталарды сатып алышат жана сарптай алышат, кеңеш беришет, сатып алышат Premium жана акы төлөнүүчү чөйрөлөргө кошулуу же иштетүү."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Алар мейкиндиктерди ээлеп, аларга кошулуп, жандуу жиптерди иштете алышат. Аянттагы үн чалуулар да чат болушу керек."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Алар кошулуп, мейкиндиктерди уга алышат. Алар бирөөнү кабыл ала алышпайт же бирөөнү жайгаштыра алышпайт: балалык аккаунт гана окуйт. Аянттагы үн чалуулар да чат болушу керек."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18315,6 +18341,10 @@ msgstr "Бул бот иштебей жатат."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Бул боттун ээси аны азыр иштете албайт."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Бул боттун ээси анын эсеби токтоп турганда аны иштете албайт."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -22100,14 +22130,14 @@ msgid ""
 msgstr ""
 
 #, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
+msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
 msgstr ""
 
 #, python-format
-msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, python-format
@@ -22119,13 +22149,6 @@ msgid ""
 "Your %(site)s account has been suspended for %(days)s days for the following reason:\n"
 "\n"
 "> %(message)s"
-msgstr ""
-
-#, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
 msgstr ""
 
 #, python-format
@@ -22253,6 +22276,10 @@ msgstr "Сиздин эсебиңиз өтө сезимтал."
 msgid "Your account is no longer marked sensitive."
 msgstr "Сиздин эсебиңиз мындан ары сезимтал эмес."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Сиздин эсебиңиз токтотулду"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Сиздин эсебиңиз токтотулду."
@@ -22351,6 +22378,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -23120,10 +23174,6 @@ msgstr "суранган %(name)s"
 msgid "avatar"
 msgstr "аватар аватар"
 
-#, machine, plain1
-msgid "ban evasion"
-msgstr "тыюу салуудан качуу"
-
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "banned %(target)s"
@@ -23615,6 +23665,12 @@ msgstr "өзүңүздүн сактагычыңызда кайра ойноту�
 msgid "kicked post %(target)s"
 msgstr "түзүлгөн пост %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "карантинди автоматтык түрдө текшерүү"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23845,6 +23901,12 @@ msgstr "%(name)s тарабынан жарыяланган"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "жарыяланган, жарыяланбаган өзгөртүүлөр менен"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "карантинге эсепке алуу"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24311,9 +24373,9 @@ msgstr "сиз бири-биринен ажыратылгансыз."
 msgid "you're invited to write it"
 msgstr "сизди аны жазууга чакырышат"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "сиздин эсебиңиз ошол учурда жарыялай алган жок (успензия же гильдиянын эрежелери). Аны ачып, эмне болгонун билүү үчүн Post гезитине басыңыз."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "сиздин эсебиңиз ошол учурда жарыялай алган жок (ал токтотулган же токтотулган, же гильдиянын эрежелери жөнөтүлгөн). Аны ачып, эмне болгонун билүү үчүн Post гезитине басыңыз."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

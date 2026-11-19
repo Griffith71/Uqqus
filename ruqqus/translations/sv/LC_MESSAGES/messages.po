@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -1505,6 +1505,10 @@ msgstr "%(who)s Inbjuden guild moderator @%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s sparkade inlägg %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s lyfte en karantän en automatisk kontroll hade placerats"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s lyfte förbudet mot %(name)s"
@@ -1568,6 +1572,10 @@ msgstr "%(who)s Fäst ett meddelande i en kanal"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s Pinned Post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s sätta ett konto i karantän"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2726,6 +2734,10 @@ msgstr "Ett utrymme kan inte börja i det förflutna."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Ett utrymme för det <span class=\"text-muted font-weight-normal\">(Valfritt: Spaces postlänk)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Ett utrymme avslutas från sin egen sida; det raderas inte som ett inlägg."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Ett utrymme är live ett tag: ett bräde, en levande tråd eller ett samtal. Det hålls för replay, eller det är borta när det slutar."
@@ -2911,9 +2923,9 @@ msgstr "Ett kanalnamn kan inte innehålla kontroll eller osynliga tecken."
 msgid "A chat app wants to sign in to your chats as <strong>@%(name)s</strong>."
 msgstr "En chatt app vill logga in på dina chattar som <strong>@ @%(name)s</strong>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "A chat app was signed in to your %(site)s account. If that wasn't you, sign it out in [Settings > Chat apps](/settings/chat_apps) and change your password."
-msgstr "En chatt app undertecknades in på ditt %(site)s konto. Om det inte var du, signera det i [Inställningar> Chatt-appar] (/settings/chat_apps) och ändra ditt lösenord."
+msgstr ""
 
 #, machine, plain2, python-format
 msgid "A chat can have at most %(num)s pinned messages. Unpin one first."
@@ -2975,6 +2987,10 @@ msgstr "En community note lades till i en kommentar du frågade om: [Visa det](%
 #, machine, plain1, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr "En community note lades till i ett inlägg som du frågade om: [Visa det](%(link)s)"
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "En kopia av detta som det var när det var dolt, borttaget, raderat eller förlitat sig på för ett beslut. Endast dess författare, skuld moderatorer av skulden som beslutade och webbplatsens administratörer kan öppna den här. De flesta kopior rensas efter ett tag; kopian av något som författaren raderade stannar i den offentliga Logen."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3370,6 +3386,10 @@ msgstr "Ett inlägg som har tippats kan inte ha sitt namn bort, eftersom mynten 
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Ett inlägg som inte är offentligt kan inte använda denna bilduppladdning: dess filer kan öppnas av någon med adressen. Lägg till bilden från din länkade lagring istället (Inställningar > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Ett inlägg med en anonym kredit kan inte gafflas."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Ett inlägg med medförfattare kan inte flyttas till cirklar. Att flytta ett offentligt inlägg till cirklar tar ner de kopior du vidarebefordrade; kopierar andra människor vidarebefordrade stanna i sina skulder."
@@ -3395,10 +3415,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Ett inlägg text kan vara %(count)s tecken (kinesiska, japanska och koreanska tecken och emoji räknas som 2)."
 msgstr[1] "Ett inlägg text kan vara %(count)s tecken (kinesiska, japanska och koreanska tecken och emoji räknas som 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "En privat kopia av detta som det var när det var dolt, borttaget, raderat eller förlitat sig på för ett beslut. Endast dess författare, skuld moderatorer av skulden som beslutade och webbplatsens administratörer kan öppna den, och det hålls inte för evigt."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4110,10 +4126,6 @@ msgstr "Varningar och rubriker kommer från källan som heter på varje rad, vis
 msgid "Algorithm"
 msgstr "Algoritm"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algoritm räddad."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4359,6 +4371,29 @@ msgstr "En författare som inte har varit aktiv på webbplatsen för %(time)s r�
 msgid "An automated post can't have its name removed."
 msgstr "Ett automatiserat inlägg kan inte ha sitt namn bort."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "En automatisk check sätter kontot på håll."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "En automatisk check sätter ditt konto på håll, så du kan inte göra det för tillfället. En medlem av personalen kommer att titta på det. Om du tror att checken var fel kan du begära en recension."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "En automatisk check sätter ditt konto på håll."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "En krypterad kanal kan inte begära att dess regler accepteras: webbplatsen kan inte kontrollera vem som skrev."
@@ -4480,8 +4515,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Anonym #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Anonyma personer är anonyma om inte en andra administratör godkänner, och sedan Log namnen ditt konto bredvid dem."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Anonyma personer är anonyma om inte en andra administratör godkänner (eller, på en webbplats med en enda administratör, dess ägare), och sedan Log namnen ditt konto bredvid dem."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4725,6 +4760,10 @@ msgstr "Aryan Highlands"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Som författare redigerar du utkastet live med dem, och varje tecken du skriver krediteras till dig. När inlägget publiceras kan alla som kan se det se vem som skrev vad. Författarna bestämmer tillsammans:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Be om en recension"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4992,14 +5031,6 @@ msgstr "Balkan"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Ban comment"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Ban evasion. Denna kommentars ägare förbjöds på ett annat konto."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Ban evasion. Denna inlämning ägare förbjöds på ett annat konto."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6268,6 +6299,10 @@ msgstr "Kommentarer dolda eller borttagna"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Kommentarer på ditt anonyma inlägg är anonyma"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Kommentarer på ditt anonyma inlägg är anonyma. Om en admin förbjuder eller avbryter kontot för en, kan Logen namnge kontot för det."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Kommentarer:"
@@ -6974,9 +7009,9 @@ msgstr "Ta bort denna roll? Alla förlorar det, och kanalerna glömmer vad det t
 msgid "Delete your %(site)s account"
 msgstr "Ta bort din %(site)s konto"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Ta bort dina inlägg och kommentarer"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Ta bort dina inlägg och kommentarer (vad som raderas mer än fem minuter efter att det skrevs stannar i den offentliga Logen, som Anonymous)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7602,10 +7637,6 @@ msgid "Engagement"
 msgstr "Engagemang"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Att engagera sig i olaglig verksamhet"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Att engagera sig i eller planera olaglig verksamhet"
 
@@ -7708,10 +7739,6 @@ msgstr "Eta Aquariids meteor dusch"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Etik"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Undvika ett webbplatsomfattande förbud"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7829,6 +7856,10 @@ msgstr "Alla ser varandras förändringar som de skriver, och varje karaktär kr
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Allt från dina skulder och konton, nyast först."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Allt du skrev stannar på webbplatsen som anonym och kan inte tas tillbaka. Ta bort vad du vill ha gått, eller ta bort ditt namn från det, först (Historia > Hantera)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9753,9 +9784,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Inbjude moderator"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Bjud in människor att dela detta inlägg. När de accepterar det bär deras namn och listas på deras profil. Du redigerar fortfarande, raderar och vidarebefordrar det. Inte för anonyma inlägg."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Bjud in människor att dela detta inlägg. När de accepterar det bär deras namn och listas på deras profil; på en anonym post är deras kredit anonym också. Du redigerar fortfarande, raderar och vidarebefordrar det."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13473,8 +13504,8 @@ msgid "Post anonymously"
 msgstr "Publicera anonymt"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Post anonymt: andra medlemmar ser varje författare som Anonym med ett nummer. Administratörer kan alltid se vem de är. Det kan inte ändras när inlägget publiceras."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Post anonymt: andra medlemmar ser varje författare som Anonym med ett nummer. Administratörer kan alltid se vem de är, och en administratörs förbud kan ha Log-namnet på kontot för ett anonymt objekt som det citerar. Det kan inte ändras när inlägget publiceras."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16065,25 +16096,19 @@ msgstr "Några av mina cirklar (end-to-end krypterad)"
 msgid "Some posts are automated"
 msgstr "Vissa inlägg är automatiserade"
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Someone liked [your bot's post](%(link)s) and has tipped you %(coins)s coin!\n"
 "\n"
 "The coins are in your balance: keep them, tip someone, or redeem a week of [%(site)s Premium](/settings/premium) per coin."
 msgstr ""
-"Någon gillade [din bot's post](%(link)s) och har tippat dig %(coins)s Mynt!\n"
-"\n"
-"Mynten är i din balans: håll dem, spetsa någon, eller lösa in en vecka av [%(site)s Premium] (/settings/premium) per mynt."
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Someone liked [your bot's post](%(link)s) and has tipped you %(coins)s coins!\n"
 "\n"
 "The coins are in your balance: keep them, tip someone, or redeem a week of [%(site)s Premium](/settings/premium) per coin."
 msgstr ""
-"Någon gillade [din bot's post](%(link)s) och har tippat dig %(coins)s mynt!\n"
-"\n"
-"Mynten är i din balans: håll dem, spetsa någon, eller lösa in en vecka av [%(site)s Premium] (/settings/premium) per mynt."
 
 #, python-format
 msgid ""
@@ -16092,15 +16117,12 @@ msgid ""
 "The coins are in your balance: keep them, tip someone, or redeem a week of [%(site)s Premium](/settings/premium) per coin."
 msgstr ""
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Someone liked [your comment](%(link)s) and has tipped you %(coins)s coins!\n"
 "\n"
 "The coins are in your balance: keep them, tip someone, or redeem a week of [%(site)s Premium](/settings/premium) per coin."
 msgstr ""
-"Någon gillade [din kommentar](%(link)s) och har tippat dig %(coins)s mynt!\n"
-"\n"
-"Mynten är i din balans: håll dem, spetsa någon, eller lösa in en vecka av [%(site)s Premium] (/settings/premium) per mynt."
 
 #, python-format
 msgid ""
@@ -16245,10 +16267,6 @@ msgstr "Rummen svarar inte just nu. Försök igen i ett ögonblick."
 #, machine, plain1
 msgid "Spam"
 msgstr "Spam"
-
-#, machine, plain1
-msgid "Spamming."
-msgstr "Spamming."
 
 #, machine, plain1
 msgctxt "button"
@@ -17401,7 +17419,7 @@ msgid "The auto-moderation was saved."
 msgstr "Automoderationen sparades."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17429,10 +17447,6 @@ msgstr "Bot @%(name)s du föreslog var inte godkänt. Administratörerna sade: %
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Bot läser redan detta foder."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Bot var avstängd för att publicera för mycket liknande innehåll."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17502,6 +17516,10 @@ msgstr "Utkastet har ändrat inlägget visar inte ännu."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "De tidigare versionerna visas inte medan detta är dolt."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "De tidigare versionerna visas inte: detta raderades och dess text har rensats."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17633,6 +17651,10 @@ msgstr "Skulden har redan en roll med det namnet."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Skuldens egna regler för vad som skrivs i sina kanaler, ovanpå webbplatsens ordfilter. Guild moderatorer hålls aldrig till dem. Ett meddelande som bryter en vägras med en kort anledning som aldrig säger vilket ord."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Hållet på ditt konto lyftes. Du kan posta, kommentera och rösta igen."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18135,9 +18157,9 @@ msgstr "De är inte dämpade här."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "De kan köpa och spendera mynt, tips, köpa Premium och gå med eller köra betalda cirklar."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "De kan vara värd och gå Spaces och köra levande trådar. Röstsamtal i ett utrymme behöver också Chat att vara på."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "De kan gå med och lyssna på Spaces. De kan inte vara värd för ett eller flera inlägg: ett barnkonto läser bara. Röstsamtal i ett utrymme behöver också Chat att vara på."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18349,6 +18371,10 @@ msgstr "Denna bot är inte igång."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Denna bot ägare kan inte köra det just nu."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Denna bot ägare kan inte köra det medan deras konto är på plats."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -20268,7 +20294,7 @@ msgstr "Välkommen till %(site)s!"
 msgid "Welcome to %(site)s! These communities are currently Trending. Join some to start customizing your <a href=\"/\">home page</a>."
 msgstr "Välkommen till %(site)sDessa samhällen Trending. Gå med i några för att börja anpassa din <a href=\"/\">Hemsidan</a>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Welcome to %(site)s, %(name)s. We're glad to have you here.\n"
 "\n"
@@ -20281,16 +20307,6 @@ msgid ""
 "\n"
 "-The %(site)s team"
 msgstr ""
-"Välkommen till %(site)s, %(name)s. Vi är glada att ha dig här.\n"
-"\n"
-"\n"
-"Några saker att börja med:\n"
-"Följ människor och [gå med i vissa skulder] (/browse) så att ditt efterföljande foder har något i det.\n"
-"- Läs [regler](/help/rules) och [hjälpsidor](/help)\n"
-"Välj hur mycket du ser i [Inställningar> Innehåll](/settings/content)\n"
-"\n"
-"\n"
-"%(site)s laget"
 
 #, machine, plain1
 msgid "West Slavia"
@@ -22154,14 +22170,14 @@ msgid ""
 msgstr ""
 
 #, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
+msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
 msgstr ""
 
 #, python-format
-msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, python-format
@@ -22173,13 +22189,6 @@ msgid ""
 "Your %(site)s account has been suspended for %(days)s days for the following reason:\n"
 "\n"
 "> %(message)s"
-msgstr ""
-
-#, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -22310,6 +22319,10 @@ msgstr "Ditt konto är märkt känsligt."
 msgid "Your account is no longer marked sensitive."
 msgstr "Ditt konto är inte längre märkt känsligt."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Ditt konto är på hold"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Ditt konto är avstängd."
@@ -22415,6 +22428,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -22677,9 +22717,8 @@ msgstr "Din förälder eller vårdnadshavare har stängt av detta för ditt kont
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
 msgstr "Din förälder eller vårdnadshavare gjorde detta konto för dig. De kan se vad du gör på webbplatsen (dina inlägg, kommentarer, röster, bokmärken, följer, skulder, vem du chattar med, att ditt konto rapporterades och dina senaste inloggningar; webbplatsen visar aldrig vad dina chattar säger) och de väljer vilka funktioner som finns på. Du kan se vilka i [Inställningar> Innehåll](/settings/content). De valde ditt lösenord: ändra det i [Inställningar> Säkerhet](/settings/security) så att bara du vet det, eftersom alla som vet att det kan logga in som du och läsa dina chattar."
 
-#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "Din förälder eller vårdnadshavare satte ett nytt lösenord för ditt konto och du kopplades bort. Logga in med det nya lösenordet och ändra sedan det i [Inställningar> Säkerhet] (/settings/security) så att du bara vet det."
+msgstr ""
 
 #, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
@@ -22906,9 +22945,8 @@ msgstr "[Guild Takeover påstående](/help/siege)"
 msgid "[How moderation is recorded](/help/moderation)"
 msgstr "[Hur måtta är inspelad](/help/moderation)"
 
-#, machine, plain1
 msgid "[Legal Policies](/help/legal)"
-msgstr "(Legal Policies)(/help/legal)"
+msgstr ""
 
 msgid "[Meet the admins](/help/admins)"
 msgstr ""
@@ -23200,10 +23238,6 @@ msgstr "frågad av %(name)s"
 #, machine, plain1
 msgid "avatar"
 msgstr "avatar"
-
-#, machine, plain1
-msgid "ban evasion"
-msgstr "förbjud evasion"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23696,6 +23730,12 @@ msgstr "hålls som en replay i ditt eget lagringsutrymme; alla berättas innan d
 msgid "kicked post %(target)s"
 msgstr "sparkad post %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "lyfte en karantän en automatisk kontroll hade placerats"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23926,6 +23966,12 @@ msgstr "publicerad av %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "publicerad, med opublicerade förändringar"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "sätta ett konto i karantän"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24392,9 +24438,9 @@ msgstr "du var bortkopplad."
 msgid "you're invited to write it"
 msgstr "du är inbjuden att skriva den"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "ditt konto kunde inte lägga upp det i det ögonblicket (en suspension, eller reglerna för en skuld som det vidarebefordrades till). Öppna den och tryck på Post för att se vad."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "ditt konto kunde inte publicera det i det ögonblicket (det är på håll eller avstängd, eller reglerna för en skuld som det vidarebefordrades till). Öppna den och tryck på Post för att se vad."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

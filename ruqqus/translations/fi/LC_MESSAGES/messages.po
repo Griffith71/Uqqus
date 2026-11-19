@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,14 +30,6 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
-"\n"
-"@ %(admin)s on antanut sinulle seuraavan profiilimerkin:\n"
-"\n"
-"\n"
-"[][%(path)s)\n"
-"\n"
-"\n"
-"%(badge)s\n"
 
 #, machine, plain1, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -1505,6 +1497,10 @@ msgstr "%(who)s kutsuttu killan moderaattori @ %(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s potkaistu asema %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s poisti karanteenin"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s poisti kiellon %(name)s"
@@ -1568,6 +1564,10 @@ msgstr "%(who)s pisti viestin kanavalle"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s pinted post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s laita tili karanteeniin"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2726,6 +2726,10 @@ msgstr "Avaruus ei voi alkaa menneisyydestä."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Tila sille <span class=\"text-muted font-weight-normal\">(vapaaehtoinen: avaruuden postilinkki)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "A Space on päättynyt sen oma sivu; se ei ole poistettu kuin postitse."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Avaruus on elää jonkin aikaa: taulu, live lanka tai puhelu. Se säilytetään uusintaa varten tai se katoaa, kun se päättyy."
@@ -2975,6 +2979,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Kopio tästä sellaisena kuin se oli, kun se oli piilotettu, poistettu, poistettu tai luotettiin päätöstä. Vain sen kirjoittaja, killan moderaattorit, jotka päättivät ja sivuston ylläpitäjät voivat avata sen täällä. Useimmat kopiot ovat tyhjennetty jonkin ajan kuluttua; kopio jonkin sen tekijän poistettu pysyy julkisessa loki."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3370,6 +3378,10 @@ msgstr "Posti, joka on tipattu ei voi olla nimi pois, koska kolikot menivät sin
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Posti, joka ei ole julkinen ei voi käyttää tätä kuvaa ladata: sen tiedostoja voi avata kuka tahansa osoite. Lisää kuva linkitetyn tallennustilan sijaan (Asetukset > Media)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Nimettömän kunnian omaavaa postia ei voi väärentää."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Postia ei voi siirtää piireihin. Kansanviran siirtäminen piireihin kaataa lähettämäsi kopiot."
@@ -3395,10 +3407,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Postin teksti voi olla %(count)s merkki (kiinalainen, japanilainen ja korealainen merkkiä ja emoji lasketaan 2)."
 msgstr[1] "Postin teksti voi olla %(count)s merkkiä (kiinalaiset, japanilaiset ja korealaiset merkit ja emojit lasketaan 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Yksityinen kopio tästä sellaisena kuin se oli, kun se oli piilotettu, poistettu, poistettu tai tukeutunut päätökseen. Vain sen kirjoittaja, killan moderaattorit, jotka päättivät ja sivuston ylläpitäjät voivat avata sen, eikä sitä pidetä ikuisesti."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4110,10 +4118,6 @@ msgstr "Hälytykset ja otsikot tulevat lähteestä, joka on nimetty jokaisella r
 msgid "Algorithm"
 msgstr "Algoritmi"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algoritmi pelastettu."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4359,6 +4363,29 @@ msgstr "Tekijä, joka ei ole ollut aktiivinen sivustolla %(time)s Sitä ei laske
 msgid "An automated post can't have its name removed."
 msgstr "Automatisoitua postia ei voi poistaa."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Automaattinen tarkistus jäädytti tilin."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Automaattinen tarkistus jäädytti tilisi, joten et voi tehdä tätä toistaiseksi. Henkilökunta tutkii asiaa. Jos luulet sekin olleen väärässä, voit pyytää uudelleentarkastelua."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Automaattinen tarkistus jäädytti tilisi."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Salattu kanava ei voi pyytää sen sääntöjen hyväksymistä: sivusto ei voi tarkistaa kuka kirjoitti."
@@ -4480,8 +4507,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Nimetön #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Nimettömät pysyvät nimettöminä, ellei toinen valvoja hyväksy niitä, ja sitten loki nimeää tilisi niiden vieressä."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Nimettömät pysyvät nimettöminä, ellei toinen ylläpitäjä hyväksy (tai, sivustolla, jossa on yksi ylläpitäjä, sen omistaja), ja sitten loki nimeää tilisi niiden viereen."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4724,6 +4751,10 @@ msgstr ""
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kirjoittajana voit muokata luonnoksen elää niiden kanssa, ja jokainen merkki kirjoitat hyvitetään sinulle. Kun posti on julkaistu, kuka tahansa näkee sen voi nähdä kuka kirjoitti mitä. Laatijat päättävät yhdessä:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Kysy uudelleentarkastelua"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4991,14 +5022,6 @@ msgstr "Balkanin maat"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Kiellon kommentti"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Kiellän salakuuntelun. Tämän kommentin omistaja kiellettiin toiselta tililtä."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Kiellän salakuuntelun. Tämän lähetyksen omistaja kiellettiin toiselta tililtä."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6268,6 +6291,10 @@ msgstr "Piilotetut tai poistetut huomautukset"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Kommentit nimettömänä postitse"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Kommentit nimettömistä viroistasi ovat anonyymejä. Jos ylläpitäjä kieltää tai keskeyttää tilin yhden tilin, loki voi nimetä tilin."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Kommentit:"
@@ -6973,9 +7000,9 @@ msgstr "Poistaa tämän roolin? Kaikki menettävät sen ja kanavat unohtavat, mi
 msgid "Delete your %(site)s account"
 msgstr "Poista %(site)s -tilisi"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Poista viestisi ja kommenttisi"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Poista viestit ja kommentit (mitä on poistettu yli viisi minuuttia sen jälkeen, kun se oli kirjoitettu oleskelut yleisölle Loki, kuten Anonyymi)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7601,10 +7628,6 @@ msgid "Engagement"
 msgstr "Sitoutuminen"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Laiton toiminta"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Laittoman toiminnan aloittaminen tai suunnittelu"
 
@@ -7707,10 +7730,6 @@ msgstr "Eta Aquariids meteorisuihku"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Etiikka"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Alueen laajuisen kiellon välttäminen"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7828,6 +7847,10 @@ msgstr "Kaikki näkevät toistensa muutokset niiden mukaan, ja jokainen merkki o
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Kaikki killasta ja tileistä, uusin ensin."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Kaikki kirjoittamasi pysyy sivustolla anonyyminä eikä sitä voi ottaa takaisin. Poista haluamasi tai poista nimesi ensin (Historia > Hallitse)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9752,9 +9775,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Kutsu moderaattori"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Kutsu ihmisiä jakamaan tämä viesti. Kun he hyväksyvät sen, heidän nimensä on listattu heidän profiiliinsa. Muokkaat, poistat ja lähetät sitä edelleen. Ei nimettömiin virkoihin."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Kutsu ihmisiä jakamaan tämä viesti. Kun he hyväksyvät sen kuljettaa nimensä ja on listattu heidän profiilinsa; anonyymissä postitse heidän luotto on myös nimetön. Muokkaat, poistat ja lähetät sitä edelleen."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13472,8 +13495,8 @@ msgid "Post anonymously"
 msgstr "Julkaise nimettömänä"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Post anonyymisti: muut jäsenet näkevät jokaisen kirjailijan Anonyymi numero. Hallinto näkee aina, keitä he ovat. Sitä ei voi muuttaa julkaisun jälkeen."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Post anonyymisti: muut jäsenet näkevät jokaisen kirjailijan Anonyymi numero. Adminit voivat aina nähdä keitä he ovat, ja ylläpitäjän kielto voi olla loki nimi tilin se mainitsee. Sitä ei voi muuttaa julkaisun jälkeen."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16232,10 +16255,6 @@ msgid "Spam"
 msgstr "Roskaposti"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Spammausta."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Puhu"
@@ -17387,7 +17406,7 @@ msgid "The auto-moderation was saved."
 msgstr "Automodaus pelastettiin."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17415,10 +17434,6 @@ msgstr "Robotti%(name)s -Esitystänne ei hyväksytty. Hallintoviranomaiset sanoi
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Robotti lukee sen jo."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Robotti keskeytettiin, koska se lähetti liikaa samanlaista sisältöä."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17488,6 +17503,10 @@ msgstr "Veto on muuttunut."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Aiempia versioita ei näytetä, kun tämä on piilotettu."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Aikaisempia versioita ei näytetä: tämä on poistettu ja sen teksti on tyhjennetty."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17619,6 +17638,10 @@ msgstr "Killalla on jo rooli."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Killan omat säännöt sille, mitä sen kanaville on kirjoitettu, sivuston sanasuodattimen päälle. Killan moderaattoreita ei koskaan pidetä. Viesti, joka rikkoo yhden, hylätään lyhyellä syyllä, joka ei koskaan sano mitä sanaa."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Tilisi ote poistettiin. Voit lähettää, kommentoida ja äänestää uudelleen."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18121,9 +18144,9 @@ msgstr "Ne eivät ole mykkiä täällä."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "He voivat ostaa ja viettää kolikoita, kärki, ostaa Premium ja liittyä tai ajaa maksettu piireissä."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "He voivat isännöidä ja liittyä Spaces ja ajaa live lankaa. Äänipuhelut avaruudessa tarvitsevat myös Chatia."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "He voivat liittyä ja kuunnella Spaces. He eivät voi isännöidä yhtä tai lähettää yhtä: lapsitili vain lukee. Äänipuhelut avaruudessa tarvitsevat myös Chatia."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18335,6 +18358,10 @@ msgstr "Tämä robotti ei juokse."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Robotin omistaja ei voi pyörittää sitä juuri nyt."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Tämän botin omistaja ei voi hoitaa sitä, kun heidän tilinsä on varattu."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -20213,9 +20240,8 @@ msgstr "Me jatkamme tästä."
 msgid "We're sorry something here is wrong."
 msgstr "Anteeksi, että jokin on vialla."
 
-#, machine, plain1
 msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "Olemme muuttaneet ikäosiota [Ehdot][/help/terms). Alle 18-vuotiaan tilillä on nyt lapsilukko, ja Yhdistyneessä kuningaskunnassa, EU:ssa ja Australiassa ikäsi on vahvistettava ikätarkistuksella ennen lukon irtoamista tai voit nähdä arkaluontoista sisältöä. Voit sanoa, oletko 18 tai yli Asetukset > Sisältö."
+msgstr ""
 
 #, machine, plain1
 msgid "Web Development"
@@ -20255,7 +20281,7 @@ msgstr "Tervetuloa %(site)s!"
 msgid "Welcome to %(site)s! These communities are currently Trending. Join some to start customizing your <a href=\"/\">home page</a>."
 msgstr "Tervetuloa %(site)sNämä yhteisöt ovat tällä hetkellä Trending. Liity jotkut alkaa muokata <a href=\"/\">kotisivu</a>."
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "Welcome to %(site)s, %(name)s. We're glad to have you here.\n"
 "\n"
@@ -20268,16 +20294,6 @@ msgid ""
 "\n"
 "-The %(site)s team"
 msgstr ""
-"Tervetuloa %(site)s, %(name)s. Olemme iloisia, että olette täällä.\n"
-"\n"
-"\n"
-"Aluksi muutama asia:\n"
-"- Seuratkaa ihmisiä ja [liittykää joihinkin kiltaihin] [/browse ], joten Seuraavassa rehussanne on jotain\n"
-"- Lue [säännöt](/help/rules) ja [ohjesivut](/help)\n"
-"- Valitse, kuinka paljon näet [Asetukset > Sisältö][/settings/content)\n"
-"\n"
-"\n"
-"- Joukkue %(site)s"
 
 #, machine, plain1
 msgid "West Slavia"
@@ -22134,18 +22150,18 @@ msgstr ""
 "> %(message)s"
 
 #, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"%(site)s-tilisi on keskeytetty pysyvästi seuraavasta syystä:\n"
-"\n"
-"> veronkierron kieltäminen"
-
-#, machine, plain1, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
 msgstr "Tilisi %(site)s on palautettu. Tarkistakaa huolellisesti ja noudattakaa [palveluehtoja](/help/terms) ja [sääntöjä ja ohjeita](/help/rules) sen varmistamiseksi, ettei teitä enää hyllytetä."
+
+#, machine, plain2, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
+"Tilisi %(site)s on palautettu. Tarkistakaa huolellisesti ja noudattakaa [palveluehtoja](/help/terms) ja [sääntöjä ja ohjeita](/help/rules) sen varmistamiseksi, ettei teitä enää hyllytetä.\n"
+"\n"
+"Se on edelleen odottamassa, joten se ei voi lähettää, kommentoida tai toimia muiden toistaiseksi. Henkilökunta tutkii asiaa."
 
 #, machine, plain1, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -22160,16 +22176,6 @@ msgstr ""
 "%(site)s-tilisi on keskeytetty %(days)s päiväksi seuraavasta syystä:\n"
 "\n"
 "> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"%(site)s-tilisi on keskeytetty 1 päiväksi seuraavasta syystä:\n"
-"\n"
-"- Liikaa roskapostia!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22299,6 +22305,10 @@ msgstr "Tilisi on erittäin herkkä."
 msgid "Your account is no longer marked sensitive."
 msgstr "Tilisi ei ole enää herkkä."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Tilisi on pysähdyksissä"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Tilisi on keskeytetty."
@@ -22404,6 +22414,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -22891,9 +22928,8 @@ msgstr "[Käyttäjän poistama]"
 msgid "[FAQ](/help/faq)"
 msgstr "[FAQ](/help/faq)"
 
-#, machine, plain1
 msgid "[Guild Siege](/help/siege)"
-msgstr "[Varauspyyntö]{/help/siege)"
+msgstr ""
 
 #, machine, plain2
 msgid "[How moderation is recorded](/help/moderation)"
@@ -23196,10 +23232,6 @@ msgstr "kysynyt %(name)s"
 #, machine, plain1
 msgid "avatar"
 msgstr "avatar"
-
-#, machine, plain1
-msgid "ban evasion"
-msgstr "kieltää veronkierto"
 
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
@@ -23692,6 +23724,12 @@ msgstr "säilytetään kuin uusinta omassa varastossa; kaikille kerrotaan ennen 
 msgid "kicked post %(target)s"
 msgstr "potkittu asema %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "poisti karanteenin automaattinen tarkastus oli asetettu"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23922,6 +23960,12 @@ msgstr "julkaisija %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "julkaistu ja julkaisemattomia muutoksia"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "asettaa tili karanteeniin"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24388,9 +24432,9 @@ msgstr "sinut irrotettiin."
 msgid "you're invited to write it"
 msgstr "sinut on kutsuttu kirjoittamaan se"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "tilisi ei voinut julkaista sitä sillä hetkellä (erotus, tai säännöt guldenin se välitettiin). Avaa se ja paina Post nähdäksesi mitä."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "tilisi ei voinut lähettää sitä sillä hetkellä (se on pysäköity tai keskeytetty, tai säännöt guldenin se välitettiin). Avaa se ja paina Post nähdäksesi mitä."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

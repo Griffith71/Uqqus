@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -40,9 +40,9 @@ msgstr "%(coin)s получение адреса QR кода"
 msgid "%(company)s is outside your jurisdiction. Sucks to be you."
 msgstr "%(company)s находится вне вашей юрисдикции. Отстойно быть тобой."
 
-#, machine, python-format
+#, python-format
 msgid "%(company)s is, always has been, and always will be 100%% outside your jurisdiction. You must obtain legal process that is valid in the state of New Hampshire. Then, submit your United States legal process document to our [legal requests portal](/legal)."
-msgstr "%(company)s всегда было и всегда будет 100%% вне вашей юрисдикции. Вы должны получить юридический процесс, который действителен в штате Нью-Гемпшир. Затем отправьте свой документ о судебном процессе в США на наш [портал юридических запросов] (/legal)."
+msgstr ""
 
 #, machine, python-format
 msgid "%(company)s may revoke your License at any time and for any reason."
@@ -150,6 +150,10 @@ msgid "**Your server only orders.** Every post it names goes through the same ru
 msgstr "** Ваш сервер только заказывает** Каждый пост, который он называет, проходит по тем же правилам, что и любой канал перед его показом: удаленные посты, частные гильдии, фильтр слов каждого зрителя и блоки. Пост, который зритель может не увидеть, просто пропущен."
 
 #, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>Автоматический чек может приостановить учетную запись. Он никогда не может запретить.</b> Сайт проверяет на спам, на ссылки, которые он блокирует, на спам в профиле, на кого-то, кто обходит запрет, и на фотографии, которые соответствуют списку. Когда один из них увольняется, он откладывает счет (в журнале это называется карантином), и сотрудник смотрит на него. То, что следует, всегда является решением человека: они освобождают счет, или администратор запрещает его, с причиной, правилом и апелляцией, как описано выше."
+
+#, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
 msgstr "<b>Для изгнания нужна причина и то, на что он опирается.</b> Модератор гильдии, который высылает кого-то, пишет почему и называет хотя бы один из собственных постов или комментариев этого человека в гильдии, на которую опирается изгнание; чат-майт тоже нуждается в причине, и удаление администратора всегда делает. На сайте хранится приватная копия каждого элемента, который был назван, как это было, в течение года: человек, модераторы гильдии и администраторы могут открыть его, поэтому более позднее редактирование или удаление не может переписать то, на чем основывалось решение. Журнал перечисляет названный, публичный пункт по его идентификатору."
 
@@ -158,8 +162,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>анонимный #3.</b> В одном потоке каждый, кто является анонимным, имеет номер, указанный в том порядке, в котором он стал анонимным (когда он опубликовал или прокомментировал анонимно, или когда удалил «Удалить мое имя» или закрыл свою учетную запись). Это один и тот же номер в сообщении и анонимных комментариях этого человека, другой в каждом другом потоке, и он остается, когда учетная запись удаляется. Он разъединяет людей, никогда не говорит, кто они."
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>Запрещается ссылаться на то, что кто-то написал.</b> Когда администратор запрещает или приостанавливает учетную запись, он может ссылаться на сообщения и комментарии, которые ее оправдывают, даже те, которые написаны анонимно. Как только второй администратор соглашается, журнал называет учетную запись для этих предметов (линия о каждом из них и строка запрета), поэтому любой может проверить, что запрет был справедливым. Элементы остаются анонимными везде на сайте, без второго администратора ничего не называется, и отмена запрета отменяет имя."
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>Просить рецензию.</b> Уведомление, которое вы отправляете, имеет <b>Запросить рецензию</b> ссылка, которая открывается /appeal/quarantine (вам необходимо зарегистрироваться). Вы можете попросить один раз для каждого трюма, до 500 символов, и администраторы сайта решают это, никогда не проверяя, что держал вас. Если они соглашаются, трюм поднимается, так говорит новая строка в Журнале, и вам говорят; если нет, то вам тоже говорят. Если администратор позже запретит учетную запись, это отдельное решение со своей причиной, правилом и апелляцией, и то, что сказано выше о запретах, которые ссылаются на анонимные сообщения, относится к нему. Владелец никогда не называет учетную запись за то, что он написал анонимно."
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>Запрещается ссылаться на то, что кто-то написал.</b> Когда администратор запрещает или приостанавливает учетную запись, он может ссылаться на сообщения и комментарии, которые ее оправдывают, даже те, которые написаны анонимно. Как только второй администратор соглашается (или на сайте с одним администратором, его владельцем), журнал называет учетную запись для этих элементов (линия о каждом из них и строка запрета), поэтому любой может проверить, что запрет был справедливым. Элементы остаются анонимными везде на сайте, ничто не названо без этого одобрения, и как только он назван, он остается: если запрет позже отменен, или приостановка просто заканчивается, журнал показывает, что тоже и сохраняет имя, поэтому запрет, который был найден неправильным, можно рассматривать как таковой."
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +202,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>Умеренность</b>Пост или комментарий, скрытый или удаленный, восстановленный или скрытый в версии. Для каждого из них: кто (модератор гильдии по имени; администраторы сайта как «админ сайта», никогда по имени), когда, где, какое правило и причина, написанная для него. Он никогда не показывает заголовок или текст того, что было скрыто."
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>Больше никому не говорят.</b> В его профиле нет баннера, и ни одна страница не называет учетную запись, которая находится в режиме ожидания. Учетной записи отправляется уведомление с общей причиной (и правилом, где она есть) и ссылкой для запроса отзыва."
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>Только человек поднимает трюм.</b> Не время и не проверка адреса электронной почты: администратор освобождает его из очереди персонала или принимает запрос на проверку. Держите чек регистрации на совершенно новой учетной записи отличается: проверка адреса электронной почты поднимает этот, если только автоматическая проверка не запустила учетную запись с тех пор."
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>Посты, написанные с другими.</b> Кредит каждого автора может быть анонимным сам по себе: когда сообщение анонимно с самого начала, когда автор выбирает «Удалить мое имя» для своего кредита или когда они удаляют свою учетную запись. Только этот кредит становится \"Анонимным\" #N\"; другие авторы остаются в списке. Администраторы всегда могут видеть, кто это."
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>Уберите мое имя.</b> Пост или комментарий остается там, где он есть, с вашим именем снято, и оставляет ваш профиль. Он не может быть отменен, и он не предлагается для сообщения, сделанного для Круга, сообщения, которое было опрокинуто, или сообщения, написанного с другими."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>Уберите мое имя.</b> Пост или комментарий остается там, где он есть, с вашим именем снято, и оставляет ваш профиль. Он не может быть отменен, и он не предлагается для сообщения, сделанного для Круга или сообщения, которое было опрокинуто. На посте, написанном с другими, он снимает только ваш кредит."
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -218,8 +234,20 @@ msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, t
 msgstr "<b>Пытаюсь выяснить, кто стоит за анонимным аккаунтом.</b> Угадывать, тестировать или сравнивать учетные записи с тем, кто решил быть анонимным, несправедливо, и это может привести к запрету. Сайт может видеть, когда модератор гильдии действует на учетную запись как по номеру, так и по имени, и его персоналу говорят, чтобы они могли смотреть."
 
 #, machine, plain2
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr "<b>Что может сделать удерживаемый счет</b> Он может читать сайт, изменять свои собственные настройки и профиль, удалять то, что он написал, закладки, отменять, оставлять гильдии и отправлять отзывы. Он не может публиковать, комментировать, редактировать, голосовать, следовать за кем-то, присоединяться к гильдии, пересылать, перепост, давать советы, сообщать, использовать чат или звонки, писать в канале, вики или событии, создавать Пространство, круг, кураторскую ленту или историю или использовать полномочия модератора гильдии. Сам трюм ничего не снимает."
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>То, что автоматически удаляется, является публичным.</b> Когда автоматическая проверка удаляет сообщение или комментарий, журнал показывает его на вкладке «Модерация», как и любое удаление: сообщение или комментарий по его идентификатору, правилу и общей причине, никогда его заголовку или тексту и никогда тому, кто его написал, даже когда он был анонимным. Само удаление не посылает отдельного уведомления: человек, которым оно было, находит <b>Обжаловать это решение</b> ссылку на удаленный пост или комментарий, и администраторы сайта решают эту апелляцию."
+
+#, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>Что никогда не публикуется:</b> слова элемента, удаленного модератором или скрытого гильдией, элемента запрещенной гильдии и всего, что удалено учетной записью, заблокированной как у ребенка: на них изображена строка и нет слов. Пост, сделанный для Круга или в частной гильдии, хранится только для этой аудитории."
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>Что показывает журнал.</b> Большинство трюмов имеют одну строку на вкладке «Санкции», с сайта: «поставить счет в карантин», с правилом, общей причиной («Автоматическая проверка спама», «Автоматическая проверка ссылок» или «Автоматическая проверка изображений») и временем. Он не называет ни аккаунта, ни поста, ни гильдии и ничего не говорит о том, что было поймано. Когда такой трюм поднимается, вторая строка говорит, что «поднят карантин, установлен автоматическая проверка». Сотрудники держат отдельную записку, которая называет учетную запись и говорит, что видел чек; только они ее читают. Некоторые трюмы не имеют публичной линии и читаются только персоналом, как и остальная часть того, что сайт делает для запуска себя."
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -298,9 +326,8 @@ msgstr "<strong>Посты</strong> на X, Bluesky, MastodonНити, Instagram
 msgid "<strong>Videos play in the post:</strong> YouTube, Vimeo, Dailymotion, Twitch, Kick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom and TED; Facebook videos and reels, Instagram reels and TikTok videos play when you press play."
 msgstr "<strong>Видео играют в посте:</strong> YouTubeВимео, Dailymotion, TwitchKick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom и TED; Facebook видео и барабаны, Instagram барабаны и TikTok Видео играет, когда вы нажимаете на игру."
 
-#, machine
 msgid "A **bot** is an account that posts by itself. The site's admins approve every one before it posts anything, and every bot follows the same posting rules, and the [rules for bots](/help/rules#bots) in the Rules and Guidelines."
-msgstr "**bot** — это аккаунт, который публикуется сам по себе. Администраторы сайта одобряют все до того, как он что-либо публикует, и каждый бот следует тем же правилам публикации и правилам для ботов [/help/rules#bots] в Правилах и руководящих принципах."
+msgstr ""
 
 #, machine
 msgid "A **member bot** needs its member to run it: a script of their own with a **bot key** (for example for X), or a source they pay for. It stays the member's, they manage it, and its profile says **Automated by @member**. A member bot may read approved feeds too."
@@ -361,6 +388,10 @@ msgid_plural "A feed that keeps failing (%(num)s times in a row) stops and the m
 msgstr[0] "Корм, который продолжает выходить из строя (%(num)s раз подряд) останавливается, и участнику, выполняющему его, говорят; запустите его снова из Настройки > Боты, как только это сработает."
 msgstr[1] "Корм, который продолжает выходить из строя (%(num)s раза подряд), останавливается, и участнику, выполняющему его, говорят; запустите его снова из Настройки > Боты, как только это сработает."
 msgstr[2] "Корм, который продолжает выходить из строя (%(num)s раз подряд), останавливается, и участнику, выполняющему его, говорят; запустите его снова из Настройки > Боты, как только это сработает."
+
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "Держите автоматический чек, поставленный на ваш счет, спрашивают примерно одинаково, один раз для каждого держания: см. Автоматические чеки выше."
 
 #, machine
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
@@ -475,6 +506,10 @@ msgstr "Просить слова, чтобы спуститься"
 #, machine
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "Автоматизированные сообщения - это сообщения с открытыми ссылками: никогда не анонимные, для кругов или соавторов. Они могут быть переданы гильдиям по вашему выбору, по правилам каждой гильдии."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "Автоматические проверки"
 
 #, machine
 msgid "Awesome online communities, without censorship"
@@ -687,9 +722,9 @@ msgstr "Не модифицируйте активы бренда и не исп
 msgid "Do not use the %(site)s name or brand assets in a manner that implies a partnership with, or endorsement by, ruqqus.com or %(company)s."
 msgstr "Не используйте имя %(site)s или активы бренда таким образом, который подразумевает партнерство с ruqqus.com или %(company)s."
 
-#, machine, python-format
+#, python-format
 msgid "Do not use the %(site)s name or brand assets in connection with material that violates the %(site)s [terms of service](/help/terms) or [rules and guidelines](/help/rules)."
-msgstr "Не используйте название %(site)s или активы бренда в связи с материалом, который нарушает %(site)s [условия обслуживания] (/help/terms) или [правила и руководящие принципы] (/help/rules)."
+msgstr ""
 
 #, machine, python-format
 msgid "Do not use the brand assets in connection with content that disparages ruqqus.com, %(company)s, or %(site)s staff."
@@ -1542,9 +1577,8 @@ msgstr "Названия сторонников"
 msgid "Supporting %(site)s means supporting free speech and digital discourse."
 msgstr "Поддержка %(site)s означает поддержку свободы слова и цифрового дискурса."
 
-#, machine
 msgid "Sworn United States law enforcement agents and authorized United States government representatives may use our [legal requests portal](/legal) to submit legal process such as court orders, subpoenas or search warrants."
-msgstr "Присяжные сотрудники правоохранительных органов Соединенных Штатов и уполномоченные представители правительства Соединенных Штатов могут использовать наш [портал юридических запросов] (/legal) для подачи судебных решений, повесток в суд или ордеров на обыск."
+msgstr ""
 
 #, machine, plain1
 msgid "Tabs"
@@ -1587,8 +1621,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "Первая поправка к Конституции США гласит:"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "Журнал - это одна запись о том, что модераторы гильдии и сайт решили, и о том, что участники удалили. Ничто в нем никогда не редактируется: исправление — это новая строка, указывающая на ту, которую оно исправляет. Откройте его из нижнего колонтитула или в /log."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "Журнал - это одна запись о том, что модераторы гильдии и сайт решили, и о том, что участники удалили. То, что он говорит, никогда не переписывается: исправление — это новая строка, указывающая на ту, которую он исправляет. Только три вещи вынимаются из строки, и каждая из них покидает строку сама по себе: причина, по которой администратор прячет после отчета, пункт строки указывает на то, когда его автор позже снимает свое имя, а слова чего-то администратор стирает. Откройте его из нижнего колонтитула или в /log."
 
 #, machine, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1597,6 +1631,10 @@ msgstr "Поток авторизации OAuth2 используется для
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "Платформа"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "Область `delete` удаляет элемент с сайта; то, что он удаляет более чем через пять минут после написания элемента, остается в публичном журнале как Anonymous. Вместо этого снимите имя («Удалите мое имя»), и инструменты истории принадлежат сайту и не предлагаются приложениям."
 
 #, machine
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"

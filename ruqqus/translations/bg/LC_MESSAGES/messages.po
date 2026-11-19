@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: bg\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, machine, plain1, python-format
+#, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,14 +30,6 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
-"\n"
-"@%(admin)s Ви е дал следната профилна значка:\n"
-"\n"
-"\n"
-"[]%(path)s)\n"
-"\n"
-"\n"
-"%(badge)s\n"
 
 #, machine, plain1, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -1505,6 +1497,10 @@ msgstr "%(who)s поканен гилдия модератор @%(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s ритник пост %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s вдигна карантина, беше поставена автоматична проверка"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s отменя забраната на %(name)s"
@@ -1568,6 +1564,10 @@ msgstr "%(who)s закачено съобщение в канал"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s прикован пост %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s постави сметка под карантина."
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2726,6 +2726,10 @@ msgstr "Космосът не може да започне в миналото."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Място за него <span class=\"text-muted font-weight-normal\">(по избор: пощенската връзка на пространството)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Пространството е завършено от собствената си страница; то не е изтрито като пост."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Пространството е живо за известно време: дъска, жива нишка или обаждане. Поддържа се за повторение, или го няма, когато свърши."
@@ -2975,6 +2979,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Копие от това, както е било, когато е било скрито, премахнато, изтрито или разчитано за решение. Само авторът му, гилдията модератори на гилдията, която е решила и администраторите на сайта могат да я отворят тук. Повечето копия се изчистват след известно време; копието на нещо изтрито от автора му остава в публичния дневник."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3370,6 +3378,10 @@ msgstr "Пост, който е бил наклонен не може да пр�
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Пост, който не е публичен, не може да използва тази снимка: файловете му могат да бъдат отворени от всеки с адреса. Добавяне на снимката от вашето свързано съхранение вместо това (Настройки > Медия)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Пост с анонимен кредит не може да бъде използван."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Пост със съавтор не може да се мести в кръг. Преместването на обществен пост в кръг отнема копията, които сте предали; копия, които други хора изпращат, остават в гилдията си."
@@ -3395,10 +3407,6 @@ msgid "A post's text can be %(count)s character (Chinese, Japanese and Korean ch
 msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Текстът на публикацията може да бъде %(count)s характер (китайски, японски и корейски символи и емоджи брой като 2)."
 msgstr[1] "Текстът на публикацията може да бъде %(count)s символи (китайски, японски и корейски символи и емоджи брой до 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Частно копие на това, както е било, когато е било скрито, премахнато, изтрито или разчитано за решение. Само авторът му, гилдията модератори на гилдията, която е решила и администраторите на сайта могат да я отворят, и тя не се съхранява завинаги."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4110,10 +4118,6 @@ msgstr "Сигналите и заглавията идват от източн�
 msgid "Algorithm"
 msgstr "Алгоритъм"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Алгоритъмът е спасен."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4359,6 +4363,29 @@ msgstr "Автор, който не е бил активен в сайта за 
 msgid "An automated post can't have its name removed."
 msgstr "Автоматизираният пост не може да премахне името му."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Автоматична проверка остави сметката на изчакване."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Автоматичен чек остави сметката ти на изчакване, така че не можеш да го направиш за сега. Един член на персонала ще го погледне. Ако смятате, че чекът е грешен, може да поискате преразглеждане."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Автоматичен чек остави сметката ти на изчакване."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Криптиран канал не може да поиска приемането на правилата му: сайта не може да провери кой е написал."
@@ -4480,8 +4507,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Анонимен #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Анонимните остават анонимни, освен ако втори администратор не одобри, и тогава журналът назовава вашата сметка до тях."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Анонимните остават анонимни, освен ако втори администратор не одобри (или, на сайт с един администратор, негов собственик), а след това лог имена вашата сметка до тях."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4725,6 +4752,10 @@ msgstr "Арийски планини"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Като автор вие редактирате проекта на живо с тях, и всеки персонаж, който напишете, ви се приписва. След публикуването на публикацията всеки, който може да я види, може да види кой какво е написал. Авторите решават заедно:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Поискай отзив"
 
 #, machine, plain1
 msgid "Asked you"
@@ -4992,14 +5023,6 @@ msgstr "Балкани"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Коментар за забрана"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Да забраним укриването. Собственикът на този коментар е бил забранен за друга сметка."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Да забраним укриването. Собственикът е бил забранен за друга сметка."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6269,6 +6292,10 @@ msgstr "Коментари скрити или премахнати"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Коментарите по анонимния ви пост са анонимни"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Коментарите по анонимния ви пост са анонимни. Ако администратор забрани или спре сметката за такава, Дневникът може да назове сметката за нея."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Коментари:"
@@ -6975,9 +7002,9 @@ msgstr "Да изтрия тази роля? Всеки го губи и кан�
 msgid "Delete your %(site)s account"
 msgstr "Изтриване на профила %(site)s"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Изтриване на публикациите и коментарите"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Изтриване на публикациите и коментарите (това, което е изтрито повече от пет минути след като е било написано остава в публичния дневник, като анонимен)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7603,10 +7630,6 @@ msgid "Engagement"
 msgstr "Годеж"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Включване в незаконна дейност"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Включване или планиране на незаконна дейност"
 
@@ -7709,10 +7732,6 @@ msgstr "Ета Водолейдс метеоритен дъжд"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Етика"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Избягване на забрана на място"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -7830,6 +7849,10 @@ msgstr "Всеки вижда промените си, докато пише, и
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Всичко от вашите гилдия и сметки, най-новото първо."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Всичко, което сте написали остава на сайта като Анонимен и не може да бъде отнето. Изтрийте това, което искате, или премахнете името си от него, първо (История > Управление)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9754,9 +9777,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Модератор за покани"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Покани хората да споделят този пост. След като го приемат носи името им и е включен в профила им. Все още редактираш, изтриваш и препращаш. Не и за анонимни постове."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Покани хората да споделят този пост. След като го приемат носи името си и е включен в профила им; на анонимен пост кредитът им също е анонимен. Все още редактираш, изтриваш и препращаш."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13474,8 +13497,8 @@ msgid "Post anonymously"
 msgstr "Публикувай анонимно"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Публикувайте анонимно: други членове виждат всеки автор като анонимен с номер. Администрите винаги виждат кои са. Не може да се промени след публикуването на публикацията."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Публикувайте анонимно: други членове виждат всеки автор като анонимен с номер. Администраторите винаги могат да видят кои са те и забраната на администратора може да има името на дневника на сметката за анонимен елемент, който цитира. Не може да се промени след публикуването на публикацията."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16234,10 +16257,6 @@ msgid "Spam"
 msgstr "Спам"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Спаминг."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Говори"
@@ -17389,7 +17408,7 @@ msgid "The auto-moderation was saved."
 msgstr "Автомодермацията беше спасена."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17417,10 +17436,6 @@ msgstr "The bot @%(name)s Предложението ти не беше одоб
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Ботът вече чете тази информация."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Ботът беше спрян за прекалено много подобно съдържание."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17490,6 +17505,10 @@ msgstr "В проекта има промени на поста все още н
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Предишните версии не се показват, докато това е скрито."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "По-ранните версии не са показани: това е изтрито и текстът му е изчистен."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17621,6 +17640,10 @@ msgstr "Гилдията вече има роля с това име."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Собствените правила на гилдията за това, което е написано в каналите му, върху думата филтър на сайта. Гилдията на модераторите никога не ги държи. Послание, което се нарушава, се отказва с кратка причина, която никога не казва коя дума."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Запорът по сметката ти беше премахнат. Можете да публикувате, коментирате и гласувате отново."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18123,9 +18146,9 @@ msgstr "Не са заглушени тук."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Те могат да купуват и харчат монети, бакшиш, купуват Premium и се присъединяват или тичат платени кръгове."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Те могат да бъдат домакини и да се присъединят към Пространствата и да тичат живи конци. Гласовите обаждания в космоса също имат нужда от Чат."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Могат да се присъединят и да слушат Пространствата. Те не могат да бъдат домакини или пост в едно: акаунт за деца само чете. Гласовите обаждания в космоса също имат нужда от Чат."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18337,6 +18360,10 @@ msgstr "Този робот не работи."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Собственикът на този бот не може да го управлява точно сега."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Собственикът на този робот не може да го управлява, докато сметката им е на изчакване."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -22124,18 +22151,15 @@ msgstr ""
 "\n"
 "> %(message)s"
 
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Вашият %(site)s акаунт е временно отстранен поради следната причина:\n"
-"\n"
-"> избягване на забрани"
-
 #, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -22151,16 +22175,6 @@ msgstr ""
 "Вашият %(site)s акаунт е бил отстранен за %(days)s дни поради следната причина:\n"
 "\n"
 "> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Вашият %(site)s акаунт е бил отстранен за 1 ден поради следната причина:\n"
-"\n"
-"Прекалено много спам!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22290,6 +22304,10 @@ msgstr "Сметката ви е чувствителна."
 msgid "Your account is no longer marked sensitive."
 msgstr "Сметката ти вече не е чувствителна."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Сметката ви е на изчакване"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Сметката ви е спряна."
@@ -22388,6 +22406,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -23165,10 +23210,6 @@ msgstr "попитан от %(name)s"
 msgid "avatar"
 msgstr "аватар"
 
-#, machine, plain1
-msgid "ban evasion"
-msgstr "избягване на забрани"
-
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "banned %(target)s"
@@ -23660,6 +23701,12 @@ msgstr "се съхранява като повторение в собстве�
 msgid "kicked post %(target)s"
 msgstr "kicked post %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "е вдигнала карантина, е поставила автоматична проверка"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -23890,6 +23937,12 @@ msgstr "публикувано от %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "публикувана, с непубликувани промени"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "постави сметка под карантина"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24356,9 +24409,9 @@ msgstr "бил си изключен."
 msgid "you're invited to write it"
 msgstr "поканен си да го напишеш"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "вашият акаунт не може да го публикува в този момент (намаляване, или правилата на гилдия, на която е бил изпратен). Отвори го и натисни \"Поуст,\" за да видиш какво."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "вашият акаунт не може да го публикува в този момент (той е на изчакване или временно спряно, или правилата на гилдията, на която е изпратен). Отвори го и натисни \"Поуст,\" за да видиш какво."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: et\n"
@@ -150,6 +150,10 @@ msgid "**Your server only orders.** Every post it names goes through the same ru
 msgstr "** Teie server ainult tellib.** Iga postitus, mida ta nimetab, läbib samad reeglid nagu iga sööt enne selle näitamist: eemaldatud postitused, privaatsed gildid, iga vaataja sõna filter ja plokid. Postitus, mida vaataja ei pruugi näha, jäetakse lihtsalt välja."
 
 #, machine, plain2
+msgid "<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above."
+msgstr "<b>Automaatne kontroll võib konto ootele panna. See ei saa kunagi keelata.</b> Sait kontrollib rämpsposti, linke, mida see blokeerib, rämpsposti profiilis, keegi, kes saab keelu ringi, ja pilte, mis sobivad loendiga. Kui üks neist vallandab, paneb see konto ootele (logi nimetab seda karantiiniks) ja töötaja vaatab seda. Alljärgnev on alati inimese otsus: nad vabastavad konto või administraator keelab selle põhjuse, reegli ja apellatsiooniga, nagu eespool kirjeldatud."
+
+#, machine, plain2
 msgid "<b>An exile needs a reason and something it relies on.</b> A guildmaster who exiles someone writes why and names at least one of that person's own posts or comments in the guild that the exile relies on; a chat mute needs a reason too, and an admin's takedown always does. The site keeps a private copy of each item that was named, as it was, for a year: the person, the guild's guildmasters and the admins can open it, so a later edit or delete can't rewrite what the decision rested on. The Log lists a named, public item by its id."
 msgstr "<b>Pagulane vajab põhjust ja midagi, millele ta toetub.</b> Gild moderaator, kes pagendab kedagi, kirjutab, miks ja nimetab vähemalt ühe selle isiku enda postituse või kommentaari gildis, millele eksiili toetub; vestlustumm vajab ka põhjust ja administraator võtab alati. Sait säilitab privaatkoopia igast elemendist, mida nimetati, nagu see oli, aasta jooksul: inimene, gildi moderaatorid ja administraatorid saavad selle avada, nii et hilisem redigeerimine või kustutamine ei saa uuesti kirjutada, mida otsus tugines. Log loetleb nimelise avaliku elemendi oma ID järgi."
 
@@ -158,8 +162,12 @@ msgid "<b>Anonymous #3.</b> In one thread, everyone who is anonymous there has a
 msgstr "<b>Anonüümne #3.</b> Ühes lõimes on igaühel, kes on anonüümne, number, mis on antud järjekorras, mille nad said seal anonüümseks (kui nad postitasid või kommenteerisid anonüümselt või kui kustutamine, \"Eemalda minu nimi\" või konto sulgemine seda tegi). See on sama number postitusel ja selle isiku anonüümsetel kommentaaridel, iga teise lõime erinev ja see jääb konto kustutamisel. See eristab inimesi; see ei ütle kunagi, kes nad on."
 
 #, machine, plain2
-msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out."
-msgstr "<b>Keeld, mis viitab sellele, mida keegi kirjutas.</b> Kui administraator keelab või peatab konto, võivad nad tsiteerida postitusi ja kommentaare, mis seda õigustavad, isegi need, mis on kirjutatud anonüümselt. Kui teine admin nõustub, siis Log nimetab nende esemete konto (rida iga kohta ja keelu rida), nii et igaüks saab kontrollida, kas keeld oli õiglane. Esemed jäävad anonüümseks kõikjal mujal saidil, midagi ei nimetata ilma selle teise administraatorita ja keelu tagasipööramine võtab nime tagasi."
+msgid "<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously."
+msgstr "<b>Küsin ülevaadet.</b> Teile saadetud teatel on <b>Küsi ülevaatust</b> link, mis avab / apellatsiooni / karantiini (peate olema sisse logitud). Võite küsida üks kord iga valduses, kuni 500 tähemärki, ja saidi administraatorid otsustavad seda, mitte kunagi kontrolli, mis hoidis teid. Kui nad nõustuvad, tõstetakse trümmi, logi uus rida ütleb nii ja teile öeldakse; kui mitte, siis öeldakse teile ka seda. Kui administraator hiljem konto keelab, on see eraldi otsus, millel on oma põhjus, reegel ja kaebus, ja see, mida eespool anonüümsetele postitustele viitavate keeldude kohta öeldakse, kehtib selle kohta. Hoidmine ei nimeta kunagi kontot midagi, mille ta kirjutas anonüümselt."
+
+#, machine, plain2
+msgid "<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such."
+msgstr "<b>Keeld, mis viitab sellele, mida keegi kirjutas.</b> Kui administraator keelab või peatab konto, võivad nad tsiteerida postitusi ja kommentaare, mis seda õigustavad, isegi need, mis on kirjutatud anonüümselt. Kui teine admin nõustub (või saidil, kus on üks administraator, selle omanik), Log nimetab nende esemete konto (rida iga kohta ja keelu rida), nii et igaüks saab kontrollida keeldu oli õiglane. Esemed jäävad anonüümseks kõikjal mujal saidil, midagi ei nimetata ilma selle heakskiiduta ja kui see on nimetatud, jääb see: kui keeld on hiljem ümber pööratud või peatamine lihtsalt otsa saab, näitab logi seda ka ja hoiab nime, nii et keeldu, mis leiti valesti, võib sellisena näha."
 
 #, machine, plain2
 msgid "<b>Comments under a deleted post stay.</b> They are read under the post in the Log, where the post is Anonymous. The comments you wrote under your own post become Anonymous with it. A comment its own author deletes is shown as Anonymous there too."
@@ -194,12 +202,20 @@ msgid "<b>Moderation</b>: a post or comment hidden or removed, restored, or hidd
 msgstr "<b>Mõõdukus</b>Postitus või kommentaar peidetud või eemaldatud, taastatud või peidetud versioon. Iga üks: kes (Gild moderaator nime järgi; saidi administraatorid kui \"Site admin\", mitte kunagi nime järgi), millal, kus, milline reegel ja selle põhjus. See ei näita kunagi pealkirja ega teksti, mis oli peidetud."
 
 #, machine, plain2
+msgid "<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review."
+msgstr "<b>Kellelegi teisele pole öeldud.</b> Selle profiilil ei ole bännerit ja ükski leht ei nimeta kontot, mis on ootel. Kontole saadetakse teade, millel on üldine põhjus (ja reegel, kui see on olemas) ja link läbivaatamise taotlemiseks."
+
+#, machine, plain2
+msgid "<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since."
+msgstr "<b>Ainult inimene tõstab kinni.</b> Mitte aeg ja e-posti aadressi kinnitamata jätmine: administraator vabastab selle töötajate järjekorrast või nõustub läbivaatamise taotlusega. Registreerimiskontrolli kinnipidamine paneb täiesti uuele kontole on erinev: e-posti aadressi kontrollimine tõstab selle, välja arvatud juhul, kui automaatne kontroll on kontole pärast seda käivitanud."
+
+#, machine, plain2
 msgid "<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is."
 msgstr "<b>Teistega kirjutatud postitused.</b> Iga autori krediit võib olla anonüümne: kui postitus on algusest peale anonüümne, kui autor valib oma krediidi jaoks \"Eemalda minu nimi\" või kui nad oma konto kustutavad. Ainult see krediit muutub anonüümseks. #NTeiste autorite nimed jäävad alles. Administrid näevad alati, kelle oma see on."
 
 #, machine, plain2
-msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others."
-msgstr "<b>Eemalda mu nimi.</b> Postitus või kommentaar jääb sinna, kus see on, teie nimi eemaldatakse ja jätab teie profiili. Seda ei saa tagasi võtta ja seda ei pakuta ringi jaoks tehtud postitusele, postitusele, mis on kallutatud, ega postitusele, mis on kirjutatud teistega."
+msgid "<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only."
+msgstr "<b>Eemalda mu nimi.</b> Postitus või kommentaar jääb sinna, kus see on, teie nimi eemaldatakse ja jätab teie profiili. Seda ei saa tagasi võtta ja seda ei pakuta postitusele, mis on tehtud ringile või postitusele, mis on kallutatud. Teistega kirjutatud postitus võtab ära ainult teie enda krediidi."
 
 #, machine, plain2
 msgid "<b>Removing an anonymous author of a shared post.</b> The authors of a shared post can propose removing an anonymous author by their number. The other authors never see whose number it is while they vote. If the vote passes, the author is removed and so everyone knows who it was; their credit on the post stays a number."
@@ -218,8 +234,20 @@ msgid "<b>Trying to find out who is behind an anonymous account.</b> Guessing, t
 msgstr "<b>Püüame välja selgitada, kes on anonüümse konto taga.</b> Kontode arvamine, testimine või võrdlemine anonüümseks jäänud isiku paljastamiseks on ebaõiglane kokkupuude ja see võib viia keeluni. Sait näeb, kui gildi moderaator tegutseb kontol nii numbri kui ka nime järgi ning selle töötajatele öeldakse, et nad saaksid vaadata."
 
 #, machine, plain2
+msgid "<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down."
+msgstr "<b>Mida konto saab teha.</b> See võib lugeda saidi, muuta oma seadeid ja profiili, kustutada, mida ta kirjutas, järjehoidja, mittejärgida, jätta gildid ja saata tagasisidet. See ei saa postitada, kommenteerida, redigeerida, hääletada, järgida kedagi, liituda gildiga, edasi saata, uuesti postitada, tipida, raporteerida, kasutada vestlust või kõnesid, kirjutada kanalis, vikis või sündmuses, teha ruumi, ringi, kureeritud sööta või lugu ega kasutada gildi moderaatori volitusi. Hoidik ise ei võta midagi maha."
+
+#, machine, plain2
+msgid "<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal."
+msgstr "<b>Mida automaatne kontroll eemaldab, on avalik.</b> Kui automaatne kontroll eemaldab postituse või kommentaari, näitab logi seda vahekaardil modereerimine nagu iga eemaldamine: postitus või kommentaar oma ID-ga, reegel ja üldine põhjus, mitte kunagi selle pealkiri või tekst ja mitte kunagi, kes seda kirjutas, isegi kui see oli anonüümne. Eemaldamine ise ei saada eraldi teadet: isik, kes see oli, leiab <b>Apellatsioonkaebus</b> link eemaldatud postitusele või kommentaarile ja saidi administraatorid otsustavad selle kaebuse."
+
+#, machine, plain2
 msgid "<b>What is never published:</b> the words of an item a moderator had removed or a guild had hidden, of an item in a banned guild, and of anything deleted by an account locked as a child's: those show a line and no words. A post made for a Circle, or in a private guild, is kept for that audience only."
 msgstr "<b>Mis ei ole kunagi avaldatud:</b> sõnad objekti moderaator oli eemaldatud või gild oli peidetud, objekt keelatud gild, ja midagi kustutatud konto lukustatud lapse: need näitavad rida ja ei sõnu. Ringile või privaatses gildis tehtud postitust hoitakse ainult selle publiku jaoks."
+
+#, machine, plain2
+msgid "<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself."
+msgstr "<b>Mida Log näitab.</b> Enamikul trükkidel on vahekaardil Sanktsioonid üks rida, saidilt: \"panna konto karantiini\", reegliga, üldine põhjus (\"Automaatne rämpsposti kontroll\", \"Automaatse lingi kontroll\" või \"Automatic image check\") ja aeg. See ei nimeta ühtegi kontot, posti ega gildi ega ütle midagi selle kohta, mis kinni püüti. Kui selline kinnihoidmine on tõstetud, ütleb teine rida \"tõstsin karantiini, mille automaatne kontroll oli paigutatud\". Töötajad hoiavad eraldi märkust, mis nimetab konto ja ütleb, mida tšekk nägi; ainult nad lugesid seda. Mõned hoiab ei ole avaliku liini ja loevad ainult töötajad, nagu ülejäänud, mida sait teeb, et käivitada ise."
 
 #, machine, plain2
 msgid "<b>When something is lifted you are told.</b> If an exile or a mute ends, a hidden or removed post or comment is shown again, a suspension runs out or a banned guild is reinstated, the people it concerned are sent a short notice. A chat mute and a guild's ban are told when they are made, with the rule, the reason and an <b>Appeal</b> button, as other decisions are; a guild's founder and full guildmasters can each appeal its ban."
@@ -298,9 +326,8 @@ msgstr "<strong>Postid</strong> X-il, Bluesky, Mastodon, Threads Instagram, Redd
 msgid "<strong>Videos play in the post:</strong> YouTube, Vimeo, Dailymotion, Twitch, Kick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom and TED; Facebook videos and reels, Instagram reels and TikTok videos play when you press play."
 msgstr "<strong>Postituses mängivad videod:</strong> YouTubeVimeo, Dailymotion, Twitch, Kick, Rumble, Odysee, BitChute, Bilibili, Streamable, Loom ja TED; Facebook videod ja rullid, Instagram rullides TikTok videod mängivad, kui vajutad mängu."
 
-#, machine, plain1
 msgid "A **bot** is an account that posts by itself. The site's admins approve every one before it posts anything, and every bot follows the same posting rules, and the [rules for bots](/help/rules#bots) in the Rules and Guidelines."
-msgstr "**bot** on konto, mis postitab ise. Saidi administraatorid kiidavad kõik enne, kui ta midagi postitab, ja iga bot järgib samu postitamisreegleid ja [reeglid robotitele] (/help/rules#bots) reeglites ja suunistes."
+msgstr ""
 
 #, machine, plain1
 msgid "A **member bot** needs its member to run it: a script of their own with a **bot key** (for example for X), or a source they pay for. It stays the member's, they manage it, and its profile says **Automated by @member**. A member bot may read approved feeds too."
@@ -359,6 +386,10 @@ msgid "A feed that keeps failing (%(num)s times in a row) stops and the member r
 msgid_plural "A feed that keeps failing (%(num)s times in a row) stops and the member running it is told; start it again from Settings > Bots once it works."
 msgstr[0] "Kanal, mis pidevalt ebaõnnestub (%(num)s korda järjest), peatub ja seda käivitavale liikmele öeldakse; käivitage see uuesti menüüst Seadistused > Robotid, kui see töötab."
 msgstr[1] "Kanal, mis pidevalt ebaõnnestub (%(num)s korda järjest), peatub ja seda käivitavale liikmele öeldakse; käivitage see uuesti menüüst Seadistused > Robotid, kui see töötab."
+
+#, machine, plain2
+msgid "A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above."
+msgstr "Oma kontole pandud automaatset kontrolli küsitakse samal viisil, üks kord iga kinnihoidmise kohta: vt Automaatsed kontrollid ülal."
 
 #, machine, plain1
 msgid "A member bot can also post from a script of its member's own, through a **bot key**. This is how to run a bot for **X**: X has no feeds, and its terms don't allow other sites to scrape it, so use your own X access in your own script and post each tweet's link. The site shows a link to a tweet as X's own embed, so no tweet text is copied. Site bots have no keys."
@@ -473,6 +504,10 @@ msgstr "Sõnade küsimine"
 #, machine, plain1
 msgid "Automated posts are public link posts: never anonymous, for circles or co-authored. They can be forwarded to guilds you choose, under each guild's rules."
 msgstr "Automaatsed postitused on avalikud lingipostitused: mitte kunagi anonüümsed, ringkondade jaoks või kaasautor. Neid saab edastada teie valitud gildidele iga gildi reeglite järgi."
+
+#, machine, plain2
+msgid "Automatic checks"
+msgstr "Automaatne kontroll"
 
 #, machine, plain1
 msgid "Awesome online communities, without censorship"
@@ -1015,9 +1050,9 @@ msgstr "Selleks, et saaksime teie päringule vastata, palun kõigepealt <a href=
 msgid "In order to successfully siege a guild you must meet the following requirements:"
 msgstr "Et edukalt üle võtta gildi nõue, peate vastama järgmistele nõuetele:"
 
-#, machine, plain1, python-format
+#, python-format
 msgid "In the [apps tab of %(site)s settings](/settings/apps), fill in and submit the form to request new API keys. You will need:"
-msgstr "[ %(site)s seadistuste vahekaardil] (/settings/apps) täitke ja esitage vorm uue API taotlemiseks võtmed. Sul on vaja:"
+msgstr ""
 
 #, machine, plain1
 msgid "Inline formatting"
@@ -1536,9 +1571,8 @@ msgstr "Toetajate tiitlid"
 msgid "Supporting %(site)s means supporting free speech and digital discourse."
 msgstr "Toetamine %(site)s tähendab sõnavabaduse ja digitaalse diskursuse toetamist."
 
-#, machine, plain1
 msgid "Sworn United States law enforcement agents and authorized United States government representatives may use our [legal requests portal](/legal) to submit legal process such as court orders, subpoenas or search warrants."
-msgstr "Vande all olevad Ameerika Ühendriikide õiguskaitseorganid ja volitatud Ameerika Ühendriikide valitsuse esindajad võivad kasutada meie [juriidiliste taotluste portaali] (/legal) õiguslike protsesside, näiteks kohtumääruste, kohtukutsete või läbiotsimismääruste esitamiseks."
+msgstr ""
 
 #, machine, plain1
 msgid "Tabs"
@@ -1581,8 +1615,8 @@ msgid "The First Amendment to the United States Constitution states:"
 msgstr "Ameerika Ühendriikide põhiseaduse esimene parandus sätestab:"
 
 #, machine, plain2
-msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log."
-msgstr "Log on üks kirje sellest, mida gildi moderaatorid ja sait otsustasid ja millised liikmed kustutasid. Midagi selles pole kunagi redigeeritud: parandus on uus rida, mis osutab sellele, mida ta parandab. Ava see jalust või aadressil /log."
+msgid "The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log."
+msgstr "Log on üks kirje sellest, mida gildi moderaatorid ja sait otsustasid ja millised liikmed kustutasid. Seda, mida ta ütleb, ei kirjutata kunagi ümber: parandus on uus rida, mis osutab sellele, mida ta parandab. Ainult kolm asja võetakse joonest välja ja igaüks lahkub joonest ise: põhjus, miks administraator pärast aruannet peidab, punkt, millele joon osutab, kui selle autor hiljem oma nime maha võtab, ja sõnad millestki, mille administraator kustutab. Ava see jalust või aadressil /log."
 
 #, machine, plain1, python-format
 msgid "The OAuth2 authorization flow is used to enable users to authorize third-party applications to access their %(site)s account without having to provide their login information to the application."
@@ -1591,6 +1625,10 @@ msgstr "OAuth2 autentimisvoogu kasutatakse selleks, et võimaldada kasutajatel l
 #, glossary, machine, plain2
 msgid "The Platform"
 msgstr "Platvorm"
+
+#, machine, plain2
+msgid "The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead (\"Remove my name\") and the History tools are the site's own and are not offered to apps."
+msgstr "`delete` Ulatus eemaldab elemendi saidilt; see, mida see eemaldab rohkem kui viis minutit pärast elemendi kirjutamist, jääb avalikku logisse anonüümseks. Selle asemel nime eemaldamine (\"Eemalda minu nimi\") ja ajaloo tööriistad on saidi enda ja neid ei pakuta rakendustele."
 
 #, machine, plain1
 msgid "The assets on this page (\"brand assets\") may be used for the following purposes, under a limited, nonexclusive, nontransferable, royalty-free license (\"the License\"):"

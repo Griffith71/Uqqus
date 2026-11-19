@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sl\n"
@@ -1751,6 +1751,10 @@ msgstr "%(who)s povabljeni moderator ceha @ %(name)s"
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s brcnili post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s je odstranil karanteno"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s odpravil prepoved na %(name)s"
@@ -1814,6 +1818,10 @@ msgstr "%(who)s v kanalu"
 #, machine, plain1, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s pripeto mesto %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s da račun v karanteno"
 
 #, machine, plain1, python-format
 msgid "%(who)s reinstated comment"
@@ -2992,6 +3000,10 @@ msgstr "Vesolje se ne more začeti v preteklosti."
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Prostor za to <span class=\"text-muted font-weight-normal\">(neobvezno: poštna povezava prostora)</span>"
 
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Prostor se konča z lastne strani; ni izbrisan kot post."
+
 #, machine, plain1
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
 msgstr "Prostor je nekaj časa v živo: deska, živa nit ali klic. Hrani se za ponovitev ali pa izgine, ko se konča."
@@ -3273,6 +3285,10 @@ msgstr ""
 #, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr ""
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Kopija tega, kot je bila, ko je bila skrita, odstranjena, izbrisana ali zavedena v odločbo. Samo njegov avtor, guldni moderatorji ceha, ki se je odločil in skrbniki strani ga lahko odprejo tukaj. Večina izvodov se čez nekaj časa očisti; kopija nečesa, kar je avtor izbrisal, ostane v javnem dnevniku."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3724,6 +3740,10 @@ msgstr "Postava, ki je bila navita, ne more biti odstranjena, ker so kovanci šl
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Postava, ki ni javna, ne more uporabiti te slike: njene datoteke lahko odpre kdorkoli z naslovom. Namesto tega dodajte sliko iz vašega povezanega skladišča (Nastavitve > Mediji)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Postave z anonimnim kreditom ni mogoče razvozlati."
+
 #, machine, plain1
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Postave s soavtorji se ne da premakniti v kroge. Premikanje javne objave v kroge vzame kopije, ki ste jih posredovali; kopije drugih ljudi, ki so jih posredovali, ostanejo v njihovih cehih."
@@ -3751,10 +3771,6 @@ msgstr[0] "Besedilo pošte je lahko %(count)s lik (kitajski, japonski in korejsk
 msgstr[1] "Besedilo posta je lahko %(count)s znakov (kitajski, japonski in korejski liki in emoji štetje 2)."
 msgstr[2] "Besedilo posta je lahko %(count)s znakov (kitajski, japonski in korejski liki in emoji štetje 2)."
 msgstr[3] "Besedilo posta je lahko %(count)s znakov (kitajski, japonski in korejski liki in emoji štetje 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Zasebna kopija tega, kot je bila, ko je bila skrita, odstranjena, izbrisana ali zapisana v odločbo. Samo njegov avtor, guldni moderatorji ceha, ki se je odločil in skrbniki strani ga lahko odprejo, in ga ne hranijo za vedno."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4494,10 +4510,6 @@ msgstr "Opozorila in naslovi prihajajo iz vira, ki je naveden na vsaki vrstici, 
 msgid "Algorithm"
 msgstr "Algoritem"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Algoritem rešen."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4745,6 +4757,29 @@ msgstr "Avtor, ki ni bil aktiven na spletni strani za %(time)s se ne šteje."
 msgid "An automated post can't have its name removed."
 msgstr "Avtomatska pošta ne more odstraniti imena."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Avtomatski ček je odložil račun."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Avtomatski ček je dal vaš račun na čakanje, tako da za zdaj ne morete storiti tega. Član osebja bo pogledal. Če mislite, da je bil ček napačen, lahko zahtevate oceno."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Avtomatski ček je dal vaš račun na čakanje."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Šifrirani kanal ne more zahtevati, da se njegova pravila sprejmejo: stran ne more preveriti, kdo je napisal."
@@ -4874,8 +4909,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Anonimni uporabnik #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Anonimni ostanejo anonimni, razen če drugi administrator ne odobri, in potem Log imenuje vaš račun poleg njih."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Anonimni ostanejo anonimni, razen če drugi administrator odobri (ali na spletni strani z enim samim administratorjem, lastnikom), in potem Log imenuje vaš račun poleg njih."
 
 #, machine, plain1
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -5121,6 +5156,10 @@ msgstr "Arijsko višavje"
 #, machine, plain1
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Kot avtor urejate osnutek v živo z njimi in vsak znak, ki ga vtipkate, vam je pripisan. Ko je objava objavljena, lahko vsakdo, ki vidi, vidi, kdo je napisal kaj. Avtorji se skupaj odločijo:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Zahtevaj pregled"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5404,14 +5443,6 @@ msgstr "Balkan"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Komentar prepovedi"
-
-#, machine, plain1
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Izmikanje prepovedi. Lastnik tega komentarja je bil prepovedan na drug račun."
-
-#, machine, plain1
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Izmikanje prepovedi. Lastnik te vloge je bil prepovedan na drug račun."
 
 #, machine, plain1
 msgctxt "guildmaster action"
@@ -6687,6 +6718,10 @@ msgstr "Pripombe skrite ali odstranjene"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Komentarji na anonimni pošti so anonimni"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Komentarji so anonimni. Če administrator račun za enega od računov prepove ali začasno prekine, lahko ta račun imenuje."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Komentarji:"
@@ -7397,9 +7432,9 @@ msgstr "Izbriši to vlogo? Vsi ga izgubijo in kanali pozabijo, kaj je dovolilo a
 msgid "Delete your %(site)s account"
 msgstr "Zbriši svoj račun %(site)s"
 
-#, machine, plain1
-msgid "Delete your posts and comments"
-msgstr "Izbrišite svoje objave in komentarje"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Izbrišite svoje objave in komentarje (kar je izbrisano več kot pet minut po tem, ko je bilo napisano bivanje v javnem dnevniku, kot Anonimno)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -8031,10 +8066,6 @@ msgid "Engagement"
 msgstr "Zaroka"
 
 #, machine, plain1
-msgid "Engaging in illegal activity"
-msgstr "Vključevanje v nezakonite dejavnosti"
-
-#, machine, plain1
 msgid "Engaging in or planning unlawful activity"
 msgstr "Vključevanje ali načrtovanje nezakonite dejavnosti"
 
@@ -8137,10 +8168,6 @@ msgstr "Eta Aquariids meteorski dež"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Etika"
-
-#, machine, plain1
-msgid "Evading a site-wide ban"
-msgstr "Izogibanje prepovedi na celotnem območju"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -8262,6 +8289,10 @@ msgstr "Vsak vidi med seboj spremembe med tipkanjem in vsak lik se pripisuje tis
 #, machine, plain1
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Vse iz vaših čet in računov."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Vse, kar ste napisali, ostane na strani kot Anonymous in se ne more vzeti nazaj. Najprej izbrišite, kar želite, ali pa odstranite svoje ime iz njega (Zgodovina > Upravljanje)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -10206,9 +10237,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Povabi moderator"
 
-#, machine, plain1
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Povabi ljudi, da delijo to delovno mesto. Ko ga sprejmejo, nosi njihovo ime in je naveden na njihovem profilu. Še vedno urejaš, brišeš in posreduješ. Ne za anonimne objave."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Povabi ljudi, da delijo to delovno mesto. Ko ga sprejmejo, nosi njihovo ime in je naveden na njihovem profilu; na anonimni pošti je anonimna tudi njihova zasluga. Še vedno urejaš, brišeš in posreduješ."
 
 #, machine, plain1
 msgid "Invite them to speak first."
@@ -13988,8 +14019,8 @@ msgid "Post anonymously"
 msgstr "Objavi anonimno"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Post anonimno: drugi člani vidijo vsakega avtorja kot Anonimnega s številko. Skrbniki vedno vidijo, kdo so. Ko je objava objavljena, je ni mogoče spremeniti."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Post anonimno: drugi člani vidijo vsakega avtorja kot Anonimnega s številko. Skrbniki lahko vedno vidijo, kdo so, in administratorjeva prepoved ima lahko ime Dnevnik računa za anonimno postavko, ki jo navaja. Ko je objava objavljena, je ni mogoče spremeniti."
 
 #, machine, plain1
 msgid "Post automatically from your own account"
@@ -16788,10 +16819,6 @@ msgid "Spam"
 msgstr "Neželena pošta"
 
 #, machine, plain1
-msgid "Spamming."
-msgstr "Spamming."
-
-#, machine, plain1
 msgctxt "button"
 msgid "Speak"
 msgstr "Govori"
@@ -17947,7 +17974,7 @@ msgid "The auto-moderation was saved."
 msgstr "Avtomoderacija je bila rešena."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17977,10 +18004,6 @@ msgstr "Bot @%(name)s, ki ste ga predlagali, ni bil odobren. Upravitelji so rekl
 #, machine, plain1
 msgid "The bot already reads that feed."
 msgstr "Bot že bere to krmo."
-
-#, machine, plain1
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Bot je bil suspendiran za objavo preveč podobne vsebine."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -18054,6 +18077,10 @@ msgstr "Osnutek ima spremembe post še ne kaže."
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Zgodnejše različice niso prikazane, medtem ko je to skrito."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Zgodnejše različice niso prikazane: to je bilo izbrisano in njegovo besedilo očiščeno."
 
 #, machine, plain1, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -18187,6 +18214,10 @@ msgstr "Guild že ima vlogo s tem imenom."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Guildova lastna pravila za to, kar je napisano v njenih kanalih, na vrhu besednega filtra strani. Guild moderatorji nikoli ne držijo za njih. Sporočilo, ki nekoga zlomi, se zavrne s kratkim razlogom, ki nikoli ne pove katere besede."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Zadržanje vašega računa je bilo preklicano. Lahko objavite, komentar in glas znova."
 
 #, machine, plain1
 msgid "The host stays on stage."
@@ -18705,9 +18736,9 @@ msgstr "Tu niso utišani."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Lahko kupijo in porabijo kovance, napitnino, kupijo Premium in se pridružijo ali vodijo plačane kroge."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Lahko gostijo in se pridružijo Prostorom in tečejo v živo niti. Glasovi v vesolju potrebujejo tudi klepet."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Lahko se pridružijo in poslušajo Spaces. Ne morejo gostiti enega ali post v enem: otroški račun se bere samo. Glasovi v vesolju potrebujejo tudi klepet."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18921,6 +18952,10 @@ msgstr "Ta robot ne deluje."
 #, machine, plain1
 msgid "This bot's owner can't run it right now."
 msgstr "Lastnik tega robota trenutno ne more voditi."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Lastnik tega robota ga ne more voditi, dokler je njihov račun na čakanju."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -22795,18 +22830,15 @@ msgstr ""
 "\n"
 "> %(message)s"
 
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Vaš račun %(site)s je bil trajno suspendiran iz naslednjega razloga:\n"
-"\n"
-"> izogibanje prepovedi"
-
 #, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
 msgstr ""
 
 #, machine, plain1, python-format
@@ -22822,16 +22854,6 @@ msgstr ""
 "Vaš %(site)s račun je bil prekinjen za %(days)s dni iz naslednjega razloga:\n"
 "\n"
 "> %(message)s"
-
-#, machine, plain1, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Račun %(site)s je bil za 1 dan prekinjen zaradi naslednjega razloga:\n"
-"\n"
-"> Preveč spam!"
 
 #, machine, plain1, python-format
 msgid "Your %(site)s password"
@@ -22961,6 +22983,10 @@ msgstr "Vaš račun je občutljiv."
 msgid "Your account is no longer marked sensitive."
 msgstr "Vaš račun ni več označen kot občutljiv."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Vaš račun je na čakanju"
+
 #, machine, plain1
 msgid "Your account is suspended."
 msgstr "Vaš račun je suspendiran."
@@ -23066,6 +23092,33 @@ msgstr ""
 #, python-format
 msgid ""
 "Your appeal of [this decision](%(log)s) was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
 "\n"
 "```\n"
 "%(note)s\n"
@@ -23865,10 +23918,6 @@ msgstr "vpraša %(name)s"
 msgid "avatar"
 msgstr "avatar"
 
-#, machine, plain1
-msgid "ban evasion"
-msgstr "prepoved izogibanja"
-
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "banned %(target)s"
@@ -24370,6 +24419,12 @@ msgstr "hranijo kot ponovitev v svojem skladišču; vsakdo je povedal, preden se
 msgid "kicked post %(target)s"
 msgstr "brcnil post %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "je odstranil karanteno, ki so jo samodejno preverili"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -24600,6 +24655,12 @@ msgstr "objavil %(name)s"
 #, machine, plain1
 msgid "published, with unpublished changes"
 msgstr "objavljen, z neobjavljenimi spremembami"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "položiti račun v karanteno"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -25074,9 +25135,9 @@ msgstr "izključen si bil."
 msgid "you're invited to write it"
 msgstr "povabljeni ste, da ga napišete"
 
-#, machine, plain1
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "vaš račun ga v tistem trenutku ni mogel objaviti (začasna ustavitev ali pravila ceha, kateremu je bil posredovan). Odprite in pritisnite Post, da vidite, kaj."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "vaš račun ga v tistem trenutku ni mogel objaviti (je na čakanju ali začasno preklican ali pravila ceha, kateremu je bil posredovan). Odprite in pritisnite Post, da vidite, kaj."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown

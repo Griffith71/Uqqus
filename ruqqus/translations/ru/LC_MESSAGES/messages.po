@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-15 02:43+1100\n"
+"POT-Creation-Date: 2026-11-18 23:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#, machine, python-format
+#, python-format
 msgid ""
 "\n"
 "@%(admin)s has given you the following profile badge:\n"
@@ -30,14 +30,6 @@ msgid ""
 "\n"
 "%(badge)s\n"
 msgstr ""
-"\n"
-"@%(admin)s Вы получили следующий значок профиля:\n"
-"\n"
-"\n"
-"![ ]%(path)s)\n"
-"\n"
-"\n"
-"%(badge)s\n"
 
 #, machine, python-format
 msgid "\"%(guild)s\" is not a guild name."
@@ -1628,6 +1620,10 @@ msgstr "%(who)s приглашенный модератор гильдии @%(na
 msgid "%(who)s kicked post %(title)s"
 msgstr "%(who)s kicked post %(title)s"
 
+#, machine, plain2, python-format
+msgid "%(who)s lifted a quarantine an automatic check had placed"
+msgstr "%(who)s снял карантин, автоматическая проверка"
+
 #, machine, plain1, python-format
 msgid "%(who)s lifted the ban on %(name)s"
 msgstr "%(who)s снял запрет на %(name)s"
@@ -1691,6 +1687,10 @@ msgstr "%(who)s закрепил сообщение в канале"
 #, machine, python-format
 msgid "%(who)s pinned post %(title)s"
 msgstr "%(who)s pinned post %(title)s"
+
+#, machine, plain2, python-format
+msgid "%(who)s put an account in quarantine"
+msgstr "%(who)s поместить счет в карантин"
 
 #, machine, python-format
 msgid "%(who)s reinstated comment"
@@ -2715,9 +2715,9 @@ msgstr "@%(name)s reposted [a comment](%(link)s."
 msgid "@%(name)s reposted [a post](%(link)s)."
 msgstr "@%(name)s reposted [a post](%(link)s)."
 
-#, machine, plain1, python-format
+#, python-format
 msgid "@%(name)s says they are 18 or over and asked you to release their account. You can answer in [Settings > Children](/settings/children)."
-msgstr "@%(name)s говорит, что им 18 или больше, и попросил вас выпустить их учетную запись. Вы можете ответить в [Настройки > Дети] (/settings/children)."
+msgstr ""
 
 #, machine, python-format
 msgid "@%(name)s shared [a story](%(link)s)."
@@ -2864,6 +2864,10 @@ msgstr "Пространство не может начаться в прошл�
 #, machine
 msgid "A Space for it <span class=\"text-muted font-weight-normal\">(optional: the Space's post link)</span>"
 msgstr "Пространство для него <span class=\"text-muted font-weight-normal\">(перенаправлено с «The Space’s Post Link»)</span>"
+
+#, machine, plain2
+msgid "A Space is ended from its own page; it isn't deleted like a post."
+msgstr "Пространство заканчивается со своей страницы; оно не удаляется, как сообщение."
 
 #, machine
 msgid "A Space is live for a while: a board, a live thread or a call. It is kept for replay, or it is gone when it ends."
@@ -3130,6 +3134,10 @@ msgstr "В комментарий, который вы задали, была д
 #, machine, python-format
 msgid "A community note was added to a post you asked about: [view it](%(link)s)"
 msgstr "Добавлена записка сообщества в пост, о котором вы спросили: [просмотреть его](%(link)s"
+
+#, machine, plain2
+msgid "A copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it here. Most copies are cleared after a while; the copy of something its author deleted stays in the public Log."
+msgstr "Копия этого, как это было, когда она была скрыта, удалена, удалена или полагалась на решение. Только его автор, модераторы гильдии, решившие и администраторы сайта могут открыть его здесь. Большинство копий очищаются через некоторое время; копия того, что ее автор удалил, остается в публичном журнале."
 
 #, machine, plain1
 msgid "A curation of the whole site needs an age limit of a month or less."
@@ -3553,6 +3561,10 @@ msgstr "Сообщение, которое было опрокинуто, не �
 msgid "A post that isn't public can't use this picture upload: its files can be opened by anyone with the address. Add the picture from your linked storage instead (Settings > Media)."
 msgstr "Пост, который не является общедоступным, не может использовать эту загрузку изображения: его файлы могут быть открыты кем угодно с адресом. Добавьте изображение из своего связанного хранилища (Настройки > Медиа)."
 
+#, machine, plain2
+msgid "A post with an anonymous credit can't be forked."
+msgstr "Пост с анонимным кредитом не может быть раздвоен."
+
 #, machine
 msgid "A post with co-authors can't be moved to circles. Moving a public post to circles takes down the copies you forwarded; copies other people forwarded stay in their guilds."
 msgstr "Пост с соавторами нельзя перемещать в круги. Перемещение публичного поста в круги снимает копии, которые вы пересылали; копии, которые пересылали другие люди, остаются в своих гильдиях."
@@ -3579,10 +3591,6 @@ msgid_plural "A post's text can be %(count)s characters (Chinese, Japanese and K
 msgstr[0] "Текст сообщения может быть %(count)s символ (китайские, японские и корейские символы и смайлики считаются как 2)."
 msgstr[1] "Текст сообщения может быть %(count)s символами (китайские, японские и корейские символы и смайлики считаются как 2)."
 msgstr[2] "Текст сообщения может быть %(count)s символами (китайские, японские и корейские символы и смайлики считаются как 2)."
-
-#, machine, plain2
-msgid "A private copy of this as it was when it was hidden, removed, deleted or relied on for a decision. Only its author, the guildmasters of the guild that decided and the site's administrators can open it, and it is not kept for ever."
-msgstr "Частная копия этого, как это было, когда он был скрыт, удален, удален или полагался на решение. Только его автор, модераторы гильдии, решившие и администраторы сайта, могут его открыть, и он не хранится вечно."
 
 #, machine, plain1
 msgid "A private guild can only go in a private curation."
@@ -4308,10 +4316,6 @@ msgstr "Предупреждения и заголовки исходят из �
 msgid "Algorithm"
 msgstr "Алгоритм"
 
-#, machine, plain1
-msgid "Algorithm saved."
-msgstr "Алгоритм спасен."
-
 #, glossary, machine, plain2
 msgctxt "feed"
 msgid "All"
@@ -4558,6 +4562,29 @@ msgstr "Автор, который не был активен на сайте д
 msgid "An automated post can't have its name removed."
 msgstr "Автоматический пост не может быть удален."
 
+#, machine, plain2
+msgid "An automatic check put the account on hold."
+msgstr "Автоматический чек заморозил счет."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review."
+msgstr "Автоматический чек приостановил вашу учетную запись, так что вы не можете сделать это сейчас. На это будет смотреть сотрудник. Если вы считаете, что проверка была неправильной, вы можете запросить отзыв."
+
+#, machine, plain2
+msgid "An automatic check put your account on hold."
+msgstr "Автоматическая проверка приостановила вашу учетную запись."
+
+#, python-format
+msgid ""
+"An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
+"\n"
+"```\n"
+"%(why)s\n"
+"```\n"
+"\n"
+"[Ask for a review](%(appeal)s)"
+msgstr ""
+
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
 msgstr "Зашифрованный канал не может попросить принять его правила: сайт не может проверить, кто написал."
@@ -4683,8 +4710,8 @@ msgid "Anonymous #%(num)s"
 msgstr "Аноним #%(num)s"
 
 #, machine, plain2
-msgid "Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them."
-msgstr "Анонимные остаются анонимными, если второй администратор не одобрит их, а затем журнал именует вашу учетную запись рядом с ними."
+msgid "Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them."
+msgstr "Анонимные остаются анонимными, если второй администратор не одобрит (или, на сайте с одним администратором, его владельцем), а затем Лог называет вашу учетную запись рядом с ними."
 
 #, machine
 msgid "Anonymous posts and comments count for you like any other. Your points and earnings are shown only to you; the site's admins see the payout list."
@@ -4929,6 +4956,10 @@ msgstr "Арийское нагорье"
 #, machine
 msgid "As an author you edit the draft live with them, and every character you type is credited to you. Once the post is published, anyone who can see it can see who wrote what. The authors decide together:"
 msgstr "Как автор, вы редактируете черновик вживую, и каждый персонаж, который вы вводите, приписывается вам. Как только пост будет опубликован, любой, кто может его увидеть, сможет увидеть, кто что написал. Авторы решают вместе:"
+
+#, machine, plain2
+msgid "Ask for a review"
+msgstr "Запросить рецензию"
 
 #, machine, plain1
 msgid "Asked you"
@@ -5204,14 +5235,6 @@ msgstr "Балканы"
 msgctxt "guildmaster action"
 msgid "Ban comment"
 msgstr "Запретить комментарий"
-
-#, machine
-msgid "Ban evasion. This comment's owner was banned on another account."
-msgstr "Уклонение от запрета. Владелец этого комментария был запрещен на другом аккаунте."
-
-#, machine
-msgid "Ban evasion. This submission's owner was banned on another account."
-msgstr "Уклонение от запрета. Владелец этой заявки был запрещен на другом счете."
 
 #, machine
 msgctxt "guildmaster action"
@@ -6484,6 +6507,10 @@ msgstr "Комментарии скрытые или удаленные"
 msgid "Comments on your anonymous post are anonymous"
 msgstr "Комментарии к вашему анонимному сообщению анонимны"
 
+#, machine, plain2
+msgid "Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it."
+msgstr "Комментарии к вашему анонимному сообщению анонимны. Если администратор запрещает или приостанавливает учетную запись для одного, журнал может назвать учетную запись для него."
+
 #, glossary, machine, plain2
 msgid "Comments:"
 msgstr "Комментарии:"
@@ -7192,9 +7219,9 @@ msgstr "Удалить эту роль? Все его теряют, а кана�
 msgid "Delete your %(site)s account"
 msgstr "Удалите свой аккаунт %(site)s"
 
-#, machine
-msgid "Delete your posts and comments"
-msgstr "Удалите свои посты и комментарии"
+#, machine, plain2
+msgid "Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)"
+msgstr "Удалите свои сообщения и комментарии (то, что удалено более чем через пять минут после его написания, остается в публичном журнале, как Anonymous)"
 
 #, machine, plain2
 msgid "Deleted"
@@ -7823,10 +7850,6 @@ msgid "Engagement"
 msgstr "Вовлечение"
 
 #, machine
-msgid "Engaging in illegal activity"
-msgstr "Участие в незаконной деятельности"
-
-#, machine
 msgid "Engaging in or planning unlawful activity"
 msgstr "Участие или планирование незаконной деятельности"
 
@@ -7929,10 +7952,6 @@ msgstr "Метеорный поток Eta Aquariids"
 #, machine, plain1
 msgid "Ethics"
 msgstr "Этика"
-
-#, machine
-msgid "Evading a site-wide ban"
-msgstr "Уклонение от запрета на весь сайт"
 
 #, machine, plain1
 msgid "Evading and manipulating the site"
@@ -8052,6 +8071,10 @@ msgstr "Каждый видит изменения друг друга, когд
 #, machine
 msgid "Everything from your guilds and accounts, newest first."
 msgstr "Все из ваших гильдий и счетов, сначала новейшее."
+
+#, machine, plain2
+msgid "Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage)."
+msgstr "Все, что вы написали, остается на сайте как Anonymous и не может быть возвращено. Сначала удалите то, что вы хотите, или удалите из него свое имя (История > Управление)."
 
 #, machine, plain2
 msgid "Evidence can't be cited"
@@ -9986,9 +10009,9 @@ msgctxt "guildmaster action"
 msgid "Invite mod"
 msgstr "Пригласить модератора"
 
-#, machine
-msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile. You still edit, delete and forward it. Not for anonymous posts."
-msgstr "Пригласите людей поделиться этим постом. Как только они принимают его, он носит их имя и указан в их профиле. Вы все еще редактируете, удаляете и пересылаете его. Не для анонимных сообщений."
+#, machine, plain2
+msgid "Invite people to share this post. Once they accept it carries their name and is listed on their profile; on an anonymous post their credit is anonymous too. You still edit, delete and forward it."
+msgstr "Пригласите людей поделиться этим постом. Как только они принимают его, он носит их имя и указан в их профиле; в анонимном сообщении их кредит также является анонимным. Вы все еще редактируете, удаляете и пересылаете его."
 
 #, machine
 msgid "Invite them to speak first."
@@ -13737,8 +13760,8 @@ msgid "Post anonymously"
 msgstr "Опубликовать анонимно"
 
 #, machine, plain2
-msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are. It can't be changed once the post is published."
-msgstr "Пост анонимно: другие члены видят каждого автора анонимным с номером. Администраторы всегда могут видеть, кто они. Он не может быть изменен после публикации статьи."
+msgid "Post anonymously: other members see every author as Anonymous with a number. Admins can always see who they are, and an administrator's ban can have the Log name the account for an anonymous item it cites. It can't be changed once the post is published."
+msgstr "Пост анонимно: другие члены видят каждого автора анонимным с номером. Администраторы всегда могут видеть, кто они, и запрет администратора может иметь имя журнала для анонимного элемента, который он цитирует. Он не может быть изменен после публикации статьи."
 
 #, machine
 msgid "Post automatically from your own account"
@@ -16392,17 +16415,13 @@ msgstr ""
 msgid "Someone saved this page while you were editing. Your text is still here: copy it, reload the page to see their changes, and add yours again."
 msgstr "Кто-то сохранил эту страницу, пока вы редактировали. Ваш текст все еще здесь: скопируйте его, перезагрузите страницу, чтобы увидеть их изменения, и добавьте свой снова."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "Someone signed in to your account with a QR code you approved: %(browser)s, %(place)s, %(when)s.\n"
 "\n"
 "\n"
 "If it wasn't you, [log out everywhere](/settings/security#log-out-everywhere) and check [your apps](/settings/apps) and [your chat apps](/settings/chat_apps): logging out doesn't end those."
 msgstr ""
-"Кто-то подписался на вашу учетную запись с кодом QR, который вы одобрили: %(browser)s, %(place)s, %(when)s.\n"
-"\n"
-"\n"
-"Если это не вы, [отключитесь везде] (/settings/security#log-out-everywhere) и проверьте [ваши приложения] (/settings/apps) и [ваши приложения для чата] (/settings/chat_apps): отключение не прекращает их."
 
 #, machine
 msgid "Someone who follows you gets your message in their Inbox; anyone else gets it as a request. Chats are end-to-end encrypted."
@@ -16517,10 +16536,6 @@ msgstr "Пространства сейчас не отвечают. Попро�
 #, machine
 msgid "Spam"
 msgstr "Спам"
-
-#, machine
-msgid "Spamming."
-msgstr "Спам."
 
 #, machine
 msgctxt "button"
@@ -17676,7 +17691,7 @@ msgid "The auto-moderation was saved."
 msgstr "Автомодерация была сохранена."
 
 #, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
 msgstr ""
 
 #, machine, plain1, python-format
@@ -17705,10 +17720,6 @@ msgstr "Предложенный вами бот @%(name)s не был одоб�
 #, machine
 msgid "The bot already reads that feed."
 msgstr "Бот уже читает эту ленту."
-
-#, machine
-msgid "The bot was suspended for posting too much similar content."
-msgstr "Бот был отстранен за публикацию слишком большого количества подобного контента."
 
 #, python-format
 msgid "The bot you proposed, [@%(name)s](/@%(name)s), was approved. It is run by the site from now on and starts posting from its feeds within a few minutes. Thank you!"
@@ -17780,6 +17791,10 @@ msgstr "В проекте изменений пост пока не показы
 #, machine, plain1
 msgid "The earlier versions aren't shown while this is hidden."
 msgstr "Более ранние версии не отображаются, пока они скрыты."
+
+#, machine, plain2
+msgid "The earlier versions aren't shown: this was deleted and its text has been cleared."
+msgstr "Более ранние версии не показаны: это было удалено, и его текст был очищен."
 
 #, machine, python-format
 msgid "The feed %(url)s for your account's automated posting was approved: it is read from now on."
@@ -17912,6 +17927,10 @@ msgstr "Гильдия уже играет роль с этим именем."
 #, machine, plain1
 msgid "The guild's own rules for what is written in its channels, on top of the site's word filter. Guildmasters are never held to them. A message that breaks one is refused with a short reason that never says which word."
 msgstr "Собственные правила гильдии для того, что написано в ее каналах, поверх фильтра слова сайта. Модераторы гильдий никогда к ним не относятся. Сообщение, которое разбивает одно, отвергается по короткой причине, которая никогда не говорит, какое слово."
+
+#, machine, plain2
+msgid "The hold on your account was lifted. You can post, comment and vote again."
+msgstr "Задержка на вашем счете была снята. Вы можете публиковать, комментировать и голосовать снова."
 
 #, machine
 msgid "The host stays on stage."
@@ -18422,9 +18441,9 @@ msgstr "Они здесь не приглушены."
 msgid "They can buy and spend coins, tip, buy Premium and join or run paid circles."
 msgstr "Они могут покупать и тратить монеты, чаевые, покупать Premium и присоединяться или запускать платные круги."
 
-#, machine, plain1
-msgid "They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on."
-msgstr "Они могут принимать и присоединяться к Пространствам и запускать живые нити. Голосовые звонки в пространстве также нуждаются в чате."
+#, machine, plain2
+msgid "They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on."
+msgstr "Они могут присоединиться и послушать Spaces. Они не могут разместить один или разместить в одном: детский аккаунт только читает. Голосовые звонки в пространстве также нуждаются в чате."
 
 #, machine, plain1
 msgid "They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them."
@@ -18637,6 +18656,10 @@ msgstr "Этот бот не работает."
 #, machine
 msgid "This bot's owner can't run it right now."
 msgstr "Владелец этого бота не может управлять им прямо сейчас."
+
+#, machine, plain2
+msgid "This bot's owner can't run it while their account is on hold."
+msgstr "Владелец этого бота не может запустить его, пока его счет находится на приостановке."
 
 #, machine, plain2
 msgid "This browser was signed out. Sign in again to carry on."
@@ -20526,9 +20549,8 @@ msgstr "Мы заберем это отсюда."
 msgid "We're sorry something here is wrong."
 msgstr "Мы сожалеем, что что-то здесь не так."
 
-#, machine, plain1
 msgid "We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content."
-msgstr "Мы изменили раздел «Возраст» (/help/terms). У учетной записи лица моложе 18 лет теперь есть детский замок, и в Великобритании, ЕС и Австралии ваш возраст должен быть подтвержден службой проверки возраста, прежде чем замок отключится или вы сможете увидеть конфиденциальный контент. Вы можете сказать, вам 18 или больше в настройках Содержание."
+msgstr ""
 
 #, machine, plain1
 msgid "Web Development"
@@ -21656,7 +21678,7 @@ msgstr "Вы можете создать учетную запись ребен�
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Вы можете подать три апелляции в день. Попробуй завтра."
 
-#, machine, plain2, python-format
+#, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
@@ -21666,13 +21688,6 @@ msgid ""
 "\n"
 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
 msgstr ""
-"Вы больше не можете писать в каналах +%(guild)s, но вы все еще можете читать их.\n"
-"\n"
-"\"\"\n"
-"%(why)s\n"
-"\"\"\n"
-"\n"
-"[См. в журнале](%(log)s) · [Применить это решение](%(appeal)s"
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -22475,19 +22490,16 @@ msgstr ""
 "\n"
 ">%(message)s"
 
-#, machine, python-format
-msgid ""
-"Your %(site)s account has been permanently suspended for the following reason:\n"
-"\n"
-"> ban evasion"
-msgstr ""
-"Ваша учетная запись %(site)s была приостановлена по следующей причине:\n"
-"\n"
-"Уклонение от запрета"
-
-#, machine, python-format
+#, python-format
 msgid "Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again."
-msgstr "Ваша учетная запись %(site)s была восстановлена. Пожалуйста, внимательно просмотрите и соблюдайте [условия обслуживания] (/help/terms) и [правила и руководящие принципы] (/help/rules), чтобы убедиться, что вы не будете приостановлены снова."
+msgstr ""
+
+#, python-format
+msgid ""
+"Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get suspended again.\n"
+"\n"
+"It is still on hold, so it can't post, comment or act on others for now. A member of the staff will look at it."
+msgstr ""
 
 #, machine, python-format
 msgid "Your %(site)s account has been suspended for %(days)s days due to a Terms of Service violation."
@@ -22502,16 +22514,6 @@ msgstr ""
 "Твой %(site)s счет был приостановлен на %(days)s дней по следующей причине:\n"
 "\n"
 "> %(message)s"
-
-#, machine, python-format
-msgid ""
-"Your %(site)s account has been suspended for 1 day for the following reason:\n"
-"\n"
-"> Too much spam!"
-msgstr ""
-"Ваш счет %(site)s был приостановлен на 1 день по следующей причине:\n"
-"\n"
-"Слишком много спама!"
 
 #, machine, python-format
 msgid "Your %(site)s password"
@@ -22641,6 +22643,10 @@ msgstr "Ваш аккаунт считается чувствительным."
 msgid "Your account is no longer marked sensitive."
 msgstr "Ваш аккаунт больше не является чувствительным."
 
+#, machine, plain2
+msgid "Your account is on hold"
+msgstr "Ваша учетная запись приостановлена"
+
 #, machine
 msgid "Your account is suspended."
 msgstr "Ваш аккаунт приостановлен."
@@ -22653,21 +22659,15 @@ msgstr "Ваша учетная запись слишком новая, чтоб
 msgid "Your account is waiting for a quick check before it can do this. To skip the wait, verify an email address in Settings > Security."
 msgstr "Ваша учетная запись ждет быстрой проверки, прежде чем она сможет это сделать. Чтобы пропустить ожидание, проверьте адрес электронной почты в настройках Охрана."
 
-#, machine, plain1
 msgid ""
 "Your account is waiting for a quick check before you can post, comment, vote or follow. You can look around and set up your profile in the meantime.\n"
 "\n"
 "\n"
 "To skip the wait, add and verify an email address in [Settings > Security](/settings/security)."
 msgstr ""
-"Ваша учетная запись ждет быстрой проверки, прежде чем вы сможете публиковать, комментировать, голосовать или следовать. Вы можете посмотреть вокруг и настроить свой профиль.\n"
-"\n"
-"\n"
-"Чтобы пропустить ожидание, добавьте и проверьте адрес электронной почты в [Настройки > Безопасность] (/settings/security)."
 
-#, machine, plain1
 msgid "Your account is your own now. It no longer has the child lock and your parent or guardian can no longer see it. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "Ваш счет теперь ваш собственный. У него больше нет детского замка, и ваш родитель или опекун больше не может его видеть. Они выбрали ваш пароль: измените его в [Настройки > Безопасность] (/settings/security), или они все еще могут войти как вы."
+msgstr ""
 
 #, machine
 msgid "Your account needs to be at least 30 days old to post automatically."
@@ -22752,6 +22752,33 @@ msgid ""
 "```"
 msgstr ""
 
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was looked at, and the hold stands.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
+#, python-format
+msgid ""
+"Your appeal of the hold on your account was not taken further.\n"
+"\n"
+"```\n"
+"%(note)s\n"
+"```"
+msgstr ""
+
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
 msgstr "Ваша апелляция была принята, и решение было отменено."
@@ -22822,9 +22849,8 @@ msgstr "Ваши чаты"
 msgid "Your chat devices can't be listed right now."
 msgstr "Ваши устройства чата не могут быть перечислены прямо сейчас."
 
-#, machine, plain2
 msgid "Your chat encryption was started over. Messages from before can't be read on your devices unless a browser where you used chat brings them back. If this wasn't you, change your password in [Settings > Security](/settings/security)."
-msgstr "Ваше шифрование чата было начато. Сообщения из прошлого не могут быть прочитаны на ваших устройствах, если браузер, в котором вы использовали чат, не возвращает их. Если это не вы, измените пароль в [Настройки > Безопасность] (/settings/security)."
+msgstr ""
 
 #, machine, plain1
 msgid "Your chats and their keys have been removed from this browser."
@@ -23006,17 +23032,14 @@ msgstr "Родителя или опекуна попросили освобод
 msgid "Your parent or guardian has turned this off for your account."
 msgstr "Ваш родитель или опекун отключили это для вашего счета."
 
-#, machine, plain1
 msgid "Your parent or guardian made this account for you. They can see what you do on the site (your posts, comments, votes, bookmarks, follows, guilds, who you chat with, that your account was reported and your recent sign-ins; the site never shows them what your chats say) and they choose which features are on. You can see which in [Settings > Content](/settings/content). They chose your password: change it in [Settings > Security](/settings/security) so that only you know it, because anyone who knows it can sign in as you and read your chats."
-msgstr "Ваши родители или опекуны сделали это для вас. Они могут видеть, что вы делаете на сайте (ваши сообщения, комментарии, голоса, закладки, заметки, гильдии, с которыми вы общаетесь, что ваша учетная запись была зарегистрирована и ваши недавние входы в систему; сайт никогда не показывает им, что говорят ваши чаты), и они выбирают, какие функции включены. Вы можете увидеть, что в [Настройки > Содержание](/settings/content). Они выбрали ваш пароль: измените его в [Настройки > Безопасность] [/settings/security], чтобы только вы знали его, потому что любой, кто знает его, может войти как вы и читать ваши чаты."
+msgstr ""
 
-#, machine, plain2
 msgid "Your parent or guardian set a new password for your account and you were signed out. Sign in with the new password, then change it in [Settings > Security](/settings/security) so that only you know it."
-msgstr "Ваш родитель или опекун установил новый пароль для вашей учетной записи, и вы были отключены. Зарегистрируйтесь с новым паролем, затем измените его в [Настройки > Безопасность] (/settings/security), чтобы только вы знали его."
+msgstr ""
 
-#, machine, plain1
 msgid "Your parent or guardian stopped managing your account. It keeps the child lock until you confirm your age in Settings > Content. They chose your password: change it in [Settings > Security](/settings/security), or they can still sign in as you."
-msgstr "Ваш родитель или опекун перестал управлять вашим аккаунтом. Он сохраняет детский замок до тех пор, пока вы не подтвердите свой возраст в настройках. Содержание. Они выбрали ваш пароль: измените его в [Настройки > Безопасность] (/settings/security), или они все еще могут войти как вы."
+msgstr ""
 
 #, machine, plain1
 msgid "Your parent or guardian's account was suspended, so yours is suspended until theirs is back."
@@ -23542,10 +23565,6 @@ msgstr "спрашивают %(name)s"
 msgid "avatar"
 msgstr "аватар"
 
-#, machine
-msgid "ban evasion"
-msgstr "запрет на уклонение"
-
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "banned %(target)s"
@@ -24042,6 +24061,12 @@ msgstr "хранится как повтор в вашем собственно�
 msgid "kicked post %(target)s"
 msgstr "щелкнуть пост %(target)s"
 
+#. follows the site's name in the Log; a hold an automatic check had placed on
+#. an account, which is not named, was lifted
+#, machine, plain2
+msgid "lifted a quarantine an automatic check had placed"
+msgstr "снят карантин, установлена автоматическая проверка"
+
 #. follows the moderator's name in the Log; %(target)s is a link to an account
 #, machine, plain1, python-format
 msgid "lifted the ban on %(target)s"
@@ -24272,6 +24297,12 @@ msgstr "опубликовано %(name)s"
 #, machine
 msgid "published, with unpublished changes"
 msgstr "опубликованные с неопубликованными изменениями"
+
+#. follows the site's name in the Log; an automatic check held an account,
+#. which is not named
+#, machine, plain2
+msgid "put an account in quarantine"
+msgstr "поставить счет в карантин"
 
 #. follows the moderator's name in a guild's moderation log; %(target)s is a
 #. link
@@ -24742,9 +24773,9 @@ msgstr "вы были отключены."
 msgid "you're invited to write it"
 msgstr "вы приглашены написать его"
 
-#, machine
-msgid "your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). Open it and press Post to see what."
-msgstr "ваша учетная запись не могла опубликовать его в тот момент (приостановка или правила гильдии, на которую он был направлен). Откройте его и нажмите Post, чтобы узнать, что."
+#, machine, plain2
+msgid "your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). Open it and press Post to see what."
+msgstr "ваша учетная запись не могла опубликовать его в тот момент (он приостановлен или приостановлен, или правила гильдии, к которой он был перенаправлен). Откройте его и нажмите Post, чтобы узнать, что."
 
 #. "~" means about; an action is a post or comment counted towards the posting
 #. cooldown
