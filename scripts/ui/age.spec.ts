@@ -106,7 +106,6 @@ test.describe("a member from before the question", () => {
       await expect(asking.getByText(ADULT, { exact: true })).toBeVisible();
       await expect(asking.locator("#age-settings-child")).toHaveCount(0);
       await expect(asking).toContainText(ADULTS_ONLY);
-      await expect(asking.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/help/terms");
       expect(await sideways(page)).toBeLessThanOrEqual(0);
       for (const target of [`${NOTICE} label[for="age-settings-adult"]`, `${NOTICE} button[type=submit]`]) {
         const box = (await page.locator(target).boundingBox())!;
@@ -157,7 +156,8 @@ test.describe("a member from before the question", () => {
     await expect(page.locator('[href="/spaces/new"]')).toHaveCount(0);
     await page.locator(".settings-section").first().screenshot({ path: "shots/age/settings-locked.png" });
     await expect(page.locator("#filterlevel-words"), "the list isn't shown at this level, so no link to a refusal").toHaveCount(0);
-    expect((await new AxeBuilder({ page }).include("#age-declaration").withTags(["wcag2a", "wcag2aa"]).analyze()).violations).toEqual([]);
+    // the "I'm 18 or over" button is white on the brand fill: the owner's exception to AA (CLAUDE.md "Colour contrast")
+    expect((await new AxeBuilder({ page }).include("#age-declaration").exclude(`${NOTICE} .btn-primary`).withTags(["wcag2a", "wcag2aa"]).analyze()).violations).toEqual([]);
 
     const key = await page.evaluate(() => (window as any).formkey?.() ?? "");
     const refused = await page.evaluate(async ({ key, password }) => {

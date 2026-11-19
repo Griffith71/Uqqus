@@ -204,3 +204,15 @@ def test_no_template_offers_a_child_account_a_way_to_post_or_comment():
     assert "{% if not content_locked(v) %}" in menu and 'href="/submit"' in menu
     for template in ("partials/comment_form.html", "home.html", "board.html"):
         assert "content_locked(v)" in (ROOT / "ruqqus" / "templates" / template).read_text(encoding="utf-8"), template
+
+
+
+def test_every_way_to_create_a_post_in_the_page_shells_is_hidden_from_a_locked_account():
+    # the Settings shell's phone icon and both phone menus had none (found 2026-11-19 by age.spec.ts): each link to /submit sits
+    # under a condition that asks content_locked, the nearest {% if %} or {% elif %} before it
+    import re
+    for template in ("default.html", "header.html"):
+        text = (ROOT / "ruqqus" / "templates" / template).read_text(encoding="utf-8")
+        for found in re.finditer(r'href="/submit"', text):
+            conditions = re.findall(r"\{% (?:if|elif) [^%]*%\}", text[:found.start()])
+            assert conditions and "content_locked(v)" in conditions[-1], (template, text[found.start() - 120:found.start()])

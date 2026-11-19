@@ -384,9 +384,11 @@
     <li class="nav-item">
       <a class="nav-link" href="/spaces"><i class="fas fa-microphone-lines fa-fw mr-3"></i>{{ _("Spaces") }}</a>
     </li>
+    {% if not content_locked(v) %}{# a locked account only reads: no way to a page that refuses it #}
     <li class="nav-item">
       <a class="nav-link" href="/submit"><i class="fas fa-feather-alt fa-fw mr-3"></i>{{ _("Create post") }}</a>
     </li>
+    {% endif %}
     <li class="nav-item">
       <a class="nav-link" href="/circles"><i class="fas fa-circle-notch fa-fw mr-3"></i>{{ _("Circles") }}</a>
     </li>
