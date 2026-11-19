@@ -11,6 +11,7 @@ import re
 import time
 
 from flask import *
+from sqlalchemy import bindparam, text
 
 from ruqqus.helpers.wrappers import *
 from ruqqus.helpers.get import *
@@ -75,6 +76,17 @@ def chat_room(v, room_id):
     return voice_room(v, room_id)
 
 
+def _held_among(user_ids):
+    """Of these accounts, the ones on hold (helpers/quarantine.py): a held account has no chat, so a call doesn't ring it or tell it. Read here and never said to the caller:
+    nothing in an answer differs (a ring nobody hears is an ordinary call nobody answers), so the hold is no oracle."""
+    ids = sorted({int(u) for u in user_ids})
+    if not ids:
+        return set()
+    rows = g.db.execute(text("SELECT id FROM users WHERE id IN :ids AND quarantined_utc > 0 AND admin_level = 0 AND NOT COALESCE(is_bot, false)")
+                        .bindparams(bindparam("ids", expanding=True)), {"ids": ids}).all()
+    return {row[0] for row in rows}
+
+
 def _relay_state(now):
     allowance = turn_usage.allowance_bytes(os.environ.get("TURN_MONTHLY_GB"))
     state, spent = turn_usage_store.call_state(g.db, now, allowance)
@@ -134,6 +146,7 @@ live_bus.register_topic("call", _guard_call_topic)
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def call_window(room_id, v):
     room, refusal = chat_room(v, room_id)
     if room is None:
@@ -166,6 +179,7 @@ def _room_and_device(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def call_join(v):
     room, refusal, room_id, device_id = _room_and_device(v)
@@ -217,14 +231,16 @@ def call_join(v):
     if voice:
         pass                                    # nobody is rung or told: a voice channel is simply there to join
     elif started and room["kind"] == "pair":
-        call_store.ring(r, room_id, room["other"].id)
-        live_bus.publish_to_user(r, room["other"].id, "call.ring", caller)
+        if room["other"].id not in _held_among([room["other"].id]):
+            call_store.ring(r, room_id, room["other"].id)
+            live_bus.publish_to_user(r, room["other"].id, "call.ring", caller)
         # and a closed browser rings through its push notification (helpers/push_send.py)
         push_send.send_later(push_send.prepare(g.db, [room["other"].id], push_rules.CALL, v, room_id, video=kind == call_rules.VIDEO),
                              urgency="high")
     elif started:
         members = room["member_ids"] if room["member_ids"] is not None else group_store.member_ids(g.db, room["group_id"], joined_only=True)
-        live_bus.publish_to_users(r, [uid for uid in members if uid != v.id], "call.started", {**caller, "group": True})
+        held = _held_among(members)
+        live_bus.publish_to_users(r, [uid for uid in members if uid != v.id and uid not in held], "call.started", {**caller, "group": True})
         told = group_store.push_targets(g.db, room_id, v.id, (push_rules.EVERY, push_rules.CALLS))
         push_send.send_later(push_send.prepare(g.db, told, push_rules.GROUP_CALL, v, room_id, video=kind == call_rules.VIDEO),
                              urgency="high")
@@ -243,6 +259,7 @@ def call_join(v):
 @limiter.limit("120/minute", key_func=member_limit_key)
 @auth_required
 @not_qr_limited
+@not_quarantined("chat")
 @validate_formkey
 def call_heartbeat(v):
     room_id = request.values.get("room", "")
@@ -335,6 +352,7 @@ def call_decline(v):
 @limiter.limit("120/minute", key_func=member_limit_key)
 @auth_required
 @not_qr_limited
+@not_quarantined("chat")
 def call_status(v):
     """Whether this chat has a call going now and how many are in it (the chat's "Join call" bar)."""
     room_id = request.args.get("room", "")
@@ -369,6 +387,7 @@ def _short(room_id):
 @app.route("/api/calls/history", methods=["GET"])
 @auth_required
 @not_qr_limited
+@not_quarantined("chat")
 def calls_history(v):
     """The member's recent calls: only in chats they are in now (their 1:1 chats and the groups they joined), newest
     first, with the other person or the group, voice or video, when, how long, and whether they started it. Nothing

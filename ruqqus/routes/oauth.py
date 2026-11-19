@@ -19,7 +19,7 @@ SCOPES = {
     'create': tr_lazy('Save posts and comments as you'),
     'read': tr_lazy('View %(site)s as you, including private or restricted content'),
     'update': tr_lazy('Edit your posts and comments'),
-    'delete': tr_lazy('Delete your posts and comments'),
+    'delete': tr_lazy('Delete your posts and comments (what is deleted more than five minutes after it was written stays in the public Log, as Anonymous)'),
     'vote': tr_lazy('Cast votes as you'),
     'guildmaster': tr_lazy('Perform Guildmaster actions')
 }

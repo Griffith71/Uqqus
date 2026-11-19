@@ -39,6 +39,7 @@ def push_key(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def push_subscribe(v):
     if not push_send.enabled():
@@ -75,6 +76,7 @@ def settings_chat_push_names(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_group_push(gid, v):
     """What a member is told of in this group: every message, calls only, or nothing."""

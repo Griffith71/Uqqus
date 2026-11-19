@@ -241,10 +241,22 @@ def comment_thread_hidden(comment, v):
     return False
 
 
+def guild_content_reader(board, v):
+    """Whether `v` may READ what `board`'s content guildmasters read (an item the guild hid, its earlier versions): a guildmaster of it with the content permission.
+    **Reading, not acting**: `Board.has_mod` says no to a held account (the signup guard's hold or an automatic check's quarantine) and to a limited QR sign-in, because
+    those hold no guildmaster's POWERS, but a held guildmaster still reads what they led; that is `Board.leads`, which asks no permission, so the permission is asked here
+    from the same row `has_mod` reads. Anything that hides, restores, removes or changes keeps asking `has_mod`."""
+    if board is None or v is None or not board.leads(v):
+        return False
+    return bool(board._mod_row(v, "content"))
+
+
 def history_open(item, v):
     """Whether this reader may open an item's history page at all. The page names who edited and who deleted it, so for an item
     its author deleted it is the author's and the admins' alone (the audit, 2026-11-05: H1: it used to tell everyone "Deleted by
-    @alice" on a page whose Log says a member's own delete is not published). Slice D3a replaces this with the Deleted tab's rule."""
+    @alice" on a page whose Log says a member's own delete is not published). **This is the rule on purpose, and it stays**: a
+    published delete is in the Log as Anonymous (the Deleted tab, the item's own `/log`), with no name; this page is the one that
+    names the account, so slice D3a did not widen it to the Deleted tab's rule (`tests/pg/test_log_public.py` pins a 404 for everyone else)."""
     if not (item.deleted_utc or 0) > 0:
         return True
     return bool(v and (v.admin_level >= 3 or anonymity.is_author(item, v)))
@@ -255,7 +267,10 @@ def history_text_shown(item, v):
     Edits stay public. Text the site's admins removed is shown only to admins (level 3+, as on the item's page); purged text to
     nobody, since purging means erasing it. **An item a guild hid, or a post's author hid, is treated the same way** (M2): the
     versions edited away would show what the hide was for, so only admins, the item's author and, for a guild's hide, that
-    guild's content guildmasters read them."""
+    guild's content guildmasters read them.
+    **`purged_utc` on an item its author deleted is, nearly always, the automatic clearing** `scripts/recomputes.py` makes 90 days after
+    the delete, not an administrator, so the page says only "deleted and its text has been cleared" (`content_history.html`) and blames
+    the administrators for a live or removed item alone. An admin's purge or obliteration also blanks the version rows themselves."""
     if (item.purged_utc or 0) > 0:
         return False
     admin = bool(v and v.admin_level >= 3)
@@ -268,7 +283,7 @@ def history_text_shown(item, v):
             return True
         post = getattr(item, "post", item)          # a comment's guild is its post's
         board = getattr(post, "board", None)
-        if hidden_by_guild and board is not None and v is not None and board.has_mod(v, "content"):
+        if hidden_by_guild and guild_content_reader(board, v):
             return True
         return bool(author_hidden and v is not None and anonymity.is_author(post, v))
     return True

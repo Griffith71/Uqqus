@@ -35,8 +35,8 @@ def db():
             conn.execute(text(statement))
         # the later migrations (2026-12-21 and 2026-12-30), in SQLite's words (the migrations themselves are Postgres)
         log_tables.apply(conn)
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, parent_submission INTEGER, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0)"))
         conn.execute(text("CREATE TABLE contributors (id INTEGER PRIMARY KEY, user_id INTEGER, board_id INTEGER, is_active BOOLEAN)"))
@@ -586,3 +586,55 @@ def test_an_item_made_anonymous_after_an_exile_cited_it_stops_pairing_in_every_l
     assert exile in {r["id"] for r in log.fetch(db, level=0)[0]}                             # the entry itself stays in the Log
     assert exile in listed(db, user_id=30, include_anonymous=True)                           # and staff see it
     assert exile in {r["id"] for r in log.fetch(db, level=3, target_user_id=30)[0]}
+
+
+# --- the second review (2026-11-17) --------------------------------------------------------------------------------------------------------------
+
+def test_belonging_to_one_guild_does_not_open_the_entries_of_another_that_has_gone_private(db):
+    """C02: passing member_boards used to switch the 'gone private' filter off for every guild."""
+    was_open = entry(db, board=1)                                                     # public when written
+    db.execute(text("UPDATE boards SET is_private = 1 WHERE id = 1"))
+    assert seen(db, level=0, member_boards=[3]) == set()                              # a member of some other guild
+    assert seen(db, level=0, member_boards=[1]) == {was_open}                         # a member of THAT guild reads its own
+    assert seen(db, level=0) == set()
+    assert seen(db, level=3) == {was_open}
+
+
+def test_everything_decided_about_a_post_for_circles_or_a_comment_under_it_is_the_staffs_alone(db, items):
+    """C59: only the edit and the delete of a post for circles were floored; its author's hide of a comment, a note, an admin's removal and a hidden
+    version were public entries naming it, though the post is a profile post whose board is public."""
+    db.execute(text("UPDATE submissions SET audience = 4 WHERE id = 104"))
+    db.execute(text("UPDATE comments SET parent_submission = 104 WHERE id = 202"))
+    plain = entry(db, board=1, post_id=100)
+    circle_post, circle_comment = entry(db, board=1, post_id=104), entry(db, board=1, comment_id=202)
+    assert audience(db, plain) == log.PUBLIC
+    assert audience(db, circle_post) == log.STAFF and audience(db, circle_comment) == log.STAFF
+    assert seen(db, level=0) == {plain} and seen(db, level=3) == {plain, circle_post, circle_comment}
+
+
+def test_an_automatic_removal_of_an_anonymous_item_is_public_again_because_nothing_automatic_is_a_public_named_sanction_any_more(db, items):
+    """The second review's C60 floored these at staff, so the removal could not be paired with a public named suspension of its author written the same second.
+    The owner (2026-11-17) reverted it, decision 1 of the Log plan: the site's own checks only QUARANTINE an account, and a quarantine is a public line that
+    names nobody (helpers/auto_quarantine.py), so there is no public named entry to pair with. The removal names the item by id and never its author."""
+    named = log.record(db, "ban_post", 1, board_id=1, post_id=100, reason="Automatic spam check", now=NOW)
+    anonymous = log.record(db, "ban_post", 1, board_id=1, post_id=103, reason="Automatic spam check", now=NOW)
+    anonymous_comment = log.record(db, "ban_comment", 1, board_id=1, comment_id=201, reason="Automatic spam check", now=NOW)
+    by_a_person = log.record(db, "ban_post", 20, board_id=1, post_id=103, role=log.ADMIN, reason="Spam", now=NOW)
+    assert {audience(db, e) for e in (named, anonymous, anonymous_comment, by_a_person)} == {log.PUBLIC}
+    quarantine = log.record(db, "automatic_quarantine", 1, role=log.SYSTEM, rule="evasion", reason="Automatic spam check", now=NOW)
+    assert audience(db, quarantine) == log.PUBLIC
+    row = db.execute(text("SELECT target_user_id, target_submission_id, target_comment_id, board_id FROM log_entries WHERE id = :i"), {"i": quarantine}).first()
+    assert tuple(row) == (None, None, None, None)
+
+
+def test_the_four_quarantine_actions_are_sanctions_two_for_the_staff_alone_and_two_public_with_nobody_named(db):
+    """helpers/auto_quarantine.py: the staff's entry names the account, the public line beside it names nobody."""
+    for action in ("quarantine_user", "unquarantine_user", "automatic_quarantine", "automatic_quarantine_lifted"):
+        assert log.type_of(action) == log.SANCTION, action
+    staff = [log.record(db, a, 1, role=log.SYSTEM, target_user_id=30, now=NOW) for a in ("quarantine_user", "unquarantine_user")]
+    public = [log.record(db, a, 1, role=log.SYSTEM, now=NOW) for a in ("automatic_quarantine", "automatic_quarantine_lifted")]
+    assert {audience(db, e) for e in staff} == {log.STAFF} and {audience(db, e) for e in public} == {log.PUBLIC}
+    assert log.record_quietly(db, "quarantine_user", 1, role=log.SYSTEM, target_user_id=30, floor=log.LEGAL, now=NOW)
+    assert seen(db, level=0, log_type="sanction") == set(public) and seen(db, level=3, log_type="sanction") == set(public) | set(staff)
+    assert set(log.QUARANTINE_ACTIONS) <= log.STAFF_ACTIONS and set(log.AUTOMATIC_QUARANTINE_ACTIONS) <= log.PUBLIC_ACTIONS
+    assert not set(log.AUTOMATIC_QUARANTINE_ACTIONS) & log.STAFF_ACTIONS and len("automatic_quarantine_lifted") <= 32

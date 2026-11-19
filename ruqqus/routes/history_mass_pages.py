@@ -59,8 +59,10 @@ def _rows_for(v, content_type, page):
 
 def _page(v, content_type, page, **extra):
     rows, next_exists = _rows_for(v, content_type, page)
+    # `history_base`: this page is also drawn from the POST to /history/mass, whose address answers only POST: its Show links and pager go to /history/manage
+    # (the second review, C67)
     return render_template("history_manage.html", v=v, active_tab="manage", content_type=content_type, rows=rows, page=page,
-                           next_exists=next_exists, max_items=mass_edit.MAX_ITEMS, listing=[], mixed_listing=None, **extra)
+                           next_exists=next_exists, max_items=mass_edit.MAX_ITEMS, listing=[], mixed_listing=None, history_base="/history/manage", **extra)
 
 
 def _content_type():

@@ -264,26 +264,38 @@ def test_ban_evade_counter_increments_and_commits_when_roll_misses(app_, monkeyp
     assert app_.db.commits == 1 and app_.user in app_.db.added
 
 
-def test_ban_evade_roll_hit_bans_content_and_403s(app_, monkeypatch):
+def test_ban_evade_roll_hit_quarantines_and_the_request_goes_on(app_, monkeypatch):
+    """The owner, 2026-11-17: the site's own checks quarantine, never ban. Nothing the account wrote is removed (an admin who bans it removes that), no notice is
+    sent from here (auto_quarantine.hold queues it for after the commit) and the request is not refused (a held account can read the site)."""
     monkeypatch.setattr(app_.wrappers.random, "randint", lambda a, b: 0)
+    held = []
+    monkeypatch.setattr(app_.wrappers.auto_quarantine, "hold", lambda db, user, trigger, **kw: held.append((user, trigger, kw)) or 7)
     app_.user.ban_evade = 5
     post = app_.db.insert(FakeSubmission(id=1, author_id=1))
     post.is_banned = False
-    other = app_.db.insert(FakeSubmission(id=2, author_id=1))
-    other.is_banned = True
     c = app_.db.insert(FakeComment(id=1, author_id=1))
     c.is_banned = False
     c.post = post
     app_.login(app_.user)
     r = app_.client.get("/req")
-    assert r.status_code == 403
-    assert app_.user.ban_calls == ["Evading a site-wide ban"]
-    assert len(app_.notifications) == 1
-    assert post.is_banned and c.is_banned
-    assert post.ban_reason.startswith("Ban evasion.")
-    actions = app_.db.rows(FakeModAction)
-    assert sorted(a.kind for a in actions) == ["ban_comment", "ban_post"]
-    assert app_.db.commits == 2
+    assert r.status_code == 200
+    assert [(u, t) for u, t, _ in held] == [(app_.user, "evasion")]
+    assert "suspended" in held[0][2]["detail"] and "@" not in held[0][2]["detail"]
+    assert app_.user.ban_calls == [] and app_.notifications == []
+    assert not post.is_banned and not c.is_banned and app_.db.rows(FakeModAction) == []
+    assert app_.db.commits == 1
+
+
+def test_ban_evade_does_not_count_an_account_an_automatic_check_already_holds(app_, monkeypatch):
+    monkeypatch.setattr(app_.wrappers.random, "randint", lambda a, b: 0)
+    held = []
+    monkeypatch.setattr(app_.wrappers.auto_quarantine, "hold", lambda *a, **kw: held.append(1))
+    app_.user.ban_evade = 5
+    app_.user.quarantined_utc = int(time.time())
+    app_.user.quarantine_kind = 1
+    app_.login(app_.user)
+    assert app_.client.get("/req").status_code == 200
+    assert held == [] and app_.user.ban_evade == 5 and app_.db.commits == 0
 
 
 def test_ban_evade_does_not_ban_already_suspended_user_but_increments(app_, monkeypatch):
@@ -297,10 +309,13 @@ def test_ban_evade_does_not_ban_already_suspended_user_but_increments(app_, monk
 
 def test_ban_evade_runs_for_auth_desired_and_is_not_banned_too(app_, monkeypatch):
     monkeypatch.setattr(app_.wrappers.random, "randint", lambda a, b: 0)
+    held = []
+    monkeypatch.setattr(app_.wrappers.auto_quarantine, "hold", lambda db, user, trigger, **kw: held.append(trigger))
     app_.user.ban_evade = 2
     app_.login(app_.user)
-    assert app_.client.get("/des").status_code == 403
-    assert app_.client.get("/nb").status_code == 403
+    assert app_.client.get("/des").status_code == 200
+    assert app_.client.get("/nb").status_code == 200
+    assert held == ["evasion", "evasion"]
 
 
 def test_admin_level_required_does_not_run_ban_evade_check(app_, monkeypatch):
@@ -648,3 +663,24 @@ def test_fake_user_formkey_code_matches_real_user_class():
     assert 'if "session_id" not in session:\n            return False' in src
     assert "session[\"session_id\"] = token_hex(16)" in src
     assert "self.unban_utc ==\n                                    0 or" in src
+
+
+def test_guildmaster_held_account_is_refused_with_the_held_message_and_a_stranger_learns_nothing(gm):
+    """A suspension used to take a guildmaster's powers; the site's own checks now only hold the account (a quarantine, helpers/quarantine.py), and a held
+    account acts on nobody. The refusal says why, to a guildmaster of the guild only: anyone else keeps the plain 'not a guildmaster' answer."""
+    from ruqqus.helpers import quarantine
+    gm.user.quarantined_utc = int(time.time())
+    gm.user.quarantine_kind = 1
+    r = gm.client.get("/g/testguild/none")
+    assert (r.status_code, r.get_json()) == (403, {"error": quarantine.HELD_AUTOMATIC})
+    gm.user.quarantine_kind = 0                                             # the signup guard's hold is refused the same way, with its own words
+    assert gm.client.get("/g/testguild/none").get_json() == {"error": quarantine.HELD}
+    del gm.board.mods[1]                                                    # not a guildmaster here: nothing about the hold is said
+    r = gm.client.get("/g/testguild/none")
+    assert (r.status_code, r.get_json()) == (403, {"error": "You aren't a guildmaster of +testguild"})
+
+
+def test_guildmaster_an_admin_is_never_held(gm):
+    gm.user.quarantined_utc = int(time.time())
+    gm.user.admin_level = 3
+    assert gm.client.get("/g/testguild/none").status_code == 200

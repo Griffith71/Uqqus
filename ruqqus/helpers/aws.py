@@ -162,7 +162,7 @@ def delete_file(name):
 
 
 def _load_user(db, user):
-    """`user` belongs to the request's session, which may be over; the ban is written by the scan's own, so it loads the row again."""
+    """`user` belongs to the request's session, which may be over; the hold is written by the scan's own, so it loads the row again."""
     from ruqqus.classes.user import User
 
     return db.get(User, user.id)
@@ -187,12 +187,14 @@ def check_csam_url(url, v, delete_content_function):
     db=db_session()
 
     if x.status_code == 451:
+        # the uploader and their alts are put on hold, never banned: an admin decides what follows (helpers/auto_quarantine.py)
         from ruqqus.helpers import scan_bans
-        scan_bans.ban_uploader(db, _load_user(db, v), detail="the CDN answered 451 for an uploaded picture", legal=True)
+        scan_bans.quarantine_uploader(db, _load_user(db, v), detail="the CDN answered 451 for an uploaded picture", legal=True)
 
         delete_content_function()
 
         db.commit()
+        scan_bans.tell(db)
         db.close()
         delete_file(parsed_url.path.lstrip('/'))
         return
@@ -206,17 +208,19 @@ def check_csam_url(url, v, delete_content_function):
 
     h=check_phash(db, tempname)
     if h:
+        from ruqqus.helpers import scan_bans
 
-        # ban user and alts, through User.ban; the picture goes either way, and a limited QR sign-in bans nobody (helpers/qr_login.py).
-        # The match above, which is the child-abuse list's, does: CLAUDE.md "QR sign-in"
+        # put the user and their alts on hold, never ban them (helpers/auto_quarantine.py); the picture goes either way, and a limited QR sign-in holds
+        # nobody on the site's own list's word (helpers/qr_login.py). The match above, which is the child-abuse list's, holds whoever it is:
+        # CLAUDE.md "QR sign-in"
         if not getattr(v, "qr_limited", False):
-            from ruqqus.helpers import scan_bans
-            scan_bans.ban_uploader(db, _load_user(db, v), days=h.ban_time or 0,
-                                   detail=f"matched a picture on the site's banned list: {h.ban_reason}")
+            scan_bans.quarantine_uploader(db, _load_user(db, v),
+                                          detail=f"matched a picture on the site's banned list: {h.ban_reason}")
 
         delete_content_function()
 
         db.commit()
+        scan_bans.tell(db)
 
         # nuke aws
         delete_file(parsed_url.path.lstrip('/'))

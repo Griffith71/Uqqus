@@ -215,7 +215,8 @@ def test_the_route_checks_everything_before_it_changes_anything():
     for assignment in ("v.bio, v.bio_html", "setattr(v", "v.set_", "v.del_", "v.display_name =", "g.db.add(v)"):
         assert assignment not in checking, assignment                          # nothing is assigned before every check has passed
     refusal = after.split("# --- 5")[0]
-    assert 'v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))' in refusal and "return _refused(" in refusal
+    assert 'auto_quarantine.hold(g.db, v, "link_malicious"' in refusal and "return _refused(" in refusal      # the worst kind of link holds the account, never bans it
+    assert refusal.index("auto_quarantine.hold(") < refusal.index("return _refused(") and ".ban(" not in ROUTE
     assert after.index("g.db.flush()") < after.index("v.set_profile(picture)")     # a column that won't fit fails before the bucket is touched
 
 
@@ -239,6 +240,41 @@ def test_pictures_are_gated_like_the_old_routes_and_a_removal_is_not_an_upload()
     assert "getattr(v, has_field)" in body                                    # a removal only runs when there is a picture to remove
     assert body.index("_gate(v, kind)") < body.index("profile_edit.check_image(sent)")
     assert "gated = True" in body and "403 if gated else 400" in body
+
+
+def test_a_hold_an_automatic_check_placed_closes_the_picture_routes_and_never_the_removal_or_the_text():
+    """`User.can_upload_avatar` / `can_upload_banner` are false for such an account (tests/test_profile_edit.py runs the expression), and the two routes that
+    would have said "Tor" for it say the site's words for a hold instead (the pop-up's `_gate`, Settings' `_held_picture_answer`); the signup guard's hold is not
+    this one (`quarantine.picture_refusal`), and taking a picture down or changing any text never asks."""
+    gate = func(ROUTE, "_gate")
+    assert gate.index("v.is_suspended") < gate.index("quarantine.picture_refusal(v, r)") < gate.index("v.can_upload_avatar")
+    assert "return held" in gate and "not_quarantined" not in ROUTE.replace("A held account", "")
+    body = ROUTE.split("def settings_profile_edit_post(")[1]
+    assert body.index("_gate(v, kind)") < body.index("elif form.get(remove_field)")         # only an upload asks; a removal is the elif beside it
+    answer = func(SETTINGS, "_held_picture_answer")
+    assert "quarantine.picture_refusal(v, r)" in answer and "quarantine.APPEAL_LINK" in answer and "), 403" in answer
+    for name in ("settings_images_profile", "settings_images_banner"):
+        route = func(SETTINGS, name)
+        assert "_held_picture_answer(v)" in route, name
+        assert route.index("_held_picture_answer(v)") < route.index("request.files.get("), name       # before the file is looked at
+        assert route.index("_held_picture_answer(v)") < route.index("if v.can_upload_"), name
+    for name in ("settings_delete_profile", "settings_delete_banner"):
+        assert "_held_picture_answer" not in func(SETTINGS, name) and "picture_refusal" not in func(SETTINGS, name), name
+    assert "picture_refusal" not in HELPER and ("can_upload_avatar" in USER and "is_auto_quarantined" in func(USER, "can_upload_avatar", "\n    @property"))
+
+
+def test_the_seo_spam_hold_does_not_keep_the_bio_that_tripped_it_in_either_route():
+    popup = ROUTE.split("def settings_profile_edit_post(")[1]
+    seo = popup[popup.index("if bio is not None and profile_edit.looks_like_link_spam("):popup.index("# --- 6")]
+    assert seo.index("auto_quarantine.hold(") < seo.index("if v.is_auto_quarantined:") < seo.index("_take_back_bio(v, kept_bio)")
+    assert popup.index("kept_bio = (v.bio, v.bio_html)") < popup.index("v.bio, v.bio_html = bio.text, bio.html")       # taken before the assignment
+    back = func(ROUTE, "_take_back_bio")
+    assert "v.bio, v.bio_html = kept" in back and "apply_user_severity(v)" in back and "v.display_name" not in back       # only the bio, rated again
+    post = func(SETTINGS, "settings_profile_post", "\n\n\n@app.")
+    seo = post[post.index("if profile_edit.looks_like_link_spam("):post.index('return {"html": lambda: render_template("settings_profile.html", v=v, msg=tr("Your bio has been updated."))')]
+    assert post.index("kept_bio, kept_html = v.bio, v.bio_html") < post.index("v.bio = check.text")
+    assert seo.index("auto_quarantine.hold(") < seo.index("if v.is_auto_quarantined:") < seo.index("v.bio, v.bio_html = kept_bio, kept_html") < seo.index("g.db.commit()")
+    assert "apply_user_severity(v)" in seo
 
 
 def test_a_picture_that_fails_leaves_the_old_one_and_is_reported_for_itself():

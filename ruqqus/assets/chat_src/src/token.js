@@ -388,7 +388,7 @@ function answerOf(got) {
   const body = got.body || {};
   if (got.signedOut) throw new SignedOut(startFailed());
   if (got.status === 403 && body.need_password) throw new PasswordNeeded(body.error || startFailed());
-  if (got.status === 403 && body.age_locked) throw new ChatRefused(body.error || startFailed());
+  if (got.status === 403 && (body.age_locked || body.held)) throw new ChatRefused(body.error || startFailed());   // held: the account is on hold (helpers/quarantine.py)
   if (got.status === 200) {
     const ok = typeof body.user_id === "string" && typeof body.device_id === "string" && DEVICE.test(body.device_id)
       && typeof body.homeserver_url === "string" && typeof body.kid === "string" && typeof body.storage_key === "string"

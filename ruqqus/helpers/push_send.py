@@ -49,7 +49,7 @@ def prepare(db, recipient_ids, kind, sender, room_id, video=False):
     site = current_app.config["SITE_NAME"]
     jobs = []
     for user in db.query(User).filter(User.id.in_(list(ids - blocked - muted))).all():
-        if user.is_deleted:
+        if user.is_deleted or user.is_quarantined:          # a held account has no chat (helpers/quarantine.py): nothing is pushed to it, and nothing says so to the sender
             continue
         name = None if sender.is_deleted else (sender.username if user_hidden(sender, user) else sender.shown_name)
         with force_locale(locale_for_user(user)):

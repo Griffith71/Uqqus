@@ -21,7 +21,7 @@ from flask import abort, g, make_response, redirect, render_template, request
 from urllib.parse import quote
 
 from ruqqus.classes import ClientAuth, OauthApp, User
-from ruqqus.helpers import action_log, bot_store, bots, feed_fetch, feed_items, profile_edit
+from ruqqus.helpers import action_log, bot_store, bots, feed_fetch, feed_items, profile_edit, quarantine
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.helpers.get import get_user
@@ -29,7 +29,7 @@ from ruqqus.helpers.i18n_runtime import N_, tr, trn
 from ruqqus.helpers.safe_fetch import FetchError
 from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.helpers.wrappers import not_qr_limited, admin_level_required, auth_required, is_not_banned, validate_formkey
-from ruqqus.__main__ import app, limiter, member_limit_key
+from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 # why a bot is paused when nobody gave a reason: stored with the bot (bot_store.set_running), so kept in English
 PAUSED_BY_ADMINS = N_("Paused by the site's admins.")
@@ -267,6 +267,11 @@ def settings_bots_apply(v):
     if refusal:
         return _back("/settings/bots", error=refusal)
 
+    if any(getattr(request.files.get(field), "filename", "") for field in ("profile", "banner")):
+        held = quarantine.picture_refusal(v, r)            # a public picture on a bot account is the owner's upload: an account an automatic check holds has none
+        if held:                                           # (asked before the feeds are read: nothing is fetched for a refused request)
+            return _back("/settings/bots", error=held)
+
     kind = bots.parse_kind(request.form.get("kind"))
     name, error = bots.parse_username(request.form.get("username"))
     purpose, purpose_error = bots.parse_purpose(request.form.get("purpose"))
@@ -389,6 +394,9 @@ def settings_bot_picture(name, which, v):
     account, row, admin = _manageable(name, v)
     _not_self(row)
     field = "profile" if which == "picture" else "banner"
+    held = quarantine.picture_refusal(v, r)                # removing one stays open (below)
+    if held:
+        return _back(_page(account), error=held)
     file, error = _image(request.files.get(field))
     if error or file is None:
         return _back(_page(account), error=error or tr("Choose a picture to upload."))

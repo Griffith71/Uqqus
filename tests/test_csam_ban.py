@@ -1,11 +1,12 @@
-"""check_csam_url must persist the uploader's and alts' ban and the removal, through the one ban routine.
+"""check_csam_url must persist the uploader's and alts' hold and the removal, through the one routine that holds them.
 
 Regression test for `db.add(v)` with an undefined `v`, which raised NameError before db.commit() so a positive CSAM match never saved the
-ban (in `check_csam(post)`, which nothing called and the Log's slice D4 removed: every scan now goes through `check_csam_url`, whose caller
-brings the content's own removal). Since the Log's slice D2 the ban itself is `scan_bans.ban_uploader` (-> `User.ban`, tested on the real app in
+consequence (in `check_csam(post)`, which nothing called and the Log's slice D4 removed: every scan now goes through `check_csam_url`, whose caller
+brings the content's own removal). Since the owner's decision of 2026-11-17 the consequence is a QUARANTINE, never a ban: the hold itself is
+`scan_bans.quarantine_uploader` (-> `auto_quarantine.hold`, tested on SQLite in tests/test_scan_bans.py and on the real app in
 tests/pg/test_scan_bans.py) and the removal is written to the Log (`action_log.record_image_check_removal`): both are replaced here by
-fakes that record what they were asked, so this file checks the checks - what they hand over, in which session, and that the
-whole thing is committed. Runs without Postgres, S3, Cloudflare or the app's heavy dependencies:
+fakes that record what they were asked, so this file checks the checks - what they hand over, in which session, that the notice is sent only
+AFTER the commit, and that the whole thing is committed. Runs without Postgres, S3, Cloudflare or the app's heavy dependencies:
 those modules are replaced by stubs, and db_session() by a fake session that
 behaves like SQLAlchemy in the two ways that matter here - only state that was
 add()ed and commit()ed counts, and add() refuses objects owned by another
@@ -51,8 +52,8 @@ class User:
     def __init__(self, id, alt_ids=()):
         self.id = id
         self.is_banned = 0
-        self.ban_reason = None
-        self.unban_utc = 0
+        self.quarantined_utc = 0
+        self.quarantine_kind = 0
         self._alt_ids = alt_ids
 
     def alts_threaded(self, db):
@@ -111,18 +112,21 @@ def aws(monkeypatch, tmp_path):
     stub("ruqqus.classes.submission", Submission=Submission)
     stub("ruqqus.helpers.base36", hex2bin=lambda h: h)
 
-    asked = types.SimpleNamespace(bans=[], removals=[])
+    asked = types.SimpleNamespace(holds=[], removals=[], tells=[])
 
-    def ban_uploader(db, user, *, days=0, detail="", legal=False):
-        """What User.ban does to the row, in the session it was given; the Log's entries are the real routine's."""
-        asked.bans.append({"db": db, "user": user, "days": days, "detail": detail, "legal": legal})
+    def quarantine_uploader(db, user, *, detail="", legal=False):
+        """What `auto_quarantine.hold` does to the rows, in the session it was given; the Log's entries are the real routine's. Nobody is banned."""
+        asked.holds.append({"db": db, "user": user, "detail": detail, "legal": legal})
         for account in [user] + list(user.alts_threaded(db)):
-            account.is_banned = 1
-            account.ban_reason = "Automatic image check"
-            account.unban_utc = 1_000_000 + 86400 * days if days else 0
+            account.quarantined_utc = 1_000_000
+            account.quarantine_kind = 1
             db.add(account)
 
-    stub("ruqqus.helpers.scan_bans", ban_uploader=ban_uploader)
+    def tell(db):
+        """The notice goes after the commit: what had been committed when it was asked for is recorded."""
+        asked.tells.append({"db": db, "committed": {key: dict(snap) for key, snap in db.committed.items()}, "closed": db.closed})
+
+    stub("ruqqus.helpers.scan_bans", quarantine_uploader=quarantine_uploader, tell=tell)
     stub("ruqqus.helpers.action_log",
          record_image_check_removal=lambda db, **kw: asked.removals.append({"db": db, **kw}))
     monkeypatch.delitem(sys.modules, "ruqqus.helpers.aws", raising=False)
@@ -148,34 +152,56 @@ def url_case(aws, monkeypatch, status_code, qr_limited=False):
     return member, db, removed, deleted
 
 
-def test_a_cdn_451_on_an_uploaded_picture_bans_through_the_routine_removes_the_content_and_commits(aws, monkeypatch):
+def test_a_cdn_451_on_an_uploaded_picture_holds_through_the_routine_removes_the_content_and_commits_before_the_notice(aws, monkeypatch):
     member, db, removed, deleted = url_case(aws, monkeypatch, 451)
 
     aws.check_csam_url(URL, member, lambda: removed.append("content"))
 
-    (ban,) = aws.asked.bans
-    assert ban["user"] is db.rows[(User, 1)] and ban["legal"] is True and ban["days"] == 0 and ban["db"] is db
+    (hold,) = aws.asked.holds
+    assert hold["user"] is db.rows[(User, 1)] and hold["legal"] is True and hold["db"] is db
+    assert "days" not in hold and "451" in hold["detail"]
     assert removed == ["content"] and deleted == ["post/abc/xyz"]
     for uid in (1, 2):
-        assert db.committed[(User, uid)]["is_banned"] == 1
+        row = db.committed[(User, uid)]
+        assert row["quarantine_kind"] == 1 and row["quarantined_utc"] > 0 and row["is_banned"] == 0          # held, never banned
+    (told,) = aws.asked.tells
+    assert told["db"] is db and told["closed"] is False                                       # the notice needs the session open...
+    assert told["committed"][(User, 1)]["quarantine_kind"] == 1                              # ...and goes after the commit
     assert db.closed
 
 
-def test_a_banned_list_match_on_an_uploaded_picture_suspends_for_the_lists_days(aws, monkeypatch):
+def test_a_banned_list_match_on_an_uploaded_picture_holds_the_uploader_with_no_days_to_serve(aws, monkeypatch):
     member, db, removed, deleted = url_case(aws, monkeypatch, 200)
     monkeypatch.setattr(aws, "check_phash", lambda db_, name: types.SimpleNamespace(ban_reason="Spam picture", ban_time=2))
 
     aws.check_csam_url(URL, member, lambda: removed.append("content"))
 
-    (ban,) = aws.asked.bans
-    assert ban["days"] == 2 and ban["legal"] is False and "Spam picture" in ban["detail"]
+    (hold,) = aws.asked.holds
+    assert hold["legal"] is False and "Spam picture" in hold["detail"] and "days" not in hold
     assert removed == ["content"] and deleted == ["post/abc/xyz"]
+    for uid in (1, 2):
+        row = db.committed[(User, uid)]
+        assert row["quarantine_kind"] == 1 and row["is_banned"] == 0
+    assert len(aws.asked.tells) == 1 and aws.asked.tells[0]["committed"][(User, 1)]["quarantine_kind"] == 1
 
 
-def test_a_limited_qr_sign_in_is_refused_the_picture_but_bans_nobody_on_the_lists_word(aws, monkeypatch):
+def test_a_limited_qr_sign_in_is_refused_the_picture_but_holds_nobody_on_the_lists_word(aws, monkeypatch):
     member, db, removed, deleted = url_case(aws, monkeypatch, 200, qr_limited=True)
     monkeypatch.setattr(aws, "check_phash", lambda db_, name: types.SimpleNamespace(ban_reason="Spam picture", ban_time=2))
 
     aws.check_csam_url(URL, member, lambda: removed.append("content"))
 
-    assert aws.asked.bans == [] and removed == ["content"] and deleted == ["post/abc/xyz"]
+    assert aws.asked.holds == [] and removed == ["content"] and deleted == ["post/abc/xyz"]
+    assert (User, 1) not in db.committed and (User, 2) not in db.committed
+
+
+def test_the_cdns_451_holds_the_uploader_however_they_signed_in(aws, monkeypatch):
+    """The one exception to a limited sign-in's protection (the owner, 2026-11-18): illegal content has reached the site by then."""
+    member, db, removed, deleted = url_case(aws, monkeypatch, 451, qr_limited=True)
+
+    aws.check_csam_url(URL, member, lambda: removed.append("content"))
+
+    (hold,) = aws.asked.holds
+    assert hold["legal"] is True and hold["user"] is db.rows[(User, 1)]
+    assert removed == ["content"] and deleted == ["post/abc/xyz"]
+    assert db.committed[(User, 1)]["quarantine_kind"] == 1 and db.committed[(User, 1)]["is_banned"] == 0

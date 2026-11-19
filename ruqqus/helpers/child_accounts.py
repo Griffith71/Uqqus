@@ -41,7 +41,7 @@ DEFAULTS = {name: False for name in FEATURES}
 CONTROL_TEXT = {
     "chat": (N_("Chat, group chats and calls"),
              N_("They can message people, join group chats and make calls. The site never shows you what a chat says: chats are end-to-end encrypted. Whoever knows their password can still sign in and read them.")),
-    "spaces": (N_("Spaces and live threads"), N_("They can host and join Spaces and run live threads. Voice calls in a Space also need Chat to be on.")),
+    "spaces": (N_("Spaces and live threads"), N_("They can join and listen to Spaces. They can't host one or post in one: a child account only reads. Voice calls in a Space also need Chat to be on.")),
     "money": (N_("Coins, tips, Premium and paid circles"), N_("They can buy and spend coins, tip, buy Premium and join or run paid circles.")),
     "anonymous_guilds": (N_("Starting guilds"), N_("They can start a guild. They still can't post or comment: a child account only reads.")),
 }

@@ -65,9 +65,9 @@ def db():
         for statement in log_tables.migration_statements(read("scripts", "migrations", "2026-12-09_action_log.sql")):
             conn.execute(text(statement))
         log_tables.apply(conn, modactions=True)
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, "
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, repost_id INTEGER DEFAULT 0, "
                           "is_anonymous BOOLEAN DEFAULT 0, distinguish_level INTEGER DEFAULT 0, gm_distinguish INTEGER DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, parent_submission INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, parent_submission INTEGER, is_anonymous BOOLEAN DEFAULT 0, distinguish_level INTEGER DEFAULT 0, gm_distinguish INTEGER DEFAULT 0)"))
         for statement in _statements(read("scripts", "migrations", "2027-01-03_account_anonymise.sql")):
             conn.execute(text(statement))
     with Session(engine) as session:

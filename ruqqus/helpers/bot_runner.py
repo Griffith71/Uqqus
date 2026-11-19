@@ -10,11 +10,15 @@ rule, the throttle and bans apply as for a person; nothing here repeats submit_p
 * What happened is stored in English (a source's last error, a bot's pause reason: drawn with msg()), and the owner
   is told with `notify(user_id, message, **values)`: an English message marked with N_ and its values
   (alerts.notify), so they read it in their own language.
-* An answer that means the bot itself can't post (suspended, not approved any more) pauses the bot and tells the owner.
+* An answer that means the bot itself can't post (not approved any more, the account put on hold by an automatic check
+  while posting) pauses the bot and tells the owner.
+* An owner who is held (the signup guard's hold or an automatic check's) can't run a member bot or their own account's
+  automated posting: the source is skipped and nothing is marked seen, so what the feed holds waits until the hold is
+  lifted (`owner_ok`, and `classify` reads the refusal that comes of a hold that landed meanwhile as a wait).
 """
 from collections import namedtuple
 
-from ruqqus.helpers import action_log, bot_store, bots, feed_items
+from ruqqus.helpers import action_log, bot_store, bots, feed_items, quarantine
 from ruqqus.helpers.i18n_runtime import N_
 from ruqqus.helpers.safe_fetch import FetchError
 
@@ -27,6 +31,11 @@ def outcome(kind, message="", post_id=None):
     return Outcome(kind, message, post_id)
 
 
+# what a held owner's refusal says (submit is asked in English: scripts/run_bots.py). A hold is not the bot's fault and can be lifted, so the item is kept: the
+# answer of `@not_quarantined` carries `held: true` (read first); the words, which are the site's own constants, are the fallback for an answer without it
+_HELD_ANSWERS = tuple(text[:300] for text in (quarantine.HELD, quarantine.HELD_AUTOMATIC, bots.OWNER_HELD))
+
+
 def classify(status, location, data, forwarded, post_id=None):
     """What an answer of the submit route means for the bot."""
     data = data if isinstance(data, dict) else {}
@@ -37,10 +46,13 @@ def classify(status, location, data, forwarded, post_id=None):
         return outcome("duplicate", error)
     if status in (301, 302, 303, 307, 308):
         if "/notifications" in location:
-            return outcome("stop", N_("The bot was suspended for posting too much similar content."))
+            # submit_post sends an account to its notifications only when a check just put it on hold (a link on the autoban list)
+            return outcome("stop", N_("An automatic check put the account on hold."))
         if "/help/terms" in location or "/login" in location:
             return outcome("stop", N_("The site refused the bot's session."))
         return outcome("duplicate", N_("Already posted."))
+    if status == 403 and (data.get("held") is True or error in _HELD_ANSWERS):
+        return outcome("wait", error)
     if status == 403 and data.get("bot_refusal") == "wait":
         return outcome("wait", error)
     if status == 403 and data.get("bot_refusal") == "stop":

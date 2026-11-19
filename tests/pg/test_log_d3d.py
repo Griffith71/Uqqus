@@ -2,7 +2,7 @@
 
 The promises: an admin banning an account cites its items from a picker that reaches anonymous items and a deleted account's; a list that can't be cited bans
 nobody; the Log names the author for a cited item (its line in the Deleted tab, and the ban's own line) only once a DIFFERENT admin approves, never for a
-declined one, and takes the name back when the ban is reversed; the staff page lists what is waiting; a deleted account is named by its username."""
+declined one, and keeps the name when the ban is reversed; the staff page lists what is waiting; a deleted account is named by its username."""
 import re
 import secrets
 import time
@@ -135,12 +135,13 @@ def test_the_log_names_the_author_only_after_a_different_admin_approves_and_not_
     assert "Evidence:" in ban_card and f"post #{base36}" in ban_card
     assert f"/post/{base36}/log" in sanctions
 
-    # reversing the ban takes the name back out
+    # reversing the ban does not take the name back (the owner, 2026-11-17: once exposed, it can't be unexposed; a reversed ban is transparency about the
+    # moderation): the reversal is its own entry beside the ban, and the cited item still names its author
     unbanned = post(first.browser(), first, f"/api/unban_user/{target.id}", reason="a mistake")
     assert unbanned.status_code in (200, 302)
-    assert one(real_app, "SELECT status FROM log_evidence WHERE entry_id = :e", e=entry)["status"] == "withdrawn"
-    assert f"@{target.username}" not in section(deleted_tab(real_app), title), "Anonymous again"
-    assert "Evidence:" not in section(get(app.test_client(), "/log?type=sanction").get_data(as_text=True), f'id="log-{entry}"')
+    assert one(real_app, "SELECT status FROM log_evidence WHERE entry_id = :e", e=entry)["status"] == "approved"
+    assert f"@{target.username}" in section(deleted_tab(real_app), title), "still named after the reversal"
+    assert "Evidence:" in section(get(app.test_client(), "/log?type=sanction").get_data(as_text=True), f'id="log-{entry}"')
 
 
 def section_of(page, entry_id):

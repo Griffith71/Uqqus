@@ -10,7 +10,9 @@ anonymous everywhere else on the site**, and nothing here changes `is_anonymous`
 and only then does it show. The ban itself takes effect at once; until approved the Log shows the ban alone, and a reveal nobody confirms or that is
 declined never shows. **Sole-admin case** (decision 27): when no other admin exists (level 3 or more, not banned or deleted, checked when approving) a
 level-4 owner may confirm their own proposal, and the row records it as a sole-admin approval; a level-3 admin who is the only admin has no one to
-confirm and the reveal stays unpublished. **Reversing the ban withdraws the reveal** (the lines draw Anonymous again).
+confirm and the reveal stays unpublished. **Reversing the ban does not take an approved reveal back** (the owner, 2026-11-17: once someone is exposed it can't
+be undone, and a ban found wrong is itself something the Log should show: the reversal is a public entry beside the name); only a proposal still waiting for its
+second admin is dropped, since it has exposed nothing and must not be approved for a ban that was reversed.
 
 Only the items of the banned account can be cited; never an item with a legal-level entry (it has no public line to attach to), never one erased inside
 the grace window (it has no public record), and an item that is not public (a Circle's, a private guild's) is counted, never listed by id. The rows live in
@@ -67,9 +69,13 @@ def _marks(prefix, ids):
 
 
 def another_admin_exists(db, excluding_id):
-    """Is there an admin (level 3 or more, not banned, not deleted) other than this one?"""
-    return db.execute(text("SELECT 1 FROM users WHERE admin_level >= 3 AND id <> :a AND NOT COALESCE(is_deleted, false) AND COALESCE(is_banned, 0) = 0 "
-                           "LIMIT 1"), {"a": int(excluding_id)}).first() is not None
+    """Is there an admin (level 3 or more, not banned or suspended now, not deleted) other than this one? A suspension that has run out no longer counts:
+    `is_banned` is set by a timed suspension and nothing clears it, so an admin suspended once and long reinstated counted as banned for ever, and the
+    owner could approve their own reveal (the second review, C24)."""
+    import time
+    return db.execute(text("SELECT 1 FROM users WHERE admin_level >= 3 AND id <> :a AND NOT COALESCE(is_deleted, false) "
+                           "AND (COALESCE(is_banned, 0) = 0 OR (COALESCE(unban_utc, 0) > 0 AND unban_utc <= :now)) LIMIT 1"),
+                      {"a": int(excluding_id), "now": int(time.time())}).first() is not None
 
 
 # --- what can be cited -------------------------------------------------------------------------------------------------------------------
@@ -210,9 +216,11 @@ def decide(db, entry_id, admin_id, admin_level, approve, now):
     return result.rowcount or 0, None
 
 
-def withdraw(db, target_id, now):
-    """Reversing a ban withdraws its reveal: every pending or approved row of this account is `withdrawn`, so the Log draws Anonymous again."""
-    return db.execute(text("UPDATE log_evidence SET status = 'withdrawn', withdrawn_utc = :now WHERE target_user_id = :t AND status IN ('pending', 'approved')"),
+def withdraw_pending(db, target_id, now):
+    """Reversing a ban drops the reveal proposals of this account that no second admin has approved: they are `withdrawn`, so nobody can approve them for a
+    ban that was reversed. **An approved reveal stays** (it has been published; the owner, 2026-11-17: it can't be unexposed, and a reversed ban is
+    transparency about the moderation, not a reason to hide the name again)."""
+    return db.execute(text("UPDATE log_evidence SET status = 'withdrawn', withdrawn_utc = :now WHERE target_user_id = :t AND status = 'pending'"),
                       {"now": int(now), "t": int(target_id)}).rowcount or 0
 
 

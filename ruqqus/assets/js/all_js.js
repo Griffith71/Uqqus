@@ -1113,6 +1113,21 @@ function fill_late_box(slot, html) {
   if (height) slot.classList.add("late-box-in");
 }
 
+// The Delete / Remove my name choice of the two delete dialogs: the title, the icon and the confirm button say and look like what is chosen.
+// The template writes both versions (data-text-delete / data-text-unlink, data-class-delete / data-class-unlink: space-separated class lists)
+// in the reader's language, so no string lives here. Red (btn-danger) stays on a real delete only.
+function deleteDialogChoice(dialog, unlink) {
+  dialog.querySelectorAll("[data-text-delete]").forEach(function(el) {
+    el.textContent = el.getAttribute(unlink ? "data-text-unlink" : "data-text-delete");
+  });
+  dialog.querySelectorAll("[data-class-delete]").forEach(function(el) {
+    var off = el.getAttribute(unlink ? "data-class-delete" : "data-class-unlink").split(" ");
+    var on = el.getAttribute(unlink ? "data-class-unlink" : "data-class-delete").split(" ");
+    off.forEach(function(name) { if (name && on.indexOf(name) < 0) el.classList.remove(name); });
+    on.forEach(function(name) { if (name) el.classList.add(name); });
+  });
+}
+
 // Delete Post
 
 function delete_postModal(id, canUnlink) {
@@ -1122,6 +1137,9 @@ function delete_postModal(id, canUnlink) {
   // "Remove my name" is offered only where the server will do it (a Circle post, a tipped one, one written with others or a Space isn't:
   // helpers/deletion.py unlink_refusal); the dialog opens on "Delete" every time.
 
+  var dialog = document.getElementById("deletePostModal");
+  var choice = document.getElementById("deletePostChoice");
+  var buttons = [document.getElementById("deletePostButton"), document.getElementById("deletePostButton-mobile")];
   document.getElementById("deletePostUnlinkOption").hidden = !canUnlink;
   document.getElementById("delete-post-how-delete").checked = true;
 
@@ -1130,9 +1148,25 @@ function delete_postModal(id, canUnlink) {
   var unlinkRadio = document.getElementById("delete-post-how-unlink");
   var ownComments = 0;
   var showComments = function() { commentsOption.hidden = !(canUnlink && unlinkRadio.checked && ownComments > 0); };
+  // what the dialog says and looks like follows the choice (the title, the icon, the confirm button: red only for a real delete), and
+  // `ready` is how it starts and how it comes back after a refusal: the buttons are shared by every post on the page, so a button left
+  // disabled, spinning and saying "Removing your name" by an earlier try would otherwise open on the next post that way
+  var show = function() { deleteDialogChoice(dialog, canUnlink && unlinkRadio.checked); showComments(); };
+  var ready = function() {
+    choice.disabled = false;
+    buttons.forEach(function(button) { button.disabled = false; });
+    show();
+  };
+  // a refusal: a disabled button drops the keyboard's focus to the page, where Escape no longer closes the dialog, so it goes back to the button pressed
+  var pressed = null;
+  var refused = function() {
+    ready();
+    if (pressed) pressed.focus();
+  };
   commentsOption.hidden = true;
   ownComments = 0;
-  document.querySelectorAll('input[name="delete-post-how"]').forEach(function(radio) { radio.onchange = showComments; });
+  document.querySelectorAll('input[name="delete-post-how"]').forEach(function(radio) { radio.onchange = show; });
+  ready();
   if (canUnlink) {
     fetch('/api/post/' + id + '/own_comment_count', {credentials: 'same-origin'}).then(function(r) { return r.ok ? r.json() : null; }).then(function(data) {
       if (!data || !data.count) return;
@@ -1151,13 +1185,17 @@ function delete_postModal(id, canUnlink) {
 
     var how = (canUnlink && document.getElementById("delete-post-how-unlink").checked) ? "unlink" : "delete";
     this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(how == "unlink" ? tr('Removing your name') : tr('Deleting post'));
-    this.disabled = true; 
+    // both buttons and the two radios hold still while the request is out, so the choice can't change under it
+    pressed = this;
+    choice.disabled = true;
+    buttons.forEach(function(button) { button.disabled = true; });
     post('/delete_post/' + id,
       callback = function() {
 
         location.reload();
       },
-      undefined, {how: how, with_comments: (how == "unlink" && ownComments > 0 && document.getElementById("delete-post-with-comments").checked) ? "1" : ""}
+      undefined, {how: how, with_comments: (how == "unlink" && ownComments > 0 && document.getElementById("delete-post-with-comments").checked) ? "1" : ""},
+      refused
       )
   }
 
@@ -1169,20 +1207,40 @@ function delete_commentModal(id, canUnlink) {
 
   // Passed data for modal (see delete_postModal: "Remove my name" only where the server will do it)
 
+  var dialog = document.getElementById("deleteCommentModal");
+  var choice = document.getElementById("deleteCommentChoice");
+  var button = document.getElementById("deleteCommentButton");
+  var unlinkRadio = document.getElementById("delete-comment-how-unlink");
   document.getElementById("deleteCommentUnlinkOption").hidden = !canUnlink;
   document.getElementById("delete-comment-how-delete").checked = true;
 
-  document.getElementById("deleteCommentButton").onclick = function() {  
+  // the title, the icon and the confirm button follow the choice (see delete_postModal); `ready` also puts them back after a refusal
+  var show = function() { deleteDialogChoice(dialog, canUnlink && unlinkRadio.checked); };
+  var ready = function() {
+    choice.disabled = false;
+    button.disabled = false;
+    show();
+  };
+  var refused = function() {
+    ready();
+    button.focus();          // see delete_postModal
+  };
+  document.querySelectorAll('input[name="delete-comment-how"]').forEach(function(radio) { radio.onchange = show; });
+  ready();
+
+  button.onclick = function() {  
 
     var how = (canUnlink && document.getElementById("delete-comment-how-unlink").checked) ? "unlink" : "delete";
     this.innerHTML='<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>' + escapeHtmlText(how == "unlink" ? tr('Removing your name') : tr('Deleting comment'));
+    choice.disabled = true;
     this.disabled = true; 
     post('/delete/comment/' + id,
       callback = function() {
 
         location.reload();
       },
-      undefined, {how: how}
+      undefined, {how: how},
+      refused
       )
   }
 
@@ -3482,14 +3540,22 @@ block_user=function() {
 
 }
 
+// a switch in a comment box's tools (partials/post_options.html disclosure_toggles): its label takes the "on" colour and the line
+// that says what it means (disclosure_hints, `data-hint` names it) is shown while it is on. The words are text, not only a tooltip, so
+// a phone and a keyboard read them; the line's place is outside the tools row, so turning a switch on moves nothing in it
+disclosureSwitch=function(box){
+  box.parentNode.classList.toggle('text-info', box.checked);
+  var hint=document.getElementById(box.getAttribute('data-hint') || '');
+  if (hint) hint.hidden=!box.checked;
+};
+
 // the "comment as @me" switch: asks once, in the site's own sheet, because a named comment next to your anonymous post can give it away
 commentAsMe=function(box, prefix){
-  var label=box.parentNode;
   var anon=document.getElementById(prefix+'-anon');
   var settle=function(on){
     box.checked=on;
-    label.classList.toggle('text-info', on);
-    if (anon) { anon.checked=!on; label.parentNode.querySelectorAll('label[for="'+prefix+'-anon"]').forEach(function(l){ l.classList.toggle('text-info', !on); }); }
+    disclosureSwitch(box);
+    if (anon) { anon.checked=!on; disclosureSwitch(anon); }
   };
   if (!box.checked) { settle(false); return; }
   var ask=window.confirmSheet ? confirmSheet({

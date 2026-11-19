@@ -67,8 +67,11 @@ ERRORS = {
 
 def _refusal(user, chat_ready):
     """`oidc.account_refusal`, and never an age-restricted account whose chat is off (an outside app is a way into chat that needs no chat page): the same
-    plain refusal, which says nothing of why."""
-    return oidc.account_refusal(user, chat_ready) or (oidc.REFUSED if age_declaration.feature_refusal(user, "chat") else None)
+    plain refusal, which says nothing of why. **Nor an account on hold** (the signup guard's or an automatic check's: helpers/quarantine.py, the owner, 2026-11-19: a hold
+    cuts chat off entirely, and an outside app is chat): the same plain refusal, and the app's code is refused at the swap too, so a code asked for just before the hold
+    signs no app in."""
+    refused = oidc.REFUSED if age_declaration.feature_refusal(user, "chat") or getattr(user, "is_quarantined", False) else None
+    return oidc.account_refusal(user, chat_ready) or refused
 
 
 def _request_args(source):

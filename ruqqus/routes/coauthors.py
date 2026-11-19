@@ -15,7 +15,7 @@ from ruqqus.helpers.get import get_post, get_user
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
 from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers.visibility import post_hidden
-from ruqqus.helpers.wrappers import auth_required, not_qr_limited, validate_formkey
+from ruqqus.helpers.wrappers import auth_required, not_qr_limited, not_quarantined, validate_formkey
 from ruqqus.__main__ import app, cache
 
 
@@ -67,6 +67,7 @@ def _collab(post):
 @app.post("/api/coauthor/<pid>/invite")
 @auth_required
 @not_qr_limited
+@not_quarantined("coauthor")
 @validate_formkey
 def coauthor_invite(pid, v):
     """The author invites accounts (`usernames`, separated by commas or spaces)."""
@@ -95,7 +96,7 @@ def coauthor_list(pid, v):
     post = _primary(pid)
     if post_hidden(post, v):
         abort(404)
-    is_author = post.author_id == v.id
+    is_author = anonymity.is_author(post, v)          # not a raw id comparison: a limited QR sign-in is a stranger to its own anonymous post (C16)
     rows = coauthors.rows_of(g.db, post.id)
     numbers = anon_aliases.numbers_cached(g.db, anon_aliases.scope_key(post)) if any(r.is_anonymous for r in rows) else {}
     out = []
@@ -122,6 +123,7 @@ def coauthor_list(pid, v):
 
 @app.get("/coauthor/<pid>")
 @auth_required
+@not_qr_limited
 def coauthor_page(pid, v):
     """The invitation (accept or decline), or, once accepted, the way to step off."""
     post = _primary(pid)
@@ -134,6 +136,7 @@ def coauthor_page(pid, v):
 @app.post("/api/coauthor/<pid>/accept")
 @auth_required
 @not_qr_limited
+@not_quarantined("coauthor")
 @validate_formkey
 def coauthor_accept(pid, v):
     post = _primary(pid)
@@ -215,6 +218,7 @@ def coauthor_leave(pid, v):
 
 @app.post("/api/coauthor/<pid>/remove")
 @auth_required
+@not_quarantined("coauthor")
 @validate_formkey
 def coauthor_remove(pid, v):
     """The author takes a co-author off, or cancels an invitation that was not answered."""

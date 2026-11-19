@@ -36,6 +36,7 @@ def _room_for(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_pin(v):
     """Pins or unpins a message: Matrix's own pinned list (`m.room.pinned_events`), newest first, at most MAX_PINS."""
@@ -65,6 +66,7 @@ def chat_pin(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_disappear(v):
     """Turns disappearing messages on (a day or a week) or off for everyone in the chat. Messages already sent keep the

@@ -13,7 +13,13 @@ What keeps it from being an identity oracle (the plan's list):
   already exiled, one with no number, an item not in this guild or not anonymous) is "accepted, no effect", exactly as a success is, so success or refusal reveals
   nothing; the page is the only thing that changes;
 * **rate limited per guildmaster** (`PER_HOUR`): the visible effect, that the alias can no longer comment, must not become a way to test guesses;
-* the exiled account is told as for any exile, with the appeal way (decision 13); the guildmaster is not told who it is.
+* the exiled account is told as for any exile, with the appeal way (decision 13); the guildmaster is not told who it is;
+* **no side effect that names the account**: an alias exile does NOT strip the account's guild roles or have the bot kick it from the channel rooms it
+  opened (a role list and a room's member list are readable by people who must not learn the account, and a success would then take longer than the
+  no-op that answers alike), and an alias mute does not kick it from encrypted rooms either. `read_refusal` already stops an exiled or muted account reading
+  or writing and the sync step takes it out of the rooms within minutes (the second review, 2026-11-17, C19);
+* **only what an exile by name may cite**: the item named by `thing` is kept as a year-long copy every guildmaster of the guild can open, so a deleted,
+  grace-erased, removed or author-hidden item is "accepted, no effect" here too (`sanction_evidence.usable`, C22).
 
 **What it can't hide** (the plan's decision 24 accepts it; the answers are identical, the side effects are not): a guildmaster who already SUSPECTS an account can test
 the guess. (1) Exile the suspect BY NAME, then look at the exile list: if the suspect was exiled by alias, the answer is the same 204 as for any member who has taken
@@ -53,6 +59,12 @@ def resolve(db, board_id, item):
     author = getattr(item, "author_id", None)
     if scope is None or not author:
         return None
+    if getattr(item, "repost_id", 0):
+        # a guild's copy keeps the ORIGINAL author's id, but whoever it is about here is its forwarder, as an exile by name reads it
+        # (`_exile_item_owner`): when somebody else forwarded it, its author never took part in this guild and is not for an alias (C21)
+        from ruqqus.helpers import post_follows
+        if post_follows.responsible_id(db, item) != author:
+            return None
     number = anon_aliases.numbers_in(db, scope).get(author)
     if not number:
         return None

@@ -54,14 +54,19 @@ def test_no_code_bans_an_account_except_user_ban():
             assert (filename, _function_at(ROOT / filename, number)) in HAND_BANS, (filename, number)
 
 
-def test_the_image_checks_ban_through_the_one_routine():
+def test_the_image_checks_quarantine_through_the_one_routine():
+    """The owner, 2026-11-17: an image check only QUARANTINES (helpers/auto_quarantine.py); it never bans, suspends or cascades, and assigns no `is_banned` on an account."""
     for name in ("helpers/aws.py", "helpers/media/safety.py"):
         source = read(RUQQUS / name)
         assert "is_banned" not in re.sub(r"(post|comment|banned)\.is_banned", "", source), name
-    assert "scan_bans.ban_uploader" in read(RUQQUS / "helpers" / "aws.py")
+        assert "ban_uploader" not in source and ".ban(" not in source, name
+    assert "scan_bans.quarantine_uploader" in read(RUQQUS / "helpers" / "aws.py")
+    assert "safety.quarantine_uploader" in read(RUQQUS / "routes" / "media.py") and "ban_uploader" not in read(RUQQUS / "routes" / "media.py")
     scans = read(RUQQUS / "helpers" / "scan_bans.py")
-    assert "user.ban(reason=action_log.AUTOMATIC_IMAGE_REASON" in scans and "floor=action_log.STAFF" in scans     # alts: staff-only entries
-    assert "record_detail" in scans and scans.count("cascade=False)") == 2                  # no sub-account is closed by a scan: law enforcement
+    code = re.sub(r'""".*?"""', "", scans, flags=re.S)
+    assert 'auto_quarantine.hold(db, user, "image", alts=alts)' in code      # the alts are held in staff-only entries by the hold itself
+    assert "record_detail" in code                                           # what was matched: a separate entry, level 4 for the child-abuse list
+    assert not re.search(r"\.ban\(|\.unban\(|is_banned|cascade", code)     # no sub-account is closed by a scan: nothing is banned at all
 
 
 # admin routes that change nothing a person could be wronged by, or that keep a record of their own
@@ -87,7 +92,7 @@ NO_ENTRY = {
     "admin_sig_generate": "makes a signature for the admin's own use: changes nothing",
 }
 LOGGED = ("action_log.", "ModAction(", ".ban(", ".unban(", "_decided(", "_obliterated(", "_ban_addresses(", "_act(", "_settle(",
-          "purge_post_text(", "purge_comment_text(")
+          "purge_post_text(", "purge_comment_text(", "auto_quarantine.release(")          # a release writes the staff's `unquarantine_user` entry itself
 
 
 def _admin_routes():
@@ -151,3 +156,17 @@ def test_the_background_steps_keep_the_paper_trail_whole():
     retention = read(RUQQUS / "helpers" / "retention.py")
     assert "DELETE FROM log_failures" in retention and "UPDATE log_appeals SET reason = ''" in retention
     assert "mirror_from_table" in read(RUQQUS / "helpers" / "action_log.py")
+
+
+def test_a_ban_of_a_linked_account_is_always_staff_only():
+    """The second review (2026-11-17, C13): the spam guard's and the signup guard's alt bans were public, so the Sanctions tab
+    listed which accounts the site links. Every `alt.ban(` says so itself (`floor=action_log.STAFF`)."""
+    for path in RUQQUS.rglob("*.py"):
+        lines = read(path).splitlines()
+        for number, line in enumerate(lines, 1):
+            if re.search(r"\balt\.ban\(", line):
+                call = " ".join(lines[number - 1:number + 2])                      # a call may run over a line or two
+                assert "floor=action_log.STAFF" in call, f"{path.relative_to(RUQQUS)}:{number} bans a linked account in public"
+    # the site's own checks now quarantine their alts through `auto_quarantine.hold(..., alts=...)`, which writes each in a staff-only entry
+    # ("alt of @name", no public line) whatever the trigger's floor is: the same promise, in the one place that writes it
+    assert "floor=max(spec.floor, action_log.STAFF)" in read(RUQQUS / "helpers" / "auto_quarantine.py")

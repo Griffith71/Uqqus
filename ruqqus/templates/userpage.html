@@ -134,7 +134,7 @@
 {% endif %}
 {% if u.is_suspended %}
 <p>Banned by: <a href="{{ u.banned_by.permalink}}">@{{ u.banned_by.username }}</a></p>
-<p>Reason: {{ u.ban_reason }}</p>
+{% if u.ban_reason %}<p>Reason: {{ u.ban_reason }}</p>{% endif %}
 {% endif %}
 {% if v.admin_level >=4 %}
 <p>Alts:</p>

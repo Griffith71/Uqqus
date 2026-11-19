@@ -39,8 +39,8 @@ def db():
         log_tables.apply(conn, modactions=True)
         for statement in create_statements("2027-01-05_anon_aliases.sql"):
             conn.execute(text(statement))
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, parent_submission INTEGER, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE forwardrels (id INTEGER PRIMARY KEY, forward_submission_id INTEGER, forwarded_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE comment_forwardrels (id INTEGER PRIMARY KEY, promoted_submission_id INTEGER, promoted_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
@@ -238,3 +238,12 @@ def test_the_staff_columns_and_the_migration_agree():
         table, name = column.split(".")
         assert f"ALTER TABLE public.{table} ADD COLUMN IF NOT EXISTS {name} integer;" in sql, column
     assert "IF NOT EXISTS" in sql and "2027-01-07_alias_actions.sql" in read("schema.sql")
+
+
+def test_an_alias_through_a_guilds_copy_forwarded_by_somebody_else_is_nobodys_to_act_on(db):
+    """C21: a copy keeps the original author's id, but an exile by name reads it as its forwarder's: its author never took part in this guild."""
+    anon_aliases.alias_for(db, ("post", 7), 31)
+    copy = SimpleNamespace(is_anonymous=True, original_board_id=BOARD, author_id=31, id=99, repost_id=7)
+    assert alias_actions.resolve(db, BOARD, copy) == (31, 7, 1)                              # forwarded by its own author: theirs
+    db.execute(text("INSERT INTO forwardrels (forward_submission_id, forwarded_by_id) VALUES (99, 40)"))
+    assert alias_actions.resolve(db, BOARD, copy) is None                                    # forwarded by someone else: the original author took no part here

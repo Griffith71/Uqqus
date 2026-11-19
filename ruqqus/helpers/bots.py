@@ -29,7 +29,7 @@ import re
 import time
 from urllib.parse import urlsplit, urlunsplit
 
-from ruqqus.helpers.i18n_runtime import N_, tr, tr_lazy, trn
+from ruqqus.helpers.i18n_runtime import N_, msg, tr, tr_lazy, trn
 
 PENDING, APPROVED, REJECTED, PAUSED = "pending", "approved", "rejected", "paused"
 STATUSES = (PENDING, APPROVED, REJECTED, PAUSED)
@@ -75,6 +75,9 @@ SEEN_DAYS = 90
 TITLE_MAX = 280                  # helpers/post_fields.TITLE_MAX
 MAX_KEYS = 2                     # bot keys per bot
 STALE_AFTER = 2 * 86400          # an item dated further back than this when first seen is never posted (promos)
+# a member bot or an own account's automated posting stops while its owner is held (the signup guard's hold or an automatic check's: `is_quarantined`).
+# Its own words, so the runner can tell it from a suspended owner's refusal (bot_runner.classify): a hold can be lifted, so the bot waits and the item is kept
+OWNER_HELD = N_("This bot's owner can't run it while their account is on hold.")
 
 # query parameters that only track who clicked; a bot's link drops them (`clean_link`). Narrower than trending's
 # list on purpose: `ref`, `si`, `feature` and `share` change the page on some sites (GitHub's ?ref=), so they stay.
@@ -389,14 +392,16 @@ def retry_wait(header, now=None):
 def post_refusal(bot, owner, posts_today, is_on=None):
     """Why this bot account may not post now, or None. Asked by submit_post for every bot account, whether the post
     comes from the job or from a bot key. `bot` is the `bots` row (status, kind), `owner` the member who runs a member
-    bot (a site bot has none: the site runs it)."""
+    bot (a site bot has none: the site runs it); an owner who is held (`is_quarantined`) can't run one either."""
     if not (enabled() if is_on is None else is_on):
         return tr("Bots are switched off on this site for now.")
     if bot is None or bot.status != APPROVED:
         return tr("This bot is not running.") if bot is not None and bot.status == PAUSED else tr("This bot has not been approved.")
-    if getattr(bot, "kind", MEMBER) in (MEMBER, SELF) and (
-            owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False) or _age_locked(owner)):
-        return tr("This bot's owner can't run it right now.")
+    if getattr(bot, "kind", MEMBER) in (MEMBER, SELF):
+        if owner is None or getattr(owner, "is_deleted", False) or getattr(owner, "is_suspended", False) or _age_locked(owner):
+            return tr("This bot's owner can't run it right now.")
+        if getattr(owner, "is_quarantined", False):
+            return msg(OWNER_HELD)
     if posts_today >= DAILY_CAP:
         return trn("A bot can post at most %(num)s time a day.", "A bot can post at most %(num)s times a day.", DAILY_CAP)
     return None

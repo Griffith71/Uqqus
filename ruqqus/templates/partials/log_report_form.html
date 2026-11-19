@@ -1,0 +1,11 @@
+{# The Log's own Report (helpers/log_reports.py, routes/log_report_pages.py): a signed-in member asks the admins to take down the words of one entry, once per person per entry. One copy, drawn by every page that shows an entry's words (partials/log_rows.html, log_thread.html). The caller decides whether to draw it: only for a signed-in reader and an entry that shows words. #}
+{% macro report_form(entry_id, v) %}
+<details class="text-small mt-1">
+  <summary class="text-muted">{{ _('Report this') }}</summary>
+  <form method="post" action="/log/{{ entry_id }}/report" class="mt-1">
+    <input type="hidden" name="formkey" value="{{ v.formkey }}">
+    <input class="form-control form-control-sm mb-1" name="reason" maxlength="200" required aria-label="{{ _('Why should it come down?') }}" placeholder="{{ _('Why should it come down?') }}">
+    <button class="btn btn-sm btn-outline-secondary" type="submit">{{ _('Send report') }}</button>
+  </form>
+</details>
+{% endmacro %}

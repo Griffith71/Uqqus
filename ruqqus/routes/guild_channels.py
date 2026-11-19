@@ -220,7 +220,7 @@ def _visible_board(guildname, v):
 
 def has_chat(board, v):
     """Whether the guild has channels (the Chat tab): a count, never which channels."""
-    return v is not None and not age_declaration.feature_refusal(v, "chat") and board.can_view(v) and not board.is_banned and store.count(g.db, board.id) > 0
+    return v is not None and not age_declaration.feature_refusal(v, "chat") and not v.is_quarantined and board.can_view(v) and not board.is_banned and store.count(g.db, board.id) > 0
 
 
 app.jinja_env.globals.update(guild_has_chat=has_chat)
@@ -232,6 +232,7 @@ app.jinja_env.globals.update(guild_has_chat=has_chat)
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def guild_channels_list(guildname, v):
     board = _visible_board(guildname, v)
     rows = store.of_board_for(g.db, board.id, v.id)
@@ -242,7 +243,7 @@ def guild_channels_list(guildname, v):
 @auth_desired
 def guild_chat(guildname, v):
     board = _visible_board(guildname, v)
-    if v is not None and age_declaration.feature_refusal(v, "chat"):       # the tab is not drawn for them: the address answers as the guild's own page would for a stranger
+    if v is not None and (age_declaration.feature_refusal(v, "chat") or v.is_quarantined):       # a held account has no chat either (helpers/quarantine.py). The tab is not drawn for them: the address answers as the guild's own page would for a stranger
         abort(404)
     if v is None:
         return render_template("guild/chat.html", v=v, b=board, tab="chat", state="signin", channels=[], selected=None)
@@ -279,6 +280,7 @@ def _sync_writers(row):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def guild_channel_join(cid, v):
     """Put the viewer in the channel's room (they open a channel to join it, never all at once when a guild is joined)."""
@@ -332,6 +334,7 @@ def _mentioned(row, board, v, post_id, body, now):
 @is_not_banned
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("channel")
 @validate_formkey
 def guild_channel_message(cid, v):
     """A message, rated and counted here and sent by the site as its writer with the site's signature."""
@@ -429,6 +432,7 @@ def _everyone(row, board, v, post_id, body, now, already):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def guild_channel_mark_read(cid, v):
     _load(cid, v)
@@ -469,6 +473,7 @@ def _sender_map(user_ids, v, board_id=None):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def guild_channel_senders(cid, v):
     """Names for the people who wrote in a channel (?ids=1,2,3, at most 50): only people who wrote in this channel are
     ever answered, so this is no way to look an account up."""
@@ -486,6 +491,7 @@ def guild_channel_senders(cid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("report")
 @validate_formkey
 def guild_channel_report(cid, v):
     row, board = _load(cid, v)
@@ -548,6 +554,7 @@ def _remove_encrypted_message(row, board, v, event_id):
 @app.route("/api/guilds/channels/<int:cid>/remove", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("moderate")
 @validate_formkey
 def guild_channel_remove(cid, v):
     """A guildmaster with the content permission removes a message from the channel's page."""
@@ -571,6 +578,7 @@ def _visible_text(body, severity, v):
 @app.route("/api/guilds/channels/<int:cid>/pin", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("moderate")
 @validate_formkey
 def guild_channel_pin(cid, v):
     """A guildmaster with the content permission pins a message (or takes the pin off with on=0): at most MAX_PINS."""
@@ -600,6 +608,7 @@ def guild_channel_pin(cid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def guild_channel_pins(cid, v):
     """The pinned messages, for this viewer (their word filter, their blocks and mutes)."""
     _load(cid, v)
@@ -620,6 +629,7 @@ def guild_channel_pins(cid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def guild_channel_mute_for_me(cid, v):
     """Your own mute of a channel: no unread dot, no mention notifications, for hours (1, 8, 24), -1 until you turn it
@@ -638,6 +648,7 @@ def guild_channel_mute_for_me(cid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def guild_channel_accept_rules(cid, v):
     """Accept the channel's rules as they are now (a channel that asks for it): change them and everyone is asked again."""
@@ -654,6 +665,7 @@ def guild_channel_accept_rules(cid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def guild_channel_search(cid, v):
     """Messages in this channel with every word in them (?q=), newest first, among those whose text is still kept
     (KEEP_TEXT_DAYS). A rated message their word filter hides, a removed one, and anything by someone they muted or

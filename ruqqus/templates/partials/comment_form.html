@@ -41,6 +41,7 @@
         {{ post_options.disclosure_toggles("comment-disc-" ~ p.fullname, false, false, true, p.is_anonymous and v and v.id == p.author_id and not anon_hidden(p, v), p.is_anonymous and v and v.id == p.author_id and not anon_hidden(p, v) and not v.qr_limited) }}
         <a id="save-comment-on-{{ p.fullname }}" href="javascript:void(0)" form="comment-on-{{ p.fullname }}" class="btn btn-primary text-whitebtn ml-auto" onclick="post_comment('{{ p.fullname }}')">{{ pgettext('button', 'Comment') }}</a>
       </div>
+      {{ post_options.disclosure_hints("comment-disc-" ~ p.fullname, false, false, true, p.is_anonymous and v and v.id == p.author_id and not anon_hidden(p, v), p.is_anonymous and v and v.id == p.author_id and not anon_hidden(p, v) and not v.qr_limited) }}
     </form>
   </div>
   {% endif %}

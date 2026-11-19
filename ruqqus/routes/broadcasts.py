@@ -104,6 +104,7 @@ def channel_json(channel, me, v):
 @is_not_banned
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("channel")
 @validate_formkey
 def broadcast_create(v):
     try:
@@ -135,6 +136,7 @@ def broadcast_create(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def broadcasts_following(v):
     """The Channels tab's "From people you follow": public channels of accounts v follows that v is not in, never an
     account in a block with v either way, a deleted one, or one whose name v's filter hides. Not a directory."""
@@ -149,6 +151,7 @@ def broadcasts_following(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def broadcasts_popular(v):
     """The Channels tab's directory: the public channels most people are in, that v is not in, never one whose owner is in
     a block with v either way or deleted, or whose name (or owner's name) v's filter hides. Finding one by name is the
@@ -170,6 +173,7 @@ def broadcasts_popular(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def broadcast_info(bid, v):
     channel, me = _channel(bid, v, member_only=False)
     return jsonify(channel_json(channel, me, v))
@@ -179,6 +183,7 @@ def broadcast_info(bid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def broadcast_join(bid, v):
     channel = channel_store.get(g.db, bid)
@@ -226,6 +231,7 @@ def _sync_writers(channel):
 @app.route("/api/broadcasts/<int:bid>/helpers", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("channel")
 @validate_formkey
 def broadcast_helpers(bid, v):
     channel, me = _channel(bid, v)
@@ -251,6 +257,7 @@ def broadcast_helpers(bid, v):
 @is_not_banned
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("channel")
 @validate_formkey
 def broadcast_message(bid, v):
     """A public channel's message: rated, counted and sent by the site as its writer. A channel for circles is written
@@ -315,6 +322,7 @@ def broadcast_mark_read(bid, v):
 @app.route("/api/broadcasts/<int:bid>/report", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("report")
 @validate_formkey
 def broadcast_report(bid, v):
     channel, me = _channel(bid, v)

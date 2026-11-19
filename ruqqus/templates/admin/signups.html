@@ -11,7 +11,7 @@
 
 <h1>Sign-ups</h1>
 
-<p class="text-muted">The signup guard (helpers/signup_risk.py) refuses a sign-up on a hard sign of a bot, holds one whose soft signs add up to the threshold, and lets the rest through. A held account can read and change its settings but can't post, comment, vote, follow, tip, report or start a chat until you approve it here or it verifies an email that isn't a throwaway. Nothing here names an address: a network is a keyed hash of its /24 or /64.</p>
+<p class="text-muted">The signup guard (helpers/signup_risk.py) refuses a sign-up on a hard sign of a bot, holds one whose soft signs add up to the threshold, and lets the rest through. A held account can read and change its settings but can't post, comment, vote, follow, tip, report or use chat or calls until you approve it here or it verifies an email that isn't a throwaway. Nothing here names an address: a network is a keyed hash of its /24 or /64.</p>
 
 {% if msg %}<div class="alert alert-success py-2" role="status">{{ msg }}</div>{% endif %}
 

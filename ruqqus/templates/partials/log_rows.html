@@ -1,4 +1,5 @@
 {# the lines of a Log page (log.html, log_about.html): `rows` from routes/log_pages.py. A sentence is Markup built from escaped parts. #}
+{% from "partials/log_report_form.html" import report_form %}
   <div class="log-list">
   {% for e in rows %}
     <div class="card mb-2 p-3 log-entry" id="log-{{ e.id }}">
@@ -43,16 +44,7 @@
           </div>
           {% elif e.type == 'deletion' %}<div class="text-small text-muted mt-1">{{ _("What it said isn't shown here.") }}</div>{% endif %}
           {% if e.can_open %}<div class="text-small mt-1"><a href="/log/{{ e.id }}/copy" rel="nofollow">{{ _('Open the preserved copy') }}</a></div>{% endif %}
-          {% if e.can_report and v %}
-          <details class="text-small mt-1">
-            <summary class="text-muted">{{ _('Report this') }}</summary>
-            <form method="post" action="/log/{{ e.id }}/report" class="mt-1">
-              <input type="hidden" name="formkey" value="{{ v.formkey }}">
-              <input class="form-control form-control-sm mb-1" name="reason" maxlength="200" required aria-label="{{ _('Why should it come down?') }}" placeholder="{{ _('Why should it come down?') }}">
-              <button class="btn btn-sm btn-outline-danger" type="submit">{{ _('Send report') }}</button>
-            </form>
-          </details>
-          {% endif %}
+          {% if e.can_report and v %}{{ report_form(e.id, v) }}{% endif %}
         </div>
       </div>
     </div>

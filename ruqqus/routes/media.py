@@ -602,10 +602,10 @@ def media_upload_complete(aid, v):
                 asset.width, asset.height = safety.image_size(temp)
                 match = safety.banned_match(g.db, temp)
                 if match is not None:
-                    # a picture on the site's banned list: same consequence as the old upload path, but a limited QR sign-in
-                    # is only refused (helpers/qr_login.py)
+                    # a picture on the site's banned list: the uploader and their alts are put on hold (helpers/auto_quarantine.py: an admin
+                    # decides what follows), but a limited QR sign-in is only refused (helpers/qr_login.py)
                     if not v.qr_limited:
-                        safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)
+                        safety.quarantine_uploader(g.db, v, match.ban_reason)
                     _set_status(asset, rules.REMOVED)
                     g.db.commit()
                     return _error(tr("That image is not allowed here."), 403)

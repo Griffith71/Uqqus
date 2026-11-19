@@ -10,7 +10,8 @@ from migration 2026-12-09_action_log.sql (tests/test_action_log.py); no ORM mode
   0 PUBLIC  anyone (a visitor included), by the public log (`/log`) and a public guild's own log
   1 GUILD   that guild's members (`Board.can_view`'s: contributors, accepted guildmasters, invited ones) and the staff:
             a private or Circle guild's own entries, so they never reach the public log and the guild is never named
-  2 STAFF   admins (level 3): ban evasion, alt bans, a display name cleared, a forced sensitive mark, an age answer
+  2 STAFF   admins (level 3): ban evasion, alt bans, a display name cleared, a forced sensitive mark, an age answer, the entry that names an account an
+            automatic check quarantined (its public line, `automatic_quarantine`, names nobody: helpers/auto_quarantine.py)
   3 LEGAL   level-4 admins only: illegal content (CSAM), the details of an obliteration
 An entry keeps the audience it was written with: a guild that goes public later does not publish what happened while it
 was private.
@@ -78,14 +79,20 @@ _CONTENT = {
     "remove_story", "hide_revision",
 }
 # staff-only entries about a person: sanctions in kind, never public
-_STAFF_SANCTIONS = {"admin_alt_link", "admin_ip_ban", "admin_signup", "automatic_hold", "age_lock", "possible_probing", "collab_alias_removal"}
+_STAFF_SANCTIONS = {"admin_alt_link", "admin_ip_ban", "admin_signup", "automatic_hold", "age_lock", "possible_probing", "collab_alias_removal",
+                    "quarantine_user", "unquarantine_user"}
+# a quarantine an automatic check placed (helpers/auto_quarantine.py): the staff's entry names the account, the trigger and the detail; the PUBLIC line beside it names
+# no account, no item and no guild (the owner, 2026-11-17, option B), and is written for every trigger but ban-evasion detection, which stays staff-only because a public
+# line would teach how alts are caught
+QUARANTINE_ACTIONS = ("quarantine_user", "unquarantine_user")
+AUTOMATIC_QUARANTINE_ACTIONS = ("automatic_quarantine", "automatic_quarantine_lifted")
 # an action on an alias ("Anonymous #3", helpers/alias_actions.py): an exile or a chat mute whose subject is a number in a thread, never an account. Its entry
 # carries the number (`alias_n`, public: it is on the item already) and, for the staff and the appeal alone, the account (`subject_user_id`)
 ALIAS_ACTIONS = ("exile_alias", "unexile_alias", "chatban_alias", "unchatban_alias")
 _SANCTION = {
     "exile_user", "unexile_user", "chatban_user", "unchatban_user", "exile_alias", "unexile_alias", "chatban_alias", "unchatban_alias", "suspend_user", "unsuspend_user", "ban_user",
     "unban_user", "ban_guild", "unban_guild", "clear_display_name", "force_sensitive_user", "age_declaration",
-    "child_removed_with_parent",
+    "child_removed_with_parent", "automatic_quarantine", "automatic_quarantine_lifted",
 } | _STAFF_SANCTIONS
 _SUPPRESSION = {"suppress_content"}
 _DELETION = {"author_delete_post", "author_delete_comment"}      # a member's own delete after the grace window (helpers/deletion.py)
@@ -97,7 +104,7 @@ ACCOUNT_ACTIONS = {"suspend_user", "unsuspend_user", "ban_user", "unban_user"}  
 # (the owner's default for the sweep of 2026-11-05, which he can open up or narrow): a community note is the site's own words
 # under a post, and an admin's removal of a message in a public channel or a Space's board is a removal like any other
 PUBLIC_ACTIONS = {"remove_broadcast_message", "remove_space_message", "end_space", "community_note_add", "community_note_replace",
-                  "community_note_remove"}
+                  "community_note_remove", "automatic_quarantine", "automatic_quarantine_lifted"}
 # What the site's staff do to run it: its defences, the people it holds back, its lists and its bots. Never the public's business
 # (an entry about an IP ban, an alt link or a word-list edit would teach how they are caught); staff read them on /admin/log.
 # The specifics are in `staff_note`, never in a column the public reads.
@@ -105,10 +112,10 @@ RUNNING_ACTIONS = {
     "admin_badge", "admin_alt_link", "admin_ip_ban", "admin_image_ban", "admin_image_purge", "admin_word_filter", "admin_app",
     "admin_trending", "admin_feed_server", "admin_bot", "admin_signup", "admin_throttle", "admin_chat_report", "admin_siege",
     "admin_domain", "redact_entry", "correct_entry", "automatic_hold", "auto_space_takedown", "age_lock", "admin_evidence",
-    "remove_chat_message",
+    "remove_chat_message", "admin_nuke",
 }
 STAFF_ACTIONS = {"chat_keys_reset", "clear_display_name", "force_sensitive_user", "force_sensitive_post", "child_removed_with_parent",
-                 "remove_story", "age_declaration", "possible_probing", "collab_alias_removal"} | RUNNING_ACTIONS
+                 "remove_story", "age_declaration", "possible_probing", "collab_alias_removal", "quarantine_user", "unquarantine_user"} | RUNNING_ACTIONS
 LEGAL_ACTIONS = {"suppress_content"}
 
 # Actions that must say why (Wikipedia's reason): **every one is refused with no reason by the route that makes it** (a reason box the person
@@ -229,6 +236,21 @@ def _is_anonymous(db, post_id=None, comment_id=None):
     return False
 
 
+def _is_for_circles(db, post_id=None, comment_id=None):
+    """Is this post (or the post this comment is under) a post for circles (audience 4)? Everything decided about one, an author's hide of a comment
+    under it, a community note, an admin's removal, a hidden version, is the staff's alone, as its edit and delete already were: it is a profile post (a
+    public board), so by the board it would be public, and it carries the author's own words (the second review, C59)."""
+    if post_id:
+        row = db.execute(text("SELECT audience FROM submissions WHERE id = :i"), {"i": post_id}).first()
+        if row is not None:
+            return (row[0] or 0) == 4
+    if comment_id:
+        row = db.execute(text("SELECT s.audience FROM comments c JOIN submissions s ON s.id = c.parent_submission WHERE c.id = :i"), {"i": comment_id}).first()
+        if row is not None:
+            return (row[0] or 0) == 4
+    return False
+
+
 def snapshot_of(item, board_id=None, legal_hold=False, comment=False, kind=None, hider_id=None, public=False, sensitive=False):
     """What to keep of a post or comment (a Submission or a Comment, or a stand-in with the same attributes). `kind` says what
     the copy is of (`SNAPSHOT_KINDS`; a legal hold is `legal`, anything else a guild's `hide` unless the caller says);
@@ -319,6 +341,55 @@ def rescan_severities(db, rate_text, batch=500):
     return changed
 
 
+def rescan_snapshot_severities(db, rate_text, rate_html, poll_text=None, batch=200, commit_each=False, log=None):
+    """Re-rate the Log's kept copies of items with the live list (`word_filter_store.rescan`): a `delete` copy is public and never expires,
+    and the reader's word filter hides or shows its words by the rating it was kept with (`deleted_texts`, `deletion.text_view`), so a list
+    that has changed since would otherwise leave a permanent public copy rated by the list of the day it was written. Every copy that still
+    holds words is read again, in the way the item itself is rated (`word_filter_store.post_severity` / `apply_comment_severity`): a post's
+    title (stored escaped) and text, with the options of its poll when `poll_text(db, post ids) -> {post id: text}` is given; a comment's
+    text. `rate_text` and `rate_html` are the filter's `severity` and `severity_html`.
+
+    A scrubbed copy is skipped (it holds no words and `scrub_for` / `SCRUB_DUE` zeroed its rating), and the write is guarded by
+    `scrubbed_utc = 0` so a purge that lands between the read and the write is not given a rating again. The keyset on `id` reads `batch`
+    rows at a time, so no statement is large, and `commit_each` commits after every batch (short locks, and a stopped run is simply run
+    again: an unchanged rating is not written). Without it nothing here commits. Returns how many ratings changed."""
+    changed = checked = last = 0
+    while True:
+        rows = db.execute(text(
+            "SELECT id, target_submission_id, target_comment_id, title, body_html, word_severity FROM log_snapshots "
+            "WHERE id > :last AND scrubbed_utc = 0 ORDER BY id LIMIT :n"), {"last": last, "n": int(batch)}).all()
+        if not rows:
+            break
+        extras = {}
+        if poll_text:
+            post_ids = sorted({r[1] for r in rows if r[1] and not r[2]})
+            extras = poll_text(db, post_ids) if post_ids else {}
+        for snapshot_id, post_id, comment_id, title, body_html, stored in rows:
+            if comment_id and not post_id:
+                rated = int(rate_html(body_html or "") or 0) if body_html else 0
+            else:
+                extra = extras.get(post_id) or ""
+                rated = max(int(rate_text(html.unescape(title)) or 0) if title else 0,
+                            int(rate_html(body_html) or 0) if body_html else 0,
+                            int(rate_text(extra) or 0) if extra else 0)
+            if rated != (stored or 0):
+                changed += db.execute(text("UPDATE log_snapshots SET word_severity = :s WHERE id = :i AND scrubbed_utc = 0 AND word_severity <> :s"),
+                                      {"s": rated, "i": snapshot_id}).rowcount or 0
+        last = rows[-1][0]
+        checked += len(rows)
+        if commit_each:
+            db.commit()
+        if log:
+            log(f"Log copies: {checked} checked")
+    return changed
+
+
+def floor_entry(db, entry_id, floor):
+    """Narrow an entry's audience to at least `floor` (never widen it): a reversal is no more public than the decision it reverses."""
+    if entry_id and floor:
+        db.execute(text("UPDATE log_entries SET audience = CASE WHEN audience < :f THEN :f ELSE audience END WHERE id = :e"), {"f": int(floor), "e": int(entry_id)})
+
+
 def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=None, comment_id=None, rule=None,
            reason="", staff_note="", snapshot=None, role=None, note="", floor=PUBLIC, require_reason=False, now=None,
            legacy_id=None, created_utc=None, notice_sent=False, until_utc=0, linked_entry_id=None):
@@ -332,6 +403,8 @@ def record(db, action, actor_id, *, board_id=None, target_user_id=None, post_id=
     resolved = role_of(actor_id, _admin_level(db, actor_id), note, role)
     audience = audience_for(action, board_id=board_id, private=_board_is_private(db, board_id), note=note, floor=floor,
                             trusted=resolved in (ADMIN, SYSTEM))
+    if (post_id or comment_id) and audience < STAFF and _is_for_circles(db, post_id, comment_id):
+        audience = STAFF
     if target_user_id and (post_id or comment_id) and _is_anonymous(db, post_id, comment_id):
         # an entry never pairs an account with an anonymous item (an exile citing it would say who wrote it, and the
         # account's own log and the `to=` filter list it): the exile stays, the pointer to the item does not (H6)
@@ -585,17 +658,25 @@ def fetch(db, *, level=0, member_boards=(), log_type=None, board_id=None, actor_
           rule=None, action=None, before_id=None, limit=50, open_guilds_only=None, scope=None, offset=0):
     """A page of entries, newest first, for a reader with this `level`: (rows, has_more). The staff-only columns come
     only for staff; an admin entry's actor_id is left out for everyone else. `open_guilds_only` leaves out entries of a guild
-    that has since gone private or become a Circle guild: **on unless the reader is staff or the caller names the guilds the
-    reader belongs to** (`member_boards`, a guild's own view) when left at None, because the public page never names such a guild
-    and a caller that forgot to say so used to publish one; pass False to opt out. `scope` is
+    that has since gone private or become a Circle guild: **on unless the reader is staff** when left at None, because the public
+    page never names such a guild and a caller that forgot to say so used to publish one; pass False to opt out. A reader who
+    belongs to a guild (`member_boards`) still reads that guild's own entries, and ONLY that guild's: passing member boards used
+    to switch the filter off altogether, so a guildmaster of any guild could read what any now-private guild had done (the
+    second review, 2026-11-17, C02). `scope` is
     `about_scope`'s (SQL, params): only the entries about one item or account. `offset` is for a page that merges the entries
     with another list."""
     where, params = visible_clause(level, member_boards)
     clauses = [where]
     if open_guilds_only is None:
-        open_guilds_only = level < 3 and not member_boards
+        open_guilds_only = level < 3
     if open_guilds_only:
-        clauses.append(_OPEN_GUILDS)
+        own = [int(b) for b in member_boards or ()]
+        if own:
+            names = {f"og{i}": b for i, b in enumerate(own)}
+            clauses.append(_OPEN_GUILDS[:-1] + " OR log_entries.board_id IN (" + ", ".join(f":{n}" for n in names) + "))")
+            params.update(names)
+        else:
+            clauses.append(_OPEN_GUILDS)
     if scope:
         clauses.append(scope[0])
         params.update(scope[1])
@@ -823,7 +904,7 @@ def _evidence_unpaired_for(db, snapshot, viewer):
 # --- keeping and scrubbing ----------------------------------------------------------------------------------------------
 
 # the one statement that empties a private copy on its date: `helpers/retention.py` runs it every cycle, `scrub_due` runs it for a test
-SCRUB_DUE = ("UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, scrubbed_utc = :now "
+SCRUB_DUE = ("UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, word_severity = 0, scrubbed_utc = :now "
              "WHERE scrubbed_utc = 0 AND expires_utc > 0 AND expires_utc <= :now")
 
 
@@ -845,34 +926,27 @@ def scrub_for(db, post_ids=(), comment_ids=(), now=None):
         names = {f"i{n}": i for n, i in enumerate(ids)}
         marks = ", ".join(f":{n}" for n in names)
         total += db.execute(text(
-            f"UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, scrubbed_utc = :now "
+            f"UPDATE log_snapshots SET title = NULL, url = NULL, body = NULL, body_html = NULL, word_severity = 0, scrubbed_utc = :now "
             f"WHERE scrubbed_utc = 0 AND {column} IN ({marks})"), {"now": now, **names}).rowcount or 0
     return total
 
 
 def redact(db, entry_id, admin_id, now=None):
     """Hide an entry's reason from everyone but staff (Wikipedia's revision deletion: the entry stays). Level 4 only,
-    which the caller checks."""
+    which the caller checks. This is the entry alone: `correct` also clears the copies of the same words the decision's own pages print
+    (`helpers/reason_copies.py`) and writes the linked staff entry, and is what the routes call."""
     db.execute(text("UPDATE log_entries SET redacted_utc = :now, redacted_by = :by WHERE id = :e AND redacted_utc = 0"),
                {"now": int(now if now is not None else time.time()), "by": admin_id, "e": entry_id})
 
 
 # --- account sanctions: one write point for every ban and unban -----------------------------------------------------------------
 
-# What the site's own code says when it suspends someone (the msgids it passes to `User.ban`): the rule it cites and who may
-# read the entry. Ban-evasion detection is staff-only, so it never teaches anyone how it is spotted; the one about minors is
-# for level-4 admins only.
+# What the site's own code says when it suspends someone (the msgids it passes to `User.ban` with no admin): the rule it cites and who may read the entry.
+# **The site's own checks no longer ban or suspend anyone** (the owner, 2026-11-17: the spam guard, banned links, the SEO-spam check, ban-evasion detection and the
+# image checks QUARANTINE an account, helpers/auto_quarantine.py, whose reasons are `TRIGGERS`' own), so the old reasons of those bans are gone from here. What is left is
+# the one automatic suspension that is not a check: a child account suspended with its parent. `tests/test_action_log_assets.py` keeps this list equal to the reasons
+# the code still gives, so a stale entry fails as a missing one does.
 AUTOMATIC_REASONS = {
-    "Sexualizing minors": ("illegal", LEGAL),
-    "Digitally malicious content": ("illegal", PUBLIC),
-    "Digitally malicious content is not allowed.": ("illegal", PUBLIC),
-    "Engaging in illegal activity": ("illegal", PUBLIC),
-    "Spamming.": ("evasion", PUBLIC),
-    "spam": ("evasion", PUBLIC),
-    "seo spam": ("evasion", PUBLIC),
-    "Evading a site-wide ban": ("evasion", STAFF),
-    # what an image check says of itself: no category, since a match can be a false positive (the owner, decision 1)
-    "Automatic image check": ("illegal", PUBLIC),
     # a child account suspended with its parent (helpers/child_accounts.SUSPENDED_REASON): a public line would say it has a parent
     "This account is suspended.": ("", STAFF),
 }
@@ -881,11 +955,17 @@ _log = logging.getLogger(__name__)
 
 def note_failure(db, action, error):
     """Count an entry the Log could not write (the action itself stood): a row in `log_failures`, in a savepoint of its own so it
-    can't undo anything, which /admin and /admin/log show. A database too sick to take the row is only logged."""
+    can't undo anything, which /admin and /admin/log show. A database too sick to take the row is only logged.
+
+    **Only the first line of the error is kept, with no email or address in it** (`error_tracking.clean_text`): a database error's later lines (Postgres's
+    `DETAIL: Failing row contains (...)`, SQLAlchemy's `[SQL: ...]` and `[parameters: ...]`) hold what someone wrote and their account number, and this
+    table has no owner to delete them with. The callers log the whole error and its traceback themselves."""
+    from ruqqus.helpers.error_tracking import clean_text
+    kept = clean_text(str(error).split("\n", 1)[0])
     try:
         with db.begin_nested():
             db.execute(text("INSERT INTO log_failures (created_utc, action, detail) VALUES (:now, :action, :detail)"),
-                       {"now": int(time.time()), "action": str(action or "")[:32], "detail": str(error)[:300]})
+                       {"now": int(time.time()), "action": str(action or "")[:32], "detail": kept[:300]})
     except Exception:
         _log.exception("the Log could not even note that %s failed", action)
 
@@ -957,6 +1037,7 @@ def record_quietly(db, *args, **kwargs):
 AUTOMATIC_REASON = "Automatic check"                  # the one generic wording of a public entry the site wrote itself
 AUTOMATIC_IMAGE_REASON = "Automatic image check"      # an image check never says what it matched: it can be wrong (the owner, decision 1)
 AUTOMATIC_SPAM_REASON = "Automatic spam check"
+AUTOMATIC_LINK_REASON = "Automatic link check"            # a banned domain or a malicious link: the category stays with the staff (the owner, 2026-11-17)
 
 
 def record_automatic(db, action, *, target_user_id=None, post_id=None, comment_id=None, board_id=None, rule="evasion",
@@ -1038,9 +1119,24 @@ def lapse_due(db, now=None, limit=200, told=None):
 
 def correct(db, entry_id, admin, what):
     """Hide an entry's reason from everyone but staff (`redact`) and say so in a new, linked staff entry: the entry stays and is
-    never edited, and the correction has a name and a date (the owner's rule of 2026-11-05: a correction is a new entry)."""
+    never edited, and the correction has a name and a date (the owner's rule of 2026-11-05: a correction is a new entry).
+
+    **The same words are cleared from where else the decision's own pages print them** (`helpers/reason_copies.py`, the second review's C48): the
+    guild's own mod-log note, the removed or hidden item's reason, the banned account's and guild's, the exile list's and the hide's history rows,
+    each only while it is still that decision's (a later one is left alone) and without changing what the decision did. The staff note says
+    which were cleared and which could not be; a copy that fails is counted and never undoes the redaction. The entry's own `reason` is
+    never edited: staff still read it."""
     redact(db, entry_id, admin.id)
-    return record_quietly(db, "redact_entry", admin.id, role=ADMIN, staff_note=what, floor=STAFF, linked_entry_id=entry_id)
+    from ruqqus.helpers import reason_copies           # not at the top: it reads this module's rules
+    try:
+        with db.begin_nested():                         # each copy has its savepoint inside; this one is for the reading of the entry itself
+            cleared, failed = reason_copies.scrub(db, entry_id)
+    except Exception as error:
+        _log.exception("the reason of entry %s could not be cleared from its other copies", entry_id)
+        note_failure(db, "reason_copy", error)
+        cleared, failed = [], ["every other copy"]
+    return record_quietly(db, "redact_entry", admin.id, role=ADMIN, staff_note=reason_copies.describe(what, cleared, failed), floor=STAFF,
+                          linked_entry_id=entry_id)
 
 
 def record_ban(db, user_id, actor_id, *, days=0, reason="", rule=None, staff_note="", floor=PUBLIC, automatic=False,

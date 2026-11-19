@@ -25,8 +25,8 @@ def db():
         for statement in log_tables.migration_statements((ROOT / "scripts" / "migrations" / "2026-12-09_action_log.sql").read_text(encoding="utf-8")):
             conn.execute(text(statement))
         log_tables.apply(conn, modactions=True)
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, parent_submission INTEGER, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE forwardrels (id INTEGER PRIMARY KEY, forward_submission_id INTEGER, forwarded_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE comment_forwardrels (id INTEGER PRIMARY KEY, promoted_submission_id INTEGER, promoted_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0, creator_id INTEGER)"))
@@ -248,3 +248,90 @@ def test_a_guilds_ban_is_each_heads_to_appeal_once_and_the_sites_admins_decide_i
     assert appeals.is_undone(db, entry) is False
     log.record(db, "unban_guild", 20, board_id=3, role="admin", now=NOW + 1)
     assert appeals.is_undone(db, entry) is True
+
+
+# --- the second review (2026-11-17) --------------------------------------------------------------------------------------------------------------
+
+def test_the_person_who_appealed_does_not_count_as_another_who_could_decide_it(db):
+    """C10: the appellant was counted as a colleague who could decide, so the one who made the decision was kept from deciding and the appellant (a guildmaster)
+    could decide their own appeal."""
+    entry = hide_post(db, post=7, actor=10)                                # guildmaster 10 hid post 7 of +3; guildmaster 11 (access) and 10 (content) lead it
+    db.execute(text("UPDATE mods SET perm_content = 1 WHERE user_id = 11"))
+    appeal = {"actor_id": 10, "board_id": 3, "action": "hide_post_from_guild", "user_id": 11}
+    assert appeals.conflicted(db, appeal, 10) is False                      # the only other guildmaster who could decide is the appellant
+    assert appeals.conflicted(db, {**appeal, "user_id": 30}, 10) is True    # with someone else appealing, 11 could decide it, so 10 may not
+    assert entry
+
+
+def test_a_guilds_ban_is_a_level_four_decision_so_level_three_admins_are_not_others_who_could_decide_it(db):
+    """C11."""
+    db.execute(text("UPDATE users SET admin_level = 4 WHERE id = 21"))
+    ban = {"actor_id": 21, "board_id": None, "action": "ban_guild", "user_id": 12}
+    assert appeals.other_admins(db, 21, level=4) == 0 and appeals.conflicted(db, ban, 21) is False       # 20 is level 3: it could not decide a guild's ban
+    assert appeals.conflicted(db, {**ban, "action": "ban_user", "actor_id": 21}, 21) is True             # for any other decision 20 could
+
+
+def test_a_reversal_is_as_private_as_the_decision_it_reverses(db):
+    """C12."""
+    legal = log.record(db, "ban_user", 20, target_user_id=31, role=log.ADMIN, floor=log.LEGAL, now=NOW)
+    reversal = log.record(db, "unban_user", 20, target_user_id=31, role=log.ADMIN, linked_entry_id=legal, now=NOW)
+    assert db.execute(text("SELECT audience FROM log_entries WHERE id = :e"), {"e": reversal}).scalar() == log.PUBLIC
+    log.floor_entry(db, reversal, 3)
+    assert db.execute(text("SELECT audience FROM log_entries WHERE id = :e"), {"e": reversal}).scalar() == log.LEGAL
+    log.floor_entry(db, reversal, 0)
+    log.floor_entry(db, reversal, 1)
+    assert db.execute(text("SELECT audience FROM log_entries WHERE id = :e"), {"e": reversal}).scalar() == log.LEGAL      # never widened
+
+
+def test_the_count_beside_the_site_queue_counts_what_the_reader_may_decide_and_no_more(db):
+    """The review of 2026-11-18: /admin said "N waiting" for every open site-queue appeal, a legal-level quarantine appeal (a link about minors) included, while the
+    queue itself left it out for a level 3 admin: the number said an appeal existed that the page then hid, which is what the legal audience keeps from them."""
+    plain = appeals.file_appeal(db, log.record_ban(db, 31, 20, days=0, reason="x"), 31, "no", now=NOW)
+    legal_entry = log.record(db, "quarantine_user", 1, role=log.SYSTEM, target_user_id=30, rule="illegal", reason="Automatic link check",
+                             staff_note="link_minors | the domain's reason", floor=log.LEGAL, now=NOW)
+    legal = appeals.file_appeal(db, legal_entry, 30, "Not about minors.", now=NOW)
+    guild_ban = appeals.file_appeal(db, log.record(db, "ban_guild", 21, board_id=3, role=log.ADMIN, reason="x", now=NOW), 12, "Unfair.", now=NOW)
+    guild_hide = appeals.file_appeal(db, hide_post(db), 30, "no", now=NOW)                  # a guild's own queue, never the site's
+    assert appeals.entry_of(db, legal_entry)["audience"] == log.LEGAL
+    assert appeals.board_for(db, appeals.entry_of(db, legal_entry)) is None and plain and legal and guild_ban and guild_hide
+    # the count follows the queue's own rule: level 3 reads one of the three, level 4 all three; nobody below level 3 is read wider than level 3
+    assert appeals.waiting_count(db, None, level=3) == 1 and appeals.waiting_count(db, None, level=4) == 3
+    assert appeals.waiting_count(db) == 1 and appeals.waiting_count(db, None, level=None) == 1 and appeals.waiting_count(db, None, level="x") == 1
+    assert appeals.waiting_count(db, None, level=0) == 1 and appeals.waiting_count(db, None, level=5) == 3
+    # nobody decides their own appeal, so it is not on their queue and not in their number
+    assert appeals.waiting_count(db, None, level=3, viewer_id=31) == 0 and appeals.waiting_count(db, None, level=4, viewer_id=31) == 2
+    assert appeals.waiting_count(db, None, level=4, viewer_id=30) == 2 and appeals.waiting_count(db, None, level=4, viewer_id=12) == 2
+    assert appeals.waiting_count(db, None, level=4, viewer_id=20) == 3                         # an admin who appealed nothing loses none
+    # a guild's number is its own and is unchanged by any of it
+    assert appeals.waiting_count(db, 3) == 1
+
+
+def test_the_count_and_the_queue_agree_for_every_level_and_viewer(db):
+    """One rule, `may_decide_site`: the queue's rows and the count are the same set (the route filters `open_queue` with it, the count asks it in SQL)."""
+    ids = [appeals.file_appeal(db, log.record_ban(db, 31, 20, days=0, reason="x"), 31, "no", now=NOW),
+           appeals.file_appeal(db, log.record(db, "quarantine_user", 1, role=log.SYSTEM, target_user_id=30, staff_note="link_minors | x", floor=log.LEGAL, now=NOW),
+                               30, "legal", now=NOW),
+           appeals.file_appeal(db, log.record(db, "quarantine_user", 1, role=log.SYSTEM, target_user_id=32, staff_note="spam | x", floor=log.STAFF, now=NOW),
+                               32, "staff", now=NOW),
+           appeals.file_appeal(db, log.record(db, "ban_guild", 21, board_id=3, role=log.ADMIN, reason="x", now=NOW), 12, "guild", now=NOW)]
+    assert len(set(ids)) == 4
+    for level in (None, 0, 3, 4):
+        for viewer in (None, 20, 30, 31, 32, 12):
+            queue = [a for a in appeals.open_queue(db, None)
+                     if appeals.may_decide_site(a["action"], a["entry_audience"], level) and a["user_id"] != viewer]
+            assert appeals.waiting_count(db, None, level=level, viewer_id=viewer) == len(queue), (level, viewer)
+    assert appeals.may_decide_site("ban_user", log.LEGAL, 3) is False and appeals.may_decide_site("ban_user", log.LEGAL, 4) is True
+    assert appeals.may_decide_site("ban_guild", log.PUBLIC, 3) is False and appeals.may_decide_site("ban_guild", log.PUBLIC, 4) is True
+    assert appeals.may_decide_site("ban_user", log.STAFF, 3) is True and appeals.may_decide_site("ban_user", None, None) is True
+
+
+def test_the_admin_page_asks_the_count_as_the_admin_it_is_drawn_for_and_the_queue_uses_the_same_rule():
+    route = (ROOT / "ruqqus" / "routes" / "log_appeal_pages.py").read_text(encoding="utf-8")
+    assert "return log_appeals.may_decide_site(appeal[\"action\"], appeal.get(\"entry_audience\"), v.admin_level)" in route
+    counter = route.split("def waiting_for_admins(", 1)[1].split("\ndef ", 1)[0]
+    assert 'viewer if viewer is not None else getattr(g, "v", None)' in counter
+    assert 'level=getattr(viewer, "admin_level", 0), viewer_id=getattr(viewer, "id", None)' in counter
+    assert "log_appeals.waiting_count(g.db, None)" not in route                      # the old count of every open appeal, legal ones included
+    # the queue itself still leaves out a reader's own appeal and what they may not decide
+    queue = route.split("def admin_appeals(", 1)[1].split("\ndef ", 1)[0]
+    assert "_may_decide_site(a, v) and a[\"user_id\"] != v.id" in queue

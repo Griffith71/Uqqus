@@ -12,9 +12,9 @@
 <h1>Ban evidence waiting for a second admin</h1>
 <p>When an admin bans or suspends an account they may cite the posts and comments that justify it. Once a <strong>different admin</strong> approves, the
 Log names the account for those items (its lines about them draw the author instead of Anonymous) and the ban's line lists them. Everywhere else the
-items stay anonymous. Declining, or leaving it, publishes nothing, and reversing the ban takes the names back. The only exception to "a different admin"
+items stay anonymous. Declining, or leaving it, publishes nothing, and reversing the ban before it is approved drops it. The only exception to "a different admin"
 is the owner (level 4) when no other admin exists; that is recorded as a sole-admin approval. Public: what you approve here is public for ever in the
-Log until the ban is reversed, so check that the items really show what the ban says.</p>
+Log, even if the ban is reversed later, so check that the items really show what the ban says.</p>
 {% if msg %}<div class="alert alert-info" role="status">Done: {{ msg }}.</div>{% endif %}
 
 {% for w in waiting %}

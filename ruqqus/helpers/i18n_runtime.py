@@ -299,6 +299,13 @@ def _same_values(text, original, optional=()):
         all(n in want for n in have)
 
 
+def _same_markdown(text, original):
+    """A translated notice keeps the English's markdown STRUCTURE where the English draws a person's words in a fenced block or a link: the fence is what
+    stops a guildmaster's free-text reason becoming a link or markdown of its own, and a translation that dropped it (collapsed to inline code or to a
+    paragraph, as 41 machine translations of the Log's notices had) would put that text through the linker (the second review, C62)."""
+    return (text or "").count("```") == (original or "").count("```") and (text or "").count("](") == (original or "").count("](")
+
+
 def _format(text, original, params, optional=()):
     params.setdefault("site", site_name())
     if not _same_values(text, original, optional):
@@ -439,7 +446,7 @@ def notice_html(comment, render=None):
     except ValueError:
         return comment.body_html
     translated = translations(key).gettext(msgid)
-    if not _same_values(translated, msgid):
+    if not _same_values(translated, msgid) or not _same_markdown(translated, msgid):
         return comment.body_html
     try:
         text = translated % values

@@ -218,10 +218,10 @@ def test_every_save_point_attaches_and_then_scans():
             assert chunk.index("g.db.commit()") < chunk.index("media_safety.scan_later(attached_media)"), path
 
 
-def test_a_banned_picture_is_refused_at_upload_with_the_old_consequence():
+def test_a_banned_picture_is_refused_at_upload_and_its_uploader_put_on_hold():
     complete = ROUTES[ROUTES.index("def media_upload_complete("):ROUTES.index("def media_dev_upload(")]
     assert "safety.banned_match(g.db, temp)" in complete
-    assert "safety.ban_uploader(g.db, v, match.ban_reason, match.ban_time or 0)" in complete
+    assert "safety.quarantine_uploader(g.db, v, match.ban_reason)" in complete and "ban_uploader" not in complete and "ban_time" not in complete
     assert complete.index("safety.banned_match(") < complete.index("_set_status(asset, rules.READY)")
 
 

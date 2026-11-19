@@ -2,8 +2,8 @@
 
 The promises: only the banned account's own items can be cited, and never one with a legal-level record, one erased inside the grace window or one in a
 private place (those are counted, not listed); nothing shows until a different admin approves, except the level-4 owner who is the only admin; a
-declined or unapproved reveal never shows; reversing the ban withdraws it; pointer-stripping never touches the evidence, so deleting the account or
-taking your name off afterwards doesn't undo it; and what the Log draws is the author's username only for an item that is cited, approved and not withdrawn."""
+declined or unapproved reveal never shows; reversing the ban keeps an approved reveal and drops one nobody approved; pointer-stripping never touches the evidence, so deleting the account or
+taking your name off afterwards doesn't undo it; and what the Log draws is the author's username only for an item that is cited and approved."""
 from pathlib import Path
 
 import pytest
@@ -36,7 +36,7 @@ def db():
             conn.execute(text(statement))
         log_tables.apply(conn, modactions=True)
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, username VARCHAR(30), admin_level INTEGER DEFAULT 0, is_banned INTEGER DEFAULT 0, "
+        conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, username VARCHAR(30), admin_level INTEGER DEFAULT 0, is_banned INTEGER DEFAULT 0, unban_utc INTEGER DEFAULT 0, "
                           "is_deleted BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, board_id INTEGER DEFAULT 1, "
                           "post_public BOOLEAN DEFAULT 1, audience INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0, deleted_utc INTEGER DEFAULT 0, "
@@ -182,15 +182,18 @@ def test_waiting_proposals_are_grouped_by_ban_oldest_first(db):
 
 # --- withdrawal, deletion and what the Log draws ----------------------------------------------------------------------------------------
 
-def test_reversing_the_ban_withdraws_the_reveal_pending_or_approved(db):
+def test_reversing_the_ban_keeps_an_approved_reveal_and_drops_one_nobody_approved(db):
+    """The owner, 2026-11-17: once someone is exposed it can't be unexposed, and a ban found wrong is something the Log should show. A proposal no second
+    admin has approved exposed nothing, and must not be approvable for a ban that was reversed."""
     cite(db, [("post", 1)])
     ev.decide(db, 90, 21, 3, True, NOW + 1)
     cite(db, [("post", 7)], entry=91, proposer=20)
     assert ev.revealed(db, [1, 7]) == {("post", 1): "banned_one"}
-    assert ev.withdraw(db, 7, NOW + 9) == 2
-    assert ev.revealed(db, [1, 7]) == {} and ev.listed(db, [90]) == {}, "the Log draws Anonymous again"
-    assert [r[0] for r in db.execute(text("SELECT status FROM log_evidence ORDER BY id"))] == ["withdrawn", "withdrawn"]
-    assert ev.withdraw(db, 8, NOW) == 0, "somebody else's evidence is not touched"
+    assert ev.withdraw_pending(db, 7, NOW + 9) == 1
+    assert ev.revealed(db, [1, 7]) == {("post", 1): "banned_one"}, "the approved reveal still names the author"
+    assert [r[0] for r in db.execute(text("SELECT status FROM log_evidence ORDER BY id"))] == ["approved", "withdrawn"]
+    assert ev.decide(db, 91, 21, 3, True, NOW + 10)[0] == 0, "a withdrawn proposal can't be approved afterwards"
+    assert ev.withdraw_pending(db, 8, NOW) == 0, "somebody else's evidence is not touched"
 
 
 def test_stripping_pointers_and_deleting_the_account_never_undo_a_reveal(db):
@@ -221,3 +224,13 @@ def test_the_table_is_in_the_migration_the_schema_and_the_ledger_with_no_foreign
     schema = read("schema.sql")
     assert "CREATE TABLE public.log_evidence" in schema and "('2027-01-04_log_evidence.sql')" in schema
     assert "CHECK ((post_id IS NULL) <> (comment_id IS NULL))" in migration and "CHECK ((post_id IS NULL) <> (comment_id IS NULL))" in schema
+
+
+def test_an_admin_whose_suspension_has_run_out_counts_as_another_admin(db):
+    """C24: `is_banned` is set by a timed suspension and nothing clears it, so an admin suspended once and long reinstated counted as banned for ever
+    and the owner could approve their own reveal."""
+    db.execute(text("INSERT INTO users (id, username, admin_level, is_banned, unban_utc) VALUES (970, 'lapsed', 3, 1, 1), (971, 'banned', 3, 1, 0), (972, 'suspended', 3, 1, 4102444800)"))
+    assert ev.another_admin_exists(db, 21) is True                                       # 970 was suspended once, long ago
+    db.execute(text("UPDATE users SET unban_utc = 4102444800 WHERE id = 970"))           # now it is suspended until the year 2100
+    db.execute(text("DELETE FROM users WHERE admin_level >= 3 AND id NOT IN (21, 970, 971, 972)"))
+    assert ev.another_admin_exists(db, 21) is False

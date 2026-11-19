@@ -98,9 +98,9 @@
       <div class="d-flex flex-wrap align-items-center">
         <span class="text-small text-muted mr-2">{{ pgettext("filter", "Show:") }}</span>
         <div class="btn-group btn-group-sm btn-group-fit" role="group">
-          <a href="{{ request.path }}?type=all{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("filter", "All") }}</a>
-          <a href="{{ request.path }}?type=posts{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("noun", "Posts") }}</a>
-          <a href="{{ request.path }}?type=comments{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("noun", "Comments") }}</a>
+          <a href="{{ history_base or request.path }}?type=all{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='all' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("filter", "All") }}</a>
+          <a href="{{ history_base or request.path }}?type=posts{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='posts' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("noun", "Posts") }}</a>
+          <a href="{{ history_base or request.path }}?type=comments{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" class="btn btn-sm {% if content_type=='comments' %}btn-secondary{% else %}btn-link text-muted{% endif %}">{{ pgettext("noun", "Comments") }}</a>
         </div>
       </div>
     </div>
@@ -192,14 +192,14 @@
   <ul class="pagination pagination-sm py-3 pl-3 mb-0">
     {% if page>1 %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></small>
+      <small><a class="page-link" href="{{ history_base }}?page={{ page-1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" tabindex="-1">{{ pgettext("previous page", "Prev") }}</a></small>
     </li>
     {% else %}
     <li class="page-item disabled"><span class="page-link">{{ pgettext("previous page", "Prev") }}</span></li>
     {% endif %}
     {% if next_exists %}
     <li class="page-item">
-      <small><a class="page-link" href="?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
+      <small><a class="page-link" href="{{ history_base }}?page={{ page+1 }}{% if content_type and content_type != 'all' %}&type={{ content_type }}{% endif %}{% if active_tab == 'bookmarked' and folder_query %}&folder={{ folder_query }}{% endif %}" rel="next">{{ pgettext("next page", "Next") }}</a></small>
     </li>
     {% else %}
     <li class="page-item disabled"><span class="page-link">{{ pgettext("next page", "Next") }}</span></li>

@@ -294,6 +294,11 @@ class Board(Base, Stndrd, Age_times):
         if getattr(user, "qr_limited", False):
             return False
 
+        # a held account (the signup guard's hold, or an automatic check's: helpers/quarantine.py) acts on nobody, a guildmaster's powers
+        # included; a suspension used to take them. What it may read: `leads`.
+        if getattr(user, "is_quarantined", False):
+            return False
+
         return self._mod_row(user, perm)
 
     def leads(self, user):
@@ -662,7 +667,7 @@ class Board(Base, Stndrd, Age_times):
     def comment_idlist(self, page=1, v=None, **kwargs):
 
         posts = g.db.query(Submission).options(
-            lazyload('*')).filter_by(board_id=self.id)
+            lazyload('*')).filter_by(board_id=self.id).filter(Submission.deleted_utc == 0)       # not under a deleted post (decision 25b, the second review C04)
 
         # a private guild shows a non-member only their own posts, even ones forwarded while it was public (the owner's
         # choice, 2026-11, audit A-01): they stay on their authors' profiles, where they were public anyway

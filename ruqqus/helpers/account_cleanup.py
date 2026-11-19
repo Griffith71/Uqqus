@@ -86,6 +86,9 @@ STEPS = (
     ("forget the parent and child links", "DELETE FROM account_links WHERE child_id = :u OR parent_id = :u"),
     ("forget the family ledger of a closing child", "UPDATE child_family SET child_id = NULL WHERE child_id = :u"),
     ("forget the family ledger of a closing parent", "DELETE FROM child_family WHERE parent_id = :u"),
+    # a hold on the account (the signup guard's or an automatic check's: helpers/auto_quarantine.py) ends with it; the staff's entries about it stay (an entry is never
+    # deleted) and the account's own open appeal is closed below
+    ("clear a hold", "UPDATE users SET quarantined_utc = 0, quarantine_kind = 0 WHERE id = :u"),
     ("forget the age answer", "UPDATE users SET age_declared = NULL, age_declared_utc = 0, age_lock = NULL, age_assured_utc = 0, "
                               "age_under_utc = 0 WHERE id = :u"),
     # two more copies of it, where an admin changed it: the Log's row stays (an entry is never deleted, helpers/action_log.py)
@@ -97,7 +100,14 @@ STEPS = (
                               "WHERE n.comment_id = comments_aux.id AND n.user_id = :u)"),
     ("remove the age notices", "DELETE FROM notifications WHERE user_id = :u AND EXISTS (SELECT 1 FROM comments_aux a "
                                "WHERE a.id = notifications.comment_id AND a.notice_msgid = '')"),
+    # what they said to the moderators in the Log (helpers/log_appeals.py, helpers/log_reports.py) is their own words and goes with them. An appeal still
+    # open is closed first (as dismissed, by nobody: `decided_by` stays empty), or it would sit in the deciders' queue with nothing in it and nobody to answer;
+    # its row stays, as a decided one does, because an appeal is made once per decision. A report already decided is deleted (nothing reads it); one still
+    # waiting stays so the admins can still act on the entry's words, without the reporter's own, and goes 90 days after it is decided (helpers/retention.py)
+    ("end their open appeals", "UPDATE log_appeals SET status = 'dismissed', decided_utc = :now WHERE user_id = :u AND status = 'open'"),
     ("empty their appeals", "UPDATE log_appeals SET reason = '', decision_note = '' WHERE user_id = :u"),
+    ("remove their decided Log reports", "DELETE FROM log_reports WHERE reporter_id = :u AND status <> 'open'"),
+    ("empty their waiting Log reports", "UPDATE log_reports SET reason = '' WHERE reporter_id = :u AND status = 'open'"),
     # the private copy of what they erased themselves (kind `grace`: their own delete, which only they and the admins could open): closing the account is
     # as clear a wish to have it gone as any. NOT emptied: a legal hold (kept by a duty, which the privacy page says), and a guild's hide or a post
     # author's hide of their comment (other people's record of a decision, which empties on its own date)

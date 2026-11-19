@@ -374,6 +374,7 @@ $indent-phone: 10px;
     border-radius: var(--radius-pill);
     cursor: pointer;
     transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+    position: relative;                 // holds the switches' visually hidden checkbox (.sr-only is absolute)
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -381,6 +382,28 @@ $indent-phone: 10px;
         background-color: var(--hover);
         color: var(--text);
     }
+}
+
+// a switch among the tools (Commercial promotion, Made with AI, anonymous, comment as @me) is a real checkbox, kept out of
+// sight but focusable; the ring is the tool's own, since the checkbox is one pixel
+body:not(.using-mouse) .comment-write .comment-format .format:focus-within {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+}
+
+// what the switches mean, as text (partials/post_options.html disclosure_hints): under the row, never in it, one line per switch
+// that is on, so a phone, a keyboard and a screen reader read what a mouse gets as a tooltip. Every line is `hidden` until its switch
+// is on, so with none on the block has no height and nothing moves when the box opens or a tool is focused
+.comment-write .comment-format-hints {
+    flex: 0 0 100%;
+    width: 100%;
+}
+
+.comment-write .comment-format-hint {
+    margin: 0;
+    padding: 0 0 var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
 }
 
 // a word in place of a glyph: "Aa" and "GIF", as the post editor and the Create post card write them

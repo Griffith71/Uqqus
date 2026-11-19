@@ -61,29 +61,28 @@ def test_a_provider_failure_leaves_nothing_behind(tmp_path, monkeypatch):
     assert list(tmp_path.iterdir()) == []
 
 
-def test_a_banned_picture_bans_the_uploader_through_the_one_ban_routine_with_the_match_as_staff_detail(monkeypatch):
-    """The ban itself is `User.ban` (helpers/scan_bans.py, tested on the real app in tests/pg/test_scan_bans.py); this checks what
-    the check hands it: the days, that a site-list match is a staff detail and a child-abuse match a level-4 one."""
+def test_a_banned_picture_holds_the_uploader_through_the_one_routine_with_the_match_as_staff_detail(monkeypatch):
+    """The hold itself is `auto_quarantine.hold` (helpers/scan_bans.py, tested in tests/test_scan_bans.py and on the real app in
+    tests/pg/test_scan_bans.py); this checks what the check hands it: that a site-list match is a staff detail and a child-abuse match a level-4 one."""
     from ruqqus.helpers import scan_bans
 
     calls = []
-    monkeypatch.setattr(scan_bans, "ban_uploader", lambda db, user, **kw: calls.append((db, user, kw)) or 77)
+    monkeypatch.setattr(scan_bans, "quarantine_uploader", lambda db, user, **kw: calls.append((db, user, kw)) or 77)
     uploader, db = user(1), FakeDB()
-    assert safety.ban_uploader(db, uploader, "Spam picture", days=3) == 77
-    assert safety.ban_uploader(db, uploader, "the CDN answered 451 for the picture", legal=True) == 77
+    assert safety.quarantine_uploader(db, uploader, "Spam picture") == 77
+    assert safety.quarantine_uploader(db, uploader, "the CDN answered 451 for the picture", legal=True) == 77
     assert calls == [
-        (db, uploader, {"days": 3, "legal": False, "detail": "matched a picture on the site's banned list: Spam picture"}),
-        (db, uploader, {"days": 0, "legal": True, "detail": "the CDN answered 451 for the picture"}),
+        (db, uploader, {"legal": False, "detail": "matched a picture on the site's banned list: Spam picture"}),
+        (db, uploader, {"legal": True, "detail": "the CDN answered 451 for the picture"}),
     ]
 
 
-def test_no_days_means_a_permanent_ban(monkeypatch):
-    from ruqqus.helpers import scan_bans
+def test_no_check_bans_or_suspends_so_there_are_no_days_to_hand_over():
+    """The owner, 2026-11-17: the site's own checks only quarantine. The old `ban_uploader(..., days=)` is gone, and nothing is left that could be given one."""
+    import inspect
 
-    seen = []
-    monkeypatch.setattr(scan_bans, "ban_uploader", lambda db, user, **kw: seen.append(kw["days"]))
-    safety.ban_uploader(FakeDB(), user(1), "Spam picture")
-    assert seen == [0]
+    assert not hasattr(safety, "ban_uploader")
+    assert list(inspect.signature(safety.quarantine_uploader).parameters) == ["db", "user", "reason", "legal"]
 
 
 def test_only_served_pictures_are_scanned_at_their_public_address(monkeypatch):

@@ -99,6 +99,12 @@ def error_circle_only(e):
 
     def gate():
         post = e.post
+        # a Circle post that is anonymous now (a delete, an account's deletion and "Remove my name" all force that) or whose author's account is gone has no
+        # owner to name: the gate would tie its id to a person the Log says is Anonymous (the second review, C52). A plain 404, as for what isn't there.
+        if post.is_anonymous or (post.deleted_utc or 0) > 0 or post.author is None or post.author.is_deleted:
+            response = make_response(render_template("errors/404.html", v=getattr(g, "v", None)), 404)
+            response.headers["Cache-Control"] = "private, no-store"
+            return response
         paid = []
         if post.audience == circles.CIRCLES:
             ids = circle_guard.post_circles(g.db, [post.id]).get(post.id, ())

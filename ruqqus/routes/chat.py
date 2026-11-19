@@ -97,6 +97,7 @@ def _user_id_for_mxid(mxid):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_page(v):
     mxid = _ensure_provisioned(v)
     from ruqqus.helpers.chat_groups import MAX_MEMBERS
@@ -107,6 +108,7 @@ def chat_page(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 @limiter.limit("60/minute;600/hour", key_func=member_limit_key)
 def chat_token(v):
@@ -135,6 +137,7 @@ def chat_token(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 @limiter.limit("20/minute", key_func=member_limit_key)
 def chat_store_keys_route(v):
@@ -157,6 +160,9 @@ def _token_answer(status, body):
         body = {"error": tr("That request wasn't understood.")}
     elif body.get("signed_out"):
         body = {"error": tr("You're no longer signed in here. Sign in again to use chat."), "signed_out": True}
+    elif body.get("held"):
+        from ruqqus.helpers import quarantine
+        body = {"error": msg(quarantine.HELD_AUTOMATIC if quarantine.is_automatic(getattr(g, "v", None)) else quarantine.HELD), "held": True}
     elif body.get("age_locked"):
         refused = age_declaration.PARENT_OFF if body.get("parent") else age_declaration.FEATURE_LOCKED
         body = {"error": msg(refused), "age_locked": True}
@@ -195,6 +201,7 @@ def _identity(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 def chat_key_get(v):
     """The account's LOCKED recovery key copies and the salt the browser derives its password key with (audit M-03).
     Nothing here can unlock anything without the member's password or recovery code, which never reach this route.
@@ -219,6 +226,7 @@ def chat_key_get(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 def chat_key_set(v):
     """Saves the locked copies the browser made (`password_blob`, `recovery_blob`: base64url, opaque here). Saving a
@@ -248,6 +256,7 @@ def chat_key_set(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 def chat_code_saved(v):
     """The member says they kept their recovery code ("I've saved it" under a new code, or "I have it" on the chat page's reminder). Only
@@ -265,6 +274,7 @@ def chat_code_saved(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 def chat_recovery_key_legacy(v):
     """The old server-readable copy, only while it still exists: the member's own browser reads it once to lock it
     with their password and a recovery code (POST /api/chat/key then clears it). Never anything for an account
@@ -280,6 +290,7 @@ def chat_recovery_key_legacy(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 def chat_check_password(v):
     """Whether a typed password is the account's, before the browser locks the chat key with it (a typo would lock
@@ -291,6 +302,7 @@ def chat_check_password(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_ready(v):
     """This member's chat has finished setting up encryption: messages waiting for them in other people's browsers
@@ -368,6 +380,7 @@ def chat_start(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_conversations(v):
     status = request.args.get("status", "inbox")
     before = request.args.get("before", type=int)
@@ -445,6 +458,7 @@ POST_ID = re.compile(r"^[0-9a-z]{1,10}$")
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_share_targets(v):
     """Who a post can be sent to from the share sheet: the chats you can already write in
     (newest first), then people you follow, narrowed by ?q=. Never someone you block or who
@@ -494,6 +508,7 @@ def chat_share_targets(v):
 @app.route("/api/chat/post_preview/<pid>", methods=["GET"])
 @auth_required
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_post_preview(pid, v):
     """The small card under a message that links to a post, made for the person reading it:
     the same visibility rules as opening the post, and never the author (so an anonymous post
@@ -505,7 +520,7 @@ def chat_post_preview(pid, v):
         return jsonify({"ok": False, "notice": tr("This post does not exist.")})
 
     admin = v.admin_level >= 3
-    if (post.is_banned or post.board.is_banned) and not admin:
+    if (post.is_banned or post.board.is_banned or (post.hidden_by_guild and not post._guild_hide_lifted_for(v))) and not admin:
         return jsonify({"ok": False, "notice": tr("This post was removed.")})
     if post.deleted_utc and not admin:
         return jsonify({"ok": False, "notice": tr("This post was deleted.")})
@@ -531,6 +546,7 @@ def chat_post_preview(pid, v):
 @app.route("/api/chat/comment_preview/<cid>", methods=["GET"])
 @auth_required
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_comment_preview(cid, v):
     """The card under a message that links to a comment, made for the person reading it, by the rules of opening the
     comment (get_comment: a Circle post's comments, a block by its author) and its post (the post card's rules), with
@@ -544,7 +560,9 @@ def chat_comment_preview(cid, v):
         return unavailable
     post = comment.post
     admin = v.admin_level >= 3
-    if (comment.is_banned or post.is_banned or post.board.is_banned) and not admin:
+    # a comment a guild hid, or its post's author hid, shows "removed" in its thread and says nothing of what it said here either (the second review, C28)
+    if (comment.is_banned or post.is_banned or post.board.is_banned or comment._text_hidden_for(v)
+            or (post.hidden_by_guild and not post._guild_hide_lifted_for(v))) and not admin:
         return jsonify({"ok": False, "notice": tr("This post was removed.")})
     if (comment.deleted_utc or post.deleted_utc) and not admin:
         return jsonify({"ok": False, "notice": tr("This post was deleted.")})
@@ -578,6 +596,7 @@ def chat_unread_count(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_accept(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
@@ -593,6 +612,7 @@ def chat_accept(v, cid):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_decline(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
@@ -618,6 +638,7 @@ def chat_decline(v, cid):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_mark_read(v, cid):
     c = g.db.query(ChatConversation).filter_by(id=cid).first()
@@ -856,6 +877,7 @@ SEARCH_EACH = 20
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_search(v):
     """Find chats (the owner, 2026-10-21): your own 1:1 chats, groups and channels; public broadcast channels you are
     not in; the channels of your guilds you may read; and guilds with chat that you may see. Groups are private and

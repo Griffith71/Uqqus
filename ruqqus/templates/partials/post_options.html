@@ -13,7 +13,17 @@
 
   disclosure_toggles(prefix, paid, ai): the same two options as icon toggles
   in a comment form's toolbar. The inputs are `<prefix>-paid` and
-  `<prefix>-ai`; all_js.js (post_comment, comment_edit) reads them.
+  `<prefix>-ai`; all_js.js (post_comment, comment_edit) reads them. Every
+  switch is a real, focusable checkbox (visually hidden, not `hidden`) with a
+  name and a description, so a keyboard or a screen reader reaches it; the
+  tooltip is only a mouse's shortcut.
+
+  disclosure_hints(prefix, ...): the words behind those switches, drawn once
+  after the row (the same arguments as disclosure_toggles). They are plain
+  text, never a tooltip: a switch that is on shows its line, and the locked
+  anonymous switch (a comment on your own anonymous post) shows its line from
+  the start, outside the row, so a phone, which draws no row, reads it too.
+  all_js.js disclosureSwitch / commentAsMe show and hide them.
 
   anonymous_field(checked, prefix): the "Post anonymously" checkbox (helpers/anonymity.py).
 
@@ -115,14 +125,16 @@
 {% endmacro %}
 
 {% macro disclosure_field(paid, ai, prefix) %}
-<label class="mt-3 d-block">{{ _("Content disclosure") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Be upfront with readers. The labels show next to the title.') }}"></i></label>
-<div class="content-disclosure">
-  <div class="custom-control custom-checkbox custom-control-inline">
+<label class="mt-3 d-block" id="{{ prefix }}-label">{{ _("Content disclosure") }}</label>
+<span class="audience-hint d-block" id="{{ prefix }}-hint">{{ _('Be upfront with readers. The labels show next to the title.') }}</span>
+<div class="content-disclosure" role="group" aria-labelledby="{{ prefix }}-label" aria-describedby="{{ prefix }}-hint">
+  <div class="custom-control custom-checkbox">
     <input type="hidden" name="paid_partnership" value="">
-    <input type="checkbox" class="custom-control-input" id="{{ prefix }}-paid" name="paid_partnership" value="true"{% if paid %} checked{% endif %}>
-    <label class="custom-control-label" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="top" title="{{ _('Paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}">{{ _("Commercial promotion") }}</label>
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}-paid" name="paid_partnership" value="true"{% if paid %} checked{% endif %} aria-describedby="{{ prefix }}-paid-hint">
+    <label class="custom-control-label" for="{{ prefix }}-paid">{{ _("Commercial promotion") }}</label>
+    <span class="audience-hint d-block" id="{{ prefix }}-paid-hint">{{ _('Paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}</span>
   </div>
-  <div class="custom-control custom-checkbox custom-control-inline">
+  <div class="custom-control custom-checkbox">
     <input type="hidden" name="made_with_ai" value="">
     <input type="checkbox" class="custom-control-input" id="{{ prefix }}-ai" name="made_with_ai" value="true"{% if ai %} checked{% endif %}>
     <label class="custom-control-label" for="{{ prefix }}-ai">{{ _("Made with AI") }}</label>
@@ -131,27 +143,42 @@
 {% endmacro %}
 
 {% macro disclosure_toggles(prefix, paid=false, ai=false, anonymous_option=false, anonymous_locked=false, comment_as_me=false) %}
-<label class="format{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-placement="bottom" title="{{ _('Commercial promotion: paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}">
-  <input id="{{ prefix }}-paid" type="checkbox" hidden{% if paid %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
+{# each switch is a real checkbox kept out of sight with .sr-only (a `hidden` one can't be focused, named or toggled by a keyboard); `data-hint` names the line disclosure_hints draws for it, which all_js.js disclosureSwitch shows while it is on #}
+<label class="format{% if paid %} text-info{% endif %}" for="{{ prefix }}-paid" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="{{ _('Commercial promotion: paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}">
+  <input id="{{ prefix }}-paid" type="checkbox" class="sr-only" aria-label="{{ _('Commercial promotion') }}" aria-describedby="{{ prefix }}-paid-hint" data-hint="{{ prefix }}-paid-hint"{% if paid %} checked{% endif %} onchange="disclosureSwitch(this)">
   <i class="fas fa-handshake" aria-hidden="true"></i>
 </label>
-<label class="format{% if ai %} text-info{% endif %}" for="{{ prefix }}-ai" data-toggle="tooltip" data-placement="bottom" title="{{ _('Made with AI') }}">
-  <input id="{{ prefix }}-ai" type="checkbox" hidden{% if ai %} checked{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
+<label class="format{% if ai %} text-info{% endif %}" for="{{ prefix }}-ai" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="{{ _('Made with AI') }}">
+  <input id="{{ prefix }}-ai" type="checkbox" class="sr-only" aria-label="{{ _('Made with AI') }}" aria-describedby="{{ prefix }}-ai-hint" data-hint="{{ prefix }}-ai-hint"{% if ai %} checked{% endif %} onchange="disclosureSwitch(this)">
   <i class="fas fa-robot" aria-hidden="true"></i>
 </label>
 {% if anonymous_option %}
-<label class="format{% if anonymous_locked %} text-info{% endif %}" for="{{ prefix }}-anon" data-toggle="tooltip" data-placement="bottom" title="{{ _('Comments on your anonymous post are anonymous') if anonymous_locked else _('Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment.') }}">
-  <input id="{{ prefix }}-anon" type="checkbox" hidden{% if anonymous_locked %} checked disabled{% endif %} onchange="this.parentNode.classList.toggle('text-info', this.checked)">
+<label class="format{% if anonymous_locked %} text-info{% endif %}" for="{{ prefix }}-anon" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="{{ _('Comments on your anonymous post are anonymous') if anonymous_locked else _('Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment.') }}">
+  <input id="{{ prefix }}-anon" type="checkbox" class="sr-only" aria-label="{{ pgettext('label', 'Anonymous') }}" aria-describedby="{{ prefix }}-anon-hint" data-hint="{{ prefix }}-anon-hint"{% if anonymous_locked %} checked disabled{% endif %} onchange="disclosureSwitch(this)">
   <i class="fas fa-user-secret" aria-hidden="true"></i>
 </label>
 {% endif %}
 {% if comment_as_me %}
-{# "comment as @me" (helpers/anonymity.py comment_is_anonymous): the one way out of the forced anonymity on your own anonymous post; assets/js/all_js.js commentAsMe asks first, and the form sends it as `as_me` #}
-<label class="format" for="{{ prefix }}-me" data-toggle="tooltip" data-placement="bottom" title="{{ _('Comment as yourself: your name shows on this comment') }}">
-  <input id="{{ prefix }}-me" type="checkbox" hidden onchange="commentAsMe(this, '{{ prefix }}')">
+{# "comment as @me" (helpers/anonymity.py comment_is_anonymous): the one way out of the forced anonymity on your own anonymous post; assets/js/all_js.js commentAsMe asks first, and the form sends it as `as_me`. Its name is its own sentence (the hint), so it has no description. #}
+<label class="format" for="{{ prefix }}-me" data-toggle="tooltip" data-trigger="hover" data-placement="top" title="{{ _('Comment as yourself: your name shows on this comment') }}">
+  <input id="{{ prefix }}-me" type="checkbox" class="sr-only" aria-labelledby="{{ prefix }}-me-hint" data-hint="{{ prefix }}-me-hint" onchange="commentAsMe(this, '{{ prefix }}')">
   <i class="fas fa-user" aria-hidden="true"></i>
 </label>
 {% endif %}
+{% endmacro %}
+
+{% macro disclosure_hints(prefix, paid=false, ai=false, anonymous_option=false, anonymous_locked=false, comment_as_me=false) %}
+{# the words behind disclosure_toggles' switches, as text a phone, a keyboard and a screen reader all reach (the switches' tooltips need a mouse). One line per switch, shown while it is on; the locked anonymous one is on from the start. Outside the nowrap tools row, so the row never moves: every line is `hidden` (no height) until its switch is turned on. #}
+<div class="comment-format-hints">
+  <p class="comment-format-hint" id="{{ prefix }}-paid-hint"{% if not paid %} hidden{% endif %}>{{ _('Commercial promotion: paid partnerships, sponsorships, affiliate links, or advertising your own products or services') }}</p>
+  <p class="comment-format-hint" id="{{ prefix }}-ai-hint"{% if not ai %} hidden{% endif %}>{{ _('The author says this was made with AI') }}</p>
+  {% if anonymous_option %}
+  <p class="comment-format-hint" id="{{ prefix }}-anon-hint"{% if not anonymous_locked %} hidden{% endif %}>{{ _('Comments on your anonymous post are anonymous. If an admin bans or suspends the account for one, the Log may name the account for it.') if anonymous_locked else _('Comment anonymously: other users will not see your name. If an admin bans or suspends the account for it, the Log may name the account for this comment.') }}</p>
+  {% endif %}
+  {% if comment_as_me %}
+  <p class="comment-format-hint" id="{{ prefix }}-me-hint" hidden>{{ _('Comment as yourself: your name shows on this comment') }}</p>
+  {% endif %}
+</div>
 {% endmacro %}
 
 {% macro disclosure_badges(item, v=none) %}
@@ -206,12 +233,13 @@
   <span class="audience-hint d-block" id="{{ prefix }}-hint">{{ _("Others see Anonymous instead of your name; you and site admins still see it. A region filter still shows which region it comes from. It can't be changed after posting. If an admin bans or suspends the account for it, the Log may name the account for this one.") }}</span>
 </div>
 {% else %}
-<label class="mt-3 d-block">{{ _("Anonymity") }}<i class="fas fa-info-circle text-gray-400 ml-1" data-toggle="tooltip" data-placement="top" title="{{ _('Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one.') }}"></i></label>
+<label class="mt-3 d-block">{{ _("Anonymity") }}</label>
 <div class="anonymity">
   <div class="custom-control custom-checkbox">
-    <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="anonymous" value="true"{% if checked %} checked{% endif %}>
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}" name="anonymous" value="true"{% if checked %} checked{% endif %} aria-describedby="{{ prefix }}-hint">
     <label class="custom-control-label" for="{{ prefix }}">{{ _("Post anonymously") }}</label>
   </div>
+  <span class="audience-hint d-block" id="{{ prefix }}-hint">{{ _('Other users see Anonymous instead of your name. You and site admins can still see it, it follows the same rules as any post, and it cannot be undone after posting. A region filter still shows which region it comes from. It is not listed on your profile: you find it in History, under Anonymous. If an admin bans or suspends the account for it, the Log may name the account for this one.') }}</span>
 </div>
 {% endif %}
 {% endmacro %}

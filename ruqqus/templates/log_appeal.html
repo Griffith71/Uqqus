@@ -24,7 +24,7 @@
   <div class="card p-3 mb-3" id="ban-relies-on">
     <div class="font-weight-bold mb-1">{{ _('This ban relies on:') }}</div>
     <div class="text-small">{% for x in relied_on %}<a href="/{{ x.kind }}/{{ x.id }}">{% if x.kind == 'post' %}{{ _('post #%(id)s', id=x.id) }}{% else %}{{ _('comment #%(id)s', id=x.id) }}{% endif %}</a>{% if not loop.last %}, {% endif %}{% endfor %}</div>
-    <div class="text-small text-muted mt-1">{{ _("Anonymous ones stay anonymous unless a second administrator approves, and then the Log names your account beside them.") }}</div>
+    <div class="text-small text-muted mt-1">{{ _("Anonymous ones stay anonymous unless a second administrator approves (or, on a site with a single administrator, its owner), and then the Log names your account beside them.") }}</div>
   </div>
   {% endif %}
 

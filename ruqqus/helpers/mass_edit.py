@@ -1,7 +1,7 @@
 """History's mass tools: take your name off, or delete, a hundred of your own posts and comments at once (the Log plan's decisions 11 and 22; slice D3c).
 
 It is the same two actions as the single-item dialog ("Remove my name" and "Delete"), done to the items a member ticked on History > Manage, so
-every refusal is the single item's own (a Circle post, a tipped one, one written with others...). What the mass form adds is the cost of a mistake:
+every refusal is the single item's own (a Circle post, a tipped one...). What the mass form adds is the cost of a mistake:
 a count the member confirms, a cap per request, a rate limit, the **password** (and a two-factor code where they have it), the site only (an API
 app can't do it, nor a bot's key, nor a limited QR sign-in), and a list afterwards of what could not be changed and why.
 

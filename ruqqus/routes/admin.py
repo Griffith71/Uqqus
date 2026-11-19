@@ -982,15 +982,17 @@ def admin_image_ban(v):
     if badpic:
         return render_template("admin/image_ban.html", v=v, existing=badpic)
 
+    # a match puts the uploader on hold for an admin to review (helpers/media/safety.py, helpers/aws.py): it bans nobody, so the form asks for no penalty and
+    # an old form that still posts `ban_length` is ignored. `badpics.ban_time` is NOT NULL and read nowhere, so it is written as 0
     new_bp=BadPic(
         phash=h,
         ban_reason=request.form.get("ban_reason"),
-        ban_time=int(request.form.get("ban_length",0))
+        ban_time=0
         )
 
     g.db.add(new_bp)
-    action_log.record_staff(g.db, "admin_image_ban", v, f"added a picture to the banned list (suspends the uploader for "
-                                                        f"{new_bp.ban_time or 'ever'} days): {(new_bp.ban_reason or '')[:200]}")
+    action_log.record_staff(g.db, "admin_image_ban", v, f"added a picture to the banned list (an upload that matches it puts the uploader on hold for an admin "
+                                                        f"to review): {(new_bp.ban_reason or '')[:200]}")
     g.db.commit()
 
     return render_template("admin/image_ban.html", v=v, success=True)

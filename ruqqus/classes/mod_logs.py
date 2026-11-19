@@ -185,8 +185,11 @@ class ModAction(Base, Stndrd, Age_times):
         say so only for an account that really is an admin: a guildmaster's reason is the same note, free text, and "admin
         action" in it must not make their own action read as the site's (the audit, 2026-11-05: H3)."""
         user = self.user
+        note = (self._note or "").lower()
+        # a "siege" note by an admin is an admin's action too (the Log draws it as the site's, `action_log.role_of`): the guild log said so for the markers alone
+        # and named the admin, with their avatar, on a siege (the second review, C61)
         return bool(user is not None and (user.admin_level or 0) >= 3
-                    and any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS))
+                    and (any(mark in note for mark in action_log.ADMIN_MARKERS) or note.strip() == "siege"))
 
     def _who(self):
         if self.user.is_deleted:
@@ -892,6 +895,15 @@ ACTIONTYPES.update({
         # Translators: follows the site's name in the Log; %(guild)s is a guild's name
         "str": N_("opened +%(guild)s to everyone"), "icon": "fa-lock-open", "color": "bg-info",
         "title": N_("%(who)s opened +%(guild)s to everyone")},
+    # an account an automatic check put on hold (helpers/auto_quarantine.py): the public line names no account, no item and no guild, only the rule and a generic reason
+    "automatic_quarantine": {
+        # Translators: follows the site's name in the Log; an automatic check held an account, which is not named
+        "str": N_("put an account in quarantine"), "icon": "fa-user-lock", "color": "bg-danger",
+        "title": N_("%(who)s put an account in quarantine")},
+    "automatic_quarantine_lifted": {
+        # Translators: follows the site's name in the Log; a hold an automatic check had placed on an account, which is not named, was lifted
+        "str": N_("lifted a quarantine an automatic check had placed"), "icon": "fa-user-check", "color": "bg-muted",
+        "title": N_("%(who)s lifted a quarantine an automatic check had placed")},
 })
 
 

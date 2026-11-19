@@ -285,3 +285,42 @@ def test_one_edit_of_an_account_at_a_time_on_postgres_and_nothing_elsewhere():
     profile_edit.lock_account(lite, 7)
     assert lite.seen == []
     assert 0 < profile_edit.LOCK_NAMESPACE < 2 ** 31                  # the first key of the two-integer lock is an int4
+
+
+# --- a hold an automatic check placed closes the pictures ------------------------------------------------------------
+
+def _picture_expression(name="can_upload_avatar"):
+    """The property's own return expression, read from the model's source (the suite never imports the model) and run on a stand-in account."""
+    from pathlib import Path
+    user = (Path(__file__).resolve().parent.parent / "ruqqus" / "classes" / "user.py").read_text(encoding="utf-8")
+    body = user.split(f"    def {name}(self):", 1)[1].split("\n    @property", 1)[0]
+    return [line.strip()[len("return "):] for line in body.splitlines() if line.strip().startswith("return ")][0]
+
+
+def _can_upload(auto_held, activated=True, country=None):
+    me = types.SimpleNamespace(is_activated=activated, is_auto_quarantined=auto_held)
+    request = types.SimpleNamespace(headers={"cf-ipcountry": country} if country else {})
+    return bool(eval(_picture_expression(), {"self": me, "request": request}))
+
+
+def test_an_account_an_automatic_check_holds_uploads_no_picture_and_the_tor_rule_still_stands():
+    assert not _can_upload(True) and not _can_upload(True, activated=False)
+    assert _can_upload(False) and _can_upload(False, country="GB")
+    assert not _can_upload(False, activated=False, country="T1") and _can_upload(False, activated=True, country="T1")
+    assert _picture_expression("can_upload_banner") == "self.can_upload_avatar"           # the banner is the avatar's rule: one place
+
+
+def test_only_an_automatic_hold_refuses_a_picture_and_the_attempt_is_counted_apart_from_the_labelled_actions():
+    from ruqqus.helpers import quarantine, signup_signals
+    from tests.fake_redis import FakeRedis
+
+    r = FakeRedis()
+    automatic = types.SimpleNamespace(id=5, is_quarantined=True, quarantine_kind=1)
+    assert quarantine.picture_refusal(automatic, r) == quarantine.HELD_AUTOMATIC
+    assert signup_signals.attempts(r, 5) == {"other": 1}                  # "picture" is no action the admin page labels (tests/test_quarantine.py holds that)
+    # the signup guard's hold keeps its pictures; so does everyone not held (an admin or a bot is never `is_quarantined`), and nothing is counted for them
+    for who in (types.SimpleNamespace(id=6, is_quarantined=True, quarantine_kind=0), types.SimpleNamespace(id=7, is_quarantined=True),
+                types.SimpleNamespace(id=8, is_quarantined=False, quarantine_kind=1), types.SimpleNamespace(id=9), None):
+        assert quarantine.picture_refusal(who, r) is None
+    assert signup_signals.attempts(r, 5) == {"other": 1} and signup_signals.attempts(r, 6) == {}
+    assert quarantine.picture_refusal(automatic) == quarantine.HELD_AUTOMATIC          # no Redis still refuses

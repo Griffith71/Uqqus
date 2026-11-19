@@ -344,16 +344,16 @@ def test_automated_posts_from_a_persons_account_are_held_to_the_bot_rules():
     assert submit.count("if automated:") == 3                     # the rules before, the spam guard, the daily count
 
 
-def test_the_spam_guard_never_suspends_anyone_for_an_automated_post():
+def test_the_spam_guard_never_holds_anyone_for_an_automated_post():
     submit = POSTS.split("def submit_post(")[1]
     guard = submit[submit.index("own_kind = [Submission.is_bot.is_(True)]"):]
     assert "elif bot_rules.is_self(bot_store.bot_of(g.db, v.id)):\n        own_kind = [Submission.is_bot.isnot(True)]" in guard
     assert guard.count("*own_kind") == 2
     assert "if url and not automated:" in guard                  # one feed's links share a site
     refused = guard.index("if automated and max(len(similar_urls), len(similar_posts)) >= threshold:")
-    banned = guard.index("v.ban(reason=N_(\"Spamming.\")")
+    banned = guard.index("auto_quarantine.hold(g.db, v, \"spam\"")           # the real guard puts a person's account on hold (helpers/auto_quarantine.py)
     assert refused < banned and "409" in guard[refused:banned] and "return" in guard[refused:banned]
-    assert "ban(" not in guard[refused:banned]
+    assert "ban(" not in guard[refused:banned] and "hold(" not in guard[refused:banned]
     assert "noqa" not in POSTS
 
 

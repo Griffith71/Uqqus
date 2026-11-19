@@ -41,7 +41,7 @@ went; a named device with no row of this account still answers 409 `deleted_else
 - "After it" is only safe for a request that may still have chat AFTER it, and the route's wrappers read the account when the request
   began: a request already past them can wait on the mint lock while an account deletion, a parent switching chat off or a credential
   event commits. So the account is read again under the lock, before the row (`_refusal`: deleted, a sign-in the nonce has ended, or no
-  chat for a child-locked account), before a device from before the rows is given its row (`_adopt`), and before a device is served
+  chat for a child-locked account or a held one), before a device from before the rows is given its row (`_adopt`), and before a device is served
   again. Refused: 401 or 403, nothing written.
 - A Synapse call that fails, the server not answering included (matrix_client raises `Unreachable`, a MatrixError), after the new row was
   committed: the row is revoked and its device's sign-out queued, both by `chat_signouts.queue`, which takes the mint lock BEFORE it
@@ -77,6 +77,7 @@ MAX_STORE_KEYS = 4                 # /api/chat/store_keys: ids asked for at once
 ROW_LOCK_SECONDS = 15              # a device's row held this long by another request (a renewal, a sign-out): 503, never a 500
 RETRY = {"retry": True}            # the route adds the sentence, in the reader's language
 SIGNED_OUT = {"signed_out": True}
+HELD = {"held": True}              # the route adds the sentence (the hold's own: helpers/quarantine.py)
 BAD_REQUEST = {"bad_request": True}
 REPLACED = {"replaced": True}
 
@@ -130,12 +131,15 @@ def _someone_elses(db, user_id, device_id):
 def _refusal(db, user_id, nonce):
     """Whether this request may still be handed a chat device, read now (not when its wrappers ran): None, or the (status, body) to
     answer. The account deleted, or its sign-in ended by a raised nonce since (`nonce` is the cookie's): 401. A child-locked account
-    without chat (a standalone one, or a sub-account whose parent hasn't switched chat on: the `messaging` feature): 403."""
-    row = db.execute(text("""SELECT u.login_nonce, u.is_deleted, u.age_declared, u.age_lock, c.chat
+    without chat (a standalone one, or a sub-account whose parent hasn't switched chat on: the `messaging` feature): 403. **A held account
+    (the signup guard's or an automatic check's: helpers/quarantine.py) has no chat at all** (the owner, 2026-11-19): 403 `held`, the route adds the hold's sentence."""
+    row = db.execute(text("""SELECT u.login_nonce, u.is_deleted, u.age_declared, u.age_lock, c.chat, u.quarantined_utc, u.admin_level, u.is_bot
                              FROM users u LEFT JOIN child_controls c ON c.child_id = u.id WHERE u.id = :u"""), {"u": int(user_id)}).first()
     if row is None or row[1] or int(row[0] or 0) > int(nonce or 0):
         return 401, SIGNED_OUT
-    _nonce, _deleted, declared, lock, chat = row
+    _nonce, _deleted, declared, lock, chat, held, admin_level, is_bot = row
+    if held and not admin_level and not is_bot:        # a held account (helpers/quarantine.py) has no chat: a request already past its wrappers when the hold landed
+        return 403, HELD
     if (declared == age_declaration.CHILD or lock is not None) and not (lock == age_declaration.PARENT_LOCK and chat):
         return 403, {"age_locked": True, "parent": lock == age_declaration.PARENT_LOCK}
     return None

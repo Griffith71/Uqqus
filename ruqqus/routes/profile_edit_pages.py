@@ -8,15 +8,17 @@ the order is what keeps a save from half happening:
 2. each field is compared with what is stored, on the server: a field that did not change is never checked again, so a
    rule added since can't refuse or ban someone for the name or website they already had;
 3. everything is checked before anything is assigned: names, details, bio, and each picture opened and decoded in full;
-4. a refusal answers 400 with a sentence per field and changes nothing (a banned-domain bio still earns the 30-day ban,
-   as in Settings, so the pop-up is no way to probe the list);
+4. a refusal answers 400 with a sentence per field and changes nothing (a bio that links the worst kind of banned site still
+   puts the account on hold, as in Settings, so the pop-up is no way to probe the list);
 5. the text is assigned and flushed (a column that would not fit fails here, before the bucket is touched) and rated by
    the word filter once;
 6. the pictures last, each on its own: a new picture is stored before the old one goes (User.set_profile), so a failure
    leaves the old picture and is reported for that picture alone.
 
 A suspended account may remove a picture and change its text but not upload one (the rule of the old routes). A held
-account (helpers/quarantine.py) may change its own profile. Nothing in the answer says why a save banned anyone.
+account (helpers/quarantine.py) may change its own profile, and one the site's own checks put on hold (helpers/auto_quarantine.py) may too, with two
+differences: it may not upload a picture or a banner (`_gate`: 403, the site's own words for a hold; removing one is allowed), and a bio that trips the
+SEO-spam check is not kept, the account goes back to the one it had. Nothing in the answer says why a save put an account on hold.
 """
 import time
 import traceback
@@ -24,12 +26,12 @@ import traceback
 import gevent
 from flask import g, jsonify, request
 
-from ruqqus.helpers import profile_edit
+from ruqqus.helpers import auto_quarantine, profile_edit, quarantine
 from ruqqus.helpers.aws import check_csam_url
 from ruqqus.helpers.i18n_runtime import N_, tr
 from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.helpers.wrappers import auth_required, qr_limited_answer, validate_formkey
-from ruqqus.__main__ import app, limiter, member_limit_key
+from ruqqus.__main__ import app, limiter, member_limit_key, r
 
 PICTURES = (("profile", "remove_profile", "has_profile"),
             ("banner", "remove_banner", "has_banner"))
@@ -41,6 +43,13 @@ def _values(v):
             "profile_location": v.profile_location or "", "profile_website": v.profile_website or ""}
 
 
+def _take_back_bio(v, kept):
+    """The bio that tripped the SEO-spam check goes back to what it was, and the account is rated again (a held account's profile is public, and the links
+    were what the check was for). The rest of the save, a name or a website, is left alone."""
+    v.bio, v.bio_html = kept
+    apply_user_severity(v)
+
+
 def _refused(errors, status=400):
     return jsonify({"ok": False, "error": next(iter(errors.values())), "errors": errors}), status
 
@@ -49,6 +58,9 @@ def _gate(v, kind):
     """The sentence for why this account can't upload this kind of picture, else None."""
     if v.is_suspended:
         return tr("Your account is suspended.")
+    held = quarantine.picture_refusal(v, r)      # a hold an automatic check placed: the site's own words for it, never the Tor sentence below
+    if held:
+        return held
     if kind == "profile" and not v.can_upload_avatar:
         return tr("You must have a verified email address to upload images via Tor.")
     if kind == "banner" and not v.can_upload_banner:
@@ -135,12 +147,15 @@ def settings_profile_edit_post(v):
 
     # --- 4: a refusal changes nothing ----------------------------------------------------------------------------------
     if errors:
-        if malicious and not v.qr_limited:      # a suspension outlives everything: a limited QR sign-in is only refused (helpers/qr_login.py)
-            v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
+        if malicious and not v.qr_limited:      # a quarantine outlives everything: a limited QR sign-in is only refused (helpers/qr_login.py)
+            auto_quarantine.hold(g.db, v, "link_malicious", detail="a link to a banned site in a bio")
+            g.db.commit()
+            auto_quarantine.send_pending(g.db)
         return _refused(errors, 403 if gated else 400)
 
     # --- 5: the text -----------------------------------------------------------------------------------------------------
     changed = []
+    kept_bio = (v.bio, v.bio_html)
     if bio is not None:
         v.bio, v.bio_html = bio.text, bio.html
         changed.append("bio")
@@ -153,11 +168,15 @@ def settings_profile_edit_post(v):
         g.db.flush()
 
         if bio is not None and profile_edit.looks_like_link_spam(v, bio.html, int(time.time())):
-            if v.qr_limited:                # no ban on a limited QR sign-in's word, and none of this save stays (helpers/qr_login.py)
+            if v.qr_limited:                # no hold on a limited QR sign-in's word, and none of this save stays (helpers/qr_login.py)
                 g.db.rollback()
                 return qr_limited_answer(v)
-            v.ban(reason="seo spam")        # the ban takes the pictures too; the answer is as for any save
-            return jsonify({"ok": True, "changed": True, "saved": changed, "values": _values(v)})
+            # the account is put on hold (helpers/auto_quarantine.py) and the save goes on as for any other: a hold is not a suspension, so the pictures
+            # of the same save are still taken, and the answer says nothing of it. Not committed here: the account's lock is held until the whole save is
+            # done, and the person is told once the request's commit has gone through
+            auto_quarantine.hold(g.db, v, "seo_spam", detail="links in the bio of a new account")
+            if v.is_auto_quarantined:       # held now or before (an admin, a bot or a suspended account is not held, and keeps what it wrote)
+                _take_back_bio(v, kept_bio)
 
     # --- 6: the pictures, each on its own ----------------------------------------------------------------------------
     for kind, picture in uploads.items():

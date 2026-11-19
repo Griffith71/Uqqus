@@ -1,6 +1,12 @@
-{# an account the signup guard is holding (helpers/quarantine.py), on every page of default.html until it is released #}
+{# an account the signup guard or an automatic check is holding (helpers/quarantine.py, helpers/auto_quarantine.py), on every page of default.html until it is released; only the account itself sees it #}
 <div class="held-notice" role="status" id="held-notice">
+{% if v.quarantine_kind == 1 %}
+  <strong>{{ _('An automatic check put your account on hold.') }}</strong>
+  {{ _("You can look around and set up your profile; posting, comments, votes and follows open once the check is done.") }}
+  <a href="/appeal/quarantine">{{ _('Ask for a review') }}</a>
+{% else %}
   <strong>{{ _('Your account is being checked.') }}</strong>
   {{ _("You can look around and set up your profile; posting, comments, votes and follows open once the check is done.") }}
   <a href="/settings/security">{{ _('Verify an email to skip the wait') }}</a>
+{% endif %}
 </div>

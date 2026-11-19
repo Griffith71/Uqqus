@@ -40,6 +40,7 @@ from ruqqus.helpers import collab_store
 from ruqqus.helpers import circles as circle_rules, circle_guard, circle_store
 from ruqqus.helpers import insights_store
 from ruqqus.helpers import action_log
+from ruqqus.helpers import auto_quarantine
 from ruqqus.helpers import permalinks
 from ruqqus.helpers import bots as bot_rules, bot_store
 from ruqqus.helpers import sensitive as sensitive_rules
@@ -50,6 +51,10 @@ from ruqqus.helpers import bell as bell_rules
 from .front import frontlist
 from ruqqus.__main__ import app, limiter, cache, db_session, member_limit_key
 from flask import session as flask_session
+
+# the banned-domain reasons (`Domain.reason`) a post's link or text can trip, and the automatic check each is (helpers/auto_quarantine.py TRIGGERS): the site's own
+# check only puts the account on hold, an admin decides what follows. routes/comments.py keeps the same table (tests/test_automatic_checks_sites_assets.py)
+_LINK_TRIGGERS = {4: "link_malicious", 7: "link_minors", 9: "link_illegal"}
 
 
 BAN_REASONS = ['',  #placeholder
@@ -289,7 +294,9 @@ Optional file data:
     if not anonymity.is_author(p, v):
         abort(403)
 
-    if p.is_banned:
+    # a deleted post is a record (its words are in the Log, and its thread is read-only): an edit would rewrite the row and write a tracked
+    # edit entry about something that is no longer there (the second review, C07; edit_comment refuses a deleted comment the same way)
+    if p.is_banned or p.is_deleted:
         abort(403)
 
     if p.board.has_ban(v):
@@ -303,7 +310,7 @@ Optional file data:
     # A forwarded copy has no content of its own: edit the original, which
     # carries the change to every copy (including the one being looked at).
     primary = p.reposts if (p.is_forward_copy and p.reposts) else p
-    if primary.author_id != v.id or primary.is_banned:
+    if primary.author_id != v.id or primary.is_banned or primary.is_deleted:
         abort(403)
 
     # a collaborative post changes only when its authors publish its shared draft (routes/collab.py)
@@ -328,6 +335,8 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
     """The edit itself, for `edit_post` and for publishing a collaborative post's shared draft (routes/collab.py):
     `v` is whoever acts (the history row, bans, spam checks), `form` the fields as edit_post reads them, `upload` an
     image file or None, `media_owner_ids` whose linked files the text may show (the author alone by default)."""
+    if primary.is_deleted or p.is_deleted:         # the shared-draft publish reaches here without edit_post's own check
+        return _edit_error(msg(deletion.GONE), 403)
     old_url = primary.url or ""
     old_body = primary.body or ""
 
@@ -395,10 +404,13 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
             else:
                 reason = tr("Remove the %(domain)s link from your post and try again.", domain=ban.domain)
 
-            #auto ban for digitally malicious content; a limited QR sign-in is only refused (helpers/qr_login.py)
-            if any([x.reason==4 for x in bans]) and not v.qr_limited:
-                v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
-                abort(403)
+            # a malicious link puts the account on hold, never bans it (helpers/auto_quarantine.py: an admin decides what follows); a limited QR sign-in is
+            # only refused (helpers/qr_login.py). Committed here: a shared draft's publish rolls a refusal back, and this one must stand
+            malicious = next((x for x in bans if x.reason == 4), None)
+            if malicious is not None and not v.qr_limited:
+                auto_quarantine.hold(g.db, v, "link_malicious", detail=f"a link to {malicious.domain} in an edit of a post")
+                g.db.commit()
+                auto_quarantine.send_pending(g.db)
 
             return _edit_error(reason, 403)
     else:
@@ -440,15 +452,17 @@ def apply_post_edit(p, primary, v, form, upload, media_owner_ids=None):
             literal(check_url).contains(
                 BadLink.link)).first()
         if badlink:
-            if badlink.autoban and not v.qr_limited:
-                notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
-                v.ban(days=1, reason="spam")
+            # the way to your notifications is only for an account the hold really changed; an account nothing was held for (an admin, a bot, one that is held
+            # already) gets the refusal any other bad link gets, so a shared draft's publish (routes/collab.py) sees a refusal and not a redirect
+            if (badlink.autoban and not v.qr_limited
+                    and auto_quarantine.hold(g.db, v, "spam", detail=f"a link on the autoban list ({badlink.link}) in an edit of a post") is not None):
+                g.db.commit()
+                auto_quarantine.send_pending(g.db)
 
                 return redirect('/notifications')
-            else:
 
-                return _edit_error(tr("The link `%(link)s` is not allowed. Reason: %(reason)s", link=badlink.link,
-                                      reason=badlink.reason), 403)
+            return _edit_error(tr("The link `%(link)s` is not allowed. Reason: %(reason)s", link=badlink.link,
+                                  reason=badlink.reason), 403)
 
     if primary.is_profile_post and comment_permission != cperm.mode_of(primary):
         primary.comment_permission = comment_permission
@@ -618,6 +632,9 @@ an admin, only a metadata-only notice is shown - no content.
     copy_url = (f"/post/{post.base36id}/copy"
                 if v is not None and action_log.snapshot_for(g.db, post_id=post.id, viewer=v) else None)
 
+    # the editors of a post written with others whose credit is anonymous are drawn by their number (the second review, C15)
+    from ruqqus.routes.collab import _hidden_credits
+    credit_post = post.reposts if (post.is_forward_copy and post.reposts) else post
     return render_template(
         "content_history.html",
         v=v,
@@ -626,6 +643,7 @@ an admin, only a metadata-only notice is shown - no content.
         entries=entries,
         obliteration=obliteration,
         copy_url=copy_url,
+        hidden_actors=_hidden_credits(credit_post, v),
         show_text=history_text_shown(post, v)
     )
 
@@ -837,7 +855,8 @@ def _bot_refusal(v, bot=None):
         owner = g.db.query(User).filter_by(id=v.bot_owner_id).first() if v.bot_owner_id else None
     today = bot_store.posts_today(g.db, v.id, bot_rules.utc_day())
     message = bot_rules.post_refusal(bot, owner, today)
-    return message, bool(message) and (today >= bot_rules.DAILY_CAP or not bot_rules.enabled())
+    # an owner's hold can be lifted, so a bot key's script is told to wait (the cap and bots switched off are waits too), never to stop
+    return message, bool(message) and (today >= bot_rules.DAILY_CAP or not bot_rules.enabled() or message == msg(bot_rules.OWNER_HELD))
 
 
 @app.route("/submit", methods=['POST'])
@@ -1077,15 +1096,14 @@ Optional file data:
     if domain_obj:
         if not domain_obj.can_submit:
 
-            # a suspension outlives everything, so a limited QR sign-in is only refused (helpers/qr_login.py)
+            # a quarantine outlives everything, so a limited QR sign-in is only refused (helpers/qr_login.py); otherwise the link puts the account on hold
+            # and an admin decides what follows (helpers/auto_quarantine.py)
             if v.qr_limited:
                 pass
-            elif domain_obj.reason==4:
-                v.ban(days=30, reason=N_("Digitally malicious content"))
-            elif domain_obj.reason==9:
-                v.ban(days=7, reason=N_("Engaging in illegal activity"))
-            elif domain_obj.reason==7:
-                v.ban(reason=N_("Sexualizing minors"))
+            elif domain_obj.reason in _LINK_TRIGGERS:
+                auto_quarantine.hold(g.db, v, _LINK_TRIGGERS[domain_obj.reason], detail=f"a link to {domain_obj.domain} on a new post")
+                g.db.commit()
+                auto_quarantine.send_pending(g.db)
 
             # the link is refused, as when editing a post (edit_post)
             reason = BAN_REASONS[domain_obj.reason] if 0 < (domain_obj.reason or 0) < len(BAN_REASONS) else ""
@@ -1299,19 +1317,14 @@ Optional file data:
 
     if max(len(similar_urls), len(similar_posts)) >= threshold:
 
-        # this would suspend the member and every account linked to them: not on a limited QR sign-in's word (helpers/qr_login.py)
+        # this would put the member and every account linked to them on hold: not on a limited QR sign-in's word (helpers/qr_login.py)
         if v.qr_limited:
             refused = qr_limited_answer(v)
             return {"html": lambda: refused, "api": lambda: refused}
 
-        notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
-
-        v.ban(reason=N_("Spamming."),
-              days=1)
-
-        for alt in v.alts:
-            if not alt.is_suspended:
-                alt.ban(reason=N_("Spamming."), days=1)
+        # the check only quarantines (helpers/auto_quarantine.py): the account's alts too, in staff-only entries, and an admin decides what follows
+        auto_quarantine.hold(g.db, v, "spam", alts=v.alts,
+                             detail=f"{len(similar_posts)} similar posts and {len(similar_urls)} similar links in a day")
 
         for post in similar_posts + similar_urls:
             post.is_banned = True
@@ -1328,6 +1341,7 @@ Optional file data:
                     )
             g.db.add(ma)
         g.db.commit()
+        auto_quarantine.send_pending(g.db)
         return redirect("/notifications")
 
     # catch too-long body
@@ -1377,11 +1391,14 @@ Optional file data:
         else:
             reason = tr("Remove the %(domain)s link from your post and try again.", domain=ban.domain)
             
-        #auto ban for digitally malicious content; a limited QR sign-in is only refused (helpers/qr_login.py)
-        if any([x.reason==4 for x in bans]) and not v.qr_limited:
-            v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
-            abort(403)
-            
+        # a malicious link puts the account on hold, never bans it (helpers/auto_quarantine.py: an admin decides what follows); a limited QR sign-in is only
+        # refused (helpers/qr_login.py). Committed here, then the 403 refusal below answers (an abort would roll the hold back)
+        malicious = next((x for x in bans if x.reason == 4), None)
+        if malicious is not None and not v.qr_limited:
+            auto_quarantine.hold(g.db, v, "link_malicious", detail=f"a link to {malicious.domain} in the text of a new post")
+            g.db.commit()
+            auto_quarantine.send_pending(g.db)
+
         return {"html": lambda: (render_template("submit.html",
                                                  v=v,
                                                  error=reason,
@@ -1415,9 +1432,12 @@ Optional file data:
             literal(check_url).contains(
                 BadLink.link)).first()
         if badlink:
-            if badlink.autoban and not v.qr_limited:
-                notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
-                v.ban(days=1, reason="spam")
+            # the way to your notifications is only for an account the hold really changed; an account nothing was held for (an admin, a bot) gets the refusal any
+            # other bad link gets (a redirect would answer an admin with nothing: no post, no message)
+            if (badlink.autoban and not v.qr_limited
+                    and auto_quarantine.hold(g.db, v, "spam", detail=f"a link on the autoban list ({badlink.link}) in a new post") is not None):
+                g.db.commit()
+                auto_quarantine.send_pending(g.db)
 
                 return redirect('/notifications')
             else:
@@ -2019,6 +2039,11 @@ Form field (the site only; an API app always deletes):
     if post.is_deleted:
         abort(404)
 
+    # a Space's (or a live thread's) backing post is the Space's own, ended from its page (routes/spaces.py): deleting it here would publish its title and
+    # description in the Log as a post's, which a Space never is (decision 12, the second review C06)
+    if post.is_space or cperm.is_space(post):
+        return jsonify({"error": msg(deletion.SPACE_DELETE)}), 403
+
     # a collaborative post is deleted only when its authors agree (a proposal in its shared draft, routes/collab.py)
     if collab_store.open_doc_for_post(g.db, post.repost_id or post.id) is not None and not post.is_repost:
         return jsonify({"error": COLLAB_DELETE_REFUSAL}), 403
@@ -2054,6 +2079,11 @@ def unlink_post(post, v):
         already=bool(post.is_anonymous), deleted=False, bot=bool(post.is_bot))
     if refusal:
         return jsonify({"error": msg(refusal)}), 409
+    # a post limited to "accounts I follow" can't be anonymous (it would show who follows whom): taking the name off would silently reopen its comments to
+    # everyone, so it is refused until the author changes who can comment (the second review, C32)
+    limit = cperm.refusal(post.comment_permission or cperm.EVERYONE, True)
+    if limit:
+        return jsonify({"error": str(limit)}), 409
     anonymise.anonymise_post(g.db, post)
     if flag(request.form, "with_comments"):
         # the tick box: "also remove my name from my comments here". Left unticked they stay under the name, which tells readers who wrote the post
@@ -2080,6 +2110,11 @@ def delete_post_as(post, v):
     **What it leaves** (helpers/deletion.py): inside the grace window an erase (a private copy for the author and the admins, no entry); after
     it the post and its copies are made anonymous, the author's own comments under them too, and the words stay in the Log as Anonymous (the entry
     and its public copy). A child account's leaves the line only, an item a moderator removed or a banned guild's too."""
+    # one delete at a time per account, then look again: a second request that waited for the first finds the post already gone
+    deletion_store.lock_deletes(g.db, post.author_id)
+    g.db.refresh(post)
+    if post.is_deleted:
+        return jsonify({"error": msg(deletion.GONE)}), 404
     now = int(time.time())
     author = post.author
     primary_scope = not post.is_repost

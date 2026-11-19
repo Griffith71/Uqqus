@@ -237,6 +237,7 @@ def live_update_one(uid, v):
 
 @app.route("/api/post/<pid>/live_updates", methods=["POST"])
 @is_not_banned
+@not_quarantined("live_update")
 @validate_formkey
 def live_update_add(pid, v):
     child_error = age_declaration.content_refusal(v)        # an update is posting: a child account is read-only
@@ -301,9 +302,13 @@ def live_update_delete(uid, v):
 
 @app.route("/api/post/<pid>/live_summary", methods=["POST"])
 @is_not_banned
+@not_quarantined("live_update")
 @validate_formkey
 def live_summary(pid, v):
     """The pinned summary (Reddit's "resources"), kept up to date by who runs the thread; empty clears it."""
+    child_error = age_declaration.content_refusal(v)        # the summary is published to the thread: a child account is read-only (the second review, C46)
+    if child_error:
+        return _error(msg(child_error), 403)
     post, primary = _readable(pid, v)
     refused = _space_refusal(primary)
     if refused:

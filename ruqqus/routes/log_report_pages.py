@@ -17,7 +17,7 @@ from ruqqus.helpers import action_log, log_reports, log_view
 from ruqqus.helpers.get import get_post
 from ruqqus.helpers.i18n_runtime import tr
 from ruqqus.helpers.redirects import same_site
-from ruqqus.helpers.wrappers import admin_level_required, auth_required, validate_formkey
+from ruqqus.helpers.wrappers import admin_level_required, auth_required, not_quarantined, validate_formkey
 
 REPORT_RATE = "30/hour"
 
@@ -33,7 +33,9 @@ def _entry_words(entry):
 
 @app.route("/log/<int:entry_id>/report", methods=["POST"])
 @limiter.limit(REPORT_RATE)
+# a held sign-up reports nothing else either, and its report would count like a member's (the second review, C51)
 @auth_required
+@not_quarantined("report")
 @validate_formkey
 def log_report(entry_id, v):
     level = action_log.staff_level(v.admin_level)
@@ -84,7 +86,7 @@ def _plain_words(html_):
     and cleaned again with the site's own cleaner, so what is drawn is as safe as any member text."""
     from markupsafe import Markup
     from ruqqus.helpers import sanitize as sanitize_rules
-    return Markup(sanitize_rules._clean_wo_links.clean(log_view.without_links(log_view.without_media(html_))))
+    return Markup(sanitize_rules._clean_wo_links.clean(log_view.without_links(log_view.without_media(html_, plain=True))))
 
 
 @app.route("/admin/log_reports", methods=["GET"])

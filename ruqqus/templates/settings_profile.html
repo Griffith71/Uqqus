@@ -36,6 +36,10 @@
                   </label>
                 </form>
 
+                {% elif v.is_auto_quarantined %}
+
+                <div class="text-muted">{{ _("An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review.") }}</div>
+
                 {% else %}
 
                 <div class="text-muted">{{ _("You must have a verified email address to upload images via Tor.") }}</div>
@@ -90,6 +94,10 @@
                     {{ pgettext("button", "Update") }}<input type="file" hidden name="banner" onchange="form.submit()">
                   </label>
                 </form>
+
+                {% elif v.is_auto_quarantined %}
+
+                <div class="text-muted">{{ _("An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review.") }}</div>
 
                 {% else %}
 

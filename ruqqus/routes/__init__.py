@@ -76,6 +76,7 @@ from .profile_edit_pages import *
 from .account_reports import *
 from .site_feedback import *
 from .signup_guard_pages import *
+from .quarantine_pages import *
 from .admin_traffic_pages import *
 from .bot_accounts import *
 from .guild_flair import *

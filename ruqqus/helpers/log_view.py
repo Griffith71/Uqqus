@@ -7,6 +7,11 @@ nothing the author wrote reaches it. **What an author deleted themselves** (the 
 2026-11-05) **stays here as Anonymous, with its words** under the word-filter, sensitive and Child-level rules of any member text, and
 without a clickable link or a picture (`without_links`, `without_media`); inside the five-minute grace window a delete leaves nothing.
 
+**A quarantine an automatic check placed** (helpers/auto_quarantine.py) is a line on the Sanctions tab that names nobody: the site's own account, "put an account in
+quarantine" (or "lifted a quarantine an automatic check had placed"), the rule and a generic reason ("Automatic spam check"), the time. It has no account, item or guild
+for the sentence to name (`sentence` draws it from `ACTIONTYPES` like any other line, with an empty target); the staff-only entry beside it, which names the account, is read
+on /admin/log by its action name.
+
 A guild's own log keeps its filters (`SHOW`): the owner can narrow it to one kind of action.
 """
 import re
@@ -176,13 +181,15 @@ def without_links(html):
     return str(soup)
 
 
-def without_media(html):
+def without_media(html, plain=False):
     """The stored text of a preserved copy with its pictures and sounds replaced by a plain marker: an item's uploads are
     detached when it is deleted, so their addresses no longer serve anything. Only tags are removed and a fixed marker put
-    in, so what comes out is as safe as what went in."""
+    in, so what comes out is as safe as what went in. `plain=True` is for text that goes through the sanitizer afterwards (the Deleted
+    tab, the report queue): its cleaner allows no `span`, so a span marker was drawn as the literal text `<span class="text-muted">[picture]</span>`
+    (the second review, C58)."""
     # Translators: stands in a preserved copy's text where a sound was
-    sound = f'<span class="text-muted">{escape(tr("[sound]"))}</span>'
+    sound = escape(tr("[sound]")) if plain else f'<span class="text-muted">{escape(tr("[sound]"))}</span>'
     # Translators: stands in a preserved copy's text where a picture was
-    picture = f'<span class="text-muted">{escape(tr("[picture]"))}</span>'
+    picture = escape(tr("[picture]")) if plain else f'<span class="text-muted">{escape(tr("[picture]"))}</span>'
     html = _SOUND.sub(lambda _m: sound, html or "")
     return _PICTURE.sub(lambda _m: picture, html)

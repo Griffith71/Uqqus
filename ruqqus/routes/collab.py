@@ -165,6 +165,7 @@ def collab_list(v):
 
 @app.route("/collab/new", methods=["POST"])
 @is_not_banned
+@not_quarantined("collab")
 @validate_formkey
 def collab_new(v):
     """A new shared draft with its creator as the one author (a plain form: it works without script)."""
@@ -320,6 +321,7 @@ def collab_ops_after(doc_id, v):
 @app.route("/api/collab/<int:doc_id>/ops", methods=["POST"])
 @limiter.limit(f"{rules.OPS_PER_MINUTE}/minute", key_func=member_limit_key)
 @is_not_banned
+@not_quarantined("collab")
 @validate_formkey
 def collab_send_op(doc_id, v):
     """One op on one field, made on revision `base`. Answers {own: the op's revision or null when it changed
@@ -485,6 +487,7 @@ def _settle_all(doc, actor, now):
 @app.route("/api/collab/<int:doc_id>/propose", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_quarantined("collab")
 @validate_formkey
 def collab_propose(doc_id, v):
     """kind add_author | remove_author (`username`), change_rules (the rules fields), delete_post."""
@@ -569,6 +572,7 @@ def collab_propose(doc_id, v):
 @app.route("/api/collab/<int:doc_id>/proposals/<int:pid>/vote", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_quarantined("collab")
 @validate_formkey
 def collab_vote(doc_id, pid, v):
     doc = _doc_or_404(doc_id, v)
@@ -631,6 +635,7 @@ def collab_invite(pid, v):
 @app.route("/api/collab/invite/<int:pid>/<answer>", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_quarantined("collab")
 @validate_formkey
 def collab_invite_answer(pid, answer, v):
     proposal, doc = _invite_or_404(pid, v)
@@ -725,6 +730,11 @@ def _sync_coauthors(doc):
     if post is None:
         return
     current = set(store.author_ids(g.db, doc[0])) - {post.author_id}
+    # an account locked since it joined the draft is no co-author of what is published: a child account only reads, and a public byline is not something it
+    # accepted (the second review, C45)
+    if current:
+        locked = {u.id for u in g.db.query(User).filter(User.id.in_(sorted(current))).all() if age_declaration.is_locked(u)}
+        current -= locked
     rows = {row.user_id: row for row in g.db.query(PostCoauthor).filter_by(post_id=post.id).all()}
     now = _now()
     for uid, row in rows.items():
@@ -750,10 +760,23 @@ def _snapshot(doc):
             "options": store.options_of(doc)}
 
 
+def _went_to_notifications(answer):
+    """Whether `apply_post_edit` answered with the redirect to the person's notifications. That is how it answers an account an automatic check has just put
+    on hold (routes/posts.py): the edit was refused, whatever the redirect looks like to a caller that only reads a tuple's status. A successful edit
+    answers with a redirect to the post's own address."""
+    if getattr(answer, "status_code", 200) not in (301, 302, 303, 307, 308):
+        return False
+    location = str(getattr(answer, "headers", {}).get("Location") or "")
+    return location.split("?", 1)[0].rstrip("/") == "/notifications"
+
+
 def _publish(doc, publisher, snap, now):
     """Puts a snapshot of the draft on the post (making the post the first time). Returns an error message or None:
     English marked with N_ (it is also written into a notification) or what a refusal said, drawn with msg. The caller
     has committed: the first publish runs a whole request of its own."""
+    refused = age_declaration.content_refusal(publisher)       # whoever presses Publish (an author, or the settle path of a proposal) puts words in front of readers
+    if refused:
+        return refused
     title = (snap.get("title") or "").strip()
     try:
         rules.check_title(title)
@@ -762,7 +785,7 @@ def _publish(doc, publisher, snap, now):
     body = snap.get("body") or ""
     # asked before anything changes (bug hunt: a suspended proposer's passed proposal edited the live post, and the
     # check came after the edit was committed, so the revision was never recorded)
-    if publisher is None or publisher.is_suspended or publisher.is_deleted:
+    if publisher is None or publisher.is_suspended or publisher.is_quarantined or publisher.is_deleted:
         return N_("Your account can't publish right now.")
     if _listed_link((snap.get("options") or {}).get("url")):
         return N_("That link can't be posted here.")
@@ -794,8 +817,11 @@ def _publish(doc, publisher, snap, now):
             g.db.rollback()
             data = answer[0].get_json(silent=True) or {}
             return str(data.get("error") or N_("The post refused the change."))[:300]
-        if publisher.is_suspended:
+        if publisher.is_suspended or publisher.is_quarantined:      # a spam check or a malicious link in the edit may just have put the account on hold
             return N_("Your account can't publish right now.")
+        if _went_to_notifications(answer):                          # the answer an account the site's own check just held gets: the edit did not happen
+            g.db.rollback()
+            return N_("The post refused the change.")
         g.db.expire_all()
         post = g.db.query(Submission).filter_by(id=doc[7]).first()
         store.set_published(g.db, doc[0], post.id, snap["revision"])
@@ -813,6 +839,7 @@ def _publish(doc, publisher, snap, now):
 @app.route("/api/collab/<int:doc_id>/publish", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_quarantined("collab")
 @validate_formkey
 def collab_publish(doc_id, v):
     """Publish the working copy: at once when any author may, or as a proposal when the rules put it to a vote."""
@@ -876,11 +903,12 @@ def _readable_collab_post(pid, v):
 @auth_required
 def collab_fork_page(pid, v):
     post, doc = _readable_collab_post(pid, v)
-    return render_template("collab/fork.html", v=v, p=post, doc=doc, may_fork=post.is_public)
+    return render_template("collab/fork.html", v=v, p=post, doc=doc, may_fork=post.is_public and not _hidden_credits(post, None))
 
 
 @app.route("/collab/fork/<pid>", methods=["POST"])
 @is_not_banned
+@not_quarantined("collab")
 @validate_formkey
 def collab_fork(pid, v):
     """A new shared draft from a public collaborative post's latest published revision, with who typed what kept."""
@@ -892,6 +920,10 @@ def collab_fork(pid, v):
         abort(403)
     if not post.is_public:
         return _error(tr("Only a public post can be forked."), 403)
+    if _hidden_credits(post, None):
+        # a fork copies who typed what by account, and the new draft's who-wrote-what page names every one: an anonymous credit would be drawn by name
+        # (the second review, C26). Refused rather than half-hidden
+        return _error(tr("A post with an anonymous credit can't be forked."), 403)
     now = _now()
     if store.forks_since(g.db, v.id, now - DAY) >= rules.FORKS_PER_DAY:
         return _error(trn("You can fork %(num)s post a day.", "You can fork %(num)s posts a day.", rules.FORKS_PER_DAY), 429)

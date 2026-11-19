@@ -49,6 +49,10 @@ def _target(board, v):
     # what an exile by name refuses too, said to nobody: another guildmaster, an admin, an approved contributor
     if board.has_mod(user) or board.has_contributor(user) or (user.admin_level or 0) >= 3:
         return None
+    # what an exile by name refuses to cite, too (a deleted, grace-erased, removed or author-hidden item): kept as a year-long copy every
+    # guildmaster of the guild can open, so it is refused here with the common answer, not acted on (the second review, C22)
+    if not sanction_evidence.usable(item, board.id, user.id, user.id, allow_anonymous=True):
+        return None
     return user, item, thread, number
 
 
@@ -99,15 +103,14 @@ def mod_exile_alias(guildname, board, v):
     sanction_evidence.keep(g.db, entry, board.id, user.id, [item])          # the anonymous item it cites, as it was: read through the copy pages only
     g.db.commit()
     # told once the exile and its record are committed (`notify` commits on its own)
-    notify(user, N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward "
-                    "posts to +%(guild)s or comment in it.\n\nYou were exiled for [this item](%(link)s)."), guild=board.name, link=link)
+    notify(user, log_notices.ALIAS_EXILED, guild=board.name, link=link)
     if entry:
         log_notices.tell_appeal_way(g.db, entry, user)
         log_notices.mark_sent(g.db, entry)
         g.db.commit()
-    from ruqqus.helpers import guild_channel_access
-    guild_channel_access.remove_from_rooms(g.db, board.id, user.id, drop_roles=True)
-    g.db.commit()
+    # NOT `guild_channel_access.remove_from_rooms(..., drop_roles=True)`: it deletes the account's roles and has the bot kick it from its rooms with a
+    # reason, both readable by people who must not learn which account the number is, and a success then takes longer than the no-op that answers
+    # alike. `read_refusal` already stops an exiled account reading or writing, and the sync step takes it out of the rooms (the second review, C19)
     return _accepted()
 
 
@@ -153,20 +156,9 @@ def mod_chatban_alias(guildname, board, v):
     g.db.commit()
     log_notices.tell_imposed(g.db, user.id, log_notices.MUTED, entry, guild=board.name, rule_key=action_log.parse_rule(request.form.get("rule")),
                              reason=request.form.get("reason"), actor_id=v.id)
-    _leave_encrypted_rooms(board, user)
+    # an encrypted room can't stop a muted person writing, so the sync step puts them out (`guild_channel_sync`, within minutes): the bot's kick
+    # here would name the account in the room's own history and make a success slower than the no-op that answers alike (the second review, C19)
     return _accepted()
-
-
-def _leave_encrypted_rooms(board, user):
-    """The site can't stop a muted person writing in an encrypted room, so they leave it, as the mute by name does (routes/guild_channels.py)."""
-    from ruqqus.helpers import guild_channel_store as store, matrix_client as matrix
-    for cid, room in store.encrypted_rooms_of(g.db, board.id, user.id):
-        try:
-            matrix.kick_as_bot(room, matrix.mxid_for(user.id), "Muted in the guild's channels")
-            store.leave(g.db, cid, user.id)
-        except matrix.MatrixError:
-            pass                                                # the sync step does it within minutes
-    g.db.commit()
 
 
 @app.route("/mod/unchatban_alias/<guildname>/<int:ban_id>", methods=["POST"])

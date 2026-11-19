@@ -30,3 +30,20 @@ def test_every_action_has_an_admin_label():
     pages = (Path(__file__).resolve().parents[1] / "ruqqus/routes/signup_guard_pages.py").read_text()
     for action in quarantine.ACTIONS + ("other",):
         assert f'"{action}":' in pages, action
+
+
+def test_an_automatic_hold_gets_its_own_message_and_the_review_link_and_the_guards_hold_keeps_the_email_one():
+    automatic = SimpleNamespace(id=5, is_quarantined=True, quarantine_kind=1)
+    guard = SimpleNamespace(id=6, is_quarantined=True, quarantine_kind=0)
+    unsaid = SimpleNamespace(id=7, is_quarantined=True)
+    assert quarantine.refusal(automatic, "post") == quarantine.HELD_AUTOMATIC
+    assert quarantine.refusal(guard, "post") == quarantine.HELD and quarantine.refusal(unsaid, "post") == quarantine.HELD
+    assert quarantine.is_automatic(automatic) and not quarantine.is_automatic(guard) and not quarantine.is_automatic(unsaid) and not quarantine.is_automatic(None)
+    assert "email" not in quarantine.HELD_AUTOMATIC.lower() and "email" in quarantine.HELD.lower()           # no email releases it, so none is offered
+    assert quarantine.APPEAL_LINK == "/appeal/quarantine"
+
+
+def test_the_attempts_of_an_automatically_held_account_are_counted_too():
+    r = FakeRedis()
+    assert quarantine.refusal(SimpleNamespace(id=5, is_quarantined=True, quarantine_kind=1), "comment", r) == quarantine.HELD_AUTOMATIC
+    assert signup_signals.attempts(r, 5) == {"comment": 1}

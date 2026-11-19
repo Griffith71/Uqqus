@@ -6,6 +6,11 @@ commits.
 Decisions: '' while held; `approved` (an admin), `verified` (the account verified an email that isn't a throwaway),
 `banned` (an admin); `allowed` for a sign-up that was never held. Approving or verifying clears `quarantined_utc`;
 banning leaves it set, so a reinstated account is still held until someone approves it.
+
+**Only the signup guard's own hold (`users.quarantine_kind` 0) is ever read or cleared here.** A hold an automatic check placed (kind 1:
+helpers/auto_quarantine.py) is released only by an admin through that module or by a successful appeal: not by approving or verifying here, not by
+an email, not by time. An account the guard held that then tripped an automatic check is kind 1, and so out of this queue and out of every
+UPDATE below.
 """
 from sqlalchemy import bindparam, text
 
@@ -25,7 +30,7 @@ def record(db, user_id, now, verdict, network, shape, held):
 
 _WAITING = (
     "FROM signup_reviews s JOIN users u ON u.id = s.user_id "
-    "WHERE s.decision = '' AND u.quarantined_utc > 0 AND u.is_deleted = false")
+    "WHERE s.decision = '' AND u.quarantined_utc > 0 AND u.quarantine_kind = 0 AND u.is_deleted = false")
 
 
 def waiting(db, page=1):
@@ -95,7 +100,7 @@ def decide(db, user_ids, decision, admin_id, now):
         "WHERE decision = '' AND user_id IN :ids").bindparams(bindparam("ids", expanding=True)),
         {"d": decision, "t": int(now), "a": int(admin_id or 0), "ids": ids})
     if decision != "banned":
-        db.execute(text("UPDATE users SET quarantined_utc = 0 WHERE id IN :ids").bindparams(
+        db.execute(text("UPDATE users SET quarantined_utc = 0 WHERE id IN :ids AND quarantine_kind = 0").bindparams(
             bindparam("ids", expanding=True)), {"ids": ids})
     return ids
 
@@ -105,10 +110,13 @@ def release(db, user_id, decision, now, admin_id=0):
     hand, or from before the table, has none)."""
     if decision not in ("approved", "verified"):
         raise ValueError(decision)
+    # never an account an automatic check holds (kind 1): its review row stays as it is and the hold stands
     db.execute(text(
         "UPDATE signup_reviews SET decision = :d, decided_utc = :t, decided_by = :a "
-        "WHERE user_id = :u AND decision = ''"), {"d": decision, "t": int(now), "a": int(admin_id or 0), "u": user_id})
-    return db.execute(text("UPDATE users SET quarantined_utc = 0 WHERE id = :u AND quarantined_utc > 0"),
+        "WHERE user_id = :u AND decision = '' AND NOT EXISTS "
+        "(SELECT 1 FROM users x WHERE x.id = :u AND x.quarantine_kind = 1 AND x.quarantined_utc > 0)"),
+        {"d": decision, "t": int(now), "a": int(admin_id or 0), "u": user_id})
+    return db.execute(text("UPDATE users SET quarantined_utc = 0 WHERE id = :u AND quarantined_utc > 0 AND quarantine_kind = 0"),
                       {"u": user_id}).rowcount > 0
 
 

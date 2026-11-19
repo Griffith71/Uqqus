@@ -67,6 +67,7 @@
             {% if v.can_upload_avatar and v.can_upload_banner %}<p id="pe-help">{{ _("JPG, PNG, GIF files supported. Max file size 16MB.") }}</p>
             {% else %}
             {% if v.can_upload_avatar %}<p id="pe-help">{{ _("JPG, PNG, GIF files supported. Max file size 16MB.") }}</p>
+            {% elif v.is_auto_quarantined %}<p>{{ _("An automatic check put your account on hold, so you can't do this for now. A member of the staff will look at it. If you think the check was wrong, you can ask for a review.") }}</p>
             {% else %}<p>{{ _("You must have a verified email address to upload images via Tor.") }}</p>{% endif %}
             {% if v.can_upload_banner %}<p id="pe-help-banner">{{ _("JPG, PNG, GIF files supported. Max file size 16MB. (Recommend 1400x250 pixels)") }}</p>{% endif %}
             {% endif %}

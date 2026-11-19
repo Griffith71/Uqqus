@@ -11,7 +11,8 @@ OLD = NOW - bots.OWNER_MIN_AGE - 1
 
 def member(created=OLD, **kw):
     return NS(created_utc=created, is_bot=kw.get("is_bot", False), is_deleted=kw.get("is_deleted", False),
-              is_suspended=kw.get("is_suspended", False))
+              is_suspended=kw.get("is_suspended", False), is_quarantined=kw.get("is_quarantined", False),
+              quarantine_kind=kw.get("quarantine_kind", 0))
 
 
 # --- who may apply -------------------------------------------------------------------------------------------
@@ -311,6 +312,25 @@ def test_the_member_must_be_in_good_standing_for_their_feeds_to_post():
     assert "owner" in bots.post_refusal(own(), member(is_deleted=True), 0, is_on=True)
     assert "a day" in bots.post_refusal(own(), member(), bots.DAILY_CAP, is_on=True)
     assert bots.post_refusal(own(bots.PAUSED), member(), 0, is_on=True) == "This bot is not running."
+
+
+@pytest.mark.parametrize("held", [member(is_quarantined=True),                        # the signup guard's hold
+                                  member(is_quarantined=True, quarantine_kind=1)])    # an automatic check's
+@pytest.mark.parametrize("row", [own(), own(kind=bots.MEMBER)], ids=["own account", "member bot"])
+def test_a_held_owner_cant_run_a_member_bot_or_their_own_accounts_posting(row, held):
+    # the bot account itself is exempt from a hold (User.is_quarantined), so the owner's is asked here
+    assert bots.post_refusal(row, held, 0, is_on=True) == bots.OWNER_HELD
+    assert "owner" in bots.post_refusal(row, held, 0, is_on=True)
+    assert bots.post_refusal(row, member(), 0, is_on=True) is None
+    # a hold that is lifted lets it run again, and a site bot has no owner to hold
+    assert bots.post_refusal(row, member(is_quarantined=False), 0, is_on=True) is None
+    assert bots.post_refusal(NS(status=bots.APPROVED, kind=bots.SITE), None, 0, is_on=True) is None
+
+
+def test_a_held_owner_who_is_also_suspended_or_over_the_cap_gets_the_older_answers_first():
+    assert bots.post_refusal(own(), member(is_suspended=True, is_quarantined=True), 0, is_on=True) == "This bot's owner can't run it right now."
+    assert "a day" in bots.post_refusal(own(), member(), bots.DAILY_CAP, is_on=True)
+    assert bots.post_refusal(own(bots.PAUSED), member(is_quarantined=True), 0, is_on=True) == "This bot is not running."
 
 
 @pytest.mark.parametrize("account_is_bot, says_bot, row, automated", [

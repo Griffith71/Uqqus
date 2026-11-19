@@ -26,7 +26,7 @@ from flask import g
 
 from ruqqus.__main__ import app, db_session
 from ruqqus.classes import User
-from ruqqus.helpers import bot_runner, bot_store, bots, feed_fetch
+from ruqqus.helpers import age_declaration, bot_runner, bot_store, bots, feed_fetch
 from ruqqus.helpers import alerts
 from ruqqus.helpers.base36 import base36decode
 from ruqqus.helpers.i18n_runtime import ENVIRON_KEY, N_
@@ -42,8 +42,11 @@ def log(message):
 
 
 def owner_ok(owner_id):
+    """May the member who runs a member bot, or whose own account posts automatically, run it now? Not while they are
+    deleted, suspended, age-restricted (`bots.post_refusal` asks the same) or held (the signup guard's hold or an automatic check's: a bot account is exempt
+    from the hold, so this is where it reaches the member's bots). The source is skipped and its items stay unseen (bot_runner.run_source)."""
     owner = db_session().query(User).filter_by(id=owner_id).first()
-    return bool(owner and not owner.is_deleted and not owner.is_suspended)
+    return bool(owner and not owner.is_deleted and not owner.is_suspended and not owner.is_quarantined and not age_declaration.is_locked(owner))
 
 
 def notify(user_id, message, **values):

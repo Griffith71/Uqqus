@@ -1,0 +1,57 @@
+{% extends "docs_default.html" %}
+
+{% block sidebarblock %}{% endblock %}
+{% block sidebarLeftblock %}{% endblock %}
+
+{% block title %}
+<title>{{ 'SITE_NAME' | app_config }} - Quarantine</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Quarantine</h1>
+
+<p class="text-muted">The site's own checks (the spam guard, a banned or malicious link, the SEO-spam check, ban-evasion detection and the image checks) never ban or suspend an account: they put it on hold. A held account can read the site and change its own settings, and can't post, comment, vote, follow, tip, report or use chat or calls (its chat devices are signed out). <strong>You decide what follows.</strong> <strong>Release</strong> lifts the hold; the person is told, and an appeal of it that is still waiting is settled as reversed. To <strong>ban</strong> it, open its profile and use the usual ban form there (a reveal of an anonymous poster still needs a second admin); a banned account leaves this list. Nothing public names a held account: the Log has one line that names nobody, and the entry that names the account is the staff's. An email never releases a hold of this kind, and neither does time. An appeal waits at <a href="/admin/appeals">Appeals</a>.</p>
+
+{% if msg %}<div class="alert alert-success py-2" role="status">{{ msg }}</div>{% endif %}
+
+<p class="text-small mb-3"><strong>Held ({{ waiting }})</strong></p>
+
+{% for row in rows %}
+<div class="card mb-2 quarantine-row" id="quarantine-{{ row.user_id }}">
+  <div class="card-body py-2 text-small">
+    <div class="d-flex flex-wrap align-items-baseline">
+      <a href="/@{{ row.username }}" class="font-weight-bold mr-2">@{{ row.username }}</a>
+      <span class="text-muted mr-2">held since {{ datetime_text(row.since, "%d %b %Y %H:%M") }} (UTC)</span>
+      {% if row.entry_id %}<a href="/log/{{ row.entry_id }}" class="mr-2">entry {{ row.entry_id }}</a>{% endif %}
+      {% if row.appeal == 'open' %}<span class="badge badge-warning mr-2">appeal waiting</span><a href="/admin/appeals">read it</a>
+      {% elif row.appeal %}<span class="text-muted">appeal {{ row.appeal }}</span>{% endif %}
+    </div>
+    {% if row.entry_id %}
+    <div class="mt-1">{{ row.check }}</div>
+    {% else %}
+    <div class="text-muted mt-1">No entry was written for this hold: the Log's problem count on the admin page says so. You can still release it.</div>
+    {% endif %}
+    {% if row.can_release %}
+    <form method="post" action="/admin/quarantine/{{ row.user_id }}/release" class="form-inline mt-2">
+      <input type="hidden" name="formkey" value="{{ v.formkey }}">
+      <input type="hidden" name="entry" value="{{ row.entry_id or 0 }}">
+      <input name="note" class="form-control form-control-sm mr-2 mb-1" style="min-width: 22rem;" maxlength="500" placeholder="Why you are lifting it, in a line" aria-label="Note for the Log" required>
+      <button class="btn btn-primary btn-sm mb-1 mr-2" type="submit">Release</button>
+      <a class="btn btn-outline-secondary btn-sm mb-1" href="/@{{ row.username }}">Open the profile to ban</a>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<p class="text-muted">No account is waiting for you.</p>
+{% endfor %}
+
+{% if page > 1 or next_exists %}
+<p class="text-small">
+  {% if page > 1 %}<a href="/admin/quarantine?page={{ page - 1 }}" class="mr-3">Newer</a>{% endif %}
+  {% if next_exists %}<a href="/admin/quarantine?page={{ page + 1 }}" rel="next">Older</a>{% endif %}
+</p>
+{% endif %}
+
+{% endblock %}

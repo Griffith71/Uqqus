@@ -153,7 +153,9 @@ def test_the_members_own_similar_posts_still_trip_the_guard(automating, real_app
         answer = by_hand(automating, "Buy my thing now at the shop number 7")
         if answer.status_code != 200:
             break
-    assert automating.user().is_suspended, "the old rule still holds for what the person posts by hand"
+    member = automating.user()
+    assert member.is_quarantined and member.is_auto_quarantined and not member.is_suspended and not member.is_banned, \
+        "the rule still holds for what the person posts by hand, and it holds the account now (it used to suspend it)"
 
 
 def test_switching_it_off_leaves_the_account_signed_in_and_its_posts(automating, runner, real_app):

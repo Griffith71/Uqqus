@@ -212,6 +212,7 @@ def chat_group_create(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_group_info(gid, v):
     group, me = _membership(gid, v, joined_only=False)
     return jsonify(group_json(group, me, v, full=True))
@@ -221,6 +222,7 @@ def chat_group_info(gid, v):
 @is_not_banned
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("group")
 @validate_formkey
 def chat_group_add(gid, v):
     group, me = _membership(gid, v)
@@ -251,6 +253,7 @@ def chat_group_add(gid, v):
 @app.route("/api/chat/groups/<int:gid>/remove", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("group")
 @validate_formkey
 def chat_group_remove(gid, v):
     group, me = _membership(gid, v)
@@ -306,6 +309,7 @@ def chat_group_leave(gid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 @validate_formkey
 def chat_group_accept(gid, v):
     group, me = _membership(gid, v, joined_only=False)
@@ -345,6 +349,7 @@ def chat_group_decline(gid, v):
 @app.route("/api/chat/groups/<int:gid>/rename", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_quarantined("group")
 @validate_formkey
 def chat_group_rename(gid, v):
     group, me = _membership(gid, v)
@@ -362,6 +367,7 @@ def chat_group_rename(gid, v):
 @app.route("/api/chat/groups/<int:gid>/role", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("group")
 @validate_formkey
 def chat_group_role(gid, v):
     group, me = _membership(gid, v)
@@ -391,6 +397,7 @@ def chat_group_mark_read(gid, v):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("chat")
 def chat_people(v):
     """Who can be added to a group, narrowed by ?q=: people you follow and the people you chat with. Never
     someone in a block with you, a bot, a deleted or suspended account, or a name your word filter hides."""

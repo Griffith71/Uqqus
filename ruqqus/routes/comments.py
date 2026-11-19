@@ -29,6 +29,7 @@ from ruqqus.helpers.post_fields import flag
 from ruqqus.helpers import comment_permission as cperm
 from ruqqus.helpers import age_declaration, anonymity
 from ruqqus.helpers import action_log, log_notices
+from ruqqus.helpers import auto_quarantine
 from ruqqus.helpers import anon_aliases, anonymise, deletion, deletion_store
 from ruqqus.classes import *
 from flask import *
@@ -38,6 +39,10 @@ from ruqqus.helpers import text_length
 from ruqqus.__main__ import app, limiter, db_session, member_limit_key
 from .front import frontlist
 from .posts import canonical_redirect
+
+# the banned-domain reasons (`Domain.reason`) a comment can trip, and the automatic check each is (helpers/auto_quarantine.py TRIGGERS): the site's own check only
+# puts the account on hold, an admin decides what follows. routes/posts.py keeps the same table (tests/test_automatic_checks_sites_assets.py)
+_LINK_TRIGGERS = {4: "link_malicious", 7: "link_minors", 9: "link_illegal"}
 
 
 BUCKET=app.config["S3_BUCKET"]
@@ -342,20 +347,20 @@ Optional file data:
         else:
             reason = tr("Remove the %(domain)s link from your comment and try again.", domain=ban.domain)
 
-        #auto ban for digitally malicious content; a limited QR sign-in is only refused (helpers/qr_login.py)
-        banned = True
-        if v.qr_limited:
-            banned = False
-        elif any([x.reason==7 for x in bans]):
-            v.ban(reason=N_("Sexualizing minors"))
-        elif any([x.reason==4 for x in bans]):
-            v.ban(days=30, reason=N_("Digitally malicious content"))
-        elif any([x.reason==9 for x in bans]):
-            v.ban(days=7, reason=N_("Engaging in illegal activity"))
-        else:
-            banned = False
+        # a link to one of the worst kinds of site puts the account on hold (helpers/auto_quarantine.py: an admin decides what follows, nothing is banned);
+        # a limited QR sign-in is only refused (helpers/qr_login.py). The first of these kinds that is among the links decides which check it was
+        banned = False
+        if not v.qr_limited:
+            for code in (7, 4, 9):
+                found = next((x for x in bans if x.reason == code), None)
+                if found is not None:
+                    banned = True
+                    auto_quarantine.hold(g.db, v, _LINK_TRIGGERS[code], detail=f"a link to {found.domain} in a comment")
+                    g.db.commit()
+                    auto_quarantine.send_pending(g.db)
+                    break
 
-        # a 401 told an API client its sign-in was bad (bug hunt): 403 when the link bans the account, else 400, as
+        # a 401 told an API client its sign-in was bad (bug hunt): 403 when the link holds the account, else 400, as
         # editing a comment answers
         return jsonify({"error": reason}), 403 if banned else 400
 
@@ -397,6 +402,11 @@ Optional file data:
 
         return jsonify({"error": tr("You can't comment on this.")}), 403
 
+    # the post itself, not only the comment being answered: a deleted or removed post's thread is a record, and a comment under one of its
+    # live comments used to be stored (the second review, C07)
+    if post.is_banned or post.deleted_utc > 0:
+        return jsonify({"error": tr("You can't comment on things that have been deleted.")}), 403
+
     # the author may limit who can comment on the post on their profile
     limited = cperm.restriction(post, v)
     if limited:
@@ -427,18 +437,12 @@ Optional file data:
             threshold *= 2
 
         if len(similar_comments) > threshold:
-            # this would suspend the member and every account linked to them: not on a limited QR sign-in's word (helpers/qr_login.py)
+            # this would put the member and every account linked to them on hold: not on a limited QR sign-in's word (helpers/qr_login.py)
             if v.qr_limited:
                 return qr_limited_answer(v)
 
-            notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
-
-            v.ban(reason=N_("Spamming."),
-                  days=1)
-
-            for alt in v.alts:
-                if not alt.is_suspended:
-                    alt.ban(reason=N_("Spamming."), days=1)
+            # the check only quarantines (helpers/auto_quarantine.py): the account's alts too, in staff-only entries, and an admin decides what follows
+            auto_quarantine.hold(g.db, v, "spam", alts=v.alts, detail=f"{len(similar_comments)} similar comments in a day")
 
             for comment in similar_comments:
                 comment.is_banned = True
@@ -455,6 +459,7 @@ Optional file data:
                 g.db.add(ma)
 
             g.db.commit()
+            auto_quarantine.send_pending(g.db)
             return jsonify({"error": tr("Too much spam!")}), 403
 
     # check badlinks
@@ -637,6 +642,7 @@ Optional file data:
 @app.patch("/api/v2/comments/<cid>")
 @limiter.limit(deletion.EDITS_PER_HOUR, key_func=member_limit_key)         # per account, as Wikipedia throttles edits rather than merging log lines
 @is_not_banned
+@not_quarantined("edit_comment")
 @validate_formkey
 @api("update")
 def edit_comment(cid, v):
@@ -685,10 +691,13 @@ Optional form data (left out: unchanged):
         
         ban = bans[0]
 
-        #auto ban for digitally malicious content
+        # a malicious link puts the account on hold, never bans it (helpers/auto_quarantine.py: an admin decides what follows)
         # (bug hunt L2: this answered 200, which the page took for a saved edit: the comment read "undefined")
-        if any([x.reason==4 for x in bans]) and not v.qr_limited:
-            v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
+        malicious = next((x for x in bans if x.reason == 4), None)
+        if malicious is not None and not v.qr_limited:
+            auto_quarantine.hold(g.db, v, "link_malicious", detail=f"a link to {malicious.domain} in an edit of a comment")
+            g.db.commit()
+            auto_quarantine.send_pending(g.db)
             return jsonify({"error": tr("Digitally malicious content is not allowed.")}), 403
         
         if ban.reason:
@@ -748,15 +757,8 @@ Optional form data (left out: unchanged):
         if v.qr_limited:
             return qr_limited_answer(v)
 
-        notify(v, N_("Your %(site)s account has been suspended for 1 day for the following reason:\n\n> Too much spam!"))
-
-        v.ban(reason=N_("Spamming."),
-              days=1)
-
-        # (this call used to pass include_alts=True, which User.ban has never accepted: a TypeError on this path)
-        for alt in v.alts:
-            if not alt.is_suspended:
-                alt.ban(reason=N_("Spamming."), days=1)
+        # the check only quarantines (helpers/auto_quarantine.py): the account's alts too, in staff-only entries, and an admin decides what follows
+        auto_quarantine.hold(g.db, v, "spam", alts=v.alts, detail=f"{len(similar_comments)} similar comments in a day")
 
         for comment in similar_comments:
             comment.is_banned = True
@@ -772,6 +774,7 @@ Optional form data (left out: unchanged):
                 ))
 
         g.db.commit()
+        auto_quarantine.send_pending(g.db)
         return jsonify({"error": tr("Too much spam!")}), 403
 
     now = int(time.time())
@@ -866,6 +869,10 @@ Form field (the site only; an API app always deletes):
 def delete_comment_as(c, v):
     """Deletes `c` as `v`, its author: what the delete route does, and what the History page's mass tool does for each comment it is given
     (routes/history_mass_pages.py). Answers None when it is done, or the response that refuses it (a limited sign-in)."""
+    deletion_store.lock_deletes(g.db, c.author_id)          # one delete at a time per account, then look again (the second review, C08, C09)
+    g.db.refresh(c)
+    if c.deleted_utc > 0:
+        return jsonify({"error": msg(deletion.GONE)}), 404
     now = int(time.time())
     author = c.author
     post = c.post
@@ -1440,6 +1447,7 @@ URL path parameters:
 
 @app.route("/author/hide_comment/<cid>", methods=["POST"])
 @is_not_banned
+@not_quarantined("moderate")
 @validate_formkey
 def author_hide_comment(cid, v):
     """
@@ -1507,6 +1515,7 @@ Required form data:
 
 @app.route("/author/unhide_comment/<cid>", methods=["POST"])
 @is_not_banned
+@not_quarantined("moderate")
 @validate_formkey
 def author_unhide_comment(cid, v):
     """

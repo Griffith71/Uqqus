@@ -345,7 +345,7 @@ def test_the_role_and_the_audience_come_from_who_acted_and_never_from_a_guildmas
 
 
 def test_the_public_page_leaves_out_a_private_guild_without_being_asked_to():
-    assert "open_guilds_only=None" in ACTION_LOG and "open_guilds_only = level < 3 and not member_boards" in body(ACTION_LOG, "fetch")
+    assert "open_guilds_only=None" in ACTION_LOG and "open_guilds_only = level < 3" in body(ACTION_LOG, "fetch")
     for fn in ("public_log", "_about_page"):
         assert "open_guilds_only=False" not in body(LOG_PAGES, fn), fn
     assert "SITE_BOARDS" in ACTION_LOG and "action_log.SITE_BOARDS" in body(LOG_PAGES, "_rows")           # +general / +systemprofile are no guilds

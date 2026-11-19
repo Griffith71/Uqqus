@@ -32,11 +32,11 @@ def db():
         for statement in _statements():
             conn.execute(text(statement))
         log_tables.apply(conn, modactions=True)
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, parent_submission INTEGER, author_id INTEGER, is_anonymous BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0, is_banned INTEGER DEFAULT 0, "
-                          "unban_utc INTEGER DEFAULT 0)"))
+                          "unban_utc INTEGER DEFAULT 0, ban_reason VARCHAR DEFAULT '')"))
         conn.execute(text("INSERT INTO boards VALUES (1, 0, 0), (2, 1, 0), (3, 0, 1)"))
         conn.execute(text("INSERT INTO users (id, admin_level) VALUES (1, 0), (10, 0), (11, 0), (20, 3), (21, 4), (30, 0)"))
     with Session(engine) as session:
@@ -259,5 +259,18 @@ def test_a_correction_hides_the_reason_and_is_a_new_linked_staff_entry_not_an_ed
     assert one(db, "SELECT redacted_by, reason FROM log_entries WHERE id = :i", i=original)[0] == 21
     assert log.fetch(db, level=0)[0][0]["reason"] == ""                         # the public reads nothing of it
     row = one(db, "SELECT action, audience, linked_entry_id, staff_note, actor_role FROM log_entries WHERE id = :i", i=note)
+    # nothing else held these words (the account's own ban_reason was never set here), so the note says only what the admin said
     assert tuple(row) == ("redact_entry", log.STAFF, original, "a private detail slipped into the reason", "admin")
     assert one(db, "SELECT COUNT(*) FROM log_entries")[0] == 2                  # the original stays, the correction is added
+    assert one(db, "SELECT reason FROM log_entries WHERE id = :i", i=original)[0] == "a name that should not be public"      # never edited
+    assert one(db, "SELECT COUNT(*) FROM log_failures")[0] == 0                 # no copy failed to clear
+
+
+def test_a_correction_also_clears_the_live_copy_of_the_reason_and_says_so_in_the_staff_note(db):
+    """C48 (helpers/reason_copies.py has the rules and tests/test_reason_copies.py every copy): the banned account's own `ban_reason` is the same words."""
+    db.execute(text("UPDATE users SET is_banned = 20, ban_reason = 'a name that should not be public' WHERE id = 30"))
+    original = log.record(db, "ban_user", 20, target_user_id=30, reason="a name that should not be public", role=log.ADMIN, now=NOW)
+    note = log.correct(db, original, type("A", (), {"id": 21})(), "a private detail slipped into the reason")
+    assert one(db, "SELECT staff_note FROM log_entries WHERE id = :i", i=note)[0] == "a private detail slipped into the reason (also cleared: the account's ban reason)"
+    assert tuple(one(db, "SELECT ban_reason, is_banned FROM users WHERE id = 30")) == ("", 20)      # words gone, still banned
+    assert one(db, "SELECT reason FROM log_entries WHERE id = :i", i=original)[0] == "a name that should not be public"

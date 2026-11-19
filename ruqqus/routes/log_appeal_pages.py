@@ -10,12 +10,14 @@ Not `log_appeals.py`: the star import of a routes package would put a module of 
 import time
 
 from flask import abort, g, redirect, render_template, request
+from markupsafe import Markup
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 
 from ruqqus.__main__ import app, cache, limiter
 from ruqqus.classes import BanRelationship, Board, ChatBan, Comment, ContentEditHistory, ModAction, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
-from ruqqus.helpers import action_log, alias_actions, log_appeals, log_notices, log_view
+from ruqqus.helpers import action_log, alias_actions, auto_quarantine, log_appeals, log_notices, log_view, quarantine_review
 from ruqqus.helpers.base36 import base36encode
 from ruqqus.helpers.get import get_guild
 from ruqqus.helpers.i18n_runtime import msg
@@ -86,8 +88,8 @@ def _my_appeal(entry_id, user_id):
 
 def _appealable_or_404(entry_id, v):
     entry = log_appeals.entry_of(g.db, entry_id)
-    if entry is None or entry["action"] not in log_appeals.APPEALABLE or not log_appeals.is_subject(g.db, entry, v.id):
-        abort(404)                               # the same page for an entry that isn't theirs, one that can't be appealed and none
+    if entry is None or entry["action"] not in log_appeals.APPEALABLE or entry["action"] in log_appeals.OWN_PAGE or not log_appeals.is_subject(g.db, entry, v.id):
+        abort(404)                               # the same page for an entry that isn't theirs, one that can't be appealed and none; an automatic quarantine's has a page of its own (/appeal/quarantine)
     return entry
 
 
@@ -127,6 +129,9 @@ def log_appeal_post(entry_id, v):
     except log_appeals.AppealRefused as refused:
         g.db.rollback()
         return redirect(f"/log/{int(entry_id)}/appeal?error={_quote(msg(str(refused)))}", code=303)
+    except IntegrityError:                    # two tabs at once past the lock: the unique index says it was already made
+        g.db.rollback()
+        return redirect(f"/log/{int(entry_id)}/appeal?error={_quote(msg(log_appeals.ALREADY_APPEALED))}", code=303)
     g.db.commit()
     return redirect(f"/log/{int(entry_id)}/appeal?sent=1", code=303)
 
@@ -168,9 +173,15 @@ def _queue_rows(appeals, staff):
             _name(a["actor_id"]))
         appellant = users.get(a["user_id"])
         guild = _guild_name(a.get("entry_board")) if staff and a["action"] == "ban_guild" else ""        # a guild's ban is the site's admins' to read, by name
+        sentence, check = log_view.sentence(a["action"], ACTIONTYPES, who, target, guild), ""
+        if a["action"] == "quarantine_user" and staff:
+            # an account an automatic check put on hold: the staff's entry says which check and what it saw (the queue is the admins' alone, English like the page)
+            sentence = Markup("{} put {} on hold").format(who, target)
+            check = quarantine_review.check_line(quarantine_review.parse_note(
+                g.db.execute(text("SELECT staff_note FROM log_entries WHERE id = :i"), {"i": a["entry_id"]}).scalar()))
         rows.append({
             "id": a["id"], "entry_id": a["entry_id"], "created_utc": a["created_utc"], "reason": a["reason"],
-            "sentence": log_view.sentence(a["action"], ACTIONTYPES, who, target, guild),
+            "sentence": sentence, "check": check,
             "icon": kind.get("icon", "fa-gavel"), "color": kind.get("color", "bg-info"),
             "entry_reason": a["entry_reason"], "rule": a["rule_key"],
             "who": "" if (anonymous and not staff) else (appellant.username if appellant else ""),
@@ -193,7 +204,7 @@ def _name(user_id):
 @app.route("/admin/appeals", methods=["GET"])
 @admin_level_required(3)
 def admin_appeals(v):
-    appeals = [a for a in log_appeals.open_queue(g.db, None) if _may_decide_site(a, v)]
+    appeals = [a for a in log_appeals.open_queue(g.db, None) if _may_decide_site(a, v) and a["user_id"] != v.id]
     rows = _queue_rows(appeals, True)
     for row, a in zip(rows, appeals):
         row["conflicted"] = log_appeals.conflicted(g.db, {**a, "board_id": None}, v.id)
@@ -210,9 +221,9 @@ def _guild_mod(board, v):
 
 
 def _may_decide_site(appeal, v):
-    """Whether this admin may decide a site-queue appeal: a guild's ban is a level-4 decision (only a level 4 admin bans or reinstates a guild), so its
-    appeal is theirs to decide too; every other appeal is any admin's (level 3)."""
-    return appeal["action"] != "ban_guild" or (v.admin_level or 0) >= 4
+    """Whether this admin may decide a site-queue appeal (the rule is `log_appeals.may_decide_site`, which the count beside the queue follows too): an entry only
+    level-4 admins may read, and a guild's ban, are level 4's; every other appeal is any admin's (level 3)."""
+    return log_appeals.may_decide_site(appeal["action"], appeal.get("entry_audience"), v.admin_level)
 
 
 def _may_decide_guild(m, action):
@@ -225,7 +236,7 @@ def _may_decide_guild(m, action):
 def guild_appeals(guildname, v):
     board = get_guild(guildname, v=v)
     m = _guild_mod(board, v)
-    appeals = [a for a in log_appeals.open_queue(g.db, board.id) if _may_decide_guild(m, a["action"])]
+    appeals = [a for a in log_appeals.open_queue(g.db, board.id) if _may_decide_guild(m, a["action"]) and a["user_id"] != v.id]
     rows = _queue_rows(appeals, False)
     for row, a in zip(rows, appeals):
         row["conflicted"] = log_appeals.conflicted(g.db, a, v.id)
@@ -334,10 +345,15 @@ def _undo(entry, decider):
         g.db.add(board)
         return action_log.record_quietly(g.db, "unban_guild", decider.id, board_id=board.id, reason=UNDO_REASON, role=action_log.ADMIN,
                                          linked_entry_id=entry["id"])
+    elif action == "quarantine_user":
+        # an account an automatic check put on hold is released the way the staff queue releases it (helpers/auto_quarantine.py: the one place a hold is cleared); the
+        # appeal's own outcome notice tells the person, so the release queues no second one. Nothing was lifted (or its entry couldn't be written): nothing is reversed.
+        made = auto_quarantine.release(g.db, entry["target_user_id"], admin_id=decider.id, appeal_entry_id=entry["id"], note=UNDO_REASON)
+        return made if made and made is not True else None
     elif action in ("suspend_user", "ban_user"):
         user = g.db.query(User).filter_by(id=entry["target_user_id"]).first()
-        if user is None:
-            return None
+        if user is None or (decider.admin_level or 0) <= (user.admin_level or 0):
+            return None                      # the direct unban needs the admin to outrank the account (routes/admin_api.py _outranks): so does this
         made = user.unban(admin=decider, reason=UNDO_REASON, notice_sent=True)
         action_log.link(g.db, made, entry["id"])
         return made
@@ -356,6 +372,8 @@ def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
         abort(404)
     if appeal["status"] != log_appeals.OPEN:
         return _bad_input(queue_url, "That appeal was already decided.")
+    if appeal["user_id"] == decider.id:
+        abort(404)                          # nobody decides their own appeal (the second review, C10): it is not on their queue either
     if log_appeals.conflicted(g.db, appeal, decider.id):
         return _bad_input(queue_url, "You made this decision: another can decide its appeal.")
     outcome = log_appeals.parse_outcome(outcome)
@@ -365,17 +383,28 @@ def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
     entry = log_appeals.entry_of(g.db, appeal["entry_id"])
     reversal = None
     if outcome == log_appeals.REVERSED:
+        if log_appeals.is_undone(g.db, entry):
+            # it was put right by hand since the appeal was made: reversing it now would lift whatever came after (the second review, C50)
+            return _bad_input(queue_url, "That decision has already been lifted: choose another outcome.")
         reversal = _undo(entry, decider)
         if reversal is None:
             g.db.rollback()
             return _bad_input(queue_url, "That could not be undone (it may already have been put right by hand).")
+        # a reversal is as public as what it reverses and no more: an unban writes a public entry, and the ban it lifts may have been the staff's or legal's
+        action_log.floor_entry(g.db, reversal, entry.get("audience") or 0)
     if not log_appeals.decide(g.db, appeal_id, outcome, decider.id, note, reversal_entry_id=reversal):
         g.db.rollback()
         return _bad_input(queue_url, "That appeal was already decided.")
     g.db.commit()
     person = g.db.query(User).filter_by(id=appeal["user_id"]).first()
     if person is not None and not person.is_deleted:
-        log_notices.send(person, log_notices.outcome(outcome, entry_id=appeal["entry_id"], note=note))
+        log_notices.send(person, log_notices.outcome(outcome, entry_id=appeal["entry_id"], note=note, action=entry["action"]))
+    if outcome == log_appeals.REVERSED and entry["action"] == "ban_guild" and entry["board_id"]:
+        # the guild has other heads than whoever appealed, and the direct reinstatement tells every one of them: so does this (the second review, C49)
+        board = g.db.query(Board).filter_by(id=entry["board_id"]).first()
+        if board is not None:
+            log_notices.tell_heads(g.db, board.id, log_notices.GUILD_REINSTATED, actor_id=decider.id, skip=(appeal["user_id"],),
+                                   guild=board.name)
     return _bad_input(queue_url, "Decided.")
 
 
@@ -441,9 +470,12 @@ def appeal_for_guild(board, v):
 app.jinja_env.globals.update(appeal_for_account=appeal_for_account, appeal_for_item=appeal_for_item, appeal_for_guild=appeal_for_guild)
 
 
-def waiting_for_admins():
-    """The count beside Admin > Appeals on the admin page."""
-    return log_appeals.waiting_count(g.db, None)
+def waiting_for_admins(viewer=None):
+    """The count beside Admin > Appeals on the admin page, as the admin it is drawn for reads the queue: the appeals `/admin/appeals` lists for them, so a legal-level
+    appeal is in a level-4 admin's number and not a level-3 admin's, and their own appeal is in nobody's. The page asks with no argument inside a request an
+    `admin_level_required` route set `g.v` for; with no viewer at all the narrowest admin's number is the answer."""
+    viewer = viewer if viewer is not None else getattr(g, "v", None)
+    return log_appeals.waiting_count(g.db, None, level=getattr(viewer, "admin_level", 0), viewer_id=getattr(viewer, "id", None))
 
 
 def log_problems():

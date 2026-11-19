@@ -12,7 +12,7 @@ from ruqqus.helpers import action_log, chat_key_reset, mfa_backup_store, signin_
 from ruqqus.helpers.alerts import notify
 from ruqqus.helpers.i18n_runtime import N_, force_locale, locale_for_user, msg, tr
 from ruqqus.helpers.regions import COUNTRY_NAMES
-from ruqqus.helpers.wrappers import auth_required, not_child_locked, not_qr_limited, throttle_check_ip, validate_formkey
+from ruqqus.helpers.wrappers import auth_required, not_child_locked, not_qr_limited, not_quarantined, throttle_check_ip, validate_formkey
 from ruqqus.mail import send_mail_quietly
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter, member_limit_key, r
@@ -28,6 +28,7 @@ def _identity(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 @limiter.limit("10/hour", key_func=member_limit_key)
 @throttle_check_ip("chat_key_reset")
@@ -60,6 +61,7 @@ def chat_key_reset_grant(v):
 @auth_required
 @not_qr_limited
 @not_child_locked("messaging")
+@not_quarantined("chat")
 @validate_formkey
 @limiter.limit("15/hour", key_func=member_limit_key)          # the SDK retries a 503 up to four times, each a second upload
 def chat_signing_keys(v):

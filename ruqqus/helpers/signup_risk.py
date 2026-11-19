@@ -50,7 +50,7 @@ LABELS = {
     "prefix_burst": "Several sign-ups from the same network in the hour",
     "machine_name": "Username looks machine-made",
     "shape_burst": "Several sign-ups with the same username pattern in the hour",
-    "ban_evasion": "Browser was used by a suspended account",
+    "ban_evasion": "Browser was used by a suspended account or one on hold",
     "captcha_unavailable": "The captcha service could not be reached",
     "surge": "Signed up during a surge",
     "captcha_missing": "No captcha answer",

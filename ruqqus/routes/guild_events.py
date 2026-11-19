@@ -231,6 +231,7 @@ def guild_event_new(guildname, v):
 
 @app.route("/+<guildname>/events/new", methods=["POST"])
 @is_not_banned
+@not_quarantined("event")
 @validate_formkey
 def guild_event_create(guildname, v):
     board = visible_guild(guildname, v, need_wiki=False)
@@ -265,6 +266,7 @@ def guild_event_edit(guildname, eid, v):
 
 @app.route("/+<guildname>/events/<int:eid>/edit", methods=["POST"])
 @is_not_banned
+@not_quarantined("event")
 @validate_formkey
 def guild_event_save(guildname, eid, v):
     board = visible_guild(guildname, v, need_wiki=False)
@@ -285,6 +287,7 @@ def guild_event_save(guildname, eid, v):
 
 @app.route("/+<guildname>/events/<int:eid>/cancel", methods=["POST"])
 @is_not_banned
+@not_quarantined("event")
 @validate_formkey
 def guild_event_cancel(guildname, eid, v):
     board = visible_guild(guildname, v, need_wiki=False)

@@ -76,7 +76,7 @@ def test_a_credit_is_told_to_admins_and_the_co_author_and_not_to_a_limited_sign_
 
 def test_every_surface_that_draws_or_counts_a_credit_reads_the_flag():
     user = read("ruqqus", "classes", "user.py")
-    assert user.count("PostCoauthor.is_anonymous == False") == 3, "the Following feed, a profile's list and the profile's count"
+    assert user.count("PostCoauthor.is_anonymous == False") == 4, "the Following feed, a profile's list (twice: the row, and the credit that outlives an anonymous post) and the profile's count"
     assert "coauthored = coauthored.where(PostCoauthor.is_anonymous == False)" in user and "(v.admin_level or 0) >= 3" in user.split("coauthored = coauthored.where")[0][-200:]
     assert 'PostCoauthor.is_anonymous == False,\n                               PostCoauthor.user_id.in_(user_ids)' in read("ruqqus", "helpers", "blocks.py")
     routes = read("ruqqus", "routes", "coauthors.py")

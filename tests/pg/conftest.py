@@ -65,6 +65,15 @@ def real_app(pg_url):
     return app, db_session
 
 
+@pytest.fixture(autouse=True)
+def end_the_apps_open_transaction(request):
+    """A test that reads through the app's scoped session and never requests a page leaves it "idle in transaction", holding locks on the tables it read; the
+    migration test (`ALTER TABLE ... ` on `users`) then waits out its lock timeout and fails. Ending it after every test costs nothing: what a test wanted kept it committed."""
+    yield
+    if "real_app" in request.fixturenames:
+        request.getfixturevalue("real_app")[1].remove()
+
+
 def forget_leftovers(r):
     """Redis outlives a database made again from schema.sql, and user ids start over: what an earlier run left under an
     id or an address (posting and sign-in heat, "already emailed today", spent authenticator codes) would answer for

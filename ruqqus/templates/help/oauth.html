@@ -35,6 +35,7 @@
 * {% trans %}`redirect_uri` - The redirect URI (or one of the URIs) specified in your application information. Must not use HTTP unless using localhost (use HTTPS instead).{% endtrans %} 
 * {% trans %}`state` - This is your own anti-cross-site-forgery token. We don't do anything with this, except give it to the user to pass back to you later. You are responsible for generating and validating the state token.{% endtrans %}
 * {% trans %}`scope` - A comma-separated list of permission scopes that you are requesting. Valid scopes are: `identity`, `create`, `read`, `update`, `delete`, `vote`, and `guildmaster`.{% endtrans %}
+* {% trans %}The `delete` scope removes an item from the site; what it removes more than five minutes after the item was written stays in the public Log as Anonymous. Taking a name off instead ("Remove my name") and the History tools are the site's own and are not offered to apps.{% endtrans %}
 * {% trans %}`permanent` - optional. Set to `true` if you are requesting indefinite access. Omit if not.{% endtrans %}
 
 {% trans site='SITE_NAME' | app_config %}If done correctly, the user will see that your application wants to access their {{ site }} account, and be prompted to approve or deny the request.{% endtrans %}

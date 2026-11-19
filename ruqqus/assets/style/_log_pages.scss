@@ -1,0 +1,37 @@
+// The Log's pages (templates/log.html, log_about.html, log_thread.html, partials/log_rows.html, the appeal queues): imported by both sheets, tokens only.
+// What a line of the Log may hold is a stranger's words (a reason up to 512 characters, a deleted post's text), so a row must wrap and clamp
+// them rather than let one long token widen the page (the second review, C66).
+
+// a flex item's minimum width is its content's unless told otherwise: without this the text column of a row grew to the longest word
+.min-width-0 {
+    min-width: 0;
+}
+
+.log-entry .log-deleted {
+    overflow-wrap: anywhere;
+    max-height: 28rem;
+    overflow: auto;
+}
+
+.log-entry .log-deleted img {
+    max-width: 100%;
+    height: auto;
+}
+
+// A deleted post's thread: a comment's replies sit INSIDE its box, so one step per level is all it takes to indent them (a margin written from the
+// depth on every box added up, level on level, until a phone's reply was a sliver); the start edge, so right-to-left mirrors it; and the tree stops
+// stepping in at the sixth level so the words keep a width.
+.log-thread-comment {
+    margin-inline-start: var(--space-5);
+    overflow-wrap: anywhere;
+}
+
+// a link inside the grey placeholder text ("[You muted @x] Unmute") is told apart by more than its colour
+.log-thread-placeholder a {
+    text-decoration: underline;
+}
+
+.log-thread-top,
+.log-thread-deep {
+    margin-inline-start: 0;
+}

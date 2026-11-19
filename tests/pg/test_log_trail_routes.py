@@ -4,7 +4,7 @@ tests/test_log_paper_trail.py, tests/test_log_appeals.py and tests/test_log_noti
 - a hide, a removal and a ban each reach the person they are about, with the rule, the reason, the Log and the Appeal link, and sets `notice_sent`;
 - that person (and nobody else) can appeal, once; the guild's guildmasters decide a guild's decision and the site's admins everything else, never
   the one who decided while another could; a reversal runs the undo and writes a NEW entry linked to the first; the person is told;
-- an image check's ban goes through `User.ban`: generic words in the Log and on the profile, the match a separate level-4 entry, the alts staff-only;
+- an image check no longer bans: it puts the uploader on hold (tests/pg/test_scan_bans.py: generic words in the Log, the match a separate level-4 entry, the hold and its alts' entries level 4's for the CDN's list and staff-only for the site's own);
 - what the staff do to run the site is a staff-only entry; a timed suspension that ran out says so once; a mod-log row whose copy failed is copied;
 - an entry's reason can be hidden by a level-4 admin, as a new linked entry; deleting an account writes what it ends."""
 import re
@@ -310,55 +310,6 @@ def post_staff_entry(real_app, admin, make_member):
 
 # --- what the site decided by itself --------------------------------------------------------------------------------------------------
 
-def test_an_image_checks_ban_goes_through_user_ban_in_generic_words_with_the_match_as_a_level_4_entry_and_the_alts_staff_only(make_member, real_app):
-    from ruqqus.classes import Alt, User
-    from ruqqus.helpers import action_log, scan_bans
-    _, db_session = real_app
-    uploader, alt, bystander = make_member(), make_member(), make_member()
-    db = db_session()
-    db.rollback()
-    db.add(Alt(user1=uploader.id, user2=alt.id))
-    db.commit()
-    scan = db_session()
-    entry = scan_bans.ban_uploader(scan, scan.get(User, uploader.id), days=0, detail="the CDN answered 451 for an uploaded picture", legal=True)
-    scan.commit()
-    assert entry
-    for account in (uploader, alt):
-        row = rows(real_app, "SELECT is_banned, ban_reason, unban_utc FROM users WHERE id = :u", u=account.id)[0]
-        assert row["is_banned"] and row["ban_reason"] == "Automatic image check" and row["unban_utc"] == 0
-    assert not rows(real_app, "SELECT is_banned FROM users WHERE id = :u", u=bystander.id)[0]["is_banned"]
-    public, detail = entries(real_app, id=entry)[0], entries(real_app, linked_entry_id=entry)[0]
-    assert (public["actor_role"], public["actor_id"], public["rule_key"], public["reason"], public["audience"], public["action"]) == (
-        "system", action_log.SITE_ACCOUNT_ID, "illegal", "Automatic image check", 0, "ban_user")
-    assert (detail["action"], detail["audience"], detail["staff_note"]) == ("suppress_content", action_log.LEGAL, "the CDN answered 451 for an uploaded picture")
-    (alt_entry,) = entries(real_app, target_user_id=alt.id, action="ban_user")
-    assert alt_entry["audience"] == action_log.STAFF and f"alt of @{uploader.username}" in alt_entry["staff_note"]
-    html = get(real_app[0].test_client(), "/log?type=sanction").get_data(as_text=True)
-    assert "Automatic image check" in html and "451" not in html and f"@{alt.username}" not in html
-    profile = get(real_app[0].test_client(), f"/@{uploader.username}").get_data(as_text=True)
-    assert "Sexualizing" not in profile and "Automatic image check" in profile
-
-
-def test_a_timed_image_ban_keeps_its_end_and_a_removal_by_the_check_is_public_with_the_match_for_level_4_only(make_member, real_app):
-    from ruqqus.classes import User
-    from ruqqus.helpers import action_log, scan_bans
-    _, db_session = real_app
-    uploader = make_member()
-    scan = db_session()
-    entry = scan_bans.ban_uploader(scan, scan.get(User, uploader.id), days=3, detail="matched a picture on the site's banned list: Spam picture")
-    board_id, _name = guild(real_app)
-    post_id, _b36 = add_post(uploader, board_id)
-    removal = action_log.record_image_check_removal(scan, post_id=post_id, board_id=board_id, detail="matched a picture on the site's banned list: Spam picture")
-    scan.commit()
-    ban = entries(real_app, id=entry)[0]
-    assert ban["action"] == "suspend_user" and abs(ban["until_utc"] - (int(time.time()) + 3 * 86400)) < 30
-    assert entries(real_app, linked_entry_id=entry)[0]["audience"] == action_log.STAFF                  # the site's own list: staff, not level 4
-    (removed,) = entries(real_app, id=removal)
-    assert (removed["action"], removed["audience"], removed["reason"], removed["actor_role"]) == ("ban_post", 0, "Automatic image check", "system")
-    public = get(real_app[0].test_client(), f"/log?guild={_name}").get_data(as_text=True)
-    assert "Automatic image check" in public and "Spam picture" not in public
-
-
 def test_the_spam_guards_removal_reads_as_the_generic_spam_check(make_member, real_app):
     from ruqqus.classes import ModAction
     _, db_session = real_app
@@ -467,8 +418,12 @@ def test_a_level_4_admin_can_hide_an_entrys_reason_and_it_is_a_new_linked_entry_
     assert "PRIVATE-DETAIL-TEXT" not in get(real_app[0].test_client(), "/log?type=sanction").get_data(as_text=True)
     assert "PRIVATE-DETAIL-TEXT" in get(level3.browser(), f"/admin/log?target={victim.username}").get_data(as_text=True)     # staff still read it
     (note,) = entries(real_app, linked_entry_id=entry["id"], action="redact_entry")
-    assert (note["audience"], note["actor_id"], note["staff_note"]) == (2, level4.id, "a private detail slipped into it")
+    # the account's own ban_reason held the same words (its banned profile prints it): cleared with the redaction, and the note says so (C48,
+    # tests/pg/test_reason_copies.py has every other copy)
+    assert (note["audience"], note["actor_id"], note["staff_note"]) == (2, level4.id, "a private detail slipped into it (also cleared: the account's ban reason)")
     assert entries(real_app, id=entry["id"])[0]["reason"] == "PRIVATE-DETAIL-TEXT"                                          # never edited
+    state = rows(real_app, "SELECT ban_reason, is_banned FROM users WHERE id = :u", u=victim.id)[0]
+    assert state["ban_reason"] == "" and state["is_banned"] == level3.id                                                    # the words are gone, the ban stands
 
 
 # --- deleting an account ----------------------------------------------------------------------------------------------------------------

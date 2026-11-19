@@ -1,9 +1,10 @@
 <!-- Delete Comment Modal -->
-<div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalTitle" aria-hidden="true">
+{# As delete_post_modal.html: the Delete / Remove my name choice changes the title, the icon and the confirm button (all_js.js deleteDialogChoice). #}
+<div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{ _("Delete comment?") }}</h5>
+        <h5 class="modal-title" id="deleteCommentTitle" data-text-delete="{{ _('Delete comment?') }}" data-text-unlink="{{ _('Remove my name') }}">{{ _("Delete comment?") }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
@@ -12,7 +13,7 @@
       <div class="modal-body text-center">
 
         <div class="py-4">
-          <i class="fas fa-trash-alt text-muted" style="font-size: 3.5rem;"></i>
+          <i class="fas fa-trash-alt text-muted" style="font-size: 3.5rem;" data-class-delete="fa-trash-alt" data-class-unlink="fa-user-secret"></i>
         </div>
 
         <fieldset class="text-left mb-3" id="deleteCommentChoice">
@@ -33,7 +34,7 @@
       
       <div class="modal-footer">
         <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
-        <button id="deleteCommentButton" class="btn btn-danger">{{ _("Delete comment") }}</button>
+        <button type="button" id="deleteCommentButton" class="btn btn-danger" data-text-delete="{{ _('Delete comment') }}" data-text-unlink="{{ _('Remove my name') }}" data-class-delete="btn-danger" data-class-unlink="btn-primary">{{ _("Delete comment") }}</button>
       </div>
       
     </div>

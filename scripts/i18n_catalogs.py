@@ -162,6 +162,8 @@ def problems(msgid, msgstr):
         found.append("entities differ")
     if _LETTERS.search(_bare(msgid)) and not re.search(r"[^\W\d_]", _bare(msgstr)):
         found.append("no words left")                  # (one kana or hanzi is a word: "%(age)s の %(who)s")
+    if (msgstr or "").count("```") != (msgid or "").count("```") or (msgstr or "").count("](") != (msgid or "").count("]("):
+        found.append("a code fence or a link was lost")          # the fence keeps a person's words from becoming a link (the second review, C62)
     english_tags = tags(msgid)
     allowed = {(name, attrs) for _c, name, attrs in english_tags}
     for _closing, name, attrs in tags(msgstr):

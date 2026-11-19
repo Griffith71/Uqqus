@@ -82,6 +82,8 @@ def anonymise_comment(db, comment):
     """Anonymise a comment and the posts it was forwarded as. Returns the rows changed (the comment first)."""
     forwards = list(getattr(comment, "forwarded_posts", None) or [])
     comment.is_anonymous = True
+    comment.distinguish_level = 0                     # an admin's shield and a guildmaster's crown name the author's role: they end here too
+    comment.gm_distinguish = 0                        # (the second review, C17; a post's already did)
     db.add(comment)
     for forward in forwards:
         forward.is_anonymous = True
@@ -96,10 +98,10 @@ def anonymise_comment(db, comment):
     return [comment] + forwards
 
 
-def anonymise_replies(db, post_ids, author_id):
+def anonymise_replies(db, post_ids, author_id, clear_cache=True):
     """The author's OWN comments under these posts, made anonymous by the delete (decision 25f) or by "remove my name" with its tick box: a named
     comment under an anonymous post would say who wrote it. Comments by others stay as they are. Like any anonymising it takes the comments out of
-    every entry that pairs them with their author. Returns how many were changed."""
+    every entry that pairs them with their author. Returns how many were changed. `clear_cache=False` is for the unit tests, which never import the app."""
     ids = [int(i) for i in post_ids if i]
     if not ids:
         return 0
@@ -109,9 +111,22 @@ def anonymise_replies(db, post_ids, author_id):
                                              f"AND NOT COALESCE(is_anonymous, false)"), params)]
     if not changed:
         return 0
-    db.execute(text(f"UPDATE comments SET is_anonymous = :yes WHERE parent_submission IN ({marks}) AND author_id = :a "
-                    f"AND NOT COALESCE(is_anonymous, false)"), {**params, "yes": True})
+    db.execute(text(f"UPDATE comments SET is_anonymous = :yes, distinguish_level = 0, gm_distinguish = 0 WHERE parent_submission IN ({marks}) "
+                    f"AND author_id = :a AND NOT COALESCE(is_anonymous, false)"), {**params, "yes": True})
     strip_pointers(db, author_id=author_id, comment_ids=changed)
+    # a comment forwarded into a guild is a post of its own under the commenter's name: anonymise_comment makes it anonymous with the comment, and
+    # so does this (it used to leave every one of them named, the second review, C18)
+    cmarks, cnames = _marks("c", changed)
+    forwarded = [r[0] for r in db.execute(text(f"SELECT promoted_submission_id FROM comment_forwardrels WHERE comment_id IN ({cmarks}) "
+                                               f"AND promoted_submission_id IS NOT NULL"), cnames)]
+    if forwarded:
+        fmarks, fnames = _marks("f", forwarded)
+        db.execute(text(f"UPDATE submissions SET is_anonymous = :yes, distinguish_level = 0, gm_distinguish = 0 WHERE id IN ({fmarks}) "
+                        f"AND NOT COALESCE(is_anonymous, false)"), {**fnames, "yes": True})
+        strip_pointers(db, author_id=author_id, post_ids=forwarded)
+        if clear_cache:
+            from ruqqus.classes import Submission
+            clear_caches(posts=db.query(Submission).filter(Submission.id.in_(forwarded)).all())
     for scope_id in {r[0] for r in db.execute(text(
             f"SELECT COALESCE(NULLIF(s.repost_id, 0), s.id) FROM submissions s WHERE s.id IN ({marks})"), names)}:
         anon_aliases.give(db, (anon_aliases.POST, scope_id), author_id)           # a thread the author is now anonymous in

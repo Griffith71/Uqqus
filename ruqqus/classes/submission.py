@@ -13,7 +13,7 @@ from ruqqus.helpers.base36 import *
 from ruqqus.helpers.lazy import lazy
 from ruqqus.helpers.i18n_runtime import tr, trp
 from ruqqus.helpers import comment_permission as cperm
-from ruqqus.helpers import anonymity
+from ruqqus.helpers import anonymity, visibility
 from ruqqus.helpers import permalinks
 from ruqqus.helpers import community_notes
 import ruqqus.helpers.aws as aws
@@ -357,7 +357,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             template = "submission.html"
         elif self.is_banned:
             template = "submission_banned.html"
-        elif self.hidden_by_guild and not (v and self.board.has_mod(v, 'content')):
+        elif self.hidden_by_guild and not (v and visibility.guild_content_reader(self.board, v)):       # a read: a held guildmaster still reads
             template = "submission_banned.html"
         else:
             template = "submission.html"
@@ -615,12 +615,14 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
     @property
     def json_core(self):
 
+        # a removed or deleted post's words are not the API's to give: the Log publishes what it may (a deleted post's text, as
+        # Anonymous, under the Deleted tab's rules), and a grace-window erase, a child account's delete and a post a moderator removed
+        # publish none. The title was served here for every one of them, for ever (the second review, 2026-11-17, C00).
         if self.is_banned:
             return {'is_banned': True,
                     'is_deleted': self.is_deleted,
                     'ban_reason': self.ban_reason,
                     'id': self.base36id,
-                    'title': self.title,
                     'permalink': self.permalink,
                     'guild_name': self.board.name,
                     'is_pinned': self.is_pinned
@@ -629,9 +631,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
             return {'is_banned': bool(self.is_banned),
                     'is_deleted': True,
                     'id': self.base36id,
-                    'title': self.title,
-                    'permalink': self.permalink,
-                    'guild_name': self.board.name
+                    'permalink': self.permalink
                     }
         elif self.hidden_by_guild and not self._guild_hide_lifted_for(anonymity.current_viewer()):
             # the page shows "Removed by guildmasters" for this copy; the JSON says the same, without its text
@@ -647,7 +647,7 @@ class Submission(Base, Stndrd, Age_times, Scores, Fuzzing):
 
     def _guild_hide_lifted_for(self, v):
         """Who still reads a guild-hidden copy: its author and the guild's content moderators."""
-        return bool(v and (v.id == self.author_id or self.board.has_mod(v, "content")))
+        return bool(v and (anonymity.is_author(self, v) or visibility.guild_content_reader(self.board, v)))
 
     @property
     def json(self):

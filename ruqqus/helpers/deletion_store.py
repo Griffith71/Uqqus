@@ -10,6 +10,18 @@ def _marks(prefix, ids):
     return ", ".join(f":{n}" for n in names), names
 
 
+DELETE_LOCK = 7011               # pg_advisory_xact_lock(DELETE_LOCK, account id): one delete at a time per account
+
+
+def lock_deletes(db, user_id):
+    """Take the account's delete lock until the request's commit (Postgres; SQLite has one writer). The cap on erases is a count of copies and
+    "already deleted" is a flag read before the work, so two parallel requests both passed both: two public entries for one delete, and an erase
+    counted against the daily cap twice (the second review, C08 and C09). The caller re-reads the item after this and stops if it is deleted."""
+    if db.get_bind().dialect.name != "postgresql":
+        return
+    db.execute(text("SELECT pg_advisory_xact_lock(:ns, :u)"), {"ns": DELETE_LOCK, "u": int(user_id)})
+
+
 def erased_today(db, user_id, now):
     """How many items this account erased inside the grace window in the last day: their `grace` copies that no entry points at (a child's delete,
     which writes an entry, is not an erase). The cap is per account (`deletion.GRACE_ERASES_PER_DAY`)."""
@@ -42,9 +54,14 @@ def own_named_comments(db, post_ids, author_id):
 
 
 def others_replied_to_comment(db, comment_id, author_id):
-    """Has anyone but the author commented directly on this comment?"""
-    return db.execute(text("SELECT 1 FROM comments WHERE parent_comment_id = :c AND author_id <> :a LIMIT 1"),
-                      {"c": int(comment_id), "a": int(author_id)}).first() is not None
+    """Has anyone but the author commented directly on this comment, or on a post it was forwarded as? A forwarded comment is a post of its own with its
+    own thread, and a delete takes it with the comment: erasing a comment whose forwarded post has a discussion would orphan other people's words (the second
+    review, C73)."""
+    params = {"c": int(comment_id), "a": int(author_id)}
+    if db.execute(text("SELECT 1 FROM comments WHERE parent_comment_id = :c AND author_id <> :a LIMIT 1"), params).first() is not None:
+        return True
+    return db.execute(text("SELECT 1 FROM comments k JOIN comment_forwardrels f ON f.promoted_submission_id = k.parent_submission "
+                           "WHERE f.comment_id = :c AND k.author_id <> :a LIMIT 1"), params).first() is not None
 
 
 def forwarded_to_ids(db, post_id):

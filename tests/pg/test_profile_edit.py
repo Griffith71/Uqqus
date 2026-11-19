@@ -222,32 +222,46 @@ def test_a_field_not_sent_is_left_as_it_is(make_member):
     assert (user.bio, user.display_name) == ("kept", "Kept")
 
 
-def test_a_new_account_with_a_link_in_its_bio_is_banned_and_the_answer_says_nothing_of_it(make_member):
+def test_a_new_account_with_a_link_in_its_bio_is_held_and_the_answer_says_nothing_of_it(make_member):
+    """The SEO-spam check only puts the account on hold now (helpers/auto_quarantine.py: an admin decides what follows)."""
     member = make_member()
     update(member, created_utc=int(time.time()) - 60)
     answer = edit(member.browser(), member, bio="[my page](https://spam-ci.example/)")
     body = answer.get_json()
-    assert answer.status_code == 200 and body["ok"] and body["changed"] and "ban" not in str(body).lower()
+    said = str(body).lower()
+    assert answer.status_code == 200 and body["ok"] and body["changed"] and "quarantin" not in said and "hold" not in said and "spam" not in said.replace("spam-ci.example", "")
     user = member.user()
-    assert user.is_banned and "spam-ci.example" in user.bio_html
+    # the hold stands and the bio that tripped it is not kept: a held account's profile is as public as any (tests/pg/test_held_profile_pictures.py)
+    assert user.quarantined_utc > 0 and user.quarantine_kind == 1 and not user.is_banned and "spam-ci.example" not in (user.bio_html or "")
+
+
+def test_a_held_account_that_sent_a_picture_with_the_same_save_gets_the_picture_too(make_member, storage):
+    """A hold is not a suspension (the old ban took the pictures of the save with it): the pop-up keeps the picture and the text it saved."""
+    member = uploader(make_member)
+    update(member, created_utc=int(time.time()) - 60)
+    answer = edit(member.browser(), member, files={"profile": (png(), "me.png")}, bio="[my page](https://spam-ci.example/)")
+    body = answer.get_json()
+    assert answer.status_code == 200 and body["ok"] and sorted(body["saved"]) == ["bio", "profile"]
+    user = member.user()
+    assert user.quarantine_kind == 1 and not user.is_banned and user.has_profile
 
 
 # --- the banned-domain list ------------------------------------------------------------------------------------------------
 
-def test_the_worst_kind_of_linked_site_earns_the_thirty_day_ban_and_the_refusal(make_member, banned_domains):
+def test_the_worst_kind_of_linked_site_puts_the_account_on_hold_and_is_refused(make_member, banned_domains):
     member = make_member()
     answer = edit(member.browser(), member, bio="see [here](https://worse-ci.example/x)")
     body = answer.get_json()
     assert answer.status_code == 400 and "worse-ci.example" in body["errors"]["bio"]
     user = member.user()
-    assert user.is_banned and user.unban_utc > time.time() + 29 * 86400 and user.bio in (None, "")
+    assert user.quarantine_kind == 1 and user.quarantined_utc > 0 and not user.is_banned and user.bio in (None, "")
 
 
 def test_another_banned_site_is_refused_without_a_ban(make_member, banned_domains):
     member = make_member()
     answer = edit(member.browser(), member, bio="see [here](https://short-ci.example/x)")
     assert answer.status_code == 400 and "short-ci.example" in answer.get_json()["errors"]["bio"]
-    assert not member.user().is_banned
+    assert not member.user().is_banned and not member.user().quarantined_utc
 
 
 def test_a_banned_site_as_the_website_is_refused(make_member, banned_domains):
@@ -487,7 +501,7 @@ def test_a_bio_on_a_now_banned_site_is_not_refused_or_punished_when_it_is_sent_b
     body = answer.get_json()
     assert answer.status_code == 200 and body["ok"] and body["saved"] == ["profile_job"], body
     user = member.user()
-    assert not user.is_banned                                           # the reason-4 ban is for a bio being WRITTEN, not for one they already had
+    assert not user.is_banned and not user.quarantined_utc              # the reason-4 hold is for a bio being WRITTEN, not for one they already had
     assert user.bio == stored and "worse-ci.example" in user.bio_html and user.profile_job == "Engineer"
 
 
@@ -498,7 +512,7 @@ def test_a_website_on_a_now_banned_site_is_kept_when_only_something_else_changes
     body = answer.get_json()
     assert answer.status_code == 200 and body["ok"] and body["saved"] == ["bio"], body
     user = member.user()
-    assert not user.is_banned and user.profile_website == "https://worse-ci.example/" and user.bio == "a fresh bio"
+    assert not user.is_banned and not user.quarantined_utc and user.profile_website == "https://worse-ci.example/" and user.bio == "a fresh bio"
     # changing it TO that site is refused as ever
     refused = edit(member.browser(), member, profile_website="https://short-ci.example/")
     assert refused.status_code == 400 and "short-ci.example" in refused.get_json()["errors"]["profile_website"]
@@ -583,14 +597,23 @@ def test_settings_saves_a_bio_and_keeps_its_answers(make_member, banned_domains)
     heavy = settings(here, member, bio="<https://a.io/b> " * 14)
     assert heavy.status_code == 400 and "formatting" in heavy.get_json()["error"]          # was a 500 at the commit
     listed = settings(here, member, bio="[a](https://short-ci.example/)")
-    assert listed.status_code == 401 and "short-ci.example" in listed.get_json()["error"] and not member.user().is_banned
+    assert listed.status_code == 401 and "short-ci.example" in listed.get_json()["error"] and not member.user().is_banned and not member.user().quarantined_utc
     page = settings(here, member, path="/settings/profile", bio="a page answer")
     assert page.status_code == 200 and "Your bio has been updated." in page.get_data(as_text=True)
 
 
-def test_settings_still_bans_for_the_worst_kind_of_linked_site(make_member, banned_domains):
+def test_settings_still_holds_the_account_for_the_worst_kind_of_linked_site(make_member, banned_domains):
     member = make_member()
     answer = settings(member.browser(), member, bio="[a](https://worse-ci.example/)")
     assert answer.status_code == 401 and "worse-ci.example" in answer.get_json()["error"]
     user = member.user()
-    assert user.is_banned and user.unban_utc > time.time() + 29 * 86400
+    assert user.quarantine_kind == 1 and user.quarantined_utc > 0 and not user.is_banned
+
+
+def test_settings_holds_a_new_account_that_saves_a_bio_with_a_link_and_does_not_keep_the_bio(make_member):
+    member = make_member()
+    update(member, created_utc=int(time.time()) - 60)
+    answer = settings(member.browser(), member, bio="[my page](https://spam-ci.example/)")
+    assert answer.status_code == 200 and answer.get_json() == {"message": "Your bio has been updated."}
+    user = member.user()
+    assert user.quarantine_kind == 1 and user.quarantined_utc > 0 and not user.is_banned and "spam-ci.example" not in (user.bio_html or "")

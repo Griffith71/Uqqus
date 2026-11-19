@@ -187,11 +187,11 @@ def test_the_token_route_keeps_its_wrappers_with_no_suspension_check_and_never_l
     chat = read("ruqqus", "routes", "chat.py")
     for route, path, limit in (("chat_token", "/api/chat/token", '"60/minute;600/hour"'), ("chat_store_keys_route", "/api/chat/store_keys", '"20/minute"')):
         assert decorators_of(chat, route) == [f'@app.route("{path}", methods=["POST"])', "@auth_required", "@not_qr_limited",
-                                              '@not_child_locked("messaging")', "@validate_formkey",
+                                              '@not_child_locked("messaging")', '@not_quarantined("chat")', "@validate_formkey",
                                               f"@limiter.limit({limit}, key_func=member_limit_key)"], route
         body = body_of(chat, route)
         assert body.index("chat_signouts.tables_ready(g.db)") < body.index("chat_tokens."), "no Matrix call or key before the tables are known"
-        assert "suspend" not in body and "is_banned" not in body, "decision 3: a suspension changes nothing"
+        assert "suspend" not in body and "is_banned" not in body, "decision 3: a suspension changes nothing (a hold does: a held account has no chat)"
         assert "chat_store_keys.secret_of(app.config)" in body
     body = body_of(chat, "chat_token")
     assert body.index("chat_signouts.tables_ready(g.db)") < body.index("_ensure_provisioned(v)"), "no Matrix call before the tables are known"

@@ -21,7 +21,9 @@
 {% endblock %}
 
 {% block content %}
-{% set keep %}{% if filters.guild %}&guild={{ filters.guild | urlencode }}{% endif %}{% if filters.by %}&by={{ filters.by | urlencode }}{% endif %}{% if filters.to %}&to={{ filters.to | urlencode }}{% endif %}{% if rule %}&rule={{ rule }}{% endif %}{% if what %}&what={{ what }}{% endif %}{% endset %}
+{#- which filters a tab link carries: the Rule, Done by and Done to filters belong to the Moderation, Sanctions and Guild changes tabs, and the Deleted and Edits tabs have no
+    such control, so a rule carried into them hid every row and could not be cleared (the second review, C68) -#}
+{% macro carry(t) %}{% if filters.guild %}&guild={{ filters.guild | urlencode }}{% endif %}{% if t == 'edit' %}{% if filters.by %}&by={{ filters.by | urlencode }}{% endif %}{% if what %}&what={{ what }}{% endif %}{% elif t == 'deletion' %}{% if what %}&what={{ what }}{% endif %}{% else %}{% if filters.by %}&by={{ filters.by | urlencode }}{% endif %}{% if filters.to %}&to={{ filters.to | urlencode }}{% endif %}{% if rule %}&rule={{ rule }}{% endif %}{% endif %}{% endmacro %}
 <div class="col px-md-4 py-4" id="site-log">
 
   <h1 class="h4 mb-1 d-md-none">{{ _('Log') }}</h1>
@@ -40,7 +42,7 @@
     {# flex-wrap: five tabs, longer in other languages, are wider than a phone, and the group can't shrink on its own #}
     <div class="btn-group btn-group-sm flex-wrap mr-3" role="group">
       {% for t in tabs %}
-      <a href="?type={{ t }}{{ keep }}" class="btn btn-sm {% if tab == t %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if tab == t %} aria-current="page"{% endif %}>{{ msg_text(tab_labels[t]) }}</a>
+      <a href="?type={{ t }}{{ carry(t) }}" class="btn btn-sm {% if tab == t %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if tab == t %} aria-current="page"{% endif %}>{{ msg_text(tab_labels[t]) }}</a>
       {% endfor %}
     </div>
   </div>
@@ -68,7 +70,7 @@
   </form>
 
   {% if not rows %}
-  <p class="text-muted">{% if filters.guild or filters.by or filters.to or rule %}{{ _('Nothing matches this filter.') }}{% else %}{{ _('Nothing has been logged yet.') }}{% endif %}</p>
+  <p class="text-muted">{% if filters.guild or filters.by or filters.to or rule or what %}{{ _('Nothing matches this filter.') }}{% else %}{{ _('Nothing has been logged yet.') }}{% endif %}</p>
   {% endif %}
 
   {% include "partials/log_rows.html" %}
@@ -76,7 +78,7 @@
   {% if more %}
   <nav aria-label="{{ _('Page navigation') }}" class="mb-5">
     <ul class="pagination pagination-sm mb-0">
-      <li class="page-item"><small><a class="page-link" href="?type={{ tab }}&before={{ next_before }}{{ keep }}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>
+      <li class="page-item"><small><a class="page-link" href="?type={{ tab }}&before={{ next_before }}{{ carry(tab) }}" rel="next">{{ pgettext("next page", "Next") }}</a></small></li>
     </ul>
   </nav>
   {% endif %}

@@ -203,6 +203,7 @@ def api_board_available(name, v):
 @api("create")
 @not_qr_limited
 @not_child_locked("guilds")
+@not_quarantined("guild")
 @validate_formkey
 def create_board_post(v):
     """
@@ -1051,6 +1052,7 @@ def mod_rescind_bid_username(bid, username, board, v):
 @app.route("/api/v1/accept_invite/<bid>", methods=["POST"])
 @auth_required
 @not_qr_limited
+@not_quarantined("guild")
 @validate_formkey
 @api("guildmaster")
 def mod_accept_board(bid, v):
@@ -2692,6 +2694,7 @@ def mod_unchatban_bid_user(bid, board, v):
 @app.route("/siege_guild", methods=["POST"])
 @is_not_banned
 @not_qr_limited
+@not_quarantined("guild")
 @validate_formkey
 def siege_guild(v):
 

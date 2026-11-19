@@ -121,10 +121,11 @@ def activate(v):
     user.email = email
     user.is_activated = True
 
-    # an account the signup guard held goes free with an address that isn't a throwaway (helpers/quarantine.py)
-    if user.quarantined_utc and not signup_signals.disposable(email):
-        signup_review_store.release(g.db, user.id, "verified", int(time.time()))
-        user.quarantined_utc = 0
+    # an account the signup guard held goes free with an address that isn't a throwaway (helpers/quarantine.py). A hold an automatic check placed
+    # (quarantine_kind 1) is NEVER released by an email: only an admin or an appeal does (helpers/auto_quarantine.py); `release` is conditional too
+    if user.quarantined_utc and not (user.quarantine_kind or 0) and not signup_signals.disposable(email):
+        if signup_review_store.release(g.db, user.id, "verified", int(time.time())):
+            g.db.expire(user, ["quarantined_utc"])
 
     if not any([b.badge_id == 2 for b in user.badges]):
         mail_badge = Badge(user_id=user.id,

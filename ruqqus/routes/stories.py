@@ -197,6 +197,7 @@ def story_delete(sid, v):
 
 @app.route("/api/stories/<int:sid>/report", methods=["POST"])
 @auth_required
+@not_quarantined("report")
 @validate_formkey
 def story_report(sid, v):
     row = story_store.get(g.db, sid)
@@ -225,6 +226,7 @@ def story_archive(v):
 
 @app.route("/api/highlights", methods=["POST"])
 @is_not_banned
+@not_quarantined("story")
 @validate_formkey
 def highlight_create(v):
     title, error = rules.parse_title(request.form.get("title"))
@@ -240,6 +242,7 @@ def highlight_create(v):
 
 @app.route("/api/highlights/<int:hid>/rename", methods=["POST"])
 @auth_required
+@not_quarantined("story")
 @validate_formkey
 def highlight_rename(hid, v):
     title, error = rules.parse_title(request.form.get("title"))

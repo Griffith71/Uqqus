@@ -290,6 +290,7 @@ def curations_create_get(v):
 
 @app.route("/curations/create", methods=["POST"])
 @auth_required
+@not_quarantined("curation")
 @validate_formkey
 def curations_create_post(v):
 
@@ -421,6 +422,7 @@ def curation_edit_get(slug, v):
 
 @app.route("/&<slug>/edit", methods=["POST"])
 @auth_required
+@not_quarantined("curation")
 @validate_formkey
 def curation_edit_post(slug, v):
 
@@ -940,6 +942,7 @@ def curation_unfollow(slug, v):
 
 @app.route("/&<slug>/fork", methods=["POST"])
 @auth_required
+@not_quarantined("curation")
 @validate_formkey
 def curation_fork(slug, v):
 

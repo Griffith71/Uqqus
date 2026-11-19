@@ -34,12 +34,15 @@ def test_only_a_different_admin_decides_and_every_decision_is_a_staff_entry():
     assert "WHERE entry_id = :e AND status = 'pending'" in rules, "one conditional update: two admins deciding at once decide once"
 
 
-def test_unbanning_withdraws_the_reveal_in_the_one_place_every_unban_goes_through():
+def test_unbanning_drops_only_an_unapproved_proposal_in_the_one_place_every_unban_goes_through():
     unban = read("ruqqus", "classes", "user.py").split("    def unban(self")[1].split("    @property\n    def is_suspended")[0]
-    assert "log_evidence.withdraw(g.db, self.id, int(time.time()))" in unban and "begin_nested()" in unban
-    assert unban.index("record_unban(") < unban.index("log_evidence.withdraw(")
-    withdraw = read("ruqqus", "helpers", "log_evidence.py").split("def withdraw(")[1].split("\n\n\n")[0]
-    assert "status IN ('pending', 'approved')" in withdraw
+    assert "log_evidence.withdraw_pending(g.db, self.id, int(time.time()))" in unban and "begin_nested()" in unban
+    assert unban.index("record_unban(") < unban.index("log_evidence.withdraw_pending(")
+    assert "log_evidence.withdraw(" not in unban
+    rules = read("ruqqus", "helpers", "log_evidence.py")
+    withdraw = rules.split("def withdraw_pending(")[1].split("\n\n\n")[0]
+    assert "status = 'pending'" in withdraw and "'approved'" not in withdraw, "an approved reveal is never taken back by a reversal"
+    assert "def withdraw(" not in rules
 
 
 def test_only_the_reveal_s_own_code_reads_or_writes_the_evidence():

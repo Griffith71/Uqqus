@@ -8,6 +8,8 @@ full. The rating is stored as:
     submissions / comments   word_severity, word_filter_version
     users                    name_severity (username), bio_severity
     boards                   name_severity (guild name), description_severity
+    log_snapshots            word_severity of every kept copy that still holds words (the Log's public copies of
+                             what an author deleted never expire, so a re-scan must re-rate them too)
 """
 import html
 import re
@@ -221,8 +223,22 @@ def apply_board_severity(board, db=None):
     board.description_severity = get_filter(db).severity_html(board.description_html or "")
 
 
+def _poll_texts(db, post_ids):
+    """{post id: the text of its poll's options} for the posts among `post_ids` that have a poll (a forward copy has its original's), for
+    `action_log.rescan_snapshot_severities`: a post is rated with its options, so its kept copy must be."""
+    ids = sorted({int(i) for i in post_ids or () if i})
+    if not ids:
+        return {}
+    from ruqqus.classes import Submission
+    from ruqqus.helpers import poll_store
+    primary = {i: (repost_id or i) for i, repost_id in db.query(Submission.id, Submission.repost_id).filter(Submission.id.in_(ids)).all()}
+    labels = poll_store.option_texts(db, set(primary.values()))
+    return {i: labels[p] for i, p in primary.items() if p in labels}
+
+
 def rescan(db, batch=500, log=None):
-    """Re-rate everything whose rating was made with an older list.
+    """Re-rate everything whose rating was made with an older list: posts, comments, users, guilds, channels, roles, events, the Log's
+    reasons and the Log's kept copies of deleted and hidden items (`log_snapshots.word_severity`, in batches that commit as they go).
     Returns how many rows changed rating."""
     from ruqqus.classes import Submission, Comment, User, Board
 
@@ -282,6 +298,10 @@ def rescan(db, batch=500, log=None):
     from ruqqus.helpers import action_log
     changed += action_log.rescan_severities(db, f.severity)
     db.commit()
+
+    # the Log's kept copies (a `delete` copy is public and never expires, so its rating must follow the list too): after the commit above, so a
+    # database that cannot do this step cannot undo the re-rating that came before it; each batch commits for itself
+    changed += action_log.rescan_snapshot_severities(db, f.severity, f.severity_html, poll_text=_poll_texts, commit_each=True, log=log)
 
     return changed
 

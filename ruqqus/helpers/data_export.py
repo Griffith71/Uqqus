@@ -3,7 +3,8 @@ helpers/account_cleanup.py. Plain `text()` SQL, each table in its own savepoint 
 out (tests/test_data_export.py). Chats aren't in it: they are end-to-end encrypted and the site can't read them
 (each member's chat page can export its own history).
 
-Only the account's own rows and columns are read; nothing about who else voted, viewed or reported.
+Only the account's own rows and columns are read; nothing about who else voted, viewed or reported. What the account said to the moderators in
+the Log (its appeals and its reports of an entry) is its own words and is in it, with no word of who decided.
 """
 import json
 
@@ -14,8 +15,10 @@ from ruqqus.helpers.i18n_runtime import tr
 SECTIONS = (
     ("account", "SELECT id, username, display_name, email, bio, profile_job, profile_location, profile_website, "
                 "created_utc, coin_balance, premium_expires_utc, filter_level, signin_alerts, qr_login_off, languages, feed_defaults, "
-                # held by the signup guard since (0: not held); its score and reasons are the admins' and stay out
-                "quarantined_utc FROM users WHERE id = :u"),
+                # on hold since (0: not held), by the signup guard or by an automatic check; its score, its reasons and the trigger are the staff's and stay out
+                "quarantined_utc, "
+                "CASE WHEN quarantined_utc = 0 THEN 'none' WHEN quarantine_kind = 1 THEN 'an automatic check' ELSE 'the sign-up check' END "
+                "AS quarantined_by FROM users WHERE id = :u"),
     # what the member said about their age, and when (helpers/age_declaration.py)
     ("age", "SELECT CASE age_declared WHEN 1 THEN '18 or over' WHEN 2 THEN 'a child account' END AS age_declared, age_declared_utc, "
             "CASE WHEN age_lock IS NULL THEN 'none' WHEN age_lock = 2 THEN 'set by a parent' ELSE 'child lock' END AS age_lock, "
@@ -60,9 +63,14 @@ SECTIONS = (
     # what the member sent the admins, with the facts the page sent along; a screenshot is not exported
     ("feedback", "SELECT kind, message, page, context, status, response, created_utc FROM site_feedback "
                  "WHERE user_id = :u ORDER BY id"),
-    # the appeals they made against a decision in the Log, with how each ended (the Log's own entries about them are public or staff's)
+    # the appeals they made against a decision in the Log, with how each ended and the note they were sent (the Log's own entries about them are public or staff's).
+    # Never who decided, the guild, or the entry that undid it: those are what the deciders' pages hold, not what the appellant was told
     ("appeals", "SELECT a.entry_id, a.reason, a.status, a.decision_note, a.created_utc, a.decided_utc FROM log_appeals a "
                 "WHERE a.user_id = :u ORDER BY a.id"),
+    # the Log entries they reported (helpers/log_reports.py): their own words and when. A reporter is never told how a report ended, so it is "waiting" or
+    # "closed" and no more: never which admin, which outcome or when, and never anyone else's report of the same entry
+    ("log_reports", "SELECT r.entry_id, r.reason, r.created_utc, CASE WHEN r.status = 'open' THEN 'waiting' ELSE 'closed' END AS state "
+                    "FROM log_reports r WHERE r.reporter_id = :u ORDER BY r.id"),
     # what the Log says about them that anyone could read (a sanction, an exile, one made by alias too: it names the number and is theirs to be given, never a
     # staff-only entry, and never a reason an owner hid), and the private
     # copies of their own words that the site still holds (what they erased themselves, what was hidden): never a copy kept for a legal duty

@@ -178,7 +178,7 @@ STATUS_REASONS = {
     400: N_("something in it isn't accepted any more (a link, a guild or an option). Open it and press Post to see "
             "what."),
     401: N_("you were signed out."),
-    403: N_("your account couldn't post it at that moment (a suspension, or the rules of a guild it was forwarded to). "
+    403: N_("your account couldn't post it at that moment (it is on hold or suspended, or the rules of a guild it was forwarded to). "
             "Open it and press Post to see what."),
     404: N_("a guild or post it named no longer exists."),
     409: N_("it clashed with something already posted."),

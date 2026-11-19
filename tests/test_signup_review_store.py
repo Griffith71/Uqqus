@@ -24,6 +24,7 @@ def make():
             continue
         db.execute(text("\n".join(lines).replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY")))
     db.execute(text("ALTER TABLE users ADD COLUMN quarantined_utc INTEGER DEFAULT 0 NOT NULL"))
+    db.execute(text("ALTER TABLE users ADD COLUMN quarantine_kind INTEGER DEFAULT 0 NOT NULL"))
     return db
 
 
@@ -132,3 +133,21 @@ def test_forget_removes_the_row():
     account(db, 1)
     store.forget(db, 1)
     assert store.recent(db, 0) == []
+
+
+def test_a_hold_an_automatic_check_placed_is_not_this_stores_to_read_or_clear():
+    """quarantine_kind 1 (helpers/auto_quarantine.py): out of the queue, out of every cluster, and untouched by approving, verifying or a bulk decision."""
+    db = make()
+    account(db, 1)
+    account(db, 2)
+    account(db, 3, network="net2")
+    db.execute(text("UPDATE users SET quarantine_kind = 1 WHERE id = 2"))
+    assert sorted(r["user_id"] for r in store.waiting(db)[0]) == [1, 3]
+    assert store.waiting_count(db) == 2 and store.held_among(db, [1, 2, 3]) == [1, 3]
+    assert store.cluster_waiting(db, "name_shape", "a9{5}", 0) == [1, 3]
+    assert store.release(db, 2, "verified", NOW) is False and store.release(db, 2, "approved", NOW, admin_id=9) is False
+    assert store.decide(db, [2], "approved", 9, NOW) == []
+    assert dict(db.execute(text("SELECT id, quarantined_utc > 0 FROM users")).all()) == {1: 1, 2: 1, 3: 1}
+    assert db.execute(text("SELECT decision FROM signup_reviews WHERE user_id = 2")).scalar() == ""      # its review row is not closed as if it had been let go
+    assert store.decide(db, [1, 2, 3], "approved", 9, NOW) == [1, 3]
+    assert dict(db.execute(text("SELECT id, quarantined_utc > 0 FROM users")).all()) == {1: 0, 2: 1, 3: 0}

@@ -1027,7 +1027,10 @@ def write_comment(client, member, post36, **form):
 
 
 def member_state(member):
-    return rows(member, "SELECT is_banned, unban_utc, ban_reason FROM users WHERE id = :u", u=member.id)[0]
+    """(1 when the account is banned OR held by a check, else 0; unban_utc; ban_reason; quarantined_utc; quarantine_kind; is_banned). The site's own checks put an
+    account on hold now and never ban it (helpers/auto_quarantine.py), so [0] is what a limited sign-in must leave at 0 and [4] says which kind of hold a whole one earned."""
+    return rows(member, "SELECT CASE WHEN is_banned <> 0 OR quarantined_utc > 0 THEN 1 ELSE 0 END, unban_utc, ban_reason, quarantined_utc, quarantine_kind, is_banned "
+                        "FROM users WHERE id = :u", u=member.id)[0]
 
 
 def card_of(page, post36):
@@ -1207,7 +1210,7 @@ def test_a_banned_link_on_a_limited_sign_in_is_refused_and_bans_nobody(real_app,
     # the rule itself stands: the same link from a whole sign-in
     whole = member.browser()
     on_site(whole, member, "/api/vue/submit", title="a title " + secrets.token_hex(4), url=f"https://{domain}/x")
-    assert member_state(member)[0] != 0
+    assert member_state(member)[0] != 0 and member_state(member)[4] == 1 and member_state(member)[5] == 0
 
 
 def test_a_link_that_bans_on_sight_on_a_limited_sign_in_is_refused(real_app, codes, make_member):
@@ -1246,11 +1249,15 @@ def test_the_spam_guard_refuses_a_limited_sign_in_and_touches_nobody(real_app, c
     assert len(made) >= 2, "there is something for it to have taken down"
     assert member_state(member)[0] == 0 and member_state(alt)[0] == 0
     assert rows(member, "SELECT count(*) FROM submissions WHERE author_id = :u AND is_banned = true", u=member.id)[0][0] == 0
+    log_of = "SELECT count(*) FROM log_entries WHERE action = 'quarantine_user' AND target_user_id IN (:a, :b)"
+    assert rows(member, log_of, a=member.id, b=alt.id)[0][0] == 0, "nothing was written about it either"
 
     # with the password the rule is as it was
     assert desk_post(desk, "/login/qr/upgrade", formkey=member.formkey(desk), password=member.password).status_code == 302
     assert on_site(desk, member, "/api/vue/submit", title="the very same words again and again 4", body="the very same body again and again").status_code < 500
     assert member_state(member)[0] != 0 and member_state(alt)[0] != 0
+    assert member_state(member)[4] == 1 and member_state(alt)[4] == 1, "the site's own check puts both on hold"
+    assert member_state(member)[5] == 0 and member_state(alt)[5] == 0, "and bans neither"
 
 
 def test_the_comment_spam_guards_refuse_a_limited_sign_in(real_app, codes, make_member, monkeypatch):
@@ -1279,11 +1286,13 @@ def test_the_pop_ups_new_account_rule_refuses_a_limited_sign_in_and_saves_nothin
     assert member_state(member)[0] == 0 and rows(member, "SELECT bio FROM users WHERE id = :u", u=member.id)[0][0] in (None, "")
     assert desk_post(desk, "/login/qr/upgrade", formkey=member.formkey(desk), password=member.password).status_code == 302
     on_site(desk, member, "/settings/profile/edit", bio="[a link](https://example.com/x)")
-    assert member_state(member)[2] == "seo spam", "the rule stands for a whole sign-in"
+    assert member_state(member)[4] == 1 and member_state(member)[5] == 0, "the rule stands for a whole sign-in: the account is put on hold, never banned"
 
 
-def test_the_banned_picture_list_bans_nobody_on_a_limited_sign_ins_word(real_app, make_member, monkeypatch):
-    """The site's own list, read after the upload. The picture goes either way. (The child-abuse match is CLAUDE.md's named exception.)"""
+def test_the_banned_picture_list_holds_nobody_on_a_limited_sign_ins_word(real_app, make_member, monkeypatch):
+    """The site's own list, read after the upload. The picture goes either way, and nobody is ever banned or suspended by it (the owner, 2026-11-17: the site's own
+    checks only quarantine). A limited sign-in's word holds nobody: the check could be wrong and the real member would carry it. (The child-abuse match is CLAUDE.md's
+    named exception, and holds whoever uploaded: tests/pg/test_scan_bans.py.)"""
     from types import SimpleNamespace
 
     from ruqqus.helpers import aws
@@ -1298,7 +1307,12 @@ def test_the_banned_picture_list_bans_nobody_on_a_limited_sign_ins_word(real_app
         removed = []
         aws.check_csam_url(f"https://bucket.example/{secrets.token_hex(4)}.png", user, lambda: removed.append(1))
         assert removed == [1]
-        assert (member_state(member)[0] == 0) is limited
+        state = member_state(member)
+        assert state[5] == 0 and state[1] in (0, None), "never banned or suspended, whoever uploaded"
+        if limited:
+            assert state[0] == 0 and state[3] == 0 and state[4] == 0, "a limited sign-in's word holds nobody"
+        else:
+            assert state[3] > 0 and state[4] == 1, "an ordinary sign-in's word puts the account on hold, for an admin to decide"
 
 
 def test_a_qr_row_says_nothing_about_the_member_until_the_password(real_app, codes, make_member):

@@ -64,7 +64,7 @@
 </div>
 
 
-{% elif ((c.is_banned or (c.hidden_by_guild and not (v and v.id==c.author_id) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or (c.author_hidden and not (v and v.id==c.author_id) and not (v and c.post and v.id==c.post.author_id))) or (((c.is_blocking or c.is_blocked) and not anon_hidden(c, v)) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or is_muted(c, v)) and not c.distinguish_level and not (v and v.admin_level>=3) %}
+{% elif ((c.is_banned or (c.hidden_by_guild and not is_author(c, v) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or (c.author_hidden and not is_author(c, v) and not (c.post and is_author(c.post, v)))) or (((c.is_blocking or c.is_blocked) and not anon_hidden(c, v)) and not (c.is_guildmaster('content') and c.original_board_id==c.post.board_id)) or is_muted(c, v)) and not c.distinguish_level and not (v and v.admin_level>=3) %}
 
 
 
@@ -268,7 +268,9 @@
          {{ comment_tools.text_tools("comment-edit-body-" ~ c.base36id) }}
          <a id="cancel-edit-{{ c.base36id }}" href="javascript:void(0)" onclick="toggleEdit('{{ c.base36id }}')" class="btn btn-link text-muted ml-auto cancel-form">{{ _("Cancel") }}</a> 
          {{ post_options.disclosure_toggles("comment-edit-disc-" ~ c.base36id, c.paid_partnership, c.made_with_ai) }}
-         <a href="javascript:void(0)" form="comment-edit-form-{{ c.base36id }}" class="btn btn-primary ml-2" onclick="comment_edit('{{ c.base36id }}')">{{ _("Save Edit") }}</a> </div> </form>
+         <a href="javascript:void(0)" form="comment-edit-form-{{ c.base36id }}" class="btn btn-primary ml-2" onclick="comment_edit('{{ c.base36id }}')">{{ _("Save Edit") }}</a> </div>
+        {{ post_options.disclosure_hints("comment-edit-disc-" ~ c.base36id, c.paid_partnership, c.made_with_ai) }}
+       </form>
        </div>
        {% endif %}
 
@@ -490,6 +492,7 @@
           <a href="javascript:void(0)" onclick="document.getElementById('comment-on-{{ c.base36id }}').classList.add('d-none')" class="btn btn-link text-muted ml-auto cancel-form">{{ _("Cancel") }}</a> 
           <a id="save-comment-on-{{ c.fullname }}" class="btn btn-primary text-white ml-2" onclick="post_comment('{{ c.fullname }}');" href="javascript:void(0)">{{ pgettext('button', 'Comment') }}</a> 
         </div> 
+        {{ post_options.disclosure_hints("comment-disc-" ~ c.fullname, false, false, true, c.post.is_anonymous and v and v.id == c.post.author_id and not anon_hidden(c.post, v), c.post.is_anonymous and v and v.id == c.post.author_id and not anon_hidden(c.post, v) and not v.qr_limited) }}
       </form> 
     </div>
 

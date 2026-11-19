@@ -19,13 +19,14 @@ import html
 from flask import abort, g, redirect, render_template, request
 from markupsafe import Markup, escape
 from sqlalchemy import or_, text
-from sqlalchemy.orm import lazyload
+from sqlalchemy.orm import joinedload, lazyload
 
 from ruqqus.classes import Board, Comment, Submission, User
 from ruqqus.classes.mod_logs import ACTIONTYPES
-from ruqqus.helpers import action_log, anon_aliases, log_evidence, deletion, deletion_store, log_view, sanction_evidence, sensitive as sensitive_rules
+from ruqqus.helpers import action_log, anon_aliases, log_evidence, log_paging, deletion, deletion_store, log_view, sanction_evidence, sensitive as sensitive_rules
 from ruqqus.helpers import sanitize as sanitize_rules
-from ruqqus.helpers import anonymity
+from ruqqus.helpers import anonymity, muting
+from ruqqus.helpers import log_thread as log_thread_rules       # not `log_thread`: that is the route below
 from ruqqus.helpers.base36 import base36decode, base36encode
 from ruqqus.helpers.get import get_comment, get_guild, get_post, get_user
 from ruqqus.helpers.i18n_runtime import tr
@@ -189,8 +190,10 @@ def _rows(entries, v):
         actor = people.get(e["actor_id"])
         item = ("post", e["target_submission_id"]) if e["target_submission_id"] else ("comment", e["target_comment_id"])
         if role == action_log.AUTHOR:
-            if e["log_type"] in (action_log.DELETION, action_log.EDIT) and item in named:
-                # a ban cited this item and a second admin approved: the Log's lines about it say who wrote it (the item stays anonymous elsewhere)
+            if e["log_type"] == action_log.DELETION and item in named:
+                # a ban cited this item and a second admin approved: the Log's line about its DELETE says who wrote it (the item stays anonymous elsewhere).
+                # Not its edits: `fetch` has taken the editor out of an anonymous item's edit entry, and on a post written with others the editor may be a co-author
+                # who pressed Publish, not the cited account, so naming the account there would be a false attribution (the second review, C23)
                 who = log_view.person(named[item])
             elif e["log_type"] == action_log.DELETION:
                 who = log_view.anonymous_actor(numbers.get(item))
@@ -257,26 +260,22 @@ def _deleted_words(copy, board, level, shows_sensitive, post_languages, comment_
     view = deletion.text_view(copy, board_banned=bool(board is not None and board.is_banned), level=level, shows_sensitive=shows_sensitive)
     if view == deletion.LINE_ONLY:
         return None
-    html_ = log_view.without_links(log_view.without_media(copy["body_html"]))
+    html_ = log_view.without_links(log_view.without_media(copy["body_html"], plain=True))
     return {"view": view, "title": html.unescape(copy["title"] or ""), "url": copy["url"] or "",
             "body": Markup(sanitize_rules._clean_wo_links.clean(html_)),
             "lang": post_languages.get(copy["post_id"]) or comment_languages.get(copy["comment_id"]) or ""}
 
 
-ABOUT_MAX_PAGE = 40         # a page of these merges two lists, so how far back it reads is bounded: 1,000 lines
-
-
 def _about_page(v, *, heading, back, scope, page):
     """One page of the log of an item or an account: the entries ABOUT it (the same public ones `/log` has, nothing more). An author's own delete
-    is one of them since slice D3a (as Anonymous, by the Deleted tab's rules): it is not a separate list for its author and the admins any more."""
-    page = min(page, ABOUT_MAX_PAGE)
-    want = page * log_view.PER_PAGE
-    entries, more = action_log.fetch(g.db, level=0, scope=scope, limit=want)
+    is one of them since slice D3a (as Anonymous, by the Deleted tab's rules): it is not a separate list for its author and the admins any more.
+    Page N reads entries (N-1)*25 to N*25 of the newest-first list and no others (`log_paging.about_window`: the offset, at most 40 pages), and the
+    Next link is `fetch`'s own "there are more" (the page used to read the first N*25 entries and draw the last 25, and could never say there were more)."""
+    page, offset = log_paging.about_window(page)
+    entries, more = action_log.fetch(g.db, level=0, scope=scope, limit=log_view.PER_PAGE, offset=offset)
     rows = _rows(entries, v)
-    start = (page - 1) * log_view.PER_PAGE
-    shown = rows[start:start + log_view.PER_PAGE]
-    return _noindex(render_template("log_about.html", v=v, heading=heading, back=back, rows=shown, tab="content", page=page,
-                                    more=len(rows) > start + log_view.PER_PAGE and page < ABOUT_MAX_PAGE))
+    return _noindex(render_template("log_about.html", v=v, heading=heading, back=back, rows=rows, tab="content", page=page,
+                                    more=more and page < log_paging.ABOUT_MAX_PAGE))
 
 
 @app.route("/post/<pid>/log", methods=["GET"])
@@ -369,10 +368,6 @@ def may_unlink_comment(comment):
 app.jinja_env.globals.update(deleted_post_context=deleted_post_context, may_unlink_post=may_unlink_post, may_unlink_comment=may_unlink_comment)
 
 
-THREAD_PER_PAGE = 25            # top-level comments a page of a deleted post's thread
-THREAD_MAX = 2000               # comments read for one page: a thread is a record, not a feed
-
-
 def _comment_line(kind):
     """The line a comment is drawn as when its words are not shown: every one is a plain sentence, never its text or its author."""
     return {"removed": tr("A comment removed by the site's admins."),
@@ -393,6 +388,14 @@ def log_thread(pid, v):
     post = get_post(pid, v=v, graceful=True)
     if post is None:
         abort(404)
+    # the post page's own gates, BEFORE anything is answered about it (the second review, C01): this page used to redirect a live copy in a
+    # private or banned guild to its address, naming the guild and the forwarder, and to list every comment of a deleted copy in one
+    if post.in_private_guild_for(v):
+        abort(404)
+    if post.board.is_banned and not post.is_profile_post and not (v and v.admin_level > 3):
+        abort(404)
+    if post_hidden(post, v):
+        return hidden_notice(v)["html"]()
     if not (post.deleted_utc or 0) > 0:
         return redirect(post.permalink)                     # not deleted: its own page is the page
     primary_id = post.repost_id or post.id
@@ -415,24 +418,17 @@ def log_thread(pid, v):
             for c in copies if not board_hidden(c.board, v) and not c.board.is_private and not c.board.is_banned]
     tabs = tabs if len(tabs) > 1 else []
 
+    # the shape of the whole thread as ids (one statement), the page's 25 top-level subtrees cut from it, and ONLY those comments loaded as rows, with their
+    # text in the same statement (a wildcard lazyload would have read each comment's text on its own when it was drawn): the cost of a page is the page's
     page = log_view.parse_page(request.args.get("page"))
-    rows = g.db.query(Comment).options(lazyload("*")).filter(Comment.parent_submission == post.id).order_by(Comment.created_utc.asc(), Comment.id.asc()) \
-        .limit(THREAD_MAX).all()
-    children, top = {}, []
-    for c in rows:
-        if c.parent_comment_id:
-            children.setdefault(c.parent_comment_id, []).append(c)
-        else:
-            top.append(c)
-    shown_top = top[(page - 1) * THREAD_PER_PAGE:page * THREAD_PER_PAGE]
-    in_page = []
-
-    def walk(c, depth):
-        in_page.append(c)
-        return {"c": c, "depth": depth, "children": [walk(k, depth + 1) for k in children.get(c.id, ())] if depth < 8 else []}
-
-    tree = [walk(c, 0) for c in shown_top]
+    tree, ids, more, total = log_paging.thread_page(log_paging.comment_index(g.db, post.id), page)
+    loaded = ({c.id: c for c in g.db.query(Comment).options(lazyload("*"), joinedload(Comment.comment_aux, innerjoin=False))
+               .filter(Comment.id.in_(ids)).all()} if ids else {})
+    in_page = [loaded[i] for i in ids if i in loaded]
     people = _people([c.author_id for c in in_page])
+    # one statement for the page, not a query for each comment; an anonymous comment's author is never asked about (a block, like a mute,
+    # never hides only the anonymous ones: that would say which are the blocked account's)
+    blocked_ids = log_thread_rules.blocked_among(g.db, getattr(v, "id", None), {c.author_id for c in in_page if not c.is_anonymous})
     deleted_ids = [c.id for c in in_page if (c.deleted_utc or 0) > 0]
     entry_of = deletion_store.comment_entries(g.db, deleted_ids)
     visible_entries, _ = action_log.fetch(g.db, level=level, member_boards=member, limit=len(entry_of) or 1,
@@ -443,10 +439,19 @@ def log_thread(pid, v):
     post_languages, comment_languages = deletion_store.languages(g.db, (), [t["comment_id"] for t in texts.values()])
 
     def draw(node):
-        c = node["c"]
+        c = loaded.get(node["id"])
+        if c is None:                                       # gone between the index and the page's rows: it is no line at all
+            return None
         out = {"id": base36encode(c.id), "depth": node["depth"], "created_utc": c.created_utc, "kind": "live", "line": "", "who": "", "words": None,
-               "children": [draw(k) for k in node["children"]]}
-        if c.purged_utc or c.is_banned:
+               "flag": False, "name": "", "entry_id": None, "children": [k for k in map(draw, node["children"]) if k is not None]}
+        scrubbed_copy = None
+        if (c.deleted_utc or 0) > 0:
+            deleted_entry = entry_of.get(c.id)
+            scrubbed_copy = texts.get(deleted_entry) if deleted_entry in visible_ids else None
+        # `purged_utc` is also what the 90-day retention purge sets on every deleted comment (the live row's words are blanked; the Log's
+        # own copy is what this page shows), so it is not "removed by the admins": only a banned comment, a live one that was purged and a copy
+        # an admin scrubbed are (the second review, C03)
+        if c.is_banned or (c.purged_utc and not (c.deleted_utc or 0) > 0) or (scrubbed_copy and scrubbed_copy.get("scrubbed")):
             out["kind"], out["line"] = "line", _comment_line("removed")
         elif c.hidden_by_guild or c.author_hidden:
             out["kind"], out["line"] = "line", _comment_line("hidden")
@@ -458,20 +463,34 @@ def log_thread(pid, v):
             out["kind"], out["who"] = ("deleted" if shown else "line"), log_view.anonymous_actor()
             out["words"] = shown
             out["line"] = "" if shown else _comment_line("deleted")
+            # the Log's own Report (once per person per entry, log_report_pages.py): only where the words are shown, which is exactly where the route
+            # finds words in the entry (a public, unscrubbed copy the reader's filter lets through)
+            out["entry_id"] = entry if shown else None
         elif comment_hidden(c, v):
             out["kind"], out["line"] = "line", _comment_line("filtered")
-        elif v is not None and not c.is_anonymous and v.any_block_exists(people.get(c.author_id) or c.author):
+        # a block or a mute is a placeholder here as in a normal thread (comments.html), and only for a NAMED comment: it is placed AFTER a deleted
+        # comment, which is Anonymous, and neither ever hides an anonymous comment, so no placeholder can say whose an anonymous one is
+        elif v is not None and not c.is_anonymous and c.author_id in blocked_ids:
             out["kind"], out["line"] = "line", _comment_line("blocked")
+        elif muting.is_muted(c, v):
+            out["kind"], out["name"] = "muted", (people.get(c.author_id) or c.author).username
         else:
             author = anonymity.author_of(c, v)
-            out["who"] = (log_view.anonymous_actor(getattr(author, "alias", None)) if c.is_anonymous and isinstance(author, anonymity.AnonymousAuthor) else
+            hidden_author = c.is_anonymous and isinstance(author, anonymity.AnonymousAuthor)
+            out["who"] = (log_view.anonymous_actor(getattr(author, "alias", None)) if hidden_author else
                           log_view.person(author.username, deleted=bool(author.is_deleted), hidden=user_hidden(author, v)))
             out["words"] = {"view": "text", "title": "", "url": "", "body": Markup(c.body_html or ""), "lang": c.language_code or ""}
+            # Flag (the site's usual report of a comment, the modal default.html carries for a signed-in reader): not on your own, as far as this
+            # request may be told (a limited QR sign-in is a stranger to its own anonymous comment, so it is offered it, as comments.html does). The
+            # name is the modal's title: plain text, "Anonymous" (or its number) for an anonymous author, never the username of one
+            out["flag"] = v is not None and not anonymity.is_author(c, v)
+            out["name"] = (str(author) if hidden_author else tr("[deleted account]") if author.is_deleted else
+                           tr("A member") if user_hidden(author, v) else author.username)
         return out
 
-    return _noindex(render_template("log_thread.html", v=v, head=head, tree=[draw(n) for n in tree], tabs=tabs, page=page,
-                                    more=len(top) > page * THREAD_PER_PAGE, post_id=post.base36id,
-                                    total=len(top)))
+    return _noindex(render_template("log_thread.html", v=v, head=head, tree=[n for n in map(draw, tree) if n is not None], tabs=tabs, page=page,
+                                    more=more, post_id=post.base36id,
+                                    total=total))                 # every comment read, not the top level alone (the heading said "N comments" for those, C69)
 
 
 @app.route("/log", methods=["GET"])

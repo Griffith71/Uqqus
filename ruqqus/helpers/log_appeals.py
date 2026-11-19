@@ -4,7 +4,8 @@ that a reversal runs are `routes/log_appeal_pages.py`.
 
 What can be appealed (`APPEALABLE`): a guild's hide of a post or comment, an admin's removal (also the site's own spam and image
 checks, which are removals by the system), a post author's hide of a comment under it, a guild's exile or chat mute (by name or by alias), an
-account's suspension or ban, and a guild's ban from the site (the owner, 2026-11-14: its founder and full guildmasters, each once). **Only the person the decision is about** (`subject_of`: the account that was exiled, suspended or banned, the comment's
+account's suspension or ban, a guild's ban from the site (the owner, 2026-11-14: its founder and full guildmasters, each once) and **an account's quarantine
+by an automatic check** (the owner, 2026-11-18: once per quarantine, decided by the site's admins, through `/appeal/quarantine`). **Only the person the decision is about** (`subject_of`: the account that was exiled, suspended or banned, the comment's
 author, the person responsible for a post: its forwarder for a guild's copy, else its author) **and only once per entry** (a unique
 index), a reason of up to 500 characters, three a day. An appeal is private: its text is read by the people who decide it.
 
@@ -20,6 +21,7 @@ import time
 
 from sqlalchemy import text
 
+from ruqqus.helpers import action_log
 from ruqqus.helpers.i18n_runtime import N_
 
 OPEN, UPHELD, REVERSED, DISMISSED = "open", "upheld", "reversed", "dismissed"
@@ -43,9 +45,14 @@ APPEALABLE = {
     "ban_guild": ("unban_guild", None),
     "suspend_user": ("unban_user", None),
     "ban_user": ("unban_user", None),
+    # an account an automatic check put on hold (helpers/auto_quarantine.py): the staff's entry about it is a staff-only one, so the person appeals through
+    # their own page (/appeal/quarantine), which finds that entry server-side; the site's admins decide, never the system
+    "quarantine_user": ("unquarantine_user", None),
 }
 # a person is the subject of these; everything else is about an item
-ABOUT_A_PERSON = {"exile_user", "exile_alias", "chatban_user", "chatban_alias", "suspend_user", "ban_user"}
+ABOUT_A_PERSON = {"exile_user", "exile_alias", "chatban_user", "chatban_alias", "suspend_user", "ban_user", "quarantine_user"}
+# appealed from a page of their own, never from `/log/<id>/appeal`: the entry is staff-only, so its id is not the person's to know or to name
+OWN_PAGE = ("quarantine_user",)
 # an action made by alias names no account in the Log: the account is the staff's and the appeal's to know (`subject_user_id`)
 BY_ALIAS = ("exile_alias", "chatban_alias")
 # the actions that put a suspension or ban back
@@ -164,6 +171,9 @@ def is_subject(db, entry, user_id):
     return subject_of(db, entry) == user_id
 
 
+ALREADY_APPEALED = N_("You have already appealed this decision.")
+
+
 def can_appeal(db, entry, user_id, now=None):
     """None when this account may appeal this entry now, else the message to give. Never says who decided or why."""
     if entry is None or entry["action"] not in APPEALABLE:
@@ -173,7 +183,7 @@ def can_appeal(db, entry, user_id, now=None):
     if is_undone(db, entry):
         return N_("This decision has already been lifted.")
     if db.execute(text("SELECT 1 FROM log_appeals WHERE entry_id = :e AND user_id = :u"), {"e": entry["id"], "u": user_id}).first():
-        return N_("You have already appealed this decision.")
+        return ALREADY_APPEALED
     now = int(now if now is not None else time.time())
     made = db.execute(text("SELECT COUNT(*) FROM log_appeals WHERE user_id = :u AND created_utc > :since"),
                       {"u": user_id, "since": now - DAY}).scalar() or 0
@@ -182,8 +192,15 @@ def can_appeal(db, entry, user_id, now=None):
     return None
 
 
+APPEAL_LOCK = 7012                  # pg_advisory_xact_lock(APPEAL_LOCK, account id): one appeal being filed at a time per account
+
+
 def file_appeal(db, entry_id, user_id, reason, now=None):
-    """Make the appeal and return its id. Raises AppealRefused (the message to show) when it can't be made."""
+    """Make the appeal and return its id. Raises AppealRefused (the message to show) when it can't be made. One at a time per account
+    (Postgres): the checks (once per entry, three a day) were read before the INSERT, so two requests at once both passed and the second
+    hit the unique index and the member got a 500 (the second review, C08)."""
+    if db.get_bind().dialect.name == "postgresql":
+        db.execute(text("SELECT pg_advisory_xact_lock(:ns, :u)"), {"ns": APPEAL_LOCK, "u": int(user_id)})
     entry = _entry(db, entry_id)
     problem = can_appeal(db, entry, user_id, now)
     if problem:
@@ -213,7 +230,8 @@ def open_queue(db, board_id=None, limit=100):
     params["n"] = int(limit)
     return [dict(r._mapping) for r in db.execute(text(
         f"SELECT a.id, a.entry_id, a.user_id, a.board_id, a.created_utc, a.reason, e.action, e.actor_id, e.actor_role, "
-        f"e.target_submission_id, e.target_comment_id, e.target_user_id, e.board_id AS entry_board, e.reason AS entry_reason, e.rule_key "
+        f"e.target_submission_id, e.target_comment_id, e.target_user_id, e.board_id AS entry_board, e.reason AS entry_reason, e.rule_key, "
+        f"e.audience AS entry_audience "
         f"FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE a.status = 'open' AND {where} "
         f"ORDER BY a.id LIMIT :n"), params)]
 
@@ -221,8 +239,8 @@ def open_queue(db, board_id=None, limit=100):
 def appeal_of(db, appeal_id):
     row = db.execute(text(
         "SELECT a.id, a.entry_id, a.user_id, a.board_id, a.created_utc, a.reason, a.status, a.decided_by, a.reversal_entry_id, "
-        "e.action, e.actor_id, e.actor_role, e.target_submission_id, e.target_comment_id, e.target_user_id, e.board_id AS entry_board "
-        "FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE a.id = :i"), {"i": int(appeal_id)}).first()
+        "e.action, e.actor_id, e.actor_role, e.target_submission_id, e.target_comment_id, e.target_user_id, e.board_id AS entry_board, "
+        "e.audience AS entry_audience FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE a.id = :i"), {"i": int(appeal_id)}).first()
     return dict(row._mapping) if row is not None else None
 
 
@@ -231,31 +249,43 @@ def _live(now):
     return f"(u.is_banned = 0 OR (u.unban_utc > 0 AND u.unban_utc <= {int(now)}))"
 
 
-def other_admins(db, user_id, now=None):
-    """How many other admins (level 3 or more) could decide: not the one asked about, not deleted, not suspended."""
+def _also_not(also, prefix="x"):
+    """(SQL, params) that leave these accounts out of "who else could decide": the one who appealed is never a decider of their own appeal."""
+    ids = [int(i) for i in also or () if i]
+    names = {f"{prefix}{n}": i for n, i in enumerate(ids)}
+    return "".join(f" AND u.id <> :{n}" for n in names), names
+
+
+def other_admins(db, user_id, now=None, level=3, also=()):
+    """How many other admins (`level` or more: a guild's ban is a level-4 decision) could decide: not the one asked about, nor anyone in `also` (the person
+    who appealed), not deleted, not suspended."""
     now = int(now if now is not None else time.time())
-    return db.execute(text(f"SELECT COUNT(*) FROM users u WHERE u.admin_level >= 3 AND u.id <> :u AND u.is_deleted IS NOT TRUE "
-                           f"AND {_live(now)}"), {"u": user_id}).scalar() or 0
+    extra, names = _also_not(also)
+    return db.execute(text(f"SELECT COUNT(*) FROM users u WHERE u.admin_level >= :lvl AND u.id <> :u AND u.is_deleted IS NOT TRUE "
+                           f"AND {_live(now)}{extra}"), {"u": user_id, "lvl": int(level), **names}).scalar() or 0
 
 
-def other_guildmasters(db, board_id, permission, user_id, now=None):
-    """How many other accepted guildmasters of the guild hold `permission` (or full): who else could decide."""
+def other_guildmasters(db, board_id, permission, user_id, now=None, also=()):
+    """How many other accepted guildmasters of the guild hold `permission` (or full): who else could decide (not the person who appealed)."""
     now = int(now if now is not None else time.time())
     allowed = "m.perm_full" + (f" OR m.perm_{permission}" if permission in ("content", "access") else "")
+    extra, names = _also_not(also)
     return db.execute(text(
         f"SELECT COUNT(*) FROM mods m JOIN users u ON u.id = m.user_id WHERE m.board_id = :b AND m.accepted IS TRUE "
-        f"AND m.invite_rescinded IS NOT TRUE AND ({allowed}) AND u.id <> :u AND u.is_deleted IS NOT TRUE AND {_live(now)}"),
-        {"b": int(board_id), "u": user_id}).scalar() or 0
+        f"AND m.invite_rescinded IS NOT TRUE AND ({allowed}) AND u.id <> :u AND u.is_deleted IS NOT TRUE AND {_live(now)}{extra}"),
+        {"b": int(board_id), "u": user_id, **names}).scalar() or 0
 
 
 def conflicted(db, appeal, user_id, now=None):
     """Whether this account is the one who made the decision and someone else could decide instead (then it is not theirs to decide)."""
     if appeal["actor_id"] != user_id:
         return False
+    also = (appeal.get("user_id"),)          # the person who appealed can't decide it, so they are not "someone else who could"
     if appeal["board_id"]:
         entry = {"action": appeal["action"]}
-        return other_guildmasters(db, appeal["board_id"], permission_for(entry), user_id, now) > 0
-    return other_admins(db, user_id, now) > 0
+        return other_guildmasters(db, appeal["board_id"], permission_for(entry), user_id, now, also=also) > 0
+    # a guild's ban is a level-4 decision (the site queue lets only level 4 decide it), so a level-3 admin is not "another who could" (the second review, C11)
+    return other_admins(db, user_id, now, level=4 if appeal["action"] == "ban_guild" else 3, also=also) > 0
 
 
 def decide(db, appeal_id, outcome, decider_id, note, now=None, reversal_entry_id=None):
@@ -269,6 +299,35 @@ def decide(db, appeal_id, outcome, decider_id, note, now=None, reversal_entry_id
          "n": parse_reason(note, NOTE_MAX), "r": reversal_entry_id, "i": int(appeal_id)}).rowcount == 1
 
 
-def waiting_count(db, board_id=None):
-    where, params = ("board_id = :b", {"b": int(board_id)}) if board_id else ("board_id IS NULL", {})
-    return db.execute(text(f"SELECT COUNT(*) FROM log_appeals WHERE status = 'open' AND {where}"), params).scalar() or 0
+def site_level(level):
+    """The staff level the site's queue is read at: never below 3 (the queue is the admins'), so a missing or unknown level reads as the narrowest admin."""
+    try:
+        return max(3, int(level or 0))
+    except (TypeError, ValueError):
+        return 3
+
+
+def may_decide_site(action, entry_audience, level):
+    """Whether an admin of `level` may read and decide a site-queue appeal of an entry with this `action` and `audience`: **the one rule of that queue**, which the page
+    (`routes/log_appeal_pages.py` `_may_decide_site`) and the count beside it (`waiting_count`) both follow. An entry only level-4 admins may read (illegal content, a
+    link about minors) is not shown to, and cannot be reversed by, a level-3 admin: its row would carry its reason, and the appeal's very existence says who it is about
+    (the second review, C12). A guild's ban is a level-4 decision too (only a level-4 admin bans or reinstates a guild); every other appeal is any admin's."""
+    if (entry_audience or 0) >= action_log.LEGAL:
+        return site_level(level) >= 4
+    return action != "ban_guild" or site_level(level) >= 4
+
+
+def waiting_count(db, board_id=None, level=3, viewer_id=None):
+    """How many appeals wait for a decision: a guild's (`board_id`), or the site's as an admin of `level` may read the queue (`may_decide_site`, in SQL: one legal-level
+    appeal must not show as "1 waiting" on /admin while the queue itself leaves it out) and without the viewer's own (`viewer_id`: nobody decides their own appeal, so it is
+    not on their queue either). With no level the narrowest admin's number is the answer, never the widest."""
+    if board_id:
+        return db.execute(text("SELECT COUNT(*) FROM log_appeals WHERE status = 'open' AND board_id = :b"), {"b": int(board_id)}).scalar() or 0
+    where, params = ["a.status = 'open'", "a.board_id IS NULL"], {}
+    if site_level(level) < 4:
+        where.append("e.audience < :legal AND e.action <> 'ban_guild'")
+        params["legal"] = action_log.LEGAL
+    if viewer_id:
+        where.append("a.user_id <> :viewer")
+        params["viewer"] = int(viewer_id)
+    return db.execute(text("SELECT COUNT(*) FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE " + " AND ".join(where)), params).scalar() or 0

@@ -65,7 +65,7 @@ def settings_chat_apps(v):
                                                   environ.get("OIDC_CLIENT_SECRET", "").strip(),
                                                   environ.get("OIDC_PRIVATE_KEY")),
                            homeserver=app.config["MATRIX_PUBLIC_URL"], site_address=app.config["SERVER_NAME"],
-                           refusal=oidc.account_refusal(v, ready))
+                           refusal=oidc.account_refusal(v, ready) or (oidc.REFUSED if v.is_quarantined else None))
 
 
 @app.get("/api/chat/devices")

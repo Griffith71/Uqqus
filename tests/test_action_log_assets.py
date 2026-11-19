@@ -62,21 +62,43 @@ def test_an_admins_ban_needs_a_public_reason_names_the_rule_and_hides_the_alts()
     assert '{% include "admin/ban_form.html" %}' in read("ruqqus", "templates", "userpage.html")
 
 
-def test_every_reason_the_site_gives_for_its_own_ban_is_classified():
-    reasons = set()
+# The code paths of the site's OWN checks (the owner, 2026-11-17: the spam guard, banned links and bad links, the SEO-spam check on a bio or profile, ban-evasion detection
+# and the image checks only QUARANTINE an account, through `auto_quarantine.hold`; a real admin decides what follows). They never call `.ban(` at all. Admin-made bans
+# (routes/admin_api.py), the signup guard's own admin ban, the CSAM route's hand ban and a parent's cascade onto sub-accounts (classes/user.py) are not automatic checks and
+# are not listed here.
+AUTOMATIC_PATHS = ("routes/posts.py", "routes/comments.py", "routes/settings.py", "routes/profile_edit_pages.py", "helpers/wrappers.py", "helpers/scan_bans.py")
+
+
+def test_the_sites_own_checks_quarantine_and_never_call_ban():
+    """END STATE, tolerating nothing: **fails until every automatic code path has moved to `auto_quarantine.hold`**, and says which files still call `.ban(`."""
+    still = {name: len(re.findall(r"\.ban\(", read("ruqqus", *name.split("/")))) for name in AUTOMATIC_PATHS}
+    still = {name: count for name, count in still.items() if count}
+    assert not still, f"these automatic code paths still call .ban( instead of auto_quarantine.hold: {still}"
+    for name in AUTOMATIC_PATHS:
+        assert "auto_quarantine" in read("ruqqus", *name.split("/")), f"{name} no longer bans, so it should be quarantining through helpers/auto_quarantine.py"
+
+
+def test_every_reason_still_given_to_a_ban_outside_the_admin_routes_is_classified_and_nothing_else_is():
+    """The reasons of the site's own automatic suspensions (a `.ban(` with no admin: `record_ban(automatic=True)` reads AUTOMATIC_REASONS for its rule and audience, and an
+    unlisted reason would be PUBLIC). Since the site's own checks quarantine instead of banning, the only one left is a child account suspended with its parent
+    (`child.ban(reason=child_accounts.SUSPENDED_REASON, ...)`); no literal reason is given to an automatic `.ban(` any more. The list must EQUAL what the code still gives:
+    a new automatic ban whose reason is not listed fails, and so does an entry that describes a ban which no longer happens."""
+    literal = set()
     for path in (ROOT / "ruqqus").rglob("*.py"):
         if path.name in ("admin_api.py", "signup_guard_pages.py"):
             continue                                                      # an admin's own words, not the site's
         for call in re.findall(r"\.ban\(([^)]*)\)", path.read_text(encoding="utf-8")):
             m = re.search(r'reason=(?:N_\()?"([^"]+)"', call)
             if m:
-                reasons.add(m.group(1))
-    assert reasons, "no automatic bans found: the pattern is wrong"
+                literal.add(m.group(1))
+    assert not literal, f"an automatic .ban( still gives a literal reason: the site's own checks quarantine now: {literal}"
+    constant = re.search(r'^SUSPENDED_REASON = N_\("([^"]+)"\)', read("ruqqus", "helpers", "child_accounts.py"), re.M).group(1)
+    assert "child.ban(reason=child_accounts.SUSPENDED_REASON" in USER
+    given = {constant}
     namespace = {}
     exec(ACTION_LOG.split("AUTOMATIC_REASONS = ", 1)[1].split("\n}\n", 1)[0].join(["AUTOMATIC_REASONS = ", "\n}"]).replace("PUBLIC", "0").replace("STAFF", "2").replace("LEGAL", "3"), namespace)
-    assert reasons <= set(namespace["AUTOMATIC_REASONS"]), reasons - set(namespace["AUTOMATIC_REASONS"])
-    assert namespace["AUTOMATIC_REASONS"]["Evading a site-wide ban"][1] == 2          # detection is never public
-    assert namespace["AUTOMATIC_REASONS"]["Sexualizing minors"][1] == 3
+    assert set(namespace["AUTOMATIC_REASONS"]) == given, (set(namespace["AUTOMATIC_REASONS"]) ^ given)
+    assert namespace["AUTOMATIC_REASONS"][constant] == ("", 2)                            # a public line would say the account has a parent
 
 
 def test_the_spam_path_no_longer_passes_an_argument_user_ban_does_not_take():
@@ -100,7 +122,9 @@ def test_the_removal_routes_put_the_rule_and_reason_on_the_entry():
 
 
 def test_a_purge_or_an_obliteration_erases_the_private_copies_too():
-    assert "action_log.scrub_for(g.db, post_ids=[post.id])" in body(ADMIN_API, "purge_post_text")
+    purge = body(ADMIN_API, "purge_post_text")
+    assert "action_log.scrub_for(g.db, post_ids=family)" in purge, "the post's forwarded copies have private copies of their own"
+    assert purge.index("family = [post.id]") < purge.index("action_log.scrub_for(")
     assert "action_log.scrub_for(g.db, comment_ids=[comment.id])" in body(ADMIN_API, "purge_comment_text")
     assert "action_log.scrub_for(g.db, target_ids, comment_ids)" in body(ADMIN_API, "admin_obliterate_post")
     assert "action_log.scrub_for(g.db, comment_ids=[comment.id])" in body(ADMIN_API, "admin_obliterate_comment")
@@ -143,7 +167,8 @@ def test_the_public_columns_never_include_the_private_ones():
 def test_a_mod_log_answer_never_names_an_admin():
     assert '"mod": app.config[\'SITE_NAME\'] if self.by_admin else self.user.username' in MOD_LOGS
     # the note's words say "admin" only for an account that really is one (a guildmaster's reason is the same free text)
-    assert 'and any(mark in (self._note or "").lower() for mark in action_log.ADMIN_MARKERS))' in MOD_LOGS
+    assert "(any(mark in note for mark in action_log.ADMIN_MARKERS) or note.strip() == \"siege\")" in MOD_LOGS
+    assert "ma.by_admin" in read("ruqqus", "templates", "guild", "modlog.html")        # the page and the JSON ask the one rule (C61)
     assert "(user.admin_level or 0) >= 3" in MOD_LOGS
 
 
@@ -164,3 +189,52 @@ def test_a_notice_can_carry_a_value_named_message():
     alerts = read("ruqqus", "helpers", "alerts.py")
     assert "def notify(user, message, /, **params):" in alerts and "def notify_many(user_ids, message, /, **params):" in alerts
     assert '{"message": message}' in body(ADMIN_API, "ban_user")             # the value that used to collide with the parameter
+
+
+# --- an obliteration and a nuke leave an entry for every item they reach (the second review, C79) --------------------------------------------
+
+LOG_CASCADE = read("ruqqus", "helpers", "log_cascade.py")
+
+
+def test_an_obliterations_copies_each_get_an_entry_linked_to_the_stub():
+    helper = body(ADMIN_API, "_obliterated").split("def _decided(", 1)[0]
+    assert "copy_ids=()" in helper.split("):", 1)[0] and "stub = _decided(ma, rule=_OBLITERATE_RULE" in helper
+    assert helper.count("linked_entry_id=stub") == 2 and "return stub" in helper
+    # the level-4 detail points at the public stub, and each copy has the stub's own words (the rule, no reason, no account)
+    assert '"suppress_content", v.id' in helper and "linked_entry_id=stub)" in helper.split('"suppress_content", v.id', 1)[1].split("if copy_ids", 1)[0]
+    cascade = helper.split("if copy_ids:", 1)[1]
+    assert 'log_cascade.record_cascade(g.db, "obliterate", v.id, post_ids=copy_ids' in cascade and "skip_recorded=True" in cascade
+    assert "reason=" not in cascade, "the public line of a copy is the rule alone"
+    assert "copy_ids=[t.id for t in targets if t.id != post.id]" in body(ADMIN_API, "admin_obliterate_post")
+    assert "copy_ids" not in body(ADMIN_API, "admin_obliterate_comment"), "a comment's obliteration never cascades"
+    assert re.search(r"^from ruqqus\.helpers import .*\blog_cascade\b", ADMIN_API, re.M)
+
+
+def test_a_nuke_is_a_few_statements_and_one_entry_per_item_linked_to_a_staff_only_summary():
+    route = body(ADMIN_API, "admin_nuke_user")
+    assert "log_cascade.take_down_all(g.db, user.id, why)" in route
+    assert 'action_log.record_staff(g.db, "admin_nuke", v,' in route and "target_user_id=user.id" in route
+    assert 'log_cascade.record_cascade(g.db, "ban", v.id, post_ids=posts, comment_ids=comments, reason=why, linked_entry_id=summary,' in route
+    assert "anonymous_floor=action_log.STAFF" in route
+    assert "ModAction(" not in route and "g.db.query(Submission)" not in route and "g.db.query(Comment)" not in route, "no statement per item any more"
+    assert "ban_reason" not in route, "the reason is cut to its column in the helper"
+    assert route.index("_outranks") < route.index("take_down_all"), "nothing is removed before the account is checked"
+    assert route.index('"A reason is required."') < route.index("get_user("), "the reason is still asked first"
+    assert '"admin_nuke"' in ACTION_LOG.split("RUNNING_ACTIONS = {", 1)[1].split("}", 1)[0]
+
+
+def test_the_cascade_helper_is_set_based_plain_sql_and_never_names_an_account():
+    assert "from ruqqus.classes" not in LOG_CASCADE and "ModAction" not in LOG_CASCADE, "no ORM: the star import of the classes can't replace it"
+    entry = LOG_CASCADE.split("_ENTRY = (", 1)[1].split("_MODACTION = (", 1)[0]
+    columns = entry.split("(", 1)[1].split(")", 1)[0]
+    assert "target_user_id" not in columns and "staff_note" not in columns and "snapshot_id" not in columns
+    assert "legacy_modaction_id" in columns and "linked_entry_id" in columns
+    assert "INSERT INTO modactions" in LOG_CASCADE and "INSERT INTO log_entries" in LOG_CASCADE and "RETURNING id" in LOG_CASCADE
+    # the one thing put into the SQL text is a list of numbered parameter names built from integers
+    assert "def _ids(values):" in LOG_CASCADE and "int(v)" in LOG_CASCADE
+    assert 'names = {f"{prefix}{n}": i for n, i in enumerate(ids)}' in LOG_CASCADE
+    assert LOG_CASCADE.count(".format(marks=marks)") == 2 and 'f"UPDATE submissions_aux SET ban_reason = :r WHERE id IN ({marks})"' in LOG_CASCADE
+    assert "with db.begin_nested():" in LOG_CASCADE and "action_log.note_failure(db," in LOG_CASCADE and "CHUNK = 500" in LOG_CASCADE
+    loops = [line.strip() for line in LOG_CASCADE.split("def record_cascade(", 1)[1].splitlines() if line.strip().startswith("for ")]
+    assert loops == ["for ids, action, build in ((posts, post_kind, _post_sql), (comments, comment_kind, _comment_sql)):", "for chunk in _chunks(ids):"], \
+        "loops over the two tables and over chunks of 500, never over items"

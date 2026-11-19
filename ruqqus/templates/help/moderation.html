@@ -11,7 +11,7 @@
 
 <h1>{{ _("How moderation is recorded") }}</h1>
 
-<p>{{ _("The Log is one record of what guildmasters and the site decided, and of what members deleted. Nothing in it is ever edited: a correction is a new line that points at the one it corrects. Open it from the footer, or at /log.") }}</p>
+<p>{{ _("The Log is one record of what guildmasters and the site decided, and of what members deleted. What it says is never rewritten: a correction is a new line that points at the one it corrects. Only three things are taken out of a line, and each leaves the line itself: a reason an administrator hides after a report, the item a line pointed at when its author later takes their name off, and the words of something an administrator erases. Open it from the footer, or at /log.") }}</p>
 
 <h2>{{ _("What the Log shows") }}</h2>
 
@@ -31,7 +31,7 @@
 
 <ul>
   <li>{{ _("<b>Delete it.</b> It leaves the site. What it said (the title, the link and the text) stays in the Log as <b>Anonymous</b>: no name, no profile and no link, and a link in it is shown as plain text. Anyone can read it there, under the same word filter, sensitive-content and Child-level rules as any member's words. It is how a record of the site stays honest: like Wikipedia, every contribution remains.") }}</li>
-  <li>{{ _("<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle, a post that has been tipped, or a post written with others.") }}</li>
+  <li>{{ _("<b>Remove my name.</b> The post or comment stays where it is, with your name taken off, and leaves your profile. It can't be undone, and it isn't offered for a post made for a Circle or a post that has been tipped. On a post written with others it takes off your own credit only.") }}</li>
 </ul>
 
 <p>{{ _("<b>The first five minutes.</b> If you delete something less than five minutes after you made it, and nobody else has commented on it, it is really erased: nothing is published and nothing is in the Log. The site keeps a private copy for 90 days, which only you and the site's admins can open. This is for a typo, a wrong picture or a post made in anger. It can be used 20 times a day; after that, and after five minutes, a delete is published as above.") }}</p>
@@ -50,7 +50,7 @@
 
 <p>{{ _("<b>Posts written with others.</b> Each author's credit can be anonymous on its own: when the post is anonymous from the start, when an author chooses \"Remove my name\" for their credit, or when they delete their account. Only that credit becomes \"Anonymous #N\"; the other authors stay named. Admins can always see whose it is.") }}</p>
 
-<p>{{ _("<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees, the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that second admin, and reversing the ban takes the name back out.") }}</p>
+<p>{{ _("<b>Bans that cite what someone wrote.</b> When an admin bans or suspends an account they may cite the posts and comments that justify it, even ones written anonymously. Once a second admin agrees (or, on a site with a single administrator, its owner), the Log names the account for those items (the line about each one, and the ban's line), so anyone can check the ban was fair. The items stay anonymous everywhere else on the site, nothing is named without that approval, and once it is named it stays: if the ban is later reversed, or a suspension simply runs out, the Log shows that too and keeps the name, so a ban that was found wrong can be seen as such.") }}</p>
 
 <p>{{ _("The site's admins can always see who wrote something: anonymity is toward other members, not toward the site.") }}</p>
 
@@ -70,8 +70,26 @@
 
 <p>{{ _("When something is hidden, removed or erased, the site keeps a private copy of its text for 90 days (a year for illegal content, which the law requires). Who may open it depends on what it is a copy of: its author and the admins, and for a guild's hide that guild's guildmasters. Then the text is emptied; the Log's line stays.") }}</p>
 
+<h2>{{ _("Automatic checks") }}</h2>
+
+<p>{{ _("<b>An automatic check can put an account on hold. It can never ban one.</b> The site checks for spam, for links it blocks, for spam in a profile, for someone getting round a ban, and for pictures that match a list. When one of them fires it puts the account on hold (the Log calls it a quarantine) and a member of the staff looks at it. What follows is always a person's decision: they release the account, or an admin bans it, with a reason, a rule and an appeal, as described above.") }}</p>
+
+<p>{{ _("<b>What a held account can do.</b> It can read the site, change its own settings and profile, delete what it wrote, bookmark, unfollow, leave guilds and send feedback. It can't post, comment, edit, vote, follow someone, join a guild, forward, repost, tip, report, use chat or calls, write in a channel, a wiki or an event, make a Space, a circle, a curation or a story, or use a guildmaster's powers. The hold itself takes nothing down.") }}</p>
+
+<p>{{ _("<b>Nobody else is told.</b> There is no banner on its profile, and no page names an account that is on hold. The account is sent a notice with a generic reason (and the rule, where there is one) and a link to ask for a review.") }}</p>
+
+<p>{{ _("<b>What the Log shows.</b> Most holds have one line on the Sanctions tab, from the site: \"put an account in quarantine\", with the rule, a generic reason (\"Automatic spam check\", \"Automatic link check\" or \"Automatic image check\") and the time. It names no account, no post and no guild, and says nothing about what was caught. When such a hold is lifted a second line says \"lifted a quarantine an automatic check had placed\". The staff keep a separate note that names the account and says what the check saw; only they read it. Some holds have no public line and are read by the staff only, like the rest of what the site does to run itself.") }}</p>
+
+<p>{{ _("<b>What an automatic check removes is public.</b> When an automatic check removes a post or comment, the Log shows it on the Moderation tab like any removal: the post or comment by its id, the rule and the generic reason, never its title or text and never who wrote it, even when it was anonymous. The removal itself sends no separate notice: the person it was by finds an <b>Appeal this decision</b> link on the removed post or comment, and the site's admins decide that appeal.") }}</p>
+
+<p>{{ _("<b>Only a person lifts a hold.</b> Not time, and not verifying an email address: an admin releases it from the staff queue, or accepts a request for a review. A hold the sign-up check puts on a brand-new account is different: verifying an email address lifts that one, unless an automatic check has fired on the account since.") }}</p>
+
+<p>{{ _("<b>Asking for a review.</b> The notice you are sent has an <b>Ask for a review</b> link, which opens /appeal/quarantine (you need to be signed in). You can ask once for each hold, with up to 500 characters, and the site's admins decide it, never the check that held you. If they accept, the hold is lifted, a new line in the Log says so and you are told; if not, you are told that too. If an admin later bans the account, that is a separate decision with its own reason, rule and appeal, and what is said above about bans that cite anonymous posts applies to it. A hold never names an account for something it wrote anonymously.") }}</p>
+
 <h2>{{ _("If a decision was wrong") }}</h2>
 
 <p>{{ _("When a hide, a removal, an exile, a suspension or a ban is about you, you are sent the rule, the reason and a link to its line in the Log, with an <b>Appeal</b> button. You can appeal each decision once. The guild's guildmasters decide an appeal against a guild's decision; the site's admins decide the rest. If it is reversed, a new line in the Log says so.") }}</p>
+
+<p>{{ _("A hold an automatic check put on your account is asked about the same way, once for each hold: see Automatic checks above.") }}</p>
 
 {% endblock %}

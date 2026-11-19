@@ -374,6 +374,7 @@
     <label for="delete_account">{{ _("Delete Account") }}</label>
 
     <p>{{ _("This will permanently delete your %(site)s Account. Be careful, this cannot be undone.") }}</p>
+    <p class="text-small text-muted">{{ _("Everything you wrote stays on the site as Anonymous and can't be taken back. Delete what you want gone, or remove your name from it, first (History > Manage).") }}</p>
 
     {# a parent's child accounts are deleted with it (helpers/child_accounts.py): said here, with the way to download their data first #}
     {% set kids = children_count(v) %}

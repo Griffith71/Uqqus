@@ -17,7 +17,7 @@
   <input type="submit" class="btn btn-success" value="Unban guild">
 </form>
 
-<p class="my-3">Reason: {{ b.ban_reason }}</p>
+{% if b.ban_reason %}<p class="my-3">Reason: {{ b.ban_reason }}</p>{% endif %}
 
 {% if v.admin_level >=5 %}
 <form action="/admin/purge_guild_images/{{ b.name }}" method="post">

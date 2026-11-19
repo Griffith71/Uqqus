@@ -152,6 +152,10 @@ class FakeUser(Row):
                                     or self.unban_utc > time.time()))
 
     @property
+    def is_quarantined(self):  # ruqqus/classes/user.py
+        return bool(getattr(self, "quarantined_utc", 0)) and not self.admin_level and not self.is_bot
+
+    @property
     def formkey(self):  # ruqqus/classes/user.py
         from ruqqus.helpers.security import generate_hash
         s = flask.session
@@ -252,6 +256,10 @@ class FakeBoard(Row):
         if user is None:
             return None
         return self.mods.get(user.id)
+
+    def leads(self, user):
+        """Does this account lead the guild, whatever its sign-in or standing (Board.leads)."""
+        return bool(user is not None and self.mods.get(user.id))
 
 
 class FakeMod(Row):

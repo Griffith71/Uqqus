@@ -33,7 +33,7 @@ HELD = {
     "history_mass_pages.py": "history_manage history_mass",
     "legal.py": "legal_1 legal_2 legal_final dmca_post counter_dmca_post",
     "collab.py": "collab_propose collab_vote collab_withdraw collab_invite_answer collab_leave collab_publish",
-    "coauthors.py": "coauthor_invite coauthor_accept coauthor_hide_name",
+    "coauthors.py": "coauthor_invite coauthor_accept coauthor_hide_name coauthor_page",
     "discord.py": "join_discord discord_redirect",
     "age_declaration_pages.py": "settings_age_declaration settings_age_assurance_start settings_age_assurance_callback",
     "children_pages.py": "settings_children children_new children_controls children_answer children_stop children_password children_delete children_export "
@@ -70,6 +70,9 @@ HELD = {
     # an appeal is once per decision and can't be taken back, so a relayed code can't use up the member's one (and deciding one acts as a
     # guildmaster, whose powers a limited sign-in doesn't hold; the admins' queue asks for the password through `admin_level_required`)
     "log_appeal_pages.py": "log_appeal_post guild_appeal_decide",
+    # the appeal of an account an automatic check put on hold is once per quarantine and can't be taken back, so a relayed code can't use up the member's one (its GET
+    # asks for the password too: the account's standing is not shown to a limited sign-in)
+    "quarantine_pages.py": "quarantine_appeal_post",
 }
 LISTED = {(module, name) for module, names in HELD.items() for name in names.split()}
 
@@ -449,12 +452,13 @@ def test_the_qr_endpoints_are_not_pages_to_the_traffic_counter():
 
 
 def _ban_lines(source):
-    """(line number, line) of every automatic suspension in a route's source, its alts' too."""
-    return [(n, line) for n, line in enumerate(source.splitlines()) if re.search(r"\b(v|alt)\.ban\(", line)]
+    """(line number, line) of every automatic quarantine in a route's source (the site's own checks quarantine now and never ban: helpers/auto_quarantine.py),
+    its alts' too (they are the call's `alts=`)."""
+    return [(n, line) for n, line in enumerate(source.splitlines()) if re.search(r"\bauto_quarantine\.hold\(", line)]
 
 
 def test_no_automatic_ban_can_be_reached_from_a_limited_sign_in():
-    """A suspension outlives log out everywhere and the 12 hours, and a spam guard's walks over the member's real alts. A new automatic ban in
+    """A quarantine outlives log out everywhere and the 12 hours, and a spam guard's walks over the member's real alts. A new automatic check in
     a route a limited sign-in can reach has a `qr_limited` just above it (a route that is whole on HELD, such as Settings > Profile, isn't one)."""
     for name in ("posts.py", "comments.py", "profile_edit_pages.py"):
         lines = read("ruqqus", "routes", name).splitlines()
@@ -464,9 +468,13 @@ def test_no_automatic_ban_can_be_reached_from_a_limited_sign_in():
             above = "\n".join(lines[max(0, n - 12):n])
             assert "qr_limited" in above, f"{name}:{n + 1}: {line.strip()}"
     media = read("ruqqus", "routes", "media.py")
-    assert "if not v.qr_limited:\n                        safety.ban_uploader(" in media
-    assert 'if not getattr(v, "qr_limited", False):\n            from ruqqus.helpers import scan_bans' in read("ruqqus", "helpers", "aws.py")
-    # the child-abuse match bans whoever it is: CLAUDE.md "QR sign-in" names it, and this says when that changes
+    assert "if not v.qr_limited:\n                        safety.quarantine_uploader(" in media
+    aws = read("ruqqus", "helpers", "aws.py")
+    assert 'if not getattr(v, "qr_limited", False):\n            scan_bans.quarantine_uploader(' in aws
+    # the child-abuse match holds whoever it is (the owner, 2026-11-18: it quarantines however the account signed in), and the CDN's 451 branch has no gate at all
+    assert aws.split("if x.status_code == 451:")[1].split("tempname")[0].count("scan_bans.quarantine_uploader(") == 1
+    assert "qr_limited" not in aws.split("if x.status_code == 451:")[1].split("tempname")[0]
+    # the child-abuse match holds whoever it is: CLAUDE.md "QR sign-in" names it, and this says when that changes
     assert "qr_limited" not in read("ruqqus", "helpers", "media", "safety.py")
 
 

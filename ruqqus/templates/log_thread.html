@@ -1,4 +1,5 @@
 {% extends "default.html" %}
+{% from "partials/log_report_form.html" import report_form %}
 
 {% block title %}
 <title>{{ _("Log - %(site)s") }}</title>
@@ -10,11 +11,16 @@
 {% endblock %}
 
 {% block content %}
-{# What a deleted post said and what was said under it: a record, read-only. No vote, comment, tip or share control and no ad slot on this page. #}
+{# What a deleted post said and what was said under it: a record, read-only. No vote, comment, tip or share control and no ad slot on this page. What it does have: a placeholder for a comment by an account the reader muted or blocked (as comments.html draws one: only a named comment, never an anonymous one), Flag on a live comment (the site's usual report, in the modal default.html draws for a signed-in reader) and the Log's own Report under a comment its author deleted (once per person per entry). Deleted words are plain text: no link is drawn from them. #}
 {% macro comment(c) %}
-<div class="log-thread-comment mt-3" id="comment-{{ c.id }}" style="margin-left: {{ [c.depth, 6] | min * 1.25 }}rem;">
+<div class="log-thread-comment mt-3{% if c.depth == 0 %} log-thread-top{% elif c.depth > 5 %} log-thread-deep{% endif %}" id="comment-{{ c.id }}">
   {% if c.kind == "line" %}
   <div class="text-small text-muted border-left pl-3">{{ c.line }}</div>
+  {% elif c.kind == "muted" %}
+  <div class="text-small text-muted border-left pl-3 log-thread-placeholder">
+    [{{ _("You muted @%(name)s", name=c.name) }}]
+    <a href="javascript:void(0)" class="ml-1" onclick="post_toast('/settings/unmute?username={{ c.name | urlencode }}', callback=function(){window.location.reload()})">{{ _("Unmute") }}</a>
+  </div>
   {% else %}
   <div class="border-left pl-3">
     <div class="text-small text-muted"><span class="font-weight-bold text-black">{{ c.who }}</span> &middot; {{ date_text(c.created_utc, "%d %B %Y") }}</div>
@@ -25,6 +31,10 @@
     {% else %}
     <div class="text-small text-muted">{{ c.line }}</div>
     {% endif %}
+    {% if c.flag %}
+    <div class="text-small mt-1"><a href="javascript:void(0)" class="text-muted" data-toggle="modal" data-target="#reportCommentModal" onclick="report_commentModal('{{ c.id }}', {{ c.name | tojson | forceescape }})">{{ pgettext("verb", "Flag") }}</a></div>
+    {% endif %}
+    {% if c.entry_id and v %}{{ report_form(c.entry_id, v) }}{% endif %}
   </div>
   {% endif %}
   {% for k in c.children %}{{ comment(k) }}{% endfor %}
@@ -40,7 +50,7 @@
   </p>
 
   {% if tabs %}
-  <div class="btn-group btn-group-sm mb-3" role="group" aria-label="{{ _('Where it was discussed') }}">
+  <div class="btn-group btn-group-sm flex-wrap mb-3" role="group" aria-label="{{ _('Where it was discussed') }}">
     {% for t in tabs %}
     <a href="/log/post/{{ t.id }}" class="btn btn-sm {% if t.current %}btn-secondary{% else %}btn-link text-muted{% endif %}"{% if t.current %} aria-current="page"{% endif %}>{% if t.name %}{{ _('Discussed in +%(guild)s', guild=t.name) }}{% else %}{{ _('Discussed on a profile') }}{% endif %}</a>
     {% endfor %}

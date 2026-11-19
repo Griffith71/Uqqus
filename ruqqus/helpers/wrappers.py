@@ -18,7 +18,7 @@ from ruqqus.__main__ import Base, app, db_session
 from ruqqus.helpers.session_helpers import *
 from urllib.parse import parse_qsl, urlencode, urlsplit
 
-from ruqqus.helpers import qr_login, session_cookie, sign_in_ends, sign_in_history
+from ruqqus.helpers import auto_quarantine, qr_login, session_cookie, sign_in_ends, sign_in_history
 from ruqqus.helpers.redirects import same_site
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import set_committed_value
@@ -144,55 +144,22 @@ def _note_active(user):
         user.last_active_utc = now
 
 def check_ban_evade(v):
+    """Ban-evasion detection: an account whose browser was used by a suspended one, or by one an automatic check holds (`users.ban_evade`, set at sign-up in
+    routes/login.py and counted up on each request) is, by chance that grows with the count, QUARANTINED (helpers/auto_quarantine.py), never banned (the owner,
+    2026-11-17: the site's own checks only quarantine; an admin decides what follows). The entry is the staff's alone and the account's notice names no rule, so
+    nothing public teaches how alts are caught. It does not remove what the account wrote: it has been judged by nobody yet, and an admin who bans it removes
+    that. A held account can read the site, so the request goes on (the route's own `@not_quarantined` refuses what acts on others). An account already held by
+    an automatic check is not counted again."""
 
     if not v or not v.ban_evade:
         return
-    
+
+    if getattr(v, "quarantined_utc", 0) and (getattr(v, "quarantine_kind", 0) or 0) == 1:
+        return
+
     if random.randint(0,30) < v.ban_evade and not v.is_suspended:
-        v.ban(reason=N_("Evading a site-wide ban"))
-        # stored in English with its message and values, so each reader sees it in their language (alerts.notify)
-        notice = N_("Your %(site)s account has been permanently suspended for the following reason:\n\n> ban evasion")
-        values = {"site": _site_name()}
-        send_notification(v, notice % values, notice=(notice, json.dumps(values, sort_keys=True)))
-
-        for post in g.db.query(Submission).filter_by(author_id=v.id).all():
-            if post.is_banned:
-                continue
-
-            post.is_banned=True
-            post.ban_reason=N_("Ban evasion. This submission's owner was banned on another account.")
-            g.db.add(post)
-
-            ma=ModAction(
-                kind="ban_post",
-                user_id=1,
-                target_submission_id=post.id,
-                board_id=post.board_id,
-                note=N_("ban evasion")
-                )
-            g.db.add(ma)
-
+        auto_quarantine.hold(g.db, v, "evasion", detail="its browser had been used by an account that was suspended or held by an automatic check")
         g.db.commit()
-
-        for comment in g.db.query(Comment).filter_by(author_id=v.id).all():
-            if comment.is_banned:
-                continue
-
-            comment.is_banned=True
-            comment.ban_reason=N_("Ban evasion. This comment's owner was banned on another account.")
-            g.db.add(comment)
-
-            ma=ModAction(
-                kind="ban_comment",
-                user_id=1,
-                target_comment_id=comment.id,
-                board_id=comment.post.board_id,
-                note=N_("ban evasion")
-                )
-            g.db.add(ma)
-
-        g.db.commit()
-        abort(403)
 
     else:
         v.ban_evade +=1
@@ -366,7 +333,7 @@ def no_negative_balance(s):
 
 
 def not_quarantined(action):
-    """Refuse an account the signup guard is holding (helpers/quarantine.py). Goes under the route's sign-in wrapper,
+    """Refuse an account the signup guard or an automatic check is holding (helpers/quarantine.py, helpers/auto_quarantine.py). Goes under the route's sign-in wrapper,
     so `v` is known, and right above its `@validate_formkey` (several tests pin that line right above the function). A
     form the browser navigated with gets the message page, anything else (the site's scripts, the API) a 403 JSON
     error."""
@@ -375,14 +342,18 @@ def not_quarantined(action):
 
         def wrapper(*args, **kwargs):
             from ruqqus.__main__ import r
-            from .quarantine import HELD_TITLE, refusal
+            from .quarantine import APPEAL_LINK, HELD_AUTOMATIC_TITLE, HELD_TITLE, is_automatic, refusal
             from .i18n_runtime import msg
             held = refusal(kwargs.get("v"), action, r)
             if held:
                 if request.headers.get("Sec-Fetch-Mode") == "navigate" and not request.path.startswith("/api/"):
+                    if is_automatic(kwargs.get("v")):
+                        # an automatic check's hold: no email releases it, so the way out is a review (/appeal/quarantine)
+                        return render_template("message.html", v=kwargs.get("v"), title=msg(HELD_AUTOMATIC_TITLE), message=held,
+                                               link=APPEAL_LINK, link_text=tr("Ask for a review")), 403
                     return render_template("message.html", v=kwargs.get("v"), title=msg(HELD_TITLE), message=held,
                                            link="/settings/security", link_text=tr("Verify an email")), 403
-                return jsonify({"error": held}), 403
+                return jsonify({"error": held, "held": True}), 403            # `held` is the marker a script reads (the bot runner), never the words
             return f(*args, **kwargs)
 
         wrapper.__name__ = f.__name__
@@ -583,6 +554,14 @@ def is_guildmaster(*perms):
             # a limited QR sign-in holds no guildmaster's powers until its password is given (`has_mod` says no for it)
             if getattr(v, "qr_limited", False) and board.leads(v):
                 return qr_limited_answer(v)
+
+            # a held account (the signup guard's, or an automatic check's) acts on nobody: a guildmaster's powers are acts on others, and a
+            # suspension used to refuse them here (`has_mod` says no for it too, so this is asked first and says why). Only for a guildmaster
+            # of this guild: anyone else keeps the plain answer below and learns nothing.
+            if getattr(v, "is_quarantined", False) and board.leads(v):
+                from ruqqus.__main__ import r
+                from .quarantine import refusal
+                return jsonify({"error": refusal(v, "moderate", r)}), 403
 
             m=board.has_mod(v)
             if not m:

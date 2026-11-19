@@ -358,7 +358,8 @@ CREATE TABLE public.users (
     age_assured_utc bigint DEFAULT 0 NOT NULL,
     age_under_utc bigint DEFAULT 0 NOT NULL,
     push_names boolean DEFAULT true NOT NULL,
-    chat_receipts boolean DEFAULT true NOT NULL
+    chat_receipts boolean DEFAULT true NOT NULL,
+    quarantine_kind smallint DEFAULT 0 NOT NULL
 );
 
 
@@ -7163,6 +7164,9 @@ ALTER TABLE public.users ADD CONSTRAINT users_age_declared_rule CHECK (
 ALTER TABLE public.users ADD CONSTRAINT users_age_lock_rule CHECK (
     age_lock IS NULL OR (age_lock IN (1, 2) AND age_declared = 2));
 
+-- a hold on an account is the signup guard's (0) or an automatic check's (1): helpers/auto_quarantine.py; 2027-01-10_automatic_quarantine.sql
+ALTER TABLE public.users ADD CONSTRAINT users_quarantine_kind_rule CHECK (quarantine_kind IN (0, 1));
+
 -- translations kept so a text is translated once per language, and what an outside translator was sent each month
 -- (2026-11-26_languages_and_translation.sql; helpers/translation_store.py)
 CREATE TABLE public.translations (
@@ -7217,6 +7221,9 @@ CREATE INDEX log_snapshots_entry_idx ON public.log_snapshots (entry_id);
 CREATE INDEX log_snapshots_post_idx ON public.log_snapshots (target_submission_id) WHERE target_submission_id IS NOT NULL;
 CREATE INDEX log_snapshots_comment_idx ON public.log_snapshots (target_comment_id) WHERE target_comment_id IS NOT NULL;
 CREATE INDEX log_snapshots_due_idx ON public.log_snapshots (expires_utc) WHERE scrubbed_utc = 0;
+CREATE INDEX log_snapshots_author_idx ON public.log_snapshots (author_id) WHERE author_id IS NOT NULL;
+CREATE INDEX submissions_repost_id_idx ON public.submissions (repost_id);
+CREATE INDEX modactions_created_utc_idx ON public.modactions (created_utc);
 
 CREATE TABLE public.log_entries (
     id bigserial PRIMARY KEY,
@@ -7554,4 +7561,6 @@ INSERT INTO public.schema_migrations (name) VALUES
     ('2027-01-05_anon_aliases.sql'),
     ('2027-01-06_coauthor_credits.sql'),
     ('2027-01-07_alias_actions.sql'),
-    ('2027-01-08_evidence.sql');
+    ('2027-01-08_evidence.sql'),
+    ('2027-01-09_log_review_indexes.sql'),
+    ('2027-01-10_automatic_quarantine.sql');

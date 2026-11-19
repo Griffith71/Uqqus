@@ -1584,7 +1584,8 @@ def comment_idlist(page=1, v=None, **kwargs):
     # never a banned guild or a post the site's admins removed, nor a guild the viewer filtered out (as All)
     posts = g.db.query(Submission).options(
         lazyload('*')).join(Submission.board).filter(
-        Board.is_banned == False, Submission.is_banned == False)
+        Board.is_banned == False, Submission.is_banned == False,
+        Submission.deleted_utc == 0)       # a comment under a deleted post stays on its author's profile and in the Log's thread, not in the feeds (decision 25b, the second review C04)
     if v:
         posts = posts.filter(Submission.board_id.notin_(select(BoardBlock.board_id).filter_by(user_id=v.id)))
 

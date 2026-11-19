@@ -83,6 +83,7 @@ SHARED = N_("A post written with others can't have its name removed here yet.") 
 SPACE = N_("A Space can't have its name removed.")
 ALREADY = N_("This is already anonymous.")
 GONE = N_("This has been deleted.")
+SPACE_DELETE = N_("A Space is ended from its own page; it isn't deleted like a post.")     # its backing post is the Space's, not the host's to delete (the second review, C06)
 BOT = N_("An automated post can't have its name removed.")
 
 

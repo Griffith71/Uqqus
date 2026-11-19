@@ -234,6 +234,7 @@ def guild_wiki_edit(guildname, slug, v):
 
 @app.route("/+<guildname>/wiki/<slug>/edit", methods=["POST"])
 @is_not_banned
+@not_quarantined("wiki")
 @validate_formkey
 def guild_wiki_save(guildname, slug, v):
     board = visible_guild(guildname, v)
@@ -273,6 +274,7 @@ def guild_wiki_save(guildname, slug, v):
 
 @app.route("/+<guildname>/wiki/<slug>/restore/<int:rid>", methods=["POST"])
 @is_not_banned
+@not_quarantined("wiki")
 @validate_formkey
 def guild_wiki_restore(guildname, slug, rid, v):
     """A guildmaster puts an old revision's text back: a new revision, so nothing in the history is lost."""
@@ -292,6 +294,7 @@ def guild_wiki_restore(guildname, slug, rid, v):
 
 @app.route("/+<guildname>/wiki/<slug>/settings", methods=["POST"])
 @is_not_banned
+@not_quarantined("wiki")
 @validate_formkey
 def guild_wiki_settings(guildname, slug, v):
     board = visible_guild(guildname, v)
@@ -312,6 +315,7 @@ def guild_wiki_settings(guildname, slug, v):
 
 @app.route("/+<guildname>/wiki/<slug>/delete", methods=["POST"])
 @is_not_banned
+@not_quarantined("wiki")
 @validate_formkey
 def guild_wiki_delete(guildname, slug, v):
     board = visible_guild(guildname, v)

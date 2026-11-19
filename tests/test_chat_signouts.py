@@ -24,7 +24,7 @@ def statements(with_tables=True):
     out = ["CREATE TABLE chat_identities (user_id INTEGER PRIMARY KEY, matrix_user_id TEXT)",
            # what the token route reads again before it hands a device out (chat_tokens._refusal)
            "CREATE TABLE users (id INTEGER PRIMARY KEY, login_nonce INTEGER DEFAULT 0, is_deleted INTEGER DEFAULT 0, age_declared INTEGER, "
-           "age_lock INTEGER)",
+           "age_lock INTEGER, quarantined_utc INTEGER DEFAULT 0, admin_level INTEGER DEFAULT 0, is_bot INTEGER DEFAULT 0)",
            "CREATE TABLE child_controls (child_id INTEGER PRIMARY KEY, chat INTEGER DEFAULT 0)"]
     if with_tables:
         for statement in MIGRATION.read_text().split(";"):
@@ -696,6 +696,7 @@ def test_a_failed_mint_takes_the_mint_lock_before_it_touches_the_row(monkeypatch
     ("UPDATE users SET is_deleted = 1", 401),                                           # the account deleted
     ("UPDATE users SET age_declared = 2", 403),                                         # newly child-locked
     ("UPDATE users SET age_declared = 2, age_lock = 2", 403),                           # a sub-account whose parent switched chat off
+    ("UPDATE users SET quarantined_utc = 1700000000", 403),                             # put on hold: a held account has no chat
 ])
 def test_a_request_that_waited_for_a_sign_out_mints_nothing(change, status, monkeypatch):
     """The wrappers read the account when the request began; the mint reads it again under the lock, after whatever it waited for."""
@@ -709,8 +710,17 @@ def test_a_request_that_waited_for_a_sign_out_mints_nothing(change, status, monk
         return real_lock(*args)
     monkeypatch.setattr(chat_signouts, "lock_account", committed_meanwhile)
     answer = issue(db, fake, {})
-    assert answer[0] == status and ("age_locked" in answer[1]) == (status == 403)
+    assert answer[0] == status and ("age_locked" in answer[1] or "held" in answer[1]) == (status == 403)
     assert db.execute(text("SELECT count(*) FROM chat_site_devices")).scalar() == 0 and fake.calls == []
+
+
+@pytest.mark.parametrize("who", ["UPDATE users SET quarantined_utc = 1700000000, admin_level = 3", "UPDATE users SET quarantined_utc = 1700000000, is_bot = 1"])
+def test_an_admin_or_a_bot_is_never_held_so_still_gets_its_device(who):
+    """`User.is_quarantined` is false for an admin or a bot account: the mint reads the hold the same way."""
+    db = make()
+    db.execute(text(who))
+    db.commit()
+    assert issue(db, FakeMatrix(), {})[0] == 200
 
 
 @pytest.mark.parametrize("change, status", [

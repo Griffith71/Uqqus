@@ -31,7 +31,7 @@ def db():
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0)"))
         conn.execute(text("INSERT INTO users (id, admin_level) VALUES (10, 0), (20, 3), (30, 0), (31, 0)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, board_id INTEGER, is_anonymous BOOLEAN DEFAULT 0, "
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, board_id INTEGER, is_anonymous BOOLEAN DEFAULT 0, "
                           "deleted_utc INTEGER DEFAULT 0, post_public BOOLEAN DEFAULT 1)"))
         conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, parent_submission INTEGER, is_anonymous BOOLEAN DEFAULT 0, "
                           "deleted_utc INTEGER DEFAULT 0)"))

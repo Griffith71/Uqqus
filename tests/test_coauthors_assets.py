@@ -134,9 +134,10 @@ def test_a_co_authored_post_is_on_the_co_authors_profile_and_in_the_following_fe
     assert "or_(Submission.author_id == self.id, Submission.id.in_(coauthored))" in listing
     feed = USER.split("def idlist")[1][:3500]
     assert "PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == \"accepted\"" in feed and "PostCoauthor.is_anonymous == False" in feed
-    assert "and_(or_(Submission.author_id.in_(user_ids), Submission.id.in_(coauthored)), not_(Submission.is_anonymous))" in feed
+    # one flag per credit (the second review, C27): a named co-author's credit lists the post whether or not the primary author's own is anonymous
+    assert "and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous))" in feed and "Submission.id.in_(coauthored)" in feed
     count = USER.split("def public_post_count")[1].split("@property")[0]
-    assert "is_anonymous=False" in count[:200] and "PostCoauthor.status == \"accepted\"" in count and "Submission.is_anonymous == False" in count
+    assert "is_anonymous=False" in count[:200] and "PostCoauthor.status == \"accepted\"" in count and "Submission.is_anonymous == False" not in count
     assert "PostCoauthor.is_anonymous == False" in count
 
 

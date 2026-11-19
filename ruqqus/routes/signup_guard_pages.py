@@ -25,7 +25,11 @@ ACTION_LABELS = {
     "post": "post", "edit_post": "edit a post", "comment": "comment", "vote": "vote", "forward": "forward",
     "repost": "repost", "tip": "tip", "follow": "follow", "join_guild": "join a guild", "chat": "start a chat",
     "group": "make a group", "report": "report", "poll_vote": "vote in a poll", "story": "share a story",
-    "other": "other",
+    "edit_comment": "edit a comment", "moderate": "moderate (hide a comment, act as a guildmaster)", "wiki": "change a guild's wiki",
+    "event": "make or change a guild event", "space": "make a Space or write in one", "live_update": "write a live update",
+    "channel": "write in a channel", "collab": "work on a shared draft", "coauthor": "invite or join as a co-author",
+    "guild": "start or take over a guild", "curation": "make or change a curation", "region": "propose a region's name",
+    "circle": "make or change a circle", "other": "other",
 }
 
 
@@ -122,7 +126,7 @@ def _act(v, ids, decision, with_alts=False):
             if with_alts:
                 for alt in user.alts:
                     if not alt.is_deleted and (alt.admin_level or 0) < (v.admin_level or 0):
-                        alt.ban(admin=v, reason=BAN_REASON)
+                        alt.ban(admin=v, reason=BAN_REASON, staff_note=f"alt of @{user.username}", floor=action_log.STAFF)
         g.db.commit()
         return len(done)
     abort(400)

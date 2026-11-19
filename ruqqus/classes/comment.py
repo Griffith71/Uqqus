@@ -7,7 +7,7 @@ from random import randint
 import math
 from .mix_ins import *
 from ruqqus.helpers.base36 import *
-from ruqqus.helpers import anonymity
+from ruqqus.helpers import anonymity, visibility
 from ruqqus.helpers import permalinks
 from ruqqus.helpers import community_notes
 from ruqqus.helpers.lazy import lazy
@@ -346,11 +346,11 @@ class Comment(Base, Age_times, Scores, Stndrd, Fuzzing):
 
     def _text_hidden_for(self, v):
         """The comment's text is hidden from `v` by a guild's moderators or by the post's author, as in the thread."""
-        if v and v.id == self.author_id:
+        if anonymity.is_author(self, v):                 # not a raw id comparison: a limited QR sign-in is a stranger to its own anonymous comment (C16)
             return False
-        if self.hidden_by_guild and not (v and self.post and self.post.board.has_mod(v, "content")):
+        if self.hidden_by_guild and not (v and self.post and visibility.guild_content_reader(self.post.board, v)):       # a read: a held guildmaster still reads (has_mod is their powers)
             return True
-        return bool(self.author_hidden and not (v and self.post and v.id == self.post.author_id))
+        return bool(self.author_hidden and not (v and self.post and anonymity.is_author(self.post, v)))
 
     @property
     def json(self):

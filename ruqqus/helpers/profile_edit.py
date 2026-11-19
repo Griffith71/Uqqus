@@ -114,7 +114,7 @@ def website_refusal(website):
 class BioCheck:
     """The result of `check_bio`. `code` is None when the bio can be saved (`text` and `html` are what to store);
     otherwise "too_long", "unchanged", "links" (a banned domain; `malicious` when it is the worst kind, which the
-    caller answers with a ban) or "formatting" (rendered, it would not fit), and `message` is the sentence."""
+    caller answers by putting the account on hold: helpers/auto_quarantine.py) or "formatting" (rendered, it would not fit), and `message` is the sentence."""
 
     def __init__(self, text="", html="", code=None, message=None, malicious=False):
         self.text, self.html, self.code, self.message, self.malicious = text, html, code, message, malicious
@@ -172,7 +172,7 @@ def check_bio(raw, current, render=None, bans=None):
 
 def looks_like_link_spam(account, bio_html, now):
     """The "seo profile spam" rule: an account under a day old, with no post and no comment, whose bio holds a link.
-    The routes ban it (after saving the bio) and never say which rule it was."""
+    The routes put it on hold (after saving the bio: helpers/auto_quarantine.py) and never say which rule it was."""
     if now - account.created_utc >= 60 * 60 * 24 or account.post_count or account.comment_count:
         return False
     from bs4 import BeautifulSoup

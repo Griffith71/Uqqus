@@ -94,6 +94,13 @@ def refusal(name, *, primary, author_id, candidate, count, blocked, already):
 
 # --- reading and writing ----------------------------------------------------------------------
 
+def _not_banned_now(User, now):
+    """The accounts that are not banned or suspended AT THIS MOMENT: `is_banned` is set by a timed suspension too and nothing clears it when the suspension
+    lapses, so `is_banned == 0` dropped an account from every byline for good after one short suspension (the second review, C25)."""
+    from sqlalchemy import and_, or_
+    return or_(User.is_banned == 0, and_(User.unban_utc > 0, User.unban_utc <= now))
+
+
 def _classes():
     from ruqqus.classes.coauthors import PostCoauthor
     from ruqqus.classes.user import User
@@ -216,7 +223,7 @@ def accepted_of(post, v=None):
     memo = g.__dict__.setdefault("_coauthors", {})
     if key not in memo:
         memo[key] = g.db.query(User).join(PostCoauthor, PostCoauthor.user_id == User.id).filter(
-            PostCoauthor.post_id == key, PostCoauthor.status == ACCEPTED, User.is_deleted == False, User.is_banned == 0
+            PostCoauthor.post_id == key, PostCoauthor.status == ACCEPTED, User.is_deleted == False, _not_banned_now(User, int(time.time()))
         ).order_by(PostCoauthor.accepted_utc.asc(), PostCoauthor.id.asc()).all()
     return [u for u in memo[key] if not user_hidden(u, v)]
 
@@ -250,8 +257,12 @@ def _credit_rows(post):
     PostCoauthor, User = _classes()
     memo = g.__dict__.setdefault("_coauthor_credits", {})
     if key not in memo:
+        from sqlalchemy import or_
+        # an ANONYMOUS credit stays whatever happens to its account: it disappeared from the byline at the moment its holder was publicly suspended, which
+        # said who "Anonymous #3" was (the second review, C25). A named one of a banned account is still left out
         found = g.db.query(User, PostCoauthor.is_anonymous).join(PostCoauthor, PostCoauthor.user_id == User.id).filter(
-            PostCoauthor.post_id == key, PostCoauthor.status == ACCEPTED, User.is_banned == 0
+            PostCoauthor.post_id == key, PostCoauthor.status == ACCEPTED,
+            or_(_not_banned_now(User, int(time.time())), PostCoauthor.is_anonymous == True)
         ).order_by(PostCoauthor.accepted_utc.asc(), PostCoauthor.id.asc()).all()
         memo[key] = [(u, bool(hidden)) for u, hidden in found if hidden or not u.is_deleted]
     return memo[key]

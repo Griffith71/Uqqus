@@ -30,7 +30,7 @@ from .votes import Vote, CommentVote
 from .alts import Alt
 from .titles import Title
 from .submission import Submission, SubmissionAux, SaveRelationship, RepostRelationship
-from .comment import Comment, Notification, CommentSaveRelationship, CommentRepostRelationship
+from .comment import Comment, CommentAux, Notification, CommentSaveRelationship, CommentRepostRelationship
 from .history import ViewHistory
 from .boards import Board
 from .board_relationships import *
@@ -138,6 +138,7 @@ class User(Base, Stndrd, Age_times):
     signin_alerts = Column(Boolean, default=True)             # email a verified address about a sign-in from somewhere new (helpers/signin_alerts.py)
     qr_login_off = Column(Boolean, default=False)             # the member switched QR sign-in off (helpers/qr_login.py)
     quarantined_utc = Column(Integer, default=0)            # held by the signup guard (helpers/quarantine.py); 0 = not held
+    quarantine_kind = Column(SmallInteger, default=0)       # 0 = the signup guard's hold (or none), 1 = an automatic check's: only an admin or an appeal releases it (helpers/auto_quarantine.py)
     premium_auto_renew = Column(Boolean, default=False)       # spend a coin on the next week when one runs out (helpers/premium.py)
     last_active_utc = Column(Integer, default=0)             # stamped at most daily (wrappers._note_active); shared drafts don't count authors gone longer than their rules say
     score_display = Column(SmallInteger, default=0)   # how scores read: 0 upvotes, coloured (default); 1 upvotes minus downvotes
@@ -353,16 +354,18 @@ class User(Base, Stndrd, Age_times):
         coauthored = select(PostCoauthor.post_id).where(PostCoauthor.user_id.in_(user_ids), PostCoauthor.status == "accepted",
                                                         PostCoauthor.is_anonymous == False)
 
+        # a NAMED co-author's credit is theirs whether or not the primary author's own is anonymous (one flag per credit, decision 21: the second review, C27)
         posts = posts.filter(
             or_(
                 Submission.board_id.in_(board_ids),
-                and_(or_(Submission.author_id.in_(user_ids), Submission.id.in_(coauthored)), not_(Submission.is_anonymous))
+                and_(Submission.author_id.in_(user_ids), not_(Submission.is_anonymous)),
+                Submission.id.in_(coauthored)
             )
         )
         # one card per post: a guild copy leaves when its original is in Following too (an author you follow), never
         # when the guild is your only way to it (helpers/feed_family.py, audit F-01)
-        posts = one_per_family(posts, Submission, lambda original: and_(
-            or_(original.author_id.in_(user_ids), original.id.in_(coauthored)), not_(original.is_anonymous)))
+        posts = one_per_family(posts, Submission, lambda original: or_(
+            and_(original.author_id.in_(user_ids), not_(original.is_anonymous)), original.id.in_(coauthored)))
 
         if self.admin_level < 4:
             # admins can see everything
@@ -773,7 +776,10 @@ class User(Base, Stndrd, Age_times):
         authored = authored.filter(Submission.is_space == bool(spaces))
         # a profile does not list the user's anonymous posts, to anyone but admins: the author finds them in History >
         # Anonymous (anonymity.off_profile, the owner, 2026-10-27)
-        authored = authored.filter(anonymity.off_profile(Submission, v))
+        # (a post the primary author made anonymous still lists under a co-author whose OWN credit is named: one flag per credit, decision 21, C27)
+        named_credit = select(PostCoauthor.post_id).where(PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted",
+                                                          PostCoauthor.is_anonymous == False)
+        authored = authored.filter(or_(anonymity.off_profile(Submission, v), Submission.id.in_(named_credit)))
         # what someone writes inside a Circle guild stays in the guild: it is not on their profile, for anyone
         authored = authored.filter(Submission.audience != circles.GUILD)
 
@@ -1248,13 +1254,20 @@ class User(Base, Stndrd, Age_times):
     def _without_own_anonymous(self, comments):
         """For a query over notifications joined to their Comment: a limited QR sign-in (helpers/qr_login.py) doesn't get the comments
         on the member's anonymous posts and under their anonymous comments, because "comment on your post" says whose they are. They
-        wait for the password, still new. Anyone else's list is the query as it came."""
+        wait for the password, still new. Anyone else's list is the query as it came (except that no list of notifications carries a comment under a
+        DELETED post: its thread is the Log's now and a bell for it would lead into it, decision 25b, the second review C04)."""
+        comments = comments.filter(or_(Comment.parent_submission.is_(None),
+                                       Comment.parent_submission.notin_(select(Submission.id).where(Submission.deleted_utc > 0))))
         if not self.qr_limited:
             return comments
+        from ruqqus.helpers import log_notices
         posts = g.db.query(Submission.id).filter(Submission.author_id == self.id, Submission.is_anonymous == True).scalar_subquery()
         own = g.db.query(Comment.id).filter(Comment.author_id == self.id, Comment.is_anonymous == True).scalar_subquery()
+        # and the notices that link the member's item or the Log's entry about it: the item is named by id there (the second review, C14)
+        noticed = g.db.query(CommentAux.id).filter(CommentAux.notice_msgid.in_([str(m) for m in log_notices.HELD_FROM_LIMITED])).scalar_subquery()
         return comments.filter(or_(Comment.parent_submission.is_(None), Comment.parent_submission.notin_(posts)),
-                               or_(Comment.parent_comment_id.is_(None), Comment.parent_comment_id.notin_(own)))
+                               or_(Comment.parent_comment_id.is_(None), Comment.parent_comment_id.notin_(own)),
+                               Comment.id.notin_(noticed))
 
     def _notification_post_query(self, all_=True):
         """The same for the notifications that point at a post (a post from an account whose bell is on, a mention in a
@@ -1423,7 +1436,7 @@ class User(Base, Stndrd, Age_times):
         own = self.submissions.filter_by(is_banned=False, is_anonymous=False).count()
         shared = g.db.query(PostCoauthor.id).join(Submission, Submission.id == PostCoauthor.post_id).filter(
             PostCoauthor.user_id == self.id, PostCoauthor.status == "accepted", PostCoauthor.is_anonymous == False,
-            Submission.is_banned == False, Submission.is_anonymous == False, Submission.deleted_utc == 0).count()
+            Submission.is_banned == False, Submission.deleted_utc == 0).count()          # the credit's own flag decides, not the post's (C27)
         return own + shared
 
     @property
@@ -1728,8 +1741,9 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def can_upload_avatar(self):
-        # no Rep needed (the owner, 2026-10-30); only: connecting through Tor needs a verified email
-        return self.is_activated or request.headers.get("cf-ipcountry")!="T1"
+        # no Rep needed (the owner, 2026-10-30); only: connecting through Tor needs a verified email, and an account an automatic check holds
+        # uploads nothing public (helpers/quarantine.py `picture_refusal`; a signup-guard hold may). getattr: the Rep-gate tests run this expression on a stand-in
+        return not getattr(self, "is_auto_quarantined", False) and (self.is_activated or request.headers.get("cf-ipcountry")!="T1")
 
     @property
     def can_upload_banner(self):
@@ -1846,12 +1860,14 @@ class User(Base, Stndrd, Age_times):
     
 
     def ban(self, admin=None, reason=None,  days=0, rule=None, staff_note="", floor=0, notice_sent=False, cascade=True):
-        """Suspend (`days` > 0) or ban this account. Every ban and suspension, by an admin or by the site's own rules,
-        is written to the Log (helpers/action_log.py), which keeps each one: `ban_reason` below is only the latest.
-        `rule` is the rule cited, `staff_note` a private note, `floor` can narrow who may read the entry. Returns the entry's id
-        (None when the Log could not write it), which the image checks attach their level-4 detail to. `cascade=False` leaves a
-        parent's sub-accounts alone: the image checks are law-enforcement flows, and closing a child there would destroy what the staff
-        may need (helpers/scan_bans.py; `_children_follow_ban` says the rest)."""
+        """Suspend (`days` > 0) or ban this account. Every ban and suspension is written to the Log (helpers/action_log.py), which keeps each one:
+        `ban_reason` below is only the latest. **The site's own automatic checks (the spam guard, a banned link, the SEO-spam check, ban-evasion detection, the
+        image checks) don't call this: they quarantine** (helpers/auto_quarantine.py) and an admin decides. What does: an admin's ban (`ban_user` in
+        routes/admin_api.py, its alts too, and the admin's ban of a held sign-up in routes/signup_guard_pages.py) and a parent's sub-accounts following it
+        (`_children_follow_ban`, with no admin, so the Log writes it as the site's own). The CSAM route sets the ban by hand and writes its own entry, so it
+        can't cascade into a family. `rule` is the rule cited, `staff_note` a private note, `floor` can narrow who may read the entry. Returns the entry's id
+        (None when the Log could not write it), which an admin's ban attaches the evidence it cites to. `cascade=False` leaves a parent's sub-accounts alone;
+        nothing passes it today (the image checks did, before they quarantined)."""
         acting = admin
         admin=admin if admin else g.db.query(User).filter_by(id=1).first()
 
@@ -1898,6 +1914,10 @@ class User(Base, Stndrd, Age_times):
         entry_id = action_log.record_ban(g.db, self.id, admin.id if admin else 1, days=days, reason=reason, rule=rule,
                                          staff_note=staff_note, floor=floor, automatic=acting is None, notice_sent=notice_sent,
                                          until_utc=self.unban_utc if days > 0 else None)
+        if days <= 0:
+            # banned for good while an automatic check holds it: the review its appeal waits for closes with the ban (helpers/quarantine_review.py)
+            from ruqqus.helpers import quarantine_review
+            quarantine_review.close_hold_appeal_for_ban(g.db, self.id, admin.id if admin else 1)
         if cascade:
             self._children_follow_ban(days)
         return entry_id
@@ -1963,12 +1983,14 @@ class User(Base, Stndrd, Age_times):
         entry_id = action_log.record_unban(g.db, self.id, actor.id if actor else 1, reason=reason, automatic=actor is None,
                                            notice_sent=notice_sent, floor=floor)
 
-        # reversing a ban withdraws the reveal of what it cited (the Log plan's decision 10, helpers/log_evidence.py): the Log's lines draw Anonymous again.
+        # reversing a ban does NOT take back a reveal a second admin already approved (the owner, 2026-11-17: "once it's exposed it can't be unexposed ... if they
+        # got unbanned then it shows there is an issue with admin moderation"): the Log keeps the name, and the reversal is its own public entry beside it. A
+        # proposal still waiting for its second admin has exposed nothing, so it is dropped, or it could be approved for a ban found wrong (helpers/log_evidence.py).
         # In a savepoint: a database that hasn't reached the migration still unbans
         from ruqqus.helpers import log_evidence
         savepoint = g.db.begin_nested()
         try:
-            log_evidence.withdraw(g.db, self.id, int(time.time()))
+            log_evidence.withdraw_pending(g.db, self.id, int(time.time()))
             savepoint.commit()
         except Exception:
             savepoint.rollback()
@@ -1997,8 +2019,14 @@ class User(Base, Stndrd, Age_times):
 
     @property
     def is_quarantined(self):
-        # held by the signup guard until an admin approves it or it verifies an email (helpers/quarantine.py)
+        # held by the signup guard until an admin approves it or it verifies an email, or by an automatic check until an admin or an appeal
+        # releases it (helpers/quarantine.py, helpers/auto_quarantine.py)
         return bool(self.quarantined_utc) and not self.admin_level and not self.is_bot
+
+    @property
+    def is_auto_quarantined(self):
+        """Held by an automatic check (kind 1), which an email can never release."""
+        return self.is_quarantined and (self.quarantine_kind or 0) == 1
 
     @property
     def is_blocking(self):

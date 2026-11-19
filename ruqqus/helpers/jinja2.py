@@ -270,9 +270,10 @@ def child_view(v):
 
 @app.template_global("feature_locked")
 def feature_locked(v, feature):
-    """Is this feature off for this account (chat, spaces, money, guilds)? A child-locked account has it off unless its parent switched it on."""
+    """Is this feature off for this account (chat, spaces, money, guilds)? A child-locked account has it off unless its parent switched it on. **An account on
+    hold has no chat** (helpers/quarantine.py: the signup guard's or an automatic check's), so no chat icon, menu item or "Send in chat" is drawn for it."""
     from ruqqus.helpers import age_declaration
-    return bool(age_declaration.feature_refusal(v, feature))
+    return bool(age_declaration.feature_refusal(v, feature)) or (feature == "chat" and bool(getattr(v, "is_quarantined", False)))
 
 
 @app.template_global("target_locked")
@@ -345,7 +346,9 @@ def _post_quote(b36, v, depth=0):
         post = get_post(b36, v=v, graceful=True)
         missing = post is None or post.in_private_guild_for(v)
         notice = quote_cards.UNAVAILABLE if missing else quote_cards.post_notice(
-            missing=False, deleted=bool(post.deleted_utc), removed=bool(post.is_banned or post.board.is_banned),
+            missing=False, deleted=bool(post.deleted_utc),
+            # a post a guild hid reads "removed" here as on its own page, for everyone but its author and the guild's content guildmasters (the second review, C28)
+            removed=bool(post.is_banned or post.board.is_banned or (post.hidden_by_guild and not post._guild_hide_lifted_for(v))),
             filtered=post_hidden(post, v), blocked=bool(v and post.author_id != v.id and v.any_block_exists(post.author)),
             muted=is_muted(post, v), anonymous=bool(post.is_anonymous))
         inner = None if notice or depth else _quote_for(post, v, 1)

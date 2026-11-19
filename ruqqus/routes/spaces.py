@@ -25,7 +25,7 @@ from ruqqus.classes import *
 import ruqqus.helpers.matrix_client as matrix
 from ruqqus.__main__ import app, limiter, member_limit_key, r
 
-from ruqqus.helpers import age_declaration
+from ruqqus.helpers import age_declaration, quarantine
 from ruqqus.helpers import spaces as space_rules
 from ruqqus.helpers import chat_devices
 from ruqqus.helpers import space_store, space_view, space_ending, call_store, live_bus, turn_usage, turn_usage_store
@@ -341,6 +341,7 @@ def _space_page(space, v):
 @is_not_banned
 @not_qr_limited
 @not_child_locked("spaces")
+@not_quarantined("space")
 @validate_formkey
 def space_start(sid, v):
     space = load_space(sid, v)
@@ -417,6 +418,9 @@ def space_join(sid, v):
     _call_only(space)
     if age_declaration.feature_refusal(v, "chat"):           # a call runs on the chat session, which a child without chat has no way to open
         return _error(msg(age_declaration.feature_refusal(v, "chat")), 403)
+    held = quarantine.refusal(v, "chat", r)                  # ... nor an account on hold: a hold cuts chat off entirely, and a call is chat (no Matrix account, room or roster slot)
+    if held:
+        return jsonify({"error": held, "held": True}), 403
     device_id = request.values.get("device_id", "")
     if not _DEVICE.match(device_id) or r is None:
         abort(400)
@@ -463,6 +467,9 @@ def space_heartbeat(sid, v):
     now = int(time.time())
     if space.status != space_rules.LIVE or r is None or space.kind != space_rules.CALL:
         return jsonify({"in_space": False, "status": space.status})
+    if quarantine.refusal(v, "chat", r):                      # put on hold while in the call: out of the roster (the heartbeat is what keeps a slot)
+        call_store.leave_user(r, space.room, v.id)
+        return jsonify({"in_space": False, "status": space.status, "held": True})
     if space_store.removed(g.db, space.id, v.id) or _blocked_with_hosts(space, v, space_store.roles(g.db, space.id)):
         call_store.leave_user(r, space.room, v.id)
         return jsonify({"in_space": False, "status": space.status, "reason": space_rules.UNAVAILABLE})
@@ -514,6 +521,7 @@ def space_hand(sid, v):
 @app.route("/api/spaces/<sid>/invite", methods=["POST"])
 @auth_required
 @not_child_locked("spaces")
+@not_quarantined("space")
 @validate_formkey
 def space_invite(sid, v):
     space = load_space(sid, v)
@@ -579,6 +587,7 @@ def space_listen(sid, v):
 @app.route("/api/spaces/<sid>/cohost", methods=["POST"])
 @auth_required
 @not_child_locked("spaces")
+@not_quarantined("space")
 @validate_formkey
 def space_cohost(sid, v):
     space = load_space(sid, v)
@@ -597,6 +606,7 @@ def space_cohost(sid, v):
 
 @app.route("/api/spaces/<sid>/mute", methods=["POST"])
 @auth_required
+@not_quarantined("space")
 @validate_formkey
 def space_mute(sid, v):
     """Asks a speaker's window to mute their microphone (they can unmute; to stop them, move them off the stage)."""
@@ -640,6 +650,7 @@ def space_video(sid, v):
 
 @app.route("/api/spaces/<sid>/remove", methods=["POST"])
 @auth_required
+@not_quarantined("space")
 @validate_formkey
 def space_remove(sid, v):
     space = load_space(sid, v)
@@ -691,6 +702,7 @@ def space_remind(sid, v):
 
 @app.route("/api/spaces/<sid>/report", methods=["POST"])
 @auth_required
+@not_quarantined("report")
 @validate_formkey
 def space_report(sid, v):
     space = load_space(sid, v)
@@ -704,11 +716,14 @@ def space_report(sid, v):
 
 @app.route("/api/spaces/<sid>/replay", methods=["POST"])
 @is_not_banned
+@not_quarantined("space")
 @validate_formkey
 def space_replay(sid, v):
     """The host's recording, already uploaded to their own storage (helpers/media): the sound on their linked storage
     becomes the Space's sound, or (`video`, a call that allowed cameras and is shared with everyone:
     space_rules.video_replay) the video on their own video channel becomes its replay."""
+    if age_declaration.content_refusal(v):                  # it writes into the Space's post: a child account is read-only (the second review, C46)
+        return _error(msg(age_declaration.content_refusal(v)), 403)
     space = load_space(sid, v)
     if v.id != space.host_id or not space.record or space.kind != space_rules.CALL:
         abort(403)
@@ -857,6 +872,7 @@ def space_messages(sid, v):
 @limiter.limit("30/minute", key_func=member_limit_key)
 @is_not_banned
 @not_child_locked("spaces")
+@not_quarantined("space")
 @validate_formkey
 def space_message_add(sid, v):
     """A message on the board: only from someone in the Space while it is live, rated by the word filter, slowed by slow
@@ -931,6 +947,7 @@ def space_message_delete(mid, v):
 
 @app.route("/api/space_messages/<int:mid>/remove", methods=["POST"])
 @auth_required
+@not_quarantined("space")
 @validate_formkey
 def space_message_remove(mid, v):
     """The host, a co-host or a site admin takes a message down."""
@@ -945,6 +962,7 @@ def space_message_remove(mid, v):
 
 @app.route("/api/space_messages/<int:mid>/report", methods=["POST"])
 @auth_required
+@not_quarantined("report")
 @validate_formkey
 def space_message_report(mid, v):
     row, space = _message_or_404(mid, v)
@@ -983,6 +1001,7 @@ def _runs_updates(space, v):
 @app.route("/api/spaces/<sid>/updates", methods=["POST"])
 @is_not_banned
 @not_child_locked("spaces")
+@not_quarantined("space")
 @validate_formkey
 def space_update_add(sid, v):
     """An update, pushed by id on the post's topic (`live.update`) and read through the live-thread routes, which ask
@@ -1027,9 +1046,12 @@ def space_summary_text(sid, v):
 
 @app.route("/api/spaces/<sid>/summary", methods=["POST"])
 @is_not_banned
+@not_quarantined("space")
 @validate_formkey
 def space_summary(sid, v):
     """The pinned summary above the updates; empty clears it."""
+    if age_declaration.content_refusal(v):                  # published to the Space's readers: a child account is read-only (the second review, C46)
+        return _error(msg(age_declaration.content_refusal(v)), 403)
     from ruqqus.helpers import live_threads as live_rules
     from ruqqus.routes import live_threads as live_routes
     space = load_space(sid, v)
@@ -1113,6 +1135,7 @@ _CREATE_LISTS = ("circles", "forward_guilds")
 @limiter.limit("20/hour", key_func=member_limit_key)
 @is_not_banned
 @not_child_locked("spaces")
+@not_quarantined("space")
 @validate_formkey
 def space_create(v):
     """Makes a Space. Its hidden backing row is made by the real posting route in this process, as v (the scheduler's

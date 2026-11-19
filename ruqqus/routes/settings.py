@@ -6,6 +6,7 @@ import mistletoe
 import re
 from ruqqus.helpers.word_filter_store import apply_user_severity
 from ruqqus.helpers import action_log
+from ruqqus.helpers import auto_quarantine
 from ruqqus.helpers import account_anonymise, anonymise
 from ruqqus.helpers import ads as ads_rules
 from ruqqus.helpers import coins as coins_store
@@ -33,6 +34,7 @@ from ruqqus.helpers import child_accounts
 from ruqqus.helpers import text_length
 from ruqqus.helpers import profile_edit
 from ruqqus.helpers import age_declaration
+from ruqqus.helpers import quarantine
 from ruqqus.mail import *
 from .front import frontlist
 from ruqqus.__main__ import app, cache, limiter, r
@@ -150,19 +152,28 @@ def settings_profile_post(v):
                     "api": lambda: jsonify({"error": check.message})}
 
         if check.code == "links":
-            #auto ban for digitally malicious content
+            # a malicious link puts the account on hold, never bans it (helpers/auto_quarantine.py: an admin decides what follows)
             if check.malicious:
-                v.ban(days=30, reason=N_("Digitally malicious content is not allowed."))
+                auto_quarantine.hold(g.db, v, "link_malicious", detail="a link to a banned site in a bio")
+                g.db.commit()
+                auto_quarantine.send_pending(g.db)
             return jsonify({"error": check.message}), 401
 
+        kept_bio, kept_html = v.bio, v.bio_html
         v.bio = check.text
         v.bio_html = check.html
         apply_user_severity(v)
         g.db.add(v)
 
-        #seo profile spam
+        #seo profile spam: the account is put on hold (helpers/auto_quarantine.py) and the answer is as for any save. The bio that tripped it is not kept: the old
+        #ban hid the profile, and a held account's profile is as public as any, so the links never reach it
         if profile_edit.looks_like_link_spam(v, check.html, int(time.time())):
-            v.ban(reason="seo spam")
+            auto_quarantine.hold(g.db, v, "seo_spam", detail="links in the bio of a new account")
+            if v.is_auto_quarantined:       # held now or before (an admin, a bot or a suspended account is not held, and keeps what it wrote)
+                v.bio, v.bio_html = kept_bio, kept_html
+                apply_user_severity(v)
+            g.db.commit()
+            auto_quarantine.send_pending(g.db)
 
         return {"html": lambda: render_template("settings_profile.html", v=v, msg=tr("Your bio has been updated.")),
                 "api": lambda: jsonify({"message": tr("Your bio has been updated.")})}
@@ -501,10 +512,23 @@ def settings_log_out_others(v):
                            msg=tr("All other devices have been logged out"))
 
 
+def _held_picture_answer(v):
+    """The answer for an account an automatic check holds (helpers/quarantine.py `picture_refusal`) that sends a profile picture or a banner: the way a held
+    account is refused anywhere else, with the link to ask for a review. None for everyone else. Taking a picture down is never asked."""
+    held = quarantine.picture_refusal(v, r)
+    if not held:
+        return None
+    return render_template("message.html", v=v, title=msg(quarantine.HELD_AUTOMATIC_TITLE), message=held,
+                           link=quarantine.APPEAL_LINK, link_text=tr("Ask for a review")), 403
+
+
 @app.route("/settings/images/profile", methods=["POST"])
 @is_not_banned
 @validate_formkey
 def settings_images_profile(v):
+    held = _held_picture_answer(v)
+    if held:
+        return held
     if v.can_upload_avatar:
         upload = request.files.get("profile")
         if not upload or not upload.filename:                          # audit CR-04: no file answered 500
@@ -530,6 +554,9 @@ def settings_images_profile(v):
 @is_not_banned
 @validate_formkey
 def settings_images_banner(v):
+    held = _held_picture_answer(v)
+    if held:
+        return held
     if v.can_upload_banner:
         upload = request.files.get("banner")
         if not upload or not upload.filename:                          # audit CR-04: no file answered 500

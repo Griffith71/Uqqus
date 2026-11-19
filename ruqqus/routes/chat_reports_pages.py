@@ -37,6 +37,7 @@ def _user_ids(mxids):
 @auth_required
 @not_qr_limited
 @not_child_locked("chat")
+@not_quarantined("report")
 @validate_formkey
 def chat_report(v):
     room_id = str(request.values.get("room") or "")

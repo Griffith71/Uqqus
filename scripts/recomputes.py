@@ -335,6 +335,17 @@ def recompute():
             db.rollback()
             print_(f"chat health failed: {e}")
 
+        # a held account has no chat (helpers/quarantine.py): any live chat device of one is signed out now (queued here, worked by the step below), whichever kind of
+        # hold it is and however it came to have the device (helpers/auto_quarantine.py `cut_off_held_chats`)
+        try:
+            from ruqqus.helpers import auto_quarantine as held_chat
+            cut = held_chat.cut_off_held_chats(db)
+            db.commit()
+            print_(f"held accounts' chat devices: {cut} queued")
+        except Exception as e:
+            db.rollback()
+            print_(f"held accounts' chat devices failed: {e}")
+
         # the chat sign-outs still waiting for Synapse (helpers/chat_signouts.py): each is run once its request has committed, and
         # retried for ever; this is the backstop that lands the ones Synapse was down for
         try:
@@ -365,8 +376,11 @@ def recompute():
             ended = []
             lapsed = action_log.lapse_due(db, int(time.time()), told=ended)
             copied, not_copied = action_log.reconcile(db, int(time.time()))
+            # the public lines of automatic holds and their lifting, an hour or more after the staff's entries (helpers/auto_quarantine.py `publish_due`)
+            from ruqqus.helpers import auto_quarantine
+            published = auto_quarantine.publish_due(db, int(time.time()))
             db.commit()
-            print_(f"the Log: {lapsed} suspensions lapsed, {copied} mod-log rows copied, {not_copied} could not be")
+            print_(f"the Log: {lapsed} suspensions lapsed, {copied} mod-log rows copied, {not_copied} could not be, {published} public hold lines written")
             if ended:
                 # a suspension that ran out is told to the account, once, after its lapse entry is committed (a second run finds the entry and writes nothing)
                 from ruqqus.helpers import log_notices

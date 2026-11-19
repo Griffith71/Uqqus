@@ -81,3 +81,24 @@ def test_every_message_is_marked_for_translation():
     import pathlib
     source = (pathlib.Path(__file__).resolve().parent.parent / "ruqqus" / "helpers" / "log_notices.py").read_text(encoding="utf-8")
     assert source.count("= N_(") >= len(ALL)
+
+
+def test_the_quarantine_notice_carries_the_rule_the_generic_reason_and_the_way_to_a_review_and_never_the_log():
+    from ruqqus.helpers import auto_quarantine
+    assert values_in(notices.QUARANTINED) == {"site", "why", "appeal"} and "```\n%(why)s\n```" in notices.QUARANTINED
+    assert "](%(appeal)s)" in notices.QUARANTINED and notices.QUARANTINE_APPEAL == "/appeal/quarantine"
+    assert "%(log)s" not in notices.QUARANTINED                    # the staff's entry about it is not the person's to open: the review page finds it for them
+    assert values_in(notices.QUARANTINE_LIFTED) == set()
+    # every trigger's wording the person reads is a generic one: never what was matched
+    for spec in auto_quarantine.TRIGGERS.values():
+        why = notices.why_of(spec.rule if spec.say_rule else "", spec.reason)
+        assert why.endswith(spec.reason) and "Automatic" in why
+    assert notices.why_of("", "Automatic check") == "Automatic check"                              # ban-evasion detection names no rule
+    assert notices.QUARANTINED in notices.HELD_FROM_LIMITED and notices.QUARANTINE_LIFTED in notices.HELD_FROM_LIMITED
+
+
+def test_the_quarantine_notices_are_sent_the_way_the_others_are():
+    source = open(__import__("pathlib").Path(__file__).resolve().parent.parent / "ruqqus" / "helpers" / "log_notices.py", encoding="utf-8").read()
+    told = source.split("def tell_quarantined(", 1)[1].split("def tell_heads(", 1)[0]
+    assert "send(user, (QUARANTINED, " in told and "mark_sent(db, entry_id)" in told and "db.rollback()" in told      # best effort, the entry says it was told
+    assert "tell_lifted(db, user_id, QUARANTINE_LIFTED)" in told

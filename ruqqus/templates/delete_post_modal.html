@@ -1,9 +1,10 @@
 <!-- Delete Post Modal -->
-<div class="modal fade modal-sm-bottom" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalTitle" aria-hidden="true">
+{# The Delete / Remove my name choice below changes what the dialog is called and what its confirm button says and looks like (all_js.js deleteDialogChoice): each of those carries both versions, in the reader's language, as data-text-delete / data-text-unlink and data-class-delete / data-class-unlink (space-separated classes), and what is written in the tag is the "Delete it" version. Red (btn-danger) is for a real delete only. The dialog is named by its desktop title, which is read even where that header is hidden (aria-labelledby takes a hidden element); tip_modal.html names this dialog's old title id in its own aria-labelledby, so that old id must never be given to anything: the tip dialog would then be announced as "Delete post?". #}
+<div class="modal fade modal-sm-bottom" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header d-none d-md-flex">
-        <h5 class="modal-title">{{ _("Delete post?") }}</h5>
+        <h5 class="modal-title" id="deletePostTitle" data-text-delete="{{ _('Delete post?') }}" data-text-unlink="{{ _('Remove my name') }}">{{ _("Delete post?") }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}">
           <span aria-hidden="true"><i class="fas fa-times"></i></span>
         </button>
@@ -12,15 +13,15 @@
       <div class="modal-body text-center">
 
         <div class="py-4">
-          <i class="fas fa-trash-alt text-muted d-none d-md-block" style="font-size: 3.5rem;"></i>
+          <i class="fas fa-trash-alt text-muted d-none d-md-block" style="font-size: 3.5rem;" data-class-delete="fa-trash-alt" data-class-unlink="fa-user-secret"></i>
           
           <span class="fa-stack fa-2x text-muted d-md-none">
-            <i class="fas fa-circle text-danger opacity-25 fa-stack-2x"></i>
-            <i class="fas text-danger fa-trash-alt fa-stack-1x"></i>
+            <i class="fas fa-circle text-danger opacity-25 fa-stack-2x" data-class-delete="text-danger" data-class-unlink="text-primary"></i>
+            <i class="fas text-danger fa-trash-alt fa-stack-1x" data-class-delete="text-danger fa-trash-alt" data-class-unlink="text-primary fa-user-secret"></i>
           </span>
         </div>
 
-        <div class="h4 d-md-none">{{ _("Delete post?") }}</div>
+        <div class="h4 d-md-none" data-text-delete="{{ _('Delete post?') }}" data-text-unlink="{{ _('Remove my name') }}">{{ _("Delete post?") }}</div>
 
         {# two ways to take a post off your name (helpers/deletion.py): delete it, which keeps its words in the Log as Anonymous (or erases it, inside five minutes and with nobody else having commented), or keep it with your name taken off #}
         <fieldset class="text-left mb-3" id="deletePostChoice">
@@ -34,19 +35,19 @@
             <input type="radio" class="custom-control-input" name="delete-post-how" id="delete-post-how-unlink" value="unlink">
             <label class="custom-control-label font-weight-bold" for="delete-post-how-unlink">{{ _("Remove my name") }}</label>
             <div class="text-small text-muted">{{ _("The post stays where it is, with your name taken off it, and leaves your profile. Its Rep leaves you too. Everyone who saw it with your name still knows it was you.") }}</div>
-            {# your own comments under the post: left under your name they tell readers who wrote the post, so the dialog says so and offers to take the name off them too (helpers/anonymise.py anonymise_replies); hidden until the count is known, and when it is none #}
-            <div class="custom-control custom-checkbox mt-2" id="deletePostCommentsOption" hidden>
-              <input type="checkbox" class="custom-control-input" id="delete-post-with-comments" checked>
-              <label class="custom-control-label" for="delete-post-with-comments" id="delete-post-with-comments-label"></label>
-              <div class="text-small text-muted">{{ _("Left unticked, your comments stay under your name, and that tells readers who wrote the post.") }}</div>
-            </div>
+          </div>
+          {# your own comments under the post: left under your name they tell readers who wrote the post, so the dialog says so and offers to take the name off them too (helpers/anonymise.py anonymise_replies); hidden until the count is known, and when it is none #}
+          <div class="custom-control custom-checkbox mt-2 ml-4" id="deletePostCommentsOption" hidden>
+            <input type="checkbox" class="custom-control-input" id="delete-post-with-comments" checked>
+            <label class="custom-control-label" for="delete-post-with-comments" id="delete-post-with-comments-label"></label>
+            <div class="text-small text-muted">{{ _("Left unticked, your comments stay under your name, and that tells readers who wrote the post.") }}</div>
           </div>
         </fieldset>
         <p class="text-small text-muted">{{ _("This can't be undone. The site's admins can always see who wrote something, and if an admin bans or suspends the account for it, the Log may name the account for it.") }}</p>
 
         <div class="d-md-none">
 
-          <button type="button" id="deletePostButton-mobile" class="btn btn-danger btn-block btn-lg">{{ _("Delete post") }}</button>
+          <button type="button" id="deletePostButton-mobile" class="btn btn-danger btn-block btn-lg" data-text-delete="{{ _('Delete post') }}" data-text-unlink="{{ _('Remove my name') }}" data-class-delete="btn-danger" data-class-unlink="btn-primary">{{ _("Delete post") }}</button>
 
           <button type="button" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal">{{ _("Cancel") }}</button>
 
@@ -56,7 +57,7 @@
       
       <div class="modal-footer d-none d-md-flex">
         <button type="button" class="btn btn-link text-muted" data-dismiss="modal">{{ _("Cancel") }}</button>
-        <button type="button" id="deletePostButton" class="btn btn-danger">{{ _("Delete post") }}</button>
+        <button type="button" id="deletePostButton" class="btn btn-danger" data-text-delete="{{ _('Delete post') }}" data-text-unlink="{{ _('Remove my name') }}" data-class-delete="btn-danger" data-class-unlink="btn-primary">{{ _("Delete post") }}</button>
       </div>
       
     </div>

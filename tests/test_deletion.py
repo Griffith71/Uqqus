@@ -98,10 +98,11 @@ def db():
         for statement in log_tables.migration_statements(read("scripts", "migrations", "2026-12-09_action_log.sql")):
             conn.execute(text(statement))
         log_tables.apply(conn, modactions=True)
-        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0, "
-                          "tip_coins INTEGER DEFAULT 0, language_code VARCHAR(5))"))
+        conn.execute(text("CREATE TABLE submissions (id INTEGER PRIMARY KEY, audience INTEGER DEFAULT 0, author_id INTEGER, repost_id INTEGER DEFAULT 0, is_anonymous BOOLEAN DEFAULT 0, "
+                          "tip_coins INTEGER DEFAULT 0, language_code VARCHAR(5), distinguish_level INTEGER DEFAULT 0, gm_distinguish INTEGER DEFAULT 0)"))
         conn.execute(text("CREATE TABLE comments (id INTEGER PRIMARY KEY, author_id INTEGER, parent_submission INTEGER, parent_comment_id INTEGER, "
-                          "is_anonymous BOOLEAN DEFAULT 0, language_code VARCHAR(5))"))
+                          "is_anonymous BOOLEAN DEFAULT 0, language_code VARCHAR(5), distinguish_level INTEGER DEFAULT 0, gm_distinguish INTEGER DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE comment_forwardrels (id INTEGER PRIMARY KEY, comment_id INTEGER, promoted_submission_id INTEGER, promoted_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0)"))
         conn.execute(text("CREATE TABLE award_relationships (id INTEGER PRIMARY KEY, user_id INTEGER, submission_id INTEGER, comment_id INTEGER, coins INTEGER)"))
@@ -240,6 +241,18 @@ def test_the_authors_own_comments_under_a_deleted_post_become_anonymous_and_nobo
     assert anonymise.anonymise_replies(db, [], 30) == 0
 
 
+def test_anonymising_replies_ends_a_shield_or_crown_and_takes_the_posts_they_were_forwarded_as(db):
+    """The second review, C17 and C18: a comment's admin shield and guildmaster crown name its author's role, and a comment forwarded into a guild
+    is a post of its own under the commenter's name."""
+    db.execute(text("INSERT INTO submissions (id, author_id, is_anonymous) VALUES (100, 31, 0), (500, 30, 0)"))
+    db.execute(text("UPDATE submissions SET distinguish_level = 1, gm_distinguish = 7 WHERE id = 500"))
+    db.execute(text("INSERT INTO comments (id, author_id, parent_submission, is_anonymous, distinguish_level, gm_distinguish) VALUES (1, 30, 100, 0, 1, 7)"))
+    db.execute(text("INSERT INTO comment_forwardrels (comment_id, promoted_submission_id, promoted_by_id) VALUES (1, 500, 30)"))
+    assert anonymise.anonymise_replies(db, [100], 30, clear_cache=False) == 1
+    assert tuple(db.execute(text("SELECT is_anonymous, distinguish_level, gm_distinguish FROM comments WHERE id = 1")).first()) == (1, 0, 0)
+    assert tuple(db.execute(text("SELECT is_anonymous, distinguish_level, gm_distinguish FROM submissions WHERE id = 500")).first()) == (1, 0, 0)
+
+
 # --- the Report button -----------------------------------------------------------------------------------------------------------
 
 def test_a_report_is_once_per_person_with_a_reason_of_200_characters_and_twenty_a_day(db):
@@ -302,3 +315,13 @@ def test_the_delete_dialogs_offer_only_what_the_server_will_do_and_open_on_delet
     for name, call in (("submission_listing.html", "delete_postModal"), ("submission.html", "delete_postModal"), ("comments.html", "delete_commentModal")):
         text_ = read("ruqqus", "templates", name)
         assert text_.count(f"{call}('") == text_.count("may_unlink_"), name
+
+
+def test_a_comment_whose_forwarded_post_has_a_discussion_counts_as_answered(db):
+    """C73: a forwarded comment is a post with its own thread, and the delete takes it too."""
+    db.execute(text("INSERT INTO comments (id, author_id, parent_submission) VALUES (1, 30, 100)"))
+    db.execute(text("INSERT INTO submissions (id, author_id) VALUES (500, 30)"))
+    db.execute(text("INSERT INTO comment_forwardrels (comment_id, promoted_submission_id, promoted_by_id) VALUES (1, 500, 30)"))
+    assert deletion_store.others_replied_to_comment(db, 1, 30) is False
+    db.execute(text("INSERT INTO comments (id, author_id, parent_submission) VALUES (2, 31, 500)"))          # somebody answers under the forwarded post
+    assert deletion_store.others_replied_to_comment(db, 1, 30) is True

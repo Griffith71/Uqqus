@@ -503,7 +503,9 @@ def sign_up_post(v):
 
     # the signup guard (helpers/signup_risk.py): refuse, hold or let through
     session_history = tuple(flask_session.get("history", []))
-    ban_evade = int(any([x.is_suspended for x in g.db.query(User).filter(User.id.in_(session_history)).all() if x]))
+    # a browser an account was suspended in, or that an automatic check holds, is a sign of evasion: the site's own checks quarantine, they no longer suspend, so
+    # counting only the suspended let a spammer held for spam open another account here and carry on (wrappers.check_ban_evade then holds it too)
+    ban_evade = int(any([x.is_suspended or x.is_auto_quarantined for x in g.db.query(User).filter(User.id.in_(session_history)).all() if x]))
     guard = _signup_guard(username, email, int(form_timestamp), now, bool(ban_evade))
     signup_signals.tally(r, guard.verdict.action if guard.verdict.action != signup_risk.REFUSE else guard.verdict.reasons[0])
     if guard.verdict.action == signup_risk.REFUSE:

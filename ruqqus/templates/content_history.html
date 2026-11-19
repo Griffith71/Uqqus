@@ -11,13 +11,19 @@
 
   <h1 class="h4 mb-3">
     {% if target_type=="post" %}{{ _('History of this post') }}{% else %}{{ _('History of this comment') }}{% endif %}
-    <a href="{{ target.permalink }}" class="text-small font-weight-normal">{{ _('(view current)') }}</a>
+    {# a deleted item has no current page: its address leads to the Log's thread, which has nothing for an item that was erased or never published (C78) #}
+    {% if not target.deleted_utc %}<a href="{{ target.permalink }}" class="text-small font-weight-normal">{{ _('(view current)') }}</a>{% endif %}
     <a href="/{{ target_type }}/{{ target.base36id }}/log" class="text-small font-weight-normal">{{ _('Log') }}</a>
   </h1>
 
-  {% if not entries and not obliteration %}
+  {# a deleted item is never "nothing recorded": a forwarded copy a delete reached, or one a post made for circles withdrew, is deleted with no row of its own #}
+  {% if not entries and not obliteration and not target.deleted_utc %}
   <p class="text-muted">{% if target_type=="post" %}{{ _('No edits or removals recorded for this post yet.') }}{% else %}{{ _('No edits or removals recorded for this comment yet.') }}{% endif %}</p>
   {% endif %}
+
+  {# the not-shown note is said once, on the first version that has none to show, not on whatever row happens to come first #}
+  {% set note = namespace(shown=false) %}
+  {% set deleted_rows = entries | selectattr("action", "equalto", "delete") | list %}
 
   {% for entry in entries %}
   <div class="card mb-3 p-3">
@@ -26,7 +32,8 @@
       {# the account that acted is the target's author, except when a post's author hid or restored a comment under it: then it is the POST's author, and
          whether that is hidden is the post's rule, not the comment's (a comment on an anonymous post is named; its post's author who hid it is not) #}
       {% set owner = target.post if (target_type == "comment" and entry.action in ("author_hide", "author_restore")) else target %}
-      {% set actor %}{% if anon_hidden(owner, v) and entry.actor_id == owner.author_id %}{{ author_of(owner, v).shown_name }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
+      {# a post written with others: an editor whose credit is anonymous is drawn by the credit's number, to everyone but the admins and that person (the second review, C15) #}
+      {% set actor %}{% if hidden_actors and entry.actor_id in hidden_actors %}{{ hidden_actors[entry.actor_id] }}{% elif anon_hidden(owner, v) and entry.actor_id == owner.author_id %}{{ author_of(owner, v).shown_name }}{% else %}<a href="{{ entry.actor.permalink }}">@{{ entry.actor.username }}</a>{% endif %}{% endset %}
       {% endif %}
       <strong>
         {% if entry.action == "edit" %}
@@ -57,7 +64,7 @@
     {% if entry.hidden_utc %}
     <div class="text-muted text-small mb-1">{{ _("The text of this version was hidden by a site administrator.") }}</div>
     {% elif not show_text %}
-    {% if loop.first %}<div class="text-muted text-small mb-1">{% if (target.hidden_by_guild or target.author_hidden) and not target.is_banned and not target.purged_utc %}{{ _("The earlier versions aren't shown while this is hidden.") }}{% else %}{{ _("The text isn't shown: this was removed by the site's administrators.") }}{% endif %}</div>{% endif %}
+    {% if not note.shown %}{% set note.shown = true %}<div class="text-muted text-small mb-1">{% if (target.hidden_by_guild or target.author_hidden) and not target.is_banned and not target.purged_utc %}{{ _("The earlier versions aren't shown while this is hidden.") }}{% elif target.deleted_utc and target.purged_utc and not target.is_banned %}{{ _("The earlier versions aren't shown: this was deleted and its text has been cleared.") }}{% else %}{{ _("The text isn't shown: this was removed by the site's administrators.") }}{% endif %}</div>{% endif %}
     {% elif entry.previous_body_html or entry.previous_title or entry.previous_url %}
     <div class="text-muted text-small mb-1">{{ _('Content immediately before this action:') }}</div>
     <div class="border rounded p-2">
@@ -82,6 +89,15 @@
     {% endif %}
   </div>
   {% endfor %}
+
+  {% if target.deleted_utc and not deleted_rows %}
+  <div class="card mb-3 p-3">
+    <div class="mb-1">
+      <strong>{{ _('Deleted') }}</strong>
+      <span class="text-muted text-small">&middot; {{ date_text(target.deleted_utc, "%d %B %Y") }}</span>
+    </div>
+  </div>
+  {% endif %}
 
   {% if copy_url %}
   <p class="text-small"><a href="{{ copy_url }}" rel="nofollow">{{ _('Open the preserved copy') }}</a></p>

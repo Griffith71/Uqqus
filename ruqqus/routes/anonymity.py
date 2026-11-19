@@ -18,6 +18,12 @@ def _anon_hidden(item, v=None):
     return anonymity.identity_hidden(item, _viewer(v))
 
 
+def _is_author(item, v=None):
+    """Is the viewer the item's author, as far as this request may be told (a limited QR sign-in is a stranger to its own anonymous items)."""
+    viewer = _viewer(v)
+    return viewer is not None and anonymity.is_author(item, viewer)
+
+
 def _author_of(item, v=None):
     return anonymity.author_of(item, _viewer(v))
 
@@ -47,6 +53,7 @@ anonymity.alias_resolver = _alias_resolver
 
 app.jinja_env.globals.update(
     anon_hidden=_anon_hidden,
+    is_author=_is_author,
     author_of=_author_of,
     author_label=_author_label,
     op_badge=_op_badge,

@@ -208,7 +208,7 @@ export class SessionKeeper {
     this.random = random;
     this.client = null;
     this.reason = null;                           // why the session can't go on, once a renewal decided it (6.2 reads it)
-    this.refusal = null;                          // the site's own refusal (need_password, age_locked)
+    this.refusal = null;                          // the site's own refusal (need_password, age_locked, held)
     this.obtained = new Map();                    // token -> when this keeper renewed or adopted it
     this.renewing = null;
     this.timer = null;
@@ -407,7 +407,7 @@ export class SessionKeeper {
       }).catch(() => {});
       return "removed";
     }
-    if (got.status === 403 && (body.need_password || body.age_locked)) {
+    if (got.status === 403 && (body.need_password || body.age_locked || body.held)) {
       this.refusal = body;
       return "refused";
     }

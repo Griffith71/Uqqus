@@ -1,10 +1,13 @@
 """What the bot runner does with a due source (ruqqus/helpers/bot_runner.py), with stand-ins for the fetch, the
 submit route and the notification, on the real SQL (SQLite)."""
+import re
+from pathlib import Path
+
 from sqlalchemy import text
 
 from ruqqus.helpers import bot_runner as br
 from ruqqus.helpers import bot_store as bs
-from ruqqus.helpers import bots
+from ruqqus.helpers import bots, quarantine
 from ruqqus.helpers.feed_fetch import Answer
 from ruqqus.helpers.safe_fetch import FetchError
 
@@ -111,7 +114,7 @@ def test_a_guild_that_refuses_gets_the_post_on_the_profile_only():
 
 def test_an_answer_that_the_bot_cant_post_pauses_it_and_tells_the_owner():
     w = World()
-    w.answers = [br.outcome("stop", "The bot was suspended for posting too much similar content.")]
+    w.answers = [br.outcome("stop", "An automatic check put the account on hold.")]
     assert w.run().startswith("stopped")
     assert bs.bot_of(w.db, 10).status == bots.PAUSED
     assert w.told and w.told[0][0] == 1 and "paused" in w.told[0][1]
@@ -141,6 +144,41 @@ def test_an_owner_who_cant_run_it_stops_it_without_a_failure():
     assert w.posted == [] and bs.source(w.db, w.source).fail_count == 0
 
 
+def test_a_held_owner_skips_the_source_and_every_item_waits_for_the_hold_to_be_lifted():
+    w = World()
+    w.body = feed(1, 2, 3)
+    assert w.run(owner_ok=False) == "owner"
+    assert w.calls == [] and w.posted == [], "nothing was submitted"
+    assert w.db.execute(text("SELECT COUNT(*) FROM bot_seen")).scalar() == 0, "no item was marked seen, so none is lost"
+    src = bs.source(w.db, w.source)
+    assert not src.read_once and src.fail_count == 0 and src.next_check_utc == NOW + 3600
+    assert src.last_error == "The bot's owner can't run it right now."
+    assert w.told == [], "the owner is not told or paused for a hold"
+    assert bs.bot_of(w.db, 10).status == bots.APPROVED
+    # the hold is lifted: the same feed is read as a first read and its newest items are posted
+    assert w.run(owner_ok=True, now=NOW + 3600).endswith("3 posted")
+    assert w.posted == ["Item 1", "Item 2", "Item 3"]
+
+
+def test_a_refusal_that_comes_of_a_hold_that_landed_meanwhile_keeps_the_item_and_pauses_nothing():
+    w = World()
+    w.run()
+    w.body = feed(1, 2)
+    w.answers = [br.classify(403, "", {"error": quarantine.HELD_AUTOMATIC}, False)]
+    assert w.run().endswith("0 posted")
+    assert bs.seen_keys(w.db, w.source, [bots.item_key("g2", "")]) == set(), "not marked seen: it is tried again"
+    assert bs.source(w.db, w.source).last_error == quarantine.HELD_AUTOMATIC
+    assert bs.bot_of(w.db, 10).status == bots.APPROVED and w.told == []
+    w.run()
+    assert w.posted == ["Item 1", "Item 2"]
+
+
+def test_the_runners_owner_check_asks_for_a_hold_too():
+    source = (Path(__file__).resolve().parent.parent / "scripts" / "run_bots.py").read_text(encoding="utf-8")
+    body = re.search(r"def owner_ok\(owner_id\):.*?\n\n\n", source, re.S).group(0)
+    assert "owner.is_quarantined" in body and "owner.is_suspended" in body and "owner.is_deleted" in body
+
+
 def test_the_daily_cap_holds_whatever_the_feed_has():
     w = World()
     day = bots.utc_day(NOW)
@@ -155,7 +193,7 @@ def test_the_daily_cap_holds_whatever_the_feed_has():
 def test_classify():
     assert br.classify(200, "", {"id": "x"}, False, post_id=5) == br.outcome("posted", post_id=5)
     assert br.classify(409, "", {"error": "This content has already been posted"}, False).kind == "duplicate"
-    assert br.classify(302, "/notifications", {}, False).kind == "stop"
+    assert br.classify(302, "/notifications", {}, False) == br.outcome("stop", "An automatic check put the account on hold.")
     assert br.classify(302, "/help/terms#agreebox", {}, False).kind == "stop"
     assert br.classify(302, "/post/abc/title", {}, False).kind == "duplicate"
     assert br.classify(403, "", {"error": "x", "bot_refusal": "wait"}, False).kind == "wait"
@@ -168,6 +206,22 @@ def test_classify():
     assert br.classify(503, "", {}, False).kind == "wait"
     assert br.classify(400, "", {"error": "banned domain"}, False) == br.outcome("refused", "banned domain")
     assert br.classify(401, "", {}, False).kind == "stop"
+
+
+def test_the_answer_to_a_held_account_is_a_wait_never_a_refusal_that_burns_the_item():
+    # @not_quarantined answers {"error": <the hold's words>, "held": true}: the signup guard's, an automatic check's, and a member bot's held owner
+    for words in (quarantine.HELD, quarantine.HELD_AUTOMATIC, bots.OWNER_HELD):
+        for forwarded in (False, True):
+            assert br.classify(403, "", {"error": words}, forwarded) == br.outcome("wait", words)
+    # the marker is what is read first: words in another language (a reader's own) are still a wait
+    assert br.classify(403, "", {"error": "Su cuenta est\u00e1 retenida.", "held": True}, False).kind == "wait"
+    assert br.classify(403, "", {"error": "Your account is suspended.", "held": False}, False).kind == "refused"
+    # a member bot's held owner also says "stop" in the answer; the words win, since a hold can be lifted
+    assert br.classify(403, "", {"error": bots.OWNER_HELD, "bot_refusal": "stop"}, False).kind == "wait"
+    # any other 403 is what it was: a refusal of this item, or the bot's own stop
+    assert br.classify(403, "", {"error": "This bot's owner can't run it right now.", "bot_refusal": "stop"}, False).kind == "stop"
+    assert br.classify(403, "", {"error": "Your account is suspended."}, False).kind == "refused"
+    assert br.classify(403, "", {}, False).kind == "refused"
 
 
 # --- a site bot: run by the site, nobody to ask or tell ----------------------------------------------------------

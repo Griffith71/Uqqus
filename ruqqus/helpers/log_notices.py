@@ -15,6 +15,10 @@ account the lift doesn't concern, and **never names an alias** (an exile or a mu
 to the account behind it and says only what it can do again). A chat mute and a guild ban are told when imposed (`tell_muted`, `tell_guild_banned`) with the
 rule, the reason, the Log and the Appeal link, as a hide is.
 
+**A quarantine an automatic check placed** (helpers/auto_quarantine.py) is told to the person with the rule, the generic reason ("Automatic spam check": never what was
+matched) and the way to ask for a review (`/appeal/quarantine`: the staff's entry about it is not theirs to open, so the page finds it for them), and its lifting is
+told without a link (`tell_quarantined`, `tell_quarantine_lifted`).
+
 Not here: the decision's own routes (they call these after they commit: `notify` commits on its own) and the pure rules of
 appeals (helpers/log_appeals.py)."""
 import re
@@ -48,8 +52,17 @@ GUILD_BANNED = N_("+%(guild)s was banned from %(site)s.\n\n```\n%(why)s\n```\n\n
                   "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
 # a ban that cites anonymous items of the account says how many and where to see which (the appeal page lists them to the account alone: a notice is read by
 # whoever is signed in, a relayed QR code included, and the ids of anonymous items are the account's to know)
-BAN_CITES = N_("The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves, the Log will name your account "
-               "beside them. [See which, and appeal](%(appeal)s)")
+BAN_CITES = N_("The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single "
+               "administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)")
+
+# what an exile by alias tells its account: the item it cites is anonymous, and the Log entry it links names that item by id (helpers/alias_actions.py)
+ALIAS_EXILED = N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward "
+                  "posts to +%(guild)s or comment in it.\n\nYou were exiled for [this item](%(link)s).")
+
+# an automatic check put the account on hold (helpers/auto_quarantine.py): it can read the site and change its own settings, and nothing else, until an admin looks
+QUARANTINED = N_("An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a "
+                 "member of the staff has looked at it.\n\n```\n%(why)s\n```\n\n[Ask for a review](%(appeal)s)")
+QUARANTINE_APPEAL = "/appeal/quarantine"
 
 # --- what was lifted ---------------------------------------------------------------------------------------------------------
 EXILE_LIFTED = N_("You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again.")
@@ -61,12 +74,28 @@ COMMENT_RESTORED = N_("[Your comment](%(item)s) was restored.")
 COMMENT_SHOWN_AGAIN = N_("[Your comment](%(item)s) is shown again under the post it is on.")
 SUSPENSION_ENDED = N_("Your suspension has ended. You can use %(site)s as you did before.")
 GUILD_REINSTATED = N_("+%(guild)s was reinstated, and its page is open again.")
+QUARANTINE_LIFTED = N_("The hold on your account was lifted. You can post, comment and vote again.")
 
 # --- how an appeal ended -------------------------------------------------------------------------------------------------
 UPHELD = N_("Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n\n```\n%(note)s\n```")
 REVERSED = N_("Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n\n```\n%(note)s\n```")
 DISMISSED = N_("Your appeal of [this decision](%(log)s) was not taken further.\n\n```\n%(note)s\n```")
 OUTCOME_NOTICES = {"upheld": UPHELD, "reversed": REVERSED, "dismissed": DISMISSED}
+# the same for an appeal of an automatic quarantine: the staff's entry about it is not the person's to open, so these carry no link to the Log (`outcome(..., action=)`)
+QUARANTINE_UPHELD = N_("Your appeal of the hold on your account was looked at, and the hold stands.\n\n```\n%(note)s\n```")
+QUARANTINE_REVERSED = N_("Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n\n```\n%(note)s\n```")
+QUARANTINE_DISMISSED = N_("Your appeal of the hold on your account was not taken further.\n\n```\n%(note)s\n```")
+QUARANTINE_OUTCOME_NOTICES = {"upheld": QUARANTINE_UPHELD, "reversed": QUARANTINE_REVERSED, "dismissed": QUARANTINE_DISMISSED}
+
+# **What a limited QR sign-in is not shown** (the second review, 2026-11-17, C14). A notice that links the member's item, or the Log's entry about it
+# (which names the item by id), tells whoever reads it which item is the member's: for an anonymous one that is the pairing anonymity exists to keep, and
+# a limited sign-in is a stranger to it (`anonymity.is_author`). These are held back, still new, until the password is given (`User._without_own_anonymous`),
+# the way the comments on the member's anonymous posts already are. A notice of an item that is not anonymous waits too: telling which is which is the leak.
+# The two quarantine notices (helpers/auto_quarantine.py) wait as well, by the owner's instruction: they name no item, but they are about the account's standing, and the
+# first links the review page, which a limited sign-in cannot open until the password is given.
+HELD_FROM_LIMITED = (HID_POST, HID_COMMENT, REMOVED_POST, REMOVED_COMMENT, AUTHOR_HID_COMMENT, DECISION, MUTED, GUILD_BANNED, ALIAS_EXILED,
+                     POST_SHOWN, COMMENT_SHOWN, POST_RESTORED, COMMENT_RESTORED, COMMENT_SHOWN_AGAIN, UPHELD, REVERSED, DISMISSED, QUARANTINED, QUARANTINE_LIFTED,
+                     QUARANTINE_UPHELD, QUARANTINE_REVERSED, QUARANTINE_DISMISSED)
 
 # what the Log's entries say a decision is, to choose the notice
 HIDES = {"hide_post_from_guild": HID_POST, "hide_comment_from_guild": HID_COMMENT}
@@ -111,8 +140,11 @@ def decision(action, *, entry_id, item, guild="", rule_key="", reason=""):
                      "log": link_of(entry_id), "appeal": appeal_link_of(entry_id)}
 
 
-def outcome(appeal_outcome, *, entry_id, note):
-    """(message, values) for the notice that tells a person how their appeal ended."""
+def outcome(appeal_outcome, *, entry_id, note, action=None):
+    """(message, values) for the notice that tells a person how their appeal ended. **An appeal of an automatic quarantine** (`action` "quarantine_user") has its own
+    words and no link: its entry is the staff's alone, so a link to it would be a 404 to the person."""
+    if action == "quarantine_user":
+        return QUARANTINE_OUTCOME_NOTICES[appeal_outcome], {"note": plain(note, 500) or "-"}
     return OUTCOME_NOTICES[appeal_outcome], {"log": link_of(entry_id), "note": plain(note, 500) or "-"}
 
 
@@ -232,13 +264,40 @@ def tell_imposed(db, user_id, message, entry_id, *, guild="", rule_key="", reaso
         return False
 
 
-def tell_heads(db, board_id, message, *, entry_id=None, actor_id=None, **values):
+def tell_quarantined(db, user_id, entry_id, *, rule_key="", reason=""):
+    """Tell an account an automatic check put it on hold (`QUARANTINED`): the rule (only when `rule_key` is given: ban-evasion detection names none), the generic
+    reason and the way to ask for a review. AFTER the hold is committed; best effort, as `tell_imposed`. Sets the staff entry's `notice_sent`. Returns whether a
+    notice went."""
+    import logging
+
+    try:
+        user = _person(db, user_id)
+        if user is None:
+            return False
+        send(user, (QUARANTINED, {"why": why_of(rule_key, reason), "appeal": QUARANTINE_APPEAL}))
+        mark_sent(db, entry_id)
+        db.commit()
+        return True
+    except Exception:
+        logging.getLogger(__name__).exception("the quarantine notice for log entry %s was not sent", entry_id)
+        db.rollback()
+        return False
+
+
+def tell_quarantine_lifted(db, user_id):
+    """Tell an account the hold on it was lifted (a lift notice: no link). AFTER the lifting is committed; best effort."""
+    return tell_lifted(db, user_id, QUARANTINE_LIFTED)
+
+
+def tell_heads(db, board_id, message, *, entry_id=None, actor_id=None, skip=(), **values):
     """Tell the people who answer for a guild (its founder and its full guildmasters: `log_appeals.heads_of`) what was decided about it or lifted from it. With
     an `entry_id` the notice is the imposed kind (rule, reason, the Log and the Appeal link: pass `rule_key` and `reason`), else a lift notice. Returns how many were told."""
     from ruqqus.helpers import log_appeals
 
     told = 0
     for user_id in log_appeals.heads_of(db, board_id):
+        if user_id in skip:          # already told by another notice (the one who appealed has the outcome's own)
+            continue
         if entry_id:
             sent = tell_imposed(db, user_id, message, entry_id, actor_id=actor_id, **values)
         else:
@@ -249,7 +308,8 @@ def tell_heads(db, board_id, message, *, entry_id=None, actor_id=None, **values)
 
 def tell_ban_cites(db, entry_id, user_id, items):
     """Tell a banned account how many of its anonymous posts and comments the ban relies on (`items` are `("post" | "comment", id)` that are anonymous now),
-    and that a second administrator's approval would name its account beside them in the Log (the owner, 2026-11-14). The link is to the appeal page, which lists
+    and that a second administrator's approval (or, on a site with a single administrator, its owner's: decision 27) would name its account beside them in the
+    Log (the owner, 2026-11-14). The link is to the appeal page, which lists
     them to the account alone. Returns whether a notice went."""
     import logging
 

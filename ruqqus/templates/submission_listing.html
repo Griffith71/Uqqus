@@ -12,7 +12,7 @@
 {% from "partials/subscriber_badge.html" import subscriber_mark %}
 {% from "partials/quote_card.html" import quote_card %}
 {#- the people in a post's byline, passed into whole sentences as values (docs/i18n.md) -#}
-{% macro forwarder_link(u) %}<a href="/@{{ u.username }}" class="user-name"><img alt="" src="{{ u.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% endmacro -%}
+{% macro forwarder_link(u) %}{% if u.is_deleted %}{{ _("[deleted account]") }}{% else %}<a href="/@{{ u.username }}" class="user-name"><img alt="" src="{{ u.profile_url }}" class="profile-pic-20 mr-1"/><span class="user-name-inner">{{ u.shown_name }}</span>{{ handle_tag(u) }}</a>{% endif %}{% endmacro -%}
 {% macro author_name(a) %}{% if a.is_deleted %}{{ _("[deleted account]") }}{% else %}<a href="{{ a.permalink }}" class="user-name">{{ a.shown_name }}</a>{% endif %}{% endmacro -%}
 {#- `mobile`: the phone's line has the official-speech shield beside the name; the desktop line draws it after the byline -#}
 {% macro post_byline(p, v, mobile) -%}
@@ -233,7 +233,7 @@
                 {% if may_change_audience(p, v) %}<a class="dropdown-item audience-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-audience="{{ p.audience or 0 }}" data-circles="{{ p.circle_tokens() }}"><i class="fas fa-circle-notch fa-fw"></i>{{ _("Who can see this") }}</a>{% endif %}
                 {% if may_change_comment_permission(p, v) %}<a class="dropdown-item comment-permission-item" href="javascript:void(0)" data-post-id="{{ p.base36id }}" data-mode="{{ p.comment_permission or 0 }}" data-has-guilds="{{ 1 if comment_spaces(p, v).copies else 0 }}" data-anonymous="{{ 1 if p.is_anonymous else 0 }}"><i class="fas fa-comment-slash fa-fw"></i>{{ _("Who can comment") }}</a>{% endif %}
                 {% if may_see_insights(p, v) %}<a class="dropdown-item" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw"></i>{{ _("Insights") }}</a>{% endif %}
-                {% if p.deleted_utc == 0 %}
+                {% if p.deleted_utc == 0 and not p.is_space %}
                 <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}', {{ 'true' if may_unlink_post(p) else 'false' }})"><i class="fas fa-trash-alt fa-fw"></i>{{ _("Remove from +%(guild)s", guild=p.board.name) if p.is_repost else pgettext("verb", "Delete") }}</a>
                 {% endif %}
                 {% endif %}
@@ -371,7 +371,7 @@
           {% if may_see_insights(p, v) %}<a class="btn btn-link btn-block btn-lg text-left text-muted" href="/post/{{ p.base36id }}/insights"><i class="fas fa-chart-line fa-fw text-center text-muted mr-3"></i>{{ _("Insights") }}</a>{% endif %}
           {% endif %}
 
-          {% if can_edit and p.deleted_utc == 0 %}
+          {% if can_edit and p.deleted_utc == 0 and not p.is_space %}
           <button class="btn btn-link btn-block btn-lg text-left text-muted" data-toggle="modal" data-dismiss="modal" data-target="#deletePostModal" onclick="delete_postModal('{{ p.base36id }}', {{ 'true' if may_unlink_post(p) else 'false' }})"><i class="far fa-trash-alt fa-fw text-center text-muted mr-3"></i>{{ _("Remove from +%(guild)s", guild=p.board.name) if p.is_repost else pgettext("verb", "Delete") }}</button>
           {% endif %}
 

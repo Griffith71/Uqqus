@@ -11,6 +11,6 @@
   <a class="btn btn-link text-muted" href="{{ p.permalink }}">{{ pgettext("button", "Cancel") }}</a>
 </form>
 {% else %}
-<div class="alert alert-secondary" role="status">{{ _("Only a public post can be forked.") }}</div>
+<div class="alert alert-secondary" role="status">{% if p.is_public %}{{ _("A post with an anonymous credit can't be forked.") }}{% else %}{{ _("Only a public post can be forked.") }}{% endif %}</div>
 {% endif %}
 {% endblock %}

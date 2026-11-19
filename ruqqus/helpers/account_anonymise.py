@@ -12,6 +12,8 @@ anonymise whatever it wrote, a Circle post and a tipped post included. Plain `te
 The ORM-free statements here clear what would give the author away (a distinguish, a herald) and take the items out of every entry that pairs them
 with their author; the caches that list by author are cleared by the caller, which has the app.
 """
+import logging
+
 from sqlalchemy import text
 
 from ruqqus.helpers import anon_aliases, anonymise
@@ -56,7 +58,7 @@ def batch(db, user_id, size=BATCH):
         "SELECT id FROM comments WHERE author_id = :u AND NOT COALESCE(is_anonymous, false) ORDER BY id LIMIT :n"), {"u": int(user_id), "n": size})]
     if comments:
         marks, names = _marks("c", comments)
-        db.execute(text(f"UPDATE comments SET is_anonymous = :yes WHERE id IN ({marks})"), {**names, "yes": True})
+        db.execute(text(f"UPDATE comments SET is_anonymous = :yes, distinguish_level = 0, gm_distinguish = 0 WHERE id IN ({marks})"), {**names, "yes": True})
         anonymise.strip_pointers(db, author_id=user_id, comment_ids=comments)
         for scope_id in {r[0] for r in db.execute(text(
                 f"SELECT COALESCE(NULLIF(s.repost_id, 0), s.id) FROM comments c JOIN submissions s ON s.id = c.parent_submission WHERE c.id IN ({marks})"), names)}:
@@ -103,8 +105,9 @@ def run_one(db, user_id, now, *, batches=BATCHES_PER_JOB, size=BATCH, commit=Tru
 
 
 def pending(db, limit=JOBS_PER_CYCLE):
-    """The accounts still being anonymised, oldest first."""
-    return [r[0] for r in db.execute(text("SELECT user_id FROM account_anonymise_jobs WHERE done_utc = 0 ORDER BY queued_utc, user_id LIMIT :n"),
+    """The accounts still being anonymised: the ones tried least first, then the oldest, so an account that fails every cycle can't take every
+    cycle's places and starve the rest (the second review, C55)."""
+    return [r[0] for r in db.execute(text("SELECT user_id FROM account_anonymise_jobs WHERE done_utc = 0 ORDER BY tries, queued_utc, user_id LIMIT :n"),
                                      {"n": int(limit)})]
 
 
@@ -118,6 +121,14 @@ def run_due(db, now, limit=JOBS_PER_CYCLE):
             changed += posts + comments
             finished += 1 if done else 0
         except Exception:
+            # said, loudly: a failure here used to be counted and nothing more, so an account that failed every cycle left an anonymisation half done for ever
+            # with no line in any log (the second review, C55). The failure is recorded on the job (`tries` counts each cycle) and the next account goes on
+            logging.getLogger(__name__).exception("anonymising account %s failed", user_id)
             db.rollback()
             failed += 1
+            try:
+                db.execute(text("UPDATE account_anonymise_jobs SET updated_utc = :now, tries = tries + 1 WHERE user_id = :u"), {"now": int(now), "u": int(user_id)})
+                db.commit()
+            except Exception:
+                db.rollback()
     return finished, changed, failed

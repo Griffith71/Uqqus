@@ -126,3 +126,16 @@ def test_without_media_leaves_other_markup_alone_and_never_raises():
 def test_without_media_cannot_be_used_to_add_markup():
     out = view.without_media('<img src="x" onerror="alert(1)"><audio onloadstart="alert(2)"></audio>')
     assert "onerror" not in out and "onloadstart" not in out and "alert" not in out
+
+
+def test_a_quarantine_line_names_nobody_whoever_looks():
+    """helpers/auto_quarantine.py: the public line has no account, item or guild for the sentence to name (its words are the real table's, read from source)."""
+    words = {kind: re.search(rf'"{kind}": {{\s*(?:#[^\n]*\n\s*)?"str": N_\("([^"]+)"\)', MOD_LOGS).group(1)
+             for kind in ("automatic_quarantine", "automatic_quarantine_lifted")}
+    table = {kind: {"str": N_(text)} for kind, text in words.items()}
+    site = view.site_account("Laba")
+    assert str(view.sentence("automatic_quarantine", table, site)) == (
+        '<a href="/@Laba" class="font-weight-bold text-black">@Laba</a> put an account in quarantine')
+    assert str(view.sentence("automatic_quarantine_lifted", table, site, "", "")).endswith(" lifted a quarantine an automatic check had placed")
+    assert "%(" not in "".join(words.values()), "no value to fill: the line has nothing to name"
+    assert {"automatic_quarantine", "automatic_quarantine_lifted"} <= KINDS and view.SANCTION in view.TABS

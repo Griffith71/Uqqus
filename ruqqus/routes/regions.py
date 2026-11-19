@@ -72,6 +72,7 @@ def regions_list(v):
 
 @app.route("/regions/<region_code>/propose", methods=["POST"])
 @auth_required
+@not_quarantined("region")
 @validate_formkey
 def regions_propose_name(region_code, v):
 
@@ -99,6 +100,7 @@ def regions_propose_name(region_code, v):
 
 @app.route("/regions/<region_code>/vote/<int:proposal_id>", methods=["POST"])
 @auth_required
+@not_quarantined("vote")
 @validate_formkey
 def regions_vote(region_code, proposal_id, v):
 

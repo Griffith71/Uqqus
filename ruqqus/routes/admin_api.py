@@ -13,7 +13,7 @@ from ruqqus.helpers.aws import delete_file
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers import translation_store
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
-from ruqqus.helpers import action_log, log_evidence, log_notices
+from ruqqus.helpers import action_log, auto_quarantine, log_cascade, log_evidence, log_notices, quarantine_review
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -35,12 +35,18 @@ def _outranks(admin, target):
 _OBLITERATE_RULE = {"illegal_content": "illegal", "legal_takedown": "illegal", "other": "other"}
 
 
-def _obliterated(ma, v, reason_category, reason, author_id, post_id=None, comment_id=None):
-    """An obliteration in the Log: the public sees the stub (the rule only), level-4 admins the reason in full."""
-    _decided(ma, rule=_OBLITERATE_RULE.get(reason_category, "other"))
+def _obliterated(ma, v, reason_category, reason, author_id, post_id=None, comment_id=None, copy_ids=()):
+    """An obliteration in the Log: the public sees the stub (the rule only), level-4 admins the reason in full (an entry of its own, linked to
+    the stub). Each forwarded copy it reached has an entry of its own too (`copy_ids`, the second review's C79): the stub's rule, no reason, no
+    account, linked to the stub, so the copy's own log and its guild's say it is gone. Returns the stub's entry id."""
+    stub = _decided(ma, rule=_OBLITERATE_RULE.get(reason_category, "other"))
     action_log.record(g.db, "suppress_content", v.id, board_id=ma.board_id, target_user_id=author_id, post_id=post_id,
                       comment_id=comment_id, rule=_OBLITERATE_RULE.get(reason_category, "other"), reason=reason,
-                      staff_note=reason_category, role=action_log.ADMIN)
+                      staff_note=reason_category, role=action_log.ADMIN, linked_entry_id=stub)
+    if copy_ids:
+        log_cascade.record_cascade(g.db, "obliterate", v.id, post_ids=copy_ids, rule=_OBLITERATE_RULE.get(reason_category, "other"),
+                                   linked_entry_id=stub, skip_recorded=True)
+    return stub
 
 
 def _decided(ma, rule=None, reason=None):
@@ -140,7 +146,7 @@ def ban_user(user_id, v):
             notice = (N_("Your %(site)s account has been permanently suspended due to a Terms of Service violation."),
                       {})
 
-        entry = user.ban(admin=v, reason=reason, rule=rule, staff_note=message, notice_sent=True)
+        entry = user.ban(admin=v, reason=reason, rule=rule, staff_note=message, notice_sent=True)    # `User.ban` closes a waiting hold appeal
 
 
     if entry and cited:
@@ -180,9 +186,17 @@ def unban_user(user_id, v):
 
     user.unban(admin=v, reason=request.form.get("reason", ""), notice_sent=True)
 
-    notify(user, N_("Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of "
-                    "service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get "
-                    "suspended again."))
+    # a hold is a state of its own: reinstating the account does not lift it (an admin or an appeal does, helpers/auto_quarantine.py), so the notice must not say
+    # the account is free to act while it is not
+    if user.is_quarantined:
+        notify(user, N_("Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of "
+                        "service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get "
+                        "suspended again.\n\nIt is still on hold, so it can't post, comment or act on others for now. "
+                        "A member of the staff will look at it."))
+    else:
+        notify(user, N_("Your %(site)s account has been reinstated. Please carefully review and abide by the [terms of "
+                        "service](/help/terms) and [rules and guidelines](/help/rules) to ensure that you don't get "
+                        "suspended again."))
 
 
     return (redirect(user.url), user)
@@ -307,7 +321,13 @@ def purge_post_text(post, v, rule=None, reason=None):
 
     g.db.add(post)
     translation_store.forget(g.db, "post", [post.id])
-    action_log.scrub_for(g.db, post_ids=[post.id])
+    # the post and its forwarded copies: a copy that was deleted or hidden on its own has a private copy of its own in the Log, holding the same words
+    family = [post.id] + [r[0] for r in g.db.query(Submission.id).filter(Submission.repost_id == post.id).all()]
+    action_log.scrub_for(g.db, post_ids=family)
+    # and the versions edited away: "erase the words everywhere" (help/moderation) includes the item's history, copies of the post too (the second review, C57)
+    g.db.query(ContentEditHistory).filter(ContentEditHistory.target_submission_id.in_(family)).update({
+        ContentEditHistory.previous_title: None, ContentEditHistory.previous_url: None,
+        ContentEditHistory.previous_body: None, ContentEditHistory.previous_body_html: None}, synchronize_session=False)
 
     cache.delete_memoized(Board.idlist, post.board)
 
@@ -474,6 +494,8 @@ def purge_comment_text(comment, v, rule=None, reason=None):
     g.db.add(comment)
     translation_store.forget(g.db, "comment", [comment.id])
     action_log.scrub_for(g.db, comment_ids=[comment.id])
+    g.db.query(ContentEditHistory).filter(ContentEditHistory.target_comment_id == comment.id).update({
+        ContentEditHistory.previous_body: None, ContentEditHistory.previous_body_html: None}, synchronize_session=False)    # (C57)
     ma=ModAction(
         kind="purge_comment",
         user_id=v.id,
@@ -606,7 +628,7 @@ Required form data:
         target_submission_id=post.id,
         board_id=board_id,
         note="admin action"
-    ), v, reason_category, reason, author_id, post_id=post.id)
+    ), v, reason_category, reason, author_id, post_id=post.id, copy_ids=[t.id for t in targets if t.id != post.id])
 
     g.db.commit()
 
@@ -1030,11 +1052,13 @@ def admin_csam_nuke(pid, v):
     user.is_banned = v.id
     g.db.add(user)
     action_log.record_ban(g.db, user.id, v.id, reason="CSAM [1]", rule="illegal", floor=action_log.LEGAL)
+    quarantine_review.close_hold_appeal_for_ban(g.db, user.id, v.id)      # a hand ban, outside `User.ban`: a waiting hold appeal closes with it
     for alt in user.alts:
         alt.is_banned = v.id
         g.db.add(alt)
         action_log.record_ban(g.db, alt.id, v.id, reason="CSAM [1]", rule="illegal", floor=action_log.LEGAL,
                               staff_note=f"alt of @{user.username}")
+        quarantine_review.close_hold_appeal_for_ban(g.db, alt.id, v.id)
 
     if app.config["S3_BUCKET"] and post.domain == app.config["S3_BUCKET"]:
 
@@ -1108,43 +1132,17 @@ def admin_nuke_user(v):
     if not _outranks(v, user):
         abort(403)
 
-    note='admin action'
-    note+=f" | {html.escape(why)}"     # the mod log draws notes as HTML (bug hunt C1)
-
-
-    for post in g.db.query(Submission).filter_by(author_id=user.id).all():
-        if post.is_banned:
-            continue
-            
-        post.is_banned=True
-        # the removed post's page draws its reason as HTML (submission_banned.html): this one is typed text
-        post.ban_reason=html.escape(why)
-        g.db.add(post)
-
-        ma=ModAction(
-            kind="ban_post",
-            user_id=v.id,
-            target_submission_id=post.id,
-            board_id=post.board_id,
-            note=note
-            )
-        g.db.add(ma)
-
-    for comment in g.db.query(Comment).filter_by(author_id=user.id).all():
-        if comment.is_banned:
-            continue
-
-        comment.is_banned=True
-        g.db.add(comment)
-
-        ma=ModAction(
-            kind="ban_comment",
-            user_id=v.id,
-            target_comment_id=comment.id,
-            board_id=comment.post.board_id,
-            note=note
-            )
-        g.db.add(ma)
+    # a few set-based statements, not a statement per item: a huge account's nuke used to run past the worker's timeout, and a long reason was
+    # a DataError (the guild log's note and the removed post's reason are short columns). Only what THIS call removed comes back, so two admins
+    # nuking at once, or a re-run, record nothing twice (the second review, C79)
+    posts, comments = log_cascade.take_down_all(g.db, user.id, why)
+    if posts or comments:
+        # the main entry: staff only (it names the account); each item's own entry names no account and points at it. An anonymous item's entry is
+        # staff only as well, or a burst of public removals in one second would pair the account with the anonymous items by exclusion
+        summary = action_log.record_staff(g.db, "admin_nuke", v, f"removed {len(posts)} posts and {len(comments)} comments of @{user.username}",
+                                          target_user_id=user.id, reason=why)
+        log_cascade.record_cascade(g.db, "ban", v.id, post_ids=posts, comment_ids=comments, reason=why, linked_entry_id=summary,
+                                   anonymous_floor=action_log.STAFF)
 
     return redirect(user.permalink)
 
