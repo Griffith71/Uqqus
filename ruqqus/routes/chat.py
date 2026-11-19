@@ -47,6 +47,10 @@ def _ensure_provisioned(v):
         print(f"chat refused: {e}. Restore Synapse's database with the site's (RESTORE.md), or give the account back "
               "at /admin/chat if it is the same person.", flush=True)
         _refuse_chat(v)
+    except matrix.MatrixError as e:         # the chat server is down or answering badly: try again later, not a crash
+        g.db.rollback()
+        print(f"chat unavailable while setting up a chat account: {e}", flush=True)
+        abort(503)
     g.db.add(ChatIdentity(user_id=v.id, matrix_user_id=mxid))
     g.db.commit()
     chat_devices.sync_name(g.db, v, mxid)       # outside apps show the @handle (helpers/chat_devices.py)
