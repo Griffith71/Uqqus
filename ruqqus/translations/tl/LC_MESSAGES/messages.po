@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fil\n"
@@ -182,6 +182,56 @@ msgstr "%(category)s (buong kategorya)"
 #, machine, plain1, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "ang %(comment_link)s ay muling ipinapakita sa ilalim ng post na ito ay nasa."
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "ang %(comment_link)s ay ipinapakita muli sa +%(guild)s."
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ay itinago ng awtor ng koreo na nasa ilalim nito.\n"
+"\n"
+"%(why_block)s%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"ang %(comment_link)s ay itinago mula sa +%(guild)s sa pamamagitan ng isang modedor ng guild.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ay inalis.\n"
+"\n"
+"%(why_block)s%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "naibalik ang %(comment_link)s."
 
 #, machine, plain1, python-format
 msgid "%(count)s all time"
@@ -1062,6 +1112,40 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% upvote"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "ang %(post_link)s ay ipinapakita muli sa +%(guild)s."
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"ang %(post_link)s ay itinago mula sa +%(guild)s sa pamamagitan ng isang modedor ng guild.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s ay inalis.\n"
+"\n"
+"%(why_block)s%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "naibalik ang %(post_link)s."
 
 #, machine, plain1, python-format
 msgid "%(posts)s by %(people)s"
@@ -1994,16 +2078,19 @@ msgstr "+%(guild)s tatanggapin lamang ang mga forward mula sa sinang-ayunang mga
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s  un  un."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"+%(guild)s ay ipinagbawal sa %(site)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3582,6 +3669,34 @@ msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "Ang isang kabahaging draft ay maaaring magkaroon ng halos %(num)s awtor."
 msgstr[1] "Ang isang kabahaging draft ay maaaring magkaroon ng halos %(num)s awtor."
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"Isang administrador ng site ang gumawa sa kanilang sarili na isang tagaayos ng samahan ng +i%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"Inalis ka ng isang administrador ng site bilang isang tagaayos ng guild ng +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
 #, machine, plain1
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "Ang isang bot ay nangangailangan ng kahit isa; ang isang miyembro ay maaaring wala nito kung ito ay naglalagay lamang ng iyong susi."
@@ -3603,6 +3718,10 @@ msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Ang isang kuwento ay maaaring maging %(num)s karakter (Chinese, Hapones at Koreanong karakter at bilang na emoji bilang 2)."
 msgstr[1] "Ang isang kuwento ay maaaring maging %(num)s karakter (Chinese, Japanese at Korean characters at emoji count as 2)."
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "Ang pagsuspinde o pagbabawal ay nagbibigay ng pangalan sa tuntuning nalabag nito, kaya't masasabi ng Log kung alin."
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4391,16 +4510,19 @@ msgstr "Hawak - hawak ng isang awtomatikong tseke ang iyong account, upang hindi
 msgid "An automatic check put your account on hold."
 msgstr "Isang awtomatikong pagsusuri ang naglagay sa iyong account."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"Isang awtomatikong pagsusuri ang naglagay sa iyong account. Maaari mong basahin ang %(site)s at baguhin ang iyong settings, ngunit hindi ka maaaring magpaskil, magkomento o bumoto hanggang sa isang miyembro ng kawani ang tumingin dito.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(review_link)s"
 
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -5109,6 +5231,10 @@ msgstr "Maging miyembro ng +i%(guild)s, walang email address na kinakailangan. M
 #, machine, plain1
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "Maging bahagi ng komunidad, walang adres ng email na kailangan. Maglahad."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "Ang pagiging isang tagaayos ng samahan ay nangangailangan ng dahilan, kaya masasabi ng mga taga - Log at ng mga tagapamagitan sa samahan nito kung bakit."
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5951,6 +6077,14 @@ msgstr "Pumili ng isa sa iyong sariling apps (Settings > Apps)."
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "Pumili ng mga post o comment, hanggang lima. Ang site ay nag-iingat ng isang pribadong kopya ng bawat isa gaya ngayon, para sa kanila, ang guild moderators ng guild na ito at ang mga admin ng site."
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "Piliin ang tuntunin na nilalabag nito"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "Piliin ang tuntuning nilalabag nito."
 
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14617,10 +14751,6 @@ msgid "Remove this topic"
 msgstr "Alisin ang paksang ito"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "Alisin ka bilang isang awtor"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Alisin ang iyong pangalan sa mga bagay na ito?"
 
@@ -15443,6 +15573,10 @@ msgstr "Tingnan kung ano ang uso"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Tingnan kung ano ang ginagawa nila"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "Tingnan mo kung alin, at ang pang - akit"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17450,9 +17584,9 @@ msgstr "Sumang - ayon ang mga awtor na anyayahan ka: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Naligtas ang auto-moderasyon."
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "Ang pagbabawal ay depende sa %(num)s ng iyong di - kilalang mga post at komento. Kung sang - ayon ang ikalawang administrador (o, sa isang lugar na may isang administrador, ang may - ari nito), tatawagin ng Log ang iyong account sa tabi nila. %(which_link)s"
 
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18558,9 +18692,9 @@ msgstr "Ang pasiyang ito ay inalis na."
 msgid "This decision is about you. If you think it was wrong, you can appeal it."
 msgstr "Ang pasiyang ito ay tungkol sa iyo. Kung inaakala mong ito'y mali, maaari mo itong akitin."
 
-#, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "Ang pasiyang ito ay nasa Log, at maaari mong iapela ito: %(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -21217,6 +21351,14 @@ msgstr "Ikaw ay ipinatapon mula sa +%(guild)s."
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "Hindi ka na ipinatapon mula sa +%(guild)s. Maaari kang magpadala ng mga poste rito at magkomentong muli rito."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "Hindi ka na ipinatapon mula sa +%(guild)s. Hawak mo pa rin ang iyong ulat, kaya hindi ito makapagpadala ng mga post o komento hanggang sa makita ito ng isang miyembro ng kawani."
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "Hindi ka na pipi sa +i%(guild)s's channels. Hawak mo pa rin ang iyong account, kaya hindi ito makapagsulat doon hanggang sa makita ito ng isang tauhan."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Hindi ka miyembro ng anumang samahan. Ang iyong mga bahagi ay itatanghal dito."
@@ -21415,16 +21557,17 @@ msgstr "Maaari kang gumawa ng isang salaysay sa bata minsang ang iyong sariling 
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Maaari kang gumawa ng tatlong pagsamo sa isang araw. Subukan muli bukas."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"Hindi ka na makapagsulat sa +%(guild)s' Mga channel, pero mababasa mo pa rin ang mga ito.\n"
+"\n"
+"%(why_block)s%(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21806,14 +21949,19 @@ msgstr ""
 "\n"
 "Gayunman, wala sa iyong umiiral na mga poste o mga komento ang naalis, hindi ka makapaghahatid ng mga poste sa +%(guild)s o magkomento rito."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"Ikaw ay ipinatapon mula sa +%(guild)s.\n"
+"\n"
+"Gayunman, wala sa iyong umiiral na mga poste o mga komento ang naalis, hindi ka makapaghahatid ng mga poste sa +%(guild)s o magkomento rito.\n"
+"\n"
+"Ipinatapon ka %(this_item_link)s."
 
 #, python-format
 msgid ""
@@ -21821,7 +21969,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22459,87 +22607,63 @@ msgstr "Ang iyong pang - akit ay naghihintay na basahin."
 
 #, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
-"Ang iyong pag-aalsa ng [itong desisyon](%(log)s) ay tinanggap, at ang desisyon ay binaligtad.\n"
+"Ang iyong pagsamo ng %(decision_link)s ay tinanggap, at ang desisyon ay nabaligtad.\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
-"Ang iyong pag-aalsa ng [itong desisyon](%(log)s) ay tiningnan, at ang desisyon ay nakatayo.\n"
+"Ang iyong pang - akit ng %(decision_link)s ay tiningnan, at ang pasiya ay nananatili.\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
-"Ang iyong pag-aalsa ng [itong desisyon](%(log)s) ay hindi higit pang kinuha.\n"
+"Ang iyong pang - akit ng %(decision_link)s ay hindi higit na isinagawa.\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "Ang iyong pag - apela sa paghawak sa iyong account ay tinanggap, at ang paghawak ay inalis. Maaari kang magpaskil, magkomento at bumotong muli.\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "Ang iyong pagsamo sa paghawak sa iyong account ay tiningnan, at ang hawakan ay nakatayo.\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "Ang iyong pagsamo tungkol sa paghawak sa iyong kuwenta ay hindi higit pa.\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22638,6 +22762,10 @@ msgstr "Mga circle mo"
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "Ang iyong mga bilog - %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "Ang iyong komento"
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -22833,6 +22961,10 @@ msgstr "Sinang - ayunan ito ng iyong telepono. Magpatuloy lamang kayo kung ito a
 msgid "Your phone said no, so nobody was signed in."
 msgstr "Ang inyong telepono ay nagsabi na hindi, kaya walang sinuman ang nilagdaan."
 
+#, machine, plain2
+msgid "Your post"
+msgstr "Ang iyong post"
+
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Ang iyong post ay nakatala sa iyong profile sa alinmang paraan. Pumili Inilarawan ko rin ang pagkakaroon ng mga komento roon, at magdagdag ng mga guild upang ipaskil ito sa kanila: ang bawat samahan ay tumatanggap ng sarili nitong kopya na may sarili nitong mga boto at komento."
@@ -22949,6 +23081,10 @@ msgstr "Ang inyong mga suskripsiyon"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "Ang iyong pagsuspinde ay natapos na. Maaari mong gamitin ang %(site)s gaya ng dati."
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "Ang iyong pagsuspinde ay natapos na. Hawak mo pa rin ang iyong account, kaya hindi ito maaaring magpaskil, magkomento o bumoto hanggang sa tingnan ito ng isang miyembro ng kawani."
 
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -23093,81 +23229,6 @@ msgstr "[Terms of service](/help/terms)"
 #, machine, plain1
 msgid "[Titles](/help/titles)"
 msgstr "[Titles](/help/titles)"
-
-#, machine, plain2, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr "[ Ang iyong komento](%(item)s) ay muling ipinapakita sa ilalim ng post na ito ay on."
-
-#, machine, plain2, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr "[Ang iyong komento](%(item)s) ay ipinapakita muli sa +%(guild)s."
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, machine, plain2, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr "[Ang iyong komento](%(item)s) ay ibinalik."
-
-#, machine, plain2, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr "[ Ang iyong post](%(item)s) ay ipinapakita muli sa +%(guild)s."
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, machine, plain2, python-format
-msgid "[Your post](%(item)s) was restored."
-msgstr "[ Ang iyong post](%(item)s) ay ibinalik."
 
 #, machine, plain1
 msgid "[banned]"
@@ -24272,6 +24333,14 @@ msgstr "ang tinanggap nila"
 #, machine, plain1
 msgid "they declined"
 msgstr "ang tugon nila"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "ang pasiyang ito"
+
+#, machine, plain2
+msgid "this item"
+msgstr "ng artikulong ito"
 
 #, machine, plain1
 msgid "to guilds, all time"

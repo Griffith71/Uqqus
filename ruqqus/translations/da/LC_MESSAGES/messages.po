@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: da\n"
@@ -174,6 +174,60 @@ msgstr "%(category)s (hele kategorien)"
 #, machine, plain1, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "%(comment_link)s vises igen under det indlæg, den er på."
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "%(comment_link)s er vist i + %(guild)s igen."
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s blev skjult af forfatteren til det indlæg, det er under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s blev skjult fra + %(guild)s af en guild moderator.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s blev fjernet.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "%(comment_link)s blev restaureret."
 
 #, machine, plain1, python-format
 msgid "%(count)s all time"
@@ -1054,6 +1108,42 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% op-stemmer"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "%(post_link)s er vist i + %(guild)s igen."
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s blev skjult fra + %(guild)s af en guild moderator.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s blev fjernet.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "%(post_link)s blev restaureret."
 
 #, machine, plain1, python-format
 msgid "%(posts)s by %(people)s"
@@ -1986,16 +2076,19 @@ msgstr "+ %(guild)s accepterer kun forwards fra godkendte bidragydere."
 msgid "+%(guild)s unmuted."
 msgstr "+ %(guild)s udæmpet."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"+ %(guild)s blev forbudt fra %(site)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3573,6 +3666,34 @@ msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "Et fælles udkast kan højst have %(num)s forfatter."
 msgstr[1] "Et fælles udkast kan højst have %(num)s forfattere."
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"En site administrator gjort sig selv en guild moderator af + %(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"En site administrator fjernet dig som en guild moderator af + %(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
 #, machine, plain1
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "En site bot har brug for mindst én; et medlem bot kan have ingen, hvis det kun indlæg med din nøgle."
@@ -3594,6 +3715,10 @@ msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "En historie kan være %(num)s tegn (kinesiske, japanske og koreanske tegn og emoji tæller som 2)."
 msgstr[1] "En historie kan være %(num)s tegn (kinesiske, japanske og koreanske tegn og emoji tæller som 2)."
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "En suspension eller forbud navngiver den regel, det bryder, så Log kan sige, hvad."
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4382,16 +4507,19 @@ msgstr "En automatisk check sætte din konto på hold, så du kan ikke gøre det
 msgid "An automatic check put your account on hold."
 msgstr "En automatisk check sætte din konto på hold."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"En automatisk check sætte din konto på hold. Du kan læse %(site)s og ændre dine indstillinger, men du kan ikke sende, kommentere eller stemme, før en medarbejder har set på det.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(review_link)s"
 
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -5100,6 +5228,10 @@ msgstr "Bliv medlem af + %(guild)s, ingen e-mailadresse kræves. Lav en konto."
 #, machine, plain1
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "Bliv en del af fællesskabet, ingen e-mail-adresse kræves. Lav en konto."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "At blive en guild moderator af en guild har brug for en grund, så Log og dens guild moderatorer kan sige hvorfor."
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5942,6 +6074,14 @@ msgstr "Vælg en af dine egne apps (Indstillinger > Apps)."
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "Vælg de indlæg eller kommentarer, dette handler om, op til fem. Webstedet har en privat kopi af hver af dem, som det er nu, for dem, denne guild 's guild moderatorer og stedets administratorer."
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "Vælg den regel den bryder"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "Vælg den regel, den bryder."
 
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14607,10 +14747,6 @@ msgid "Remove this topic"
 msgstr "Fjern dette emne"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "Fjern dig som forfatter"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Fjern dit navn fra disse elementer?"
 
@@ -15433,6 +15569,10 @@ msgstr "Se hvad der er trending"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Se hvad de gør"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "Se hvilke, og appel"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17418,9 +17558,9 @@ msgstr "Forfatterne indvilligede i at invitere dig: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Den selvbeherskelse blev reddet."
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "Forbuddet bygger på %(num)s af dine anonyme indlæg og kommentarer. Hvis en anden administrator godkender (eller på et websted med en enkelt administrator, dens ejer), vil loggen navngive din konto ved siden af dem. %(which_link)s"
 
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18526,9 +18666,9 @@ msgstr "Denne beslutning er allerede blevet ophævet."
 msgid "This decision is about you. If you think it was wrong, you can appeal it."
 msgstr "Denne beslutning handler om dig. Hvis du mener, det var forkert, kan du appellere det."
 
-#, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "Denne beslutning er i loggen, og du kan appellere den: %(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -21174,6 +21314,14 @@ msgstr "Du er forvist fra + %(guild)s."
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "Du er ikke længere forvist fra + %(guild)s. Du kan sende indlæg til det og kommentere i det igen."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "Du er ikke længere forvist fra + %(guild)s. Din konto er stadig i venteposition, så det kan ikke sende indlæg eller kommentarer, før en medarbejder har set på det."
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "Du er ikke længere dæmpet i + %(guild)s s kanaler. Din konto er stadig i venteposition, så den kan ikke skrive der, før en medarbejder har kigget på den."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Du er ikke medlem af nogen gylden. Guilds du deltager i vil blive vist her."
@@ -21372,16 +21520,19 @@ msgstr "Du kan lave en børnekonto, når din egen konto er bekræftet som 18 ell
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Du kan appellere tre gange om dagen. Prøv igen i morgen."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"Du kan ikke længere skrive i + %(guild)s s kanaler, men du kan stadig læse dem.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21763,14 +21914,19 @@ msgstr ""
 "\n"
 "Ingen af dine eksisterende indlæg eller kommentarer er blevet fjernet, men du vil ikke være i stand til at sende indlæg til + %(guild)s eller kommentere i det."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"Du er blevet forvist fra + %(guild)s.\n"
+"\n"
+"Ingen af dine eksisterende indlæg eller kommentarer er blevet fjernet, men du vil ikke være i stand til at sende indlæg til + %(guild)s eller kommentere i det.\n"
+"\n"
+"Du blev forvist for %(this_item_link)s."
 
 #, python-format
 msgid ""
@@ -21778,7 +21934,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22404,59 +22560,65 @@ msgstr "Dit svar"
 msgid "Your appeal is waiting to be read."
 msgstr "Din appel venter på at blive læst."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Din appel af %(decision_link)s blev accepteret, og afgørelsen blev afvist.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Din appel af %(decision_link)s blev set på, og afgørelsen står.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Din appel af %(decision_link)s blev ikke taget videre.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Din appel om at holde for din skyld blev accepteret, og grebet blev ophævet. Du kan skrive, kommentere og stemme igen.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Din appel om at holde på din konto blev set på, og hold står.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Din appel af ventetiden for din skyld blev ikke taget længere.\n"
+"\n"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22554,6 +22716,10 @@ msgstr "Dine cirkler"
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "Dine cirkler - %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "Din kommentar"
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -22746,6 +22912,10 @@ msgstr "Din telefon godkendte det her. Fortsæt kun, hvis det er din konto."
 msgid "Your phone said no, so nobody was signed in."
 msgstr "Din telefon sagde nej, så ingen blev logget ind."
 
+#, machine, plain2
+msgid "Your post"
+msgstr "Din stilling"
+
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Dit indlæg er opført på din profil uanset hvad. Vælg Min profil er også at få sine kommentarer der, og tilføje guilds til at sende det direkte ind i dem: hver guild får sin egen kopi med sine egne stemmer og kommentarer."
@@ -22862,6 +23032,10 @@ msgstr "Dine abonnementer"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "Din suspension er slut. Du kan bruge %(site)s som du gjorde før."
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "Din suspension er slut. Din konto er stadig i venteposition, så den kan ikke sende, kommentere eller stemme, før en medarbejder har set på den."
 
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -22989,81 +23163,6 @@ msgid "[Terms of service](/help/terms)"
 msgstr ""
 
 msgid "[Titles](/help/titles)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1
@@ -24169,6 +24268,14 @@ msgstr "de accepterede"
 #, machine, plain1
 msgid "they declined"
 msgstr "de faldt"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "denne afgørelse"
+
+#, machine, plain2
+msgid "this item"
+msgstr "denne post"
 
 #, machine, plain1
 msgid "to guilds, all time"

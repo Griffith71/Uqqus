@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -167,6 +167,60 @@ msgstr "%(category)s (kim kategori)"
 #, machine, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "%(comment_link)s tekrar yazının altında gösterilir."
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "%(comment_link)s +%(guild)s tekrar gösterilir."
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s yazının yazarı tarafından gizlenmişti.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s +%(guild)s bir guild moderatörü tarafından gizlenmişti.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s kaldırıldı.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "%(comment_link)s restore edildi."
 
 #, machine, python-format
 msgid "%(count)s all time"
@@ -931,6 +985,42 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%%%(percent)s artı oy"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "%(post_link)s +%(guild)s tekrar gösterilir."
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s +%(guild)s bir guild moderatörü tarafından gizlenmişti.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s kaldırıldı.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "%(post_link)s restore edildi."
 
 #, machine, python-format
 msgid "%(posts)s by %(people)s"
@@ -1863,16 +1953,19 @@ msgstr "+%(guild)s sadece onaylanmış katkılardan ileri kabul eder."
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s unmuted."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"+%(guild)s %(site)s.'den yasaklandı\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3381,6 +3474,34 @@ msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "Paylaşılan bir taslak çoğu %(num)s yazara sahip olabilir."
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"Bir site yöneticisi kendilerini +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"Bir site yöneticisi sizi +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
 #, machine
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "Bir site botunun en azından birine ihtiyacı vardır; bir üye botu sadece anahtarınızla yazıp sahip olmayabilir."
@@ -3401,6 +3522,10 @@ msgstr "Tedavi edilen yem algoritması için başlangıç noktası. Ramilds ve h
 msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Bir hikaye %(num)s karakterleri (Çin, Japon ve Kore karakterleri ve emoji sayılarını 2) olabilir."
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "Bir süspansiyon veya yasak isimleri kırıyor, bu yüzden Log bunu söyleyebilir."
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4181,16 +4306,17 @@ msgstr "Otomatik bir çek hesabınızı tutun, bu yüzden bunu şimdilik yapamaz
 msgid "An automatic check put your account on hold."
 msgstr "Otomatik bir kontrol hesabınızı tutmak için koydu."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"Otomatik bir kontrol hesabınızı tutmak için koydu. Okuyabilirsin %(site)s ve ayarlarınızı değiştirebilirsiniz, ancak posta, yorum veya personel üyesine göre oy verebilirsiniz.\n"
+"\n"
+"%(why_block)s%(review_link)s"
 
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -4885,6 +5011,10 @@ msgstr "+%(guild)s üyesi ol, hiçbir e-posta adresi gerekli değil. Bir hesap y
 #, machine
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "Topluluğun bir parçası ol, hiçbir e-posta adresi gerekli değil. Bir hesap yapın."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "Bir guild moderatörü olmak bir nedene ihtiyaç duyar, bu yüzden Log ve onun guild moderatörü neden söyleyebilir."
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5723,6 +5853,14 @@ msgstr "Kendi uygulamalarınızdan birini seçin (Settings > Apps)."
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "Bu mesajları veya yorumları seçin, beşe kadar. Site şimdi olduğu gibi her birinin özel bir kopyasını tutar, çünkü bu guild'in guild moderatörleri ve site yöneticileri."
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "Verdiği kuralı seçin"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "Verdiği kuralı seçin."
 
 #, machine
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14312,10 +14450,6 @@ msgid "Remove this topic"
 msgstr "Bu konuyu kaldır"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "Sizi bir yazar olarak çıkarın"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Adınızı bu öğelerden çıkarın?"
 
@@ -15133,6 +15267,10 @@ msgstr "Ne eğilimi olduğunu görün"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Ne yaptıklarını görün"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "Bakalım"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17105,9 +17243,9 @@ msgstr "Yazarlar sizi davet etmeyi kabul etti: %(names)s."
 msgid "The auto-moderation was saved."
 msgstr "Auto-mode kurtarıldı."
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "Yasak anonim mesajların ve yorumlarınızın %(num)s'ine dayanıyor. Eğer ikinci bir yönetici (veya tek bir yönetici ile bir sitede, sahibi) onaylarsa, Log hesabınızı onların yanında adlandıracaktır. %(which_link)s"
 
 #, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18197,9 +18335,9 @@ msgstr "Bu karar zaten kaldırıldı."
 msgid "This decision is about you. If you think it was wrong, you can appeal it."
 msgstr "Bu karar sizin hakkınızda. Eğer yanlış olduğunu düşünüyorsanız, bunu temyiz edebilirsiniz."
 
-#, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "Bu karar Log'de ve bunu temyiz edebilirsiniz: %(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -20823,6 +20961,14 @@ msgstr ""
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "Artık +%(guild)s.'den sürgün edilmedin Yazıları tekrar izleyebilir ve tekrar yorumlayabilirsiniz."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "Artık +%(guild)s.'den sürgün edilmedin Hesabınız hala devam ediyor, bu yüzden personelinin bir üyesine göre mesajları veya yorumları ilerilayamıyor."
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "Artık +%(guild)s kanallarında yok. Hesabınız hala devam ediyor, bu yüzden personelinin bir üyesine göre orada yazamıyor."
+
 #, machine
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Herhangi bir guild üyesi değilsiniz. Katıldığınız Guilds burada sergilenecek."
@@ -21006,16 +21152,19 @@ msgstr "Kendi hesabınız 18 veya üstü olarak onaylandığında bir çocuk hes
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Günde üç çağrı yapabilirsiniz. Yarın tekrar deneyin."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"Artık +%(guild)s kanallarında yazamazsınız, ancak hala onları okuyabilirsiniz.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21388,14 +21537,19 @@ msgstr ""
 "\n"
 "Ancak mevcut yazılarınızın veya yorumların hiçbiri kaldırıldı, ancak, gönderileri +%(guild)s veya yorum için ileri sürmeyeceksiniz."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"+%(guild)s.'den sürgün edildin\n"
+"\n"
+"Ancak mevcut yazılarınızın veya yorumların hiçbiri kaldırıldı, ancak, gönderileri +%(guild)s veya yorum için ileri sürmeyeceksiniz.\n"
+"\n"
+"%(this_item_link)s. için sürgün edildin."
 
 #, python-format
 msgid ""
@@ -21403,7 +21557,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22025,59 +22179,65 @@ msgstr "Cevabınız Cevabınız"
 msgid "Your appeal is waiting to be read."
 msgstr "Çağrınız okumak için bekliyor."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"%(decision_link)s çağrınız kabul edildi ve karar ters alındı.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"%(decision_link)s temyize bakıldı ve karar duruyor.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"%(decision_link)s çağrınız daha fazla alınmadı.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Hesabınızdaki tutunma çağrısı kabul edildi ve tutma kaldırıldı. Tekrar yazıp oy verebilirsiniz.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Hesabınızdaki barizin çağrısına bakıldı ve tutar duruyor.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Hesabınızdaki barınması daha fazla alınmadı.\n"
+"\n"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22175,6 +22335,10 @@ msgstr "Çevrelerin"
 #, machine, python-format
 msgid "Your circles - %(site)s"
 msgstr "Çevreleriniz - %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "Yorumunuz"
 
 #, machine
 msgid "Your commenting history will show here."
@@ -22363,6 +22527,10 @@ msgstr "Telefonunuz bunu onayladı. Sadece bu sizin hesabınızsa devam edin."
 msgid "Your phone said no, so nobody was signed in."
 msgstr "Telefonunuz hayır dedi, bu yüzden kimse imzalanmadı."
 
+#, machine, plain2
+msgid "Your post"
+msgstr "Post your post"
+
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Postanız profilinizde de listelenir. seçin Profilim de yorumlarına sahip olmak ve doğrudan onlara göndermek için guilds eklemek: Her guild kendi oy ve yorumlarıyla kendi kopyasını alır."
@@ -22479,6 +22647,10 @@ msgstr "Aboneliğiniziz"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "Süspansiyonunuz sona erdi. Daha önce yaptığınız gibi %(site)s kullanabilirsiniz."
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "Süspansiyonunuz sona erdi. Hesabınız hala devam ediyor, bu yüzden bir personel üyesine göre yazıp oy veremez."
 
 #, machine, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -22619,81 +22791,6 @@ msgid "[Terms of service](/help/terms)"
 msgstr ""
 
 msgid "[Titles](/help/titles)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine
@@ -23790,6 +23887,14 @@ msgstr "kabul ettiler"
 #, machine
 msgid "they declined"
 msgstr "onlar reddettiler"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "bu karar"
+
+#, machine, plain2
+msgid "this item"
+msgstr "bu öğe"
 
 #, machine
 msgid "to guilds, all time"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: el\n"
@@ -182,6 +182,58 @@ msgstr "%(category)s (ολόκληρη κατηγορία)"
 #, machine, plain1, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "%(comment_link)s εμφανίζεται ξανά κάτω από τη θέση που είναι ενεργοποιημένη."
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "το %(comment_link)s εμφανίζεται ξανά στο + %(guild)s."
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ήταν κρυμμένο από τον συγγραφέα της ανάρτησης είναι κάτω.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ήταν κρυμμένο από + %(guild)s από έναν συντονιστή συντεχνίας.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s αφαιρέθηκε.\n"
+"\n"
+"%(why_block)s%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "%(comment_link)s Αποκαταστάθηκε."
 
 #, machine, plain1, python-format
 msgid "%(count)s all time"
@@ -1062,6 +1114,40 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% θετικές ψήφοι"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "το %(post_link)s εμφανίζεται ξανά στο + %(guild)s."
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s ήταν κρυμμένο από + %(guild)s από έναν συντονιστή συντεχνίας.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s αφαιρέθηκε.\n"
+"\n"
+"%(why_block)s%(log_link)s · %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "%(post_link)s Αποκαταστάθηκε."
 
 #, machine, plain1, python-format
 msgid "%(posts)s by %(people)s"
@@ -1994,16 +2080,19 @@ msgstr "+ %(guild)s δέχεται μόνο προκαταβολές από εγ
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s χωρίς μίμηση."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"+ %(guild)s απαγορεύτηκε από το %(site)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3588,6 +3677,34 @@ msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "Ένα κοινό σχέδιο μπορεί να έχει το πολύ %(num)s συγγραφέα."
 msgstr[1] "Ένα κοινό σχέδιο μπορεί να έχει το πολύ %(num)s συγγραφείς."
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"Ένας διαχειριστής του ιστότοπου έκανε τον εαυτό του συντονιστή συντεχνίας του + %(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"Ένας διαχειριστής site σας αφαίρεσε ως συντονιστή συντεχνίας του + %(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
 #, machine, plain1
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "Ένα bot site χρειάζεται τουλάχιστον ένα; ένα bot μέλος μπορεί να έχει καμία, αν μόνο αναρτήσει με το κλειδί σας."
@@ -3609,6 +3726,10 @@ msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "Μια ιστορία μπορεί να είναι %(num)s χαρακτήρας (κινέζικα, ιαπωνικά και κορεατικά χαρακτήρες και emoji μετρούν ως 2)."
 msgstr[1] "Μια ιστορία μπορεί να είναι %(num)s χαρακτήρες (κινέζοι, Ιάπωνες και Κορεάτες χαρακτήρες και emoji μετρούν ως 2)."
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "Μια αναστολή ή απαγόρευση κατονομάζει τον κανόνα που παραβιάζει, έτσι ώστε το Ημερολόγιο μπορεί να πει ποιος."
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4397,16 +4518,19 @@ msgstr "Μια αυτόματη επιταγή έβαλε το λογαριασ�
 msgid "An automatic check put your account on hold."
 msgstr "Μια αυτόματη επιταγή έβαλε το λογαριασμό σας σε αναμονή."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"Μια αυτόματη επιταγή έβαλε το λογαριασμό σας σε αναμονή. Μπορείτε να διαβάσετε %(site)s και να αλλάξετε τις ρυθμίσεις σας, αλλά δεν μπορείτε να δημοσιεύσετε, να σχολιάσετε ή να ψηφίσετε μέχρι ένα μέλος του προσωπικού να το εξετάσει.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(review_link)s"
 
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -5115,6 +5239,10 @@ msgstr "Γίνετε μέλος του +%(guild)s, δεν απαιτείται �
 #, machine, plain1
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "Γίνετε μέρος της κοινότητας, δεν απαιτείται διεύθυνση ηλεκτρονικού ταχυδρομείου. Κάνε λογαριασμό."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "Το να γίνεις συντονιστής συντεχνίας μιας συντεχνίας χρειάζεται έναν λόγο, ώστε ο Λογγ και οι συντονιστές της να μπορούν να πουν το γιατί."
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5957,6 +6085,14 @@ msgstr "Επιλέξτε μία από τις δικές σας εφαρμογέ
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "Επιλέξτε τις δημοσιεύσεις ή σχόλια αυτό είναι περίπου, μέχρι πέντε. Το site διατηρεί ένα ιδιωτικό αντίγραφο του καθενός όπως είναι τώρα, για αυτούς, τους συντονιστές της συντεχνίας αυτής και τους διαχειριστές του site."
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "Επιλέξτε τον κανόνα που σπάει"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "Διάλεξε τον κανόνα που σπάει."
 
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14622,10 +14758,6 @@ msgid "Remove this topic"
 msgstr "Αφαίρεση αυτού του θέματος"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "Απομακρύνετε σας ως συγγραφέα"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "Να αφαιρέσω το όνομά σου από αυτά τα αντικείμενα?"
 
@@ -15448,6 +15580,10 @@ msgstr "Δείτε τι είναι τάση"
 #, machine, plain1
 msgid "See what they do"
 msgstr "Δες τι κάνουν"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "Βλέπε ποια και αναίρεση"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17437,9 +17573,9 @@ msgstr "Οι συγγραφείς συμφώνησαν να σας προσκα�
 msgid "The auto-moderation was saved."
 msgstr "Η αυτόματη τροποποίηση σώθηκε."
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "Η απαγόρευση βασίζεται στο %(num)s των ανώνυμων δημοσιεύσεων και σχολίων σας. Εάν ένας δεύτερος διαχειριστής εγκρίνει (ή, σε μια ιστοσελίδα με έναν μόνο διαχειριστή, τον ιδιοκτήτη του), το Log θα ονομάσει τον λογαριασμό σας δίπλα τους. %(which_link)s"
 
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18545,9 +18681,9 @@ msgstr "Η απόφαση αυτή έχει ήδη αρθεί."
 msgid "This decision is about you. If you think it was wrong, you can appeal it."
 msgstr "Αυτή η απόφαση αφορά εσένα. Αν νομίζεις ότι ήταν λάθος, μπορείς να κάνεις έφεση."
 
-#, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "Αυτή η απόφαση είναι στο Ημερολόγιο, και μπορείτε να την επικαλεστείτε: %(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -21204,6 +21340,14 @@ msgstr "Εξορίζεσαι από το + %(guild)s."
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "Δεν είσαι πλέον εξόριστος από το +%(guild)s. Μπορείτε να προωθήσετε δημοσιεύσεις σε αυτό και να σχολιάσει και πάλι σε αυτό."
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "Δεν είσαι πλέον εξόριστος από το +%(guild)s. Ο λογαριασμός σας είναι ακόμα σε αναμονή, οπότε δεν μπορεί να προωθήσει δημοσιεύσεις ή σχόλια μέχρι ένα μέλος του προσωπικού έχει εξετάσει σε αυτό."
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "Δεν είσαι πλέον σιωπηλός στα κανάλια του + %(guild)s. Ο λογαριασμός σας είναι ακόμα σε αναμονή, έτσι δεν μπορεί να γράψει εκεί μέχρι ένα μέλος του προσωπικού έχει εξετάσει αυτό."
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "Δεν είσαι μέλος σε καμία συντεχνία. Οι συντεχνίες στις οποίες συμμετέχετε θα εμφανίζονται εδώ."
@@ -21402,16 +21546,19 @@ msgstr "Μπορείτε να κάνετε ένα λογαριασμό παιδ�
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "Μπορείς να κάνεις τρεις εκκλήσεις την ημέρα. Προσπάθησε ξανά αύριο."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"Δεν μπορείτε πλέον να γράψετε στα κανάλια του +%(guild)s, αλλά μπορείτε ακόμα να τα διαβάσετε.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21793,14 +21940,19 @@ msgstr ""
 "\n"
 "Καμία από τις υπάρχουσες δημοσιεύσεις ή σχόλια σας δεν έχουν αφαιρεθεί, ωστόσο, δεν θα είστε σε θέση να προωθήσει τις θέσεις σε +%(guild)s ή να σχολιάσει σε αυτό."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"Έχετε εξοριστεί από +%(guild)s.\n"
+"\n"
+"Καμία από τις υπάρχουσες θέσεις ή σχόλια σας δεν έχουν αφαιρεθεί, ωστόσο, δεν θα είστε σε θέση να προωθήσει θέσεις σε +%(guild)s ή να σχολιάσει σε αυτό.\n"
+"\n"
+"Εξορίστηκες. %(this_item_link)s."
 
 #, python-format
 msgid ""
@@ -21808,7 +21960,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22441,59 +22593,65 @@ msgstr "Η απάντησή σας"
 msgid "Your appeal is waiting to be read."
 msgstr "Η έκκλησή σου περιμένει να διαβαστεί."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Η έκκλησή σας για το %(decision_link)s έγινε δεκτή και η απόφαση αντιστράφηκε.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Η έκκλησή σας για το %(decision_link)s εξετάστηκε και η απόφαση ισχύει.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Η έκκλησή σας για το %(decision_link)s δεν προωθήθηκε.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Η έκκλησή σας για την κράτηση για λογαριασμό σας έγινε δεκτή, και η αναμονή άρθηκε. Μπορείτε να δημοσιεύσετε, να σχολιάσετε και να ψηφίσετε ξανά.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Η έκκλησή σας για την αναμονή στο λογαριασμό σας εξετάστηκε, και η αναμονή ισχύει.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"Η έκκλησή σας για λογαριασμό σας δεν ελήφθη περαιτέρω.\n"
+"\n"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22592,6 +22750,10 @@ msgstr "Οι κύκλοι σας"
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "Οι κύκλοι σας - %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "Το σχόλιό σας"
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -22787,6 +22949,10 @@ msgstr "Το τηλέφωνό σου ενέκρινε αυτό. Συνεχίστ
 msgid "Your phone said no, so nobody was signed in."
 msgstr "Το τηλέφωνό σου είπε όχι, οπότε κανείς δεν υπέγραψε."
 
+#, machine, plain2
+msgid "Your post"
+msgstr "Η θέση σας"
+
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "Η θέση σας είναι καταχωρημένη στο προφίλ σας ούτως ή άλλως. Επιλογή Το προφίλ μου για να έχω εκεί τα σχόλιά του, και να προσθέσω συντεχνίες για να το αναρτήσω απευθείας σε αυτές: κάθε συντεχνία παίρνει το δικό της αντίγραφο με τις δικές της ψήφους και σχόλια."
@@ -22903,6 +23069,10 @@ msgstr "Οι συνδρομές σας"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "Η αναστολή σου τελείωσε. Μπορείτε να χρησιμοποιήσετε το %(site)s όπως κάνατε πριν."
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "Η αναστολή σου τελείωσε. Ο λογαριασμός σας είναι ακόμα σε αναμονή, οπότε δεν μπορεί να δημοσιεύσει, να σχολιάσει ή να ψηφίσει μέχρι ένα μέλος του προσωπικού έχει εξετάσει αυτό."
 
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -23044,81 +23214,6 @@ msgid "[Terms of service](/help/terms)"
 msgstr "[Όροι υπηρεσίας]( /help/terms)"
 
 msgid "[Titles](/help/titles)"
-msgstr ""
-
-#, machine, plain2, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr "[Το σχόλιό σας](%(item)s) εμφανίζεται και πάλι κάτω από τη θέση είναι σε."
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1
@@ -24224,6 +24319,14 @@ msgstr "δέχονταν"
 #, machine, plain1
 msgid "they declined"
 msgstr "αρνήθηκαν"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "η απόφαση αυτή"
+
+#, machine, plain2
+msgid "this item"
+msgstr "αυτό το στοιχείο"
 
 #, machine, plain1
 msgid "to guilds, all time"

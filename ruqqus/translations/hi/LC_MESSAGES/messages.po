@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hi\n"
@@ -182,6 +182,60 @@ msgstr "%(category)s (पूरी श्रेणी)"
 #, machine, plain1, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "%(comment_link)s को फिर से पोस्ट के तहत दिखाया गया है।"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "%(comment_link)s फिर से +%(guild)s में दिखाया गया है।"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s पोस्ट के लेखक द्वारा छिपा हुआ था।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s एक गिल्ड मॉडरेटर द्वारा +%(guild)s से छिपा हुआ था।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s को हटा दिया गया था।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "%(comment_link)s को पुनर्स्थापित किया गया था।"
 
 #, machine, plain1, python-format
 msgid "%(count)s all time"
@@ -1062,6 +1116,42 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% अपवोट"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "%(post_link)s फिर से +%(guild)s में दिखाया गया है।"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s एक गिल्ड मॉडरेटर द्वारा +%(guild)s से छिपा हुआ था।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s को हटा दिया गया था।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "%(post_link)s को पुनर्स्थापित किया गया था।"
 
 #, machine, plain1, python-format
 msgid "%(posts)s by %(people)s"
@@ -1994,16 +2084,19 @@ msgstr "+%(guild)s केवल अनुमोदित योगदानक�
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s unmuted."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"+%(guild)s को %(site)s से प्रतिबंधित किया गया था।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3582,6 +3675,34 @@ msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "एक साझा ड्राफ्ट में %(num)s लेखक हो सकता है।"
 msgstr[1] "एक साझा ड्राफ्ट में %(num)s लेखक हो सकते हैं।"
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"एक साइट प्रशासक ने खुद को +%(guild)s का गिल्ड मॉडरेटर बनाया।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"एक साइट प्रशासक ने आपको +%(guild)s के गिल्ड मॉडरेटर के रूप में हटा दिया।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+
 #, machine, plain1
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "एक साइट बॉट कम से कम एक की जरूरत है; एक सदस्य बोट के पास कोई नहीं हो सकता है अगर यह केवल आपकी कुंजी के साथ पोस्ट करता है।"
@@ -3603,6 +3724,10 @@ msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "एक कहानी %(num)s वर्ण (चीनी, जापानी और कोरियाई अक्षर और इमोजी गिनती 2 के रूप में) हो सकती है।"
 msgstr[1] "एक कहानी %(num)s अक्षर (चीनी, जापानी और कोरियाई अक्षर और इमोजी गिनती 2) हो सकती है।"
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "एक निलंबन या प्रतिबंध यह नियम टूट जाता है, इसलिए लॉग कह सकता है कि कौन सा है।"
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4391,16 +4516,19 @@ msgstr "एक स्वचालित चेक अपने खाते क�
 msgid "An automatic check put your account on hold."
 msgstr "एक स्वचालित चेक अपने खाते को पकड़ो।"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"एक स्वचालित चेक अपने खाते को पकड़ो। आप %(site)s पढ़ सकते हैं और अपनी सेटिंग्स बदल सकते हैं, लेकिन आप पोस्ट नहीं कर सकते, टिप्पणी कर सकते हैं या वोट कर सकते हैं जब तक कि कर्मचारी ने इसे देखा है।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(review_link)s"
 
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -5109,6 +5237,10 @@ msgstr "+%(guild)s के सदस्य बनें, कोई ईमेल �
 #, machine, plain1
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "समुदाय का हिस्सा बनें, कोई ईमेल पता आवश्यक नहीं है। खाता बनाएं."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "एक गिल्ड मॉडरेटर बनना एक कारण की जरूरत है, इसलिए लॉग और इसके गिल्ड मॉडरेटर क्यों कह सकते हैं।"
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5951,6 +6083,14 @@ msgstr "अपने स्वयं के ऐप्स (सेटिंग्�
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "इसके बारे में, पांच तक पोस्ट या टिप्पणियों का चयन करें। साइट प्रत्येक की एक निजी प्रति रखता है क्योंकि यह अब है, उनके लिए, यह गिल्ड्स गिल्ड मॉडरेटर्स और साइट के व्यवस्थापक हैं।"
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "यह नियम टूट जाता है"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "यह नियम टूट जाता है।"
 
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14617,10 +14757,6 @@ msgid "Remove this topic"
 msgstr "यह विषय हटाएँ"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "आप को एक लेखक के रूप में निकालें"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "इन वस्तुओं से अपना नाम निकालें?"
 
@@ -15443,6 +15579,10 @@ msgstr "ट्रेंडिंग क्या है"
 #, machine, plain1
 msgid "See what they do"
 msgstr "वे क्या करते हैं"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "जो देखें, और अपील करें"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17428,9 +17568,9 @@ msgstr "लेखक आपको आमंत्रित करने के �
 msgid "The auto-moderation was saved."
 msgstr "ऑटो मॉडरेशन को बचाया गया था।"
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "प्रतिबंध निर्भर करता है %(num)s अपने अनाम पदों और टिप्पणियों का। यदि एक दूसरे प्रशासक को स्वीकार करता है (या, एक एकल प्रशासक के साथ एक साइट पर, उसके मालिक) तो लॉग उनके बगल में अपने खाते का नाम देगा। %(which_link)s"
 
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18537,8 +18677,8 @@ msgid "This decision is about you. If you think it was wrong, you can appeal it.
 msgstr "यह निर्णय आपके बारे में है। यदि आपको लगता है कि यह गलत है, तो आप इसे अपील कर सकते हैं।"
 
 #, machine, plain2, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr "यह निर्णय लॉग में है, और आप इसे अपील कर सकते हैं: [यह लॉग में देखें](%(log)s) [इस निर्णय को लागू करें](%(appeal)s)]"
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "यह निर्णय लॉग में है, और आप इसे अपील कर सकते हैं: %(log_link)s · %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -21184,6 +21324,14 @@ msgstr "आप +%(guild)s से निर्वासित हैं।"
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "अब आप +%(guild)s से बाहर नहीं हैं। आप इसके लिए पोस्ट भेज सकते हैं और फिर उसमें टिप्पणी कर सकते हैं।"
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "अब आप +%(guild)s से बाहर नहीं हैं। आपका खाता अभी भी होल्ड पर है, इसलिए यह पोस्ट को अग्रेषित नहीं कर सकता है या तब तक टिप्पणी नहीं कर सकता जब तक कि कर्मचारी ने इसे देखा है।"
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "अब आप +%(guild)s के चैनलों में muted नहीं हैं। आपका खाता अभी भी होल्ड पर है, इसलिए यह तब तक नहीं लिख सकता जब तक कि कर्मचारी ने इसे देखा है।"
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "आप किसी भी गिल्ड के सदस्य नहीं हैं। आप में भाग लेने वाले गिल्ड्स को यहां प्रदर्शित किया जाएगा।"
@@ -21382,16 +21530,19 @@ msgstr "एक बार जब आपका खाता 18 या उससे
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "आप दिन में तीन अपील कर सकते हैं। कल फिर से कोशिश करो।"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"अब आप +%(guild)s के चैनल में नहीं लिख सकते, लेकिन फिर भी आप उन्हें पढ़ सकते हैं।\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s %(appeal_link)s"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21773,14 +21924,19 @@ msgstr ""
 "\n"
 "हालांकि, आपके मौजूदा पोस्ट या टिप्पणियों में से कोई भी हटाया नहीं गया है, लेकिन आप पोस्ट को +%(guild)s या उसमें टिप्पणी करने में सक्षम नहीं होंगे।"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"आप +%(guild)s से निकल गए हैं।\n"
+"\n"
+"हालांकि, आपके मौजूदा पोस्ट या टिप्पणियों में से कोई भी हटाया नहीं गया है, लेकिन आप पोस्ट को +%(guild)s या उसमें टिप्पणी करने में सक्षम नहीं होंगे।\n"
+"\n"
+"आप %(this_item_link)s के लिए निर्वासित थे।"
 
 #, python-format
 msgid ""
@@ -21788,7 +21944,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22420,74 +22576,65 @@ msgstr "आपका जवाब"
 msgid "Your appeal is waiting to be read."
 msgstr "आपकी अपील पढ़ने की प्रतीक्षा कर रही है।"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"आपकी अपील %(decision_link)s स्वीकार की गई थी, और निर्णय उलट दिया गया था।\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"आपकी अपील %(decision_link)s को देखा गया था, और निर्णय खड़ा है।\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"आपकी अपील %(decision_link)s आगे नहीं ली गई थी।\n"
+"\n"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "आपके खाते पर पकड़ की आपकी अपील स्वीकार की गई थी, और होल्ड को उठाया गया था। आप फिर से पोस्ट, टिप्पणी और वोट कर सकते हैं।\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "आपके खाते पर पकड़ की आपकी अपील को देखा गया था, और पकड़ खड़ा है।\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "आपके खाते पर पकड़ की आपकी अपील आगे नहीं ली गई थी।\n"
 "\n"
-"````\n"
-"%(note)s\n"
-"````"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22586,6 +22733,10 @@ msgstr "आपके सर्कल"
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "आपका सर्कल - %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "आपकी टिप्पणी"
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -22779,6 +22930,10 @@ msgstr "फोन ने इसे मंजूरी दे दी। केव
 msgid "Your phone said no, so nobody was signed in."
 msgstr "फोन ने कहा कि नहीं, इसलिए कोई भी हस्ताक्षर नहीं किया गया था।"
 
+#, machine, plain2
+msgid "Your post"
+msgstr "पोस्ट"
+
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "आपकी पोस्ट को आपके प्रोफाइल पर भी सूचीबद्ध किया गया है। चुनें मेरी प्रोफ़ाइल को भी अपनी टिप्पणियों के लिए, और उन्हें सीधे पोस्ट करने के लिए गिल्ड्स को जोड़ें: प्रत्येक गिल्ड को अपने वोट और टिप्पणियों के साथ अपनी खुद की प्रतिलिपि मिलती है।"
@@ -22895,6 +23050,10 @@ msgstr "आपकी सदस्यता"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "आपका निलंबन समाप्त हो गया है। जैसा आपने पहले किया था, आप %(site)s का उपयोग कर सकते हैं।"
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "आपका निलंबन समाप्त हो गया है। आपका खाता अभी भी पकड़ पर है, इसलिए यह पोस्ट, टिप्पणी या वोट नहीं कर सकता जब तक कि कर्मचारियों ने इसे देखा है।"
 
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -23041,81 +23200,6 @@ msgstr "[सेवा की शर्तें](/help/terms)"
 #, machine, plain1
 msgid "[Titles](/help/titles)"
 msgstr "[Titles](/help/titles)"
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) was restored."
-msgstr ""
 
 #, machine, plain1
 msgid "[banned]"
@@ -24220,6 +24304,14 @@ msgstr "वे स्वीकार करते हैं"
 #, machine, plain1
 msgid "they declined"
 msgstr "वे गिर गए"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "यह निर्णय"
+
+#, machine, plain2
+msgid "this item"
+msgstr "इस मद"
 
 #, machine, plain1
 msgid "to guilds, all time"

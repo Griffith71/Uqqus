@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: th\n"
@@ -167,6 +167,54 @@ msgstr "%(category)s (หมวดหมู่)"
 #, machine, plain1, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "%(comment_link)s แสดงอีกครั้งภายใต้โพสต์มันบน"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "%(comment_link)s แสดงใน +%(guild)s อีกครั้ง"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ถูกซ่อนโดยผู้เขียนของโพสต์ที่อยู่ภายใต้\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ถูกซ่อนจาก +%(guild)s โดยนักเรียบเรียงหนังสือ\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s ถูกถอดออกไป\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "%(comment_link)s ฟื้นขึ้นมาอีกครั้ง"
 
 #, machine, plain1, python-format
 msgid "%(count)s all time"
@@ -931,6 +979,38 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "โหวตขึ้น %(percent)s%%"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "%(post_link)s แสดงใน +%(guild)s อีกครั้ง"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s ถูกซ่อนจาก +%(guild)s โดยนักเรียบเรียงหนังสือ\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s ถูกถอดออกไป\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "%(post_link)s ฟื้นขึ้นมาอีกครั้ง"
 
 #, machine, plain1, python-format
 msgid "%(posts)s by %(people)s"
@@ -1863,16 +1943,17 @@ msgstr "+%(guild)s ตอบรับเฉพาะผู้บริจาค�
 msgid "+%(guild)s unmuted."
 msgstr "+%(guild)s ไม่ยอมหย่า"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"+%(guild)s ถูกแบนจาก %(site)s.\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3387,6 +3468,30 @@ msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "แบบร่างที่ใช้ร่วมกัน %(num)s นักเขียน"
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"ผู้จัดการเว็บไซต์ทําตัวเองเป็นรูปแบบ Mime ของ +%(guild)s.\n"
+"\n"
+"%(why_block)s%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"ผู้จัดการเว็บไซต์ได้ลบคุณออกจากตําแหน่งผู้จัดทํารูปแบบ Mime ของ +%(guild)s.\n"
+"\n"
+"%(why_block)s%(log_link)s"
+
 #, machine, plain1
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "หุ่นไซต์ต้องการอย่างน้อยหนึ่งตัว หุ่นยนต์ที่เป็นสมาชิกอาจไม่มีเลยถ้ามันโพสต์ด้วยกุญแจของคุณ."
@@ -3407,6 +3512,10 @@ msgstr "จุดเริ่มต้นของอัลกอริทึม
 msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "เรื่องราวอาจ %(num)s ตัวอักษร (Chinese, อักขระญี่ปุ่นและเกาหลี และอักษรเอมิจินับเป็น 2)"
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "การพักงานหรือการห้ามใช้ชื่อกฏที่ห้ามใช้ ล็อกจึงบอกได้ว่าอันไหน."
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4188,16 +4297,17 @@ msgstr "เช็คอัตโนมัติฝากบัญชีไว้
 msgid "An automatic check put your account on hold."
 msgstr "เช็คอัตโนมัติฝากบัญชีไว้."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"เช็คอัตโนมัติฝากบัญชีไว้ คุณอ่านได้ %(site)s และเปลี่ยนการตั้งค่าของคุณ แต่คุณไม่สามารถโพสต์ความคิดเห็นหรือลงคะแนนเสียงจนกว่าสมาชิกของคณะได้ดูมัน\n"
+"\n"
+"%(why_block)s%(review_link)s"
 
 #, machine, plain1
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -4893,6 +5003,10 @@ msgstr "เป็นสมาชิกของ + %(guild)s ไม่ต้อ�
 #, machine, plain1
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "เป็นส่วนหนึ่งของชุมชน ไม่จําเป็นต้องมีที่อยู่อีเมล ทํา บัญชี."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "การเป็นนักจัดรายการของสมาคมต้องการเหตุผล ล็อกและเครื่องจัดอันดับของสมาคมสามารถบอกได้ว่าทําไม."
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5733,6 +5847,14 @@ msgstr "เลือกหนึ่งในโปรแกรมของคุ
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "เลือกโพสต์หรือคอมเม้นต์ ที่เกี่ยวกับเรื่องนี้ ถึงห้า เว็บไซต์เก็บสําเนาส่วนบุคคลของแต่ละคนตามที่มันเป็นตอนนี้สําหรับพวกเขา music's moderators และเว็บไซต์ของ admins."
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "เลือกกฏทีมันหัก"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "เลือกกฏที่มันหัก."
 
 #, machine, plain1
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14342,10 +14464,6 @@ msgid "Remove this topic"
 msgstr "นำหัวข้อนี้ออก"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "เอาคุณออกในฐานะผู้เขียน"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "ลบชื่อของคุณออกจากรายการเหล่านี้หรือไม่?"
 
@@ -15166,6 +15284,10 @@ msgstr "ดูที่แนวโน้ม"
 #, machine, plain1
 msgid "See what they do"
 msgstr "ดูสิว่าพวกเขาทําอะไร"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "ดูที่ และดึงดูด"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17139,9 +17261,9 @@ msgstr "นักเขียนตกลงที่จะเชิญคุณ
 msgid "The auto-moderation was saved."
 msgstr "การปรับอัตโนมัติได้รับการบันทึก."
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "การ สั่ง ห้าม ขึ้น อยู่ กับ %(num)s ของผู้ไม่ประสงค์ออกนาม และความเห็นของคุณ หากผู้ดูแลระบบตัวที่สองเห็นชอบ (หรือบนเว็บไซต์ที่มีผู้ดูแลระบบเดี่ยว) ปูมบันทึกจะตั้งชื่อบัญชีผู้ใช้ของคุณตามชื่อมัน %(which_link)s"
 
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18232,9 +18354,9 @@ msgstr "การตัดสินใจครั้งนี้ถูกยก
 msgid "This decision is about you. If you think it was wrong, you can appeal it."
 msgstr "การตัดสินใจนี้เกี่ยวกับคุณ ถ้า คุณ คิด ว่า เป็น เรื่อง ผิด คุณ อาจ อุทธรณ์ ได้."
 
-#, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "การตัดสินใจนี้อยู่ในบันทึก และคุณสามารถอุทธรณ์ได้ %(log_link)s อะ %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -20867,6 +20989,14 @@ msgstr "คุณถูกเนรเทศจาก +%(guild)s."
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "คุณไม่ได้ถูกเนรเทศจาก +%(guild)sคุณสามารถส่งต่อไปยังมัน และแสดงความเห็นในนั้นอีกครั้ง"
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "คุณไม่ได้ถูกเนรเทศจาก +%(guild)sบัญชีของคุณยังคงถืออยู่ ดังนั้นมันจะไม่สามารถส่งต่อ หรือออกความเห็นได้ จนกว่าสมาชิกคณะทํางานคนหนึ่งจะดูมัน"
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "คุณไม่ได้เงียบใน +%(guild)sช่องสัญญาณ บัญชีของคุณยังคงถืออยู่ มันเลยเขียนไม่ได้จนกว่า สมาชิกคณะทํางานจะดูมัน"
+
 #, machine, plain1
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "คุณไม่ใช่สมาชิกของสมาคมใด ๆ Guild ที่คุณเข้าร่วมจะถูกแสดงไว้ที่นี่."
@@ -21050,16 +21180,17 @@ msgstr "คุณสามารถทําบัญชีเด็กได้
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "คุณสามารถอุทธรณ์วันละ 3 ครั้ง พรุ่งนี้ลองใหม่."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"คุณไม่สามารถเขียนใน +%(guild)s'ช่อง' แต่คุณยังสามารถอ่านได้\n"
+"\n"
+"%(why_block)s%(log_link)s อะ %(appeal_link)s"
 
 #, machine, plain1
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21432,14 +21563,19 @@ msgstr ""
 "\n"
 "โพสต์หรือหมายเหตุของคุณที่มีอยู่ยังไม่ได้ถูกลบออกไป อย่างไรก็ตาม คุณจะไม่สามารถที่จะส่งต่อไปยัง +%(guild)s หรือความคิดเห็นในนั้น"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"คุณถูกเนรเทศจาก +%(guild)s.\n"
+"\n"
+"โพสต์หรือหมายเหตุของคุณที่มีอยู่ยังไม่ได้ถูกลบออกไป อย่างไรก็ตาม คุณจะไม่สามารถที่จะส่งต่อไปยัง +%(guild)s หรือความคิดเห็นในนั้น\n"
+"\n"
+"เจ้าถูกเนรเทศเพราะ %(this_item_link)s."
 
 #, python-format
 msgid ""
@@ -21447,7 +21583,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22068,59 +22204,65 @@ msgstr "คําตอบของคุณ"
 msgid "Your appeal is waiting to be read."
 msgstr "อุทธรณ์ของคุณกําลังรอที่จะอ่าน."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"ความดึงดูดใจของคุณ %(decision_link)s ได้ รับ การ ยอม รับ และ การ ตัดสิน ใจ กลับ คืน มา.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"ความดึงดูดใจของคุณ %(decision_link)s ถูกมอง และการตัดสินใจก็ยืนอยู่\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"ความดึงดูดใจของคุณ %(decision_link)s ไม่ นาน นัก.\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"คํา ร้อง ขอ ของ คุณ ใน เรื่อง บัญชี ของ คุณ ได้ รับ การ ยอม รับ และ การ ยก เลิก. คุณสามารถโพสต์ความคิดเห็นและลงคะแนนเสียงอีกครั้ง\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"เสน่ห์ของคุณในถือในบัญชีของคุณ ถูกมองที่และยืนถือ\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"การอุทธรณ์ของคุณในถือของคุณไม่ได้ถ่ายต่อไป\n"
+"\n"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22218,6 +22360,10 @@ msgstr "เซอร์เคิลของคุณ"
 #, machine, plain1, python-format
 msgid "Your circles - %(site)s"
 msgstr "วงกลมของคุณ %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "ความเห็นของคุณ"
 
 #, machine, plain1
 msgid "Your commenting history will show here."
@@ -22408,6 +22554,10 @@ msgstr "โทรศัพท์คุณอนุมัติแล้ว ท�
 msgid "Your phone said no, so nobody was signed in."
 msgstr "โทรศัพท์นายบอกว่าไม่ ไม่มีใครลงชื่อ."
 
+#, machine, plain2
+msgid "Your post"
+msgstr "ตําแหน่งของคุณ"
+
 #, machine, plain1
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "โพสต์ของคุณอยู่ในประวัติของคุณ เลือก โปรไฟล์ของผมก็มีความคิดเห็นที่นั่นเหมือนกัน และเพิ่มสมาคมเพื่อโพสต์มันโดยตรงเข้าไป: แต่ละสมาคมได้สําเนาของตัวเอง."
@@ -22521,6 +22671,10 @@ msgstr "การ บอก รับ"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "การพักงานของคุณสิ้นสุดลงแล้ว คุณสามารถใช้ %(site)s อย่างที่คุณเคยทํา"
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "การพักงานของคุณสิ้นสุดลงแล้ว บัญชีของคุณยังคงถืออยู่ ดังนั้นมันจะไม่สามารถโพสต์, หมายเหตุหรือลงคะแนนเสียง จนกว่าสมาชิกของคณะได้ดูมัน."
 
 #, machine, plain1, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -22648,81 +22802,6 @@ msgid "[Terms of service](/help/terms)"
 msgstr ""
 
 msgid "[Titles](/help/titles)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine, plain1
@@ -23821,6 +23900,14 @@ msgstr "พวกเขายอมรับ"
 #, machine, plain1
 msgid "they declined"
 msgstr "ดังนั้นพวกเขาจึงผินหลังให้"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "การตัดสินใจครั้งนี้"
+
+#, machine, plain2
+msgid "this item"
+msgstr "รายการนี้"
 
 #, machine, plain1
 msgid "to guilds, all time"

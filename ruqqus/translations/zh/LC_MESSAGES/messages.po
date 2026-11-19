@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ruqqus VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-19 16:35+1100\n"
+"POT-Creation-Date: 2026-11-19 20:48+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -167,6 +167,56 @@ msgstr "%(category)s(完整类别)"
 #, machine, python-format
 msgid "%(circles)s. %(why)s"
 msgstr "%(circles)s. %(why)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown again under the post it is on."
+msgstr "%(comment_link)s 再次显示在它上的文章下."
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s is shown in +%(guild)s again."
+msgstr "%(comment_link)s再次显示于%(guild)s."
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden by the author of the post it is under.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s 被这篇文章的作者隐藏。\n"
+"\n"
+"%(why_block)s%(log_link)s * 妇女 %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s被一个盾牌的主持人隐藏在}%(guild)s。\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s} %(appeal_link)s (韩语)"
+
+#, machine, plain2, python-format
+msgid ""
+"%(comment_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(comment_link)s 被删除。\n"
+"\n"
+"%(why_block)s%(log_link)s * 妇女 %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(comment_link)s was restored."
+msgstr "%(comment_link)s被恢复了."
 
 #, machine, python-format
 msgid "%(count)s all time"
@@ -931,6 +981,40 @@ msgstr "%(percent)s%% &middot; %(votes)s"
 #, glossary, machine, plain2, python-format
 msgid "%(percent)s%% upvoted"
 msgstr "%(percent)s%% 赞同"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s is shown in +%(guild)s again."
+msgstr "%(post_link)s再次显示于%(guild)s."
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was hidden from +%(guild)s by a guildmaster.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s被一个盾牌的主持人隐藏在}%(guild)s。\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s} %(appeal_link)s (韩语)"
+
+#, machine, plain2, python-format
+msgid ""
+"%(post_link)s was removed.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s · %(appeal_link)s"
+msgstr ""
+"%(post_link)s 被删除。\n"
+"\n"
+"%(why_block)s%(log_link)s * 妇女 %(appeal_link)s"
+
+#, machine, plain2, python-format
+msgid "%(post_link)s was restored."
+msgstr "%(post_link)s被恢复了."
 
 #, machine, python-format
 msgid "%(posts)s by %(people)s"
@@ -1863,16 +1947,19 @@ msgstr "+ 键%(guild)s 仅接受核定缴款人的转发。"
 msgid "+%(guild)s unmuted."
 msgstr "+ 键%(guild)s 无垢."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "+%(guild)s was banned from %(site)s.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"%(guild)s被禁于%(site)s。\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s} %(appeal_link)s (韩语)"
 
 #, machine, plain2, python-format
 msgid "+%(guild)s was reinstated, and its page is open again."
@@ -3389,6 +3476,30 @@ msgid "A shared draft can have at most %(num)s author."
 msgid_plural "A shared draft can have at most %(num)s authors."
 msgstr[0] "共享草稿最多可以有%(num)s作者."
 
+#, machine, plain2, python-format
+msgid ""
+"A site administrator made themselves a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"网站管理员让自己成为 + 的 guild 主持人%(guild)s。\n"
+"\n"
+"%(why_block)s%(log_link)s"
+
+#, machine, plain2, python-format
+msgid ""
+"A site administrator removed you as a guildmaster of +%(guild)s.\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(log_link)s"
+msgstr ""
+"网站管理员删除您为 + 的 guild 主持人%(guild)s。\n"
+"\n"
+"%(why_block)s%(log_link)s"
+
 #, machine
 msgid "A site bot needs at least one; a member bot may have none if it only posts with your key."
 msgstr "一个站点机器人至少需要一个;一个成员机器人如果只用你的钥匙发帖,可能就没有."
@@ -3409,6 +3520,10 @@ msgstr "编译饲料算法的起点. 在下一页中,您会加入盾和帐号,�
 msgid "A story can be %(num)s character (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgid_plural "A story can be %(num)s characters (Chinese, Japanese and Korean characters and emoji count as 2)."
 msgstr[0] "一个故事可以是%(num)s人物(中文,日文和韩文人物和emoji算作2)."
+
+#, machine, plain2
+msgid "A suspension or ban names the rule it breaks, so the Log can say which."
+msgstr "暂停或禁止名称它打破的规则,所以日志可以说出哪个."
 
 #, machine, plain1
 msgid "A suspension or ban needs a public reason, so the Log can say why."
@@ -4190,16 +4305,19 @@ msgstr "自动检查让你的账户被搁置 所以你现在不能这么做 某�
 msgid "An automatic check put your account on hold."
 msgstr "自动支票让你的账户被搁置."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a member of the staff has looked at it.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[Ask for a review](%(appeal)s)"
+"%(review_link)s"
 msgstr ""
+"自动支票让你的账户被搁置 您可以读 %(site)s 并更改您的设置, 但在工作人员查看之前, 您不能张贴、 评论或投票 。\n"
+"\n"
+"%(why_block)s\n"
+"\n"
+"%(review_link)s"
 
 #, machine
 msgid "An encrypted channel can't ask for its rules to be accepted: the site can't check who wrote."
@@ -4895,6 +5013,10 @@ msgstr "成为+成员%(guild)s,不需要电子邮件地址。 做户口."
 #, machine
 msgid "Become part of the community, no email address required. Make an account."
 msgstr "成为社区的一部分,不需要电子邮件地址。 做户口."
+
+#, machine, plain2
+msgid "Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why."
+msgstr "成为一个盾的盾的主持人需要理由,因此日志及其盾的主持人可以说出原因."
 
 #, glossary, machine, plain2
 msgid "Been on Ruqqus for less than 30 days"
@@ -5735,6 +5857,14 @@ msgstr "选择自己的应用程序之一(Settings > Apps)."
 #, machine, plain2
 msgid "Choose the posts or comments this is about, up to five. The site keeps a private copy of each as it is now, for them, this guild's guildmasters and the site's admins."
 msgstr "选择这些文章或评论, 网站保留了每个现在的私人副本,对他们来说,是这个盾的盾的主持人和网站的管理员."
+
+#, machine, plain2
+msgid "Choose the rule it breaks"
+msgstr "选择它打破的规则"
+
+#, machine, plain2
+msgid "Choose the rule it breaks."
+msgstr "选择它打破的规则."
 
 #, machine
 msgid "Choose the stories to keep under your bio. A highlight keeps its stories after their 24 hours and shows each to the people who could see it then."
@@ -14345,10 +14475,6 @@ msgid "Remove this topic"
 msgstr "移除此话题"
 
 #, machine, plain2
-msgid "Remove you as an author"
-msgstr "删除您为作者"
-
-#, machine, plain2
 msgid "Remove your name from these items?"
 msgstr "从这些项目中删除你的名字吗?"
 
@@ -15169,6 +15295,10 @@ msgstr "看什么是趋势"
 #, machine, plain1
 msgid "See what they do"
 msgstr "看他们做了什么"
+
+#, machine, plain2
+msgid "See which, and appeal"
+msgstr "看哪一个,上诉"
 
 #, machine, plain2
 msgid "See your appeal"
@@ -17142,9 +17272,9 @@ msgstr "作者们同意邀请您:%(names)s."
 msgid "The auto-moderation was saved."
 msgstr "自动调版被保存."
 
-#, python-format
-msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single administrator, its owner), the Log will name your account beside them. %(which_link)s"
+msgstr "禁令依赖于您的匿名帖子和评论 %(num)s 。 如果第二个管理员批准(或者在一个有单一管理员的网址上,其所有者),日志会给旁边的账户命名 。%(which_link)s"
 
 #, machine, plain1, python-format
 msgid "The base URL is <code>%(url)s</code>"
@@ -18236,9 +18366,9 @@ msgstr "这一决定已经取消."
 msgid "This decision is about you. If you think it was wrong, you can appeal it."
 msgstr "这个决定是针对你的 如果你认为这是错误的, 你可以上诉它."
 
-#, python-format
-msgid "This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
+#, machine, plain2, python-format
+msgid "This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s"
+msgstr "这个决定在日志中,你可以上诉它:%(log_link)s %(appeal_link)s"
 
 #, machine, plain1
 msgid "This deletes their account and everything on it. It can't be undone. You can download their data first."
@@ -20871,6 +21001,14 @@ msgstr "你被流放从+%(guild)s。"
 msgid "You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again."
 msgstr "你不再被流放 从+%(guild)s。您可以转发文章并再次在文章中发表评论。"
 
+#, machine, plain2, python-format
+msgid "You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it."
+msgstr "你不再被流放 从+%(guild)s.你的账户仍然被搁置,所以在工作人员查看之前不能转发帖子或评论."
+
+#, machine, plain2, python-format
+msgid "You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it."
+msgstr "在 + 中你不再是哑巴%(guild)s频道 你的账户仍然被搁置,所以它不能写在那里,直到一个工作人员看了它。"
+
 #, machine
 msgid "You are not a member of any guilds. Guilds you participate in will be displayed here."
 msgstr "你不是任何盾的成员。 您参加的社团将在这里展出 ."
@@ -21054,16 +21192,17 @@ msgstr "您的账户确认为18岁或18岁以上后,您可开立儿童账户。 
 msgid "You can make three appeals a day. Try again tomorrow."
 msgstr "你可以每天发出三次呼吁。 明天再试一次."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You can no longer write in +%(guild)s's channels, but you can still read them.\n"
 "\n"
-"```\n"
-"%(why)s\n"
-"```\n"
+"%(why_block)s\n"
 "\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
+"%(log_link)s · %(appeal_link)s"
 msgstr ""
+"无法在 + 中写入%(guild)s频道,你还是可以读的\n"
+"\n"
+"%(why_block)s%(log_link)s * 妇女 %(appeal_link)s"
 
 #, machine
 msgid "You can only create up to 2 guilds per day. Try again later."
@@ -21436,14 +21575,19 @@ msgstr ""
 "\n"
 "您的现有职位或评论均未被删除,但您无法将职位转发至+%(guild)s 或者在其中发表评论。"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
 "You have been exiled from +%(guild)s.\n"
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this comment](%(link)s)."
+"You were exiled for %(this_item_link)s."
 msgstr ""
+"你被流放 从+%(guild)s。\n"
+"\n"
+"您的现有职位或评论均未被删除,但您无法将职位转发至+%(guild)s 或者在其中发表评论。\n"
+"\n"
+"你被流放是因为 %(this_item_link)s。"
 
 #, python-format
 msgid ""
@@ -21451,7 +21595,7 @@ msgid ""
 "\n"
 "None of your existing posts or comments have been removed, however, you will not be able to forward posts to +%(guild)s or comment in it.\n"
 "\n"
-"You were exiled for [this item](%(link)s)."
+"You were exiled for [this comment](%(link)s)."
 msgstr ""
 
 #, python-format
@@ -22075,71 +22219,65 @@ msgstr "回答你的问题"
 msgid "Your appeal is waiting to be read."
 msgstr "你的上诉正在等待宣读."
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n"
+"Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"您的上诉 %(decision_link)s 被接受, 裁决被推翻。\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n"
+"Your appeal of %(decision_link)s was looked at, and the decision stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"你对%(decision_link)s的上诉被审查过 裁决成立\n"
+"\n"
+"%(note_block)s"
 
-#, python-format
+#, machine, plain2, python-format
 msgid ""
-"Your appeal of [this decision](%(log)s) was not taken further.\n"
+"Your appeal of %(decision_link)s was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
+"你对%(decision_link)s的上诉没有被进一步采纳。\n"
+"\n"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "你对扣账的上诉被接受 扣账被解除了 你可以再发表、评论和投票。\n"
 "\n"
-"```\n"
-"%(note)s```"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was looked at, and the hold stands.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "你对扣账的上诉被审视了 扣票站立\n"
 "\n"
-"```\n"
-"%(note)s```"
+"%(note_block)s"
 
 #, machine, plain2, python-format
 msgid ""
 "Your appeal of the hold on your account was not taken further.\n"
 "\n"
-"```\n"
-"%(note)s\n"
-"```"
+"%(note_block)s"
 msgstr ""
 "你对搁置你的指控没有进一步考虑。\n"
 "\n"
-"```\n"
-"%(note)s```"
+"%(note_block)s"
 
 #, machine, plain2
 msgid "Your appeal was accepted, and the decision was reversed."
@@ -22237,6 +22375,10 @@ msgstr "你的圈子"
 #, machine, python-format
 msgid "Your circles - %(site)s"
 msgstr "您的圆圈 - %(site)s"
+
+#, machine, plain2
+msgid "Your comment"
+msgstr "你的评论"
 
 #, machine
 msgid "Your commenting history will show here."
@@ -22427,6 +22569,10 @@ msgstr "你的手机批准了这个 如果这是你的账户,就继续."
 msgid "Your phone said no, so nobody was signed in."
 msgstr "你的电话说不行,所以没人登记."
 
+#, machine, plain2
+msgid "Your post"
+msgstr "你的职位"
+
 #, machine
 msgid "Your post is listed on your profile either way. Choose My profile to have its comments there too, and add guilds to post it straight into them: each guild gets its own copy with its own votes and comments."
 msgstr "你的文章被列在你的档案里 选择 我的简介也在这里发表评论."
@@ -22540,6 +22686,10 @@ msgstr "您的订阅"
 #, machine, plain2, python-format
 msgid "Your suspension has ended. You can use %(site)s as you did before."
 msgstr "你的停职结束了 您可以像以前一样使用 %(site)s ."
+
+#, machine, plain2
+msgid "Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it."
+msgstr "你的停职结束了 您的账户仍然被搁置,所以在工作人员查看之前不能张贴,评论或投票."
 
 #, machine, python-format
 msgid "Your title is the question. %(min)s to %(max)s options, one vote each. The poll can be voted from every forward and repost of this post."
@@ -22667,81 +22817,6 @@ msgid "[Terms of service](/help/terms)"
 msgstr ""
 
 msgid "[Titles](/help/titles)"
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown again under the post it is on."
-msgstr ""
-
-#, python-format
-msgid "[Your comment](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden by the author of the post it is under.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your comment](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, machine, plain2, python-format
-msgid "[Your comment](%(item)s) was restored."
-msgstr "[你的评论](%(item)s)被恢复."
-
-#, python-format
-msgid "[Your post](%(item)s) is shown in +%(guild)s again."
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid ""
-"[Your post](%(item)s) was removed.\n"
-"\n"
-"```\n"
-"%(why)s\n"
-"```\n"
-"\n"
-"[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)"
-msgstr ""
-
-#, python-format
-msgid "[Your post](%(item)s) was restored."
 msgstr ""
 
 #, machine
@@ -23840,6 +23915,14 @@ msgstr "他们接受了"
 #, machine
 msgid "they declined"
 msgstr "他们拒绝了"
+
+#, machine, plain2
+msgid "this decision"
+msgstr "本决定"
+
+#, machine, plain2
+msgid "this item"
+msgstr "本项目"
 
 #, machine
 msgid "to guilds, all time"
