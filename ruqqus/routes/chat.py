@@ -47,10 +47,6 @@ def _ensure_provisioned(v):
         print(f"chat refused: {e}. Restore Synapse's database with the site's (RESTORE.md), or give the account back "
               "at /admin/chat if it is the same person.", flush=True)
         _refuse_chat(v)
-    except matrix.MatrixError as e:         # the chat server is down or answering badly: try again later, not a crash
-        g.db.rollback()
-        print(f"chat unavailable while setting up a chat account: {e}", flush=True)
-        abort(503)
     g.db.add(ChatIdentity(user_id=v.id, matrix_user_id=mxid))
     g.db.commit()
     chat_devices.sync_name(g.db, v, mxid)       # outside apps show the @handle (helpers/chat_devices.py)
@@ -103,7 +99,12 @@ def _user_id_for_mxid(mxid):
 @not_child_locked("chat")
 @not_quarantined("chat")
 def chat_page(v):
-    mxid = _ensure_provisioned(v)
+    try:
+        mxid = _ensure_provisioned(v)
+    except matrix.MatrixError as e:         # the chat server is down or answering badly: try again later, not a crash
+        g.db.rollback()
+        print(f"chat unavailable while setting up a chat account: {e}", flush=True)
+        abort(503)
     from ruqqus.helpers.chat_groups import MAX_MEMBERS
     return render_template("chat.html", v=v, chat_group_max=MAX_MEMBERS, chat_mxid=mxid)
 
