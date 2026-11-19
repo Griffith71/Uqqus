@@ -255,8 +255,15 @@ def parent_tab(v):
     """Does this member get Settings > Children? An adult (said 18 or over, not under the child lock, not a bot): what they may do there is
     helpers/child_accounts.parent_refusal's to say."""
     from ruqqus.helpers import age_declaration
-    return bool(v is not None and getattr(v, "age_declared", None) == age_declaration.ADULT and not age_declaration.is_locked(v)
-                and not getattr(v, "is_bot", False))
+    return bool(age_declaration.children_enabled() and v is not None and getattr(v, "age_declared", None) == age_declaration.ADULT
+                and not age_declaration.is_locked(v) and not getattr(v, "is_bot", False))
+
+
+@app.template_global("children_enabled")
+def children_enabled():
+    """Are child and parent accounts switched on (helpers/age_declaration.children_enabled)? Off, accounts are for adults only."""
+    from ruqqus.helpers import age_declaration
+    return age_declaration.children_enabled()
 
 
 @app.template_global("children_count")

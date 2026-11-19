@@ -117,7 +117,12 @@
   <select class="form-control mb-1" id="admin-age-answer" name="answer">
     <option value=""{% if u.age_declared is none %} selected{% endif %}>Not asked</option>
     <option value="1"{% if u.age_declared == 1 and not u.age_assured_utc %} selected{% endif %}>18 or over</option>
+    {% if children_enabled() %}
     <option value="2"{% if u.age_declared == 2 %} selected{% endif %}>Child account (starts the child lock)</option>
+    {% else %}
+    {# accounts are for adults only: an admin can't make one a child's, but a locked account still shows what it is #}
+    <option value="2" disabled{% if u.age_declared == 2 %} selected{% endif %}>Locked until the age is confirmed</option>
+    {% endif %}
     <option value="confirmed"{% if u.age_assured_utc %} selected{% endif %}>18 or over, age confirmed (lifts the lock; for staff and checked accounts)</option>
   </select>
   <input type="text" class="form-control mb-1" name="reason" maxlength="512" placeholder="Reason (for the staff log)">

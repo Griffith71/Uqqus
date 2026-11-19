@@ -30,7 +30,7 @@
 
                 <div class="body w-lg-100 age-state">
                   {% if age_note == "lifted" or age_note == "confirmed" %}
-                    <p class="mb-2 text-success" role="status">{{ _("Thanks. Your account no longer has the child lock.") }}</p>
+                    <p class="mb-2 text-success" role="status">{{ _("Thanks. Your account is no longer locked.") }}</p>
                   {% elif age_note == "under" %}
                     <p class="mb-2" role="status">{{ _("The age check found that you're under 18, so the child lock stays on.") }}</p>
                   {% elif age_note == "asked_release" %}
@@ -50,10 +50,10 @@
                       {% for name in sub.order %}<li>{{ msg_text(sub.text_of[name][0]) }}: <strong>{{ _("On") if sub.controls[name] else _("Off") }}</strong></li>{% endfor %}
                     </ul>
                     {% elif child_account %}
-                    <p class="mb-1">{{ _("Your account has the child lock on, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
+                    <p class="mb-1">{{ _("Your account is locked until your age is confirmed, since %(date)s.", date=date_text(v.age_declared_utc, "%d %B %Y")) }}</p>
                     {% endif %}
                     {% if child_account %}
-                    <span class="d-block text-small-extra text-muted">{% if sub %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report.") }}{% else %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report.") }}{% endif %}</span>
+                    <span class="d-block text-small-extra text-muted">{% if sub %}{{ _("It stays on the Child word filter, which hides profanity and anything marked sensitive. A child account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report.") }}{% else %}{{ _("Until then it stays on the Child word filter, which hides profanity and anything marked sensitive. Chat, Spaces, coins and starting a guild are off, and others can't start a chat or tip you. A locked account only reads: it can't post or comment, but you can still vote, follow, join guilds, bookmark and report.") }}{% endif %}</span>
                     {% elif v.age_assured_utc %}
                     <p class="mb-1">{{ _("Your age was confirmed on %(date)s.", date=date_text(v.age_assured_utc, "%d %B %Y")) }}</p>
                     {% else %}
@@ -66,7 +66,7 @@
                       {% if v.age_under_utc %}
                         <span class="d-block text-small-extra text-muted">{{ _("The age check found that you're under 18, so the child lock stays on.") }}</span>
                       {% elif strict %}
-                        <span class="d-block text-small-extra text-muted mb-2">{% if child_account %}{{ _("Where you are, the law means your age has to be confirmed with an age-check service before the child lock comes off.") }}{% else %}{{ _("Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language.") }}{% endif %}</span>
+                        <span class="d-block text-small-extra text-muted mb-2">{% if child_account %}{{ _("Where you are, the law means your age has to be confirmed with an age-check service before the lock comes off.") }}{% else %}{{ _("Where you are, the law means your age has to be confirmed with an age-check service before you can see sensitive content or strong language.") }}{% endif %}</span>
                         {% if age_assurance_configured() %}
                         <form action="/settings/age_assurance/start" method="post" class="age-form">
                           <input type="hidden" name="formkey" value="{{ v.formkey }}">
@@ -78,7 +78,7 @@
                       {% elif sub and sub.ask_release %}
                         <span class="d-block text-small-extra" id="release-asked">{{ _("You asked your parent or guardian to release your account. They haven't answered yet.") }}</span>
                       {% else %}
-                        <span class="d-block text-small-extra text-muted mb-2">{% if sub %}{{ _("If you are 18 or over, say so and your parent or guardian will be asked to release your account.") }}{% else %}{{ _("To take the child lock off, confirm that you're 18 or over.") }}{% endif %}</span>
+                        <span class="d-block text-small-extra text-muted mb-2">{% if sub %}{{ _("If you are 18 or over, say so and your parent or guardian will be asked to release your account.") }}{% else %}{{ _("To take the lock off, confirm that you're 18 or over.") }}{% endif %}</span>
                         <form action="/settings/age_declaration" method="post" class="age-form">
                           <input type="hidden" name="formkey" value="{{ v.formkey }}">
                           <input type="hidden" name="age_declaration" value="1">

@@ -319,3 +319,35 @@ def test_the_suspension_marker_lives_on_the_ledger_in_the_schema_and_the_migrati
     assert "DROP COLUMN IF EXISTS suspended_until_utc" in migration, "a database that ran the first form"
     schema_controls = read("schema.sql").split("CREATE TABLE public.child_controls (", 1)[1].split(");", 1)[0]
     assert "suspended_until_utc" not in schema_controls
+
+
+# ---------------------------------------------------------------- switched off (the owner, 2026-11-19: accounts are for adults only)
+
+def test_every_page_and_action_here_is_a_404_while_child_accounts_are_off():
+    assert ROUTES, "the routes were found"
+    tree = ast.parse(read("ruqqus", "routes", "children_pages.py"))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef) and node.name in ROUTES:
+            body = node.body[1:] if isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant) else node.body
+            first = body[0]
+            assert (isinstance(first, ast.Expr) and isinstance(first.value, ast.Call)
+                    and getattr(first.value.func, "id", None) == "_switched_on_or_404"), (node.name, "before anything else")
+    guard = read("ruqqus", "routes", "children_pages.py").split("def _switched_on_or_404():", 1)[1].split("\ndef ", 1)[0]
+    assert "if not age_declaration.children_enabled():\n        abort(404)" in guard
+
+
+def test_nothing_offers_a_child_account_while_they_are_off():
+    jinja = read("ruqqus", "helpers", "jinja2.py").split("def parent_tab(v):", 1)[1].split("\n@app", 1)[0]
+    assert "age_declaration.children_enabled() and" in jinja, "no Settings > Children tab"
+    pages = read("ruqqus", "routes", "age_declaration_pages.py")
+    assert "age_declaration.PARENT_LOCK and age_declaration.children_enabled():" in pages, "a sub-account asks no parent who can't answer"
+    callback = pages.split("def settings_age_assurance_callback(v):", 1)[1].split("\ndef ", 1)[0]
+    assert callback.index("if status == age_assurance.MINOR and not age_declaration.children_enabled():") < callback.index("if status == age_assurance.MINOR:")
+    admin = read("ruqqus", "templates", "userpage.html").split('name="answer">', 1)[1].split("</select>", 1)[0]
+    assert '{% if children_enabled() %}\n    <option value="2"' in admin and '<option value="2" disabled' in admin
+    for legal in (("help", "terms.html"), ("help", "privacy.html")):
+        text = read("ruqqus", "templates", *legal)
+        off = text.split("{% if not children_enabled() %}", 1)[1].split("{% else %}", 1)[0]
+        assert "18 or over" in off and "parent or guardian" not in off and "child lock" not in off, legal
+    assert read("ruqqus", "helpers", "age_declaration.py").count('os.environ.get(CHILD_SWITCH, "")') == 1
+    assert "CHILD_ACCOUNTS_ENABLED=${CHILD_ACCOUNTS_ENABLED:-0}" in read("docker-compose.yml") and "CHILD_ACCOUNTS_ENABLED=0" in read(".env.example")

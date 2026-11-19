@@ -38,6 +38,18 @@ from ruqqus.helpers.visibility import CHILD as CHILD_FILTER
 
 ADULT, CHILD = 1, 2
 
+# Child and parent accounts are switched off (the owner, 2026-11-19: "for the website to make an account it's only for adults"). While
+# off, nobody can say they are under 18 (sign-up, Settings, an admin), Settings > Children and its routes are gone (404), and an age
+# check that finds someone under 18 closes the account. What stays: the stored lock on an account made in a strict country until an
+# age check confirms 18 or over, and the regional rule. The code is kept: CHILD_ACCOUNTS_ENABLED=1 brings it all back as it was.
+CHILD_SWITCH = "CHILD_ACCOUNTS_ENABLED"
+
+
+def children_enabled():
+    """Are child accounts (an under-18 answer, a parent's sub-accounts) offered? Off unless CHILD_ACCOUNTS_ENABLED is set. Read on
+    every call, so a test can turn it on."""
+    return os.environ.get(CHILD_SWITCH, "").strip().lower() in ("1", "true", "yes", "on")
+
 REGION_LOCK, PARENT_LOCK = 1, 2
 
 FILTER_LOCKED = N_("Your account is age-restricted, so its word filter stays on Child until you confirm your age in Settings.")
@@ -53,14 +65,16 @@ UNDER_AGE_CLOSED = N_("The age check found that you are under the youngest age a
 ALREADY_ANSWERED = N_("You've already answered this. Only an admin can change your answer.")
 NO_ANSWER = N_("Please choose one of the two answers.")
 SIGN_UP_NO_ANSWER = N_("Please say how old you are.")
+ADULT_NO_ANSWER = N_("Please confirm that you're 18 or over.")
+UNDER_18_CLOSED = N_("The age check found that you're under 18. Accounts here are for people 18 or over, so this account was closed.")
 
 ANSWER_TITLE = N_("Your age")
 BACK = N_("Go back")
 
 # told once, by scripts/notify_terms_age.py, in the words the Terms now use. Stored in English like every notice.
-TERMS_NOTICE = N_("We've changed the Age section of our [Terms](/help/terms). An account for someone under 18 now has a child lock, "
-                  "and in the UK, the EU and Australia your age has to be confirmed with an age-check service before the lock "
-                  "comes off or you can see sensitive content. You can say whether you're 18 or over in Settings > Content.")
+TERMS_NOTICE = N_("We've changed the Age section of our [Terms](/help/terms): accounts are for people 18 or over. In the UK, the EU "
+                  "and Australia your age has to be confirmed with an age-check service before your account's lock comes off or you "
+                  "can see sensitive content. You can say that you're 18 or over in Settings > Content.")
 
 # an admin changed the answer: the member is told what that does to their account
 CONFIRMED = 3     # not stored: an admin's "18 or over, and checked" (age_declared ADULT with age_assured_utc set)
@@ -70,7 +84,7 @@ ADMIN_NOTICES = {
     ADULT: N_("An admin marked this account as belonging to someone 18 or over. Your word filter hasn't changed: you "
               "can change it in Settings > Content, and turning the Child filter down needs your password."),
     None: N_("An admin cleared the age answer on your account. You'll be asked again."),
-    CONFIRMED: N_("An admin confirmed that you are 18 or over. Your account no longer has the child lock. Your word filter hasn't "
+    CONFIRMED: N_("An admin confirmed that you are 18 or over. Your account is no longer locked. Your word filter hasn't "
                   "changed: you can change it in Settings > Content, and turning the Child filter down needs your password."),
 }
 
@@ -79,7 +93,10 @@ LABELS = {None: "not asked", ADULT: "18 or over", CHILD: "child account", CONFIR
 
 
 def parse(value):
-    """ADULT or CHILD from a form's value, else None. Only the two exact strings count."""
+    """ADULT or CHILD from a form's value, else None. Only the two exact strings count, and CHILD only while child accounts are
+    switched on (`children_enabled`): sign-up, Settings and the admin route all read the answer through here."""
+    if value == "2" and not children_enabled():
+        return None
     if value == "1":
         return ADULT
     if value == "2":

@@ -14,6 +14,13 @@ from sqlalchemy import text
 
 from .test_child_accounts import made, post as child_post, switch  # noqa: F401  (made is a fixture)
 
+
+@pytest.fixture(autouse=True)
+def children_on(monkeypatch):
+    """These tests are about child and parent accounts, which are switched off unless CHILD_ACCOUNTS_ENABLED is set (the owner,
+    2026-11-19: accounts are for adults only). tests/pg/test_adults_only.py holds the site with them off."""
+    monkeypatch.setenv("CHILD_ACCOUNTS_ENABLED", "1")
+
 BASE = "http://localhost"
 HEADERS = {"User-Agent": "ci-signouts"}
 

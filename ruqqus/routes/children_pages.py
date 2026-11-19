@@ -43,6 +43,13 @@ RELEASED_FOR_PARENT = N_("@%(name)s's age was confirmed as 18 or over, so their 
 MONTHS = tuple((number, calendar.timegm((2001, number, 15, 12, 0, 0))) for number in range(1, 13))
 
 
+def _switched_on_or_404():
+    """Child and parent accounts are switched off unless CHILD_ACCOUNTS_ENABLED is set (helpers/age_declaration.children_enabled; the
+    owner, 2026-11-19: accounts are for adults only): every page and action here is then a plain 404."""
+    if not age_declaration.children_enabled():
+        abort(404)
+
+
 def _now():
     return int(time.time())
 
@@ -118,6 +125,7 @@ def parent_view(v):
 @auth_required
 @not_qr_limited
 def settings_children(v):
+    _switched_on_or_404()
     return _children_page(v, request.args.get("msg"), request.args.get("error"))
 
 
@@ -141,6 +149,7 @@ def _children_page(v, message, error, forget_chat=None):
 def children_new(v):
     """Make a child account: a username, a password, and the month and year they were born (checked here and not kept). The parent agrees to the
     Terms for them. At most `MAX_CHILDREN` a parent and `PER_DAY` in a day, counted again under a lock so two requests can't both slip in."""
+    _switched_on_or_404()
     child_store.lock_parent(g.db, v.id)          # two requests of one parent make one account at a time, and never while the parent is being closed
     g.db.refresh(v)                       # what the parent is NOW (closing an account takes the same lock), not what this request loaded
     children, refusal, _eligible = parent_view(v)
@@ -187,6 +196,7 @@ def children_new(v):
 def children_controls(username, v):
     """Switch one control for one child (`control`, `on` = "true"): chat, spaces, money or anonymous_guilds (starting a guild). There is no control for
     posting or commenting: a child account only reads."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     name = request.values.get("control")
     on = request.values.get("on") == "true"
@@ -207,6 +217,7 @@ def children_controls(username, v):
 def children_answer(username, v):
     """Answer a child's open request: `request` is `release` (they say they are 18 or over and ask to be released), `answer` is `allow` or `deny`. A release
     lifts the child lock and ends the parent's access; it is refused where only an age check lifts a lock."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     kind, allow = request.form.get("request"), request.form.get("answer") == "allow"
     if kind != "release" or request.form.get("answer") not in ("allow", "deny"):
@@ -241,6 +252,7 @@ def children_answer(username, v):
 @validate_formkey
 def children_stop(username, v):
     """Stop managing an account: it stays a child account with the child lock (a standalone one), the parent's access ends and the link can't be remade."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     if _wrong_proof(v):                           # irreversible: the link can't be made again
         return _back(error=msg(rules.WRONG_PASSWORD))
@@ -267,6 +279,7 @@ def children_stop(username, v):
 def children_password(username, v):
     """Set a new password for a child (the parent's own password first). It signs the child out everywhere, chat apps included. The chat key the child's
     browser locked with the old password is not reachable from here: if they use chat they are asked for their recovery code on their next new device."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     if _wrong_proof(v):
         return _back(error=msg(rules.WRONG_PASSWORD))
@@ -293,6 +306,7 @@ def children_delete(username, v):
     """Delete a child's account (the parent's own password first). The same steps as when a member deletes theirs, run for the child: it isn't this
     browser's account, so this browser stays signed in. Not a redirect: the answer is the page itself, which clears the child's chat devices and stores
     from this browser (a family shares one), as the child's own deletion page would."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     if _wrong_proof(v):
         return _back(error=msg(rules.WRONG_PASSWORD))
@@ -312,6 +326,7 @@ def children_delete(username, v):
 @validate_formkey
 def children_export(username, v):
     """Download what the site holds about a child, as a member can download their own data (the parent's own password first). No chat content: there is none."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     if _wrong_proof(v):
         return _back(error=msg(rules.WRONG_PASSWORD))
@@ -327,6 +342,7 @@ def children_export(username, v):
 @not_qr_limited
 def children_activity(username, v):
     """What a parent may see of one child's account (helpers/child_activity.py): activity and the names of who they chat with, never a chat."""
+    _switched_on_or_404()
     child = _child_or_404(v, username)
     row = _child_row(child)
     return render_template("settings_child.html", v=v, child=child, activity=child_activity.everything(g.db, child["id"]),
@@ -339,6 +355,7 @@ def children_activity(username, v):
 @validate_formkey
 def settings_parent_ask(v):
     """A child asks their parent: `kind` is release (I'm 18 or over, release my account). Asked once while it is open."""
+    _switched_on_or_404()
     return ask_parent(v, request.form.get("kind"), request.form.get("next"))
 
 

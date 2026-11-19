@@ -11,6 +11,13 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
+
+@pytest.fixture(autouse=True)
+def children_on(monkeypatch):
+    """These tests are about child and parent accounts, which are switched off unless CHILD_ACCOUNTS_ENABLED is set (the owner,
+    2026-11-19: accounts are for adults only). tests/pg/test_adults_only.py holds the site with them off."""
+    monkeypatch.setenv("CHILD_ACCOUNTS_ENABLED", "1")
+
 BASE = "http://localhost"
 AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
 HEADERS = {"User-Agent": AGENT, "Accept-Language": "en-GB,en;q=0.9"}
@@ -205,7 +212,7 @@ def test_settings_shows_the_state_plainly(make_member):
     other = make_member()
     make_child(other)
     page = get(other.browser(), "/settings/content").get_data(as_text=True)
-    assert "Your account has the child lock on, since" in page
+    assert "Your account is locked until your age is confirmed, since" in page
     select = page.split('id="filterlevel"', 1)[1].split(">", 1)[0]
     assert "disabled" in select
     assert 'id="filterlevel-locked"' in page

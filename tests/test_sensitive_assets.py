@@ -141,7 +141,7 @@ def test_sensitive_is_one_general_film_rating_test_and_the_ban_stays():
         assert "Do not post content made mainly to be consumed as sexual, violent or grotesque material." in page
         assert "Mark Sensitive content Sensitive." in page
         assert "rated 15, R or 16+" in page
-        assert "An account with the child lock can't post Sensitive content." in page
+        assert "A locked account can't post at all until its age is confirmed." in page
     assert "film-rating" in read("ruqqus", "helpers", "sensitive.py") or "anchored on film and game ratings" in read("ruqqus", "helpers", "sensitive.py")
     label = "Would a film with this be rated 15 or R? Blur this post until viewers click to reveal it."
     for name in ("submit.html", "collab/editor.html", "partials/inline_composer.html"):

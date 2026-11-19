@@ -1,5 +1,6 @@
-"""Accounts for scripts/ui/age.spec.ts (password ui-Password-1): `ui_age_old` and `ui_age_child`, who haven't answered the age
-question, `ui_age_rtl`, the same reading the site in Arabic, and `ui_age_admin` (level 3). Dev only. Run it before each full run:
+"""Accounts for scripts/ui/age.spec.ts (password ui-Password-1): `ui_age_old`, who hasn't answered the age question, `ui_age_child`,
+a locked account (as one made in a strict country is: child accounts are switched off, so nobody can answer under 18),
+`ui_age_rtl`, the same as ui_age_old reading the site in Arabic, and `ui_age_admin` (level 3). Dev only. Run it before each full run:
 a run answers the question, which a member can't take back, so this puts the answers back.
 
     PYTHONPATH=. python scripts/ui/seed_age.py            make them (and clear their answers)
@@ -49,6 +50,10 @@ def seed():
              "languages": "ar" if name == "ui_age_rtl" else "", "admin_level": 3 if name == "ui_age_admin" else 0},
             synchronize_session=False)
     db.query(User).filter_by(id=ACCOUNTS[-1][1]).update({"age_declared": 1, "age_declared_utc": now}, synchronize_session=False)
+    # locked until an age check (helpers/age_declaration.fields_for(CHILD)), in one statement for the database's own rule
+    db.query(User).filter_by(id=ACCOUNTS[1][1]).update(
+        {"age_declared": 2, "age_declared_utc": now, "age_lock": 1, "filter_level": 2, "hide_offensive": True, "all_shows_sensitive": False},
+        synchronize_session=False)
     db.commit()
     print("Seeded " + ", ".join(name for name, _ in ACCOUNTS) + ".")
 

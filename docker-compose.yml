@@ -39,6 +39,8 @@ services:
       # the child lock (helpers/age_declaration.py, helpers/age_assurance.py): empty means the default list / no age-check service
       - AGE_LOCK_COUNTRIES=${AGE_LOCK_COUNTRIES:-}
       - AGE_MIN_AGES=${AGE_MIN_AGES:-}
+      # child and parent accounts (helpers/age_declaration.children_enabled): off, accounts are for adults only
+      - CHILD_ACCOUNTS_ENABLED=${CHILD_ACCOUNTS_ENABLED:-0}
       - AGE_ASSURANCE_PROVIDER=${AGE_ASSURANCE_PROVIDER:-}
       - AGE_ASSURANCE_DEV=${AGE_ASSURANCE_DEV:-}
       # chat for a member whose Matrix account Synapse already holds with no record on the site (routes/chat.py,

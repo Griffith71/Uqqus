@@ -22,7 +22,7 @@ CORE = (
     "pirated copies",
     "mark sensitive content sensitive",
     "what is sensitive",
-    "child lock",
+    "locked account",
     "personal information",
     "impersonation",
     "paid partnerships",

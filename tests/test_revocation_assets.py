@@ -132,9 +132,12 @@ def test_deleting_an_account_queues_before_its_rows_go_and_never_ends_another_ac
     assert 'render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children,' in body_of(settings, "delete_account")
     delete = body_of(settings, "delete_account")
     assert delete.index("deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)") < delete.index("close_own_account(")
-    callback = body_of(read("ruqqus", "routes", "age_declaration_pages.py"), "settings_age_assurance_callback")
-    assert callback.index("deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)") < callback.index("close_own_account(")
-    assert "deleted_mxid=deleted_mxid, deleted_children=deleted_children" in callback
+    # an age check that closes the account (under the minimum, or under 18 while accounts are for adults only) does it in one place
+    pages = read("ruqqus", "routes", "age_declaration_pages.py")
+    assert body_of(pages, "settings_age_assurance_callback").count("return _close_for_age(") == 2
+    closing = body_of(pages, "_close_for_age")
+    assert closing.index("deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)") < closing.index("close_own_account(")
+    assert "deleted_mxid=deleted_mxid, deleted_children=deleted_children" in closing
     assert "forgetChatDevices({{ deleted_mxid | tojson }}, {{ (deleted_children or []) | tojson }})" in read("ruqqus", "templates", "account_deleted.html")
     # a child its parent deletes: the parent's page forgets the child's chat, read before it closed (a family shares a browser)
     children = body_of(read("ruqqus", "routes", "children_pages.py"), "children_delete")

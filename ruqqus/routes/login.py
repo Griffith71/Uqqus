@@ -464,7 +464,7 @@ def sign_up_post(v):
     # in the page, so only a hand-made request sends it) is stored as the locked answer
     age_answer = age_declaration.parse(request.form.get("age_declaration"))
     if age_answer is None:
-        return new_signup(msg(age_declaration.SIGN_UP_NO_ANSWER))
+        return new_signup(msg(age_declaration.SIGN_UP_NO_ANSWER if age_declaration.children_enabled() else age_declaration.ADULT_NO_ANSWER))
     age_answer = age_declaration.signup_answer(age_answer, request.headers.get("cf-ipcountry"))
 
     # Check for existing acocunts

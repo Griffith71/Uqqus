@@ -5,11 +5,12 @@ import { open } from "./pages";
 // The age question and the child lock (CLAUDE.md "Age declaration and the child lock"; helpers/age_declaration.py, partials/age_question.html):
 //   docker compose exec -T ruqqus env PYTHONPATH=. /opt/ruqqus/service/venv/bin/python scripts/ui/seed_age.py     before each run
 //   npm run age
-// What it holds it to, in a real browser: sign-up can't be sent without an answer and nothing is answered for them; no page carries a
-// notice for a member from before (the owner, 2026-11-05) and Settings > Content asks in the same words as sign-up, with nothing running
-// off a phone's screen and both choices a target tall (32, 44 under a finger); "under 18" starts the child lock at once and the lock can
-// be lifted by saying 18 or over (no country header: not a strict country); once answered otherwise it is kept for good; a child account's word filter and sensitive switch can't be changed by any of the routes; an admin can
-// change the answer. A real sign-up is tests/pg/test_age_declaration.py: the dev site allows one account an
+// What it holds it to, in a real browser, with child accounts switched off (the default; the owner, 2026-11-19: accounts are for adults
+// only): sign-up asks one thing, "I'm 18 or over", and can't be sent without it; no page carries a notice for a member from before (the
+// owner, 2026-11-05) and Settings > Content asks in the same words as sign-up, with nothing running off a phone's screen and the choice a
+// target tall (32, 44 under a finger); nobody can answer under 18; a locked account says it is locked, never that it is a child's, and
+// its lock can be lifted by saying 18 or over (no country header: not a strict country); once answered otherwise it is kept for good;
+// a locked account's word filter and sensitive switch can't be changed by any of the routes; an admin can change the answer. A real sign-up is tests/pg/test_age_declaration.py: the dev site allows one account an
 // hour from its one Docker address, and refuses a headless browser's name.
 
 const PASSWORD = "ui-Password-1";
@@ -17,7 +18,7 @@ const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch:
 const DESKTOP = { viewport: { width: 1280, height: 900 } } as const;
 const NOTICE = "#age-declaration";
 const ADULT = "I'm 18 or over";
-const CHILD = "I'm 13 to 17";
+const ADULTS_ONLY = "Accounts are for people 18 or over.";
 
 test.describe.configure({ mode: "serial" });
 test.setTimeout(300_000);
@@ -54,11 +55,12 @@ test.describe("signing up", () => {
       const context = await browser.newContext(options);
       const page = await context.newPage();
       await open(page, "/signup");
-      const radios = page.locator('input[name="age_declaration"]');
-      await expect(radios).toHaveCount(2);
+      const boxes = page.locator('input[name="age_declaration"]');
+      await expect(boxes).toHaveCount(1);
       await expect(page.locator('input[name="age_declaration"]:checked')).toHaveCount(0);
       await expect(page.getByText(ADULT, { exact: true })).toBeVisible();
-      await expect(page.getByText(CHILD, { exact: true })).toBeVisible();
+      await expect(page.locator("#signup-age-means")).toContainText(ADULTS_ONLY);
+      await expect(page.locator("#signup-age-child")).toHaveCount(0);
       await page.fill("#username-register", "someone_new");
       await page.fill("#password-register", "ui-Password-1");
       await page.fill("#password_confirm", "ui-Password-1");
@@ -70,9 +72,7 @@ test.describe("signing up", () => {
       expect(await page.locator("#signup").evaluate((form: HTMLFormElement) => form.checkValidity())).toBe(true);
       expect(await sideways(page)).toBeLessThanOrEqual(0);
       const least = label === "phone" ? 44 : 32;
-      for (const id of ["signup-age-adult", "signup-age-child"]) {
-        expect((await page.locator(`label[for="${id}"]`).boundingBox())!.height, id).toBeGreaterThanOrEqual(least);
-      }
+      expect((await page.locator('label[for="signup-age-adult"]').boundingBox())!.height).toBeGreaterThanOrEqual(least);
       await page.locator("fieldset:has(#signup-age-adult)").screenshot({ path: `shots/age/signup-${label}.png` });
       await context.close();
     });
@@ -86,7 +86,7 @@ test.describe("signing up", () => {
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const box = (await page.locator('label[for="signup-age-adult"]').boundingBox())!;
     const field = (await page.locator("#username-register").boundingBox())!;
-    expect(Math.abs(box.x + box.width - (field.x + field.width))).toBeLessThan(30);   // beside the radio, at the fields' right edge
+    expect(Math.abs(box.x + box.width - (field.x + field.width))).toBeLessThan(30);   // beside the box, at the fields' right edge
     await page.locator("fieldset:has(#signup-age-adult)").screenshot({ path: "shots/age/signup-rtl.png" });
     await context.close();
   });
@@ -104,10 +104,11 @@ test.describe("a member from before the question", () => {
       await open(page, "/settings/content");
       const asking = page.locator("#age-declaration");
       await expect(asking.getByText(ADULT, { exact: true })).toBeVisible();
-      await expect(asking.getByText(CHILD, { exact: true })).toBeVisible();
+      await expect(asking.locator("#age-settings-child")).toHaveCount(0);
+      await expect(asking).toContainText(ADULTS_ONLY);
       await expect(asking.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/help/terms");
       expect(await sideways(page)).toBeLessThanOrEqual(0);
-      for (const target of [`${NOTICE} label[for="age-settings-adult"]`, `${NOTICE} label[for="age-settings-child"]`, `${NOTICE} button[type=submit]`]) {
+      for (const target of [`${NOTICE} label[for="age-settings-adult"]`, `${NOTICE} button[type=submit]`]) {
         const box = (await page.locator(target).boundingBox())!;
         expect(box.height, target).toBeGreaterThanOrEqual(label === "phone" ? 43 : 31);
       }
@@ -131,24 +132,21 @@ test.describe("a member from before the question", () => {
     expect((await new AxeBuilder({ page }).include("#age-declaration").withTags(["wcag2a", "wcag2aa"]).analyze()).violations).toEqual([]);
 
     const again = await page.evaluate(async () => {
-      const form = new URLSearchParams({ formkey: (document.querySelector('input[name="formkey"]') as HTMLInputElement)?.value ?? "", age_declaration: "2", confirm: "1" });
-      return (await fetch("/settings/age_declaration", { method: "POST", body: form })).status;
+      const key = (document.querySelector('input[name="formkey"]') as HTMLInputElement)?.value ?? "";
+      const send = async (answer: string) =>
+        (await fetch("/settings/age_declaration", { method: "POST", body: new URLSearchParams({ formkey: key, age_declaration: answer }) })).status;
+      return [await send("2"), await send("1")];
     });
-    expect(again).toBe(409);
+    expect(again).toEqual([400, 409]);     // under 18 is no answer at all; 18 or over again is already answered
     await context.close();
   });
 
-  test("answering under 18 starts the child lock; the lock can be lifted by saying 18 or over", async ({ browser }) => {
-    const { context, page } = await member(browser, "ui_age_child");
+  test("a locked account says it is locked, never a child's, and can be lifted by saying 18 or over", async ({ browser }) => {
+    const { context, page } = await member(browser, "ui_age_child");     // seeded locked, as a sign-up from a strict country is
     await open(page, "/settings/content");
-    await page.locator(`${NOTICE} label[for="age-settings-child"]`).click();
-    await page.locator(`${NOTICE} button[type=submit]`).click();
-    await page.waitForLoadState("load");
-    expect(new URL(page.url()).pathname).toBe("/settings/content");
-
-    await open(page, "/settings/content");
-    await expect(page.locator("#age-declaration")).toContainText("Your account has the child lock on");
-    await expect(page.locator("#age-confirm")).toContainText("confirm that you're 18 or over");
+    await expect(page.locator("#age-declaration")).toContainText("Your account is locked until your age is confirmed");
+    await expect(page.locator("#age-declaration")).not.toContainText("child");
+    await expect(page.locator("#age-confirm")).toContainText("To take the lock off, confirm that you're 18 or over.");
     await expect(page.locator("#private-posting-switch"), "Private posting is gone: a child account only reads").toHaveCount(0);
     await expect(page.locator('a[href="/submit"], [data-compose]'), "no Post button for an account that can't post").toHaveCount(0);
     await expect(page.locator("#filterlevel")).toBeDisabled();
@@ -157,7 +155,7 @@ test.describe("a member from before the question", () => {
     await expect(page.locator("#all-shows-sensitive")).toBeDisabled();
     await expect(page.locator('[data-side-panel="chat"]'), "a locked account has no chat").toHaveCount(0);
     await expect(page.locator('[href="/spaces/new"]')).toHaveCount(0);
-    await page.locator(".settings-section").first().screenshot({ path: "shots/age/settings-child.png" });
+    await page.locator(".settings-section").first().screenshot({ path: "shots/age/settings-locked.png" });
     await expect(page.locator("#filterlevel-words"), "the list isn't shown at this level, so no link to a refusal").toHaveCount(0);
     expect((await new AxeBuilder({ page }).include("#age-declaration").withTags(["wcag2a", "wcag2aa"]).analyze()).violations).toEqual([]);
 
@@ -177,6 +175,7 @@ test.describe("a member from before the question", () => {
     await open(page, "/@ui_age_child");
     const form = page.locator('form[action="/admin/age_declaration"]').first();
     await expect(form.locator('select[name="answer"]')).toHaveValue("2");
+    await expect(form.locator('option[value="2"]'), "an admin can't make an account a child's").toBeDisabled();
     await form.locator('select[name="answer"]').selectOption("1");
     await form.locator('input[name="reason"]').fill("a grown-up, their own account");
     await form.screenshot({ path: "shots/age/admin-form.png" });

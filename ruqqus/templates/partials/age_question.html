@@ -2,6 +2,14 @@
    words. Nothing is ticked first: it has to be an answer. #}
 {% macro age_choices(prefix) %}
 {% set ctx = age_context() %}
+{% if not children_enabled() %}
+{# accounts are for adults only (the owner, 2026-11-19): one thing to confirm, required everywhere. In a strict country the server stores it
+   as a locked account until an age check confirms it (helpers/age_declaration.signup_answer). #}
+<div class="custom-control custom-checkbox age-choice">
+    <input type="checkbox" class="custom-control-input" id="{{ prefix }}-adult" name="age_declaration" value="1" required aria-describedby="{{ prefix }}-means">
+    <label class="custom-control-label" for="{{ prefix }}-adult">{{ _("I'm 18 or over") }}</label>
+</div>
+{% else %}
 <div class="custom-control custom-radio age-choice">
     {# where a vendor has to confirm it (the UK, the EU/EEA, Australia) "18 or over" can't be picked: the server stores the locked answer whatever is posted #}
     <input type="radio" class="custom-control-input" id="{{ prefix }}-adult" name="age_declaration" value="1"{% if ctx.strict %} disabled aria-describedby="{{ prefix }}-means"{% else %} required{% endif %}>
@@ -11,21 +19,29 @@
     <input type="radio" class="custom-control-input" id="{{ prefix }}-child" name="age_declaration" value="2" required>
     <label class="custom-control-label" for="{{ prefix }}-child">{% if ctx.strict %}{{ _("I'm %(min)s or over", min=ctx.min) }}{% else %}{{ _("I'm %(min)s to 17", min=ctx.min) }}{% endif %}</label>
 </div>
+{% endif %}
 {% endmacro %}
 
 {% macro age_child_means(prefix) %}
 {% set ctx = age_context() %}
 <small class="age-means" id="{{ prefix }}-means">
+    {% if not children_enabled() %}
+    {{ _("Accounts are for people 18 or over.") }}
+    {% if ctx.strict %}
+    {{ _("Where you are, the law means an age-check service has to confirm it, in your Settings after you sign up. Until then your account is locked: you can read, vote and follow, but you can't post, comment or chat, and profanity and sensitive content stay hidden.") }}
+    {% endif %}
+    {% else %}
     {{ _("You must be at least %(min)s to have an account where you are.", min=ctx.min) }}
     {% if ctx.strict %}
     {{ _("Where you are, the law means you have to confirm that you're 18 or over with an age-check service, in your Settings after you sign up. Until then your account has the child lock on, which hides profanity and sensitive content and turns some features off.") }}
     {% else %}
     {{ _("If you're under 18 you can still sign up. Your account will have the child lock on, which hides profanity and sensitive content and turns some features off, until you confirm your age in your Settings.") }}
     {% endif %}
+    {% endif %}
 </small>
 {% endmacro %}
 
-{# a plain form, so it works with no script; "child" is asked again on a page of its own before anything is saved #}
+{# a plain form, so it works with no script #}
 {% macro age_form(v, back, prefix) %}
 <form action="/settings/age_declaration" method="post" class="age-form">
     <input type="hidden" name="formkey" value="{{ v.formkey }}">

@@ -37,7 +37,7 @@ def settings_age_declaration(v):
     back = _settings_back()
     answer = age_declaration.parse(request.form.get("age_declaration"))
     if answer is None:
-        return _refused(v, age_declaration.NO_ANSWER, 400, back)
+        return _refused(v, age_declaration.NO_ANSWER if age_declaration.children_enabled() else age_declaration.ADULT_NO_ANSWER, 400, back)
     country = age_declaration.request_country()
     now = int(time.time())
 
@@ -60,7 +60,7 @@ def settings_age_declaration(v):
         return redirect(back, code=303)
 
     if age_declaration.is_locked(v) and answer == age_declaration.ADULT:
-        if getattr(v, "age_lock", None) == age_declaration.PARENT_LOCK:
+        if getattr(v, "age_lock", None) == age_declaration.PARENT_LOCK and age_declaration.children_enabled():
             from ruqqus.routes.children_pages import ask_parent       # a parent's sub-account asks its parent to release it
             return ask_parent(v, "release", back)
         if getattr(v, "age_lock", None) != age_declaration.REGION_LOCK:
@@ -126,22 +126,31 @@ def settings_age_assurance_callback(v):
             from ruqqus.routes.children_pages import tell_parent_released
             tell_parent_released(parent_id, v)
         return redirect("/settings/content?age=confirmed", code=303)
+    if status == age_assurance.MINOR and not age_declaration.children_enabled():
+        # accounts are for adults only (the owner, 2026-11-19): under 18 closes the account, as under the minimum age always has
+        return _close_for_age(v, "age check: under 18", "age check: under 18, and accounts are for adults: the account was closed",
+                              age_declaration.UNDER_18_CLOSED)
     if status == age_assurance.MINOR:
         g.db.query(User).filter(User.id == v.id).update({"age_under_utc": now}, synchronize_session=False)
         action_log.record_staff(g.db, "age_lock", None, "age check: under 18, it stays locked", target_user_id=v.id)
         g.db.commit()
         return redirect("/settings/content?age=under", code=303)
     if status == age_assurance.UNDER_MINIMUM:
-        from ruqqus.routes.settings import close_own_account
-        # read before the accounts close: the page clears this account's chat here (and any child closed with it)
-        deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)
-        close_own_account(v, "age check: under the youngest age where they are")
-        action_log.record_staff(g.db, "age_lock", None, "age check: under the youngest age allowed here, the account was closed",
-                                target_user_id=v.id)
-        g.db.commit()
-        return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children, title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE),
-                               message=msg(age_declaration.UNDER_AGE_CLOSED))
+        return _close_for_age(v, "age check: under the youngest age where they are",
+                              "age check: under the youngest age allowed here, the account was closed", age_declaration.UNDER_AGE_CLOSED)
     return redirect("/settings/content?age=failed", code=303)
+
+
+def _close_for_age(v, reason, log_note, message):
+    """Close the account an age check found too young, and say so on the page that answers."""
+    from ruqqus.routes.settings import close_own_account
+    # read before the accounts close: the page clears this account's chat here (and any child closed with it)
+    deleted_mxid, deleted_children = chat_devices.closing_with(g.db, v.id)
+    close_own_account(v, reason)
+    action_log.record_staff(g.db, "age_lock", None, log_note, target_user_id=v.id)
+    g.db.commit()
+    return render_template("account_deleted.html", v=None, deleted_mxid=deleted_mxid, deleted_children=deleted_children,
+                           title=msg(age_declaration.UNDER_AGE_CLOSED_TITLE), message=msg(message))
 
 
 @app.route("/admin/age_declaration", methods=["POST"])

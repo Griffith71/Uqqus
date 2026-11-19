@@ -11,6 +11,13 @@ import time
 import pytest
 from sqlalchemy import text
 
+
+@pytest.fixture(autouse=True)
+def children_on(monkeypatch):
+    """These tests are about child and parent accounts, which are switched off unless CHILD_ACCOUNTS_ENABLED is set (the owner,
+    2026-11-19: accounts are for adults only). tests/pg/test_adults_only.py holds the site with them off."""
+    monkeypatch.setenv("CHILD_ACCOUNTS_ENABLED", "1")
+
 BASE = "http://localhost"
 AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
 

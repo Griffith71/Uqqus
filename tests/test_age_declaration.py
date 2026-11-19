@@ -28,8 +28,27 @@ def python_sources():
 
 @pytest.mark.parametrize("value, expected", [("1", age.ADULT), ("2", age.CHILD), ("", None), (None, None), ("0", None),
                                              ("3", None), (" 1", None), ("１", None), ("adult", None), (1, None), (["1"], None)])
-def test_only_the_two_exact_answers_count(value, expected):
+def test_only_the_two_exact_answers_count(value, expected, monkeypatch):
+    monkeypatch.setenv(age.CHILD_SWITCH, "1")
     assert age.parse(value) == expected
+
+
+@pytest.mark.parametrize("value", ["", "0", "no", "false", "off", " "])
+def test_child_accounts_are_off_unless_switched_on_and_then_only_18_or_over_counts(value, monkeypatch):
+    # the owner, 2026-11-19: accounts are for adults only. Sign-up, Settings and the admin route all read the answer through parse
+    monkeypatch.delenv(age.CHILD_SWITCH, raising=False)
+    assert not age.children_enabled() and age.parse("2") is None and age.parse("1") == age.ADULT
+    monkeypatch.setenv(age.CHILD_SWITCH, value)
+    assert not age.children_enabled() and age.parse("2") is None
+    for on in ("1", "true", "yes", "on", "ON"):
+        monkeypatch.setenv(age.CHILD_SWITCH, on)
+        assert age.children_enabled() and age.parse("2") == age.CHILD
+
+
+def test_a_strict_country_still_stores_the_locked_answer_with_children_off(monkeypatch):
+    monkeypatch.delenv(age.CHILD_SWITCH, raising=False)
+    assert age.signup_answer(age.ADULT, "GB") == age.CHILD and age.signup_answer(age.ADULT, "US") == age.ADULT
+    assert age.fields_for(age.CHILD, 5)["age_lock"] == age.REGION_LOCK
 
 
 def test_a_child_account_is_put_on_the_child_filter_with_sensitive_content_off():
@@ -187,7 +206,7 @@ def test_the_terms_notice_goes_to_people_who_agreed_to_the_old_terms_once(db):
 
 
 def test_the_terms_notice_has_the_link_and_the_terms_words():
-    assert "[Terms](/help/terms)" in age.TERMS_NOTICE and "child lock" in age.TERMS_NOTICE and "age-check service" in age.TERMS_NOTICE
+    assert "[Terms](/help/terms)" in age.TERMS_NOTICE and "accounts are for people 18 or over" in age.TERMS_NOTICE and "age-check service" in age.TERMS_NOTICE
 
 
 def test_the_one_off_is_by_hand_and_nothing_sends_it_by_itself():
@@ -206,7 +225,10 @@ def test_the_one_off_is_by_hand_and_nothing_sends_it_by_itself():
 
 def test_the_two_choices_are_written_once_and_asked_in_the_same_words_everywhere():
     question = read("ruqqus", "templates", "partials", "age_question.html")
-    assert question.count("I'm 18 or over") == 1
+    assert question.count("I'm 18 or over") == 2, "the one box while child accounts are off, the first of two answers while they are on"
+    off = question.split("{% if not children_enabled() %}", 1)[1].split("{% else %}", 1)[0]
+    assert 'type="checkbox" class="custom-control-input" id="{{ prefix }}-adult" name="age_declaration" value="1" required' in off
+    assert "-child" not in off and 'value="2"' not in off
     assert question.count("I'm %(min)s to 17") == 1 and question.count("I'm %(min)s or over") == 1
     # the adult choice can't be picked where a vendor has to confirm it; the other is required either way
     assert 'name="age_declaration" value="1"{% if ctx.strict %} disabled' in question
