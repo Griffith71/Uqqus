@@ -180,7 +180,7 @@ def test_an_admin_takedown_needs_a_reason_before_anything_is_taken_down(real_app
     db.commit()
     assert post(client, admin, "/admin/display_name/clear", username=member.username).status_code == 400
     assert one(real_app, "SELECT display_name FROM users WHERE id = :u", u=member.id)["display_name"] == "Some Name"
-    assert post(client, admin, f"/api/purge_comment/{c36}", reason="Taking the words down").status_code == 204
+    assert post(client, admin, f"/api/purge_comment/{c36}", reason="Taking the words down", rule="other").status_code == 204
     assert one(real_app, "SELECT reason FROM log_entries WHERE action = 'purge_comment' AND target_comment_id = :c", c=comment_id)["reason"] == "Taking the words down"
 
 

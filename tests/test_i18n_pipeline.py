@@ -397,6 +397,15 @@ def test_a_hash_before_a_value_stays_with_its_number_in_arabic_script():
     assert all(lrm not in glossary[key]["Anonymous #%(num)s"][""] for key in glossary if key not in ("ar", "fa", "ur"))
 
 
+def test_an_at_before_a_handle_stays_in_front_of_it_in_right_to_left_text():
+    lrm = "\u200e"
+    assert tx.tidy("Exile @%(name)s", "نفي @%(name)s") == f"نفي {lrm}@%(name)s"
+    assert tx.tidy("Exile @%(name)s", "הגלה @%(name)s") == f"הגלה {lrm}@%(name)s"
+    assert tx.tidy("Exile @%(name)s", f"نفي {lrm}@%(name)s") == f"نفي {lrm}@%(name)s", "asked again, unchanged"
+    assert tx.tidy("Exile @%(name)s", "Exiler @%(name)s") == "Exiler @%(name)s"
+    assert cat.problems("Exile @%(name)s", f"نفي {lrm}@%(name)s") == []
+
+
 def test_a_hash_before_a_value_is_kept():
     # the label an anonymous person is drawn with in a thread: machines wrote "Anonyme3", "Anonimo!3", "Anonymous # 3" (2026-11-14)
     assert "a # before a value is dropped" in cat.problems("Anonymous #%(num)s", "Anonyme%(num)s")

@@ -1310,7 +1310,7 @@ def admin_siege_guild(v):
     #Siege is successful
 
     #look up current mod record if one exists
-    m=guild.has_mod(user)
+    m=guild.mod_row(user)      # a fact about ANOTHER account: a held or limited guildmaster still has their row (has_mod is the account's own powers)
 
     #remove current mods. If they are at or below existing mod, leave in place
     for x in guild.moderators:

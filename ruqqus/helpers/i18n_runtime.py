@@ -448,8 +448,9 @@ def notice_html(comment, render=None):
     translated = translations(key).gettext(msgid)
     if not _same_values(translated, msgid) or not _same_markdown(translated, msgid):
         return comment.body_html
+    from ruqqus.helpers.notice_parts import derive
     try:
-        text = translated % values
+        text = translated % {**values, **derive(values, translations(key).gettext)}
     except (KeyError, ValueError, TypeError):
         return comment.body_html
     html = (render or _render_notice)(text)

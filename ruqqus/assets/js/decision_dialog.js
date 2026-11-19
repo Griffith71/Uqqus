@@ -6,7 +6,8 @@
 //   evidence             true: the account's items in that guild are offered to cite (an exile by name needs at least one)
 //   evidenceUrl, thing   where to ask for them, and the item (a fullname) the menu was opened on, already ticked
 //   ask_username         true: the Exiled page's typed name; the items are asked for once it is typed
-//   rule                 false to leave out the rule menu
+//   rule                 false to leave out the rule menu; ruleRequired: true makes the choice of rule compulsory (an admin's takedown: the owner, 2026-11-19)
+//   done                 a function called with the server's answer instead of reloading the page (a removal updates the card in place)
 // Everything is drawn with textContent: an item's words are a stranger's.
 (function () {
   "use strict";
@@ -53,6 +54,13 @@
     }
   }
 
+  // the list of their items couldn't be fetched: the item the menu was opened on can still be cited, so the decision isn't blocked on a failed picker
+  function fallback() {
+    if (!current.thing) return;
+    el.evidence.hidden = false;
+    offered([]);
+  }
+
   function load(username) {
     if (!current.evidenceUrl || !username) return;
     say("");
@@ -62,9 +70,9 @@
     xhr.onload = function () {
       var data = xhrData(xhr);
       if (xhrOk(xhr) && data && data.items) { el.evidence.hidden = false; offered(data.items); }
-      else say(xhrError(xhr, data));
+      else { say(xhrError(xhr, data)); fallback(); }
     };
-    xhr.onerror = function () { say(tr("Something went wrong. Please try again.")); };
+    xhr.onerror = function () { say(tr("Something went wrong. Please try again.")); fallback(); };
     xhr.send();
   }
 
@@ -95,7 +103,9 @@
     if (!reason) { say(tr("A reason is required.")); el.reason.focus(); return; }
     var data = new FormData();
     data.append("formkey", formkey());
+    data.append("ajax", "1");                                   // a route that answers a form with a redirect answers this 204, which is a success here
     data.append("reason", reason);
+    if (!el.ruleGroup.hidden && current.ruleRequired && !el.rule.value) { say(tr("Choose the rule it breaks.")); el.rule.focus(); return; }
     if (!el.ruleGroup.hidden && el.rule.value) data.append("rule", el.rule.value);
     var fields = current.fields || {};
     // in a dialog that asks what the decision relies on, the item the menu was opened on is sent only if it is still ticked (`thing` is a citation like the others)
@@ -123,7 +133,8 @@
           window.jQuery("#toast-post-success").toast("dispose").toast("show");
           document.getElementById("toast-post-success-text").innerText = answer.message;
         }
-        if (current.reload !== false) window.location.reload(true);
+        if (typeof current.done === "function") current.done(answer);
+        else if (current.reload !== false) window.location.reload(true);
         return;
       }
       el.ok.disabled = false;

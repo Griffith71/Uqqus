@@ -195,9 +195,12 @@ def _panel_context(doc, v):
     people = _users([a[0] for a in author_rows])
     window = doc_rules["inactive_after_days"]
     authors_out = []
+    # who can take part at all (`store.voters`: not deleted, banned for good or on hold): one who can't is drawn as one who isn't counted, which is what the panel
+    # already says of an author away for months, so a hold is not told to the other authors by a "counted" mark that never votes
+    can_vote = {u for u, _ in store.voters(g.db, doc_id)}
     for uid, active, joined in author_rows:
         authors_out.append(dict(_name_of(people.get(uid), v), id=uid, me=(uid == v.id),
-                                counted=rules.is_active(active, doc_rules, now)))
+                                counted=uid in can_vote and rules.is_active(active, doc_rules, now)))
     proposals_out = []
     rows = store.proposals(g.db, doc_id, limit=30)
     subjects = _users([p[3] for p in rows] + [p[5] for p in rows])
@@ -206,11 +209,11 @@ def _panel_context(doc, v):
         payload = store.payload_of(p)
         by_alias = p[2] == rules.REMOVE and bool(payload.get("alias_n"))
         subject_out = _name_of(subjects.get(p[3]), v) if p[3] else None
-        if by_alias and not (p[9] == rules.PASSED and payload.get("removed")) and p[3] != v.id:
+        if by_alias and not (p[9] == rules.PASSED and payload.get("removed")):
             # a removal asked for by number: until it passes the other authors are shown the number, never the account (passed, the person is out, and known)
             subject_out = {"name": anonymity.alias_name(payload["alias_n"]), "handle": "", "link": None}
         proposals_out.append({
-            "id": p[0], "kind": p[2], "subject": subject_out, "is_subject": bool(p[2] == rules.REMOVE and p[3] == v.id),
+            "id": p[0], "kind": p[2], "subject": subject_out, "is_subject": bool(p[2] == rules.REMOVE and p[3] == v.id and not by_alias),         # a removal by number is drawn the same to everyone: no "you"
             "by_alias": by_alias,
             "by": _name_of(subjects.get(p[5]), v), "created_utc": p[6], "closes_utc": p[7], "outcome": p[9],
             "invitee_answer": p[10], "yes": sum(1 for x in votes.values() if x), "no": sum(1 for x in votes.values() if not x),
@@ -560,9 +563,11 @@ def collab_propose(doc_id, v):
     g.db.commit()
     outcome = _settle(store.doc(g.db, doc_id), store.proposal(g.db, doc_id, pid), v, now)
     if outcome == rules.OPEN:
+        # only the authors whose vote counts (C-06): except that a removal asked for by number tells the person it is about too, in the same words, so that
+        # "who was told" is no clue to who the number is
         counted = rules.counted(store.voters(g.db, doc_id), doc_rules, now,
-                                exclude=subject if kind == rules.REMOVE else None)
-        _tell([u for u in counted if u != v.id],                     # only the authors whose vote counts (C-06)
+                                exclude=subject if kind == rules.REMOVE and not payload.get("alias_n") else None)
+        _tell([u for u in counted if u != v.id],
               N_("@%(name)s made a proposal in a shared draft you write: your vote counts. [Open the draft](%(link)s)"),
               name=v.username, link=f"/collab/{doc_id}")
         _changed(doc_id)
@@ -581,12 +586,17 @@ def collab_vote(doc_id, pid, v):
         abort(404)
     if proposal[9] != rules.OPEN:
         return _error(tr("This proposal is closed."), 409)
-    if proposal[2] == rules.REMOVE and proposal[3] == v.id:
+    by_alias = proposal[2] == rules.REMOVE and bool(store.payload_of(proposal).get("alias_n"))
+    if proposal[2] == rules.REMOVE and proposal[3] == v.id and not by_alias:
         return _error(tr("You don't vote on your own removal."), 403)
     choice = request.values.get("vote")
     if choice not in ("yes", "no"):
         return _error(tr("Vote yes or no."))
     now = _now()
+    if proposal[2] == rules.REMOVE and proposal[3] == v.id:
+        # a removal asked for by NUMBER looks the same to every author, the person it is about included (the owner left the design to me, 2026-11-19): offering the
+        # vote buttons to everyone but them would tell the other authors, by elimination, who the number is. Their vote is accepted and never counted or kept.
+        return jsonify({"ok": True, "outcome": rules.OPEN})
     store.vote(g.db, pid, v.id, choice == "yes", now)
     g.db.commit()
     outcome = _settle(store.doc(g.db, doc_id), store.proposal(g.db, doc_id, pid), v, now)

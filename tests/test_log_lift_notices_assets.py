@@ -16,19 +16,23 @@ OTHERWISE_TOLD = {
     "close_own_account": "the account is being deleted",
     "complete_deletion": "the account is being deleted",
     "_lift_after_close": "the account is being deleted",
+    "lapse_due": "it only writes the entry and hands back who ended: scripts/recomputes.py tells them (`told=`, `log_notices.tell_lapsed`)",
+    "record_unban": "the entry of `User.unban`, whose callers send the reinstatement notice",
 }
 
 
 def functions_with(kinds):
     """{(file, function): the lifts it writes} over the routes and helpers that write them."""
     found = {}
-    for path in sorted((ROOT / "ruqqus" / "routes").glob("*.py")) + [ROOT / "ruqqus" / "classes" / "user.py"]:
+    # the routes, the model and the helpers (a lift written in a helper used to go unseen: the review of 2026-11-19)
+    for path in (sorted((ROOT / "ruqqus" / "routes").glob("*.py")) + sorted((ROOT / "ruqqus" / "helpers").glob("*.py"))
+                 + [ROOT / "ruqqus" / "classes" / "user.py"]):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
             body = ast.get_source_segment(path.read_text(encoding="utf-8"), node) or ""
-            used = {k for k in kinds if re.search(rf"""["']{k}["']""", body) and re.search(rf"""(kind\s*=|record\w*\(\s*g\.db,|ModAction\()""", body)}
+            used = {k for k in kinds if re.search(rf"""["']{k}["']""", body) and re.search(rf"""(kind\s*=|record\w*\(\s*(?:g\.)?db,|ModAction\()""", body)}
             if used:
                 found[(path.name, node.name)] = used
     return found
@@ -40,7 +44,7 @@ def test_every_lifting_route_tells_the_person_or_says_why_not():
         if name in OTHERWISE_TOLD:
             continue
         body = ""
-        for path in (ROOT / "ruqqus" / "routes" / file, ROOT / "ruqqus" / "classes" / file):
+        for path in (ROOT / "ruqqus" / "routes" / file, ROOT / "ruqqus" / "classes" / file, ROOT / "ruqqus" / "helpers" / file):
             if path.exists():
                 tree = ast.parse(path.read_text(encoding="utf-8"))
                 for node in ast.walk(tree):
@@ -65,13 +69,13 @@ def test_the_lapse_step_tells_the_accounts_whose_suspension_ended():
 def test_a_lift_notice_has_no_link_and_the_imposed_ones_carry_the_log_and_the_appeal():
     from ruqqus.helpers import log_notices as n
 
-    for name in ("EXILE_LIFTED", "MUTE_LIFTED", "POST_SHOWN", "COMMENT_SHOWN", "POST_RESTORED", "COMMENT_RESTORED", "COMMENT_SHOWN_AGAIN",
-                 "SUSPENSION_ENDED", "GUILD_REINSTATED"):
-        assert "%(log)s" not in getattr(n, name) and "%(appeal)s" not in getattr(n, name), name
+    from ruqqus.helpers.notice_parts import needs
+    for name in ("EXILE_LIFTED", "MUTE_LIFTED", "EXILE_LIFTED_HELD", "MUTE_LIFTED_HELD", "POST_SHOWN", "COMMENT_SHOWN", "POST_RESTORED", "COMMENT_RESTORED",
+                 "COMMENT_SHOWN_AGAIN", "SUSPENSION_ENDED", "SUSPENSION_ENDED_HELD", "GUILD_REINSTATED"):
+        assert not needs(getattr(n, name)) & {"log", "appeal"}, name                # no link to an entry or an appeal (an item's own link is the notice's subject)
     for name in ("MUTED", "GUILD_BANNED"):
-        text = getattr(n, name)
-        assert "%(log)s" in text and "%(appeal)s" in text and "%(why)s" in text, name
-    assert "%(appeal)s" in n.BAN_CITES and "%(num)s" in n.BAN_CITES and "%(items)s" not in n.BAN_CITES, "a count and the way to the page that lists them: never an item"
+        assert needs(getattr(n, name)) >= {"log", "appeal", "why"}, name
+    assert needs(n.BAN_CITES) == {"num", "appeal"}, "a count and the way to the page that lists them: never an item"
 
 
 def test_no_lift_notice_can_name_an_alias():

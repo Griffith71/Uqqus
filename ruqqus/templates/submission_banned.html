@@ -42,6 +42,11 @@
 {% else %}
 <form action="/api/ban_post/{{ p.base36id }}", method="post">
 <input type="hidden" name="formkey", value="{{ v.formkey }}">
+<input type="text" class="form-control" name="reason" placeholder="Removal Reason (public, required)" required maxlength="512">
+<select name="rule" class="form-control" aria-label="Rule broken" required>
+  <option value="">Rule broken</option>
+  {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ msg_text(label) }}</option>{% endfor %}
+</select>
 <input type="submit" value="Remove Post">
 </form>
 {% endif %}

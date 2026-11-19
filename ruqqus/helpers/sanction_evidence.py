@@ -40,7 +40,7 @@ def usable(item, board_id, user_id, owner_id, allow_anonymous=False):
     return item.original_board_id == board_id and owner_id == user_id
 
 
-def keep(db, entry_id, board_id, user_id, items, now=None):
+def keep(db, entry_id, board_id, user_id, items, now=None, limit=MAX_CITED):
     """A private `evidence` copy of each cited item, tied to the entry. The copy's author is the exiled account (a guild's copy of a post keeps its
     ORIGINAL author's id, but the person the decision is about is the forwarder). Returns how many were kept."""
     kept = 0
@@ -50,7 +50,7 @@ def keep(db, entry_id, board_id, user_id, items, now=None):
         if key in seen:
             continue
         seen.add(key)
-        if kept >= MAX_CITED:
+        if kept >= limit:
             break
         snapshot = action_log.snapshot_of(item, board_id, comment=is_comment(item), kind=action_log.EVIDENCE)
         snapshot["author_id"] = user_id

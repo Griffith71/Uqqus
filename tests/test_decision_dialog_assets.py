@@ -49,9 +49,14 @@ def test_every_exile_and_mute_menu_item_opens_the_dialog_through_the_macros():
 def test_the_admin_takedown_entry_points_ask_for_a_reason():
     script = read("ruqqus", "assets", "js", "all_js.js")
     remove = script.split("function removePost(post_id) {")[1].split("\n}\n")[0]
-    assert "window.prompt(" in remove and "{reason: reason.trim()}" in remove, "the one-tap Remove sent no reason and was refused every time"
+    assert "takedownDialog(" in remove and "ruleRequired: true" in remove and "/api/ban_post/" in remove and "window.prompt(" not in remove, \
+        "the one-tap Remove sent no reason and was refused every time; it opens the dialog that asks for the reason and the rule"
+    comment = script.split("function removeComment(cid) {")[1].split("\n}\n")[0]
+    assert "takedownDialog(" in comment and "ruleRequired: true" in comment and "/api/ban_comment/" in comment
     purge = script.split("function purgeComment(cid) {")[1].split("\n}\n")[0]
-    assert "window.prompt(" in purge and "/api/purge_comment/" in purge and "{reason: reason.trim()}" in purge
+    assert "takedownDialog(" in purge and "ruleRequired: true" in purge and "/api/purge_comment/" in purge
+    dialog = read("ruqqus", "assets", "js", "decision_dialog.js")
+    assert "current.ruleRequired" in dialog and "typeof current.done" in dialog
     comments = read("ruqqus", "templates", "comments.html")
     assert comments.count("purgeComment('{{ c.base36id }}')") == 2 and "post_toast('/api/purge_comment" not in comments
     pages = read("ruqqus", "assets", "js", "guild_pages.js")

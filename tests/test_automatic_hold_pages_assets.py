@@ -139,7 +139,9 @@ def test_a_review_is_up_to_five_hundred_characters_and_the_notice_carries_the_li
     assert "up to 500 characters" in flat(moderation_section())
     assert "500 characters" in privacy_bullet()
     assert log_notices.QUARANTINE_APPEAL == quarantine.APPEAL_LINK == "/appeal/quarantine"
-    assert "Ask for a review" in str(log_notices.QUARANTINED) and "Ask for a review" in flat(moderation_section())
+    from ruqqus.helpers.notice_parts import ASK_REVIEW, rendered
+    assert "%(review_link)s" in str(log_notices.QUARANTINED) and str(ASK_REVIEW) == "Ask for a review" and "Ask for a review" in flat(moderation_section())
+    assert "[Ask for a review](/appeal/quarantine)" in rendered(log_notices.QUARANTINED, {"why": "x", "appeal": log_notices.QUARANTINE_APPEAL, "site": "Laba"})
 
 
 def test_the_pages_name_the_checks_the_triggers_have():

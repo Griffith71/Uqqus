@@ -204,10 +204,13 @@ def _name(user_id):
 @app.route("/admin/appeals", methods=["GET"])
 @admin_level_required(3)
 def admin_appeals(v):
-    appeals = [a for a in log_appeals.open_queue(g.db, None) if _may_decide_site(a, v) and a["user_id"] != v.id]
+    # the site's own appeals, and a guild's that its guildmasters can't answer (the only one who could is the one who decided it) or have left open for two weeks
+    appeals = sorted(log_appeals.open_queue(g.db, None) + log_appeals.escalated_queue(g.db), key=lambda a: a["id"])
+    appeals = [a for a in appeals if _may_decide_site(a, v) and a["user_id"] != v.id]
     rows = _queue_rows(appeals, True)
     for row, a in zip(rows, appeals):
         row["conflicted"] = log_appeals.conflicted(g.db, {**a, "board_id": None}, v.id)
+        row["escalated"] = a.get("escalated")
     return render_template("admin/appeals.html", v=v, rows=rows, waiting=len(rows), msg=request.args.get("msg"))
 
 
@@ -236,7 +239,9 @@ def _may_decide_guild(m, action):
 def guild_appeals(guildname, v):
     board = get_guild(guildname, v=v)
     m = _guild_mod(board, v)
-    appeals = [a for a in log_appeals.open_queue(g.db, board.id) if _may_decide_guild(m, a["action"]) and a["user_id"] != v.id]
+    # an appeal only the admins can answer (`log_appeals.ALONE`) is not on the guild's queue at all
+    appeals = [a for a in log_appeals.open_queue(g.db, board.id) if _may_decide_guild(m, a["action"]) and a["user_id"] != v.id
+               and log_appeals.escalation(g.db, a) != log_appeals.ALONE]
     rows = _queue_rows(appeals, False)
     for row, a in zip(rows, appeals):
         row["conflicted"] = log_appeals.conflicted(g.db, a, v.id)
@@ -364,9 +369,10 @@ def _undo(entry, decider):
     return action_log.annotate(g.db, ma.id, reason=UNDO_REASON, linked_entry_id=entry["id"])
 
 
-def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
+def _settle(appeal_id, outcome, note, decider, queue_url, permitted, site_queue=False):
     """The one decision: refuses what the caller may not decide, runs the undo on `reversed`, records the outcome once and tells the person.
-    `permitted` is the caller's own check of who may decide this appeal."""
+    `permitted` is the caller's own check of who may decide this appeal. `site_queue` says it is decided from the admins' queue: "someone else who could" is then another
+    admin (the page's own test), never another guildmaster, and a reversal is drawn as the site's."""
     appeal = log_appeals.appeal_of(g.db, appeal_id)
     if appeal is None or not permitted(appeal):
         abort(404)
@@ -374,7 +380,7 @@ def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
         return _bad_input(queue_url, "That appeal was already decided.")
     if appeal["user_id"] == decider.id:
         abort(404)                          # nobody decides their own appeal (the second review, C10): it is not on their queue either
-    if log_appeals.conflicted(g.db, appeal, decider.id):
+    if log_appeals.conflicted(g.db, {**appeal, "board_id": None} if site_queue else appeal, decider.id):
         return _bad_input(queue_url, "You made this decision: another can decide its appeal.")
     outcome = log_appeals.parse_outcome(outcome)
     note = log_appeals.parse_reason(note, log_appeals.NOTE_MAX)
@@ -387,6 +393,9 @@ def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
             # it was put right by hand since the appeal was made: reversing it now would lift whatever came after (the second review, C50)
             return _bad_input(queue_url, "That decision has already been lifted: choose another outcome.")
         reversal = _undo(entry, decider)
+        if reversal and site_queue and entry["actor_role"] == action_log.GUILDMASTER:
+            # an escalated guild appeal decided by an admin: the reversal is the site's, as every admin decision is drawn, never a guildmaster by name
+            g.db.execute(text("UPDATE log_entries SET actor_role = :r WHERE id = :i"), {"r": action_log.ADMIN, "i": reversal})
         if reversal is None:
             g.db.rollback()
             return _bad_input(queue_url, "That could not be undone (it may already have been put right by hand).")
@@ -413,7 +422,8 @@ def _settle(appeal_id, outcome, note, decider, queue_url, permitted):
 @validate_formkey
 def admin_appeal_decide(appeal_id, v):
     return _settle(appeal_id, request.form.get("outcome"), request.form.get("note"), v, "/admin/appeals",
-                   lambda appeal: appeal["board_id"] is None and _may_decide_site(appeal, v))
+                   lambda appeal: (appeal["board_id"] is None or log_appeals.escalation(g.db, appeal)) and _may_decide_site(appeal, v),
+                   site_queue=True)
 
 
 @app.route("/+<guildname>/mod/appeals/<int:appeal_id>", methods=["POST"])
@@ -424,7 +434,8 @@ def guild_appeal_decide(guildname, appeal_id, v):
     board = get_guild(guildname, v=v)
     m = _guild_mod(board, v)
     return _settle(appeal_id, request.form.get("outcome"), request.form.get("note"), v, f"/+{board.name}/mod/appeals",
-                   lambda appeal: appeal["board_id"] == board.id and _may_decide_guild(m, appeal["action"]))
+                   lambda appeal: appeal["board_id"] == board.id and _may_decide_guild(m, appeal["action"])
+                   and log_appeals.escalation(g.db, appeal) != log_appeals.ALONE)
 
 
 def _appeal_url(entry_id, user_id):

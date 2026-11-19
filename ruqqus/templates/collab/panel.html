@@ -58,7 +58,7 @@
       <div>
         <strong>
           {% if p.kind == 'add_author' %}{% if p.subject %}{{ _("Add %(name)s", name=p.subject.name) }}{% else %}{{ _("Add an account") }}{% endif %}
-          {% elif p.kind == 'remove_author' %}{% if p.is_subject and p.by_alias %}{{ _("Remove you as an author") }}{% elif p.subject %}{{ _("Remove %(name)s", name=p.subject.name) }}{% else %}{{ _("Remove an author") }}{% endif %}
+          {% elif p.kind == 'remove_author' %}{% if p.subject %}{{ _("Remove %(name)s", name=p.subject.name) }}{% else %}{{ _("Remove an author") }}{% endif %}
           {% elif p.kind == 'change_rules' %}{{ _("Change the rules") }}
           {% elif p.kind == 'delete_post' %}{{ _("Delete the published post") }}
           {% else %}{{ _("Publish the draft as it was") }}{% endif %}

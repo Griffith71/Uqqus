@@ -825,7 +825,7 @@ Optional form data:
         return jsonify({"error": tr("@%(name)s is an approved contributor to +%(guild)s and can't currently be exiled.",
                                     name=user.username, guild=board.name)}), 409
 
-    if board.has_mod(user):
+    if board.leads(user):                # whoever the account is signed in as, held or not: a held guildmaster is still one
         return jsonify({"error": tr("You can't exile other guildmasters.")}), 409
 
     # you can only exile a user who has previously participated in the guild
@@ -1140,7 +1140,7 @@ def mod_remove_username(bid, username, board, v):
 
     user = get_user(username)
 
-    u_mod = board.has_mod(user)
+    u_mod = board.mod_row(user)          # the record of the one being removed, held or not
     v_mod = board.has_mod(v)
 
     if not u_mod:

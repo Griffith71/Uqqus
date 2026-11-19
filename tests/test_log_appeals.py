@@ -31,7 +31,7 @@ def db():
         conn.execute(text("CREATE TABLE comment_forwardrels (id INTEGER PRIMARY KEY, promoted_submission_id INTEGER, promoted_by_id INTEGER)"))
         conn.execute(text("CREATE TABLE boards (id INTEGER PRIMARY KEY, is_private BOOLEAN DEFAULT 0, is_circle BOOLEAN DEFAULT 0, creator_id INTEGER)"))
         conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, admin_level INTEGER DEFAULT 0, is_banned INTEGER DEFAULT 0, "
-                          "unban_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0)"))
+                          "unban_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0, quarantined_utc INTEGER DEFAULT 0)"))
         conn.execute(text("CREATE TABLE mods (id INTEGER PRIMARY KEY, user_id INTEGER, board_id INTEGER, accepted BOOLEAN DEFAULT 1, "
                           "invite_rescinded BOOLEAN DEFAULT 0, perm_full BOOLEAN DEFAULT 0, perm_content BOOLEAN DEFAULT 0, "
                           "perm_access BOOLEAN DEFAULT 0)"))
@@ -294,14 +294,15 @@ def test_the_count_beside_the_site_queue_counts_what_the_reader_may_decide_and_n
     guild_hide = appeals.file_appeal(db, hide_post(db), 30, "no", now=NOW)                  # a guild's own queue, never the site's
     assert appeals.entry_of(db, legal_entry)["audience"] == log.LEGAL
     assert appeals.board_for(db, appeals.entry_of(db, legal_entry)) is None and plain and legal and guild_ban and guild_hide
-    # the count follows the queue's own rule: level 3 reads one of the three, level 4 all three; nobody below level 3 is read wider than level 3
-    assert appeals.waiting_count(db, None, level=3) == 1 and appeals.waiting_count(db, None, level=4) == 3
-    assert appeals.waiting_count(db) == 1 and appeals.waiting_count(db, None, level=None) == 1 and appeals.waiting_count(db, None, level="x") == 1
-    assert appeals.waiting_count(db, None, level=0) == 1 and appeals.waiting_count(db, None, level=5) == 3
+    # the count follows the queue's own rule: level 3 reads the plain one, level 4 the legal one and the guild's ban too; nobody below level 3 is read wider than level 3.
+    # (The guild's hide is the admins' as well here: its decider, 10, is the only guildmaster with the content permission, so no one else could answer it: `escalation`.)
+    assert appeals.waiting_count(db, None, level=3) == 2 and appeals.waiting_count(db, None, level=4) == 4
+    assert appeals.waiting_count(db) == 2 and appeals.waiting_count(db, None, level=None) == 2 and appeals.waiting_count(db, None, level="x") == 2
+    assert appeals.waiting_count(db, None, level=0) == 2 and appeals.waiting_count(db, None, level=5) == 4
     # nobody decides their own appeal, so it is not on their queue and not in their number
-    assert appeals.waiting_count(db, None, level=3, viewer_id=31) == 0 and appeals.waiting_count(db, None, level=4, viewer_id=31) == 2
-    assert appeals.waiting_count(db, None, level=4, viewer_id=30) == 2 and appeals.waiting_count(db, None, level=4, viewer_id=12) == 2
-    assert appeals.waiting_count(db, None, level=4, viewer_id=20) == 3                         # an admin who appealed nothing loses none
+    assert appeals.waiting_count(db, None, level=3, viewer_id=31) == 1 and appeals.waiting_count(db, None, level=4, viewer_id=31) == 3
+    assert appeals.waiting_count(db, None, level=4, viewer_id=30) == 2 and appeals.waiting_count(db, None, level=4, viewer_id=12) == 3
+    assert appeals.waiting_count(db, None, level=4, viewer_id=20) == 4                         # an admin who appealed nothing loses none
     # a guild's number is its own and is unchanged by any of it
     assert appeals.waiting_count(db, 3) == 1
 
@@ -335,3 +336,44 @@ def test_the_admin_page_asks_the_count_as_the_admin_it_is_drawn_for_and_the_queu
     # the queue itself still leaves out a reader's own appeal and what they may not decide
     queue = route.split("def admin_appeals(", 1)[1].split("\ndef ", 1)[0]
     assert "_may_decide_site(a, v) and a[\"user_id\"] != v.id" in queue
+
+
+# --- escalation to the admins (the owner, 2026-11-19) -----------------------------------------------------------------------------------
+
+def test_a_guild_appeal_nobody_else_could_answer_is_the_admins(db):
+    """10 is the only guildmaster with the content permission, so no one but the one who hid the post could answer its appeal."""
+    appeal_id = appeals.file_appeal(db, hide_post(db), 30, "It was not an advert.", now=NOW)
+    row = appeals.appeal_of(db, appeal_id)
+    assert appeals.escalation(db, row, NOW) == appeals.ALONE
+    assert [a["id"] for a in appeals.escalated_queue(db, NOW)] == [appeal_id]
+    assert appeals.escalated_queue(db, NOW)[0]["escalated"] == appeals.ALONE
+
+
+def test_another_guildmaster_who_could_decide_keeps_it_in_the_guild_until_it_has_waited_two_weeks(db):
+    db.execute(text("INSERT INTO mods (user_id, board_id, perm_content) VALUES (12, 3, 1)"))
+    appeal_id = appeals.file_appeal(db, hide_post(db), 30, "no", now=NOW)
+    row = appeals.appeal_of(db, appeal_id)
+    assert appeals.escalation(db, row, NOW) is None and appeals.escalated_queue(db, NOW) == []
+    assert appeals.escalation(db, row, NOW + 13 * DAY) is None
+    assert appeals.escalation(db, row, NOW + 14 * DAY) == appeals.LATE and [a["escalated"] for a in appeals.escalated_queue(db, NOW + 15 * DAY)] == [appeals.LATE]
+
+
+def test_a_colleague_who_is_held_or_deleted_or_banned_is_not_another_who_could_decide(db):
+    db.execute(text("INSERT INTO mods (user_id, board_id, perm_content) VALUES (12, 3, 1)"))
+    appeal_id = appeals.file_appeal(db, hide_post(db), 30, "no", now=NOW)
+    row = appeals.appeal_of(db, appeal_id)
+    assert appeals.escalation(db, row, NOW) is None
+    db.execute(text("UPDATE users SET quarantined_utc = 5 WHERE id = 12"))
+    assert appeals.escalation(db, row, NOW) == appeals.ALONE, "a held guildmaster decides nothing"
+    db.execute(text("UPDATE users SET quarantined_utc = 0, is_deleted = 1 WHERE id = 12"))
+    assert appeals.escalation(db, row, NOW) == appeals.ALONE
+    db.execute(text("UPDATE users SET is_deleted = 0, is_banned = 1, unban_utc = 0 WHERE id = 12"))
+    assert appeals.escalation(db, row, NOW) == appeals.ALONE
+
+
+def test_the_one_who_appealed_is_not_another_who_could_and_a_site_appeal_is_never_escalated(db):
+    db.execute(text("INSERT INTO mods (user_id, board_id, perm_content) VALUES (30, 3, 1)"))      # the account that appealed is itself a guildmaster of the guild
+    row = appeals.appeal_of(db, appeals.file_appeal(db, hide_post(db), 30, "no", now=NOW))
+    assert appeals.escalation(db, row, NOW) == appeals.ALONE
+    site = appeals.appeal_of(db, appeals.file_appeal(db, log.record_ban(db, 31, 20, days=0, reason="Spam"), 31, "no", now=NOW))
+    assert appeals.escalation(db, site, NOW + 400 * DAY) is None and site["board_id"] is None

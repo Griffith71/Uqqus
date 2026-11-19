@@ -151,11 +151,13 @@ def authors(db, doc_id):
 def voters(db, doc_id):
     """The authors who can take part in a decision: [(user_id, last_active_utc)], leaving out deleted accounts and
     accounts banned for good (audit C-04: they used to count, so one deleted author could hold a unanimous decision
-    for six months, or for ever under "never")."""
+    for six months, or for ever under "never"), and accounts on hold (helpers/quarantine.py: the vote route is held for them, so they could never
+    answer, and under the default unanimous rule one held author would stall every decision of the draft)."""
     return [(r[0], r[1]) for r in db.execute(text("""
         SELECT a.user_id, COALESCE(u.last_active_utc, 0) FROM collab_authors a JOIN users u ON u.id = a.user_id
         WHERE a.doc_id = :d AND a.left_utc = 0 AND COALESCE(u.is_deleted, :no) = :no
           AND NOT (COALESCE(u.is_banned, 0) <> 0 AND COALESCE(u.unban_utc, 0) = 0)
+          AND (COALESCE(u.quarantined_utc, 0) = 0 OR COALESCE(u.admin_level, 0) > 0 OR COALESCE(u.is_bot, :no) <> :no)
         ORDER BY a.joined_utc, a.user_id"""), {"d": doc_id, "no": False})]
 
 

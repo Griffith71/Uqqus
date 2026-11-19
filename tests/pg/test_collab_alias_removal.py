@@ -85,20 +85,23 @@ def test_a_number_that_finds_no_credit_is_refused_the_same_whatever_the_reason(r
     assert propose(author, doc, alias="1").status_code == 200, "a credit that is anonymous and still an author is found"
 
 
-def test_a_removal_by_number_shows_the_number_to_the_others_and_the_person_that_they_are_the_subject(real_app, make_member):
+def test_a_removal_by_number_looks_the_same_to_every_author_the_person_it_is_about_included(real_app, make_member):
+    """The owner left the design to me (2026-11-19). If everyone but the subject were offered the vote buttons, the other authors would know by elimination who the
+    number is, so every author gets the same panel, the same notice and the same buttons; the subject's vote is accepted and never counted or kept."""
     doc, post_id, people = published(real_app, make_member)
     author, named = people["author"], people["named"][0]
     first, second = people["anon"][1], people["anon"][2]
     assert propose(author, doc, alias="1").status_code == 200
     pid = one(real_app, "SELECT id, subject_user_id, payload FROM collab_proposals WHERE doc_id = :d", d=doc)
     assert pid["subject_user_id"] == first.id and json.loads(pid["payload"]) == {"alias_n": 1}
-    for viewer in (author, named, second):
-        page = panel(viewer, doc)
-        assert "Remove Anonymous #1" in page, viewer.username
-        assert "Remove you as an author" not in page
-    mine = panel(first, doc)
-    assert "Remove you as an author" in mine and "/vote?vote=yes" not in mine.split("Remove you as an author")[1].split("</li>")[0], "no vote buttons for the subject"
-    assert vote(first, doc, pid["id"]).status_code == 403, "the subject can't vote on their own removal"
+    pages = {who.username: panel(who, doc) for who in (author, named, second, first)}
+    for name, page in pages.items():
+        assert "Remove Anonymous #1" in page and "Remove you as an author" not in page, name
+        assert "/vote?vote=yes" in page.split("Remove Anonymous #1")[1].split("</li>")[0], f"{name}: the vote buttons are there for everyone"
+    assert any("made a proposal in a shared draft you write" in n for n in notices_of(real_app, first.id)), "the same notice, the person it is about included"
+    assert vote(first, doc, pid["id"], "no").status_code == 200, "their vote is accepted"
+    assert rows(real_app, "SELECT 1 FROM collab_votes WHERE proposal_id = :p AND user_id = :u", p=pid["id"], u=first.id) == [], "and not kept"
+    assert one(real_app, "SELECT outcome FROM collab_proposals WHERE id = :i", i=pid["id"])["outcome"] == "open"
 
 
 def test_a_proposal_by_number_is_a_duplicate_of_another_by_the_same_number_only(real_app, make_member):

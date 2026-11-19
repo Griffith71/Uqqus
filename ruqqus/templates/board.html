@@ -34,6 +34,7 @@
 {% if not b.has_mod(v) %}
 <form action="/api/mod_self/{{ b.base36id }}" method="post">
   <input type="hidden" name="formkey", value="{{ v.formkey }}">
+  <input type="text" name="reason" class="form-control bg-white mt-3" maxlength="512" required placeholder="Why you are making yourself a guildmaster (its guildmasters are told)" aria-label="Reason">
   <input type="submit" class="btn btn-success mt-3" value="Mod Self">
 </form>
 {% endif %}

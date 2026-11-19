@@ -878,11 +878,25 @@ function showCommentModeration(cid, removed) {
   if (body) body.classList.toggle("banned", removed);
 }
 
-function removeComment(cid) {
-  var reason = window.prompt(tr("Why is this comment being removed? Your reason is shown in the public log."));
+// An admin's takedown (a removal or an erasure) says why and names the rule it breaks. The decision dialog (assets/js/decision_dialog.js) asks for both; a page whose shell
+// doesn't draw it (the guild settings and help shells, which also show these buttons to an admin) asks with two prompts and posts the same fields.
+function takedownDialog(opts) {
+  if (typeof window.decisionDialog === "function") { window.decisionDialog(opts); return; }
+  var reason = window.prompt(opts.intro);
   if (reason == null || reason.trim() == "") return;
-  post("/api/ban_comment/" + cid, function() { showCommentModeration(cid, true); },
-    tr("Unable to remove the comment at this time. Please try again later."), {reason: reason.trim()});
+  var rule = window.prompt(tr("Which rule does it break? One of: good_faith, illegal, content, disclosure, evasion, bots, guild_rule, other"), "other");
+  if (rule == null || rule.trim() == "") return;
+  post(opts.url, function() { if (typeof opts.done === "function") opts.done(); else window.location.reload(true); },
+    tr("Something went wrong. Please try again."), {reason: reason.trim(), rule: rule.trim(), ajax: "1"});
+}
+
+function removeComment(cid) {
+  // an admin's removal names the rule it breaks and says why, in public (the owner, 2026-11-19): the dialog asks for both
+  takedownDialog({
+    title: tr("Remove this comment"), ok: tr("Remove"), intro: tr("Why is this comment being removed? Your reason is shown in the public log."),
+    url: "/api/ban_comment/" + encodeURIComponent(cid), ruleRequired: true,
+    done: function() { showCommentModeration(cid, true); }
+  });
 }
 
 function approveComment(cid) {
@@ -2231,19 +2245,20 @@ function showModeration(post_id, removed) {
 }
 
 function removePost(post_id) {
-  // a removal says why, in public (the owner, 2026-11-14): this button used to send no reason and the route refused it every time
-  var reason = window.prompt(tr("Why is this post being removed? Your reason is shown in the public log."));
-  if (reason == null || reason.trim() == "") return;
-  post("/api/ban_post/" + post_id, function() { showModeration(post_id, true); },
-    tr("Unable to remove post at this time. Please try again later."), {reason: reason.trim()});
+  // a removal says why, in public, and names the rule it breaks (the owner, 2026-11-14 and 2026-11-19)
+  takedownDialog({
+    title: tr("Remove this post"), ok: tr("Remove"), intro: tr("Why is this post being removed? Your reason is shown in the public log."),
+    url: "/api/ban_post/" + encodeURIComponent(post_id), ruleRequired: true,
+    done: function() { showModeration(post_id, true); }
+  });
 }
 
 // erase a comment's text for good (an admin): the sheet asked "are you sure?", this asks why, in public
 function purgeComment(cid) {
-  var reason = window.prompt(tr("Why is this comment's text being erased? Your reason is shown in the public log."));
-  if (reason == null || reason.trim() == "") return;
-  post("/api/purge_comment/" + cid, function() { window.location.reload(true); },
-    tr("Unable to erase the comment at this time. Please try again later."), {reason: reason.trim()});
+  takedownDialog({
+    title: tr("Erase this comment's text"), ok: tr("Erase"), intro: tr("Why is this comment's text being erased? Your reason is shown in the public log."),
+    url: "/api/purge_comment/" + encodeURIComponent(cid), ruleRequired: true
+  });
 }
 
 function approvePost(post_id) {

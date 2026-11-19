@@ -139,7 +139,7 @@ def _tables():
 def db():
     engine = create_engine("sqlite://")
     with engine.begin() as conn:
-        conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, last_active_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0, is_banned INTEGER DEFAULT 0, unban_utc INTEGER DEFAULT 0)"))
+        conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, last_active_utc INTEGER DEFAULT 0, is_deleted BOOLEAN DEFAULT 0, is_banned INTEGER DEFAULT 0, unban_utc INTEGER DEFAULT 0, quarantined_utc INTEGER DEFAULT 0, admin_level INTEGER DEFAULT 0, is_bot BOOLEAN DEFAULT 0)"))
         conn.execute(text("INSERT INTO users (id, last_active_utc) VALUES (1, :n), (2, :n), (3, :old)"),
                      {"n": NOW, "old": NOW - 400 * DAY})
         for statement in _tables():

@@ -85,8 +85,9 @@ def test_every_notice_that_links_an_item_or_the_log_is_held_from_a_limited_qr_si
     """C14: a notice with `%(item)s` or `%(log)s` names the member's item by id (an anonymous one included): a relayed code's limited session reads the
     notifications, and must not."""
     from ruqqus.helpers import log_notices
+    from ruqqus.helpers.notice_parts import needs
     linking = {name: value for name, value in vars(log_notices).items()
-               if name.isupper() and isinstance(value, str) and ("%(item)s" in value or "%(log)s" in value or "%(link)s" in value)}
+               if name.isupper() and isinstance(value, str) and needs(value) & {"item", "log", "link"}}
     assert len(linking) >= 14
     missing = sorted(name for name, value in linking.items() if value not in log_notices.HELD_FROM_LIMITED)
     assert not missing, f"these notices link an item or an entry and a limited sign-in would read them: {missing}"

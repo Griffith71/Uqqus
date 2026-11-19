@@ -25,7 +25,7 @@ def admin_of(make_member, level=3):
 
 def ban(client, admin, user, evidence=(), reason="Posting spam that made the guild unusable", days=""):
     return client.post(f"/api/ban_user/{user.id}", base_url=BASE, headers={"User-Agent": AGENT},
-                       data={"formkey": admin.formkey(client), "reason": reason, "rule": "evading", "days": days, "evidence": list(evidence)},
+                       data={"formkey": admin.formkey(client), "reason": reason, "rule": "evasion", "days": days, "evidence": list(evidence)},
                        environ_base={"REMOTE_ADDR": address()})
 
 

@@ -11,7 +11,8 @@
 {% block content %}
 <h1>Appeals</h1>
 <p>Appeals of decisions the site's admins or its own checks made (a removal, a suspension, a ban or a quarantine) and of a post author's hide of a comment.
-A guild's own decisions are decided by that guild's guildmasters. An
+A guild's own decisions are decided by that guild's guildmasters, and come here only when they can't answer: the one who decided is the only guildmaster who could
+(or none is left or none is free), or the guild left it open for two weeks. An
 appeal is private: its text is read only here. <strong>Reversed</strong> runs the undo and writes a new entry in the Log linked to the original
 (the original is never edited); <strong>Upheld</strong> means it stands; <strong>Dismissed</strong> means it was not taken further. Say why in a
 line: the person is sent it. You can't decide an appeal of your own decision while another admin could.</p>
@@ -24,6 +25,8 @@ line: the person is sent it. You can't decide an appeal of your own decision whi
     <div class="min-width-0">
       <div>{{ r.sentence }} <a href="/log/{{ r.entry_id }}">(entry {{ r.entry_id }})</a></div>
       <div class="text-small text-muted">{{ datetime_text(r.created_utc, "%d %b %Y %H:%M") }} (UTC){% if r.who %} &middot; appealed by <a href="/@{{ r.who }}">@{{ r.who }}</a>{% endif %}{% if r.rule in LOG_RULES %} &middot; {{ LOG_RULES[r.rule] }}{% endif %}</div>
+      {% if r.escalated == 'alone' %}<div class="text-small mt-1 font-weight-bold">Escalated: no other guildmaster of that guild could decide this, so it is yours alone.</div>
+      {% elif r.escalated == 'late' %}<div class="text-small mt-1 font-weight-bold">Escalated: the guild's guildmasters have left this open for two weeks. Their queue still has it; whoever decides first settles it.</div>{% endif %}
       {% if r.entry_reason %}<div class="text-small mt-1">Reason given: {{ r.entry_reason }}</div>{% endif %}
       {% if r.check %}<div class="text-small mt-1">What the automatic check saw: {{ r.check }}. Reversing it releases the hold; the account is not banned either way.</div>{% endif %}
       <blockquote class="mt-2 mb-2 pl-3 border-left" style="white-space: pre-wrap;">{{ r.reason }}</blockquote>

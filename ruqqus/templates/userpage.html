@@ -154,6 +154,7 @@
 <form action="/admin/demod_user" method="post">
   <input type="hidden" name="formkey" value="{{ v.formkey }}">
   <input type="hidden" name="user" value="{{ u.username }}">
+  <input type="text" name="reason" class="form-control form-control-sm mb-1" maxlength="512" required placeholder="Why they are removed as guildmaster everywhere (they are told, and it is in the Log)" aria-label="Reason">
   <input type="submit" class="d-none btn btn-danger" id="demod-user" value="Confirm De-Mod User">
 </form>
 {% endblock %}

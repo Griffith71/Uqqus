@@ -202,7 +202,7 @@ def test_every_refusal_answers_the_one_accepted_message_and_a_target_is_checked_
     exile = source[source.index("def mod_exile_alias"):source.index('@app.route("/mod/unexile_alias')]
     assert exile.index("_target(board, v)") < exile.index("BanRelationship(") and "return _accepted()" in exile
     target = source[source.index("def _target"):source.index("def _logged")]
-    for refusal in ("board.has_mod(user)", "board.has_contributor(user)", "admin_level", "user.id == v.id", "is_deleted"):
+    for refusal in ("board.leads(user)", "board.has_contributor(user)", "admin_level", "user.id == v.id", "is_deleted"):
         assert refusal in target, refusal
     assert "abort(" not in target and "jsonify(" not in target, "a refusal never has an answer of its own"
 

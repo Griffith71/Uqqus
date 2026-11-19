@@ -43,8 +43,9 @@ def test_the_ban_notice_names_the_sole_administrator_and_keeps_its_facts():
     assert len(after) == 2, "the notice still says a second administrator approves"
     assert SOLE.search(after[1][:REACH]), "and what happens when there is only one"
     # the facts it keeps: a count and the appeal link; never an id, the entry or a link to an item (it is read by whoever is signed in, a relayed QR code included)
-    assert "%(num)s" in message and "%(appeal)s" in message
-    for forbidden in ("%(item)s", "%(items)s", "%(log)s", "%(link)s", "%(id)s"):
+    from ruqqus.helpers.notice_parts import needs
+    assert needs(message) == {"num", "appeal"}, "a count and the appeal link, built from `appeal`: nothing else"
+    for forbidden in ("%(item)s", "%(items)s", "%(log)s", "%(link)s", "%(id)s", "%(post_link)s", "%(comment_link)s", "%(log_link)s"):
         assert forbidden not in message, forbidden
     assert message not in log_notices.HELD_FROM_LIMITED, "it links no item and no entry, so a limited sign-in may read it (and it must stay that way)"
 

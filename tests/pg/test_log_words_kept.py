@@ -133,9 +133,15 @@ def test_closing_an_account_clears_its_reports_and_appeals_and_the_appeal_leaves
     db.commit()
     post_id = row.id
     assert post(gm.browser(), gm, f"/mod/kick/{name}/{base36encode(post_id)}", reason="Advertising", rule="good_faith").status_code == 200
+    # a second guildmaster answers appeals: with only the one who decided, the appeal is the admins' (the escalation of 2026-11-19)
+    reader = make_member()
+    db = reader.db_session()
+    db.add(ModRelationship(user_id=reader.id, board_id=board_id, accepted=True, invite_rescinded=False, perm_full=True, perm_content=True,
+                           perm_access=True, perm_config=True))
+    db.commit()
     (hidden,) = rows(real_app, "SELECT id FROM log_entries WHERE board_id = :b AND target_submission_id = :p", b=board_id, p=post_id)
     assert post(author.browser(), author, f"/log/{hidden['id']}/appeal", reason="PRIVATE-APPEAL-WORDS").status_code == 303
-    assert "PRIVATE-APPEAL-WORDS" in get(gm.browser(), f"/+{name}/mod/appeals").get_data(as_text=True), "the guildmasters can read it while it is open"
+    assert "PRIVATE-APPEAL-WORDS" in get(reader.browser(), f"/+{name}/mod/appeals").get_data(as_text=True), "the guildmasters can read it while it is open"
     assert [a["user_id"] for a in log_appeals.open_queue(db_session(), board_id)] == [author.id]
 
     # two reports by the author (one decided, one waiting) and one by somebody else on the decided entry
@@ -157,7 +163,7 @@ def test_closing_an_account_clears_its_reports_and_appeals_and_the_appeal_leaves
     db = db_session()
     db.rollback()
     assert log_appeals.open_queue(db, board_id) == []
-    page = get(gm.browser(), f"/+{name}/mod/appeals").get_data(as_text=True)
+    page = get(reader.browser(), f"/+{name}/mod/appeals").get_data(as_text=True)
     assert "PRIVATE-APPEAL-WORDS" not in page
 
     # the waiting report can still be decided by the admins, and is deleted once it is old

@@ -404,6 +404,10 @@ _NATIVE_THEN_LATIN = (("।.", "।"), ("؟?", "؟"), ("？?", "？"), ("。.", 
 # is drawn "مجهول 3#" (Arabic, Persian, Urdu; Hebrew is fine). A left-to-right mark before the "#" keeps "#3" together (measured in Chromium, 2026-11-14).
 _ARABIC_SCRIPT = re.compile(r"[\u0600-\u06ff\u0750-\u077f]")
 _HASH_BEFORE_VALUE = re.compile(r"(?<!\u200e)#(?=%\(\w+\)[sd])")
+# an "@" before a handle: a neutral between the right-to-left words and the Latin name takes the right-to-left direction, so "@name" was drawn "name@" (Arabic, Persian,
+# Urdu and Hebrew alike); the same mark keeps it in front (the review of 2026-11-19)
+_RTL_SCRIPT = re.compile(r"[\u0590-\u05ff\u0600-\u06ff\u0750-\u077f]")
+_AT_BEFORE_VALUE = re.compile(r"(?<!\u200e)@(?=%\(\w+\)[sd])")
 
 
 def tidy(english, text):
@@ -424,6 +428,8 @@ def tidy(english, text):
             text = text.replace(pair, mark)
     if re.search(r"#%\(", english) and _ARABIC_SCRIPT.search(text):
         text = _HASH_BEFORE_VALUE.sub("\u200e#", text)
+    if re.search(r"@%\(", english) and _RTL_SCRIPT.search(text):
+        text = _AT_BEFORE_VALUE.sub("\u200e@", text)
     return text
 
 

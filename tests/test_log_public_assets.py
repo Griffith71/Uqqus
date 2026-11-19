@@ -219,7 +219,10 @@ def test_an_admins_removal_of_a_post_or_comment_must_say_why_in_public():
     form = read("ruqqus", "templates", "submission.html")
     assert 'name="reason" placeholder="Removal Reason (public, required)" required' in form and 'name="rule"' in form
     js = read("ruqqus", "assets", "js", "all_js.js")
-    assert "function removeComment(cid) {\n  var reason = window.prompt(" in js and "{reason: reason.trim()}" in js
+    comment = js.split("function removeComment(cid) {")[1].split("\n}\n")[0]
+    assert "takedownDialog(" in comment and "ruleRequired: true" in comment      # the dialog asks for the reason and the rule (the owner, 2026-11-19)
+    for fn in ("ban_post", "api_ban_comment"):
+        assert 'action_log.parse_rule(request.form.get("rule"))' in body(ADMIN_API, fn), fn
 
 
 def test_an_exile_may_carry_the_rule_and_the_reason_and_hide_revision_needs_one():

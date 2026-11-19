@@ -5,7 +5,7 @@
   <input type="hidden" name="formkey" value="{{ v.formkey }}">
   <input id="user-ban-message" type="text" class="form-control" name="message" placeholder="Ban Message Reason" onchange="document.getElementById('user-ban-submit').disabled=false">
   <input id="user-ban-reason" type="text" class="form-control" name="reason" placeholder="Ban Reason (public, required)" required maxlength="512" onchange="document.getElementById('user-ban-submit').disabled=false">
-  <select id="user-ban-rule" class="form-control" name="rule" aria-label="Rule broken">
+  <select id="user-ban-rule" class="form-control" name="rule" aria-label="Rule broken" required>
     <option value="">Rule broken</option>
     {% for key, label in LOG_RULES.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
   </select>

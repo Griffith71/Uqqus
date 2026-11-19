@@ -31,60 +31,62 @@ _TICKS = re.compile(r"`+")
 WHY = 300                       # how much of a reason a notice carries; the entry has all of it
 
 # --- what was decided ----------------------------------------------------------------------------------------------------
-HID_POST = N_("[Your post](%(item)s) was hidden from +%(guild)s by a guildmaster.\n\n```\n%(why)s\n```\n\n"
-              "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
-HID_COMMENT = N_("[Your comment](%(item)s) was hidden from +%(guild)s by a guildmaster.\n\n```\n%(why)s\n```\n\n"
-                 "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
-REMOVED_POST = N_("[Your post](%(item)s) was removed.\n\n```\n%(why)s\n```\n\n"
-                  "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
-REMOVED_COMMENT = N_("[Your comment](%(item)s) was removed.\n\n```\n%(why)s\n```\n\n"
-                     "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
-AUTHOR_HID_COMMENT = N_("[Your comment](%(item)s) was hidden by the author of the post it is under.\n\n```\n%(why)s\n```\n\n"
-                        "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
+HID_POST = N_("%(post_link)s was hidden from +%(guild)s by a guildmaster.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
+HID_COMMENT = N_("%(comment_link)s was hidden from +%(guild)s by a guildmaster.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
+REMOVED_POST = N_("%(post_link)s was removed.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
+REMOVED_COMMENT = N_("%(comment_link)s was removed.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
+AUTHOR_HID_COMMENT = N_("%(comment_link)s was hidden by the author of the post it is under.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
 # an exile and a ban each have a notice of their own already (with the admin's own words): this one only carries the way to the Log
 # and the appeal
-DECISION = N_("This decision is in the Log, and you can appeal it: [See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
+DECISION = N_("This decision is in the Log, and you can appeal it: %(log_link)s · %(appeal_link)s")
 
 # a chat mute and a guild ban, when they are made (a mute by alias too: the notice says nothing of the number)
-MUTED = N_("You can no longer write in +%(guild)s's channels, but you can still read them.\n\n```\n%(why)s\n```\n\n"
-           "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
-GUILD_BANNED = N_("+%(guild)s was banned from %(site)s.\n\n```\n%(why)s\n```\n\n"
-                  "[See it in the Log](%(log)s) · [Appeal this decision](%(appeal)s)")
+MUTED = N_("You can no longer write in +%(guild)s's channels, but you can still read them.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
+GUILD_BANNED = N_("+%(guild)s was banned from %(site)s.\n\n%(why_block)s\n\n%(log_link)s · %(appeal_link)s")
 # a ban that cites anonymous items of the account says how many and where to see which (the appeal page lists them to the account alone: a notice is read by
 # whoever is signed in, a relayed QR code included, and the ids of anonymous items are the account's to know)
 BAN_CITES = N_("The ban relies on %(num)s of your anonymous posts and comments. If a second administrator approves (or, on a site with a single "
-               "administrator, its owner), the Log will name your account beside them. [See which, and appeal](%(appeal)s)")
+               "administrator, its owner), the Log will name your account beside them. %(which_link)s")
 
 # what an exile by alias tells its account: the item it cites is anonymous, and the Log entry it links names that item by id (helpers/alias_actions.py)
 ALIAS_EXILED = N_("You have been exiled from +%(guild)s.\n\nNone of your existing posts or comments have been removed, however, you will not be able to forward "
-                  "posts to +%(guild)s or comment in it.\n\nYou were exiled for [this item](%(link)s).")
+                  "posts to +%(guild)s or comment in it.\n\nYou were exiled for %(this_item_link)s.")
 
 # an automatic check put the account on hold (helpers/auto_quarantine.py): it can read the site and change its own settings, and nothing else, until an admin looks
 QUARANTINED = N_("An automatic check put your account on hold. You can read %(site)s and change your settings, but you can't post, comment or vote until a "
-                 "member of the staff has looked at it.\n\n```\n%(why)s\n```\n\n[Ask for a review](%(appeal)s)")
+                 "member of the staff has looked at it.\n\n%(why_block)s\n\n%(review_link)s")
 QUARANTINE_APPEAL = "/appeal/quarantine"
+
+# what a level-4 admin's use of guild powers tells the people it touches (the owner, 2026-11-19: every such act says why)
+ADMIN_JOINED = N_("A site administrator made themselves a guildmaster of +%(guild)s.\n\n%(why_block)s\n\n%(log_link)s")
+ADMIN_REMOVED_MOD = N_("A site administrator removed you as a guildmaster of +%(guild)s.\n\n%(why_block)s\n\n%(log_link)s")
 
 # --- what was lifted ---------------------------------------------------------------------------------------------------------
 EXILE_LIFTED = N_("You are no longer exiled from +%(guild)s. You can forward posts to it and comment in it again.")
 MUTE_LIFTED = N_("You can write in +%(guild)s's channels again.")
-POST_SHOWN = N_("[Your post](%(item)s) is shown in +%(guild)s again.")
-COMMENT_SHOWN = N_("[Your comment](%(item)s) is shown in +%(guild)s again.")
-POST_RESTORED = N_("[Your post](%(item)s) was restored.")
-COMMENT_RESTORED = N_("[Your comment](%(item)s) was restored.")
-COMMENT_SHOWN_AGAIN = N_("[Your comment](%(item)s) is shown again under the post it is on.")
+POST_SHOWN = N_("%(post_link)s is shown in +%(guild)s again.")
+COMMENT_SHOWN = N_("%(comment_link)s is shown in +%(guild)s again.")
+POST_RESTORED = N_("%(post_link)s was restored.")
+COMMENT_RESTORED = N_("%(comment_link)s was restored.")
+COMMENT_SHOWN_AGAIN = N_("%(comment_link)s is shown again under the post it is on.")
 SUSPENSION_ENDED = N_("Your suspension has ended. You can use %(site)s as you did before.")
 GUILD_REINSTATED = N_("+%(guild)s was reinstated, and its page is open again.")
 QUARANTINE_LIFTED = N_("The hold on your account was lifted. You can post, comment and vote again.")
+# the same three for an account that is ON HOLD still (helpers/quarantine.py): a lift that says "you can post again" is untrue to it, so it says what is still so
+EXILE_LIFTED_HELD = N_("You are no longer exiled from +%(guild)s. Your account is still on hold, so it can't forward posts or comment until a member of the staff has looked at it.")
+MUTE_LIFTED_HELD = N_("You are no longer muted in +%(guild)s's channels. Your account is still on hold, so it can't write there until a member of the staff has looked at it.")
+SUSPENSION_ENDED_HELD = N_("Your suspension has ended. Your account is still on hold, so it can't post, comment or vote until a member of the staff has looked at it.")
+HELD_VARIANTS = {}      # filled below, once the plain ones are all defined
 
 # --- how an appeal ended -------------------------------------------------------------------------------------------------
-UPHELD = N_("Your appeal of [this decision](%(log)s) was looked at, and the decision stands.\n\n```\n%(note)s\n```")
-REVERSED = N_("Your appeal of [this decision](%(log)s) was accepted, and the decision was reversed.\n\n```\n%(note)s\n```")
-DISMISSED = N_("Your appeal of [this decision](%(log)s) was not taken further.\n\n```\n%(note)s\n```")
+UPHELD = N_("Your appeal of %(decision_link)s was looked at, and the decision stands.\n\n%(note_block)s")
+REVERSED = N_("Your appeal of %(decision_link)s was accepted, and the decision was reversed.\n\n%(note_block)s")
+DISMISSED = N_("Your appeal of %(decision_link)s was not taken further.\n\n%(note_block)s")
 OUTCOME_NOTICES = {"upheld": UPHELD, "reversed": REVERSED, "dismissed": DISMISSED}
 # the same for an appeal of an automatic quarantine: the staff's entry about it is not the person's to open, so these carry no link to the Log (`outcome(..., action=)`)
-QUARANTINE_UPHELD = N_("Your appeal of the hold on your account was looked at, and the hold stands.\n\n```\n%(note)s\n```")
-QUARANTINE_REVERSED = N_("Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n\n```\n%(note)s\n```")
-QUARANTINE_DISMISSED = N_("Your appeal of the hold on your account was not taken further.\n\n```\n%(note)s\n```")
+QUARANTINE_UPHELD = N_("Your appeal of the hold on your account was looked at, and the hold stands.\n\n%(note_block)s")
+QUARANTINE_REVERSED = N_("Your appeal of the hold on your account was accepted, and the hold was lifted. You can post, comment and vote again.\n\n%(note_block)s")
+QUARANTINE_DISMISSED = N_("Your appeal of the hold on your account was not taken further.\n\n%(note_block)s")
 QUARANTINE_OUTCOME_NOTICES = {"upheld": QUARANTINE_UPHELD, "reversed": QUARANTINE_REVERSED, "dismissed": QUARANTINE_DISMISSED}
 
 # **What a limited QR sign-in is not shown** (the second review, 2026-11-17, C14). A notice that links the member's item, or the Log's entry about it
@@ -96,6 +98,10 @@ QUARANTINE_OUTCOME_NOTICES = {"upheld": QUARANTINE_UPHELD, "reversed": QUARANTIN
 HELD_FROM_LIMITED = (HID_POST, HID_COMMENT, REMOVED_POST, REMOVED_COMMENT, AUTHOR_HID_COMMENT, DECISION, MUTED, GUILD_BANNED, ALIAS_EXILED,
                      POST_SHOWN, COMMENT_SHOWN, POST_RESTORED, COMMENT_RESTORED, COMMENT_SHOWN_AGAIN, UPHELD, REVERSED, DISMISSED, QUARANTINED, QUARANTINE_LIFTED,
                      QUARANTINE_UPHELD, QUARANTINE_REVERSED, QUARANTINE_DISMISSED)
+
+HELD_VARIANTS.update({EXILE_LIFTED: EXILE_LIFTED_HELD, MUTE_LIFTED: MUTE_LIFTED_HELD, SUSPENSION_ENDED: SUSPENSION_ENDED_HELD})
+# an exile or a mute lifted by ALIAS is told to the account behind it, and names the guild: a relayed code reads that too (the review of 2026-11-19)
+HELD_FROM_LIMITED = HELD_FROM_LIMITED + (EXILE_LIFTED, MUTE_LIFTED, EXILE_LIFTED_HELD, MUTE_LIFTED_HELD, ADMIN_JOINED, ADMIN_REMOVED_MOD)
 
 # what the Log's entries say a decision is, to choose the notice
 HIDES = {"hide_post_from_guild": HID_POST, "hide_comment_from_guild": HID_COMMENT}
@@ -238,6 +244,8 @@ def tell_lifted(db, user_id, message, *, actor_id=None, **values):
         user = _person(db, user_id, actor_id)
         if user is None:
             return False
+        if getattr(user, "is_quarantined", False):
+            message = HELD_VARIANTS.get(message, message)       # an account on hold is told what is still so
         send(user, (message, {k: plain(v, 128) if k == "guild" else v for k, v in values.items()}))
         return True
     except Exception:

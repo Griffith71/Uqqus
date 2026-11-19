@@ -931,7 +931,7 @@ def guild_channel_mute(guildname, board, v):
     target = get_user((request.values.get("username") or "").lstrip("@"), graceful=True)
     if target is None or target.is_deleted:
         return _manage_page(board, v, error=tr("There's no account with that name."), status=404)
-    if target.id == v.id or board.has_mod(target):
+    if target.id == v.id or board.leads(target):
         return _manage_page(board, v, error=tr("You can't mute a guildmaster, or yourself."), status=409)
     if store.alias_muted(g.db, board.id, target.id):
         exposure.note(g.db, board.id, v.id, target.id, exposure.MUTED_BY_NAME)      # the staff are told it was tried: a signal, never a verdict

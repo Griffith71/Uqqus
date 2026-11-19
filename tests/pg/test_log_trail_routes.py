@@ -188,6 +188,8 @@ def test_a_post_authors_hide_of_a_comment_is_in_the_log_by_role_never_by_name_an
 def test_a_guild_appeal_end_to_end_only_the_person_files_it_the_guildmasters_decide_and_a_reversal_is_a_new_linked_entry(make_member, real_app):
     board_id, name, gm, author, post_id, b36, entry = hide(real_app, make_member)
     eid = entry["id"]
+    why = "I did not advertise " + secrets.token_hex(3)          # unique: the admins' queue holds the escalated appeals of every other test
+    gm_decided, gm = gm, guildmaster(make_member, board_id)       # the one who decided can't answer its appeal while another could (and alone, it is the admins'): `gm` is that other
     mine, stranger = author.browser(), make_member().browser()
     form = get(mine, f"/log/{eid}/appeal")
     assert form.status_code == 200 and "Why was it wrong?" in form.get_data(as_text=True), (form.status_code, re.sub(r"\s+", " ", re.sub("<[^>]+>", " ", form.get_data(as_text=True)))[-700:])
@@ -195,7 +197,7 @@ def test_a_guild_appeal_end_to_end_only_the_person_files_it_the_guildmasters_dec
     assert get(real_app[0].test_client(), f"/log/{eid}/appeal").status_code in (401, 302)
     assert post(stranger, author, f"/log/{eid}/appeal", reason="not mine").status_code == 404
 
-    sent = post(mine, author, f"/log/{eid}/appeal", reason="I did not advertise")
+    sent = post(mine, author, f"/log/{eid}/appeal", reason=why)
     assert sent.status_code == 303 and sent.headers["Location"].endswith("?sent=1")
     again = post(mine, author, f"/log/{eid}/appeal", reason="and again")
     assert "already%20appealed" in again.headers["Location"]
@@ -205,10 +207,10 @@ def test_a_guild_appeal_end_to_end_only_the_person_files_it_the_guildmasters_dec
     # the guild's queue shows it (the post by id, never its words); an admin's queue and a stranger's do not
     queue = get(gm.browser(), f"/+{name}/mod/appeals")
     html = queue.get_data(as_text=True)
-    assert queue.status_code == 200 and "I did not advertise" in html and f"#{b36}" in html and "Advertising" in html
+    assert queue.status_code == 200 and why in html and f"#{b36}" in html and "Advertising" in html
     assert get(stranger, f"/+{name}/mod/appeals").status_code == 404
     admin = admin_of(make_member)
-    assert "I did not advertise" not in get(admin.browser(), "/admin/appeals").get_data(as_text=True)
+    assert why not in get(admin.browser(), "/admin/appeals").get_data(as_text=True)
     assert post(stranger, author, f"/+{name}/mod/appeals/{appeal['id']}", outcome="reversed", note="x").status_code == 404
 
     done = post(gm.browser(), gm, f"/+{name}/mod/appeals/{appeal['id']}", outcome="reversed", note="You are right, sorry")

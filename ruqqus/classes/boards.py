@@ -306,6 +306,12 @@ class Board(Base, Stndrd, Age_times):
         a password. Every power asks `has_mod`."""
         return bool(user is not None and self._mod_row(user))
 
+    def mod_row(self, user, perm=None):
+        """The guildmaster record of `user` here, whatever their sign-in or standing (a held account or a limited sign-in included), or a falsy value: for a question
+        ABOUT another account ("is the one being exiled, muted or removed a guildmaster?"), where `has_mod` would answer no for a held guildmaster and so let them be
+        acted on. A power asks `has_mod`; a fact about someone asks this."""
+        return self._mod_row(user, perm) if user is not None else None
+
     def _mod_row(self, user, perm=None):
 
         if self.is_banned:

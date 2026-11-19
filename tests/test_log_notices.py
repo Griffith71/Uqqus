@@ -6,13 +6,15 @@ linking skips) and can't end it; every message is marked for translation and nam
 import re
 
 from ruqqus.helpers import log_notices as notices
+from ruqqus.helpers.notice_parts import needs, rendered
 
 ALL = (notices.HID_POST, notices.HID_COMMENT, notices.REMOVED_POST, notices.REMOVED_COMMENT, notices.AUTHOR_HID_COMMENT, notices.DECISION,
        notices.UPHELD, notices.REVERSED, notices.DISMISSED)
 
 
 def values_in(message):
-    return set(re.findall(r"%\((\w+)\)s", message))
+    """What the message needs from the one who sends it: its placeholders, the derived ones (the fenced reason, the links: helpers/notice_parts.py) as the values they are built from."""
+    return needs(message)
 
 
 def test_the_messages_name_only_the_values_their_builders_give():
@@ -27,12 +29,17 @@ def test_the_messages_name_only_the_values_their_builders_give():
 
 
 def test_a_reason_sits_in_a_fenced_block_and_every_decision_notice_links_the_log_and_the_appeal():
+    """The fence and the links are built by code from the stored values (helpers/notice_parts.py), so this checks what a notice DRAWS."""
+    values = {"item": "/post/abc", "guild": "pets", "why": "No jokes", "log": "/log/5", "appeal": "/log/5/appeal", "note": "Thanks"}
     for message in ALL:
-        if "%(why)s" in message or "%(note)s" in message:
-            assert "```\n%(why)s\n```" in message or "```\n%(note)s\n```" in message, message
-            assert ">" not in message.replace("%(", "").replace("](", "")         # not a quote: a quote's text is linked on its way
+        text = rendered(message, values)
+        if "%(why_block)s" in message or "%(note_block)s" in message:
+            assert "```\nNo jokes\n```" in text or "```\nThanks\n```" in text, message
+            assert ">" not in text.replace("](", "")                                   # not a quote: a quote's text is linked on its way
     for message in (notices.HID_POST, notices.HID_COMMENT, notices.REMOVED_POST, notices.REMOVED_COMMENT, notices.AUTHOR_HID_COMMENT, notices.DECISION):
-        assert "](%(log)s)" in message and "](%(appeal)s)" in message
+        text = rendered(message, values)
+        assert "[See it in the Log](/log/5)" in text and "[Appeal this decision](/log/5/appeal)" in text
+        assert "%(log_link)s" in message and "%(appeal_link)s" in message and "](" not in message and "```" not in message, "the translated message holds words and placeholders only"
 
 
 def test_words_cant_end_the_block_or_run_on():
@@ -42,7 +49,7 @@ def test_words_cant_end_the_block_or_run_on():
     assert notices.plain(None) == ""
     # the rest of a message is code-built links; none of a person's words can add one outside the block
     built = notices.decision("hide_post_from_guild", entry_id=5, item="/+pets/post/abc", guild="pets", reason="```\n[x](http://evil.example)")
-    text = built[0] % built[1]
+    text = rendered(built[0], built[1])
     assert text.count("```") == 2 and "evil.example" in text.split("```")[1]
     assert text.split("```")[2].count("http") == 0 and "http://evil" not in text.split("```")[0]
 
@@ -63,7 +70,7 @@ def test_each_decision_has_its_own_notice_and_an_action_with_none_has_no_notice(
         assert built[0] == message
         assert built[1] == {"item": "/post/abc", "guild": "pets", "why": "A rule of the guild: No jokes", "log": "/log/12",
                             "appeal": "/log/12/appeal"}
-        assert message % built[1]                                                        # every value it names is given
+        assert rendered(message, built[1])                                               # every value it names is given
     assert notices.decision("exile_user", entry_id=1, item="x") is None
 
 
@@ -85,8 +92,9 @@ def test_every_message_is_marked_for_translation():
 
 def test_the_quarantine_notice_carries_the_rule_the_generic_reason_and_the_way_to_a_review_and_never_the_log():
     from ruqqus.helpers import auto_quarantine
-    assert values_in(notices.QUARANTINED) == {"site", "why", "appeal"} and "```\n%(why)s\n```" in notices.QUARANTINED
-    assert "](%(appeal)s)" in notices.QUARANTINED and notices.QUARANTINE_APPEAL == "/appeal/quarantine"
+    assert values_in(notices.QUARANTINED) == {"site", "why", "appeal"} and "%(why_block)s" in notices.QUARANTINED
+    drawn = rendered(notices.QUARANTINED, {"site": "Laba", "why": "Automatic check", "appeal": notices.QUARANTINE_APPEAL})
+    assert "```\nAutomatic check\n```" in drawn and "[Ask for a review](/appeal/quarantine)" in drawn and notices.QUARANTINE_APPEAL == "/appeal/quarantine"
     assert "%(log)s" not in notices.QUARANTINED                    # the staff's entry about it is not the person's to open: the review page finds it for them
     assert values_in(notices.QUARANTINE_LIFTED) == set()
     # every trigger's wording the person reads is a generic one: never what was matched

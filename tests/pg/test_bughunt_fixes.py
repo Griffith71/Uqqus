@@ -1123,7 +1123,7 @@ def test_an_admin_acts_only_on_accounts_below_their_own_level(make_member):
     assert not banned(senior)
     here = senior.browser()
     assert post(here, "/admin/nuke_user", {"user": peer.username, "reason": "x", "formkey": senior.formkey(here)}).status_code == 403
-    assert post(here, f"/api/ban_user/{junior.id}", {"reason": "x", "days": "1", "formkey": senior.formkey(here)}).status_code in (200, 302)
+    assert post(here, f"/api/ban_user/{junior.id}", {"reason": "x", "rule": "evasion", "days": "1", "formkey": senior.formkey(here)}).status_code in (200, 302)
     assert banned(junior), "a senior admin still bans below their level"
     db = fresh(junior)
     db.execute(text("UPDATE users SET is_banned = 0, unban_utc = 0 WHERE id = :u"), {"u": junior.id})

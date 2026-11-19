@@ -47,7 +47,7 @@ def _target(board, v):
     if user is None or user.is_deleted or user.id == v.id:
         return None
     # what an exile by name refuses too, said to nobody: another guildmaster, an admin, an approved contributor
-    if board.has_mod(user) or board.has_contributor(user) or (user.admin_level or 0) >= 3:
+    if board.leads(user) or board.has_contributor(user) or (user.admin_level or 0) >= 3:
         return None
     # what an exile by name refuses to cite, too (a deleted, grace-erased, removed or author-hidden item): kept as a year-long copy every
     # guildmaster of the guild can open, so it is refused here with the common answer, not acted on (the second review, C22)

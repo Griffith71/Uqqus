@@ -17,9 +17,12 @@ def _render(text):
 def _notice(message, params):
     """(the English text, its HTML, the message, its values as JSON) of a notice made with notify / notify_many."""
     from ruqqus.helpers.i18n_runtime import site_name
+    from ruqqus.helpers.notice_parts import derive
     values = dict(params)
     values.setdefault("site", site_name())
-    text = message % values
+    # what is stored is what the caller gave; the fenced reasons and the links a message names (`%(why_block)s`, `%(log_link)s`...) are built from it, in English here and
+    # in the reader's language when the notice is drawn (helpers/notice_parts.py)
+    text = message % {**values, **derive(values)}
     return text, _render(text), message, json.dumps(values, sort_keys=True)
 
 

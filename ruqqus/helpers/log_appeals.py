@@ -272,7 +272,8 @@ def other_guildmasters(db, board_id, permission, user_id, now=None, also=()):
     extra, names = _also_not(also)
     return db.execute(text(
         f"SELECT COUNT(*) FROM mods m JOIN users u ON u.id = m.user_id WHERE m.board_id = :b AND m.accepted IS TRUE "
-        f"AND m.invite_rescinded IS NOT TRUE AND ({allowed}) AND u.id <> :u AND u.is_deleted IS NOT TRUE AND {_live(now)}{extra}"),
+        f"AND m.invite_rescinded IS NOT TRUE AND ({allowed}) AND u.id <> :u AND u.is_deleted IS NOT TRUE AND {_live(now)}{extra} "
+        f"AND COALESCE(u.quarantined_utc, 0) = 0"),            # a held account (helpers/quarantine.py) decides nothing: it is not "another who could"
         {"b": int(board_id), "u": user_id, **names}).scalar() or 0
 
 
@@ -286,6 +287,47 @@ def conflicted(db, appeal, user_id, now=None):
         return other_guildmasters(db, appeal["board_id"], permission_for(entry), user_id, now, also=also) > 0
     # a guild's ban is a level-4 decision (the site queue lets only level 4 decide it), so a level-3 admin is not "another who could" (the second review, C11)
     return other_admins(db, user_id, now, level=4 if appeal["action"] == "ban_guild" else 3, also=also) > 0
+
+
+ESCALATE_DAYS = 14
+ALONE, LATE = "alone", "late"
+
+
+def escalation(db, appeal, now=None):
+    """Why an open appeal against a GUILD's decision is the site's admins' to decide too (the owner, 2026-11-19: "escalate to admins"), or None. `ALONE`: no other
+    guildmaster who could decide exists (the one who decided is the only qualified guildmaster, or none is left, or the others are held or gone), so the guild's
+    queue is no longer a place it can be answered and **only the admins decide it**. `LATE`: the guild has left it open `ESCALATE_DAYS`, so the admins may decide it as
+    well (whoever decides first settles it: `decide` is one conditional UPDATE). A site-queue appeal (no guild) is never escalated: it is the admins' already."""
+    if not appeal.get("board_id") or appeal.get("action") not in APPEALABLE:
+        return None
+    now = int(now if now is not None else time.time())
+    also = (appeal.get("user_id"),)
+    if other_guildmasters(db, appeal["board_id"], permission_for({"action": appeal["action"]}), appeal.get("actor_id") or 0, now, also=also) == 0:
+        return ALONE
+    if now - int(appeal.get("created_utc") or now) >= ESCALATE_DAYS * DAY:
+        return LATE
+    return None
+
+
+def escalated_queue(db, now=None, limit=200):
+    """The open guild appeals the admins decide too (`escalation`), oldest first, in the shape `open_queue` gives them, each with `escalated` set to why."""
+    now = int(now if now is not None else time.time())
+    out, after = [], 0
+    while len(out) < limit:
+        # in batches by id, so the filter is applied to EVERY open guild appeal and not only the oldest few hundred (a newer one that the guild can no longer answer must show)
+        rows = [dict(r._mapping) for r in db.execute(text(
+            "SELECT a.id, a.entry_id, a.user_id, a.board_id, a.created_utc, a.reason, e.action, e.actor_id, e.actor_role, "
+            "e.target_submission_id, e.target_comment_id, e.target_user_id, e.board_id AS entry_board, e.reason AS entry_reason, e.rule_key, "
+            "e.audience AS entry_audience FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id "
+            "WHERE a.status = 'open' AND a.board_id IS NOT NULL AND a.id > :after ORDER BY a.id LIMIT 200"), {"after": after})]
+        if not rows:
+            break
+        for row in rows:
+            why = escalation(db, row, now)
+            if why and len(out) < limit:
+                out.append({**row, "escalated": why})
+        after = rows[-1]["id"]
+    return out
 
 
 def decide(db, appeal_id, outcome, decider_id, note, now=None, reversal_entry_id=None):
@@ -330,4 +372,6 @@ def waiting_count(db, board_id=None, level=3, viewer_id=None):
     if viewer_id:
         where.append("a.user_id <> :viewer")
         params["viewer"] = int(viewer_id)
-    return db.execute(text("SELECT COUNT(*) FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE " + " AND ".join(where)), params).scalar() or 0
+    own = db.execute(text("SELECT COUNT(*) FROM log_appeals a JOIN log_entries e ON e.id = a.entry_id WHERE " + " AND ".join(where)), params).scalar() or 0
+    escalated = [a for a in escalated_queue(db) if may_decide_site(a["action"], a.get("entry_audience"), level) and a["user_id"] != viewer_id]
+    return own + len(escalated)

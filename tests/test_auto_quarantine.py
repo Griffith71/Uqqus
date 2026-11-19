@@ -585,7 +585,8 @@ def test_hold_and_release_write_no_public_line_themselves_and_the_cycle_runs_pub
 
 def test_the_notice_says_what_it_is_and_never_what_was_matched():
     message, values = log_notices.QUARANTINED, {"why": log_notices.why_of("evasion", "Automatic spam check"), "appeal": log_notices.QUARANTINE_APPEAL, "site": "Laba"}
-    body = message % values
+    from ruqqus.helpers.notice_parts import rendered
+    body = rendered(message, values)
     assert "Evading and manipulating the site: Automatic spam check" in body and "(/appeal/quarantine)" in body
     assert "```\nEvading" in body                                                               # a reason sits inside the fenced block
     assert log_notices.why_of("", "Automatic check") == "Automatic check"

@@ -13,7 +13,7 @@ from ruqqus.helpers.aws import delete_file
 from ruqqus.helpers.media import attach as media_attach, cdn as media_cdn
 from ruqqus.helpers import translation_store
 from ruqqus.helpers.i18n_runtime import N_, msg, tr
-from ruqqus.helpers import action_log, auto_quarantine, log_cascade, log_evidence, log_notices, quarantine_review
+from ruqqus.helpers import action_log, auto_quarantine, log_cascade, log_evidence, log_notices, quarantine_review, sanction_evidence
 from ruqqus.helpers.base36 import *
 from ruqqus.helpers.alerts import *
 from ruqqus.helpers.sanitize import *
@@ -116,6 +116,10 @@ def ban_user(user_id, v):
         # the paper trail: every suspension says why, in words the public sees (the owner, 2026-10-31)
         return render_template("message.html", v=v, title=tr("Give a reason"),
                                message=tr("A suspension or ban needs a public reason, so the Log can say why.")), 400
+    if not rule:
+        # and the rule it breaks (the owner, 2026-11-19: an admin's decision cites the evidence and outlines how it breaks the rules)
+        return render_template("message.html", v=v, title=tr("Choose the rule it breaks"),
+                               message=tr("A suspension or ban names the rule it breaks, so the Log can say which.")), 400
 
     # the items the banning admin cites for the ban (the Log plan's decision 10, helpers/log_evidence.py): checked BEFORE anything changes, so a list that can't
     # be cited bans nobody. They are only proposed here: a different admin approves before the Log names anyone
@@ -153,6 +157,10 @@ def ban_user(user_id, v):
         proposed = log_evidence.propose(g.db, entry, user.id, v.id, cited, int(time.time()))
         action_log.record_staff(g.db, "admin_evidence", v, f"proposed citing {proposed} item(s) for entry {entry}: a different admin has to approve before "
                                                           f"the Log names the author", target_user_id=user.id)
+        # the documentation (the owner, 2026-11-19: a ban cites the account's own activity): a private copy of each cited item as it is now, kept a year, for the
+        # account, the admins and nobody else (board 0: no guild's guildmasters, since an item may be anonymous and a ban is the site's decision)
+        items = [g.db.query(Comment if kind == "comment" else Submission).filter_by(id=item_id).first() for kind, item_id in cited]
+        sanction_evidence.keep(g.db, entry, 0, user.id, [i for i in items if i is not None], limit=log_evidence.MAX_ITEMS)
 
     for x in user.alts:
         if not x.is_deleted and _outranks(v, x):
@@ -215,6 +223,8 @@ def ban_post(post_id, v):
     # a removal says why, in public (the Log shows the rule and the reason, never the text: helpers/action_log.py)
     if not action_log.clean_reason(request.form.get("reason")):
         return jsonify({"error": tr("A reason is required.")}), 400
+    if not action_log.parse_rule(request.form.get("rule")):
+        return jsonify({"error": tr("Choose the rule it breaks.")}), 400
 
     post.is_banned = True
     post.is_approved = 0
@@ -245,6 +255,8 @@ def ban_post(post_id, v):
     # the person it is about is told: the rule, the reason, the Log and the way to appeal (best effort)
     log_notices.tell_decision(g.db, entry, "ban_post", post=post, reason=request.form.get("reason"), actor_id=v.id,
                               rule_key=action_log.parse_rule(request.form.get("rule")))
+    if request.form.get("ajax"):
+        return "", 204              # the decision dialog's request (assets/js/decision_dialog.js): the card is updated in place, a followed redirect is no answer
     return (redirect(post.permalink), post)
 
 
@@ -408,6 +420,8 @@ def api_ban_comment(c_id, v):
 
     if not action_log.clean_reason(request.form.get("reason")):
         return jsonify({"error": tr("A reason is required.")}), 400
+    if not action_log.parse_rule(request.form.get("rule")):
+        return jsonify({"error": tr("Choose the rule it breaks.")}), 400
 
     comment.is_banned = True
     comment.is_approved = 0
@@ -480,6 +494,8 @@ nothing that references it breaks; only the text itself is gone.
 
     if not action_log.clean_reason(request.form.get("reason")):
         return jsonify({"error": tr("A reason is required.")}), 400
+    if not action_log.parse_rule(request.form.get("rule")):
+        return jsonify({"error": tr("Choose the rule it breaks.")}), 400
 
     purge_comment_text(comment, v, rule=request.form.get("rule"), reason=request.form.get("reason"))
     return "", 204
@@ -787,6 +803,11 @@ def api_unban_guild(v, bid):
 @validate_formkey
 def mod_self_to_guild(v, bid):
 
+    # a level-4 admin taking guildmaster powers in a guild says why (the owner, 2026-11-19): asked first, and the guild's heads are told
+    why = action_log.clean_reason(request.form.get("reason"))
+    if not why:
+        return render_template("message.html", v=v, title=tr("Give a reason"), message=tr("Becoming a guildmaster of a guild needs a reason, so the Log and its guildmasters can say why.")), 400
+
     board = get_board(bid)
     if not board.has_mod(v):
         mr = ModRelationship(user_id=v.id,
@@ -806,7 +827,11 @@ def mod_self_to_guild(v, bid):
             board_id=board.id,
             note="admin action"
         )
-        g.db.add(ma)
+        entry = _decided(ma, rule=request.form.get("rule"), reason=why)
+        g.db.commit()
+        if entry:
+            log_notices.tell_heads(g.db, board.id, log_notices.ADMIN_JOINED, entry_id=entry, actor_id=v.id, guild=board.name,
+                                   rule_key=action_log.parse_rule(request.form.get("rule")), reason=why)
 
     return redirect(f"/+{board.name}/mod/mods")
 
@@ -1151,10 +1176,16 @@ def admin_nuke_user(v):
 @validate_formkey
 def admin_demod_user(v):
 
+    # removing someone as guildmaster of every guild says why (the owner, 2026-11-19): asked first, before the account is looked at
+    why = action_log.clean_reason(request.form.get("reason"))
+    if not why:
+        return jsonify({"error": tr("A reason is required.")}), 400
+
     user=get_user(request.form.get("user"))
     if not _outranks(v, user):
         abort(403)
 
+    removed = []
     for mod in g.db.query(ModRelationship).filter_by(user_id=user.id, accepted=True):
 
         ma=ModAction(
@@ -1164,11 +1195,18 @@ def admin_demod_user(v):
             kind="remove_mod",
             note="admin_action"
             )
-        g.db.add(ma)
+        entry = _decided(ma, rule=request.form.get("rule"), reason=why)
+        removed.append((mod.board_id, entry))
 
         g.db.delete(mod)
 
     g.db.commit()
+    # the person is told, once for each guild, why (a notice commits on its own, so after the removal is committed)
+    for board_id, entry in removed:
+        board = g.db.query(Board).filter_by(id=board_id).first()
+        if board is not None and entry:
+            log_notices.tell_imposed(g.db, user.id, log_notices.ADMIN_REMOVED_MOD, entry, guild=board.name, rule_key=action_log.parse_rule(request.form.get("rule")),
+                                     reason=why, actor_id=v.id)
     return redirect(user.permalink)
 
 @app.route("/admin/signature", methods=["POST"])
